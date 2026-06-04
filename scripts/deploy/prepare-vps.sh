@@ -35,8 +35,8 @@ echo "==> [3/4] Pare-feu UFW (SSH + HTTP + HTTPS)..."
 ufw default deny incoming
 ufw default allow outgoing
 ufw allow 22/tcp comment 'SSH'
-ufw allow 80/tcp comment 'HTTP Caddy'
-ufw allow 443/tcp comment 'HTTPS Caddy'
+ufw allow 80/tcp comment 'HTTP Traefik'
+ufw allow 443/tcp comment 'HTTPS Traefik'
 ufw --force enable
 ufw status verbose | head -20
 

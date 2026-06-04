@@ -25,8 +25,12 @@ build_gsms_images
 
 cd "$GSMS_DIR"
 echo "==> Up stack (profile apps)..."
-docker compose --profile apps up -d crm docs landing worker
-docker compose up -d caddy
+if [[ "${REBUILD_DOCS:-0}" == "1" ]]; then
+  docker compose --profile apps up -d crm docs landing worker
+else
+  docker compose --profile apps up -d crm landing worker
+fi
+docker compose up -d traefik
 
 echo "==> Status"
-docker ps --format 'table {{.Names}}\t{{.Status}}' | grep -E 'gsms-crm|gsms-docs|gsms-landing|gsms-caddy|NAMES'
+docker ps --format 'table {{.Names}}\t{{.Status}}' | grep -E 'gsms-crm|gsms-docs|gsms-landing|gsms-traefik|gsms-worker|NAMES'

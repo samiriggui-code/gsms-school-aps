@@ -3,7 +3,7 @@
 # GUIDE RAPIDE (PowerShell, depuis la racine du projet) :
 #   cd c:\laragon\www\app-prisma
 #   .\scripts\0-aide-deploiement.ps1      # affiche ce guide
-#   .\scripts\1-etape-preparer-fichiers.ps1  # ETAPE 1 — PC : .env, Caddyfile (pas de SSH)
+#   .\scripts\1-etape-preparer-fichiers.ps1  # ETAPE 1 — PC : .env, Traefik (pas de SSH)
 #   .\scripts\2-etape-infra-vps.ps1        # ETAPE 2 — envoi VPS + Docker + Postgres
 #   .\scripts\3-etape-apps-vps.ps1          # ETAPE 3 — CRM + landing + migrations
 #
@@ -167,11 +167,20 @@ function Expand-StackStaging {
     [bool]$UseHttps
   )
   $Vars['GENERATED_AT'] = (Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+  New-Item -ItemType Directory -Path (Join-Path $Staging 'traefik\dynamic') -Force | Out-Null
+  New-Item -ItemType Directory -Path (Join-Path $Staging 'homepage\config') -Force | Out-Null
   Expand-TemplateFile (Join-Path $Templates '.env.tpl') (Join-Path $Staging '.env') $Vars
-  $caddyTpl = if ($UseHttps) { 'Caddyfile.tpl' } else { 'Caddyfile.http.tpl' }
-  Expand-TemplateFile (Join-Path $Templates $caddyTpl) (Join-Path $Staging 'caddy\Caddyfile') $Vars
+  if ($UseHttps) {
+    Expand-TemplateFile (Join-Path $Templates 'traefik.yml.tpl') (Join-Path $Staging 'traefik\traefik.yml') $Vars
+    Expand-TemplateFile (Join-Path $Templates 'traefik-dynamic.yaml.tpl') (Join-Path $Staging 'traefik\dynamic\routers.yaml') $Vars
+  } else {
+    Copy-Item (Join-Path $StackSrc 'traefik\traefik.http.yml') (Join-Path $Staging 'traefik\traefik.yml') -Force
+    Expand-TemplateFile (Join-Path $Templates 'traefik-dynamic.http.yaml.tpl') (Join-Path $Staging 'traefik\dynamic\routers.yaml') $Vars
+  }
   Expand-TemplateFile (Join-Path $Templates 'homepage-services.yaml.tpl') (Join-Path $Staging 'homepage\config\services.yaml') $Vars
   Expand-TemplateFile (Join-Path $Templates 'SECRETS.txt.tpl') (Join-Path $Staging 'SECRETS.txt') $Vars
+  $json = $Vars | ConvertTo-Json -Compress
+  Set-Content (Join-Path $Staging 'traefik\dynamic\_vars.json') -Value $json -Encoding UTF8
 }
 
 function New-StagingFromDeployConfig {
@@ -230,6 +239,8 @@ function New-StagingFromDeployConfig {
     UPTIME_HOST                    = $uptimeHost
     NETDATA_HOST                   = $netdataHost
     SERVER_IP                      = $serverIp
+    SCHEME                         = $scheme
+    TRAEFIK_EMAIL                  = "admin@$domain"
     CADDY_EMAIL                    = "admin@$domain"
   }
   Copy-StackToStaging
@@ -696,7 +707,7 @@ $appRoot = Read-Default 'Dossier monorepo sur le VPS' (Get-Cfg 'AppRoot' '/opt/a
 
 $projectName = Read-Default 'Nom du projet / client' (Get-Cfg 'ProjectName' 'GSMS')
 $domain = Read-Default 'Domaine principal (landing)' (Get-Cfg 'Domain' 'gsms-security.com')
-$serverIp = Read-Default 'IP du VPS (acces LAN Caddy)' (Get-Cfg 'ServerIp' $sshHost)
+$serverIp = Read-Default 'IP du VPS (DNS A records)' (Get-Cfg 'ServerIp' $sshHost)
 
 Write-Host ''
 Write-Host '--- Sous-domaines (defaut: crm.DOMAINE, etc.) ---' -ForegroundColor Yellow
@@ -706,7 +717,7 @@ $monitoringHost = Read-Default 'Homepage / monitoring' "monitoring.$domain"
 $portainerHost = Read-Default 'Portainer' "portainer.$domain"
 $uptimeHost = Read-Default 'Uptime Kuma' "uptime.$domain"
 $netdataHost = Read-Default 'Netdata' "netdata.$domain"
-$caddyEmail = Read-Default 'Email Caddy (Let us Encrypt)' "admin@$domain"
+$traefikEmail = Read-Default 'Email Traefik (Let us Encrypt)' "admin@$domain"
 
 Write-Host ''
 Write-Host '--- Base de donnees (automatique) ---' -ForegroundColor Yellow
@@ -764,8 +775,8 @@ if ($PrepareOnly) {
 
 Write-Host ''
 Write-Host '--- HTTPS (Let''s Encrypt) ---' -ForegroundColor Yellow
-Write-Host '  Caddy obtient les certificats automatiquement si le DNS pointe deja vers le VPS.' -ForegroundColor DarkGray
-$useHttps = Read-YesNo 'Activer HTTPS (Let''s Encrypt via Caddy)' $true
+Write-Host '  Traefik obtient les certificats si le DNS pointe deja vers le VPS (ports 80/443).' -ForegroundColor DarkGray
+$useHttps = Read-YesNo 'Activer HTTPS (Let''s Encrypt via Traefik)' $true
 $scheme = if ($useHttps) { 'https' } else { 'http' }
 $nextAuthSecret = New-Secret
 $authSecret = New-Secret
@@ -807,7 +818,9 @@ $vars = @{
   UPTIME_HOST                    = $uptimeHost
   NETDATA_HOST                   = $netdataHost
   SERVER_IP                      = $serverIp
-  CADDY_EMAIL                    = $caddyEmail
+  SCHEME                         = $scheme
+  TRAEFIK_EMAIL                  = $traefikEmail
+  CADDY_EMAIL                    = $traefikEmail
 }
 
 } # fin if (-not $script:skipWizard)
@@ -818,9 +831,9 @@ if (-not $script:skipWizard) {
   Copy-StackToStaging
   Expand-StackStaging -Vars $vars -UseHttps $useHttps
   if ($useHttps) {
-    Write-Host '  Caddyfile : HTTPS + Let''s Encrypt (auto)' -ForegroundColor DarkGray
+    Write-Host '  Traefik : HTTPS + Let''s Encrypt (auto)' -ForegroundColor DarkGray
   } else {
-    Write-Host '  Caddyfile : HTTP seul (test LAN, pas de SSL)' -ForegroundColor DarkGray
+    Write-Host '  Traefik : HTTP seul (test LAN, pas de SSL)' -ForegroundColor DarkGray
   }
 }
 
@@ -842,7 +855,7 @@ if ($PrepareOnly -or $InfraOnly) {
 Write-Host ''
 Write-Host '--- Fichiers prepares (PC) ---' -ForegroundColor Green
 Write-Host ('  Dossier : ' + $Staging)
-Write-Host '  .env, SECRETS.txt, docker-compose.yml, caddy/Caddyfile, ...'
+Write-Host '  .env, SECRETS.txt, docker-compose.yml, traefik/, homepage/, ...'
 if (Test-Path (Join-Path $Staging 'SECRETS.txt')) {
   Write-Host '  Mots de passe Postgres/MinIO : scripts\.deploy-staging\SECRETS.txt' -ForegroundColor Cyan
 }

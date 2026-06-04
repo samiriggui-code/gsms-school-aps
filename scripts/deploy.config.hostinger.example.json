@@ -1,0 +1,22 @@
+{
+  "_comment": "Exemple Hostinger — copier vers scripts/deploy.config.json apres etape 1",
+  "SshHost": "187.77.166.124",
+  "Scheme": "https",
+  "SshUser": "root",
+  "SshKey": "C:\\Users\\VOTRE_USER\\.ssh\\id_ed25519",
+  "GsmsDir": "/opt/gsms",
+  "AppRoot": "/opt/app-prisma",
+  "ProjectName": "GSMS",
+  "Domain": "gsms-security.com",
+  "ServerIp": "187.77.166.124",
+  "CrmHost": "crm.gsms-security.com",
+  "DocsHost": "docs.gsms-security.com",
+  "MonitoringHost": "monitoring.gsms-security.com",
+  "PortainerHost": "portainer.gsms-security.com",
+  "UptimeHost": "uptime.gsms-security.com",
+  "NetdataHost": "netdata.gsms-security.com",
+  "SmtpHost": "smtp.hostinger.com",
+  "SmtpPort": "465",
+  "SmtpSecure": "true",
+  "SmtpUser": "admin@gsms-security.com"
+}

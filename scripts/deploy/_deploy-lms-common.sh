@@ -218,6 +218,7 @@ new_staging_from_deploy_config() {
       NETDATA_HOST: process.argv[20],
       SERVER_IP: process.argv[21],
       TRAEFIK_EMAIL: 'admin@'+process.argv[13],
+      SCHEME: process.argv[9],
     }));
   " "$PROJECT_NAME" "$pg_pass" "$pg_pass_enc" "$minio_pass" \
     "$SMTP_HOST" "$SMTP_PORT" "$SMTP_SECURE" "$SMTP_USER" \

@@ -8,6 +8,7 @@
 #
 #   cd c:\laragon\www\app-prisma
 #   .\scripts\1-etape-preparer-fichiers.ps1
+# Hostinger : voir docs/DEPLOIEMENT-HOSTINGER.md
 #
 # Ensuite : .\scripts\2-etape-infra-vps.ps1
 # Guide    : .\scripts\DEPLOIEMENT.md

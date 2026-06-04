@@ -1,0 +1,210 @@
+# Stack GSMS / LMS — Traefik + infra + apps (profile `apps`)
+# Usage VPS : /opt/gsms — voir deploy/gsms/README.md
+
+name: gsms
+
+networks:
+  gsms:
+    name: gsms
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  portainer_data:
+  uptime_kuma_data:
+  traefik_letsencrypt:
+  netdata_config:
+  netdata_lib:
+  netdata_cache:
+
+services:
+  traefik:
+    image: traefik:v3.3
+    container_name: gsms-traefik
+    restart: unless-stopped
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+      - traefik_letsencrypt:/letsencrypt
+    networks:
+      - gsms
+
+  maintenance:
+    image: nginx:1.27-alpine
+    container_name: gsms-maintenance
+    restart: unless-stopped
+    volumes:
+      - ./maintenance:/usr/share/nginx/html:ro
+    networks:
+      - gsms
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: gsms-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - gsms
+
+  redis:
+    image: redis:7-alpine
+    container_name: gsms-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - gsms
+
+  minio:
+    image: minio/minio:latest
+    container_name: gsms-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - gsms
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: gsms-homepage
+    restart: unless-stopped
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
+    volumes:
+      - ./homepage/config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - gsms
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: gsms-portainer
+    restart: unless-stopped
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - gsms
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: gsms-uptime-kuma
+    restart: unless-stopped
+    volumes:
+      - uptime_kuma_data:/app/data
+    networks:
+      - gsms
+
+  netdata:
+    image: netdata/netdata:stable
+    container_name: gsms-netdata
+    restart: unless-stopped
+    hostname: ${NETDATA_HOSTNAME}
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdata_config:/etc/netdata
+      - netdata_lib:/var/lib/netdata
+      - netdata_cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - gsms
+
+  crm:
+    profiles: [apps]
+    image: gsms-crm:latest
+    container_name: gsms-crm
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      DIRECT_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - gsms
+
+  landing:
+    profiles: [apps]
+    image: gsms-landing:latest
+    container_name: gsms-landing
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - gsms
+
+  docs:
+    profiles: [apps]
+    image: gsms-docs:latest
+    container_name: gsms-docs
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3004"
+      HOSTNAME: "0.0.0.0"
+    networks:
+      - gsms
+
+  worker:
+    profiles: [apps]
+    image: gsms-worker:latest
+    container_name: gsms-worker
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - gsms
