@@ -1,0 +1,37 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "add": "Ajouter",
+      "remove": "Retirer",
+      "submit": "Envoyer",
+      "close": "Fermer"
+    },
+    "actions": {
+      "export": "Exporter",
+      "refresh": "Actualiser",
+      "back": "Retour"
+    },
+    "labels": {
+      "name": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe"
+    },
+    "messages": {
+      "loading": "Chargement…",
+      "error": "Une erreur est survenue",
+      "success": "Opération réussie"
+    }
+  },
+  "layout": {
+    "loading": "Chargement…",
+    "toggleTheme": "Basculer le thème",
+    "lightMode": "Mode clair",
+    "darkMode": "Mode sombre",
+    "openMenu": "Ouvrir le menu",
+    "language": "Langue"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "lms-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.5.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "postinstall": "pnpm db:generate",
+    "dev": "pnpm --parallel --filter @lms-crm --filter @lms-landing --filter @lms/docs --filter @repo/workers run dev",
+    "dev:all": "pnpm --parallel --filter @lms-crm --filter @lms-landing --filter @lms/docs --filter @repo/workers run dev",
+    "dev:landing": "pnpm -C apps/lms-landing dev",
+    "dev:crm": "pnpm -C apps/lms-crm dev",
+    "dev:crm:lan": "pnpm -C apps/lms-crm dev:lan",
+    "dev:landing:lan": "pnpm -C apps/lms-landing dev:lan",
+    "dev:docs:lan": "pnpm -C apps/lms-docs dev:lan",
+    "dev:mobile": "pnpm -C apps/lms-mobile start",
+    "dev:docs": "pnpm -C apps/lms-docs dev",
+    "dev:deploy": "node -e \"console.error('\\nCockpit deploy (Phase 2) : cd ../gsms-deploy puis pnpm dev:deploy\\n');process.exit(1)\"",
+    "dev:deploy:clean": "node -e \"console.error('\\nCockpit deploy : cd ../gsms-deploy puis pnpm dev:deploy:clean\\n');process.exit(1)\"",
+    "dev:deploy:web": "node -e \"console.error('\\nCockpit deploy : cd ../gsms-deploy puis pnpm dev:deploy:web\\n');process.exit(1)\"",
+    "dev:deploy:terminal": "node -e \"console.error('\\nCockpit deploy : cd ../gsms-deploy puis pnpm dev:deploy:terminal\\n');process.exit(1)\"",
+    "db:push": "pnpm -C packages/database run db:push",
+    "db:generate": "pnpm -C packages/database db:generate",
+    "db:seed": "node packages/database/prisma/seed.js",
+    "db:studio": "pnpm -C packages/database db:studio",
+    "dev:workers": "pnpm --filter @repo/workers dev",
+    "build:crm": "pnpm --filter @lms-crm build",
+    "build:landing": "pnpm --filter @lms-landing build",
+    "build:apps": "pnpm build:landing && pnpm build:crm"
+  },
+  "prisma": {
+    "schema": "packages/database/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "shadcn": "^4.4.0",
+    "turbo": "^2.9.16"
+  },
+  "dependencies": {
+    "ioredis": "^5.10.1"
+  }
+}

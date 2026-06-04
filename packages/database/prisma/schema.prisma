@@ -1,0 +1,2010 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+  output          = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  INACTIVE
+  ACTIVE
+  BLOCKED
+  PENDING
+  BANNED
+  ABSENT
+}
+
+enum UserCategory {
+  INTERNAL
+  CLIENT
+  SUBCONTRACTOR
+}
+
+enum WorkTimeType {
+  FULL_TIME
+  PART_TIME
+}
+
+enum ContractType {
+  CDI
+  CDD
+  INTERIM
+  STAGE
+}
+
+enum FileAssetVisibility {
+  PRIVATE
+  INTERNAL
+  PUBLIC
+}
+
+enum FileAssetStatus {
+  ACTIVE
+  DELETED
+  ARCHIVED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  VALIDATED
+  REJECTED
+  COMPLETED
+  ARCHIVED
+}
+
+/// Vue CRM formations catalogue (hors Enrollment LMS cours).
+enum CandidatureStatus {
+  /// Dossier en saisie, pièces incomplètes possibles.
+  DRAFT
+  /// Envoyé aux services / prêt pour instruction.
+  SUBMITTED
+  /// Retour instructeur pièces manquantes ou invalides.
+  MISSING_DOCUMENTS
+  VALIDATION_PENDING
+  PENDING_CNAPS
+  CNAPS_APPROVED
+  CNAPS_REJECTED
+  /// Dossier administratif conforme : apte à être placé sur une session.
+  VALIDATED
+  /// Formation suivie, examen réussi et attestation délivrée.
+  COMPLETED
+  REJECTED
+  ARCHIVED
+}
+
+enum FormationExamOutcome {
+  PENDING
+  PASSED
+  FAILED
+  ABSENT
+}
+
+enum CandidatureSource {
+  MANUAL
+  LEAD
+  LANDING_SESSION
+}
+
+enum FormationSessionEnrollmentStatus {
+  CONFIRMED
+  WAITLIST
+  CANCELLED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  EXCUSED
+}
+
+enum UserBusinessLabel {
+  COLLABORATEUR
+  FORMATEUR
+}
+
+/// Service / équipe interne à l’école de formation (pas une entité juridique ni une « unité » multi-tenant GSMS).
+enum SchoolInternalService {
+  /// Pool formateurs et intervenants.
+  TRAINER_POOL
+  /// Coordination pédagogique, programmes, qualité.
+  PEDAGOGICAL
+  /// RH, administration, support.
+  HR_ADMIN
+}
+
+enum EquipmentStatus {
+  AVAILABLE
+  IN_USE
+  MAINTENANCE
+  OUT_OF_SERVICE
+}
+
+enum EquipmentMaintenanceStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  TRANSFER
+}
+
+model LandingConfig {
+  id String @id @default(uuid())
+
+  sections Json    @default("[]") // Stocke les sections dynamiques (Hero, Sheets, etc.)
+  enabled  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id       String     @id @default(uuid())
+  email    String     @unique
+  password String?
+  country  String?
+  timezone String?
+  name     String?
+  roleId   String
+  status   UserStatus @default(INACTIVE)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastSignInAt    DateTime?
+  emailVerifiedAt DateTime?
+  isTrashed       Boolean   @default(false)
+  avatar          String?
+  firstName       String?
+  lastName        String?
+  phone           String?
+  proEmail        String?
+  userCategory    UserCategory @default(INTERNAL)
+  subcontractorId String?
+  jobFunction     String?
+  qualification   String?
+  birthDate       DateTime?
+  birthPlace      String?
+  nationality     String?
+  socialSecurityNumber  String?
+  cniNumber             String?
+  residencePermitNumber String?
+  residencePermitExpiry DateTime?
+  contractType          ContractType?
+  workTimeType          WorkTimeType?
+  contractStartDate     DateTime?
+  contractEndDate       DateTime?
+  address               String?
+  city                  String?
+  postalCode            String?
+  carteProNumber        String?
+  carteProExpiry        DateTime?
+  isSchedulable         Boolean   @default(true)
+  documentCni           String?
+  documentAssurance     String?
+  documentResidencePermit String?
+  documentCartePro      String?
+  invitedByUserId String?
+  isProtected     Boolean   @default(false)
+
+  role      UserRole    @relation(fields: [roleId], references: [id])
+  systemLog SystemLog[]
+  accounts  Account[]
+  Session   Session[]
+
+  // LMS relations
+  courses            Course[]
+  userProgress       UserProgress[]
+  purchases          Purchase[]
+  stripeCustomer     StripeCustomer?
+  activitiesModified Activity[]      @relation("ActivityModifier")
+
+  instructorSessions TrainingSession[]      @relation("Instructor")
+  enrollments        Enrollment[]
+  attendances        Attendance[]
+  grades             Grade[]
+  submissions        AssignmentSubmission[]
+
+  formationSessionParticipants FormationSessionParticipant[]
+  formationAttestations        FormationAttestation[]
+  candidatures                   Candidature[]
+  /** Sessions formation CRM dont cet utilisateur est le formateur référent. */
+  formationSessionsTrained FormationSession[] @relation("FormationSessionTrainer")
+
+  certificates    UserCertificate[]
+  discussions     Discussion[]
+  comments        Comment[]
+  discussionVotes DiscussionVote[]
+  commentVotes    CommentVote[]
+
+  trails                Trail[]
+  trailRuns             TrailRun[]
+  apiTokens             ApiToken[]
+  webhooks              WebhookEndpoint[]
+  businessRoles         UserBusinessRole[]
+  collaborateurProfile  CollaborateurProfile?
+  formateurProfile      FormateurProfile?
+  managedCollaborateurs CollaborateurProfile[] @relation("CollaborateurManager")
+  createdFileAssets     FileAsset[]            @relation("FileAssetCreatedBy")
+  assignedSupportTickets SupportTicket[]       @relation("SupportTicketAssignee")
+  createdSupportTickets  SupportTicket[]       @relation("SupportTicketCreatedBy")
+
+  inAppNotifications InAppNotification[]
+  chatParticipants   ChatParticipant[]
+  chatMessages       ChatMessage[]
+
+  rhTeamsLed         RhTeam[]        @relation("RhTeamLeader")
+  rhTeamMemberships  RhTeamMember[]
+  rhOrgUnitsManaged  RhOrgUnit[]     @relation("RhOrgUnitManager")
+  rhAbsences         RhAbsence[]
+  rhAbsencesValidated RhAbsence[]    @relation("RhAbsenceValidatedBy")
+
+  @@index([invitedByUserId])
+  @@index([roleId])
+  @@index([status])
+}
+
+model FileAsset {
+  id            String              @id @default(uuid())
+  module        String
+  entityType    String
+  entityId      String?
+  category      String?
+  originalName  String
+  mimeType      String
+  size          Int
+  storageKey    String              @unique
+  url           String
+  visibility    FileAssetVisibility @default(PRIVATE)
+  status        FileAssetStatus     @default(ACTIVE)
+  provider      String              @default("s3")
+  metadata      Json?               @default("{}")
+  createdById   String?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  deletedAt     DateTime?
+
+  createdBy User? @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([module, entityType, entityId])
+  @@index([status, visibility])
+  @@index([createdById])
+}
+
+model UserBusinessRole {
+  id        String            @id @default(uuid())
+  userId    String
+  label     UserBusinessLabel
+  isPrimary Boolean           @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, label])
+  @@index([label])
+  @@index([userId, isPrimary])
+}
+
+model CollaborateurProfile {
+  id                    String    @id @default(uuid())
+  userId                String    @unique
+  employeeCode          String?   @unique
+  companyId             String?
+  schoolInternalService SchoolInternalService?
+  managerUserId         String?
+  hireDate              DateTime?
+  endDate               DateTime?
+  contractType          String?
+  workTimeType          String?
+  qualification         String?
+  jobFunction           String?
+  carteProNumber        String?
+  carteProExpiry        DateTime?
+  socialSecurityNumber  String?
+  cniNumber             String?
+  residencePermitNumber String?
+  residencePermitExpiry DateTime?
+  birthDate             DateTime?
+  birthPlace            String?
+  nationality           String?
+  address               String?
+  city                  String?
+  postalCode            String?
+  country               String?
+  isSchedulable         Boolean   @default(true)
+  metadata              Json?     @default("{}")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  manager User? @relation("CollaborateurManager", fields: [managerUserId], references: [id], onDelete: SetNull)
+
+  @@index([companyId])
+  @@index([schoolInternalService])
+  @@index([managerUserId])
+}
+
+model FormateurProfile {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  companyId             String?
+  /// Équipe interne rattachée (formateurs salariés / pool maison).
+  schoolInternalService SchoolInternalService?
+  trainingCenterId      String?
+  /// Première spécialité (doublon de confort avec `specialties[0]`).
+  speciality            String?
+  /** Domaines dispensés au catalogue (JSON string[]): SST, TFPAPS, SSIAP, etc. */
+  specialties           Json     @default("[]")
+  pedagogicalReferences Json?    @default("[]")
+  certifications        Json?    @default("[]")
+  yearsOfExperience     Int?
+  hourlyRate            Float?
+  isInternal            Boolean  @default(true)
+  availability          Json?    @default("{}")
+  metadata              Json?    @default("{}")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([schoolInternalService])
+  @@index([trainingCenterId])
+  @@index([speciality])
+}
+
+model UserRole {
+  id              String               @id @default(uuid())
+  slug            String               @unique
+  name            String               @unique
+  description     String?
+  isTrashed       Boolean              @default(false)
+  createdByUserId String?
+  createdAt       DateTime             @default(now())
+  isProtected     Boolean              @default(false)
+  isDefault       Boolean              @default(false)
+  users           User[]
+  permissions     UserRolePermission[]
+}
+
+model UserPermission {
+  id              String               @id @default(uuid())
+  slug            String               @unique
+  name            String
+  description     String?
+  createdByUserId String?
+  createdAt       DateTime             @default(now())
+  roles           UserRolePermission[]
+}
+
+model UserRolePermission {
+  id           String   @id @default(uuid())
+  roleId       String
+  permissionId String
+  assignedAt   DateTime @default(now())
+
+  role       UserRole       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission UserPermission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId], name: "provider_providerAccountId")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model SystemLog {
+  id          String   @id @default(uuid())
+  userId      String
+  createdAt   DateTime @default(now())
+  entityId    String?
+  entityType  String?
+  event       String?
+  description String?
+  ipAddress   String?
+  meta        String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model SystemSetting {
+  id             String  @id @default(uuid())
+  name           String  @default("My Company")
+  logo           String?
+  active         Boolean @default(true)
+  address        String?
+  companyCity    String?
+  companyPostalCode String?
+  /// Identifiant légal entreprise (école / organisme).
+  siret          String?
+  /// Agrément CNAPS ou équivalent, si applicable.
+  cnaps          String?
+  /// Représentant / responsable légal affiché sur documents et profil école.
+  directorFullName String?
+  /// Photo / avatar dirigeant (URL publique, preset `/compagnie-avatars/...` ou fichier uploadé).
+  directorAvatar   String?
+  industry         String?
+  companyType      String?
+  companySize      String?
+  companyRegion    String?
+
+  /// Numéro Déclaration Activité (NDA) et informations réglementaires formation.
+  ndaNumber               String?
+  ndaSpecialty            String?   @db.Text
+  ndaDeclaredAt           DateTime?
+  ndaRegion               String?
+  ndaTrainingActions      String?   @db.Text
+  qualiopiCertifications  String?   @db.Text
+
+  /// Registre national des entreprises / données publiques INPI–INSEE (référence).
+  siren                     String?
+  establishmentNic          String?
+  vatIntracommunityNumber   String?
+  eoriNumber                String?
+  nafApeCode                String?
+  naf2025Code               String?
+  mainActivityDescription   String?
+  legalFormDetailed         String?   @db.Text
+  companyCreationDate       DateTime?
+  establishmentCreationDate DateTime?
+  inseeRegistrationDate     DateTime?
+  rneExtractDate            DateTime?
+  employeeSituationNote     String?   @db.Text
+  companySizeCategoryNote   String?   @db.Text
+  directorRole              String?
+  collectiveAgreementNote   String?   @db.Text
+  inpiCompanySummary        String?   @db.Text
+
+  /// Capital social (€), mention réglementaire.
+  shareCapitalEuros    Int?
+  /// Ex. greffe du tribunal de commerce (ville).
+  rcsRegistryCity      String?
+  agreementAdef        String?
+  agreementQualianor   String?
+  agreementQualiopiRef String?
+  agreementSsiap       String?
+
+  websiteURL     String?
+  supportEmail   String?
+  supportPhone   String?
+  language       String  @default("en")
+  timezone       String  @default("UTC")
+  currency       String  @default("USD")
+  currencyFormat String  @default("$ {value}")
+
+  socialFacebook  String?
+  socialTwitter   String?
+  socialInstagram String?
+  socialLinkedIn  String?
+  socialPinterest String?
+  socialYoutube   String?
+
+  notifyStockEmail               Boolean  @default(true)
+  notifyStockWeb                 Boolean  @default(true)
+  notifyStockThreshold           Int      @default(10)
+  notifyStockRoleIds             String[]
+  notifyNewOrderEmail            Boolean  @default(true)
+  notifyNewOrderWeb              Boolean  @default(true)
+  notifyNewOrderRoleIds          String[]
+  notifyOrderStatusUpdateEmail   Boolean  @default(true)
+  notifyOrderStatusUpdateWeb     Boolean  @default(true)
+  notifyOrderStatusUpdateRoleIds String[]
+  notifyPaymentFailureEmail      Boolean  @default(true)
+  notifyPaymentFailureWeb        Boolean  @default(true)
+  notifyPaymentFailureRoleIds    String[]
+  notifySystemErrorFailureEmail  Boolean  @default(true)
+  notifySystemErrorWeb           Boolean  @default(true)
+  notifySystemErrorRoleIds       String[]
+
+  /// Fiches du dossier administratif de l’école (références, dates, id de pièce jointe `FileAsset`).
+  administrativeDossier Json? @default("{}")
+}
+
+model ClientSite {
+  id          String      @id @default(uuid())
+  name        String
+  code        String?     @unique
+  address     String?
+  city        String?
+  country     String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  equipments  Equipment[]
+  rhTeams     RhTeam[]
+
+  @@index([name])
+}
+
+/// Unité organisationnelle RH (agence, pôle, etc.)
+model RhOrgUnit {
+  id         String   @id @default(uuid())
+  name       String
+  type       String   @default("AGENCE")
+  parentId   String?
+  managerId  String?
+  positionId String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  parent   RhOrgUnit?  @relation("RhOrgUnitTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children RhOrgUnit[] @relation("RhOrgUnitTree")
+  manager  User?       @relation("RhOrgUnitManager", fields: [managerId], references: [id], onDelete: SetNull)
+  teams    RhTeam[]
+
+  @@index([parentId])
+  @@index([managerId])
+}
+
+/// Équipe opérationnelle RH
+model RhTeam {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  type        String   @default("SECURITE")
+  sector      String   @default("CLIENT")
+  image       String?
+  siteId      String?
+  orgUnitId   String?
+  leaderId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  site    ClientSite?    @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  orgUnit RhOrgUnit?     @relation(fields: [orgUnitId], references: [id], onDelete: SetNull)
+  leader  User?          @relation("RhTeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  members RhTeamMember[]
+
+  @@index([siteId])
+  @@index([orgUnitId])
+  @@index([leaderId])
+  @@index([name])
+}
+
+model RhTeamMember {
+  id        String   @id @default(uuid())
+  teamId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  team RhTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId])
+}
+
+enum RhAbsenceType {
+  CONGE_PAYE
+  MALADIE
+  RTT
+  AUTRE
+}
+
+enum RhAbsenceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Demande d'absence / congé collaborateur
+model RhAbsence {
+  id            String          @id @default(uuid())
+  userId        String
+  type          RhAbsenceType
+  status        RhAbsenceStatus @default(PENDING)
+  startDate     DateTime        @db.Date
+  endDate       DateTime        @db.Date
+  reason        String?         @db.Text
+  validatedById String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  user        User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  validatedBy User? @relation("RhAbsenceValidatedBy", fields: [validatedById], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+  @@index([startDate])
+}
+
+/// Référentiel postes / fonctions (org units, équipes)
+model RhPosition {
+  id        String   @id @default(uuid())
+  label     String
+  code      String?  @unique
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Equipment {
+  id               String                @id @default(uuid())
+  serialNumber     String                @unique
+  label            String
+  type             String?
+  status           EquipmentStatus       @default(AVAILABLE)
+  assignedSiteId   String?
+  assignedSite     ClientSite?           @relation(fields: [assignedSiteId], references: [id], onDelete: SetNull)
+  metadata         Json?                 @default("{}")
+  avatar           String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  maintenanceItems EquipmentMaintenance[]
+  stockMovements   StockMovement[]
+  sessions         TrainingSession[]
+
+  @@index([status])
+  @@index([type])
+  @@index([assignedSiteId])
+}
+
+model EquipmentMaintenance {
+  id              String                     @id @default(uuid())
+  equipmentId     String
+  status          EquipmentMaintenanceStatus @default(SCHEDULED)
+  title           String?
+  notes           String?
+  scheduledDate   DateTime?
+  completedDate   DateTime?
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+  equipment       Equipment                  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@index([equipmentId])
+  @@index([status])
+  @@index([scheduledDate])
+}
+
+model StockMovement {
+  id            String            @id @default(uuid())
+  equipmentId   String
+  type          StockMovementType
+  quantity      Int
+  movementDate  DateTime          @default(now())
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  equipment     Equipment         @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@index([equipmentId])
+  @@index([type])
+  @@index([movementDate])
+}
+
+// --- CRM: catalogue formations (fiches vitrine + sessions commerciales ; aligné sheets Formations CRM / landing) ---
+// Distinct du LMS `TrainingSession` (instances liées à `Course`).
+
+enum FormationLifecycleStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum FormationTrack {
+  surete
+  incendie
+  habilitation
+  sst
+  entreprise
+  autres
+}
+
+enum FormationParcoursSpecialite {
+  INITIAL
+  MAC
+  RAN
+  AUTRE
+}
+
+enum FormationDeliveryMode {
+  PRESENTIEL
+  DISTANCIEL
+  MIXTE
+  ENTREPRISE_SUR_SITE
+}
+
+/// Sessions vitrine CRM. `sessionKind` est **dérivé du parcours** de la formation :
+/// parcours Initial → `WITH_EXAM` (examen en fin de parcours) ; MAC / RAN / Autre → `INITIAL`.
+/// Valeur `OTHER` réservée aux cas exceptionnels. Le CRM ne propose pas un interrupteur « avec/sans examen » séparé.
+enum FormationVitrineSessionKind {
+  INITIAL
+  WITH_EXAM
+  OTHER
+}
+
+model Formation {
+  id     String @id @default(uuid())
+  slug   String @unique
+  name   String
+  /// Résumé carte liste / SEO (catalogue vitrine).
+  description String? @db.Text
+
+  track               FormationTrack
+  tag                 String
+  duration            String             @db.Text
+  parcoursSpecialite  FormationParcoursSpecialite @default(INITIAL)
+
+  status   FormationLifecycleStatus @default(DRAFT)
+  featured Boolean                  @default(false)
+
+  /// Sidebar : logo formation (URL ou clé média).
+  logoUrl         String? @db.Text
+  providerName    String?
+  providerEmail   String?
+  providerPhone   String?
+  providerAddress String? @db.Text
+  /// Libellé rapide type « Dès le 04 Mai 2026 » (sidebar upload).
+  nextSessionLabel String?
+
+  cpfEligible       Boolean @default(false)
+  qualiopiCertified Boolean @default(false)
+  rncpUrl           String? @db.Text
+  rncpCode          String?
+
+  deliveryMode FormationDeliveryMode?
+
+  /// KPI vue d’ensemble (statistics1) — scalaires pour filtres / tri ; détails dans overviewMetrics si besoin.
+  hoursMin       Int?
+  hoursMax       Int?
+  traineesMin    Int?
+  traineesMax    Int?
+  priceFrom      Decimal? @db.Decimal(10, 2)
+  currency       String   @default("EUR")
+  successRate    Decimal? @db.Decimal(5, 2)
+  clientSatisfactionRate Decimal? @db.Decimal(5, 2)
+
+  /// Bandeau Programme (statistics2).
+  unitsCount        Int?
+  volumeHoursLabel  String?
+  theoryPercent     Int?
+  practicePercent   Int?
+
+  /// Bandeau Prérequis (statistics4).
+  minAgeLabel               String?
+  frenchLevel               String?
+  authorizationSummary      String?
+  criminalRecordRequirement String?
+
+  /// Carte « Présentation » (resent-order).
+  presentationTitle String?
+  longDescription   String? @db.Text
+
+  /// listes / tableaux riches (structure libre, consommée par les sheets CRM).
+  modules              Json @default("[]")
+  outcomes             Json @default("[]")
+  presentationBullets  Json @default("[]")
+  programModules       Json @default("[]")
+  prerequisitesTable   Json @default("[]")
+  fundingBlocks        Json @default("[]")
+  fundingChannels      Json @default("[]")
+  overviewMetrics      Json @default("[]")
+  certificationSteps   Json @default("[]")
+  /// Résumés carte « Détails complémentaires » + métadonnées UI (axes, version commerciale…).
+  complementaryDetails Json @default("{}")
+
+  /// Routage type sheet landing (`FORMATION_CATALOG_PROGRAM_BY_SLUG`) sérialisé en JSON.
+  catalogProgramConfig Json @default("{}")
+
+  /// Pont optionnel vers un cours LMS (sync progression / TrainingSession).
+  courseId String? @unique
+  course   Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  sessions FormationSession[]
+
+  /// Offre catalogue CRM (surcharges prix / financement / prérequis ; statut actif ou suspendu).
+  catalogOffer FormationCatalogOffer?
+
+  /// Ligne catalogue finance (prestations / tarifs devis), synchronisée depuis l’offre catalogue.
+  financeCatalogLine FinanceCatalogLine?
+
+  candidatures Candidature[]
+  attestations FormationAttestation[]
+  /// Demandes de devis landing (Lead.source = Landing demande de devis).
+  quoteLeads Lead[] @relation("LeadQuoteFormation")
+  financeDevis FinanceDevis[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([track])
+  @@index([parcoursSpecialite])
+  @@index([featured])
+}
+
+/// Inclusion d'une fiche référence dans le catalogue école — pas de duplication métier, surcharges optionnelles.
+model FormationCatalogOffer {
+  id          String    @id @default(uuid())
+  formationId String    @unique
+  formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
+
+  /// Visible catalogue / brouillon / suspendu (archivé). La ligne référence `Formation` n'est jamais supprimée.
+  catalogStatus FormationLifecycleStatus @default(ACTIVE)
+
+  priceFromOverride Decimal? @db.Decimal(10, 2)
+  currencyOverride  String?
+
+  /// Affichage catalogue : initial / MAC / RAN… si null, reprend `Formation.parcoursSpecialite`.
+  parcoursSpecialiteOverride FormationParcoursSpecialite?
+
+  fundingBlocksOverride       Json?
+  fundingChannelsOverride     Json?
+  prerequisitesTableOverride  Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([catalogStatus])
+}
+
+/// Salle ou espace pédagogique réservable pour les sessions catalogue CRM (libellés métier : « Salle Aurore », etc.).
+model FormationVenueRoom {
+  id         String   @id @default(uuid())
+  name       String
+  shortCode  String?  @unique
+  capacity   Int?
+  floorLabel String?
+  /// Visuel vitrine (URL relative Next `/media/...`).
+  imageUrl   String?
+  isActive   Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  sessions   FormationSession[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+model FormationSession {
+  id          String    @id @default(uuid())
+  formationId String
+  formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
+
+  startDate DateTime?
+  endDate   DateTime?
+
+  /// Clôture des inscriptions (horodatage).
+  registrationClosesAt DateTime?
+  /// Date / heure d’examen prévue (optionnel).
+  examDate             DateTime?
+
+  /// Effectif cible pour cette session (distinct de la fourchette « fiche formation »).
+  traineesMin Int?
+  traineesMax Int?
+
+  /// Formateur référent (compte rôle formateur).
+  trainerUserId String?
+  trainer       User?   @relation("FormationSessionTrainer", fields: [trainerUserId], references: [id], onDelete: SetNull)
+
+  /// Salle allouée (disponibilité = pas de autre session même salle sur dates qui se chevauchent).
+  venueRoomId String?
+  venueRoom   FormationVenueRoom? @relation(fields: [venueRoomId], references: [id], onDelete: SetNull)
+
+  /// Identifiants `Equipment` réservés pour la session (JSON : tableau d’UUID).
+  reservedEquipmentIds Json @default("[]")
+
+  /// Libellé affiché (ex. « 04 Mai au 12 Juin 2026 ») tant que les dates ne sont pas renseignées partout.
+  dateDisplayLabel String @db.Text
+  location         String
+  sessionKind      FormationVitrineSessionKind @default(INITIAL)
+
+  venueBrandPrefix String? @db.Text
+  sessionSubtitle  String?
+
+  sortOrder      Int     @default(0)
+  bookingEnabled Boolean @default(false)
+  bookingUrl     String? @db.Text
+
+  participants FormationSessionParticipant[]
+  attestations FormationAttestation[]
+
+  candidaturesInterested Candidature[] @relation("CandidatureInterestedSession")
+  financeDevisSessionLinks FinanceDevis[] @relation("FinanceDevisLinkedSession")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([formationId])
+  @@index([startDate])
+  @@index([venueRoomId])
+}
+
+/// Dossier d’entrée CRM : rattache une personne (compte au rôle `candidat` ou `eleve`) à une intention de formation catalogue.
+model Candidature {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  formationId String?
+  formation   Formation? @relation(fields: [formationId], references: [id], onDelete: SetNull)
+
+  /// Session précise visée depuis le landing (optionnel ; doit appartenir à `formationId` lorsque les deux sont renseignés).
+  interestedSessionId String?
+  interestedSession    FormationSession? @relation("CandidatureInterestedSession", fields: [interestedSessionId], references: [id], onDelete: SetNull)
+
+  leadId String? @unique
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  source CandidatureSource @default(MANUAL)
+  status CandidatureStatus @default(DRAFT)
+
+  cnapsSubmittedAt DateTime?
+  cnapsReference   String?
+  cnapsDecisionAt  DateTime?
+  /// Réponse PN/CNAPS lorsque suivie manuellement (null = encore en cours).
+  cnapsPrefavorable Boolean?
+
+  validatedAt DateTime?
+  completedAt DateTime?
+  archivedAt  DateTime?
+
+  notes    String? @db.Text
+  metadata Json     @default("{}")
+
+  sessionEnrollments FormationSessionParticipant[]
+  attestations       FormationAttestation[]
+  financeDevis       FinanceDevis[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([formationId])
+  @@index([status])
+  @@index([interestedSessionId])
+}
+
+/// Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.
+model FormationSessionParticipant {
+  id        String @id @default(uuid())
+  sessionId String
+  session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  candidatureId String?
+  candidature   Candidature? @relation(fields: [candidatureId], references: [id], onDelete: SetNull)
+
+  enrollmentStatus FormationSessionEnrollmentStatus @default(CONFIRMED)
+
+  examOutcome         FormationExamOutcome @default(PENDING)
+  examDate            DateTime?
+  certifiedAt         DateTime?
+  trainingCompletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sessionId, userId])
+  @@index([userId])
+  @@index([candidatureId])
+  @@index([examOutcome])
+}
+
+/// Attestation / certification délivrée après parcours catalogue CRM (distinct du LMS `UserCertificate`).
+model FormationAttestation {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  candidatureId String?
+  candidature   Candidature? @relation(fields: [candidatureId], references: [id], onDelete: SetNull)
+
+  formationId String
+  formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
+
+  sessionId String?
+  session   FormationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  title          String
+  certificateUrl String? @db.Text
+  issueDate      DateTime  @default(now())
+  expiryDate     DateTime?
+  metadata       Json      @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([candidatureId])
+  @@index([formationId])
+  @@index([sessionId])
+}
+
+// LMS Models
+model Course {
+  id          String  @id @default(uuid())
+  createdById String
+  title       String  @db.Text
+  description String? @db.Text
+  imageUrl    String? @db.Text
+  price       Float?
+  isPublished Boolean @default(false)
+
+  attachments Attachment[]
+  category    Category?    @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  chapters    Chapter[]
+  purchases   Purchase[]
+  createdBy   User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  trainingSessions TrainingSession[]
+  enrollments      Enrollment[]
+  grades           Grade[]
+
+  certifications Certification[]
+  community      Community?
+  embeddings     CourseEmbedding[]
+  collections    Collection[]      @relation("CourseToCollection")
+  leads          Lead[]
+  trailSteps     TrailStep[]
+
+  formationCatalog Formation?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([createdById])
+}
+
+model Category {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  courses Course[]
+}
+
+model Attachment {
+  id   String @id @default(uuid())
+  name String
+  url  String @db.Text
+
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model Chapter {
+  id          String  @id @default(uuid())
+  title       String
+  description String? @db.Text
+  videoUrl    String? @db.Text
+  position    Int
+  isPublished Boolean @default(false)
+  isFree      Boolean @default(false)
+
+  muxData      MuxData?
+  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId     String
+  userProgress UserProgress[]
+  activities   Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+enum ActivityType {
+  VIDEO
+  DOCUMENT
+  DYNAMIC
+  ASSIGNMENT
+  QUIZ
+}
+
+enum ActivitySubType {
+  VIDEO_YOUTUBE
+  VIDEO_HOSTED
+  DOCUMENT_PDF
+  DYNAMIC_PAGE
+  DYNAMIC_MARKDOWN
+  QUIZ_MULTIPLE_CHOICE
+}
+
+model Activity {
+  id          String          @id @default(uuid())
+  name        String
+  type        ActivityType
+  subType     ActivitySubType
+  content     Json            @default("{}")
+  details     Json?           @default("{}")
+  isPublished Boolean         @default(false)
+  position    Int
+
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  assignment Assignment?
+  embeddings CourseEmbedding[]
+
+  lastModifiedById String?
+  lastModifiedBy   User?   @relation("ActivityModifier", fields: [lastModifiedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([chapterId])
+}
+
+model MuxData {
+  id         String  @id @default(uuid())
+  assetId    String
+  playbackId String?
+
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId String  @unique
+}
+
+model UserProgress {
+  id     String @id @default(uuid())
+  userId String
+
+  chapter     Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId   String
+  isCompleted Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, chapterId])
+  @@index([chapterId])
+}
+
+model Purchase {
+  id     String @id @default(uuid())
+  userId String
+
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+model StripeCustomer {
+  id               String @id @default(uuid())
+  userId           String @unique
+  stripeCustomerId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrainingSession {
+  id           String   @id @default(uuid())
+  title        String
+  description  String?  @db.Text
+  startDate    DateTime
+  endDate      DateTime
+  location     String? // Salle de classe ou URL visioconférence
+  instructorId String?
+  instructor   User?    @relation("Instructor", fields: [instructorId], references: [id])
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  enrollments Enrollment[]
+  attendances Attendance[]
+  equipments  Equipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([instructorId])
+}
+
+model Enrollment {
+  id        String           @id @default(uuid())
+  userId    String
+  courseId  String
+  sessionId String?
+  status    EnrollmentStatus @default(PENDING)
+
+  documents Json?   @default("[]") // Liste d'URLs pour le dossier d'admission
+  notes     String? @db.Text
+
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course  Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  session TrainingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId, sessionId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([sessionId])
+}
+
+model Attendance {
+  id        String           @id @default(uuid())
+  userId    String
+  sessionId String
+  date      DateTime         @default(now())
+  status    AttendanceStatus @default(PRESENT)
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, sessionId, date])
+  @@index([userId])
+  @@index([sessionId])
+}
+
+model Grade {
+  id        String  @id @default(uuid())
+  userId    String
+  courseId  String
+  chapterId String?
+  value     Float // La note (ex: 15.5)
+  weight    Float   @default(1.0) // Coefficient
+  comment   String? @db.Text
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([courseId])
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  LOST
+}
+
+/// Cycle commercial d’un devis (module Finance).
+enum FinanceDevisStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+model Lead {
+  id        String     @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  source    String? // ex: "Landing Page", "Phone"
+  status    LeadStatus @default(NEW)
+  notes     String?    @db.Text
+
+  courseId String? // Formation qui l'interesse
+  course   Course? @relation(fields: [courseId], references: [id])
+
+  /// Fiche catalogue CRM (`Formation`) pour les devis landing — distinct du cours LMS (`courseId`).
+  formationId String?
+  formation   Formation? @relation("LeadQuoteFormation", fields: [formationId], references: [id], onDelete: SetNull)
+
+  candidature Candidature?
+  financeDevis FinanceDevis[]
+  supportTickets SupportTicket[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([formationId])
+}
+
+/// Devis / proposition commerciale (Finance), souvent rattaché à un lead landing devis.
+model FinanceDevis {
+  id            String @id @default(uuid())
+  referenceCode String @unique
+  title         String
+  status        FinanceDevisStatus @default(DRAFT)
+
+  leadId String?
+  lead   Lead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  formationId String?
+  formation   Formation? @relation(fields: [formationId], references: [id], onDelete: SetNull)
+
+  /// Dossier candidature CRM (optionnel) — ex. après conversion lead.
+  candidatureId String?
+  candidature   Candidature? @relation(fields: [candidatureId], references: [id], onDelete: SetNull)
+
+  /// Session catalogue visée (optionnel).
+  formationSessionId String?
+  formationSession   FormationSession? @relation("FinanceDevisLinkedSession", fields: [formationSessionId], references: [id], onDelete: SetNull)
+
+  /// Contexte client figé (entreprise, effectifs, modalité… — aligné formulaire landing).
+  clientSnapshot Json @default("{}")
+  /// Lignes [{ label, quantity, unitPriceHt, vatRate }]
+  lines          Json @default("[]")
+
+  subtotalHt Decimal @default(0) @db.Decimal(12, 2)
+  vatTotal   Decimal @default(0) @db.Decimal(12, 2)
+  totalTtc   Decimal @default(0) @db.Decimal(12, 2)
+  currency   String  @default("EUR")
+
+  validUntil    DateTime?
+  notes         String? @db.Text
+  internalNotes String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  plaquetteMessages FinanceDevisPlaquetteMessage[]
+  payments          FinancePayment[]
+
+  @@index([leadId])
+  @@index([status])
+  @@index([formationId])
+  @@index([candidatureId])
+  @@index([formationSessionId])
+}
+
+/// Message laissé par le client depuis la plaquette publique (lien signé) — consultable côté CRM.
+model FinanceDevisPlaquetteMessage {
+  id          String       @id @default(uuid())
+  devisId     String
+  devis       FinanceDevis @relation(fields: [devisId], references: [id], onDelete: Cascade)
+  /// CLIENT | STAFF (réponses internes futures).
+  authorKind  String       @default("CLIENT")
+  body        String       @db.Text
+  authorLabel String?
+  createdAt   DateTime     @default(now())
+
+  @@index([devisId, createdAt])
+}
+
+/// Lignes préremplies pour les devis : formations catalogue + prestations / frais saisis en base.
+model FinanceCatalogLine {
+  id String @id @default(uuid())
+
+  /// FORMATION | PRESTATION | FRAIS | AUTRE
+  category String @default("FORMATION")
+
+  /// Renseigné et unique pour les lignes synchronisées avec une offre catalogue formation.
+  formationId String? @unique
+  formation   Formation? @relation(fields: [formationId], references: [id], onDelete: Cascade)
+
+  label       String
+  description String? @db.Text
+
+  defaultUnitPriceHt Decimal? @db.Decimal(12, 2)
+  defaultVatRate     Decimal  @default(20) @db.Decimal(5, 2)
+  currency           String   @default("EUR")
+
+  sortOrder Int     @default(0)
+  isActive  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@index([category, isActive])
+}
+
+// Certifications
+model Certification {
+  id       String @id @default(uuid())
+  courseId String
+  config   Json   @default("{}") // Template, logo, signatures, etc.
+
+  course           Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userCertificates UserCertificate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model UserCertificate {
+  id              String    @id @default(uuid())
+  userId          String
+  certificationId String
+  certificateUrl  String?
+  issueDate       DateTime  @default(now())
+  expiryDate      DateTime?
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  certification Certification @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, certificationId])
+  @@index([userId])
+  @@index([certificationId])
+}
+
+// Community & Discussions
+model Community {
+  id          String  @id @default(uuid())
+  name        String
+  description String? @db.Text
+  courseId    String? @unique
+
+  course      Course?      @relation(fields: [courseId], references: [id])
+  discussions Discussion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Discussion {
+  id       String  @id @default(uuid())
+  title    String
+  content  String? @db.Text
+  label    String? @default("general")
+  emoji    String?
+  isPinned Boolean @default(false)
+  isLocked Boolean @default(false)
+
+  authorId    String
+  communityId String
+
+  author    User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  community Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  votes     DiscussionVote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([communityId])
+}
+
+model Comment {
+  id           String  @id @default(uuid())
+  content      String  @db.Text
+  discussionId String
+  authorId     String
+  parentId     String? // Pour les réponses imbriquées
+
+  discussion Discussion    @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  author     User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent     Comment?      @relation("CommentToComment", fields: [parentId], references: [id], onDelete: Cascade)
+  replies    Comment[]     @relation("CommentToComment")
+  votes      CommentVote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([discussionId])
+  @@index([authorId])
+  @@index([parentId])
+}
+
+model DiscussionVote {
+  id           String @id @default(uuid())
+  discussionId String
+  userId       String
+  value        Int    @default(1) // 1 pour upvote, -1 pour downvote
+
+  discussion Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([discussionId, userId])
+  @@index([discussionId])
+  @@index([userId])
+}
+
+model CommentVote {
+  id        String @id @default(uuid())
+  commentId String
+  userId    String
+  value     Int    @default(1)
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
+}
+
+// Assignments
+model Assignment {
+  id          String    @id @default(uuid())
+  title       String
+  description String?   @db.Text
+  dueDate     DateTime?
+  maxPoints   Int       @default(100)
+
+  activityId  String                 @unique
+  activity    Activity               @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  submissions AssignmentSubmission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([activityId])
+}
+
+model AssignmentSubmission {
+  id       String  @id @default(uuid())
+  content  String? @db.Text // Texte du rendu ou lien
+  fileUrl  String? // URL du fichier déposé
+  grade    Float?
+  feedback String? @db.Text
+
+  assignmentId String
+  userId       String
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([assignmentId, userId])
+  @@index([assignmentId])
+  @@index([userId])
+}
+
+// Billing & Usage Tracking
+model ProductPack {
+  id       String @id @default(uuid())
+  type     String // ex: "ai_credits", "member_seats"
+  packId   String // ex: "ai_500", "basic_subscription"
+  quantity Int
+  status   String @default("active") // active, cancelled
+
+  activatedAt DateTime  @default(now())
+  cancelledAt DateTime?
+
+  platformSubscriptionId String? // ID Stripe ou autre plateforme
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UsageEvent {
+  id         String @id @default(uuid())
+  feature    String // ex: "members", "courses", "ai_tokens"
+  eventType  String // ex: "add", "remove", "consume"
+  usageAfter Int // Total après l'événement
+
+  createdAt DateTime @default(now())
+
+  @@index([feature, createdAt])
+}
+
+// Learning Paths & Collections
+model Trail {
+  id          String  @id @default(uuid())
+  title       String
+  description String? @db.Text
+  userId      String // Créateur du parcours
+
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  steps TrailStep[]
+  runs  TrailRun[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model TrailStep {
+  id       String @id @default(uuid())
+  trailId  String
+  courseId String
+  position Int
+
+  trail  Trail  @relation(fields: [trailId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@index([trailId])
+  @@index([courseId])
+}
+
+model TrailRun {
+  id      String @id @default(uuid())
+  trailId String
+  userId  String
+  status  String @default("in_progress") // in_progress, completed
+
+  trail Trail @relation(fields: [trailId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([trailId])
+  @@index([userId])
+}
+
+model Collection {
+  id          String  @id @default(uuid())
+  name        String
+  description String? @db.Text
+  isPublic    Boolean @default(true)
+
+  courses Course[] @relation("CourseToCollection")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// External Integrations & Security
+model ApiToken {
+  id         String    @id @default(uuid())
+  name       String
+  token      String    @unique
+  userId     String
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model WebhookEndpoint {
+  id          String  @id @default(uuid())
+  url         String
+  secret      String
+  description String?
+  events      Json    @default("[]") // Liste des événements écoutés
+  isActive    Boolean @default(true)
+  createdById String
+
+  createdBy User                 @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  logs      WebhookDeliveryLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdById])
+}
+
+model WebhookDeliveryLog {
+  id             String  @id @default(uuid())
+  webhookId      String
+  eventName      String
+  payload        Json
+  responseStatus Int?
+  responseBody   String? @db.Text
+  success        Boolean @default(false)
+  duration       Int? // En ms
+
+  webhook WebhookEndpoint @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([webhookId])
+}
+
+// AI & Search (RAG)
+model CourseEmbedding {
+  id         String  @id @default(uuid())
+  courseId   String
+  activityId String?
+  chunkText  String  @db.Text
+  embedding  Json? // Remplacé Unsupported("vector") par Json pour compatibilité locale
+
+  course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  activity Activity? @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@index([activityId])
+}
+
+// Collaboration (Hocuspocus/Yjs Persistence)
+model CollaborationDocument {
+  id   String @id @default(uuid())
+  name String @unique // Identifiant unique du document (ex: "chapter-xxx")
+  data Bytes  @db.ByteA // Le document Yjs sérialisé (State vector)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// --- Support, marketing, SEO, finance (modules CRM opérationnels) ---
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_CLIENT
+  RESOLVED
+  CLOSED
+}
+
+enum SupportTicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model SupportTicket {
+  id          String                @id @default(uuid())
+  referenceCode String              @unique
+  subject     String
+  description String                @db.Text
+  status      SupportTicketStatus   @default(OPEN)
+  priority    SupportTicketPriority @default(MEDIUM)
+  requesterName  String
+  requesterEmail String
+  leadId      String?
+  lead        Lead?                 @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  assignedToId String?
+  assignedTo  User?                 @relation("SupportTicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdById String?
+  createdBy   User?                 @relation("SupportTicketCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  resolvedAt  DateTime?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([status])
+  @@index([priority])
+  @@index([leadId])
+  @@index([assignedToId])
+}
+
+enum MarketingCampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ENDED
+}
+
+model MarketingCampaign {
+  id        String                  @id @default(uuid())
+  name      String
+  channel   String                  @default("landing")
+  status    MarketingCampaignStatus @default(DRAFT)
+  utmSource String?
+  utmMedium String?
+  utmCampaign String?
+  startDate DateTime?
+  endDate   DateTime?
+  notes     String?                 @db.Text
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+
+  @@index([status])
+  @@index([utmSource])
+}
+
+model SeoRedirect {
+  id           String  @id @default(uuid())
+  sourcePath   String  @unique
+  targetPath   String
+  redirectType Int     @default(302)
+  active       Boolean @default(true)
+  notes        String? @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active])
+}
+
+enum FinancePaymentStatus {
+  PENDING
+  RECEIVED
+  FAILED
+  REFUNDED
+}
+
+model FinancePayment {
+  id            String               @id @default(uuid())
+  referenceCode String               @unique
+  devisId       String?
+  devis         FinanceDevis?        @relation(fields: [devisId], references: [id], onDelete: SetNull)
+  amount        Decimal              @db.Decimal(12, 2)
+  currency      String               @default("EUR")
+  status        FinancePaymentStatus @default(PENDING)
+  method        String?
+  paidAt        DateTime?
+  notes         String?              @db.Text
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@index([status])
+  @@index([devisId])
+}
+
+model FinanceBudgetLine {
+  id             String  @id @default(uuid())
+  label          String
+  category       String  @default("FORMATION")
+  periodYear     Int
+  periodMonth    Int?
+  plannedAmount  Decimal @db.Decimal(12, 2)
+  actualAmount   Decimal @default(0) @db.Decimal(12, 2)
+  currency       String  @default("EUR")
+  notes          String? @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([periodYear, periodMonth])
+  @@index([category])
+}
+
+enum InAppNotificationCategory {
+  SYSTEM
+  TICKET
+  FINANCE
+  ACADEMIC
+  TEAM
+}
+
+/// File d'événements métier — traitée par `@repo/workers` → `InAppNotification` (+ widgets landing).
+enum CrmEventOutboxStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum CrmEventAudience {
+  BROADCAST_ACTIVE_USERS
+  USER_IDS
+}
+
+enum CrmEventSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+model CrmEventOutbox {
+  id          String                @id @default(uuid())
+  eventType   String
+  moduleKey   String
+  specialty   String?
+  category    InAppNotificationCategory
+  severity    CrmEventSeverity      @default(INFO)
+  title       String
+  body        String                @db.Text
+  href        String?
+  audience    CrmEventAudience      @default(BROADCAST_ACTIVE_USERS)
+  userIds     String[]              @default([])
+  payload     Json?                 @default("{}")
+  status      CrmEventOutboxStatus  @default(PENDING)
+  error       String?               @db.Text
+  processedAt DateTime?
+  createdById String?
+  createdAt   DateTime              @default(now())
+
+  @@index([status, createdAt])
+  @@index([moduleKey, createdAt])
+}
+
+model InAppNotification {
+  id         String                    @id @default(uuid())
+  userId     String
+  user       User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   InAppNotificationCategory @default(SYSTEM)
+  title      String
+  body       String                    @db.Text
+  href       String?
+  readAt     DateTime?
+  archivedAt DateTime?
+  metadata   Json?                     @default("{}")
+  createdAt  DateTime                  @default(now())
+
+  @@index([userId, readAt])
+  @@index([userId, archivedAt])
+  @@index([userId, createdAt])
+}
+
+enum ChatConversationType {
+  DIRECT
+  GROUP
+}
+
+model ChatConversation {
+  id           String               @id @default(uuid())
+  type         ChatConversationType @default(GROUP)
+  title        String?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  participants ChatParticipant[]
+  messages     ChatMessage[]
+
+  @@index([updatedAt])
+}
+
+model ChatParticipant {
+  id             String           @id @default(uuid())
+  conversationId String
+  userId         String
+  lastReadAt     DateTime?
+  joinedAt       DateTime         @default(now())
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model ChatMessage {
+  id             String           @id @default(uuid())
+  conversationId String
+  senderId       String
+  body           String           @db.Text
+  createdAt      DateTime         @default(now())
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User             @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+}

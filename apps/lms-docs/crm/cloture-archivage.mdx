@@ -1,0 +1,41 @@
+---
+title: Clôture et archivage
+description: Terminer et archiver le dossier en base de données
+---
+
+# Clôture & archivage
+
+## Accès
+
+Fiche candidat → onglet **Parcours** (ou actions depuis la liste candidats).
+
+## Étape 1 — Clôturer le parcours (COMPLETED)
+
+Conditions vérifiées par le système :
+
+- [ ] Candidature **Validée**
+- [ ] Examen **Réussi** sur l'inscription session
+- [ ] Au moins une **attestation** délivrée
+
+Action : **Clôturer parcours (terminé)** → statut `COMPLETED`, date `completedAt`.
+
+## Étape 2 — Archiver (ARCHIVED)
+
+Quand le dossier est **terminé** ou **refusé** :
+
+Action : **Archiver le dossier** → statut `ARCHIVED`, date `archivedAt`.
+
+Le dossier reste en base pour l'historique ; il sort des listes actives.
+
+## Récapitulatif des dates en base
+
+| Champ | Moment |
+|-------|--------|
+| `Lead.createdAt` | Préinscription |
+| `Candidature.validatedAt` | Validation dossier |
+| `FormationSessionParticipant.examDate` | Examen |
+| `FormationAttestation.issueDate` | Attestation |
+| `Candidature.completedAt` | Clôture parcours |
+| `Candidature.archivedAt` | Archivage final |
+
+Voir aussi : [Parcours complet](/lms/parcours-candidat-complet)

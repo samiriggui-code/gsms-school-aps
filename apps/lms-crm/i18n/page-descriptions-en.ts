@@ -1,0 +1,113 @@
+/** English page toolbar descriptions — keyed like PAGE_DESCRIPTIONS_FR. */
+export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
+  'administration-facturation.finance.devis':
+    'Commercial proposals, version tracking and conversion to invoicing.',
+  'administration-facturation.finance.factures':
+    'Issued invoices, reminders and attachments aligned with your billing process.',
+  'administration-facturation.finance':
+    'Track quotes, invoices and payments to monitor financial performance in real time.',
+  'administration-facturation.finance.budget':
+    'Budget lines by fiscal year — planned vs actual.',
+  'administration-facturation.finance.paiements':
+    'Payments linked to quotes and collection follow-ups.',
+  'administration-facturation.finance.rapports':
+    'Monthly summary of quotes, leads and revenue.',
+  'administration-facturation': 'Centralize billing, collections and follow-ups.',
+  'communication-contenu.cms.contenus':
+    'Training records editable in the academic module — landing publication hub.',
+  'communication-contenu.cms': 'Landing pages and content management.',
+  'communication-contenu.cms.pages-landing':
+    'Order, visibility and publication of the one-page public site.',
+  'communication-contenu.marketing.formulaires-leads':
+    'Leads from landings (quotes, pre-registration): qualification, pipeline and detail views.',
+  'communication-contenu.marketing': 'Lead forms and campaign management.',
+  'communication-contenu.marketing.campagnes':
+    'Acquisition campaign registry (UTM, channels, status) - not email sending; leads under Lead forms.',
+  'communication-contenu': 'Centralize messaging, training content and campaigns.',
+  'communication-contenu.seo.meta-indexation':
+    'Landing title/description tags and sitemap / robots links.',
+  'communication-contenu.seo': 'SEO management, indexing and redirects.',
+  'communication-contenu.seo.redirections': '301/302 rules and landing site anchors.',
+  'gestion-academique':
+    'Section grouping the Student life module: programs, sessions, applications, scheduling, exams and certifications.',
+  'gestion-academique.vie-scolaire.certifications':
+    'CRM certificate issuance after a passed exam (before closing the file).',
+  'gestion-academique.vie-scolaire.etudiants':
+    'Learner files, CRM pipeline and session assignment.',
+  'gestion-academique.vie-scolaire.examens':
+    'Result entry for candidates enrolled in a session (CRM catalog path).',
+  'gestion-academique.vie-scolaire.formations':
+    'Catalog, programs and link to scheduled sessions.',
+  'gestion-academique.vie-scolaire':
+    'Training and session tracking. Alerts below may also reflect team compliance (HR).',
+  'gestion-academique.vie-scolaire.planning':
+    'CRM catalog sessions and enrolled headcount (linked to candidate journey).',
+  'gestion-academique.vie-scolaire.sessions':
+    'Session planning, enrollments and training follow-up.',
+  'gestion-ressources.compagnie':
+    'Manage company profile, structure and administrative documents.',
+  'gestion-ressources.compagnie.profil':
+    'Legal identity, contact details and administrative contacts.',
+  'gestion-ressources.equipements.affectations':
+    'Equipment reservations and mobilization per session (trainer or staff).',
+  'gestion-ressources.equipements.inventaire':
+    'Equipment catalog by category — stock, assignments and maintenance per line.',
+  'gestion-ressources.equipements.maintenance':
+    'Workshop units and technical interventions tracking.',
+  'gestion-ressources.equipements': 'Manage your fleet and inventory in real time.',
+  'gestion-ressources':
+    'Configure company, HR teams and equipment before academic operations.',
+  'gestion-ressources.rh.absences': 'Absence requests, approvals and staff export.',
+  'gestion-ressources.rh.collaborateurs':
+    'List, export and HR files for group staff.',
+  'gestion-ressources.rh.conformite':
+    'Regulatory checks, expected documents and non-compliance alerts.',
+  'gestion-ressources.rh.equipes': 'Manage teams and staff assignments.',
+  'gestion-ressources.rh.formateurs': 'External trainers, assignments and availability.',
+  'gestion-ressources.rh':
+    'Manage staff, absence tracking and HR administration in real time.',
+  'mon-profil': 'Consolidated view of your profile: identity, role and quick access.',
+  'account.notifications':
+    'CRM alert history: tickets, finance, training and team — mark read and archive.',
+  'pilotage-supervision':
+    'Dashboards, KPIs, performance and operational monitoring in real time.',
+  'pilotage-supervision.pilotage':
+    'Dashboards, alerts, reports and operational monitoring in real time.',
+  'securite-configuration.acces':
+    'Manage users, roles and permissions with access traceability in real time.',
+  'securite-configuration.acces.permissions':
+    'Fine-grained screen and action rights; assignment to roles and users.',
+  'securite-configuration.acces.roles':
+    'Authorization profiles and reusable permission groups.',
+  'securite-configuration.acces.logs':
+    'Audit log: sign-ins, sensitive actions and compliance investigations.',
+  'securite-configuration.acces.security-log':
+    'Redirects to Activity logs — same audit journal.',
+  'securite-configuration.acces.users':
+    'Accounts, statuses and application access for staff and partners.',
+  'securite-configuration.gouvernance-donnees':
+    'Manage storage, document requests and content audit tracking.',
+  'securite-configuration.gouvernance-donnees.storage-conformite':
+    'Active file inventory (S3 / FileAsset).',
+  'securite-configuration.gouvernance-donnees.demandes-documents':
+    'Candidate files awaiting documents or review.',
+  'securite-configuration.gouvernance-donnees.corbeille-archivage':
+    'Deleted files — restore available.',
+  'securite-configuration.gouvernance-donnees.audit-documentaire':
+    'SystemLog — sign-ins and system events.',
+  'securite-configuration':
+    'Administer access, traceability and platform settings.',
+  'securite-configuration.parametres':
+    'Configure general settings, notifications and global platform options.',
+  'securite-configuration.parametres.sante-systeme':
+    'Real-time resource usage overview (Postgres, Redis, Node.js).',
+  'support-qualite': 'Track user support, satisfaction and operational compliance.',
+  'support-qualite.qualite': 'Quality and incident tracking.',
+  'support-qualite.support':
+    'Support tickets and catalog sheets used as self-service help.',
+  'support-qualite.support.tickets': 'Create, assign and track support requests.',
+  'support-qualite.support.base-aide':
+    'Active training catalog sheets — full documentation in Mintlify (Documentation tab).',
+  'support-qualite.qualite.incidents':
+    'Out-of-service equipment and system errors — summary with quality charts.',
+};

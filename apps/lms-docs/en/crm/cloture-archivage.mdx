@@ -1,0 +1,41 @@
+---
+title: Closure and archiving
+description: Complete and archive the file in the database
+---
+
+# Closure & archiving
+
+## Access
+
+Candidate file → **Journey** tab (or actions from the applications list).
+
+## Step 1 — Close the journey (COMPLETED)
+
+Conditions checked by the system:
+
+- [ ] Application **Validated**
+- [ ] **Passed** exam on the session enrollment
+- [ ] At least one **certificate** issued
+
+Action: **Close journey (completed)** → status `COMPLETED`, date `completedAt`.
+
+## Step 2 — Archive (ARCHIVED)
+
+When the file is **completed** or **rejected**:
+
+Action: **Archive file** → status `ARCHIVED`, date `archivedAt`.
+
+The file remains in the database for history; it leaves active lists.
+
+## Database date summary
+
+| Field | When |
+|-------|------|
+| `Lead.createdAt` | Pre-registration |
+| `Candidature.validatedAt` | File validation |
+| `FormationSessionParticipant.examDate` | Exam |
+| `FormationAttestation.issueDate` | Certificate |
+| `Candidature.completedAt` | Journey closure |
+| `Candidature.archivedAt` | Final archiving |
+
+See also: [Complete journey](/en/lms/parcours-candidat-complet)

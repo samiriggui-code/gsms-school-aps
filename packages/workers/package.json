@@ -1,0 +1,21 @@
+{
+  "name": "@repo/workers",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "dev": "node --env-file=../../.env ./node_modules/tsx/dist/cli.mjs src/run.ts",
+    "start": "pnpm run dev"
+  },
+  "dependencies": {
+    "@repo/api-core": "workspace:*",
+    "@repo/database": "workspace:*",
+    "@repo/redis": "workspace:*",
+    "node-cron": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/node-cron": "^3.0.11",
+    "tsx": "^4.21.0"
+  }
+}

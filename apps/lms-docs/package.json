@@ -1,0 +1,16 @@
+{
+	"name": "@lms/docs",
+	"version": "1.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "mintlify dev --port 3002 --no-open",
+		"dev:lan": "mintlify dev --port 3002 --no-open --host 0.0.0.0",
+		"build": "echo 'Mintlify build skipped (docs are synced via Git)'",
+		"typecheck": "node -e \"console.log('@lms/docs: typecheck N/A')\"",
+		"lint": "node -e \"console.log('@lms/docs: lint N/A')\"",
+		"clean": "echo 'No clean needed for docs'"
+	},
+	"devDependencies": {
+		"mintlify": "^4.2.531"
+	}
+}

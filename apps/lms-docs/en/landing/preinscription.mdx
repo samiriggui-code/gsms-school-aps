@@ -1,0 +1,39 @@
+---
+title: Landing pre-registration
+description: Public form and automatic database creation
+---
+
+# Landing pre-registration
+
+## Candidate side
+
+1. Open the FORM'SSI site (port 3000).
+2. Start pre-registration (hero, pricing, CTA).
+3. Select **course** and **session** when offered.
+4. Fill in identity, contact details, and motivation.
+5. Submit.
+
+## What is created in the database (automatic)
+
+| Record | Role |
+|--------|------|
+| `User` | **Candidate** role account (unique email) |
+| `Lead` | Commercial entry (status **NEW**) |
+| `Candidature` | Processing file (status **DRAFT**, linked to lead) |
+
+The application inherits the course and session chosen on the form.
+
+## CRM verification
+
+**Communication & content → Marketing → Lead forms**  
+**Academic management → Student life → Applications**
+
+Same email = same person. Do not manually recreate a file.
+
+## Common errors
+
+| Message | Action |
+|---------|--------|
+| Email already in use (other profile) | Check whether the person is a staff member |
+| Session not found | Check the [session catalogue](/en/landing/catalogue-sessions) |
+| Duplicate pre-registration | Same email + same session already in the database |

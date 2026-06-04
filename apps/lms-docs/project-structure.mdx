@@ -1,0 +1,74 @@
+---
+title: Project Structure
+description: Organisation du monorepo GSMS
+---
+
+# Project Structure
+
+Le projet utilise une structure monorepo simple:
+
+```text
+test-app-monorepo/
+├── apps/
+│   ├── landing-gsms/
+│   ├── app-gsms/
+│   ├── crm-gsms/
+│   └── docs/
+├── packages/
+├── package.json
+├── pnpm-workspace.yaml
+├── turbo.json
+└── tsconfig.base.json
+```
+
+## Raison du choix
+
+- Isoler chaque application metier
+- Garder une orchestration unique via Turborepo
+- Partager facilement des packages communs ensuite (`packages/*`)
+
+## Apps detaillees
+
+### `apps/landing-gsms`
+
+- Site d'accueil / marketing
+- Next.js App Router
+- Port local: `3001`
+
+### `apps/app-gsms`
+
+- Application principale
+- Auth, dashboard, modules metier
+- Port local: `3000`
+
+### `apps/crm-gsms`
+
+- Backoffice CRM
+- Auth dediee + ecrans CRM
+- Port local: `3002`
+
+### `apps/docs`
+
+- Documentation Mintlify
+- Port local: `3004`
+
+## Commandes racine utiles
+
+```bash
+pnpm install
+pnpm dev
+pnpm dev:landing
+pnpm dev:app
+pnpm dev:crm
+pnpm build
+pnpm lint
+pnpm typecheck
+```
+
+## Prochaine etape recommandee
+
+Creer des packages partages dans `packages/*` quand les apps sont stables:
+
+- `packages/ui`
+- `packages/config`
+- `packages/database` (si mutualisation Prisma voulue)

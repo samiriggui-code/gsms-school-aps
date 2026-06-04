@@ -1,0 +1,70 @@
+---
+title: Parcours candidat complet
+description: De la préinscription landing à l'archivage en base de données
+---
+
+# Parcours candidat — de bout en bout
+
+Ce guide décrit le **flux réel** implémenté dans FORM'SSI : mêmes tables PostgreSQL pour le landing et le CRM.
+
+## Schéma des tables
+
+```text
+Lead ──► Candidature ──► FormationSessionParticipant ──► FormationAttestation
+  │            │                      │
+  │            └── User (candidat → élève)
+  └── créé par landing ou saisie manuelle
+```
+
+## Les 8 étapes
+
+| # | Étape | Écran CRM | Statut / table |
+|---|-------|-----------|----------------|
+| 1 | Préinscription landing | Marketing → Formulaires leads | `Lead` (NEW) + `Candidature` (DRAFT) |
+| 2 | Instruction dossier | Vie scolaire → Candidature | `Candidature` (SUBMITTED → … → VALIDATED) |
+| 3 | Lead converti | (automatique) | `Lead` → CONVERTED quand dossier VALIDATED |
+| 4 | Inscription session | Sessions → inscrire le dossier | `FormationSessionParticipant` |
+| 5 | Suivi formation | Planning | session + inscrits |
+| 6 | Examen | Vie scolaire → Examens | `examOutcome` = PASSED |
+| 7 | Attestation | Vie scolaire → Certifications | `FormationAttestation` |
+| 8 | Clôture & archivage | Fiche candidat → Parcours | `COMPLETED` puis `ARCHIVED` |
+
+## Ordre obligatoire pour clôturer
+
+1. Dossier au statut **Validé**
+2. Candidat **inscrit à une session** (participant confirmé)
+3. **Examen réussi** (PASSED) sur l'inscription session
+4. **Attestation** délivrée (Certifications)
+5. Bouton **Clôturer parcours** → statut `COMPLETED`
+6. Bouton **Archiver le dossier** → statut `ARCHIVED`
+
+<Warning>
+  Sans examen réussi et attestation, la clôture pédagogique est refusée par le système.
+</Warning>
+
+## API associées (référence interne)
+
+| Action | API |
+|--------|-----|
+| Lire le parcours | `GET …/vie-scolaire/parcours/{candidatureId}` |
+| Clôturer | `POST …/parcours/{candidatureId}/complete` |
+| Archiver | `POST …/parcours/{candidatureId}/archive` |
+| Résultat examen | `PATCH …/examens/{participantId}` |
+| Attestation | `POST …/certifications` |
+
+## Guides détaillés
+
+<CardGroup cols={2}>
+  <Card title="Préinscription landing" icon="globe" href="/landing/preinscription">
+    Formulaire public et création Lead + Candidature.
+  </Card>
+  <Card title="Traiter la candidature" icon="clipboard-check" href="/crm/traiter-candidature">
+    Statuts CNAPS et validation.
+  </Card>
+  <Card title="Examens & attestations" icon="award" href="/crm/examens-resultats">
+    Saisie résultats et délivrance.
+  </Card>
+  <Card title="Archivage" icon="archive" href="/crm/cloture-archivage">
+    Fin de parcours en base.
+  </Card>
+</CardGroup>

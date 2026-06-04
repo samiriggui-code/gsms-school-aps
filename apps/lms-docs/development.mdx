@@ -1,0 +1,75 @@
+---
+title: Development
+description: Workflow de developpement pour GSMS
+---
+
+# Development
+
+## Workflow quotidien
+
+1. Installer/mettre a jour les dependances:
+
+```bash
+pnpm install
+```
+
+2. Lancer une app cible:
+
+```bash
+pnpm dev:landing
+pnpm dev:app
+pnpm dev:crm
+```
+
+3. Corriger les erreurs de boot en priorite (module not found, env, port)
+
+4. Verifier qualite:
+
+```bash
+pnpm lint
+pnpm typecheck
+```
+
+## Bonnes pratiques
+
+- Corriger d'abord les erreurs bloquantes de compilation
+- Ne toucher qu'une app a la fois pendant la migration monorepo
+- Garder des scripts `dev:*` explicites au niveau racine
+- Centraliser progressivement le code partage dans `packages/*`
+
+## Configuration d'environnement
+
+- Chaque app garde son `.env`
+- Eviter les ecarts de variables entre `app-gsms` et `crm-gsms`
+- Pour Prisma, verifier que les URLs DB sont definies avant `dev`
+
+## Debug rapide
+
+### Port occupe
+
+```powershell
+Get-NetTCPConnection -LocalPort 3000,3001,3002,3004
+Stop-Process -Id <PID> -Force
+```
+
+### Module introuvable
+
+```bash
+pnpm --filter @gsms/app-gsms add <package-name>
+pnpm --filter @gsms/crm add <package-name>
+```
+
+### Erreur Turbopack root dans Next.js
+
+Verifier `next.config.mjs` dans chaque app:
+
+```js
+turbopack: {
+  root: path.join(__dirname, '..', '..'),
+}
+```
+
+<Info>
+  Pendant la phase de migration, privilegie des changements incrementaux et
+  testables: une app, un fix, une verification.
+</Info>

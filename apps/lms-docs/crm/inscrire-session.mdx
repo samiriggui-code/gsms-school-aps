@@ -1,0 +1,27 @@
+---
+title: Inscrire un candidat à une session
+description: Après validation du dossier
+---
+
+# Inscription session
+
+## Prérequis
+
+- Candidature au statut **Validé**
+- Session ouverte pour la **même formation**
+
+## Procédure
+
+1. **Vie scolaire → Sessions** — ouvrir la session.
+2. Inscrire le candidat via son **dossier candidature** (recommandé) ou son compte élève.
+3. Le système crée un enregistrement **FormationSessionParticipant**.
+
+## En base
+
+| Champ | Valeur initiale |
+|-------|-----------------|
+| `enrollmentStatus` | CONFIRMED |
+| `examOutcome` | PENDING |
+| `candidatureId` | lié au dossier |
+
+Suite : [Planning](/crm/planning-sessions) · [Examens](/crm/examens-resultats)

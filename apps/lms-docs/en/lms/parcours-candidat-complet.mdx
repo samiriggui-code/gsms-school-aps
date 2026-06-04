@@ -1,0 +1,70 @@
+---
+title: Complete candidate journey
+description: From landing pre-registration to database archiving
+---
+
+# Complete candidate journey
+
+This guide describes the **actual flow** implemented in FORM'SSI: the same PostgreSQL tables serve both the landing site and the CRM.
+
+## Table schema
+
+```text
+Lead ──► Candidature ──► FormationSessionParticipant ──► FormationAttestation
+  │            │                      │
+  │            └── User (candidate → student)
+  └── created by landing or manual entry
+```
+
+## The 8 steps
+
+| # | Step | CRM screen | Status / table |
+|---|------|------------|----------------|
+| 1 | Landing pre-registration | Marketing → Lead forms | `Lead` (NEW) + `Candidature` (DRAFT) |
+| 2 | File processing | Student life → Applications | `Candidature` (SUBMITTED → … → VALIDATED) |
+| 3 | Lead converted | (automatic) | `Lead` → CONVERTED when file VALIDATED |
+| 4 | Session enrollment | Sessions → enroll file | `FormationSessionParticipant` |
+| 5 | Training follow-up | Planning | session + enrolled students |
+| 6 | Exam | Student life → Exams | `examOutcome` = PASSED |
+| 7 | Certificate | Student life → Certifications | `FormationAttestation` |
+| 8 | Closure & archiving | Candidate file → Journey | `COMPLETED` then `ARCHIVED` |
+
+## Required order for closure
+
+1. File at **Validated** status
+2. Candidate **enrolled in a session** (confirmed participant)
+3. **Passed exam** (PASSED) on the session enrollment
+4. **Certificate** issued (Certifications)
+5. **Close journey** button → status `COMPLETED`
+6. **Archive file** button → status `ARCHIVED`
+
+<Warning>
+  Without a passed exam and certificate, the system blocks pedagogical closure.
+</Warning>
+
+## Related APIs (internal reference)
+
+| Action | API |
+|--------|-----|
+| Read journey | `GET …/vie-scolaire/parcours/{candidatureId}` |
+| Close | `POST …/parcours/{candidatureId}/complete` |
+| Archive | `POST …/parcours/{candidatureId}/archive` |
+| Exam result | `PATCH …/examens/{participantId}` |
+| Certificate | `POST …/certifications` |
+
+## Detailed guides
+
+<CardGroup cols={2}>
+  <Card title="Landing pre-registration" icon="globe" href="/en/landing/preinscription">
+    Public form and Lead + Application creation.
+  </Card>
+  <Card title="Process application" icon="clipboard-check" href="/en/crm/traiter-candidature">
+    CNAPS statuses and validation.
+  </Card>
+  <Card title="Exams & certificates" icon="award" href="/en/crm/examens-resultats">
+    Result entry and issuance.
+  </Card>
+  <Card title="Archiving" icon="archive" href="/en/crm/cloture-archivage">
+    End of journey in the database.
+  </Card>
+</CardGroup>

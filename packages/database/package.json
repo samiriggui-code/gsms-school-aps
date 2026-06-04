@@ -1,0 +1,36 @@
+{
+  "name": "@repo/database",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/browser.ts",
+    "./landing-sections": "./src/landing-sections.ts",
+    "./generated/client": "./generated/client"
+  },
+  "dependencies": {
+    "@prisma/client-runtime-utils": "7.8.0",
+    "@prisma/adapter-pg": "7.8.0",
+    "@prisma/client": "7.8.0",
+    "bcrypt": "^6.0.0",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.16.0",
+    "prisma": "7.8.0"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma",
+    "seed": "node prisma/seed.js"
+  },
+  "scripts": {
+    "db:push": "node --env-file=../../.env node_modules/prisma/build/index.js db push",
+    "db:generate": "node --env-file=../../.env node_modules/prisma/build/index.js generate",
+    "db:seed": "node prisma/seed.js",
+    "db:migrate": "node --env-file=../../.env node_modules/prisma/build/index.js migrate deploy",
+    "db:migrate:dev": "node --env-file=../../.env node_modules/prisma/build/index.js migrate dev",
+    "db:studio": "node --env-file=../../.env node_modules/prisma/build/index.js studio"
+  }
+}

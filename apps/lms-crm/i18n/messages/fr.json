@@ -1,0 +1,1207 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "add": "Ajouter",
+      "remove": "Retirer",
+      "submit": "Envoyer",
+      "close": "Fermer"
+    },
+    "actions": {
+      "export": "Exporter",
+      "refresh": "Actualiser",
+      "addCollaborator": "Ajouter un collaborateur",
+      "addTrainer": "Ajouter un formateur",
+      "moreActions": "Plus d'actions",
+      "back": "Retour",
+      "exportSelection": "Exporter la sélection"
+    },
+    "labels": {
+      "name": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "username": "Identifiant",
+      "phone": "Téléphone",
+      "address": "Adresse"
+    },
+    "messages": {
+      "welcome": "Bienvenue",
+      "loading": "Chargement…",
+      "error": "Une erreur est survenue",
+      "success": "Opération réussie",
+      "confirm": "Confirmer ?"
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "Accueil",
+      "description": "Bienvenue sur le CRM FORM'SSI"
+    },
+    "account": {
+      "title": "Paramètres du compte",
+      "notifications": {
+        "title": "Notifications",
+        "description": "Gérez vos préférences de notification"
+      }
+    },
+    "settings": {
+      "title": "Paramètres système",
+      "description": "Établissement, légal, formation, notifications, réseaux sociaux et intégrations — une seule source de vérité (SystemSetting).",
+      "sidebar": {
+        "general": "Général",
+        "etablissement": "Établissement",
+        "legal": "Identité légale",
+        "formation": "Formation & conformité",
+        "dirigeant": "Dirigeant",
+        "registre": "Registre INPI",
+        "notifications": "Notifications",
+        "social": "Réseaux sociaux",
+        "integrations": "Intégrations"
+      },
+      "common": {
+        "reset": "Réinitialiser",
+        "save": "Enregistrer",
+        "error": "Erreur",
+        "loading": "Chargement…",
+        "formErrors": "Corrigez les erreurs du formulaire avant d'enregistrer.",
+        "notSet": "Non défini",
+        "open": "Ouvrir",
+        "active": "Actif",
+        "notConfigured": "Non configuré"
+      },
+      "general": {
+        "saveSuccess": "Paramètres enregistrés avec succès",
+        "basicTitle": "Paramètres de base",
+        "logo": "Logo",
+        "chooseImage": "Choisir une image",
+        "logoHint": "PNG, JPEG ou GIF — max. 1 Mo",
+        "establishmentName": "Nom de l'établissement",
+        "establishmentNamePlaceholder": "Nom affiché sur la plateforme",
+        "platformStatus": "Statut plateforme",
+        "platformActive": "Plateforme active",
+        "regionalTitle": "Régional & devise",
+        "language": "Langue",
+        "chooseLanguage": "Choisir une langue",
+        "currency": "Devise",
+        "chooseCurrency": "Choisir une devise",
+        "currencyHint": "Devise utilisée pour les montants affichés dans le CRM.",
+        "currencyFormat": "Format devise",
+        "chooseFormat": "Choisir un format",
+        "timezone": "Fuseau horaire",
+        "currencies": {
+          "EUR": "EUR — Euro",
+          "USD": "USD — Dollar US",
+          "GBP": "GBP — Livre sterling",
+          "CHF": "CHF — Franc suisse"
+        }
+      },
+      "etablissement": {
+        "saveSuccess": "Établissement enregistré",
+        "identityTitle": "Identité de l'établissement",
+        "companyName": "Nom de l'établissement",
+        "industry": "Secteur d'activité",
+        "companyType": "Type d'organisme",
+        "companySize": "Taille",
+        "companySizePlaceholder": "TPE, PME…",
+        "companyRegion": "Région",
+        "contactTitle": "Coordonnées & contact",
+        "address": "Adresse",
+        "postalCode": "Code postal",
+        "city": "Ville",
+        "country": "Pays",
+        "website": "Site web",
+        "supportEmail": "E-mail support / contact",
+        "supportPhone": "Téléphone support",
+        "validation": {
+          "companyNameRequired": "Le nom de l'établissement est requis",
+          "invalidUrl": "URL invalide",
+          "invalidEmail": "E-mail invalide"
+        }
+      },
+      "legal": {
+        "saveSuccess": "Identité légale enregistrée",
+        "title": "Identité légale & fiscalité",
+        "siret": "SIRET",
+        "siren": "SIREN",
+        "establishmentNic": "NIC établissement",
+        "cnaps": "Agrément CNAPS",
+        "vatIntracommunityNumber": "TVA intracommunautaire",
+        "eoriNumber": "Numéro EORI",
+        "nafApeCode": "Code NAF / APE",
+        "naf2025Code": "Code NAF 2025",
+        "legalFormDetailed": "Forme juridique détaillée",
+        "shareCapitalEuros": "Capital social (€)",
+        "rcsRegistryCity": "Ville du greffe RCS"
+      },
+      "formation": {
+        "saveSuccess": "Formation & conformité enregistrés",
+        "ndaTitle": "Déclaration d'activité (NDA)",
+        "ndaNumber": "Numéro NDA",
+        "ndaDeclarationDate": "Date de déclaration",
+        "ndaRegion": "Région DREETS",
+        "ndaSpecialty": "Spécialité déclarée",
+        "ndaTrainingActions": "Actions de formation",
+        "qualiopiTitle": "Qualiopi & agréments",
+        "qualiopiCertifications": "Certifications Qualiopi",
+        "agreementQualiopiRef": "Réf. Qualiopi",
+        "agreementAdef": "Agrément ADEF",
+        "agreementQualianor": "Agrément Qualianor",
+        "agreementSsiap": "Agrément SSIAP"
+      },
+      "dirigeant": {
+        "saveSuccess": "Dirigeant enregistré",
+        "title": "Représentant légal",
+        "changePhoto": "Changer la photo",
+        "fullName": "Nom complet",
+        "role": "Fonction",
+        "rolePlaceholder": "Directeur, gérant…",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "invalidEmail": "E-mail invalide"
+      },
+      "registre": {
+        "saveSuccess": "Registre INPI enregistré",
+        "title": "Registre INPI / INSEE",
+        "mainActivityDescription": "Activité principale",
+        "companyCreationDate": "Création entreprise",
+        "establishmentCreationDate": "Création établissement",
+        "inseeRegistrationDate": "Immatriculation INSEE",
+        "rneExtractDate": "Extrait RNE",
+        "employeeSituationNote": "Effectif / situation salariés",
+        "companySizeCategoryNote": "Catégorie de taille",
+        "collectiveAgreementNote": "Convention collective",
+        "inpiCompanySummary": "Synthèse INPI"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "saveSuccess": "Paramètres de notification enregistrés",
+        "columnNotification": "Notification",
+        "columnUsers": "Utilisateurs",
+        "columnEmail": "E-mail",
+        "columnWeb": "Web",
+        "searchRoles": "Rechercher un rôle…",
+        "noRoles": "Aucun rôle trouvé.",
+        "items": {
+          "stock": {
+            "label": "Alertes stock équipements",
+            "description": "Seuil de stock bas sur l'inventaire équipements."
+          },
+          "newOrder": {
+            "label": "Nouvelles demandes",
+            "description": "Devis, leads ou préinscriptions entrants."
+          },
+          "orderStatus": {
+            "label": "Mises à jour statut",
+            "description": "Changement de statut devis, tickets ou dossiers."
+          },
+          "paymentFailure": {
+            "label": "Échecs de paiement",
+            "description": "Paiements refusés ou en erreur."
+          },
+          "systemError": {
+            "label": "Erreurs système",
+            "description": "Incidents techniques et erreurs applicatives."
+          }
+        }
+      },
+      "social": {
+        "title": "Réseaux sociaux",
+        "saveSuccess": "Réseaux sociaux enregistrés"
+      },
+      "integrations": {
+        "title": "Intégrations & services",
+        "description": "État des connexions techniques (variables d'environnement et services). Les bascules reflètent l'état réel — la configuration se fait via le déploiement (.env)."
+      }
+    }
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "settings": "Paramètres",
+    "profile": "Profil"
+  },
+  "messages": {
+    "unauthorized": "Accès non autorisé.",
+    "system_error": "Une erreur est survenue. Veuillez réessayer.",
+    "invalid_input": "Données invalides. Vérifiez et réessayez.",
+    "data_not_found": "Données introuvables.",
+    "delete_restricted_error": "Impossible de supprimer cet enregistrement car il est lié à d'autres données."
+  },
+  "crud": {
+    "refresh": "Actualiser",
+    "add": "Ajouter",
+    "search": "Rechercher…",
+    "loading": "Chargement…",
+    "empty": "Aucun enregistrement",
+    "emptyView": "Aucun enregistrement pour cette vue.",
+    "actions": "Actions",
+    "yes": "Oui",
+    "no": "Non",
+    "page": "Page {{page}} / {{total}}",
+    "pageWithCount": "Page {{page}} / {{total}} — {{count}} entrées",
+    "prev": "Préc.",
+    "next": "Suiv.",
+    "previous": "Précédent",
+    "nextFull": "Suivant",
+    "createTitle": "Nouvel enregistrement",
+    "create": "Créer",
+    "fieldRequired": "{{field}} requis",
+    "createFailed": "Échec création",
+    "created": "Enregistrement créé",
+    "deleteConfirm": "Supprimer cet enregistrement ?",
+    "deleteStaffConfirm": "Supprimer le collaborateur {{name}} ?",
+    "staffDeleted": "Collaborateur supprimé avec succès",
+    "deleteTrainerConfirm": "Supprimer le formateur {{name}} ?",
+    "trainerDeleted": "Formateur supprimé avec succès",
+    "deleteComplianceConfirm": "Supprimer le dossier conformité {{name}} ?",
+    "complianceDeleted": "Dossier conformité supprimé avec succès",
+    "deleteTeamConfirm": "Supprimer l'équipe {{name}} ?",
+    "teamDeleted": "Équipe supprimée avec succès",
+    "deleteVendorConfirm": "Supprimer le prestataire {{name}} ?",
+    "vendorDeleted": "Prestataire supprimé avec succès",
+    "deleteStudentConfirm": "Supprimer l'étudiant {{name}} ?",
+    "studentDeleted": "Étudiant supprimé avec succès",
+    "deletePlanningConfirm": "Supprimer le planning {{name}} ?",
+    "planningDeleted": "Planning supprimé avec succès",
+    "deleteExamConfirm": "Supprimer l'examen {{name}} ?",
+    "examDeleted": "Examen supprimé avec succès",
+    "deleteCertificationConfirm": "Supprimer la certification {{name}} ?",
+    "certificationDeleted": "Certification supprimée avec succès",
+    "deleteFailed": "Suppression impossible",
+    "deleted": "Supprimé",
+    "consolidatedData": "Données consolidées",
+    "filter": "Filtrer"
+  },
+  "candidature": {
+    "createdSuccess": "Candidature créée (compte candidat).",
+    "updatedSuccess": "Dossier mis à jour.",
+    "validatedSuccess": "Dossier validé — le compte est passé en élève.",
+    "resetLinkSent": "Lien de réinitialisation envoyé avec succès.",
+    "accountRestored": "Compte utilisateur réintégré avec succès.",
+    "pathCompleted": "Parcours marqué comme terminé",
+    "archived": "Dossier archivé",
+    "resetLinkFailed": "Échec de l'envoi du mail de réinitialisation"
+  },
+  "sessions": {
+    "created": "Session créée.",
+    "createdDescription": "La liste a été mise à jour.",
+    "updated": "Session mise à jour.",
+    "deleted": "Session supprimée.",
+    "equipmentRemoved": "Équipement retiré de la réservation de session."
+  },
+  "academic": {
+    "certificationSaved": "Attestation enregistrée",
+    "examResultSaved": "Résultat examen enregistré"
+  },
+  "support": {
+    "ticketUpdated": "Ticket mis à jour",
+    "ticketCreated": "Ticket créé"
+  },
+  "cms": {
+    "sectionsSaved": "Sections enregistrées",
+    "metaSaved": "Meta enregistrées"
+  },
+  "teams": {
+    "updated": "Équipe mise à jour avec succès",
+    "memberAdded": "Membre ajouté avec succès",
+    "memberRemoved": "Membre retiré de l'équipe",
+    "unitCreated": "Unité créée avec succès",
+    "unitCreateFailed": "Erreur lors de la création",
+    "deleted": "Équipe supprimée"
+  },
+  "leads": {
+    "convertedToCandidature": "Lead converti en candidature.",
+    "emailSent": "E-mail envoyé au lead."
+  },
+  "formations": {
+    "created": "Formation créée",
+    "createdDescNamed": "« {{name}} » a été ajoutée au catalogue.",
+    "createdDesc": "La formation a été ajoutée au catalogue.",
+    "creationCancelled": "Création annulée",
+    "creationCancelledDesc": "La formation n'a pas été enregistrée.",
+    "suspended": "Formation suspendue",
+    "suspendedDesc": "« {{name}} » n'est plus proposée dans le catalogue actif. Les données restent en base.",
+    "suspendCancelled": "Suspension annulée",
+    "suspendCancelledDesc": "La formation n'a pas été suspendue.",
+    "activated": "Formation activée",
+    "activatedDesc": "« {{name}} » est à nouveau disponible dans le catalogue.",
+    "activateCancelled": "Activation annulée",
+    "activateCancelledDesc": "Le statut actif n'a pas été appliqué.",
+    "updated": "Modifications enregistrées",
+    "updatedDescNamed": "Les informations de « {{name}} » ont été mises à jour.",
+    "updatedDesc": "Les changements ont été enregistrés.",
+    "updateCancelled": "Enregistrement annulé",
+    "updateCancelledDesc": "Les modifications n'ont pas été appliquées.",
+    "actionFailed": "Action impossible"
+  },
+  "devis": {
+    "listTitle": "Liste des devis",
+    "listDescription": "Propositions commerciales — brouillons, envoyés et signés.",
+    "statusFilterPlaceholder": "Statut devis",
+    "allStatuses": "Tous les statuts",
+    "leadFilterActive": "Filtre actif : devis du lead sélectionné.",
+    "clearLeadFilter": "Afficher tous les devis",
+    "notLinkedFormation": "Non rattachée",
+    "viewAria": "Voir la fiche devis",
+    "viewOverviewTitle": "Voir la fiche (vue d'ensemble)",
+    "editAria": "Modifier le devis",
+    "editDraftTitle": "Modifier le brouillon (onglet Édition)",
+    "deleteDraftTitle": "Supprimer ce brouillon ?",
+    "deleteDraftDescription": "Le devis {{reference}} sera définitivement supprimé. Les devis envoyés ou acceptés ne peuvent pas être supprimés depuis cette liste.",
+    "deleteDraftTooltip": "Supprimer ce brouillon",
+    "deleteDraftAria": "Supprimer le brouillon",
+    "deletedSuccess": "Devis supprimé.",
+    "empty": "Aucun devis trouvé.",
+    "pageInfo": "Page {{page}} / {{total}} — {{count}} devis",
+    "replySaved": "Réponse enregistrée. Elle apparaît sur la plaquette du client après actualisation.",
+    "messageRequired": "Saisissez un message.",
+    "emailSent": "E-mail envoyé au contact. Statut du devis : Envoyé.",
+    "linkGenerateFailed": "Impossible de générer le lien.",
+    "unexpectedResponse": "Réponse inattendue du serveur.",
+    "updatedSuccess": "Devis mis à jour.",
+    "clientLinkCopied": "Lien client (plaquette + suivi) copié — valable 60 jours.",
+    "linkGeneratedTitle": "Lien généré",
+    "status": {
+      "DRAFT": "Brouillon",
+      "SENT": "Envoyé",
+      "ACCEPTED": "Accepté",
+      "REJECTED": "Refusé",
+      "EXPIRED": "Expiré"
+    }
+  },
+  "facture": {
+    "listTitle": "Liste des factures",
+    "listDescription": "Propositions acceptées — dossiers prêts à facturer.",
+    "searchPlaceholder": "Rechercher (référence, titre, contact…)",
+    "leadFilterActive": "Filtre actif : propositions acceptées pour ce lead.",
+    "clearLeadFilter": "Afficher toutes les lignes à facturer",
+    "openSheetTitle": "Ouvrir la fiche facturation",
+    "openSheetAria": "Ouvrir la fiche",
+    "empty": "Aucune proposition acceptée à facturer pour l'instant. Validez un devis côté module Devis pour qu'il apparaisse ici.",
+    "pageInfo": "Page {{page}} / {{total}} — {{count}} dossier(s)",
+    "updatedSuccess": "Fiche mise à jour."
+  },
+  "financeReports": {
+    "exportButton": "Exporter rapport mensuel",
+    "exportedSuccess": "Rapport exporté"
+  },
+  "finance": {
+    "columns": {
+      "reference": "Référence",
+      "referenceProposal": "Réf. proposition",
+      "company": "Entreprise",
+      "formation": "Formation",
+      "amountTtc": "Montant TTC",
+      "status": "Statut",
+      "updatedAt": "Mise à jour",
+      "actions": "Actions"
+    },
+    "companyNotSet": "Raison sociale non renseignée",
+    "notLinkedFormation": "Non rattachée"
+  },
+  "equipment": {
+    "deleteTitle": "Supprimer cet équipement ?",
+    "deleteDescription": "« {{label}} » sera retiré définitivement de l'inventaire. Cette action est irréversible.",
+    "deleteDescriptionGeneric": "Cette action est irréversible.",
+    "deletedSuccess": "Équipement supprimé",
+    "deleteFailed": "Impossible de supprimer cet équipement",
+    "deleteFailedShort": "Impossible de supprimer"
+  },
+  "documents": {
+    "uploadSuccess": "Document chargé avec succès",
+    "uploadAdded": "Document ajouté avec succès",
+    "uploadFailed": "Erreur lors de l'ajout du document",
+    "attached": "Document joint",
+    "attachedToDossier": "Document joint au dossier",
+    "detached": "Fichier détaché de la fiche",
+    "recordSaved": "Fiche enregistrée"
+  },
+  "governance": {
+    "exportFailed": "Export impossible",
+    "exportSuccess": "Export téléchargé",
+    "restoreFailed": "Restauration impossible",
+    "restoreSuccess": "Fichier restauré",
+    "open": "Ouvrir",
+    "restore": "Restaurer"
+  },
+  "layout": {
+    "loading": "Chargement…",
+    "documentation": "Documentation",
+    "toggleTheme": "Basculer le thème",
+    "flagAlt": "Drapeau {{name}}",
+    "soon": "Bientôt",
+    "search": {
+      "title": "Rechercher dans le CRM",
+      "placeholder": "Page ou module…",
+      "empty": "Aucune page trouvée.",
+      "pages": "Navigation"
+    }
+  },
+  "menuCard": {
+    "access": "Accéder",
+    "pages_zero": "0 page",
+    "pages_one": "1 page",
+    "pages_other": "{{count}} pages",
+    "moreSections": "...et {{count}} de plus",
+    "modules_one": "1 module",
+    "modules_other": "{{count}} modules"
+  },
+  "userMenu": {
+    "active": "Actif",
+    "publicProfile": "Profil public",
+    "profile": "Profil",
+    "lockScreen": "Verrouiller l'écran",
+    "supportForum": "Forum support",
+    "signOut": "Déconnexion"
+  },
+  "welcome": {
+    "firstLogin": "Première connexion",
+    "todayAt": "Aujourd'hui à {{time}}",
+    "lastLogin": "Dernière connexion",
+    "getStarted": "Commencer",
+    "plan": "Offre {{plan}}",
+    "never": "Jamais",
+    "greeting": "Bienvenue",
+    "onPlatform": "sur votre plateforme",
+    "description": "Pilotez vos formations, vos apprenants et votre équipe pédagogique depuis un seul tableau de bord centralisé et intuitif."
+  },
+  "workspace": {
+    "finance-budget": {
+      "title": "Budget",
+      "description": "Pipeline commercial, budget validé et prévisions à partir des devis.",
+      "pageDescription": "Lignes budgétaires {{year}} — prévisionnel vs réalisé.",
+      "stats": {
+        "total": { "label": "Lignes", "subtitle": "Exercice {{year}}" },
+        "planned": { "label": "Prévu", "subtitle": "Total planifié" },
+        "actual": { "label": "Réalisé", "subtitle": "Consommé" },
+        "ecart": { "label": "Écart", "subtitle": "Prévu − réalisé" },
+        "consumptionRate": { "label": "Consommation", "subtitle": "Réalisé / prévu (%)" }
+      },
+      "columns": {
+        "libelle": "Libellé",
+        "categorie": "Catégorie",
+        "prevu": "Prévu",
+        "realise": "Réalisé",
+        "ecart": "Écart"
+      },
+      "footnote": "Lignes budgétaires FinanceBudgetLine (exercice en cours).",
+      "fields": {
+        "label": "Libellé",
+        "category": "Catégorie",
+        "periodYear": "Année",
+        "plannedAmount": "Montant prévu (€)",
+        "actualAmount": "Montant réalisé (€)",
+        "notes": "Notes"
+      }
+    },
+    "finance-paiements": {
+      "title": "Paiements",
+      "description": "Suivi des encaissements et relances sur devis acceptés ou en attente.",
+      "pageDescription": "Suivi des encaissements liés aux devis.",
+      "stats": {
+        "total": { "label": "Total suivi", "subtitle": "Enregistrements" },
+        "pending": { "label": "En attente", "subtitle": "À encaisser" },
+        "received": { "label": "Encaissés", "subtitle": "Reçus" },
+        "pendingAmount": { "label": "Montant dû", "subtitle": "Somme en attente" },
+        "failed": { "label": "Échoués", "subtitle": "Paiements en erreur" }
+      },
+      "columns": {
+        "reference": "Référence",
+        "devis": "Devis",
+        "statut": "Statut",
+        "montant": "Montant",
+        "maj": "Suivi"
+      },
+      "footnote": "Encaissements FinancePayment liés aux devis.",
+      "fields": {
+        "amount": "Montant (€)",
+        "devisId": "ID devis (optionnel)",
+        "method": "Mode (virement, CB…)",
+        "notes": "Notes"
+      },
+      "status": {
+        "PENDING": "En attente",
+        "RECEIVED": "Encaissé",
+        "FAILED": "Échoué",
+        "REFUNDED": "Remboursé"
+      },
+      "actions": {
+        "markReceived": "Marquer encaissé",
+        "markReceivedFailed": "Validation impossible"
+      }
+    },
+    "finance-rapports": {
+      "title": "Rapports financiers",
+      "description": "Consolidation mensuelle devis, leads et chiffre d'affaires accepté.",
+      "footnote": "Rapport mensuel consolidé (devis, leads, CA accepté).",
+      "stats": {
+        "devis12m": { "label": "Devis 12 mois", "subtitle": "Volume commercial" },
+        "accepted": { "label": "Acceptés", "subtitle": "Taux de conversion" },
+        "leads12m": { "label": "Leads 12 mois", "subtitle": "Entrées commerciales" },
+        "conversionRate": { "label": "Taux conversion", "subtitle": "Devis → accepté" },
+        "revenue": { "label": "CA accepté", "subtitle": "12 mois glissants" }
+      },
+      "columns": {
+        "periode": "Période",
+        "devis": "Devis",
+        "acceptes": "Acceptés",
+        "leads": "Leads",
+        "ca": "CA accepté"
+      }
+    },
+    "comm-cms-pages": {
+      "title": "Pages landing",
+      "description": "Sections et blocs du site public (LandingConfig).",
+      "footnote": "Sections issues de LandingConfig (site public).",
+      "stats": {
+        "sections": { "label": "Sections landing", "subtitle": "Blocs configurés" },
+        "publication": { "label": "Publication", "subtitle": "LandingConfig" },
+        "lastUpdate": { "label": "Dernière MAJ", "subtitle": "CMS landing" },
+        "crmPages": { "label": "Pages CRM", "subtitle": "Site vitrine unique" },
+        "blockTypes": { "label": "Types de blocs", "subtitle": "Sections distinctes" }
+      },
+      "columns": {
+        "ordre": "#",
+        "type": "Type",
+        "titre": "Titre / libellé",
+        "actif": "Actif"
+      }
+    },
+    "comm-cms-contenus": {
+      "title": "Contenus",
+      "description": "Catalogue formations et statut de publication landing.",
+      "footnote": "Contenus pédagogiques et statut catalogue landing.",
+      "stats": {
+        "formations": { "label": "Formations", "subtitle": "Catalogue CRM" },
+        "active": { "label": "Actives", "subtitle": "Publiables" },
+        "catalogOffers": { "label": "Offres catalogue", "subtitle": "Visibles landing" },
+        "drafts": { "label": "Brouillons", "subtitle": "Hors ligne" },
+        "noOffer": { "label": "Sans offre", "subtitle": "Hors catalogue landing" }
+      },
+      "columns": {
+        "formation": "Formation",
+        "slug": "Slug",
+        "statut": "Statut",
+        "catalogue": "Catalogue",
+        "maj": "MAJ"
+      }
+    },
+    "comm-campagnes": {
+      "title": "Campagnes",
+      "description": "Performance des sources leads (landing, devis, préinscription).",
+      "pageDescription": "UTM, canaux et statuts des campagnes acquisition.",
+      "stats": {
+        "total": { "label": "Total", "subtitle": "Campagnes" },
+        "active": { "label": "Actives", "subtitle": "En cours" },
+        "paused": { "label": "En pause", "subtitle": "Suspendues" },
+        "channels": { "label": "Canaux", "subtitle": "Distincts" },
+        "ended": { "label": "Terminées", "subtitle": "Campagnes closes" }
+      },
+      "columns": {
+        "nom": "Nom",
+        "canal": "Canal",
+        "statut": "Statut",
+        "utm": "UTM",
+        "maj": "MAJ"
+      },
+      "footnote": "Campagnes marketing (MarketingCampaign).",
+      "fields": {
+        "name": "Nom",
+        "channel": "Canal",
+        "status": "Statut",
+        "utmSource": "UTM source",
+        "utmMedium": "UTM medium",
+        "utmCampaign": "UTM campagne",
+        "notes": "Notes"
+      },
+      "status": {
+        "DRAFT": "Brouillon",
+        "ACTIVE": "Active",
+        "PAUSED": "En pause",
+        "ENDED": "Terminée"
+      },
+      "actions": {
+        "activate": "Activer",
+        "pause": "Mettre en pause",
+        "activateFailed": "Activation impossible",
+        "pauseFailed": "Pause impossible"
+      }
+    },
+    "comm-seo-meta": {
+      "title": "Meta & indexation",
+      "description": "Métadonnées organisme et publication landing.",
+      "footnote": "Meta & indexation — valeurs SystemSetting + LandingConfig.",
+      "stats": {
+        "metaEntries": { "label": "Entrées meta", "subtitle": "Champs suivis" },
+        "org": { "label": "Organisme", "subtitle": "SystemSetting" },
+        "landing": { "label": "Landing", "subtitle": "Publication" },
+        "indexing": { "label": "Indexation", "subtitle": "Sitemap à brancher" },
+        "crmSite": { "label": "Site CRM", "subtitle": "SystemSetting" }
+      },
+      "columns": {
+        "cle": "Meta",
+        "valeur": "Valeur",
+        "zone": "Zone"
+      }
+    },
+    "comm-seo-redirections": {
+      "title": "Redirections",
+      "description": "Règles de redirection et ancres du site one-page.",
+      "pageDescription": "Règles 301/302 et ancres du site landing.",
+      "stats": {
+        "total": { "label": "Total", "subtitle": "Règles" },
+        "active": { "label": "Actives", "subtitle": "En production" },
+        "inactive": { "label": "Inactives", "subtitle": "Désactivées" },
+        "perm301": { "label": "301", "subtitle": "Permanentes" },
+        "perm302": { "label": "302", "subtitle": "Temporaires" }
+      },
+      "columns": {
+        "source": "Source",
+        "cible": "Cible",
+        "type": "Type",
+        "statut": "Statut"
+      },
+      "footnote": "Redirections SEO (SeoRedirect).",
+      "fields": {
+        "sourcePath": "Chemin source (/)",
+        "targetPath": "Cible",
+        "redirectType": "Type",
+        "notes": "Notes"
+      },
+      "redirectType": {
+        "301": "301 Permanent",
+        "302": "302 Temporaire"
+      },
+      "actions": {
+        "enable": "Activer",
+        "disable": "Désactiver",
+        "updateFailed": "Mise à jour impossible"
+      }
+    },
+    "support-tickets": {
+      "title": "Tickets",
+      "description": "File support utilisateurs (tickets CRM).",
+      "footnote": "File support (SupportTicket).",
+      "stats": {
+        "total": { "label": "Total", "subtitle": "Tickets" },
+        "open": { "label": "Ouverts", "subtitle": "À traiter" },
+        "inProgress": { "label": "En cours", "subtitle": "Assignés" },
+        "resolved": { "label": "Résolus", "subtitle": "Clôturés" },
+        "urgent": { "label": "Priorité haute", "subtitle": "Urgent / haute" }
+      },
+      "columns": {
+        "reference": "Réf.",
+        "sujet": "Sujet",
+        "demandeur": "Demandeur",
+        "statut": "Statut",
+        "maj": "MAJ"
+      }
+    },
+    "support-base-aide": {
+      "title": "Catalogue formations (aide)",
+      "description": "Fiches catalogue actives réutilisées pour l'aide self-service — documentation complète dans Mintlify.",
+      "footnote": "Fiches issues du catalogue formations actif. FAQ et analytics : voir onglet Documentation Mintlify.",
+      "stats": {
+        "articles": { "label": "Fiches catalogue", "subtitle": "Formations actives" },
+        "faq": { "label": "Guide Mintlify", "subtitle": "Procédures & support" },
+        "searches": { "label": "Recherches", "subtitle": "Analytics à brancher" },
+        "satisfaction": { "label": "Satisfaction", "subtitle": "Enquêtes à brancher" },
+        "coverage": { "label": "Couverture", "subtitle": "Fiches actives" }
+      },
+      "columns": {
+        "article": "Article",
+        "slug": "Slug",
+        "extrait": "Extrait",
+        "categorie": "Catégorie"
+      }
+    },
+    "support-incidents": {
+      "title": "Incidents",
+      "description": "Matériel hors service et erreurs système à traiter.",
+      "footnote": "Signalements matériel hors service et erreurs journalisées.",
+      "stats": {
+        "equipmentDown": { "label": "Matériel HS", "subtitle": "Équipements" },
+        "systemErrors": { "label": "Erreurs système", "subtitle": "Logs" },
+        "critical": { "label": "Critiques", "subtitle": "À traiter" },
+        "resolved7d": { "label": "Résolus 7j", "subtitle": "Workflow qualité" },
+        "totalReports": { "label": "Total signalements", "subtitle": "Matériel + système" }
+      },
+      "columns": {
+        "type": "Type",
+        "sujet": "Sujet",
+        "reference": "Réf.",
+        "lieu": "Lieu / détail",
+        "date": "Date"
+      }
+    },
+    "gouvernance-storage": {
+      "title": "Storage & conformité",
+      "description": "Inventaire des fichiers actifs et volume stocké.",
+      "pageDescription": "Inventaire des fichiers actifs (S3 / FileAsset).",
+      "stats": {
+        "total": { "label": "Fichiers actifs", "subtitle": "FileAsset" },
+        "sizeMb": { "label": "Volume (Mo)", "subtitle": "Stockage S3" },
+        "modules": { "label": "Modules", "subtitle": "Page courante" },
+        "privateDefault": { "label": "Privés", "subtitle": "Visibilité par défaut" },
+        "avgSizeKb": { "label": "Taille moyenne", "subtitle": "Ko / fichier" }
+      },
+      "columns": {
+        "fichier": "Fichier",
+        "module": "Module",
+        "type": "Entité",
+        "mime": "MIME",
+        "taille": "Taille",
+        "date": "Dépôt"
+      },
+      "footnote": "Inventaire des fichiers actifs (@repo/storage / FileAsset)."
+    },
+    "gouvernance-demandes": {
+      "title": "Demandes de documents",
+      "description": "Dossiers candidats en attente de pièces ou validation.",
+      "pageDescription": "Dossiers candidats en attente de pièces ou d'instruction.",
+      "stats": {
+        "total": { "label": "Dossiers ouverts", "subtitle": "En cours" },
+        "missing": { "label": "Pièces manquantes", "subtitle": "À relancer" },
+        "pending": { "label": "En validation", "subtitle": "Instruction" },
+        "draft": { "label": "Brouillons", "subtitle": "Landing / CRM" },
+        "submitted": { "label": "Transmis", "subtitle": "En attente instruction" }
+      },
+      "columns": {
+        "candidat": "Candidat",
+        "email": "E-mail",
+        "formation": "Formation",
+        "statut": "Statut",
+        "maj": "MAJ"
+      },
+      "footnote": "Demandes de pièces / dossiers candidats en cours de traitement."
+    },
+    "gouvernance-corbeille": {
+      "title": "Corbeille & archivage",
+      "description": "Fichiers supprimés et comptes en corbeille.",
+      "pageDescription": "Fichiers supprimés (soft-delete) — restauration possible.",
+      "stats": {
+        "total": { "label": "Fichiers supprimés", "subtitle": "Corbeille" },
+        "trashedUsers": { "label": "Comptes corbeille", "subtitle": "Utilisateurs" },
+        "volumeTotal": { "label": "Volume total", "subtitle": "Éléments archivés" },
+        "retentionDays": { "label": "Rétention", "subtitle": "Jours (politique)" },
+        "restoreCount": { "label": "Restaurations", "subtitle": "Action admin" }
+      },
+      "columns": {
+        "fichier": "Fichier",
+        "module": "Module",
+        "supprime": "Supprimé le"
+      },
+      "footnote": "Corbeille documentaire (FileAsset soft-deleted)."
+    },
+    "gouvernance-audit": {
+      "title": "Audit documentaire",
+      "description": "Journal des accès et actions sur la plateforme.",
+      "pageDescription": "Journal SystemLog — connexions et événements système.",
+      "stats": {
+        "total": { "label": "Événements", "subtitle": "Total" },
+        "recent": { "label": "7 jours", "subtitle": "Activité récente" },
+        "loginCount": { "label": "Connexions", "subtitle": "LOGIN" },
+        "today": { "label": "Aujourd'hui", "subtitle": "Événements du jour" },
+        "ipCount": { "label": "Adresses IP", "subtitle": "Page courante" }
+      },
+      "columns": {
+        "evenement": "Événement",
+        "utilisateur": "Utilisateur",
+        "ip": "IP",
+        "detail": "Détail",
+        "date": "Date"
+      },
+      "footnote": "Journal d'audit basé sur SystemLog (accès, actions CRM)."
+    },
+    "pilotage-alertes": {
+      "title": "Alertes",
+      "description": "Signaux opérationnels candidatures, finance, équipements et sessions.",
+      "footnote": "Synthèse temps réel à partir des modules CRM existants.",
+      "stats": {
+        "activeAlerts": { "label": "Alertes actives", "subtitle": "Alertes opérationnelles" },
+        "candidatures": { "label": "Candidatures", "subtitle": "Instruction" },
+        "expiredQuotes": { "label": "Devis expirés", "subtitle": "Relance commerciale" },
+        "sessions14d": { "label": "Sessions 14 j", "subtitle": "Charge pédagogique" },
+        "brokenEquip": { "label": "Matériel HS", "subtitle": "Équipements" }
+      },
+      "columns": {
+        "alerte": "Alerte",
+        "niveau": "Niveau",
+        "valeur": "Valeur",
+        "action": "Module"
+      }
+    },
+    "pilotage-indicateurs": {
+      "title": "Indicateurs",
+      "description": "KPI pédagogiques — sessions, examens, participants et parcours terminés.",
+      "footnote": "Performance consolidée (sessions, examens, parcours candidat).",
+      "stats": {
+        "kpiCount": { "label": "KPI pédagogiques", "subtitle": "Indicateurs suivis" },
+        "examSuccess": { "label": "Réussite examens", "subtitle": "Réel" },
+        "participants": { "label": "Participants", "subtitle": "Sessions" },
+        "completed": { "label": "Terminés", "subtitle": "Parcours complet" },
+        "sessions": { "label": "Sessions", "subtitle": "Planifiées" }
+      },
+      "columns": {
+        "indicateur": "Indicateur",
+        "valeur": "Réel",
+        "cible": "Cible",
+        "ecart": "Écart"
+      }
+    },
+    "pilotage-rapports": {
+      "title": "Rapports & exports",
+      "description": "Synthèse opérationnelle consolidée et extractions CSV.",
+      "footnote": "Synthèse temps réel à partir des modules CRM existants.",
+      "stats": {
+        "activeAlerts": { "label": "Alertes actives", "subtitle": "Rapports de pilotage" },
+        "candidatures": { "label": "Candidatures", "subtitle": "Instruction" },
+        "expiredQuotes": { "label": "Devis expirés", "subtitle": "Relance commerciale" },
+        "sessions14d": { "label": "Sessions 14 j", "subtitle": "Charge pédagogique" },
+        "brokenEquip": { "label": "Matériel HS", "subtitle": "Équipements" }
+      },
+      "columns": {
+        "alerte": "Alerte",
+        "niveau": "Niveau",
+        "valeur": "Valeur",
+        "action": "Module"
+      }
+    },
+    "pilotage-risques": {
+      "title": "Risques",
+      "description": "Registre des expositions, conformité CNAPS, examens et maintenance.",
+      "footnote": "Registre des risques alimenté par candidatures, examens et maintenance.",
+      "stats": {
+        "exposures": { "label": "Expositions", "subtitle": "Risques suivis" },
+        "cnapsPending": { "label": "CNAPS en cours", "subtitle": "Conformité" },
+        "examAbsences": { "label": "Absences examen", "subtitle": "Pédagogie" },
+        "maintenance7d": { "label": "Maintenance 7 j", "subtitle": "Matériel" },
+        "rejected": { "label": "Refus dossiers", "subtitle": "Candidatures" }
+      },
+      "columns": {
+        "risque": "Risque",
+        "gravite": "Gravité",
+        "exposition": "Exposition",
+        "mesure": "Mesure"
+      }
+    }
+  },
+  "pilotage": {
+    "insightsTitle": "Synthèse opérationnelle"
+  },
+  "auth": {
+    "signInTitle": "Connexion CRM",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "signIn": "Se connecter",
+    "unexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer.",
+    "secureAccess": "Accès sécurisé au tableau de bord",
+    "brandedDescription": "Plateforme de gestion FORM'SSI — formations, apprenants et équipe pédagogique.",
+    "brandedSubtitle": "Une passerelle d'authentification robuste qui garantit un accès utilisateur sécurisé et efficace à l'interface du tableau de bord FORM'SSI.",
+    "devAlert": "Environnement dev : utilisez les comptes de test ci-dessous.",
+    "devAccountsTitle": "Comptes de développement",
+    "devAccountsHint": "Cliquez sur un profil pour pré-remplir le formulaire.",
+    "emailPlaceholder": "Votre e-mail",
+    "passwordPlaceholder": "Votre mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "hidePassword": "Masquer le mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "signupDisabled": "La création de compte public est désactivée.",
+    "validation": {
+      "emailRequired": "L'e-mail est requis.",
+      "emailInvalid": "Veuillez saisir une adresse e-mail valide.",
+      "passwordRequired": "Le mot de passe est requis.",
+      "passwordMin": "Le mot de passe doit contenir au moins 6 caractères."
+    }
+  },
+  "sections": {
+    "gestionRessources": {
+      "welcomeDescription": "Centralisez compagnie, RH et équipements — structure interne, personnel et matériel pédagogique au même endroit.",
+      "menuCardsTitle": "Accès rapide — Gestion administrative",
+      "menuCardsSubtitle": "3 modules : 10 pages au menu latéral (compagnie 3, RH 4, équipements 3)",
+      "securityHighlightsTitle": "Indicateurs clés — Gestion administrative",
+      "cards": {
+        "compagnie": "Profil entreprise, structure interne et documents administratifs.",
+        "rh": "Collaborateurs, formateurs, absences et conformité au menu latéral.",
+        "equipements": "Inventaire, affectations sessions et maintenance atelier."
+      }
+    },
+    "gestionAcademique": {
+      "welcomeDescription": "Formations, sessions, candidatures, planning, examens et certifications — pilotez la vie scolaire depuis un seul espace.",
+      "menuCardsTitle": "Vie scolaire — accès rapide aux espaces",
+      "menuCardsSubtitle": "Raccourcis vers les six espaces du module (identiques au menu latéral)",
+      "securityHighlightsTitle": "Indicateurs clés — Gestion académique",
+      "cards": {
+        "formations": "Catalogue et pilotage des parcours de formation.",
+        "sessions": "Sessions en cours, calendrier et organisation pédagogique.",
+        "etudiants": "Effectifs, dossiers et suivi des apprenants.",
+        "planning": "Vue planning, progression pédagogique et assiduité.",
+        "examens": "Sessions d'examen, convocations et résultats.",
+        "certifications": "Édition et vérification des diplômes et attestations."
+      }
+    },
+    "communicationContenu": {
+      "welcomeDescription": "Pages landing, contenus, campagnes marketing et SEO pour piloter votre présence en ligne.",
+      "menuCardsTitle": "Accès rapide — Communication & contenu",
+      "menuCardsSubtitle": "{{modules}} modules et {{pages}} pages principales selon le menu CRM",
+      "securityHighlightsTitle": "Indicateurs clés — Communication & contenu",
+      "cards": {
+        "cms": "Gestion des pages landing et des contenus.",
+        "marketing": "Gestion des formulaires leads et campagnes.",
+        "seo": "Pilotage SEO, indexation et redirections."
+      }
+    },
+    "supportQualite": {
+      "welcomeDescription": "Tickets support, base d'aide self-service et suivi qualité / incidents.",
+      "menuCardsTitle": "Accès rapide — Support et qualité",
+      "menuCardsSubtitle": "{{modules}} modules et {{pages}} pages principales selon le menu CRM",
+      "securityHighlightsTitle": "Indicateurs clés — Support & qualité",
+      "cards": {
+        "support": "Gestion des tickets, FAQ et accompagnement utilisateurs.",
+        "qualite": "Suivi qualité et gestion des incidents."
+      }
+    },
+    "securiteConfiguration": {
+      "welcomeDescription": "Accès utilisateurs, paramètres système et gouvernance des données — sécurité et conformité.",
+      "menuCardsTitle": "Accès rapide — Sécurité et configuration",
+      "menuCardsSubtitle": "{{modules}} modules et {{pages}} pages principales selon le menu CRM",
+      "securityHighlightsTitle": "Indicateurs clés — Sécurité & configuration",
+      "cards": {
+        "acces": "Gestion des utilisateurs, rôles et permissions CRM.",
+        "parametres": "Paramétrage général de la plateforme et des notifications.",
+        "gouvernance": "Storage, demandes documentaires, corbeille et audit."
+      }
+    },
+    "pilotageSupervision": {
+      "welcomeDescription": "Alertes, indicateurs, rapports et registre des risques pour superviser l'établissement.",
+      "menuCardsTitle": "Accès rapide — Pilotage & supervision",
+      "menuCardsSubtitle": "1 module et {{pages}} pages principales selon le menu CRM",
+      "securityHighlightsTitle": "Indicateurs clés — Pilotage & supervision",
+      "cards": {
+        "pilotage": "Tableaux de bord, alertes opérationnelles, KPI pédagogiques, rapports CSV et registre des risques."
+      }
+    },
+    "administrationFacturation": {
+      "welcomeDescription": "Budget, devis, factures, paiements et rapports financiers consolidés.",
+      "menuCardsTitle": "Accès rapide — Administration & facturation",
+      "menuCardsSubtitle": "1 module et {{pages}} pages principales selon le menu CRM",
+      "securityHighlightsTitle": "Indicateurs clés — Administration & facturation",
+      "cards": {
+        "finance": "Module finance centralisant budget, devis, factures, paiements et rapports."
+      }
+    }
+  },
+  "help": {
+    "questionsTitle": "Questions ?",
+    "questionsDescription": "Procédures CRM, catalogue formations et support : consultez le guide Mintlify (documentation produit).",
+    "questionsCta": "Ouvrir la documentation",
+    "supportTitle": "Contacter le support",
+    "supportDescription": "Besoin d'aide ? Contactez notre équipe support pour une assistance rapide et personnalisée.",
+    "supportCta": "Contacter le support",
+    "imageAlt": "Illustration"
+  },
+  "securityHighlights": {
+    "title": "Indicateurs clés",
+    "overallPerformance": "Performance globale",
+    "loading": "Chargement…",
+    "notAvailable": "N/A",
+    "categories": {
+      "operations": "Opérations",
+      "personnel": "Personnel",
+      "clients": "Clients"
+    }
+  },
+  "securityStats": {
+    "activeCampus": "Campus actifs",
+    "activeCampusDetail": "Sites sous supervision",
+    "activeTrainers": "Formateurs actifs",
+    "activeTrainersDetail": "Ressources pédagogiques",
+    "pedagogicalAlerts": "Alertes pédagogiques",
+    "pedagogicalAlertsDetail": "À traiter",
+    "activeLearners": "Apprenants actifs",
+    "activeLearnersDetail": "Comptes actifs",
+    "todayCourses": "Cours aujourd'hui",
+    "todayCoursesDetail": "Séances planifiées",
+    "loadError": "Erreur lors du chargement des statistiques"
+  },
+  "confirmDismiss": {
+    "title": "Abandonner les modifications ?",
+    "description": "Des modifications non enregistrées seront perdues. Fermer cette fenêtre ?",
+    "cancel": "Annuler",
+    "confirm": "Abandonner"
+  },
+  "footer": {
+    "copyright": "{{year}} © LMS",
+    "documentation": "Documentation"
+  },
+  "sectionLanding": {
+    "loadingIndicators": "Chargement des indicateurs…",
+    "loadError": "Erreur de chargement des indicateurs"
+  },
+  "accueil": {
+    "title": "Accueil",
+    "description": "Vue d'ensemble de votre école de formation",
+    "menuCardsTitle": "Accès rapide aux sections",
+    "menuCardsSubtitle": "Chaque carte ouvre une section ; les puces listent les modules de cette section (les pages sont dans chaque module).",
+    "noModulesTitle": "Aucun module accessible",
+    "noModulesDescription": "Contactez votre administrateur pour obtenir les permissions nécessaires.",
+    "cards": {
+      "gestion-ressources": "Section établissement : structure organisationnelle, ressources humaines et moyens avant le pilotage pédagogique.",
+      "gestion-academique": "Section pédagogique : regroupe les modules liés au parcours apprenants (dont la vie scolaire).",
+      "administration-facturation": "Section financière et administrative : suivi budgétaire, commercial et comptable.",
+      "communication-contenu": "Section communication : site, campagnes et visibilité.",
+      "support-qualite": "Section assistance utilisateurs et suivi qualité.",
+      "securite-configuration": "Section sécurité CRM, réglages et conformité documentaire.",
+      "pilotage-supervision": "Section pilotage : alertes, indicateurs, rapports CSV et registre des risques."
+    }
+  },
+  "datagrid": {
+    "rowsPerPage": "Lignes par page",
+    "paginationInfo": "{{from}} - {{to}} sur {{count}}",
+    "prevPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "viewAll": "Voir tout",
+    "listView": "Liste",
+    "gridView": "Cartes",
+    "sync": "Synchroniser",
+    "syncSuccess": "Données synchronisées avec succès",
+    "changeStatus": "Changer le statut",
+    "duplicate": "Dupliquer",
+    "delete": "Supprimer",
+    "selectedCount_one": "{{count}} sélectionné",
+    "selectedCount_other": "{{count}} sélectionnés",
+    "columns": {
+      "staffMember": "Collaborateur",
+      "trainer": "Formateur",
+      "qualification": "Qualification",
+      "category": "Catégorie",
+      "categoryModel": "Catégorie / Modèle",
+      "status": "Statut",
+      "fileStatus": "Statut dossier",
+      "lastLogin": "Dernière connexion",
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "date": "Date",
+      "reference": "Référence",
+      "actions": "Actions"
+    },
+    "categories": {
+      "INTERNAL": "Interne",
+      "CLIENT": "Client",
+      "SUBCONTRACTOR": "Sous-traitant"
+    },
+    "search": {
+      "generic": "Rechercher…",
+      "staffMember": "Rechercher un collaborateur…",
+      "trainer": "Rechercher un formateur…",
+      "candidate": "Rechercher un candidat…",
+      "absence": "Rechercher une absence…",
+      "equipment": "Rechercher…",
+      "byNameOrEmail": "Rechercher par nom ou e-mail…",
+      "lead": "Rechercher entreprise, nom, e-mail, téléphone…",
+      "role": "Rechercher un rôle",
+      "permission": "Rechercher une permission",
+      "log": "Rechercher des logs…",
+      "quote": "Rechercher un devis…",
+      "session": "Rechercher une session, une formation…",
+      "catalog": "Rechercher dans le catalogue…",
+      "partner": "Rechercher un partenaire…",
+      "team": "Rechercher une équipe…"
+    }
+  },
+  "account": {
+    "notifications": {
+      "page": {
+        "tableTitle": "Historique des alertes",
+        "search": "Rechercher par titre ou message…",
+        "filterTabs": "Filtrer les notifications",
+        "categoryAll": "Toutes catégories",
+        "open": "Ouvrir la ressource",
+        "markRead": "Lu",
+        "emptyArchived": "Aucune notification archivée.",
+        "tabs": {
+          "all": "Actives",
+          "unread": "Non lues",
+          "archived": "Archivées"
+        },
+        "columns": {
+          "status": "Statut",
+          "category": "Catégorie",
+          "title": "Notification",
+          "date": "Reçue le",
+          "actions": "Actions"
+        },
+        "status": {
+          "unread": "Non lue",
+          "read": "Lue",
+          "archived": "Archivée"
+        },
+        "kpi": {
+          "active": "Actives",
+          "activeHint": "Non archivées dans votre boîte",
+          "unread": "Non lues",
+          "unreadHint": "À traiter en priorité",
+          "read": "Lues",
+          "readHint": "Déjà consultées",
+          "archived": "Archivées",
+          "archivedHint": "Retirées de la liste active"
+        },
+        "landingAlertsTitle": "Alertes & événements",
+        "landingAlertsSubtitle": "Vie scolaire · catalogue, sessions, conformité",
+        "landingAlertsEmpty": "Aucun événement récent"
+      }
+    }
+  },
+  "topbar": {
+    "notifications": {
+      "title": "Notifications",
+      "tabAll": "Toutes",
+      "tabUnread": "Non lues",
+      "loading": "Chargement…",
+      "loadError": "Impossible de charger les notifications.",
+      "empty": "Aucune notification.",
+      "emptyUnread": "Aucune notification non lue.",
+      "archiveAll": "Archiver tout",
+      "markAllRead": "Tout marquer lu",
+      "viewAll": "Voir tout",
+      "archivedSuccess": "Notifications archivées.",
+      "readAllSuccess": "Toutes les notifications sont marquées comme lues.",
+      "categories": {
+        "SYSTEM": "Système",
+        "TICKET": "Support",
+        "FINANCE": "Finance",
+        "ACADEMIC": "Formation",
+        "TEAM": "Équipe"
+      }
+    },
+    "chat": {
+      "title": "Chat",
+      "loading": "Chargement…",
+      "emptyConversations": "Aucune conversation.",
+      "emptyConversationsHint": "Exécutez le seed pour la démo équipe.",
+      "conversationCount_one": "{{count}} conversation",
+      "conversationCount_other": "{{count}} conversations",
+      "noMessages": "Aucun message",
+      "startConversation": "Démarrez la conversation.",
+      "youPrefix": "Vous : ",
+      "placeholder": "Écrire un message…",
+      "send": "Envoyer",
+      "me": "Moi",
+      "defaultConversation": "Conversation",
+      "newConversation": "Nouvelle conversation",
+      "newTitle": "Titre du groupe",
+      "newTitlePlaceholder": "Ex. Équipe pédagogique",
+      "newParticipant": "Participant",
+      "newParticipantPlaceholder": "Choisir un collaborateur",
+      "create": "Créer",
+      "createSuccess": "Conversation créée.",
+      "createError": "Impossible de créer la conversation.",
+      "createValidation": "Titre et participant requis."
+    }
+  }
+}

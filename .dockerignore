@@ -1,0 +1,11 @@
+# Contexte docker build (racine monorepo) — aligné sur l’archive tar deploy-lms.ps1
+node_modules
+**/.next
+.git
+.turbo
+**/.turbo
+scripts/.deploy-staging
+*.tar.gz
+.env
+.env.*
+!.env.example

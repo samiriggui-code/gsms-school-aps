@@ -1,0 +1,1207 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "add": "Add",
+      "remove": "Remove",
+      "submit": "Submit",
+      "close": "Close"
+    },
+    "actions": {
+      "export": "Export",
+      "refresh": "Refresh",
+      "addCollaborator": "Add staff member",
+      "addTrainer": "Add trainer",
+      "moreActions": "More actions",
+      "back": "Back",
+      "exportSelection": "Export selection"
+    },
+    "labels": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "username": "Username",
+      "phone": "Phone",
+      "address": "Address"
+    },
+    "messages": {
+      "welcome": "Welcome",
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "success": "Operation completed successfully",
+      "confirm": "Are you sure?"
+    }
+  },
+  "pages": {
+    "home": {
+      "title": "Welcome",
+      "description": "Welcome to the FORM'SSI CRM"
+    },
+    "account": {
+      "title": "Account Settings",
+      "notifications": {
+        "title": "Notifications",
+        "description": "Manage your notification preferences"
+      }
+    },
+    "settings": {
+      "title": "System settings",
+      "description": "Organization, legal, training, notifications, social networks and integrations — single source of truth (SystemSetting).",
+      "sidebar": {
+        "general": "General",
+        "etablissement": "Organization",
+        "legal": "Legal identity",
+        "formation": "Training & compliance",
+        "dirigeant": "Director",
+        "registre": "INPI registry",
+        "notifications": "Notifications",
+        "social": "Social networks",
+        "integrations": "Integrations"
+      },
+      "common": {
+        "reset": "Reset",
+        "save": "Save",
+        "error": "Error",
+        "loading": "Loading…",
+        "formErrors": "Fix form errors before saving.",
+        "notSet": "Not set",
+        "open": "Open",
+        "active": "Active",
+        "notConfigured": "Not configured"
+      },
+      "general": {
+        "saveSuccess": "Settings saved successfully",
+        "basicTitle": "Basic settings",
+        "logo": "Logo",
+        "chooseImage": "Choose image",
+        "logoHint": "PNG, JPEG or GIF — max. 1 MB",
+        "establishmentName": "Organization name",
+        "establishmentNamePlaceholder": "Name displayed on the platform",
+        "platformStatus": "Platform status",
+        "platformActive": "Platform active",
+        "regionalTitle": "Regional & currency",
+        "language": "Language",
+        "chooseLanguage": "Choose a language",
+        "currency": "Currency",
+        "chooseCurrency": "Choose a currency",
+        "currencyHint": "Currency used for amounts displayed in the CRM.",
+        "currencyFormat": "Currency format",
+        "chooseFormat": "Choose a format",
+        "timezone": "Timezone",
+        "currencies": {
+          "EUR": "EUR — Euro",
+          "USD": "USD — US Dollar",
+          "GBP": "GBP — British Pound",
+          "CHF": "CHF — Swiss Franc"
+        }
+      },
+      "etablissement": {
+        "saveSuccess": "Organization saved",
+        "identityTitle": "Organization identity",
+        "companyName": "Organization name",
+        "industry": "Industry",
+        "companyType": "Organization type",
+        "companySize": "Size",
+        "companySizePlaceholder": "Micro, SME…",
+        "companyRegion": "Region",
+        "contactTitle": "Address & contact",
+        "address": "Address",
+        "postalCode": "Postal code",
+        "city": "City",
+        "country": "Country",
+        "website": "Website",
+        "supportEmail": "Support / contact email",
+        "supportPhone": "Support phone",
+        "validation": {
+          "companyNameRequired": "Organization name is required",
+          "invalidUrl": "Invalid URL",
+          "invalidEmail": "Invalid email"
+        }
+      },
+      "legal": {
+        "saveSuccess": "Legal identity saved",
+        "title": "Legal identity & tax",
+        "siret": "SIRET",
+        "siren": "SIREN",
+        "establishmentNic": "Establishment NIC",
+        "cnaps": "CNAPS approval",
+        "vatIntracommunityNumber": "EU VAT number",
+        "eoriNumber": "EORI number",
+        "nafApeCode": "NAF / APE code",
+        "naf2025Code": "NAF 2025 code",
+        "legalFormDetailed": "Detailed legal form",
+        "shareCapitalEuros": "Share capital (€)",
+        "rcsRegistryCity": "RCS registry city"
+      },
+      "formation": {
+        "saveSuccess": "Training & compliance saved",
+        "ndaTitle": "Activity declaration (NDA)",
+        "ndaNumber": "NDA number",
+        "ndaDeclarationDate": "Declaration date",
+        "ndaRegion": "DREETS region",
+        "ndaSpecialty": "Declared specialty",
+        "ndaTrainingActions": "Training actions",
+        "qualiopiTitle": "Qualiopi & approvals",
+        "qualiopiCertifications": "Qualiopi certifications",
+        "agreementQualiopiRef": "Qualiopi ref.",
+        "agreementAdef": "ADEF approval",
+        "agreementQualianor": "Qualianor approval",
+        "agreementSsiap": "SSIAP approval"
+      },
+      "dirigeant": {
+        "saveSuccess": "Director saved",
+        "title": "Legal representative",
+        "changePhoto": "Change photo",
+        "fullName": "Full name",
+        "role": "Role",
+        "rolePlaceholder": "Director, manager…",
+        "email": "Email",
+        "phone": "Phone",
+        "invalidEmail": "Invalid email"
+      },
+      "registre": {
+        "saveSuccess": "INPI registry saved",
+        "title": "INPI / INSEE registry",
+        "mainActivityDescription": "Main activity",
+        "companyCreationDate": "Company creation",
+        "establishmentCreationDate": "Establishment creation",
+        "inseeRegistrationDate": "INSEE registration",
+        "rneExtractDate": "RNE extract",
+        "employeeSituationNote": "Workforce / employee situation",
+        "companySizeCategoryNote": "Size category",
+        "collectiveAgreementNote": "Collective agreement",
+        "inpiCompanySummary": "INPI summary"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "saveSuccess": "Notification settings saved",
+        "columnNotification": "Notification",
+        "columnUsers": "Users",
+        "columnEmail": "Email",
+        "columnWeb": "Web",
+        "searchRoles": "Search roles…",
+        "noRoles": "No roles found.",
+        "items": {
+          "stock": {
+            "label": "Equipment stock alerts",
+            "description": "Low stock threshold on equipment inventory."
+          },
+          "newOrder": {
+            "label": "New requests",
+            "description": "Incoming quotes, leads or pre-registrations."
+          },
+          "orderStatus": {
+            "label": "Status updates",
+            "description": "Quote, ticket or file status changes."
+          },
+          "paymentFailure": {
+            "label": "Payment failures",
+            "description": "Declined or failed payments."
+          },
+          "systemError": {
+            "label": "System errors",
+            "description": "Technical incidents and application errors."
+          }
+        }
+      },
+      "social": {
+        "title": "Social networks",
+        "saveSuccess": "Social networks saved"
+      },
+      "integrations": {
+        "title": "Integrations & services",
+        "description": "Technical connection status (environment variables and services). Toggles reflect actual state — configure via deployment (.env)."
+      }
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "messages": {
+    "unauthorized": "Unauthorized access.",
+    "system_error": "Oops! Something didn't go as planned. Please try again in a moment.",
+    "invalid_input": "Invalid input. Please check your data and try again.",
+    "data_not_found": "Requested data not found.",
+    "delete_restricted_error": "Unable to delete this record because it is linked to other records."
+  },
+  "crud": {
+    "refresh": "Refresh",
+    "add": "Add",
+    "search": "Search…",
+    "loading": "Loading…",
+    "empty": "No records",
+    "emptyView": "No records for this view.",
+    "actions": "Actions",
+    "yes": "Yes",
+    "no": "No",
+    "page": "Page {{page}} / {{total}}",
+    "pageWithCount": "Page {{page}} / {{total}} — {{count}} entries",
+    "prev": "Prev",
+    "next": "Next",
+    "previous": "Previous",
+    "nextFull": "Next",
+    "createTitle": "New record",
+    "create": "Create",
+    "fieldRequired": "{{field}} is required",
+    "createFailed": "Creation failed",
+    "created": "Record created",
+    "deleteConfirm": "Delete this record?",
+    "deleteStaffConfirm": "Delete staff member {{name}}?",
+    "staffDeleted": "Staff member deleted successfully",
+    "deleteTrainerConfirm": "Delete trainer {{name}}?",
+    "trainerDeleted": "Trainer deleted successfully",
+    "deleteComplianceConfirm": "Delete compliance record {{name}}?",
+    "complianceDeleted": "Compliance record deleted successfully",
+    "deleteTeamConfirm": "Delete team {{name}}?",
+    "teamDeleted": "Team deleted successfully",
+    "deleteVendorConfirm": "Delete vendor {{name}}?",
+    "vendorDeleted": "Vendor deleted successfully",
+    "deleteStudentConfirm": "Delete student {{name}}?",
+    "studentDeleted": "Student deleted successfully",
+    "deletePlanningConfirm": "Delete schedule {{name}}?",
+    "planningDeleted": "Schedule deleted successfully",
+    "deleteExamConfirm": "Delete exam {{name}}?",
+    "examDeleted": "Exam deleted successfully",
+    "deleteCertificationConfirm": "Delete certification {{name}}?",
+    "certificationDeleted": "Certification deleted successfully",
+    "deleteFailed": "Unable to delete",
+    "deleted": "Deleted",
+    "consolidatedData": "Consolidated data",
+    "filter": "Filter"
+  },
+  "candidature": {
+    "createdSuccess": "Application created (candidate account).",
+    "updatedSuccess": "File updated.",
+    "validatedSuccess": "File validated — account promoted to student.",
+    "resetLinkSent": "Password reset link sent successfully.",
+    "accountRestored": "User account restored successfully.",
+    "pathCompleted": "Path marked as completed",
+    "archived": "File archived",
+    "resetLinkFailed": "Failed to send password reset email"
+  },
+  "sessions": {
+    "created": "Session created.",
+    "createdDescription": "The list has been updated.",
+    "updated": "Session updated.",
+    "deleted": "Session deleted.",
+    "equipmentRemoved": "Equipment removed from session reservation."
+  },
+  "academic": {
+    "certificationSaved": "Certificate recorded",
+    "examResultSaved": "Exam result recorded"
+  },
+  "support": {
+    "ticketUpdated": "Ticket updated",
+    "ticketCreated": "Ticket created"
+  },
+  "cms": {
+    "sectionsSaved": "Sections saved",
+    "metaSaved": "Meta saved"
+  },
+  "teams": {
+    "updated": "Team updated successfully",
+    "memberAdded": "Member added successfully",
+    "memberRemoved": "Member removed from team",
+    "unitCreated": "Unit created successfully",
+    "unitCreateFailed": "Creation failed",
+    "deleted": "Team deleted"
+  },
+  "leads": {
+    "convertedToCandidature": "Lead converted to application.",
+    "emailSent": "Email sent to lead."
+  },
+  "formations": {
+    "created": "Training created",
+    "createdDescNamed": "\"{{name}}\" was added to the catalog.",
+    "createdDesc": "The training was added to the catalog.",
+    "creationCancelled": "Creation cancelled",
+    "creationCancelledDesc": "The training was not saved.",
+    "suspended": "Training suspended",
+    "suspendedDesc": "\"{{name}}\" is no longer offered in the active catalog. Data remains in the database.",
+    "suspendCancelled": "Suspension cancelled",
+    "suspendCancelledDesc": "The training was not suspended.",
+    "activated": "Training activated",
+    "activatedDesc": "\"{{name}}\" is available again in the catalog.",
+    "activateCancelled": "Activation cancelled",
+    "activateCancelledDesc": "Active status was not applied.",
+    "updated": "Changes saved",
+    "updatedDescNamed": "Information for \"{{name}}\" was updated.",
+    "updatedDesc": "Changes were saved.",
+    "updateCancelled": "Save cancelled",
+    "updateCancelledDesc": "Changes were not applied.",
+    "actionFailed": "Action failed"
+  },
+  "devis": {
+    "listTitle": "Quote list",
+    "listDescription": "Commercial proposals — drafts, sent and signed.",
+    "statusFilterPlaceholder": "Quote status",
+    "allStatuses": "All statuses",
+    "leadFilterActive": "Active filter: quotes for selected lead.",
+    "clearLeadFilter": "Show all quotes",
+    "notLinkedFormation": "Not linked",
+    "viewAria": "View quote details",
+    "viewOverviewTitle": "View details (overview)",
+    "editAria": "Edit quote",
+    "editDraftTitle": "Edit draft (Edit tab)",
+    "deleteDraftTitle": "Delete this draft?",
+    "deleteDraftDescription": "Quote {{reference}} will be permanently deleted. Sent or accepted quotes cannot be deleted from this list.",
+    "deleteDraftTooltip": "Delete this draft",
+    "deleteDraftAria": "Delete draft",
+    "deletedSuccess": "Quote deleted.",
+    "empty": "No quotes found.",
+    "pageInfo": "Page {{page}} / {{total}} — {{count}} quotes",
+    "replySaved": "Reply saved. It will appear on the client brochure after refresh.",
+    "messageRequired": "Enter a message.",
+    "emailSent": "Email sent to contact. Quote status: Sent.",
+    "linkGenerateFailed": "Unable to generate link.",
+    "unexpectedResponse": "Unexpected server response.",
+    "updatedSuccess": "Quote updated.",
+    "clientLinkCopied": "Client link (brochure + tracking) copied — valid for 60 days.",
+    "linkGeneratedTitle": "Link generated",
+    "status": {
+      "DRAFT": "Draft",
+      "SENT": "Sent",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected",
+      "EXPIRED": "Expired"
+    }
+  },
+  "facture": {
+    "listTitle": "Invoice list",
+    "listDescription": "Accepted proposals — billing-ready files.",
+    "searchPlaceholder": "Search (reference, title, contact…)",
+    "leadFilterActive": "Active filter: accepted proposals for this lead.",
+    "clearLeadFilter": "Show all billable lines",
+    "openSheetTitle": "Open billing details",
+    "openSheetAria": "Open details",
+    "empty": "No accepted proposals to bill yet. Accept a quote in the Quotes module for it to appear here.",
+    "pageInfo": "Page {{page}} / {{total}} — {{count}} file(s)",
+    "updatedSuccess": "Record updated."
+  },
+  "financeReports": {
+    "exportButton": "Export monthly report",
+    "exportedSuccess": "Report exported"
+  },
+  "finance": {
+    "columns": {
+      "reference": "Reference",
+      "referenceProposal": "Proposal ref.",
+      "company": "Company",
+      "formation": "Training",
+      "amountTtc": "Amount incl. tax",
+      "status": "Status",
+      "updatedAt": "Updated",
+      "actions": "Actions"
+    },
+    "companyNotSet": "Company name not provided",
+    "notLinkedFormation": "Not linked"
+  },
+  "equipment": {
+    "deleteTitle": "Delete this equipment?",
+    "deleteDescription": "\"{{label}}\" will be permanently removed from inventory. This action cannot be undone.",
+    "deleteDescriptionGeneric": "This action cannot be undone.",
+    "deletedSuccess": "Equipment deleted",
+    "deleteFailed": "Unable to delete this equipment",
+    "deleteFailedShort": "Unable to delete"
+  },
+  "documents": {
+    "uploadSuccess": "Document uploaded successfully",
+    "uploadAdded": "Document added successfully",
+    "uploadFailed": "Failed to add document",
+    "attached": "Document attached",
+    "attachedToDossier": "Document attached to file",
+    "detached": "File detached from record",
+    "recordSaved": "Record saved"
+  },
+  "governance": {
+    "exportFailed": "Export failed",
+    "exportSuccess": "Export downloaded",
+    "restoreFailed": "Restore failed",
+    "restoreSuccess": "File restored",
+    "open": "Open",
+    "restore": "Restore"
+  },
+  "layout": {
+    "loading": "Loading…",
+    "documentation": "Documentation",
+    "toggleTheme": "Toggle theme",
+    "flagAlt": "{{name}} flag",
+    "soon": "Soon",
+    "search": {
+      "title": "Search the CRM",
+      "placeholder": "Page or module…",
+      "empty": "No page found.",
+      "pages": "Navigation"
+    }
+  },
+  "menuCard": {
+    "access": "Open",
+    "pages_zero": "0 pages",
+    "pages_one": "1 page",
+    "pages_other": "{{count}} pages",
+    "moreSections": "...and {{count}} more",
+    "modules_one": "1 module",
+    "modules_other": "{{count}} modules"
+  },
+  "userMenu": {
+    "active": "Active",
+    "publicProfile": "Public profile",
+    "profile": "Profile",
+    "lockScreen": "Lock screen",
+    "supportForum": "Support forum",
+    "signOut": "Sign out"
+  },
+  "welcome": {
+    "firstLogin": "First login",
+    "todayAt": "Today at {{time}}",
+    "lastLogin": "Last login",
+    "getStarted": "Get started",
+    "plan": "{{plan}} plan",
+    "never": "Never",
+    "greeting": "Welcome",
+    "onPlatform": "to your platform",
+    "description": "Manage training, learners and your team from one centralized, intuitive dashboard."
+  },
+  "auth": {
+    "signInTitle": "CRM sign in",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "signIn": "Sign in",
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+    "secureAccess": "Secure dashboard access",
+    "brandedDescription": "FORM'SSI management platform — training, learners and teaching staff.",
+    "brandedSubtitle": "A robust authentication gateway for secure, efficient access to the FORM'SSI dashboard.",
+    "devAlert": "Dev environment: use the test accounts below.",
+    "devAccountsTitle": "Development accounts",
+    "devAccountsHint": "Click a profile to pre-fill the form.",
+    "emailPlaceholder": "Your email",
+    "passwordPlaceholder": "Your password",
+    "forgotPassword": "Forgot password?",
+    "hidePassword": "Hide password",
+    "showPassword": "Show password",
+    "signupDisabled": "Public signup is disabled.",
+    "validation": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordRequired": "Password is required.",
+      "passwordMin": "Password must be at least 6 characters long."
+    }
+  },
+  "workspace": {
+    "finance-budget": {
+      "title": "Budget",
+      "description": "Sales pipeline, approved budget and forecasts from quotes.",
+      "pageDescription": "Budget lines {{year}} — planned vs actual.",
+      "stats": {
+        "total": { "label": "Lines", "subtitle": "Fiscal year {{year}}" },
+        "planned": { "label": "Planned", "subtitle": "Total planned" },
+        "actual": { "label": "Actual", "subtitle": "Spent" },
+        "ecart": { "label": "Variance", "subtitle": "Planned − actual" },
+        "consumptionRate": { "label": "Consumption", "subtitle": "Actual / planned (%)" }
+      },
+      "columns": {
+        "libelle": "Label",
+        "categorie": "Category",
+        "prevu": "Planned",
+        "realise": "Actual",
+        "ecart": "Variance"
+      },
+      "footnote": "FinanceBudgetLine rows (current fiscal year).",
+      "fields": {
+        "label": "Label",
+        "category": "Category",
+        "periodYear": "Year",
+        "plannedAmount": "Planned amount (€)",
+        "actualAmount": "Actual amount (€)",
+        "notes": "Notes"
+      }
+    },
+    "finance-paiements": {
+      "title": "Payments",
+      "description": "Track collections and follow-ups on accepted or pending quotes.",
+      "pageDescription": "Track payments linked to quotes.",
+      "stats": {
+        "total": { "label": "Total tracked", "subtitle": "Records" },
+        "pending": { "label": "Pending", "subtitle": "To collect" },
+        "received": { "label": "Received", "subtitle": "Collected" },
+        "pendingAmount": { "label": "Amount due", "subtitle": "Pending total" },
+        "failed": { "label": "Failed", "subtitle": "Payment errors" }
+      },
+      "columns": {
+        "reference": "Reference",
+        "devis": "Quote",
+        "statut": "Status",
+        "montant": "Amount",
+        "maj": "Updated"
+      },
+      "footnote": "FinancePayment collections linked to quotes.",
+      "fields": {
+        "amount": "Amount (€)",
+        "devisId": "Quote ID (optional)",
+        "method": "Method (transfer, card…)",
+        "notes": "Notes"
+      },
+      "status": {
+        "PENDING": "Pending",
+        "RECEIVED": "Received",
+        "FAILED": "Failed",
+        "REFUNDED": "Refunded"
+      },
+      "actions": {
+        "markReceived": "Mark as received",
+        "markReceivedFailed": "Could not validate payment"
+      }
+    },
+    "finance-rapports": {
+      "title": "Financial reports",
+      "description": "Monthly consolidation of quotes, leads and accepted revenue.",
+      "footnote": "Monthly consolidated report (quotes, leads, accepted revenue).",
+      "stats": {
+        "devis12m": { "label": "Quotes 12 mo", "subtitle": "Sales volume" },
+        "accepted": { "label": "Accepted", "subtitle": "Conversion rate" },
+        "leads12m": { "label": "Leads 12 mo", "subtitle": "Commercial intake" },
+        "conversionRate": { "label": "Conversion rate", "subtitle": "Quote → accepted" },
+        "revenue": { "label": "Accepted revenue", "subtitle": "Rolling 12 months" }
+      },
+      "columns": {
+        "periode": "Period",
+        "devis": "Quotes",
+        "acceptes": "Accepted",
+        "leads": "Leads",
+        "ca": "Accepted revenue"
+      }
+    },
+    "comm-cms-pages": {
+      "title": "Landing pages",
+      "description": "Public site sections and blocks (LandingConfig).",
+      "footnote": "Sections from LandingConfig (public site).",
+      "stats": {
+        "sections": { "label": "Landing sections", "subtitle": "Configured blocks" },
+        "publication": { "label": "Publication", "subtitle": "LandingConfig" },
+        "lastUpdate": { "label": "Last update", "subtitle": "Landing CMS" },
+        "crmPages": { "label": "CRM pages", "subtitle": "Single showcase site" },
+        "blockTypes": { "label": "Block types", "subtitle": "Distinct sections" }
+      },
+      "columns": {
+        "ordre": "#",
+        "type": "Type",
+        "titre": "Title / label",
+        "actif": "Active"
+      }
+    },
+    "comm-cms-contenus": {
+      "title": "Content",
+      "description": "Training catalog and landing publication status.",
+      "footnote": "Training content and landing catalog status.",
+      "stats": {
+        "formations": { "label": "Trainings", "subtitle": "CRM catalog" },
+        "active": { "label": "Active", "subtitle": "Publishable" },
+        "catalogOffers": { "label": "Catalog offers", "subtitle": "Visible on landing" },
+        "drafts": { "label": "Drafts", "subtitle": "Offline" },
+        "noOffer": { "label": "No offer", "subtitle": "Not on landing catalog" }
+      },
+      "columns": {
+        "formation": "Training",
+        "slug": "Slug",
+        "statut": "Status",
+        "catalogue": "Catalog",
+        "maj": "Updated"
+      }
+    },
+    "comm-campagnes": {
+      "title": "Campaigns",
+      "description": "Lead source performance (landing, quotes, pre-registration).",
+      "pageDescription": "UTM tags, channels and acquisition campaign statuses.",
+      "stats": {
+        "total": { "label": "Total", "subtitle": "Campaigns" },
+        "active": { "label": "Active", "subtitle": "Running" },
+        "paused": { "label": "Paused", "subtitle": "Suspended" },
+        "channels": { "label": "Channels", "subtitle": "Distinct" },
+        "ended": { "label": "Ended", "subtitle": "Closed campaigns" }
+      },
+      "columns": {
+        "nom": "Name",
+        "canal": "Channel",
+        "statut": "Status",
+        "utm": "UTM",
+        "maj": "Updated"
+      },
+      "footnote": "Marketing campaigns (MarketingCampaign).",
+      "fields": {
+        "name": "Name",
+        "channel": "Channel",
+        "status": "Status",
+        "utmSource": "UTM source",
+        "utmMedium": "UTM medium",
+        "utmCampaign": "UTM campaign",
+        "notes": "Notes"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "ENDED": "Ended"
+      },
+      "actions": {
+        "activate": "Activate",
+        "pause": "Pause",
+        "activateFailed": "Could not activate",
+        "pauseFailed": "Could not pause"
+      }
+    },
+    "comm-seo-meta": {
+      "title": "Meta & indexing",
+      "description": "Organization metadata and landing publication.",
+      "footnote": "Meta & indexing — SystemSetting + LandingConfig values.",
+      "stats": {
+        "metaEntries": { "label": "Meta entries", "subtitle": "Tracked fields" },
+        "org": { "label": "Organization", "subtitle": "SystemSetting" },
+        "landing": { "label": "Landing", "subtitle": "Publication" },
+        "indexing": { "label": "Indexing", "subtitle": "Sitemap to wire" },
+        "crmSite": { "label": "CRM site", "subtitle": "SystemSetting" }
+      },
+      "columns": {
+        "cle": "Meta",
+        "valeur": "Value",
+        "zone": "Zone"
+      }
+    },
+    "comm-seo-redirections": {
+      "title": "Redirects",
+      "description": "Redirect rules and one-page site anchors.",
+      "pageDescription": "301/302 rules and landing site anchors.",
+      "stats": {
+        "total": { "label": "Total", "subtitle": "Rules" },
+        "active": { "label": "Active", "subtitle": "In production" },
+        "inactive": { "label": "Inactive", "subtitle": "Disabled" },
+        "perm301": { "label": "301", "subtitle": "Permanent" },
+        "perm302": { "label": "302", "subtitle": "Temporary" }
+      },
+      "columns": {
+        "source": "Source",
+        "cible": "Target",
+        "type": "Type",
+        "statut": "Status"
+      },
+      "footnote": "SEO redirects (SeoRedirect).",
+      "fields": {
+        "sourcePath": "Source path (/)",
+        "targetPath": "Target",
+        "redirectType": "Type",
+        "notes": "Notes"
+      },
+      "redirectType": {
+        "301": "301 Permanent",
+        "302": "302 Temporary"
+      },
+      "actions": {
+        "enable": "Enable",
+        "disable": "Disable",
+        "updateFailed": "Update failed"
+      }
+    },
+    "support-tickets": {
+      "title": "Tickets",
+      "description": "User support queue (CRM tickets).",
+      "footnote": "Support queue (SupportTicket).",
+      "stats": {
+        "total": { "label": "Total", "subtitle": "Tickets" },
+        "open": { "label": "Open", "subtitle": "To handle" },
+        "inProgress": { "label": "In progress", "subtitle": "Assigned" },
+        "resolved": { "label": "Resolved", "subtitle": "Closed" },
+        "urgent": { "label": "High priority", "subtitle": "Urgent / high" }
+      },
+      "columns": {
+        "reference": "Ref.",
+        "sujet": "Subject",
+        "demandeur": "Requester",
+        "statut": "Status",
+        "maj": "Updated"
+      }
+    },
+    "support-base-aide": {
+      "title": "Training catalog (help)",
+      "description": "Active catalog sheets used for self-service help — full docs in Mintlify.",
+      "footnote": "Sheets from the active training catalog. FAQ and analytics: see Mintlify documentation tab.",
+      "stats": {
+        "articles": { "label": "Catalog sheets", "subtitle": "Active trainings" },
+        "faq": { "label": "Mintlify guide", "subtitle": "Procedures & support" },
+        "searches": { "label": "Searches", "subtitle": "Analytics pending" },
+        "satisfaction": { "label": "Satisfaction", "subtitle": "Surveys pending" },
+        "coverage": { "label": "Coverage", "subtitle": "Active sheets" }
+      },
+      "columns": {
+        "article": "Article",
+        "slug": "Slug",
+        "extrait": "Excerpt",
+        "categorie": "Category"
+      }
+    },
+    "support-incidents": {
+      "title": "Incidents",
+      "description": "Out-of-service equipment and system errors to resolve.",
+      "footnote": "Out-of-service equipment and logged system errors.",
+      "stats": {
+        "equipmentDown": { "label": "Equipment down", "subtitle": "Assets" },
+        "systemErrors": { "label": "System errors", "subtitle": "Logs" },
+        "critical": { "label": "Critical", "subtitle": "To resolve" },
+        "resolved7d": { "label": "Resolved 7d", "subtitle": "Quality workflow" },
+        "totalReports": { "label": "Total reports", "subtitle": "Equipment + system" }
+      },
+      "columns": {
+        "type": "Type",
+        "sujet": "Subject",
+        "reference": "Ref.",
+        "lieu": "Location / detail",
+        "date": "Date"
+      }
+    },
+    "gouvernance-storage": {
+      "title": "Storage & compliance",
+      "description": "Active file inventory and stored volume.",
+      "pageDescription": "Active file inventory (S3 / FileAsset).",
+      "stats": {
+        "total": { "label": "Active files", "subtitle": "FileAsset" },
+        "sizeMb": { "label": "Volume (MB)", "subtitle": "S3 storage" },
+        "modules": { "label": "Modules", "subtitle": "Current page" },
+        "privateDefault": { "label": "Private", "subtitle": "Default visibility" },
+        "avgSizeKb": { "label": "Average size", "subtitle": "KB / file" }
+      },
+      "columns": {
+        "fichier": "File",
+        "module": "Module",
+        "type": "Entity",
+        "mime": "MIME",
+        "taille": "Size",
+        "date": "Uploaded"
+      },
+      "footnote": "Active file inventory (@repo/storage / FileAsset)."
+    },
+    "gouvernance-demandes": {
+      "title": "Document requests",
+      "description": "Candidate files awaiting documents or validation.",
+      "pageDescription": "Candidate files awaiting documents or review.",
+      "stats": {
+        "total": { "label": "Open files", "subtitle": "In progress" },
+        "missing": { "label": "Missing documents", "subtitle": "To follow up" },
+        "pending": { "label": "Under review", "subtitle": "Processing" },
+        "draft": { "label": "Drafts", "subtitle": "Landing / CRM" },
+        "submitted": { "label": "Submitted", "subtitle": "Awaiting review" }
+      },
+      "columns": {
+        "candidat": "Candidate",
+        "email": "Email",
+        "formation": "Training",
+        "statut": "Status",
+        "maj": "Updated"
+      },
+      "footnote": "Document requests / candidate files in progress."
+    },
+    "gouvernance-corbeille": {
+      "title": "Trash & archiving",
+      "description": "Deleted files and accounts in trash.",
+      "pageDescription": "Soft-deleted files — restore available.",
+      "stats": {
+        "total": { "label": "Deleted files", "subtitle": "Trash" },
+        "trashedUsers": { "label": "Trashed accounts", "subtitle": "Users" },
+        "volumeTotal": { "label": "Total volume", "subtitle": "Archived items" },
+        "retentionDays": { "label": "Retention", "subtitle": "Days (policy)" },
+        "restoreCount": { "label": "Restores", "subtitle": "Admin action" }
+      },
+      "columns": {
+        "fichier": "File",
+        "module": "Module",
+        "supprime": "Deleted on"
+      },
+      "footnote": "Document trash (soft-deleted FileAsset)."
+    },
+    "gouvernance-audit": {
+      "title": "Document audit",
+      "description": "Platform access and action log.",
+      "pageDescription": "SystemLog — sign-ins and system events.",
+      "stats": {
+        "total": { "label": "Events", "subtitle": "Total" },
+        "recent": { "label": "7 days", "subtitle": "Recent activity" },
+        "loginCount": { "label": "Sign-ins", "subtitle": "LOGIN" },
+        "today": { "label": "Today", "subtitle": "Today's events" },
+        "ipCount": { "label": "IP addresses", "subtitle": "Current page" }
+      },
+      "columns": {
+        "evenement": "Event",
+        "utilisateur": "User",
+        "ip": "IP",
+        "detail": "Detail",
+        "date": "Date"
+      },
+      "footnote": "Audit log from SystemLog (access, CRM actions)."
+    },
+    "pilotage-alertes": {
+      "title": "Alerts",
+      "description": "Operational signals for applications, finance, equipment and sessions.",
+      "footnote": "Real-time summary from existing CRM modules.",
+      "stats": {
+        "activeAlerts": { "label": "Active alerts", "subtitle": "Operational alerts" },
+        "candidatures": { "label": "Applications", "subtitle": "Processing" },
+        "expiredQuotes": { "label": "Expired quotes", "subtitle": "Sales follow-up" },
+        "sessions14d": { "label": "Sessions 14d", "subtitle": "Training load" },
+        "brokenEquip": { "label": "Broken equipment", "subtitle": "Equipment" }
+      },
+      "columns": {
+        "alerte": "Alert",
+        "niveau": "Level",
+        "valeur": "Value",
+        "action": "Module"
+      }
+    },
+    "pilotage-indicateurs": {
+      "title": "Indicators",
+      "description": "Training KPIs — sessions, exams, participants and completed paths.",
+      "footnote": "Consolidated performance (sessions, exams, candidate paths).",
+      "stats": {
+        "kpiCount": { "label": "Training KPIs", "subtitle": "Tracked indicators" },
+        "examSuccess": { "label": "Exam success", "subtitle": "Actual" },
+        "participants": { "label": "Participants", "subtitle": "Sessions" },
+        "completed": { "label": "Completed", "subtitle": "Full path" },
+        "sessions": { "label": "Sessions", "subtitle": "Scheduled" }
+      },
+      "columns": {
+        "indicateur": "Indicator",
+        "valeur": "Actual",
+        "cible": "Target",
+        "ecart": "Gap"
+      }
+    },
+    "pilotage-rapports": {
+      "title": "Reports & exports",
+      "description": "Consolidated operational summary and CSV exports.",
+      "footnote": "Real-time summary from existing CRM modules.",
+      "stats": {
+        "activeAlerts": { "label": "Active alerts", "subtitle": "Management reports" },
+        "candidatures": { "label": "Applications", "subtitle": "Processing" },
+        "expiredQuotes": { "label": "Expired quotes", "subtitle": "Sales follow-up" },
+        "sessions14d": { "label": "Sessions 14d", "subtitle": "Training load" },
+        "brokenEquip": { "label": "Broken equipment", "subtitle": "Equipment" }
+      },
+      "columns": {
+        "alerte": "Alert",
+        "niveau": "Level",
+        "valeur": "Value",
+        "action": "Module"
+      }
+    },
+    "pilotage-risques": {
+      "title": "Risks",
+      "description": "Exposure register, CNAPS compliance, exams and maintenance.",
+      "footnote": "Risk register fed by applications, exams and maintenance.",
+      "stats": {
+        "exposures": { "label": "Exposures", "subtitle": "Tracked risks" },
+        "cnapsPending": { "label": "CNAPS pending", "subtitle": "Compliance" },
+        "examAbsences": { "label": "Exam absences", "subtitle": "Training" },
+        "maintenance7d": { "label": "Maintenance 7d", "subtitle": "Equipment" },
+        "rejected": { "label": "Rejected files", "subtitle": "Applications" }
+      },
+      "columns": {
+        "risque": "Risk",
+        "gravite": "Severity",
+        "exposition": "Exposure",
+        "mesure": "Measure"
+      }
+    }
+  },
+  "pilotage": {
+    "insightsTitle": "Operational summary"
+  },
+  "sections": {
+    "gestionRessources": {
+      "welcomeDescription": "Centralize company, HR and equipment — internal structure, staff and teaching resources in one place.",
+      "menuCardsTitle": "Quick access — Administrative management",
+      "menuCardsSubtitle": "3 modules: 10 sidebar pages (company 3, HR 4, equipment 3)",
+      "securityHighlightsTitle": "Key metrics — Administrative management",
+      "cards": {
+        "compagnie": "Company profile, internal structure and administrative documents.",
+        "rh": "Staff, trainers, absences and compliance from the sidebar menu.",
+        "equipements": "Inventory, session assignments and workshop maintenance."
+      }
+    },
+    "gestionAcademique": {
+      "welcomeDescription": "Training, sessions, applications, scheduling, exams and certifications — manage student life from one hub.",
+      "menuCardsTitle": "Student life — quick access to workspaces",
+      "menuCardsSubtitle": "Shortcuts to the six module workspaces (same as the sidebar menu)",
+      "securityHighlightsTitle": "Key metrics — Academic management",
+      "cards": {
+        "formations": "Catalog and training pathway management.",
+        "sessions": "Ongoing sessions, calendar and teaching organization.",
+        "etudiants": "Headcount, files and learner follow-up.",
+        "planning": "Schedule view, progress tracking and attendance.",
+        "examens": "Exam sessions, summons and results.",
+        "certifications": "Issue and verify diplomas and certificates."
+      }
+    },
+    "communicationContenu": {
+      "welcomeDescription": "Landing pages, content, marketing campaigns and SEO to manage your online presence.",
+      "menuCardsTitle": "Quick access — Communication & content",
+      "menuCardsSubtitle": "{{modules}} modules and {{pages}} main pages per CRM menu",
+      "securityHighlightsTitle": "Key metrics — Communication & content",
+      "cards": {
+        "cms": "Landing pages and content management.",
+        "marketing": "Lead forms and campaign management.",
+        "seo": "SEO, indexing and redirect management."
+      }
+    },
+    "supportQualite": {
+      "welcomeDescription": "Support tickets, self-service help base and quality / incident tracking.",
+      "menuCardsTitle": "Quick access — Support & quality",
+      "menuCardsSubtitle": "{{modules}} modules and {{pages}} main pages per CRM menu",
+      "securityHighlightsTitle": "Key metrics — Support & quality",
+      "cards": {
+        "support": "Tickets, FAQ and user assistance.",
+        "qualite": "Quality tracking and incident management."
+      }
+    },
+    "securiteConfiguration": {
+      "welcomeDescription": "User access, system settings and data governance — security and compliance.",
+      "menuCardsTitle": "Quick access — Security & configuration",
+      "menuCardsSubtitle": "{{modules}} modules and {{pages}} main pages per CRM menu",
+      "securityHighlightsTitle": "Key metrics — Security & configuration",
+      "cards": {
+        "acces": "CRM users, roles and permissions.",
+        "parametres": "General platform and notification settings.",
+        "gouvernance": "Storage, document requests, trash and audit."
+      }
+    },
+    "pilotageSupervision": {
+      "welcomeDescription": "Alerts, metrics, reports and risk register to supervise the organization.",
+      "menuCardsTitle": "Quick access — Operations & supervision",
+      "menuCardsSubtitle": "1 module and {{pages}} main pages per CRM menu",
+      "securityHighlightsTitle": "Key metrics — Operations & supervision",
+      "cards": {
+        "pilotage": "Dashboards, operational alerts, teaching KPIs, CSV reports and risk register."
+      }
+    },
+    "administrationFacturation": {
+      "welcomeDescription": "Budget, quotes, invoices, payments and consolidated financial reports.",
+      "menuCardsTitle": "Quick access — Administration & billing",
+      "menuCardsSubtitle": "1 module and {{pages}} main pages per CRM menu",
+      "securityHighlightsTitle": "Key metrics — Administration & billing",
+      "cards": {
+        "finance": "Finance module for budget, quotes, invoices, payments and reports."
+      }
+    }
+  },
+  "help": {
+    "questionsTitle": "Questions?",
+    "questionsDescription": "CRM procedures, training catalog and support: see the Mintlify product guide.",
+    "questionsCta": "Open documentation",
+    "supportTitle": "Contact support",
+    "supportDescription": "Need help? Contact our support team for fast, personalized assistance.",
+    "supportCta": "Contact support",
+    "imageAlt": "Illustration"
+  },
+  "securityHighlights": {
+    "title": "Key metrics",
+    "overallPerformance": "Overall performance",
+    "loading": "Loading…",
+    "notAvailable": "N/A",
+    "categories": {
+      "operations": "Operations",
+      "personnel": "Staff",
+      "clients": "Clients"
+    }
+  },
+  "securityStats": {
+    "activeCampus": "Active campuses",
+    "activeCampusDetail": "Sites under supervision",
+    "activeTrainers": "Active trainers",
+    "activeTrainersDetail": "Teaching resources",
+    "pedagogicalAlerts": "Teaching alerts",
+    "pedagogicalAlertsDetail": "To handle",
+    "activeLearners": "Active learners",
+    "activeLearnersDetail": "Active accounts",
+    "todayCourses": "Classes today",
+    "todayCoursesDetail": "Scheduled sessions",
+    "loadError": "Failed to load statistics"
+  },
+  "confirmDismiss": {
+    "title": "Discard changes?",
+    "description": "You have unsaved changes. Are you sure you want to close this dialog?",
+    "cancel": "Cancel",
+    "confirm": "Discard changes"
+  },
+  "footer": {
+    "copyright": "{{year}} © LMS",
+    "documentation": "Documentation"
+  },
+  "sectionLanding": {
+    "loadingIndicators": "Loading metrics…",
+    "loadError": "Failed to load metrics"
+  },
+  "accueil": {
+    "title": "Home",
+    "description": "Overview of your training organization",
+    "menuCardsTitle": "Quick access to sections",
+    "menuCardsSubtitle": "Each card opens a section; bullets list that section's modules (pages live inside each module).",
+    "noModulesTitle": "No accessible modules",
+    "noModulesDescription": "Contact your administrator for the required permissions.",
+    "cards": {
+      "gestion-ressources": "Organization section: structure, human resources and assets before academic operations.",
+      "gestion-academique": "Academic section: modules for the learner journey (including student life).",
+      "administration-facturation": "Finance and admin section: budget, sales and accounting follow-up.",
+      "communication-contenu": "Communication section: website, campaigns and visibility.",
+      "support-qualite": "User support and quality tracking section.",
+      "securite-configuration": "CRM security, settings and document compliance section.",
+      "pilotage-supervision": "Operations section: alerts, metrics, CSV reports and risk register."
+    }
+  },
+  "datagrid": {
+    "rowsPerPage": "Rows per page",
+    "paginationInfo": "{{from}} - {{to}} of {{count}}",
+    "prevPage": "Go to previous page",
+    "nextPage": "Go to next page",
+    "viewAll": "View all",
+    "listView": "List",
+    "gridView": "Cards",
+    "sync": "Sync",
+    "syncSuccess": "Data synced successfully",
+    "changeStatus": "Change status",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "selectedCount_one": "{{count}} selected",
+    "selectedCount_other": "{{count}} selected",
+    "columns": {
+      "staffMember": "Staff member",
+      "trainer": "Trainer",
+      "qualification": "Qualification",
+      "category": "Category",
+      "categoryModel": "Category / Model",
+      "status": "Status",
+      "fileStatus": "File status",
+      "lastLogin": "Last login",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "date": "Date",
+      "reference": "Reference",
+      "actions": "Actions"
+    },
+    "categories": {
+      "INTERNAL": "Internal",
+      "CLIENT": "Client",
+      "SUBCONTRACTOR": "Subcontractor"
+    },
+    "search": {
+      "generic": "Search…",
+      "staffMember": "Search staff member…",
+      "trainer": "Search trainer…",
+      "candidate": "Search candidate…",
+      "absence": "Search absence…",
+      "equipment": "Search…",
+      "byNameOrEmail": "Search by name or email…",
+      "lead": "Search company, name, email, phone…",
+      "role": "Search role",
+      "permission": "Search permission",
+      "log": "Search logs…",
+      "quote": "Search quote…",
+      "session": "Search session or training…",
+      "catalog": "Search catalog…",
+      "partner": "Search partner…",
+      "team": "Search team…"
+    }
+  },
+  "account": {
+    "notifications": {
+      "page": {
+        "tableTitle": "Alert history",
+        "search": "Search by title or message…",
+        "filterTabs": "Filter notifications",
+        "categoryAll": "All categories",
+        "open": "Open linked resource",
+        "markRead": "Read",
+        "emptyArchived": "No archived notifications.",
+        "tabs": {
+          "all": "Active",
+          "unread": "Unread",
+          "archived": "Archived"
+        },
+        "columns": {
+          "status": "Status",
+          "category": "Category",
+          "title": "Notification",
+          "date": "Received",
+          "actions": "Actions"
+        },
+        "status": {
+          "unread": "Unread",
+          "read": "Read",
+          "archived": "Archived"
+        },
+        "kpi": {
+          "active": "Active",
+          "activeHint": "Not archived in your inbox",
+          "unread": "Unread",
+          "unreadHint": "Needs your attention",
+          "read": "Read",
+          "readHint": "Already opened",
+          "archived": "Archived",
+          "archivedHint": "Removed from active list"
+        },
+        "landingAlertsTitle": "Alerts & events",
+        "landingAlertsSubtitle": "School life · catalog, sessions, compliance",
+        "landingAlertsEmpty": "No recent events"
+      }
+    }
+  },
+  "topbar": {
+    "notifications": {
+      "title": "Notifications",
+      "tabAll": "All",
+      "tabUnread": "Unread",
+      "loading": "Loading…",
+      "loadError": "Unable to load notifications.",
+      "empty": "No notifications.",
+      "emptyUnread": "No unread notifications.",
+      "archiveAll": "Archive all",
+      "markAllRead": "Mark all as read",
+      "viewAll": "View all",
+      "archivedSuccess": "Notifications archived.",
+      "readAllSuccess": "All notifications marked as read.",
+      "categories": {
+        "SYSTEM": "System",
+        "TICKET": "Support",
+        "FINANCE": "Finance",
+        "ACADEMIC": "Training",
+        "TEAM": "Team"
+      }
+    },
+    "chat": {
+      "title": "Chat",
+      "loading": "Loading…",
+      "emptyConversations": "No conversations.",
+      "emptyConversationsHint": "Run the seed for the team demo.",
+      "conversationCount_one": "{{count}} conversation",
+      "conversationCount_other": "{{count}} conversations",
+      "noMessages": "No messages",
+      "startConversation": "Start the conversation.",
+      "youPrefix": "You: ",
+      "placeholder": "Write a message…",
+      "send": "Send",
+      "me": "Me",
+      "defaultConversation": "Conversation",
+      "newConversation": "New conversation",
+      "newTitle": "Group title",
+      "newTitlePlaceholder": "e.g. Pedagogy team",
+      "newParticipant": "Participant",
+      "newParticipantPlaceholder": "Choose a user",
+      "create": "Create",
+      "createSuccess": "Conversation created.",
+      "createError": "Could not create conversation.",
+      "createValidation": "Title and participant are required."
+    }
+  }
+}

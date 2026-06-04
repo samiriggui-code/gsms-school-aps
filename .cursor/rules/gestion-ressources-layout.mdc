@@ -1,0 +1,160 @@
+---
+description: Gabarits page section / module / sous-module — Gestion administrative (CRM)
+globs: apps/lms-crm/app/(protected)/gestion-ressources/**/*
+alwaysApply: false
+---
+
+# Gestion administrative — mise en page (`/gestion-ressources`)
+
+App : **lms-crm** (port **3002**). Menu : `apps/lms-crm/config/menu.config.tsx`.
+
+Hiérarchie URL :
+- **Section** : `/gestion-ressources`
+- **Module** : `/gestion-ressources/{compagnie|rh|equipements}`
+- **Sous-module** : ex. `/gestion-ressources/rh/collaborateurs`, `/compagnie/profil`, `/equipements/inventaire`
+
+Ne pas inventer de layout : copier le niveau le plus proche (références ci-dessous).
+
+---
+
+## Composants communs (obligatoires)
+
+| Rôle | Import |
+|------|--------|
+| Largeur / padding | `@/components/common/container` → `Container` |
+| Titre page | `@/components/common/toolbar` → `Toolbar`, `ToolbarHeading`, `ToolbarTitle`, `ToolbarDescription` |
+| Actions header | `ToolbarActions` + `Button` |
+| KPI section (sous-pages) | `@/components/common/stat-card-metric-layout` → `MODULE_LANDING_STATS_GRID_ROW`, `SECTION_KPI_CARD_ACCENTS`, `StatCardMetricLayout`, `MetricStatCardIconSlot` |
+| Cartes modules (section) | `@/components/common/menu-card` → `MenuCard`, `menuCardPagesBadge` |
+| DataGrid listes | `@/components/ui/data-grid` + `DataGridTable`, `DataGridPagination`, `CardTable` |
+| Footer aide | `UserManagementSupportSection` depuis `securite-configuration/components/datagrid-standards` |
+| Sheets détail / ajout | classes `gestion-ressources/constants/sheet-shell-classes.ts` (réexport vie scolaire) |
+
+Espacements standard :
+- Entre blocs dans `Container` : `className="space-y-5 lg:space-y-7.5"`
+- Grilles module dashboard : `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch`
+- Colonnes 1/3 + 2/3 : `lg:col-span-1` + `lg:col-span-2`
+
+---
+
+## Niveau 1 — Page section (`page.tsx` à la racine)
+
+Référence : `gestion-ressources/page.tsx`
+
+Structure :
+1. `Container` + `Toolbar` (titre section + description)
+2. `Container` avec `space-y-5 lg:space-y-7.5 pb-8`
+3. Bandeau stats dynamiques : `RessourcesStatsDynamic`
+4. Grille 2/3 + 1/3 : `WelcomeCallout` + `SecurityHighlightsB`
+5. `SectionBMenuCards` (3 `MenuCard` → compagnie, rh, equipements)
+6. `UserManagementSupportSection`
+
+Pas de `ToolbarActions` sur la section. Chargement : état `loading` + `Loader2` dans un conteneur `container-fluid` si fetch initial.
+
+Exporter les blocs section depuis `gestion-ressources/components/index.ts` ; ne pas dupliquer `MenuCard` inline.
+
+---
+
+## Niveau 2 — Page module (hub dashboard)
+
+Références : `compagnie/page.tsx`, `rh/page.tsx`, `equipements/page.tsx`
+
+Structure :
+1. `Container` + `Toolbar` (sans actions sauf besoin métier rare)
+2. `Container className="space-y-5 lg:space-y-7.5 pb-8"`
+3. **3 lignes** identiques, grille 3 cols :
+   - L1 : `{Module}Stats` (col-1) + `{Module}WelcomeCallout` (col-2)
+   - L2 : `ComplianceAlerts` ou `{Module}Alerts` (col-1) + `{Module}OverviewTable` / `OperationsTable` (col-2)
+   - L3 : `{Module}DistributionChart` (col-1) + `{Module}EvolutionChart` (col-2)
+4. Footer : `UserManagementSupportSection` dans `div className="mt-5 lg:mt-7.5"` (compagnie) ou omis (rh/equipements — rester cohérent avec le module voisin)
+
+Composants dans `{module}/components/` avec barrel `index.ts`. Préfixer : `CompagnieStats`, `RHStats`, `EquipmentStats`, etc.
+
+Stats module landing : souvent `ModuleLandingStatGradientCard` + API `/api/sections/gestion-ressources/.../stats`.
+
+---
+
+## Niveau 3 — Sous-module (liste CRUD ou formulaire)
+
+### Type A — Liste + DataGrid (pattern principal)
+
+Références : `rh/collaborateurs/page.tsx`, `equipements/inventaire/page.tsx`
+
+```tsx
+<>
+  <Container>
+    <Toolbar>
+      <ToolbarHeading>
+        <ToolbarTitle>...</ToolbarTitle>
+        <ToolbarDescription>...</ToolbarDescription>
+      </ToolbarHeading>
+      <ToolbarActions>
+        <Button variant="outline"><Download /> Exporter</Button>
+        <Button onClick={openAdd}>...</Button>
+      </ToolbarActions>
+    </Toolbar>
+  </Container>
+
+  <Container className="space-y-5 lg:space-y-7.5">
+    <{Entity}Stats variant="row" />   {/* MODULE_LANDING_STATS_GRID_ROW */}
+    <{Entity}List ... />
+  </Container>
+
+  <div className="mt-5 lg:mt-7.5"><UserManagementSupportSection /></div>
+  <{Entity}AddSheet open={...} />
+</>
+```
+
+- `page.tsx` : `'use client'`, état sheets (`useState`), **pas** de logique table dans la page
+- `{entity}-list.tsx` : TanStack Table + `useQuery` + `apiFetch` + pagination manuelle
+- `{entity}-stats.tsx` : `variant="row"` + `MODULE_LANDING_STATS_GRID_ROW` sur sous-pages
+- `{entity}-add-sheet.tsx` / `{entity}-details-sheet.tsx` : `Sheet` + `sheet-shell-classes`
+- `constants/status.ts` : badges statut (`getXxxStatusProps`)
+
+Liste : header `Card` avec titre onglet + recherche ; corps `CardTable` + `DataGrid` ; onglets internes via `Tabs` si plusieurs vues (ex. inventaire).
+
+### Type B — Page formulaire / fiche unique
+
+Référence : `compagnie/profil/page.tsx`
+
+Même `Toolbar` + `ToolbarActions` (ex. Modifier / Aperçu). Stats `ProfilStats` puis contenu principal (`ProfilSettings` ou overview). Pas de DataGrid sauf si liste secondaire.
+
+---
+
+## Arborescence fichiers (nouvelle sous-page)
+
+```
+gestion-ressources/{module}/{sous-module}/
+  page.tsx
+  components/
+    {entity}-list.tsx
+    {entity}-stats.tsx
+    {entity}-add-sheet.tsx
+    {entity}-details-sheet.tsx
+  forms/{entity}-add-schema.ts
+  constants/status.ts
+  hooks/          # si requêtes réutilisées
+```
+
+API : `apps/lms-crm/app/api/sections/gestion-ressources/{module}/{sous-module}/`
+
+---
+
+## Interdits
+
+- Nouveau layout « one-off » (padding, grilles, toolbar maison) sans alignement sur les 3 niveaux
+- KPI empilés verticalement hors `StatCardMetricLayout`
+- `ModuleMenuCards` local (Card+Link) sur les hubs — utiliser le pattern **3 lignes** module ou `MenuCard` section
+- Sheet sans `VIE_SCOLAIRE_SHEET_*` / `sheet-shell-classes`
+- Oublier `UserManagementSupportSection` sur les sous-pages listes (sauf décision explicite)
+- Dupliquer `fetch('/api/dashboard/stats')` sur chaque sous-page : stats dédiées `/api/sections/gestion-ressources/...`
+
+---
+
+## Checklist avant PR
+
+- [ ] URL déclarée dans `menu.config.tsx`
+- [ ] `ToolbarTitle` / `ToolbarDescription` en français, cohérents avec le menu
+- [ ] Niveau correct (section / module / sous-module)
+- [ ] Composants existants réutilisés (`Container`, `DataGrid`, stats layout)
+- [ ] Sheet + invalidation `queryKey` alignés sur le module voisin

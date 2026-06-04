@@ -1,0 +1,39 @@
+---
+title: Préinscription sur le landing
+description: Formulaire public et création automatique en base
+---
+
+# Préinscription landing
+
+## Côté candidat
+
+1. Ouvrir le site FORM'SSI (port 3000).
+2. Lancer la préinscription (hero, tarifs, CTA).
+3. Choisir **formation** et **session** si proposées.
+4. Remplir identité, coordonnées, motivation.
+5. Valider.
+
+## Ce qui est créé en base (automatique)
+
+| Enregistrement | Rôle |
+|----------------|------|
+| `User` | Compte rôle **candidat** (e-mail unique) |
+| `Lead` | Entrée commerciale (statut **NEW**) |
+| `Candidature` | Dossier instruction (statut **DRAFT**, lié au lead) |
+
+La candidature reprend la formation et la session choisies sur le formulaire.
+
+## Vérification CRM
+
+**Communication & contenu → Marketing → Formulaires leads**  
+**Gestion académique → Vie scolaire → Candidature**
+
+Même e-mail = même personne. Ne pas recréer un dossier manuellement.
+
+## Erreurs fréquentes
+
+| Message | Action |
+|---------|--------|
+| E-mail déjà utilisé (autre profil) | Vérifier si la personne est collaborateur |
+| Session introuvable | Vérifier le [catalogue sessions](/landing/catalogue-sessions) |
+| Préinscription dupliquée | Même e-mail + même session déjà en base |

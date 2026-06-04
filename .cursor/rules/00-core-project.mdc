@@ -1,0 +1,17 @@
+---
+description: Stack, archi single-tenant et conventions monorepo LMS
+alwaysApply: true
+---
+
+# Projet LMS — règles globales
+
+- Next.js App Router, TypeScript, Prisma, PostgreSQL, Tailwind
+- Server Components par défaut ; API routes (backend partagé) ; Server Actions (flux UI)
+- NextAuth uniquement (jamais Clerk)
+- Single-tenant : une école, DB `lms_app` ; pas de `tenantId` / GSMS
+- Signup désactivé sur le CRM ; landing = entrée publique acquisition
+- Apps actives : `lms-crm`, `lms-landing`, `lms-docs` (pas de second schema par app)
+- Prisma uniquement dans `packages/database/prisma` — `pnpm db:push|generate|seed`
+- Ports : landing 3000, **crm 3002**, docs 3004
+
+Références : `.cursor/context.md` · workflow feature `.cursor/rules/monorepo-feature-workflow.mdc`

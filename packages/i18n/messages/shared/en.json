@@ -1,0 +1,37 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "add": "Add",
+      "remove": "Remove",
+      "submit": "Submit",
+      "close": "Close"
+    },
+    "actions": {
+      "export": "Export",
+      "refresh": "Refresh",
+      "back": "Back"
+    },
+    "labels": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password"
+    },
+    "messages": {
+      "loading": "Loading…",
+      "error": "An error occurred",
+      "success": "Operation successful"
+    }
+  },
+  "layout": {
+    "loading": "Loading…",
+    "toggleTheme": "Toggle theme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "openMenu": "Open menu",
+    "language": "Language"
+  }
+}

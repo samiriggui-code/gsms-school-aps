@@ -1,0 +1,27 @@
+---
+title: Enroll a candidate in a session
+description: After file validation
+---
+
+# Session enrollment
+
+## Prerequisites
+
+- Application at **Validated** status
+- Open session for the **same course**
+
+## Procedure
+
+1. **Student life → Sessions** — open the session.
+2. Enroll the candidate via their **application file** (recommended) or student account.
+3. The system creates a **FormationSessionParticipant** record.
+
+## In the database
+
+| Field | Initial value |
+|-------|---------------|
+| `enrollmentStatus` | CONFIRMED |
+| `examOutcome` | PENDING |
+| `candidatureId` | linked to the file |
+
+Next: [Planning](/en/crm/planning-sessions) · [Exams](/en/crm/examens-resultats)

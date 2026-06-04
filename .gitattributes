@@ -1,0 +1,5 @@
+# Shell / deploy : LF obligatoire (VPS Linux)
+*.sh text eol=lf
+scripts/** text eol=lf
+scripts/deploy/** text eol=lf
+deploy/** text eol=lf

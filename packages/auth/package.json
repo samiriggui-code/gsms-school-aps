@@ -1,0 +1,14 @@
+{
+  "name": "@repo/auth",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/create-auth-options.ts",
+  "dependencies": {
+    "next-auth": "^4.24.11",
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "bcrypt": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2"
+  }
+}

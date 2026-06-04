@@ -1,0 +1,52 @@
+export { createPrismaClient, withDbTimeout } from './create-prisma-client';
+/** Valeurs runtime Prisma — exports nommés (évite `export *` sur le bundle CJS Turbopack). */
+export {
+  PrismaClient,
+  Prisma,
+  UserStatus,
+  UserCategory,
+  WorkTimeType,
+  ContractType,
+  FileAssetVisibility,
+  FileAssetStatus,
+  EnrollmentStatus,
+  CandidatureStatus,
+  CandidatureSource,
+  FormationSessionEnrollmentStatus,
+  FormationExamOutcome,
+  AttendanceStatus,
+  UserBusinessLabel,
+  SchoolInternalService,
+  EquipmentStatus,
+  EquipmentMaintenanceStatus,
+  StockMovementType,
+  FormationLifecycleStatus,
+  FormationTrack,
+  FormationParcoursSpecialite,
+  FormationDeliveryMode,
+  FormationVitrineSessionKind,
+  ActivityType,
+  ActivitySubType,
+  LeadStatus,
+  FinanceDevisStatus,
+  SupportTicketStatus,
+  SupportTicketPriority,
+  MarketingCampaignStatus,
+  FinancePaymentStatus,
+  InAppNotificationCategory,
+  ChatConversationType,
+} from '../generated/client';
+/** Types Prisma (modèles, inputs, enums) — sans ré-export runtime `export *`. */
+export type * from '../generated/client';
+export {
+  LANDING_LEAD_SOURCES,
+  LANDING_PREINSCRIPTION_LEAD_SOURCE,
+  LANDING_QUOTE_LEAD_SOURCE,
+} from './quote-lead-source';
+export {
+  DEFAULT_LANDING_SECTIONS,
+  LANDING_SECTION_CATALOG,
+  landingSectionLabel,
+  normalizeLandingSections,
+  type LandingSectionConfig,
+} from './landing-sections';

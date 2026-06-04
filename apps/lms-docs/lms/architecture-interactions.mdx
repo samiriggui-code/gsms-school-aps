@@ -1,0 +1,66 @@
+---
+title: Architecture et Interactions
+description: Vue d'ensemble du projet et des interactions entre applications
+---
+
+# Architecture et Interactions
+
+Cette page donne une vue simple du projet, sans detail technique de developpement.
+
+## 1) Presentation du projet
+
+Le projet est une plateforme LMS monorepo basee sur `Next.js`, organisee en 3 applications metiers:
+
+- `Landing`: acquisition, pre-inscriptions, orientation des prospects
+- `LMS App`: experience de formation (cours, lecons, progression)
+- `CRM`: gestion administrative (dossiers, suivi, operations ecole)
+
+Une application `Docs` existe pour aider les equipes admin a exploiter la plateforme.
+
+## 2) Authentification et roles
+
+L'authentification est centralisee pour un acces coherent entre les espaces.
+
+Roles principaux:
+
+- `superadmin`: supervision globale
+- `admin_ecole`: pilotage LMS + CRM + docs
+- `crm_user`: operations CRM
+- `formateur`: creation/gestion pedagogique
+- `candidat`: suivi du parcours de formation
+
+## 3) Schema d'interaction global
+
+```text
+Visiteur
+   |
+   v
+Landing (inscription / information)
+   |
+   v
+Page de connexion unique (Auth)
+   |
+   +--> LMS App  (formateur, candidat, admin_ecole)
+   |
+   +--> CRM      (crm_user, admin_ecole)
+   |
+   +--> Docs     (admin_ecole, formateur selon droits)
+```
+
+## 4) Flux metier simplifie
+
+```text
+Prospect -> Dossier administratif -> Validation -> Activation acces -> Formation -> Suivi
+```
+
+## 5) Services transverses (niveau fonctionnel)
+
+- Paiement en ligne: Stripe (si activé par l'ecole)
+- Notifications: Pusher (si besoin temps reel)
+- Automatisations: workers (rappels, relances, traitements periodiques)
+
+## 6) Principe de gouvernance
+
+- Une source d'information unifiee pour l'ecole
+- Une navigation fluide entre les espaces selon le role
+- Une documentation metier orientee procedures et depannage utilisateur

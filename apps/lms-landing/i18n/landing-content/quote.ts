@@ -1,0 +1,126 @@
+export const quoteMessages = {
+  fr: {
+    landing: {
+      quote: {
+        cta: 'Demander un devis',
+        title: 'Demande de devis',
+        descriptionPrestation:
+          'Offre sur mesure : renseignez votre structure et le projet (effectifs, dates, modalité).',
+        descriptionCatalog:
+          'Tarif sur mesure : complétez les informations pour recevoir une proposition.',
+        sections: {
+          contact: 'Contact',
+          company: 'Entreprise',
+          project: 'Projet formation',
+        },
+        fields: {
+          firstName: 'Prénom',
+          lastName: 'Nom',
+          email: 'Email professionnel',
+          phone: 'Téléphone',
+          contactRole: 'Fonction / service',
+          contactRolePlaceholder: 'ex. Responsable RH, QSE, RSSI…',
+          company: 'Raison sociale',
+          siret: 'SIRET / SIREN (optionnel)',
+          siretPlaceholder: '14 chiffres',
+          address: 'Adresse du siège ou site d\'intervention',
+          addressPlaceholder: 'Ville, code postal…',
+          trainees: 'Nombre de stagiaires prévu',
+          traineesPlaceholder: 'ex. 12, ou fourchette 8–15',
+          delivery: 'Modalité souhaitée',
+          deliveryPlaceholder: 'Choisir…',
+          dates: 'Période ou dates souhaitées',
+          datesPlaceholder:
+            'Ex. janvier–février 2026, hors juillet, semaine du 9 mars au 13 mars…',
+          funding: 'Financement envisagé',
+          fundingPlaceholder: 'Optionnel',
+          message: 'Précisions complémentaires (optionnel)',
+          messagePlaceholder: 'Contraintes techniques, multi-sites, certifications attendues…',
+        },
+        delivery: {
+          INTRA_SUR_SITE: 'En intra sur site (vos locaux)',
+          CENTRE_FORMATION: 'En centre de formation',
+          MIXTE: 'Mixte (théorie centre / pratique site)',
+          DISTANCE: 'À distance ou blended (si applicable)',
+        },
+        funding: {
+          CPF: 'CPF / OPCO / plan entreprise',
+          OPCO: 'OPCO uniquement',
+          BUDGET_ENTREPRISE: 'Budget entreprise',
+          MULTI: 'Plusieurs financements à étudier',
+          AUTRE: 'Autre (précisez dans le message)',
+        },
+        cancel: 'Annuler',
+        submit: 'Envoyer la demande',
+        submitting: 'Envoi…',
+        toasts: {
+          error: 'Envoi impossible. Réessayez plus tard.',
+          success: 'Demande enregistrée. Notre équipe vous recontacte rapidement.',
+          network: 'Erreur réseau.',
+        },
+      },
+    },
+  },
+  en: {
+    landing: {
+      quote: {
+        cta: 'Request a quote',
+        title: 'Quote request',
+        descriptionPrestation:
+          'Tailored offer: tell us about your organisation and project (headcount, dates, delivery mode).',
+        descriptionCatalog:
+          'Custom pricing: complete the form to receive a proposal.',
+        sections: {
+          contact: 'Contact',
+          company: 'Company',
+          project: 'Training project',
+        },
+        fields: {
+          firstName: 'First name',
+          lastName: 'Last name',
+          email: 'Work email',
+          phone: 'Phone',
+          contactRole: 'Role / department',
+          contactRolePlaceholder: 'e.g. HR manager, QHSE, CISO…',
+          company: 'Company name',
+          siret: 'SIRET / SIREN (optional)',
+          siretPlaceholder: '14 digits',
+          address: 'Registered office or training site address',
+          addressPlaceholder: 'City, postcode…',
+          trainees: 'Expected number of trainees',
+          traineesPlaceholder: 'e.g. 12, or range 8–15',
+          delivery: 'Preferred delivery mode',
+          deliveryPlaceholder: 'Choose…',
+          dates: 'Preferred period or dates',
+          datesPlaceholder:
+            'E.g. Jan–Feb 2026, excluding July, week of 9–13 March…',
+          funding: 'Planned funding',
+          fundingPlaceholder: 'Optional',
+          message: 'Additional details (optional)',
+          messagePlaceholder: 'Technical constraints, multi-site, expected certifications…',
+        },
+        delivery: {
+          INTRA_SUR_SITE: 'On-site in-house (your premises)',
+          CENTRE_FORMATION: 'At the training centre',
+          MIXTE: 'Blended (centre theory / on-site practice)',
+          DISTANCE: 'Remote or blended (where applicable)',
+        },
+        funding: {
+          CPF: 'Personal training account / OPCO / company plan',
+          OPCO: 'OPCO only',
+          BUDGET_ENTREPRISE: 'Company budget',
+          MULTI: 'Several funding options to explore',
+          AUTRE: 'Other (specify in message)',
+        },
+        cancel: 'Cancel',
+        submit: 'Send request',
+        submitting: 'Sending…',
+        toasts: {
+          error: 'Could not send. Please try again later.',
+          success: 'Request saved. Our team will contact you shortly.',
+          network: 'Network error.',
+        },
+      },
+    },
+  },
+};

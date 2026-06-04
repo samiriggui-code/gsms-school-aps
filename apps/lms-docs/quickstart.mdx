@@ -1,0 +1,39 @@
+---
+title: Quickstart
+description: Valider le parcours candidat de bout en bout
+---
+
+# Prise en main — parcours candidat
+
+## 1) Accès
+
+- CRM (port 3001)
+- Landing (port 3000)
+- Docs (port 3004)
+
+## 2) Scénario test (30 min)
+
+<Steps>
+  <Step title="Publier formation + session">
+    CRM → Formations (catalogue actif) → Sessions à venir.
+  </Step>
+  <Step title="Préinscription landing">
+    Formulaire avec e-mail `test+…@domaine.fr`. Voir [Préinscription](/landing/preinscription).
+  </Step>
+  <Step title="Valider le dossier">
+    CRM → Candidature → statut **Validé**. Le lead passe **Converti**.
+  </Step>
+  <Step title="Inscrire à la session">
+    Sessions → inscription du dossier. Voir [Inscrire session](/crm/inscrire-session).
+  </Step>
+  <Step title="Examen réussi + attestation">
+    Examens → PASSED puis Certifications → attestation.
+  </Step>
+  <Step title="Clôturer et archiver">
+    Fiche candidat → Parcours → Clôturer puis Archiver. Voir [Clôture](/crm/cloture-archivage).
+  </Step>
+</Steps>
+
+<Tip>
+  Consultez le [parcours complet](/lms/parcours-candidat-complet) pour le détail des statuts en base.
+</Tip>

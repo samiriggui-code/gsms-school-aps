@@ -1,0 +1,19 @@
+{
+  "_comment": "Genere par deploy-lms.ps1 -InfraOnly. Utilise par -AppsOnly (sans mots de passe).",
+  "SshHost": "vps-client.example.com",
+  "Scheme": "https",
+  "SshUser": "root",
+  "SshKey": "C:\\Users\\vous\\.ssh\\id_ed25519",
+  "GsmsDir": "/opt/gsms",
+  "AppRoot": "/opt/gsms/app",
+  "ProjectName": "GSMS",
+  "Domain": "gsms-security.com",
+  "ServerIp": "vps-client.example.com",
+  "CrmHost": "crm.gsms-security.com",
+  "DocsHost": "docs.gsms-security.com",
+  "MonitoringHost": "monitoring.gsms-security.com",
+  "SmtpHost": "smtp.hostinger.com",
+  "SmtpPort": "465",
+  "SmtpSecure": "true",
+  "SmtpUser": "admin@gsms-security.com"
+}

@@ -1,0 +1,86 @@
+---
+description: Architecture cible orchestrateur de déploiement VPS (lms-deploy + terminal-server)
+alwaysApply: true
+---
+
+# Architecture — orchestrateur de déploiement LMS
+
+## Où travailler (important)
+
+| Rôle | Chemin | Commande dev |
+|------|--------|----------------|
+| **Cockpit deploy Phase 0–2** (UI, historique, PostgreSQL, terminal WS) | `C:\laragon\www\gsms-deploy` | `pnpm dev:deploy:clean` |
+| Monorepo LMS (CRM, landing, scripts `deploy/`) | `C:\laragon\www\app-prisma` | `pnpm dev:crm` — **pas** le cockpit refondu |
+
+Ne pas lancer `pnpm dev:deploy` depuis `app-prisma` : `apps/lms-deploy` est l’ancienne copie (sans historique / Phase 2). Toute feature deploy UI/API → **`gsms-deploy`** uniquement.
+
+## Objectif réel
+
+Créer un **orchestrateur local de déploiement VPS** pour monorepo Next.js avec **pipeline interactif**.
+
+L’outil doit :
+
+- tourner localement
+- préparer les fichiers
+- poser des questions interactives
+- provisionner le VPS
+- déployer automatiquement
+- afficher logs et progression
+
+## 1. Séparer le terminal de Next.js
+
+Structure cible :
+
+```
+gsms-deploy/                    # monorepo cockpit (source de vérité UI)
+ apps/gsms-deploy               # UI Next (web) — ex lms-deploy
+ apps/deploy-terminal-server    # PTY + WebSocket
+app-prisma/deploy/              # scripts PowerShell + templates (DEPLOY_REPO_ROOT)
+```
+
+Ne **pas** gérer PTY, WebSocket et process persistants dans les API routes Next.js / Vercel.
+
+**Phase 0** : `deploy-terminal-server` créé ; UI bascule via `NEXT_PUBLIC_DEPLOY_TERMINAL_WS_URL`.
+
+## 2–4. Terminal interactif
+
+- Frontend : `@xterm/xterm` + `@xterm/addon-fit`
+- Backend : `node-pty`, `ws`, `express` dans **terminal-server**
+- Flux : xterm.js → WebSocket → node-pty → PowerShell (Windows)
+
+## 5–7. Pipeline
+
+Scripts shell interactifs conservés. États : `pending` | `running` | `success` | `failed`.  
+Persistance cible : PostgreSQL `gsms_deploy` via `packages/deploy-database` (`DeployHost`, `DeployPipeline`, `DeployRun`, `DeployLogLine`) — pas de second SGBD SQLite.
+
+## 8–9. Logs et WebSocket
+
+Logs persistants (stdout, stderr, SSH, durée). WebSocket pour terminal, progression, état pipeline.
+
+## 10–24. Suite (voir cahier de route)
+
+SSH `ssh2`, templates, génération infra, détection VPS, provisioning, secrets, rollback, healthchecks, monitoring, multi-env, monorepo, builds Docker, reverse proxy, reprise après crash.
+
+## 25. Architecture idéale
+
+```
+apps/
+ ├── lms-deploy/              # ui, pipeline, logs (client)
+ ├── deploy-terminal-server/  # websocket, node-pty, ssh, pipeline-engine
+scripts/
+deploy/gsms/templates/
+```
+
+## Priorités
+
+**IMMÉDIAT** : xterm, websocket, node-pty, terminal-server, SSH stable, pipeline state, logs persistants.
+
+**APRÈS** : templates, compose generator, provisioning, rollback, healthcheck.
+
+**PLUS TARD** : monitoring SaaS, multi-user, RBAC, queue, snapshots, agents.
+
+## Principe directeur
+
+Ne pas penser « simple terminal dans Next.js » — penser **moteur de pipeline DevOps interactif**.
+
+Référence détaillée : `apps/lms-deploy/docs/CAHIER-DE-ROUTE.md`.

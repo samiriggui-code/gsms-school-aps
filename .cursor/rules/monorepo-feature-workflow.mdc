@@ -1,0 +1,138 @@
+---
+description: Workflow feature — Prisma d'abord, API/workers/packages du monorepo, pas de hors-cadre
+alwaysApply: true
+---
+
+# Monorepo LMS — workflow avant toute page ou feature
+
+## Étape 0 — Toujours lire Prisma en premier
+
+Avant de créer une page, une API ou un composant métier :
+
+1. Ouvrir `packages/database/prisma/schema.prisma` et chercher modèles / enums / relations existants.
+2. Vérifier le seed : `packages/database/prisma/seed.js` et `packages/database/prisma/data/`.
+3. Décider :
+   - **Réutiliser** → passer directement UI + API (aucun changement schema).
+   - **Étendre** → ajouter champs/relations dans le schema central, puis `pnpm db:generate` (+ migration ou `pnpm db:push` selon convention équipe).
+   - **Nouveau domaine** → nouveau modèle dans le même schema, jamais un second schema.
+
+Interdit : `apps/*/prisma`, client Prisma local, `new PrismaClient()` hors `@repo/database`.
+
+Imports :
+- Serveur (API, RSC, workers) : `@repo/database`, `Prisma`, types générés.
+- Client React (enums/constants uniquement) : `@repo/database/browser`.
+
+Client app : `import { prisma } from '@/lib/prisma'` → `createPrismaClient('lms-crm')`.
+
+---
+
+## Carte du monorepo (ne pas déformer)
+
+```
+apps/
+  lms-crm/          # CRM admin (port 3002) — (protected) + app/api
+  lms-landing/      # Public (3000) — API minimales acquisition/catalogue
+  lms-docs/         # Doc interne (3004)
+packages/
+  database/         # SEUL schema Prisma + migrations + seed + client
+  api-core/         # StatService, contrats stats, logique métier partagée API
+  auth/             # create-auth-options NextAuth
+  redis/            # Cache (utilisé par api-core StatService)
+  storage/          # S3 upload/delete (fichiers, avatars)
+  workers/          # Jobs async / cron (agrégations, à étendre ici)
+```
+
+Commandes racine : `pnpm db:push`, `pnpm db:generate`, `pnpm db:seed` — uniquement via `packages/database`.
+
+---
+
+## API `lms-crm` — arborescence obligatoire
+
+Racine : `apps/lms-crm/app/api/`
+
+| Dossier | Rôle |
+|---------|------|
+| `auth/` | NextAuth `[...nextauth]` |
+| `_shared/http/response.ts` | `ok(data)` / `fail(message, status)` → `{ success, data \| error }` |
+| `common/` | Transversal : `files`, `health`, `stats` |
+| `dashboard/` | Stats accueil section |
+| `admin/` | Santé système, ops |
+| `public/` | Endpoints sans session (plaquettes devis, etc.) |
+| `sections/` | **Aligné sur le menu CRM** — un dossier par grande section |
+
+Sections actuelles (`sections/`) :
+`administration-facturation`, `communication-contenu`, `gestion-academique`, `gestion-ressources`, `gestion-sites-clients`, `securite-configuration`, `support-qualite`.
+
+Convention URL API = chemin UI :
+- UI `/gestion-ressources/rh/collaborateurs` → API `sections/gestion-ressources/rh/collaborateurs/...`
+- UI `/securite-configuration/acces/users` → API `sections/securite-configuration/acces/users/...`
+
+Patterns de fichiers (copier le voisin le plus proche) :
+
+| Pattern | Quand | Exemple |
+|---------|--------|---------|
+| `route.ts` | CRUD simple, liste paginée | `equipements/inventaire/route.ts` |
+| `[[...path]]/route.ts` | Sous-routes multiples (id, restore, …) | `rh/collaborateurs/[[...path]]/route.ts` |
+| `[...path]/route.ts` | Router section large | `gestion-ressources/[...path]/route.ts` |
+| `stats/route.ts` | KPI module | délègue à `@repo/api-core` `StatService` |
+| `[id]/route.ts` | Ressource par id | `acces/users/[id]/route.ts` |
+| `_serialize.ts`, `_*.ts` | Helpers colocalisés (pas de route) | `vie-scolaire/sessions/` |
+
+Chaque route :
+```ts
+const session = await getServerSession(authOptions);
+if (!session) return fail('Unauthorized request', 401);
+// prisma + ok() / fail()
+```
+
+Ne pas créer d’API à la racine `app/api/foo` si le domaine appartient à une `sections/*` existante.
+
+`lms-landing` : garder API publiques courtes sous `app/api/` (`catalog`, `preinscriptions`, `quote-requests`) — pas de duplication CRM.
+
+---
+
+## Interconnexions packages (ordre de dépendance)
+
+```
+database ← auth, api-core, workers, apps
+redis ← api-core
+api-core ← routes stats CRM
+storage ← routes upload (collaborateurs, equipment, files)
+workers → database + api-core (pré-calcul cache Redis)
+```
+
+- **Stats lourdes** : logique dans `packages/api-core/src/services.ts` (`StatService`), route fine + cache Redis.
+- **Fichiers** : `@repo/storage` `uploadFile` / `deleteFileByKey` + `app/api/common/files`.
+- **Pas de logique métier dupliquée** entre apps : extraire vers `packages/api-core` ou `apps/lms-crm/lib/`.
+
+---
+
+## Workers (`packages/workers`)
+
+Réservé aux traitements **asynchrones** : agrégations, exports longs, notifications, schedulers.
+
+- Référence : `stats-aggregator.ts` + `StatService.getCachedStats`.
+- Ne pas bloquer une route HTTP avec des boucles massives ou cron inline : envisager worker + Redis.
+
+---
+
+## UI CRM
+
+Pages : `apps/lms-crm/app/(protected)/{section}/...` — miroir du menu `config/menu.config.tsx`.
+
+Layouts section/module : règle `.cursor/rules/gestion-ressources-layout.mdc` (et équivalents à documenter par section).
+
+`apiFetch('/api/sections/...')` côté client — chemins cohérents avec les routes ci-dessus.
+
+---
+
+## Checklist création feature
+
+- [ ] Schema Prisma lu ; changement schema justifié ou non
+- [ ] Si schema modifié : `pnpm db:generate` (+ migration/push/seed documenté)
+- [ ] API sous `sections/{bonne-section}/` (pas de route orpheline)
+- [ ] Réponses `ok` / `fail` ; session NextAuth sur routes protégées
+- [ ] Stats → `StatService` + `@repo/api-core` si applicable
+- [ ] Fichiers → `@repo/storage` + `common/files`
+- [ ] Page UI alignée menu + layout existant ; pas de nouveau stack
+- [ ] Worker seulement si traitement async / planifié

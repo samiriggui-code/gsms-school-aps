@@ -1,0 +1,76 @@
+# Workers LMS: stratégie et jobs
+
+`worker-gsms` repose sur BullMQ + Redis et consomme la queue `gsms-global-tasks`.
+
+Objectif: déplacer les tâches lourdes/hors requête HTTP vers des jobs robustes, traçables et relançables.
+
+## Jobs existants
+
+- `refresh-stats`
+- `refresh-absences`
+- `check-expirations`
+- `sync-platforms`
+- `sync-tenant`
+- `global-sync`
+- `provision-tenant`
+
+## Jobs LMS à introduire
+
+### Candidats et admissions
+
+- `candidates.refresh-status`: recalcul des statuts de dossiers candidats.
+- `candidates.missing-documents-reminder`: relance automatique des pièces manquantes.
+- `candidates.deadline-check`: alertes sur les dates limites d'admission.
+
+### Cours, formations et planning
+
+- `courses.schedule-sync`: synchroniser sessions, cohortes et calendrier.
+- `courses.capacity-check`: alerter sur seuils et surbooking.
+- `formations.publish-window`: ouverture/fermeture planifiée de modules.
+
+### Examens et évaluations
+
+- `exams.schedule-reminder`: rappels pré-examen.
+- `exams.auto-grading`: notation automatique pour évaluations compatibles.
+- `exams.certificate-issue`: émission des attestations/certificats.
+
+### Suivi pédagogique
+
+- `learning.progress-refresh`: recalcul progression et indicateurs d'engagement.
+- `learning.dropout-risk-detect`: détection des risques de décrochage.
+- `learning.tutor-alerts`: alertes ciblées vers tuteurs/formateurs.
+
+### Paiement et abonnements
+
+- `billing.payment-retry`: relance des paiements échoués.
+- `billing.invoice-sync`: synchronisation facturation/état de paiement.
+- `billing.module-access-update`: ouverture/fermeture d'accès aux modules payants.
+
+## Contrats de job recommandés
+
+Chaque job doit définir:
+
+- un payload validé (Zod),
+- une stratégie de retry et backoff,
+- des idempotency keys,
+- des événements de succès/échec,
+- des logs structurés (jobId, tenantId, entityId).
+
+## Observabilité minimale
+
+- métriques par type de job: débit, latence, taux d'échec,
+- alertes sur échecs répétés et backlog important,
+- tableaux de bord opérationnels pour l'équipe école.
+
+## Convention de nommage
+
+Format recommandé: `domaine.action`.
+
+Exemples:
+
+- `candidates.refresh-status`
+- `courses.schedule-sync`
+- `exams.certificate-issue`
+- `learning.progress-refresh`
+- `billing.payment-retry`
+
