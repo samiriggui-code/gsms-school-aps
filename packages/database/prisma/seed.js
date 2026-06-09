@@ -44,6 +44,7 @@ const { FORMATION_VENUE_ROOMS } = require('./data/formation-venue-rooms-seed');
 const { seedLandingLeadsAndDevis } = require('./data/landing-leads-devis-seed');
 const { seedOperationalModules } = require('./data/operational-modules-seed');
 const { seedTopbarDemo } = require('./data/topbar-seed');
+const { seedGsmsOpsChat } = require('./data/gsms-ops-chat-seed');
 const { seedRhAbsencesAndPositions } = require('./data/rh-absences-positions-seed');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -652,6 +653,7 @@ async function main() {
       console.log('Settings seeded.');
 
       await seedTopbarDemo(tx);
+      await seedGsmsOpsChat(tx);
       await seedRhAbsencesAndPositions(tx);
 
       console.log('Database seeding completed!');

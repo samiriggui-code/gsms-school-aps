@@ -37,6 +37,13 @@ export type FinanceFactureDetail = {
   formation: { id: string; name: string; slug: string } | null;
   candidature?: { id: string; status: string; userId: string } | null;
   formationSession?: { id: string; dateDisplayLabel: string; location: string } | null;
+  invoicePdf?: {
+    id: string;
+    url: string;
+    originalName: string;
+    size: number;
+    createdAt: string;
+  } | null;
 };
 
 export function useFinanceFactureDetailQuery(factureId: string | null, enabled: boolean) {

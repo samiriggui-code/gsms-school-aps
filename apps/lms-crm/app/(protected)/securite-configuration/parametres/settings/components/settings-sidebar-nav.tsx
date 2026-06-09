@@ -8,10 +8,10 @@ import { SETTINGS_SCROLLSPY_ITEMS } from '../lib/settings-anchors';
 export function SettingsSidebarNav({ className }: { className?: string }) {
   const { t, i18n } = useTranslation();
 
-  const items = SETTINGS_SCROLLSPY_ITEMS.map(({ titleKey, target, active }) => ({
-    title: t(titleKey),
-    target,
-    active,
+  const items = SETTINGS_SCROLLSPY_ITEMS.map((item) => ({
+    title: t(item.titleKey),
+    target: item.target,
+    active: 'active' in item ? item.active : undefined,
   }));
 
   return (

@@ -38,3 +38,5 @@ export {
   type QuoteRequestEmailPayload,
   type PreinscriptionEmailPayload,
 } from './flows';
+
+export type { DevisQuoteEmailProps } from '@repo/emails';

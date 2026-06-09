@@ -5,12 +5,9 @@ import { PilotageExportSection } from './pilotage-export-section';
 
 export function PilotageRapportsPage() {
   return (
-    <>
-      <PilotageWorkspacePage
-        viewKey="pilotage-rapports"
-        afterContent={<PilotageExportSection />}
-      />
-</>
-    </>
+    <PilotageWorkspacePage
+      viewKey="pilotage-rapports"
+      afterContent={<PilotageExportSection />}
+    />
   );
 }

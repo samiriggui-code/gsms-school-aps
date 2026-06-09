@@ -2,6 +2,8 @@ import { type LucideIcon } from 'lucide-react';
 
 export interface MenuItem {
   title?: string;
+  /** Clé i18n (ex. `menu.byPath…`) — prioritaire sur `title` / `path`. */
+  titleKey?: string;
   icon?: LucideIcon;
   path?: string;
   rootPath?: string;

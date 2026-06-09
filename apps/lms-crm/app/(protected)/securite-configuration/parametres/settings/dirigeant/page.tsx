@@ -59,20 +59,20 @@ export function DirigeantSettingsSection() {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      directorFullName: base.directorFullName,
-      directorRole: base.directorRole,
-      directorEmail: base.directorEmail,
-      directorPhone: base.directorPhone,
+      directorFullName: base.directorFullName ?? undefined,
+      directorRole: base.directorRole ?? undefined,
+      directorEmail: base.directorEmail ?? undefined,
+      directorPhone: base.directorPhone ?? undefined,
     },
   });
 
   useEffect(() => {
     const next = buildCompanyProfileDefaults(profile, primaryAdminContact);
     form.reset({
-      directorFullName: next.directorFullName,
-      directorRole: next.directorRole,
-      directorEmail: next.directorEmail,
-      directorPhone: next.directorPhone,
+      directorFullName: next.directorFullName ?? undefined,
+      directorRole: next.directorRole ?? undefined,
+      directorEmail: next.directorEmail ?? undefined,
+      directorPhone: next.directorPhone ?? undefined,
     });
     setAvatarPreview(next.directorAvatar || null);
     setAvatarFile(null);

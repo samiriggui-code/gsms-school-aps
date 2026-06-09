@@ -833,8 +833,8 @@ export class StatService {
             absentCollaborators: absent,
             complianceRate: rate,
             complianceIssues: issues,
-            categoryDistribution: collab.categoryDistribution,
-            monthlyEvolution: collab.monthlyEvolution.map((p) => ({
+            categoryDistribution: collab.categoryDistribution ?? [],
+            monthlyEvolution: (collab.monthlyEvolution ?? []).map((p) => ({
               date: p.date,
               count: p.count,
             })),

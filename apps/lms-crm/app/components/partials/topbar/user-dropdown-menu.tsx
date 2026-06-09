@@ -9,7 +9,7 @@ import {
   UserCircle,
 } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
-import { getAvatarUrl } from '@/lib/helpers';
+import { UserAvatar } from '@/components/common/user-avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,7 +29,6 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
     ? `/securite-configuration/acces/users/${currentUserId}`
     : '/securite-configuration/acces/user-profile';
 
-  const avatarSrc = getAvatarUrl(session?.user?.avatar ?? null, '/media/avatars/300-2.png');
   const mailto = session?.user?.email ? `mailto:${session.user.email}` : undefined;
 
   return (
@@ -39,11 +38,10 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
         <div className="flex items-center justify-between p-3">
           <div className="flex items-center gap-2">
             <div className="relative">
-              <img
-                key={avatarSrc}
-                className="w-9 h-9 rounded-full border border-border object-cover"
-                src={avatarSrc}
-                alt=""
+              <UserAvatar
+                avatar={session?.user?.avatar}
+                className="w-9 h-9 rounded-full border border-border"
+                fallback="/media/avatars/300-2.png"
               />
               <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 border-2 border-background" />
             </div>

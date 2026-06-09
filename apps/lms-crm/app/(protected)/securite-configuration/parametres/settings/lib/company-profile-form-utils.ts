@@ -2,10 +2,15 @@ import type { CompanyProfileSchemaType } from '@/app/(protected)/gestion-ressour
 import type { CompanyProfileView } from '@/app/(protected)/gestion-ressources/compagnie/profil/types/company-profile-view';
 import type { PrimaryAdminContactPayload } from '@/app/(protected)/gestion-ressources/compagnie/profil/types/school-stats';
 
+/** Valeurs formulaire : `null` exclu (compatible react-hook-form). */
+export type CompanyProfileFormDefaults = {
+  [K in keyof CompanyProfileSchemaType]: Exclude<CompanyProfileSchemaType[K], null>;
+};
+
 export function buildCompanyProfileDefaults(
   p: CompanyProfileView,
   admin: PrimaryAdminContactPayload | null | undefined,
-): CompanyProfileSchemaType {
+): CompanyProfileFormDefaults {
   return {
     companyName: p.companyName || '',
     siret: p.siret || '',
@@ -52,15 +57,15 @@ export function buildCompanyProfileDefaults(
     directorEmail: p.directorEmail || '',
     directorPhone: p.directorPhone || '',
     logo: p.logo || '',
-    logoFile: null,
+    logoFile: undefined,
     logoAction: '',
     directorAvatar: p.directorAvatar || '',
-    directorAvatarFile: null,
+    directorAvatarFile: undefined,
     directorAvatarAction: '',
     adminAvatar: admin?.avatar || '',
-    adminAvatarFile: null,
+    adminAvatarFile: undefined,
     adminAvatarAction: '',
-  };
+  } satisfies CompanyProfileFormDefaults;
 }
 
 export async function saveCompanyProfilePayload(

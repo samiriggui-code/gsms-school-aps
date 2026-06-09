@@ -18,7 +18,7 @@ export type SupportTicketRow = {
 };
 
 export type SupportTicketsResponse = {
-  stats: { total: number; open: number; inProgress: number; resolved: number };
+  stats: { total: number; open: number; inProgress: number; resolved: number; urgent: number };
   items: SupportTicketRow[];
   pagination: { page: number; limit: number; total: number };
 };

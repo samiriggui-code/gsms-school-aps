@@ -4,11 +4,26 @@ import type { ReactNode } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
+type SheetStatBadgeVariant = 'success' | 'warning' | 'destructive' | 'outline' | 'secondary';
+
+function toBadgeVariant(color?: string): SheetStatBadgeVariant {
+  if (
+    color === 'success' ||
+    color === 'warning' ||
+    color === 'destructive' ||
+    color === 'outline' ||
+    color === 'secondary'
+  ) {
+    return color;
+  }
+  return 'success';
+}
+
 export type SheetStatItem = {
   total: string;
   label: string;
   badgeLabel?: string;
-  badgeColor?: 'success' | 'warning' | 'destructive' | 'outline' | 'secondary' | 'mono';
+  badgeColor?: SheetStatBadgeVariant | 'mono' | (string & {});
   text?: string;
   number?: string;
   icon?: ReactNode;
@@ -44,7 +59,12 @@ export function SheetStatGrid({ items, columnsClassName = 'sm:grid-cols-4', show
 
               {showBadges && item.badgeLabel ? (
                 <div className="flex items-center flex-wrap gap-1.5">
-                  <Badge variant={item.badgeColor ?? 'success'} size="sm" appearance="light" className="w-fit">
+                  <Badge
+                    variant={toBadgeVariant(item.badgeColor === 'mono' ? 'secondary' : item.badgeColor)}
+                    size="sm"
+                    appearance="light"
+                    className="w-fit"
+                  >
                     {item.icon ? <span className="mr-1 inline-flex">{item.icon}</span> : null}
                     {item.badgeLabel}
                   </Badge>

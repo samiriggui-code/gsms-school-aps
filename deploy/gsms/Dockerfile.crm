@@ -10,6 +10,8 @@ COPY apps/lms-crm/package.json apps/lms-crm/
 COPY apps/lms-landing/package.json apps/lms-landing/
 COPY packages ./packages
 COPY apps/lms-crm ./apps/lms-crm
+COPY scripts/allowed-dev-origins.mjs scripts/allowed-dev-origins.mjs
+COPY scripts/dev/allowed-dev-origins.mjs scripts/dev/allowed-dev-origins.mjs
 COPY patches ./patches
 ENV DATABASE_URL="postgresql://lms:lms@localhost:5432/lms_app"
 ENV DIRECT_URL="postgresql://lms:lms@localhost:5432/lms_app"

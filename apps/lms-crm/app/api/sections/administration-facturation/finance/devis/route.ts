@@ -2,11 +2,34 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
-import { NotificationService } from '@repo/api-core';
+import { NotificationService, createWorkflowEngine } from '@repo/api-core';
 import { FinanceDevisStatus, Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { totalsFromLines, type DevisLineInput } from '@/lib/finance-devis-totals';
 import { clientSnapshotFieldsFromLead, companyFromLeadNotes } from '@/lib/landing-lead-notes';
+
+async function emitDevisCreatedWorkflow(created: {
+  id: string;
+  referenceCode: string;
+  title: string;
+  leadId?: string | null;
+}) {
+  try {
+    const workflows = createWorkflowEngine(prisma);
+    await workflows.emit(
+      'crm.finance.devis.created',
+      {
+        devisId: created.id,
+        referenceCode: created.referenceCode,
+        title: created.title,
+        leadId: created.leadId ?? null,
+      },
+      { dedupeKey: `workflow:devis-created:${created.id}` },
+    );
+  } catch (e) {
+    console.error('[finance-devis] workflow create', e);
+  }
+}
 
 async function notifyDevisCreated(created: { referenceCode: string; title: string }) {
   const notifier = new NotificationService(prisma);
@@ -324,6 +347,7 @@ export async function POST(request: NextRequest) {
       });
 
       await notifyDevisCreated(created);
+      await emitDevisCreatedWorkflow(created);
       return ok(created, 201);
     }
 
@@ -420,6 +444,7 @@ export async function POST(request: NextRequest) {
     });
 
     await notifyDevisCreated(created);
+    await emitDevisCreatedWorkflow({ ...created, leadId: lead.id });
     return ok(created, 201);
   } catch (e) {
     console.error('[finance-devis POST]', e);

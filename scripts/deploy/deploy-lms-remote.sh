@@ -152,9 +152,61 @@ if [[ "$DEPLOY_RUNTIME" == "docker-compose" || "$DEPLOY_RUNTIME" == "docker" ]];
   cd "$GSMS_DIR"
 fi
 
+resolve_app_root() {
+  local root="${APP_ROOT:-/opt/gsms-school}"
+  local -a candidates=()
+  if [[ "$root" == /* ]]; then
+    candidates+=("$root")
+  else
+    candidates+=("/opt/${root#/}" "/root/${root#/}")
+  fi
+  candidates+=(
+    "/opt/gsms-school"
+    "/root/gsms-school"
+    "/opt/app-prisma"
+    "/opt/gsms-deploy"
+    "/root/app-prisma"
+  )
+
+  local c found=""
+  for c in "${candidates[@]}"; do
+    [[ -d "$c/packages/database" ]] || continue
+    found="$c"
+    break
+  done
+
+  if [[ -z "$found" ]]; then
+    local schema
+    schema="$(find /opt /root -maxdepth 6 -type f -path '*/packages/database/prisma/schema.prisma' 2>/dev/null | head -1 || true)"
+    if [[ -n "$schema" ]]; then
+      found="$(cd "$(dirname "$schema")/../../.." && pwd)"
+    fi
+  fi
+
+  if [[ -z "$found" ]]; then
+    return 1
+  fi
+
+  # Normaliser vers /opt/gsms-school si le code est dans /root/...
+  if [[ "$found" == /root/* && "$found" != "/opt/gsms-school" ]]; then
+    echo "==> Monorepo dans $found — deplacement vers /opt/gsms-school"
+    mkdir -p /opt
+    rm -rf /opt/gsms-school
+    mv "$found" /opt/gsms-school
+    found="/opt/gsms-school"
+  fi
+
+  APP_ROOT="$found"
+  export APP_ROOT
+  echo "==> Monorepo detecte: $APP_ROOT"
+  return 0
+}
+
 run_apps() {
-  if [[ ! -d "$APP_ROOT/packages/database" ]]; then
-    echo "Monorepo introuvable: $APP_ROOT — activez la sync monorepo"
+  if ! resolve_app_root; then
+    echo "Monorepo introuvable sur le VPS (packages/database)"
+    echo "  PC : relancez etape 3 et repondez Oui a « Synchroniser le monorepo »"
+    echo "  Ou : .\\scripts\\check-vps-monorepo.ps1 pour diagnostiquer"
     exit 1
   fi
   local apps_script="$APP_ROOT/scripts/deploy/deploy-gsms-apps.sh"
@@ -314,11 +366,12 @@ fi
 if declare -f deploy_compose_up_infra >/dev/null 2>&1; then
   deploy_compose_up_infra
 else
-  docker compose pull
+  docker rm -f gsms-traefik 2>/dev/null || true
+  docker compose pull maintenance postgres redis minio 2>/dev/null || docker compose pull
   if [[ "$DEPLOY_MONITORING" == "true" ]]; then
-    docker compose up -d
+    docker compose up -d maintenance postgres redis minio homepage portainer uptime-kuma netdata
   else
-    docker compose up -d caddy postgres redis minio
+    docker compose up -d maintenance postgres redis minio
   fi
 fi
 

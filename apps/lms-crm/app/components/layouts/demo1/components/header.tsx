@@ -9,7 +9,8 @@ import { ChatSheet } from '@/partials/topbar/chat-sheet';
 import { NotificationsSheet } from '@/partials/topbar/notifications-sheet';
 import { UserDropdownMenu } from '@/partials/topbar/user-dropdown-menu';
 import { Bell, Menu, MessageCircleMore, Moon, Search, Sun } from 'lucide-react';
-import { getAvatarUrl, toAbsoluteUrl } from '@/lib/helpers';
+import { toAbsoluteUrl } from '@/lib/helpers';
+import { UserAvatar } from '@/components/common/user-avatar';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
@@ -52,8 +53,6 @@ export function Header() {
   const headerSticky: boolean = scrollPosition > 0;
   const { data: topbarSummary } = useTopbarSummary();
   
-  const avatarSrc = getAvatarUrl(session?.user?.avatar ?? null, '/media/avatars/300-2.png');
-
   const handleLanguage = (lang: Language) => {
     changeLanguage(lang.code);
   };
@@ -220,11 +219,11 @@ export function Header() {
 <UserDropdownMenu
               trigger={
                 <div className="relative shrink-0 cursor-pointer">
-                  <img
-                    key={avatarSrc}
+                  <UserAvatar
+                    avatar={session?.user?.avatar}
                     className="size-9 rounded-full border-2 border-border shrink-0"
-                    src={avatarSrc}
                     alt="User Avatar"
+                    fallback="/media/avatars/300-2.png"
                   />
                   <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 border-2 border-background" />
                 </div>

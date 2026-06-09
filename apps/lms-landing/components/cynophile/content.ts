@@ -2,10 +2,10 @@
 
 import { useSheetContent } from '@/hooks/useSheetContent';
 
-const CYNOPHILE_PATH = 'landing.sheetContent.cynophile';
+const CYNOPHILE_PATH = 'landing.sheetContent.cynophile' as const;
 
 export function cynophileSheetPath() {
-  return CYNOPHILE_PATH as const;
+  return CYNOPHILE_PATH;
 }
 
 export function useCynophileSheetContent() {

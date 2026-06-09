@@ -1,4 +1,4 @@
-import type { TFunction } from 'i18next';
+import type { TFunction } from '@repo/i18n';
 
 export type TranslatedFormation = {
   id: string;

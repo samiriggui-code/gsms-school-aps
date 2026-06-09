@@ -2,10 +2,10 @@
 
 import { useSheetContent } from '@/hooks/useSheetContent';
 
-const MAC_APS_PATH = 'landing.sheetContent.macAps';
+const MAC_APS_PATH = 'landing.sheetContent.macAps' as const;
 
 export function macApsSheetPath() {
-  return MAC_APS_PATH as const;
+  return MAC_APS_PATH;
 }
 
 export function useMacApsSheetContent() {

@@ -5,7 +5,7 @@ import {
   Prisma,
 } from '@repo/database';
 import bcrypt from 'bcrypt';
-import { applyCandidatureStatusChange, NotificationService } from '@repo/api-core';
+import { applyCandidatureStatusChange, NotificationService, createWorkflowEngine } from '@repo/api-core';
 import { prisma } from '@/lib/prisma';
 import { UserStatus } from '@/app/models/user';
 import {
@@ -188,6 +188,25 @@ export async function postRhCandidature(request: NextRequest) {
     dedupeKey: `candidature-created:${created.candidature.id}`,
   });
 
+  try {
+    const workflows = createWorkflowEngine(prisma);
+    await workflows.emit(
+      'crm.candidature.created',
+      {
+        candidatureId: created.candidature.id,
+        userId: created.user.id,
+        candidateName: `${firstName} ${lastName}`.trim(),
+        email,
+        source: source,
+        formationId,
+        leadId,
+      },
+      { dedupeKey: `workflow:candidature-created:${created.candidature.id}` },
+    );
+  } catch (e) {
+    console.error('[candidature] workflow create', e);
+  }
+
   return NextResponse.json(
     {
       message: 'Candidature créée (compte candidat).',
@@ -321,6 +340,26 @@ export async function patchRhCandidature(candidatureId: string, request: NextReq
       href: '/mon-profil',
       dedupeKey: `candidature-status:${candidatureId}:${nextStatus}`,
     });
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.candidature.status_changed',
+        {
+          candidatureId,
+          userId: candidaturePrev.userId,
+          previousStatus: candidaturePrev.status,
+          nextStatus,
+          statusLabel: label,
+        },
+        {
+          dedupeKey: `workflow:candidature-status:${candidatureId}:${nextStatus}`,
+          severity: nextStatus === CandidatureStatus.VALIDATED ? 'WARNING' : undefined,
+        },
+      );
+    } catch (e) {
+      console.error('[candidature] workflow', e);
+    }
   }
 
   return NextResponse.json({ data: updated }, { status: 200 });

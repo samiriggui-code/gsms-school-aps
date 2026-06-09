@@ -60,6 +60,8 @@ load_deploy_config() {
   PORTAINER_HOST="$(json_get PortainerHost '')"
   UPTIME_HOST="$(json_get UptimeHost '')"
   NETDATA_HOST="$(json_get NetdataHost '')"
+  N8N_HOST="$(json_get N8nHost '')"
+  OPEN_WEBUI_HOST="$(json_get OpenWebuiHost '')"
   SMTP_HOST="$(json_get SmtpHost 'smtp.hostinger.com')"
   SMTP_PORT="$(json_get SmtpPort '465')"
   SMTP_SECURE="$(json_get SmtpSecure 'true')"
@@ -155,6 +157,10 @@ expand_stack_staging() {
     expand_template_vars "${TEMPLATES}/traefik-dynamic.http.yaml.tpl" "${STAGING}/traefik/dynamic/routers.yaml" "$json"
   fi
   expand_template_vars "${TEMPLATES}/homepage-services.yaml.tpl" "${STAGING}/homepage/config/services.yaml" "$json"
+  expand_template_vars "${TEMPLATES}/homepage-settings.yaml.tpl" "${STAGING}/homepage/config/settings.yaml" "$json"
+  expand_template_vars "${TEMPLATES}/homepage-docker.yaml.tpl" "${STAGING}/homepage/config/docker.yaml" "$json"
+  expand_template_vars "${TEMPLATES}/homepage-widgets.yaml.tpl" "${STAGING}/homepage/config/widgets.yaml" "$json"
+  expand_template_vars "${TEMPLATES}/homepage-bookmarks.yaml.tpl" "${STAGING}/homepage/config/bookmarks.yaml" "$json"
   expand_template_vars "${TEMPLATES}/SECRETS.txt.tpl" "${STAGING}/SECRETS.txt" "$json"
   printf '%s' "$json" > "${STAGING}/traefik/dynamic/_vars.json"
 }
@@ -167,6 +173,8 @@ new_staging_from_deploy_config() {
   PORTAINER_HOST="${PORTAINER_HOST:-portainer.${DOMAIN}}"
   UPTIME_HOST="${UPTIME_HOST:-uptime.${DOMAIN}}"
   NETDATA_HOST="${NETDATA_HOST:-netdata.${DOMAIN}}"
+  N8N_HOST="${N8N_HOST:-n8n.${DOMAIN}}"
+  OPEN_WEBUI_HOST="${OPEN_WEBUI_HOST:-ia.${DOMAIN}}"
   SERVER_IP="${SERVER_IP:-$SSH_HOST}"
   SMTP_USER="${SMTP_USER:-admin@${DOMAIN}}"
   local pg_pass minio_pass pg_pass_enc
@@ -216,6 +224,8 @@ new_staging_from_deploy_config() {
       PORTAINER_HOST: process.argv[18],
       UPTIME_HOST: process.argv[19],
       NETDATA_HOST: process.argv[20],
+      N8N_HOST: process.argv[22],
+      OPEN_WEBUI_HOST: process.argv[23],
       SERVER_IP: process.argv[21],
       TRAEFIK_EMAIL: 'admin@'+process.argv[13],
       SCHEME: process.argv[9],
@@ -224,7 +234,8 @@ new_staging_from_deploy_config() {
     "$SMTP_HOST" "$SMTP_PORT" "$SMTP_SECURE" "$SMTP_USER" \
     "$scheme" "$CRM_HOST" "$(new_secret)" "$(new_secret)" "$DOMAIN" \
     "$homepage_hosts" "$netdata_host" "$DOCS_HOST" "$MONITORING_HOST" \
-    "$PORTAINER_HOST" "$UPTIME_HOST" "$NETDATA_HOST" "$SERVER_IP")"
+    "$PORTAINER_HOST" "$UPTIME_HOST" "$NETDATA_HOST" "$SERVER_IP" \
+    "$N8N_HOST" "$OPEN_WEBUI_HOST")"
   copy_stack_to_staging
   expand_stack_staging "$use_https" "$tpl_json"
   log_green "  -> Staging regenere: $STAGING"
@@ -324,7 +335,7 @@ invoke_lms_deploy_execute() {
       --exclude=scripts/.deploy-staging --exclude='*.tar.gz' .
     scp "${SSH_BASE[@]}" "$tarf" "${target}:/tmp/lms-monorepo.tar.gz"
     local ar="$APP_ROOT"
-    ssh "${SSH_BASE[@]}" "$target" "set -e; mkdir -p ${ar}; tar -xzf /tmp/lms-monorepo.tar.gz -C ${ar}; rm -f /tmp/lms-monorepo.tar.gz; cp -f /tmp/_deploy-remote-lib.sh ${ar}/scripts/deploy/_deploy-remote-lib.sh 2>/dev/null || true; find ${ar}/scripts -name '*.sh' -exec sed -i 's/\r$//' {} + 2>/dev/null; chmod +x ${ar}/scripts/deploy/*.sh 2>/dev/null; true"
+    ssh "${SSH_BASE[@]}" "$target" "set -e; mkdir -p ${ar}; tar -xzf /tmp/lms-monorepo.tar.gz -C ${ar}; rm -f /tmp/lms-monorepo.tar.gz; cp -f /tmp/_deploy-remote-lib.sh ${ar}/scripts/deploy/_deploy-remote-lib.sh 2>/dev/null || true; find ${ar}/scripts -name '*.sh' -exec sed -i 's/\r$//' {} + 2>/dev/null; chmod +x ${ar}/scripts/deploy/*.sh 2>/dev/null; cp -f ${ar}/deploy/gsms/Dockerfile.* ${GSMS_DIR}/ 2>/dev/null || true; true"
     rm -f "$tarf"
   fi
 

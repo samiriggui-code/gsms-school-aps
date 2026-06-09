@@ -2,10 +2,10 @@
 
 import { useSheetContent } from '@/hooks/useSheetContent';
 
-const BS_BE_PATH = 'landing.sheetContent.bsBe';
+const BS_BE_PATH = 'landing.sheetContent.bsBe' as const;
 
 export function bsBeSheetPath() {
-  return BS_BE_PATH as const;
+  return BS_BE_PATH;
 }
 
 export function useBsBeSheetContent() {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { LANDING_QUOTE_LEAD_SOURCE } from '@repo/database';
 import { sendQuoteRequestEmails } from '@repo/mail';
+import { createWorkflowEngine } from '@repo/api-core';
 import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
@@ -136,7 +137,7 @@ export async function POST(request: NextRequest) {
     .filter((line) => line !== '')
     .join('\n');
 
-  await prisma.lead.create({
+  const lead = await prisma.lead.create({
     data: {
       firstName,
       lastName,
@@ -166,6 +167,29 @@ export async function POST(request: NextRequest) {
     );
   } catch (e) {
     console.error('[quote-requests] e-mail non envoyé', e);
+  }
+
+  try {
+    const workflows = createWorkflowEngine(prisma);
+    await workflows.emit(
+      'landing.quote.requested',
+      {
+        leadId: lead.id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        company,
+        formationSlug,
+        formationLabel,
+        traineesExpected,
+        deliveryMode,
+        fundingHint,
+      },
+      { dedupeKey: `landing-quote:${lead.id}` },
+    );
+  } catch (e) {
+    console.error('[quote-requests] workflow', e);
   }
 
   return NextResponse.json({ message: 'Demande enregistrée.' }, { status: 201 });

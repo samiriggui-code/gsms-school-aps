@@ -80,4 +80,4 @@ export {
   isEmailConfigured,
 } from '@repo/mail';
 
-export type { DevisQuoteEmailProps } from '@repo/emails';
+export type { DevisQuoteEmailProps } from '@repo/mail';

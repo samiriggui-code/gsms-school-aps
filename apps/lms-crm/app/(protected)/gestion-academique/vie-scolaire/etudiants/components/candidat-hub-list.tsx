@@ -145,6 +145,35 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
   >(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
+  const batchMutation = useMutation({
+    mutationFn: async (input: { candidatureIds: string[]; action: 'archive' | 'reject' }) => {
+      const res = await apiFetch('/api/sections/gestion-ressources/rh/CandidatHub/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error((body as { error?: { message?: string } }).error?.message ?? 'Action groupée impossible.');
+      }
+      return (body as { data?: { updated?: number; errors?: string[] } }).data;
+    },
+    onSuccess: (data, vars) => {
+      void queryClient.invalidateQueries({ queryKey: [...candidatHubListQueryKey] });
+      void queryClient.invalidateQueries({ queryKey: [...candidatHubStatsQueryKey] });
+      void queryClient.invalidateQueries({ queryKey: [...candidatHubDetailQueryKey] });
+      setRowSelection({});
+      const n = data?.updated ?? 0;
+      toast.success(
+        vars.action === 'archive'
+          ? `${n} dossier(s) archivé(s).`
+          : `${n} dossier(s) refusé(s).`,
+      );
+      if (data?.errors?.length) toast.warning(data.errors.slice(0, 2).join(' · '));
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const patchStatusMutation = useMutation({
     mutationFn: async (input: { candidatureId: string; status: string }) => {
       const res = await apiFetch(`/api/sections/gestion-ressources/rh/Candidatures/${input.candidatureId}`, {
@@ -681,8 +710,36 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-popover text-popover-foreground border-border">
-                    <DropdownMenuItem disabled>{t('common.actions.exportSelection')}</DropdownMenuItem>
-                    <DropdownMenuItem disabled>Ouvrir le premier en détail</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        const ids = table
+                          .getSelectedRowModel()
+                          .rows.map((r) => r.original.candidatureId)
+                          .filter((id): id is string => Boolean(id));
+                        if (!ids.length) {
+                          toast.error('Aucun dossier candidature sur la sélection.');
+                          return;
+                        }
+                        batchMutation.mutate({ candidatureIds: ids, action: 'archive' });
+                      }}
+                    >
+                      Archiver la sélection
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        const ids = table
+                          .getSelectedRowModel()
+                          .rows.map((r) => r.original.candidatureId)
+                          .filter((id): id is string => Boolean(id));
+                        if (!ids.length) {
+                          toast.error('Aucun dossier candidature sur la sélection.');
+                          return;
+                        }
+                        batchMutation.mutate({ candidatureIds: ids, action: 'reject' });
+                      }}
+                    >
+                      Refuser la sélection
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <button type="button" className="flex items-center gap-2 text-sm font-semibold hover:text-primary">

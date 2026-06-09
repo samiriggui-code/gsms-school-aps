@@ -85,7 +85,28 @@ export function getAvatarUrl(
     return avatar;
   }
 
-  return toAbsoluteUrl(avatar.startsWith('/') ? avatar : `/${avatar}`);
+  const trimmed = avatar.trim();
+  if (trimmed.startsWith('/uploads/')) {
+    return toAbsoluteUrl(trimmed);
+  }
+  if (trimmed.startsWith('/')) {
+    return toAbsoluteUrl(trimmed);
+  }
+
+  // Clés stockage S3/MinIO sans slash initial.
+  if (/^(avatars|misc|company)\//i.test(trimmed)) {
+    return toAbsoluteUrl(`/api/public/storage/${trimmed}`);
+  }
+
+  // Anciennes URLs stockées comme nom de fichier seul (profil compagnie).
+  if (/^logo-/i.test(trimmed)) {
+    return toAbsoluteUrl(`/media/company/${trimmed}`);
+  }
+  if (/^(director|admin)-/i.test(trimmed)) {
+    return toAbsoluteUrl(`/media/company/avatars/${trimmed}`);
+  }
+
+  return toAbsoluteUrl(`/${trimmed}`);
 }
 
 export function timeAgo(date: Date | string): string {

@@ -1,10 +1,9 @@
-import { mkdir, writeFile } from 'node:fs/promises';
-import path from 'node:path';
+import { uploadToS3 } from '@/lib/s3-upload';
 
 const ALLOWED = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 const MAX_BYTES = 1024 * 1024;
 
-/** Enregistre une image profil sous `public/media/company/avatars/` (dirigeant ou admin). */
+/** Enregistre une image profil dirigeant/admin dans MinIO (`company/avatars/`). */
 export async function saveCompanyProfileImageLocal(
   file: File,
   role: 'director' | 'admin',
@@ -27,13 +26,11 @@ export async function saveCompanyProfileImageLocal(
             ? 'webp'
             : 'bin';
 
-  const name = `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
-  const relativeDir = path.join('public', 'media', 'company', 'avatars');
-  const dir = path.join(process.cwd(), relativeDir);
-  await mkdir(dir, { recursive: true });
+  const prefixed = new File(
+    [await file.arrayBuffer()],
+    `${role}-${Date.now()}.${ext}`,
+    { type: file.type },
+  );
 
-  const buf = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(dir, name), buf);
-
-  return `/media/company/avatars/${name}`;
+  return uploadToS3(prefixed, 'company/avatars');
 }

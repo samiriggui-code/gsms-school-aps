@@ -95,6 +95,18 @@ export const CRM_EVENT_CATALOG: Record<
     severity: 'WARNING',
     labelFr: 'Ticket support',
   },
+  'landing.contact.submitted': {
+    moduleKey: CRM_MODULE_KEYS.SUPPORT,
+    category: 'TICKET',
+    severity: 'WARNING',
+    labelFr: 'Contact landing',
+  },
+  'landing.preinscription.created': {
+    moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Préinscription landing',
+  },
 };
 
 export type EnqueueCrmEventInput = {
@@ -180,7 +192,7 @@ export class CrmEventService {
     excludeUserId?: string | null,
   ): Promise<string[]> {
     if (audience === 'USER_IDS') {
-      return [...new Set(userIds.filter(Boolean))].filter((id) => id !== excludeUserId);
+      return Array.from(new Set(userIds.filter(Boolean))).filter((id) => id !== excludeUserId);
     }
     const users = await this.prisma.user.findMany({
       where: { status: 'ACTIVE', isTrashed: false },

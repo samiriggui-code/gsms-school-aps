@@ -1,273 +1,350 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
+import { useCallback, useId, useState, type ReactNode } from 'react';
+import { Mail, MapPin, Phone, type LucideIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Mail, Phone, MapPin, type LucideIcon } from 'lucide-react';
-import { toast } from 'sonner';
 import { CustomBadge } from '@/components/custom/badge';
 import { CustomSubtitle } from '@/components/custom/subtitle';
 import { CustomTitle } from '@/components/custom/title';
-import Link from 'next/link';
-import { MOBILE_FORM_FIELD_CLASS } from '@/lib/mobile-form';
-import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
+import { cn } from '@/lib/utils';
 
-function ContactFormSkeleton({ label }: { label: string }) {
+/** 16px min on mobile — évite le zoom automatique iOS Safari */
+const FIELD_CLASS =
+  'text-base touch-manipulation min-h-12 md:min-h-10 md:text-[0.8125rem]';
+
+type FormState = {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+};
+
+type FieldErrors = Partial<Record<keyof FormState, string>>;
+
+const EMPTY_FORM: FormState = { name: '', email: '', subject: '', message: '' };
+
+function validateForm(values: FormState, t: (key: string) => string): FieldErrors {
+  const errors: FieldErrors = {};
+  if (values.name.trim().length < 2) {
+    errors.name = t('landing.contact.validation.nameMin');
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
+    errors.email = t('landing.contact.validation.emailInvalid');
+  }
+  if (values.subject.trim().length < 5) {
+    errors.subject = t('landing.contact.validation.subjectMin');
+  }
+  if (values.message.trim().length < 10) {
+    errors.message = t('landing.contact.validation.messageMin');
+  }
+  return errors;
+}
+
+function ContactField({
+  id,
+  label,
+  error,
+  children,
+}: {
+  id: string;
+  label: string;
+  error?: string;
+  children: ReactNode;
+}) {
   return (
-    <Card className="border-border/50">
-      <CardContent className="p-5 sm:p-8 space-y-6" aria-busy="true" aria-label={label}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="h-16 rounded-md bg-muted/40 animate-pulse" />
-          <div className="h-16 rounded-md bg-muted/40 animate-pulse" />
-        </div>
-        <div className="h-16 rounded-md bg-muted/40 animate-pulse" />
-        <div className="h-28 rounded-md bg-muted/40 animate-pulse" />
-        <div className="h-12 rounded-md bg-muted/40 animate-pulse" />
-      </CardContent>
-    </Card>
+    <div className="space-y-2">
+      <label htmlFor={id} className="text-sm font-medium text-foreground">
+        {label}
+      </label>
+      {children}
+      {error ? (
+        <p id={`${id}-error`} className="text-sm text-destructive" role="alert">
+          {error}
+        </p>
+      ) : null}
+    </div>
   );
 }
 
-function ContactFormPanel() {
+function ContactForm() {
   const { t } = useTranslation();
-  const [mounted, setMounted] = useState(false);
+  const formId = useId();
+  const trapId = `${formId}-trap`;
+  const [values, setValues] = useState<FormState>(EMPTY_FORM);
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [trap, setTrap] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [banner, setBanner] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const formSchema = useMemo(
-    () =>
-      z.object({
-        name: z.string().min(2, t('landing.contact.validation.nameMin')),
-        email: z.string().email(t('landing.contact.validation.emailInvalid')),
-        subject: z.string().min(5, t('landing.contact.validation.subjectMin')),
-        message: z.string().min(10, t('landing.contact.validation.messageMin')),
-        _trap: z.string().optional(),
-      }),
-    [t],
-  );
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    mode: 'onSubmit',
-    reValidateMode: 'onSubmit',
-    defaultValues: { name: '', email: '', subject: '', message: '', _trap: '' },
-  });
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true);
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
+  const setField =
+    (key: keyof FormState) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setValues((prev) => ({ ...prev, [key]: e.target.value }));
+      setErrors((prev) => {
+        if (!prev[key]) return prev;
+        const next = { ...prev };
+        delete next[key];
+        return next;
       });
-      const data = (await res.json().catch(() => ({}))) as { message?: string };
-      if (!res.ok) {
-        toast.error(typeof data.message === 'string' ? data.message : t('landing.contact.toasts.errorGeneric'));
+      if (banner) setBanner(null);
+    };
+
+  const onSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      setBanner(null);
+
+      if (trap.trim()) {
         return;
       }
-      toast.success(t('landing.contact.toasts.success'));
-      form.reset({ name: '', email: '', subject: '', message: '', _trap: '' });
-    } catch {
-      toast.error(t('landing.contact.toasts.errorNetwork'));
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
-  if (!mounted) {
-    return <ContactFormSkeleton label={t('landing.contact.form.loadingLabel')} />;
-  }
+      const nextErrors = validateForm(values, t);
+      if (Object.keys(nextErrors).length > 0) {
+        setErrors(nextErrors);
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: values.name.trim(),
+            email: values.email.trim(),
+            subject: values.subject.trim(),
+            message: values.message.trim(),
+            _trap: trap,
+          }),
+        });
+        const data = (await res.json().catch(() => ({}))) as { message?: string };
+
+        if (!res.ok) {
+          const msg =
+            typeof data.message === 'string'
+              ? data.message
+              : t('landing.contact.toasts.errorGeneric');
+          setBanner({ type: 'error', text: msg });
+          toast.error(msg);
+          return;
+        }
+
+        const successMsg = t('landing.contact.toasts.success');
+        setBanner({ type: 'success', text: successMsg });
+        toast.success(successMsg);
+        setValues(EMPTY_FORM);
+        setTrap('');
+        setErrors({});
+      } catch {
+        const msg = t('landing.contact.toasts.errorNetwork');
+        setBanner({ type: 'error', text: msg });
+        toast.error(msg);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [t, trap, values],
+  );
 
   return (
-    <Card className="border-border/50">
-      <CardContent className="p-5 sm:p-8">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" autoComplete="on">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('landing.contact.form.name.label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t('landing.contact.form.name.placeholder')}
-                        autoComplete="name"
-                        className={MOBILE_FORM_FIELD_CLASS}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('landing.contact.form.email.label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t('landing.contact.form.email.placeholder')}
-                        type="email"
-                        inputMode="email"
-                        autoComplete="email"
-                        className={MOBILE_FORM_FIELD_CLASS}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="subject"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('landing.contact.form.subject.label')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t('landing.contact.form.subject.placeholder')}
-                      autoComplete="off"
-                      className={MOBILE_FORM_FIELD_CLASS}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+    <div className="rounded-xl border border-border/60 bg-background p-5 sm:p-8 shadow-sm">
+      {banner ? (
+        <div
+          role="status"
+          className={cn(
+            'mb-6 rounded-lg border px-4 py-3 text-sm',
+            banner.type === 'success'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-100'
+              : 'border-destructive/30 bg-destructive/5 text-destructive',
+          )}
+        >
+          {banner.text}
+        </div>
+      ) : null}
+
+      <form
+        id={formId}
+        onSubmit={onSubmit}
+        className="space-y-5"
+        autoComplete="on"
+        noValidate
+      >
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <ContactField
+            id={`${formId}-name`}
+            label={t('landing.contact.form.name.label')}
+            error={errors.name}
+          >
+            <Input
+              id={`${formId}-name`}
+              name="name"
+              variant="lg"
+              autoComplete="name"
+              enterKeyHint="next"
+              placeholder={t('landing.contact.form.name.placeholder')}
+              className={FIELD_CLASS}
+              value={values.name}
+              onChange={setField('name')}
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? `${formId}-name-error` : undefined}
             />
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('landing.contact.form.message.label')}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder={t('landing.contact.form.message.placeholder')}
-                      rows={5}
-                      enterKeyHint="done"
-                      autoComplete="off"
-                      className={cn(MOBILE_FORM_FIELD_CLASS, 'min-h-[7.5rem] resize-none')}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </ContactField>
+
+          <ContactField
+            id={`${formId}-email`}
+            label={t('landing.contact.form.email.label')}
+            error={errors.email}
+          >
+            <Input
+              id={`${formId}-email`}
+              name="email"
+              type="email"
+              variant="lg"
+              inputMode="email"
+              autoComplete="email"
+              enterKeyHint="next"
+              placeholder={t('landing.contact.form.email.placeholder')}
+              className={FIELD_CLASS}
+              value={values.email}
+              onChange={setField('email')}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? `${formId}-email-error` : undefined}
             />
-            <FormField
-              control={form.control}
-              name="_trap"
-              render={({ field }) => (
-                <FormItem className="absolute -left-[9999px] h-0 w-0 overflow-hidden p-0 opacity-0" aria-hidden>
-                  <FormLabel>{t('landing.contact.form.honeypot.label')}</FormLabel>
-                  <FormControl>
-                    <Input tabIndex={-1} autoComplete="off" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button size="lg" type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? t('landing.contact.form.submitting') : t('landing.contact.form.submit')}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+          </ContactField>
+        </div>
+
+        <ContactField
+          id={`${formId}-subject`}
+          label={t('landing.contact.form.subject.label')}
+          error={errors.subject}
+        >
+          <Input
+            id={`${formId}-subject`}
+            name="subject"
+            variant="lg"
+            autoComplete="off"
+            enterKeyHint="next"
+            placeholder={t('landing.contact.form.subject.placeholder')}
+            className={FIELD_CLASS}
+            value={values.subject}
+            onChange={setField('subject')}
+            aria-invalid={Boolean(errors.subject)}
+          />
+        </ContactField>
+
+        <ContactField
+          id={`${formId}-message`}
+          label={t('landing.contact.form.message.label')}
+          error={errors.message}
+        >
+          <Textarea
+            id={`${formId}-message`}
+            name="message"
+            variant="lg"
+            rows={5}
+            enterKeyHint="done"
+            autoComplete="off"
+            placeholder={t('landing.contact.form.message.placeholder')}
+            className={cn(FIELD_CLASS, 'min-h-[8rem] resize-y')}
+            value={values.message}
+            onChange={setField('message')}
+            aria-invalid={Boolean(errors.message)}
+          />
+        </ContactField>
+
+        {/* Honeypot — hidden natif (plus fiable que position absolute sur iOS) */}
+        <input
+          id={trapId}
+          name="_trap"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={trap}
+          onChange={(e) => setTrap(e.target.value)}
+          className="hidden"
+          aria-hidden
+        />
+
+        <Button
+          type="submit"
+          size="lg"
+          className="h-12 w-full touch-manipulation text-base md:h-10 md:text-sm"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? t('landing.contact.form.submitting') : t('landing.contact.form.submit')}
+        </Button>
+      </form>
+    </div>
   );
 }
+
+const CONTACT_LINKS: {
+  icon: LucideIcon;
+  key: 'email' | 'phone' | 'address';
+  href?: string;
+}[] = [
+  { icon: Mail, key: 'email', href: 'mailto:contact-formssi@gmail.com' },
+  { icon: Phone, key: 'phone', href: 'tel:+33171113963' },
+  { icon: MapPin, key: 'address' },
+];
 
 const Contact = () => {
   const { t } = useTranslation();
 
-  const contactInfo: { icon: LucideIcon; key: 'email' | 'phone' | 'address'; href?: string }[] = [
-    { icon: Mail, key: 'email', href: 'mailto:contact-formssi@gmail.com' },
-    { icon: Phone, key: 'phone', href: 'tel:+33171113963' },
-    { icon: MapPin, key: 'address' },
-  ];
-
   return (
-    <section id="contact" className="py-24 bg-zinc-50 dark:bg-zinc-950 border-b border-border/50">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="flex items-center justify-center flex-col text-center gap-5 mb-25"
-        >
+    <section
+      id="contact"
+      className="scroll-mt-24 overflow-x-clip border-b border-border/50 bg-zinc-50 py-16 sm:py-24 dark:bg-zinc-950"
+    >
+      <div className="container mx-auto px-4 sm:px-6">
+        <header className="mb-12 flex flex-col items-center gap-4 text-center sm:mb-16">
           <CustomBadge>{t('landing.contact.badge')}</CustomBadge>
           <CustomTitle>{t('landing.contact.title')}</CustomTitle>
           <CustomSubtitle>{t('landing.contact.subtitle')}</CustomSubtitle>
-        </motion.div>
+        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="space-y-8"
-          >
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-12">
+          <div className="space-y-8">
             <div>
-              <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+              <h3 className="mb-4 text-xl font-semibold text-foreground sm:text-2xl">
                 {t('landing.contact.sideTitle')}
               </h3>
-              <p className="text-muted-foreground mb-8">{t('landing.contact.sideDescription')}</p>
+              <p className="text-muted-foreground text-pretty">
+                {t('landing.contact.sideDescription')}
+              </p>
             </div>
-            <div className="space-y-6">
-              {contactInfo.map((info, index) => (
-                <motion.div
-                  key={info.key}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="flex items-start gap-4"
-                >
-                  <info.icon className="size-4 text-muted-foreground mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-foreground mb-1">
-                      {t(`landing.contact.info.${info.key}.title`)}
-                    </h4>
-                    {info.href ? (
-                      <Link
-                        href={info.href}
-                        className="text-muted-foreground hover:text-purple-500 whitespace-pre-line"
+
+            <ul className="space-y-6">
+              {CONTACT_LINKS.map(({ icon: Icon, key, href }) => (
+                <li key={key} className="flex gap-4">
+                  <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden />
+                  <div className="min-w-0">
+                    <p className="mb-1 font-semibold text-foreground">
+                      {t(`landing.contact.info.${key}.title`)}
+                    </p>
+                    {href ? (
+                      <a
+                        href={href}
+                        className="text-muted-foreground hover:text-primary break-words whitespace-pre-line underline-offset-4 hover:underline"
                       >
-                        {t(`landing.contact.info.${info.key}.content`)}
-                      </Link>
+                        {t(`landing.contact.info.${key}.content`)}
+                      </a>
                     ) : (
-                      <p className="text-muted-foreground whitespace-pre-line">
-                        {t(`landing.contact.info.${info.key}.content`)}
+                      <p className="text-muted-foreground whitespace-pre-line text-pretty">
+                        {t(`landing.contact.info.${key}.content`)}
                       </p>
                     )}
                   </div>
-                </motion.div>
+                </li>
               ))}
-            </div>
-          </motion.div>
-          <div className="w-full">
-            <ContactFormPanel />
+            </ul>
           </div>
+
+          <ContactForm />
         </div>
       </div>
     </section>

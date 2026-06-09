@@ -5,10 +5,25 @@ set -euo pipefail
 
 APP_ROOT="${APP_ROOT:-/opt/app-prisma}"
 GSMS_DIR="${GSMS_DIR:-/opt/gsms}"
-DOCKERFILES="${DOCKERFILES:-$APP_ROOT/deploy/gsms}"
-if [[ ! -f "$DOCKERFILES/Dockerfile.crm" && -f "$GSMS_DIR/Dockerfile.crm" ]]; then
-  DOCKERFILES="$GSMS_DIR"
+
+# Source de vérité : monorepo (sync tar). /opt/gsms peut être plus récent après étape infra
+# mais le build utilise APP_ROOT comme contexte — on aligne les Dockerfiles après sync.
+if [[ -z "${DOCKERFILES:-}" ]]; then
+  if [[ -f "$APP_ROOT/deploy/gsms/Dockerfile.crm" ]]; then
+    DOCKERFILES="$APP_ROOT/deploy/gsms"
+  elif [[ -f "$GSMS_DIR/Dockerfile.crm" ]]; then
+    DOCKERFILES="$GSMS_DIR"
+  else
+    echo "ERREUR: Dockerfile.crm introuvable sous $APP_ROOT/deploy/gsms et $GSMS_DIR"
+    exit 1
+  fi
 fi
+
+sync_dockerfiles_to_gsms_dir() {
+  if [[ -d "$APP_ROOT/deploy/gsms" && -d "$GSMS_DIR" ]]; then
+    cp -f "$APP_ROOT/deploy/gsms"/Dockerfile.* "$GSMS_DIR/" 2>/dev/null || true
+  fi
+}
 
 BUILD_EXTRA=()
 if [[ "${DOCKER_BUILD_NO_CACHE:-}" == "1" ]]; then
@@ -29,10 +44,11 @@ build_gsms_images() {
     echo "ERREUR: daemon Docker indisponible"
     exit 1
   fi
+  sync_dockerfiles_to_gsms_dir
   cd "$APP_ROOT"
   build_image crm crm
   build_image landing landing
-  if [[ "${REBUILD_WORKER:-1}" != "0" ]]; then
+  if [[ "${REBUILD_WORKER:-0}" == "1" ]]; then
     build_image worker worker
   fi
   if [[ "${REBUILD_DOCS:-0}" == "1" ]]; then

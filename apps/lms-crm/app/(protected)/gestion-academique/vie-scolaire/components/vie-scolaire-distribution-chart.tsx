@@ -36,7 +36,7 @@ export function VieScolaireDistributionChart() {
     setMounted(true);
   }, []);
 
-  const raw = statsResponse?.data?.categoryDistribution || [];
+  const raw = statsResponse?.data?.categoryDistribution ?? [];
 
   let chartData: ChartItem[] = raw.map((item: { name: string; count: number }, index: number) => ({
     name: item.name,

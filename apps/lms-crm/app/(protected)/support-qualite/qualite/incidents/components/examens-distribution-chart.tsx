@@ -5,6 +5,7 @@ import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
+import { fetchSectionHubStats } from '@/lib/section-hub-stats-client';
 import { apiFetch } from '@/lib/api';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -21,7 +22,7 @@ interface ChartItem {
 export function ExamensDistributionChart() {
   const { data: statsResponse, isLoading } = useQuery({
     queryKey: ['section-hub-distribution', 'support'],
-    queryFn: () => fetchSectionHubDistribution('support', 12),
+    queryFn: () => fetchSectionHubStats('support', 12),
     staleTime: 2 * 60 * 1000,
   });
   const [mounted, setMounted] = useState(false);
@@ -30,7 +31,7 @@ export function ExamensDistributionChart() {
     setMounted(true);
   }, []);
 
-  const categoryDistribution = statsResponse?.data?.categoryDistribution || [];
+  const categoryDistribution = statsResponse?.categoryDistribution ?? [];
   
   const chartData: ChartItem[] = categoryDistribution.map((item: any, index: number) => ({
     name: item.name,
@@ -38,7 +39,7 @@ export function ExamensDistributionChart() {
     color: COLORS[index % COLORS.length]
   }));
 
-  const activeEmployees = statsResponse?.data?.activeCollaborators || 0;
+  const activeEmployees = statsResponse?.activeCollaborators ?? 0;
 
   const options: ApexOptions = {
     chart: {

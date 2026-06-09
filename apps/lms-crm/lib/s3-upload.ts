@@ -1,4 +1,5 @@
-import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { deleteFileByKey, resolveKeyFromUrl } from '@repo/storage';
 import { uid } from './helpers';
 import { getS3ClientInstance } from './s3-client';
 
@@ -13,14 +14,23 @@ function getConfig() {
 
 function getFileUrl(key: string): string {
   const config = getConfig();
+  const base =
+    config.cdnUrl ||
+    (process.env.NEXTAUTH_URL
+      ? `${process.env.NEXTAUTH_URL.replace(/\/$/, '')}/api/public/storage`
+      : config.endpoint);
 
-  // Prefer CDN URL if available
-  if (config.cdnUrl) {
-    return `${config.cdnUrl}/${key}`;
+  // Path-style S3 (MinIO) : endpoint/bucket/key — proxy CRM : /api/public/storage/key
+  if (config.cdnUrl?.includes('/api/public/storage')) {
+    return `${config.cdnUrl.replace(/\/$/, '')}/${key}`;
   }
-
-  // Fallback to direct endpoint
-  return `${config.endpoint}/${key}`;
+  if (config.endpoint && !config.cdnUrl) {
+    return `${config.endpoint}/${config.bucket}/${key}`;
+  }
+  if (!base) {
+    return `/${key}`;
+  }
+  return `${base.replace(/\/$/, '')}/${key}`;
 }
 
 export async function uploadToS3(
@@ -75,32 +85,22 @@ export async function uploadToS3(
 }
 
 export async function deleteFromS3(fileUrl: string): Promise<void> {
+  if (!fileUrl) throw new Error('No file URL provided');
+
+  const key = resolveKeyFromUrl(fileUrl);
+  if (!key) {
+    console.warn('deleteFromS3: impossible de résoudre la clé', { fileUrl });
+    return;
+  }
+
   try {
-    const config = getConfig();
-    if (!fileUrl) throw new Error('No file URL provided');
-
-    // Extract key from URL
-    let key = fileUrl;
-    if (config.cdnUrl && fileUrl.startsWith(config.cdnUrl)) {
-      key = fileUrl.replace(`${config.cdnUrl}/`, '');
-    } else if (config.endpoint && fileUrl.startsWith(config.endpoint)) {
-      key = fileUrl.replace(`${config.endpoint}/`, '');
-    }
-
-    // Delete from storage
-    const s3Client = getS3ClientInstance();
-    await s3Client.send(
-      new DeleteObjectCommand({
-        Bucket: config.bucket,
-        Key: key,
-      }),
-    );
-
+    await deleteFileByKey(key);
     console.log('File deleted successfully:', { key });
   } catch (error) {
     console.error('Delete failed:', {
       error: error instanceof Error ? error.message : 'Unknown error',
       fileUrl,
+      key,
     });
     throw new Error('Failed to delete file');
   }

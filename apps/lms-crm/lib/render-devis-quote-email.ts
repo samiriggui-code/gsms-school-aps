@@ -1,2 +1,1 @@
-export { renderDevisQuoteEmailHtml } from '@repo/mail';
-export type { DevisQuoteEmailProps } from '@repo/emails';
+export { renderDevisQuoteEmailHtml, type DevisQuoteEmailProps } from '@repo/mail';

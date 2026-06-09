@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/card';
 
 export function I18nExample() {
-  const { t } = useTranslation();
   const { t, i18n } = useTranslation();
   const { tButton, tLabel, tMessage, tNav } = useTypedTranslation();
   const { language, changeLanguage } = useLanguage();

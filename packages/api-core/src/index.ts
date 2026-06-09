@@ -6,3 +6,4 @@ export * from './module-workspace';
 export * from './pilotage-export';
 export * from './notifications';
 export * from './crm-events';
+export * from './workflows';

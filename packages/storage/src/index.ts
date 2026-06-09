@@ -136,9 +136,14 @@ export async function uploadFile(input: UploadInput): Promise<UploadResult> {
     }),
   );
 
+  const publicBase = getPublicBaseUrl();
+  const url = publicBase.includes('/api/public/storage')
+    ? `${publicBase.replace(/\/$/, '')}/${key}`
+    : `${publicBase.replace(/\/$/, '')}/${bucket}/${key}`;
+
   return {
     key,
-    url: `${getPublicBaseUrl()}/${key}`,
+    url,
     mimeType: input.file.type || 'application/octet-stream',
     size: input.file.size,
     originalName: input.file.name,
@@ -166,11 +171,35 @@ export async function deleteFileByKey(key: string): Promise<void> {
 
 export function resolveKeyFromUrl(url: string): string | null {
   if (!url) return null;
-  if (url.startsWith('/uploads/')) return url.replace(/^\//, '');
-  const cdn = process.env.STORAGE_CDN_URL?.replace(/\/$/, '');
-  const endpoint = process.env.STORAGE_ENDPOINT?.replace(/\/$/, '');
 
-  if (cdn && url.startsWith(`${cdn}/`)) return url.replace(`${cdn}/`, '');
-  if (endpoint && url.startsWith(`${endpoint}/`)) return url.replace(`${endpoint}/`, '');
+  const trimmed = url.trim();
+
+  if (trimmed.startsWith('/uploads/')) {
+    return trimmed.replace(/^\/uploads\//, '');
+  }
+  if (trimmed.startsWith('/api/public/storage/')) {
+    return trimmed.replace(/^\/api\/public\/storage\//, '');
+  }
+
+  const cdn = process.env.STORAGE_CDN_URL?.replace(/\/$/, '');
+  if (cdn && trimmed.startsWith(`${cdn}/`)) {
+    return trimmed.slice(cdn.length + 1);
+  }
+
+  const nextAuth = process.env.NEXTAUTH_URL?.replace(/\/$/, '');
+  if (nextAuth && trimmed.startsWith(`${nextAuth}/api/public/storage/`)) {
+    return trimmed.replace(`${nextAuth}/api/public/storage/`, '');
+  }
+
+  const endpoint = process.env.STORAGE_ENDPOINT?.replace(/\/$/, '');
+  const bucket = process.env.STORAGE_BUCKET;
+  if (endpoint && trimmed.startsWith(`${endpoint}/`)) {
+    let rest = trimmed.slice(endpoint.length + 1);
+    if (bucket && rest.startsWith(`${bucket}/`)) {
+      rest = rest.slice(bucket.length + 1);
+    }
+    return rest;
+  }
+
   return null;
 }

@@ -10,7 +10,7 @@ import {
   LANDING_SECTION_CATALOG,
   landingSectionLabel,
   type LandingSectionConfig,
-} from '@repo/database';
+} from '@repo/database/browser';
 import { Container } from '@/components/common/container';
 import {
   Toolbar,

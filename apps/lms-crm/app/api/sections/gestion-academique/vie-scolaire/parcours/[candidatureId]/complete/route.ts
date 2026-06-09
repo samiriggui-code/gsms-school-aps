@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { completeCandidatureParcours } from '@repo/api-core';
+import { completeCandidatureParcours, createWorkflowEngine } from '@repo/api-core';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 
@@ -15,6 +15,27 @@ export async function POST(_request: NextRequest, context: Ctx) {
 
   try {
     const row = await prisma.$transaction((tx) => completeCandidatureParcours(tx, candidatureId));
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: row.userId },
+        select: { id: true, name: true, email: true },
+      });
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.candidature.parcours.completed',
+        {
+          candidatureId,
+          userId: row.userId,
+          candidateName: user?.name ?? user?.email ?? 'Élève',
+          status: row.status,
+        },
+        { dedupeKey: `workflow:parcours-complete:${candidatureId}` },
+      );
+    } catch (e) {
+      console.error('[parcours complete] workflow', e);
+    }
+
     return ok({ candidature: row });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'UNKNOWN';

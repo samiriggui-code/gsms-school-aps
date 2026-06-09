@@ -8,6 +8,7 @@ import {
   LANDING_PREINSCRIPTION_LEAD_SOURCE,
 } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { createWorkflowEngine } from '@repo/api-core';
 
 type Ctx = { params: Promise<{ leadId: string }> };
 
@@ -66,6 +67,33 @@ export async function POST(_request: NextRequest, context: Ctx) {
       },
       select: { id: true, userId: true },
     });
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.lead.converted',
+        {
+          leadId: lead.id,
+          candidatureId: candidature.id,
+          userId: candidature.userId,
+          email: lead.email,
+        },
+        { dedupeKey: `workflow:lead-converted:${lead.id}` },
+      );
+      await workflows.emit(
+        'crm.candidature.created',
+        {
+          candidatureId: candidature.id,
+          userId: candidature.userId,
+          email: lead.email,
+          source: CandidatureSource.LANDING_SESSION,
+          leadId: lead.id,
+        },
+        { dedupeKey: `workflow:candidature-created:${candidature.id}` },
+      );
+    } catch (e) {
+      console.error('[convert-to-candidature] workflow', e);
+    }
 
     return ok({
       candidatureId: candidature.id,

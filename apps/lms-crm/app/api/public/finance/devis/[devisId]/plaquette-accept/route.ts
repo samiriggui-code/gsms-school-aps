@@ -4,6 +4,7 @@ import { FinanceDevisStatus } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { verifyPlaquetteTokenForDevis } from '@/lib/devis-plaquette-public-request';
 import { createPlaquetteMessageRow } from '@/lib/devis-plaquette-messages-query';
+import { createWorkflowEngine } from '@repo/api-core';
 
 type Ctx = { params: Promise<{ devisId: string }> };
 
@@ -42,6 +43,20 @@ export async function POST(request: NextRequest, context: Ctx) {
       authorLabel: 'Système (client)',
       body: 'Le client a accepté la proposition via la plaquette publique.',
     });
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.finance.devis.accepted',
+        {
+          devisId,
+          referenceCode: row.referenceCode,
+        },
+        { dedupeKey: `workflow:devis-accepted:${devisId}` },
+      );
+    } catch (e) {
+      console.error('[plaquette-accept] workflow', e);
+    }
 
     return ok({ accepted: true, status: FinanceDevisStatus.ACCEPTED, referenceCode: row.referenceCode });
   } catch (e) {

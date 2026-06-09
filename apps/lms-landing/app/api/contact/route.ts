@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { sendContactFormEmails } from '@repo/mail';
+import { createWorkflowEngine } from '@repo/api-core';
 import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
@@ -66,9 +67,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: msg }, { status: 503 });
   }
 
+  let referenceCode: string | null = null;
+
   try {
     const count = await prisma.supportTicket.count();
-    const referenceCode = `TKT-${String(count + 1).padStart(4, '0')}`;
+    referenceCode = `TKT-${String(count + 1).padStart(4, '0')}`;
     await prisma.supportTicket.create({
       data: {
         referenceCode,
@@ -82,6 +85,25 @@ export async function POST(request: NextRequest) {
     });
   } catch (e) {
     console.error('[contact] ticket CRM', e);
+  }
+
+  try {
+    const workflows = createWorkflowEngine(prisma);
+    await workflows.emit(
+      'landing.contact.submitted',
+      {
+        name: safeName,
+        email: safeEmail,
+        subject: safeSubject,
+        message: safeMessage,
+        referenceCode,
+      },
+      {
+        dedupeKey: referenceCode ? `landing-contact:${referenceCode}` : undefined,
+      },
+    );
+  } catch (e) {
+    console.error('[contact] workflow', e);
   }
 
   return NextResponse.json({ message: 'Message envoyé.' }, { status: 200 });

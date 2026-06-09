@@ -34,7 +34,7 @@ export function RHDistributionChart() {
     setMounted(true);
   }, []);
 
-  const categoryDistribution = statsResponse?.data?.categoryDistribution || [];
+  const categoryDistribution = statsResponse?.data?.categoryDistribution ?? [];
   
   const chartData: ChartItem[] = categoryDistribution.map((item: any, index: number) => ({
     name: item.name,
@@ -42,7 +42,7 @@ export function RHDistributionChart() {
     color: COLORS[index % COLORS.length]
   }));
 
-  const activeEmployees = statsResponse?.data?.activeCollaborators || 0;
+  const activeEmployees = statsResponse?.data?.activeCollaborators ?? 0;
 
   const options: ApexOptions = {
     chart: {

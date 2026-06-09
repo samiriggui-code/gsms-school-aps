@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/select';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
+import { fetchSectionHubMonthlyEvolution } from '@/lib/section-hub-stats-client';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 

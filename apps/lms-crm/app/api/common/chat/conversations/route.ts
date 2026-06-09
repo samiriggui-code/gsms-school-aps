@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     ? (body.participantIds as string[]).filter((id) => id && id !== auth.userId)
     : [];
 
-  const allParticipantIds = [...new Set([auth.userId, ...participantIds])];
+  const allParticipantIds = Array.from(new Set([auth.userId, ...participantIds]));
   if (allParticipantIds.length < 2) {
     return fail('Au moins un autre participant est requis.', 400);
   }

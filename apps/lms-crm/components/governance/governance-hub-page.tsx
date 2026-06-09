@@ -211,7 +211,7 @@ export function GovernanceHubPage({
                         {(linkKey || canRestore) && (
                           <td className="px-4 py-3 text-right">
                             <div className="flex justify-end gap-2">
-                              {linkKey && row[linkKey] && (
+                              {linkKey && Boolean(row[linkKey]) && (
                                 <Button size="sm" variant="outline" asChild>
                                   <Link href={String(row[linkKey])}>
                                     {t('governance.open')}

@@ -35,6 +35,8 @@ export {
   FinancePaymentStatus,
   InAppNotificationCategory,
   ChatConversationType,
+  RhAbsenceType,
+  RhAbsenceStatus,
 } from '../generated/client';
 /** Types Prisma (modèles, inputs, enums) — sans ré-export runtime `export *`. */
 export type * from '../generated/client';

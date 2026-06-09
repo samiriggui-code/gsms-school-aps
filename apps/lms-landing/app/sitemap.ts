@@ -2,11 +2,11 @@ import type { MetadataRoute } from 'next';
 import { withDbTimeout } from '@repo/database';
 import prisma from '@/lib/prisma';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
-  const now = new Date();
+/** Généré à la requête (pas au `next build`) — évite prisma:error si Postgres absent en CI/Docker. */
+export const dynamic = 'force-dynamic';
 
-  const fallback: MetadataRoute.Sitemap = [
+function buildFallback(base: string, now: Date): MetadataRoute.Sitemap {
+  return [
     {
       url: base,
       lastModified: now,
@@ -14,22 +14,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
   ];
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const base = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+  const now = new Date();
+
+  const fallback = buildFallback(base, now);
+
+  if (!process.env.DATABASE_URL?.trim()) {
+    return fallback;
+  }
 
   return withDbTimeout(
     (async () => {
       try {
-        const [redirects, setting] = await Promise.all([
-          prisma.seoRedirect.findMany({
-            where: { active: true },
-            select: { sourcePath: true, updatedAt: true },
-          }),
-          prisma.systemSetting.findFirst({ orderBy: { id: 'asc' }, select: { updatedAt: true } }),
-        ]);
+        const redirects = await prisma.seoRedirect.findMany({
+          where: { active: true },
+          select: { sourcePath: true, updatedAt: true },
+        });
 
         const entries: MetadataRoute.Sitemap = [
           {
             url: base,
-            lastModified: setting?.updatedAt ?? now,
+            lastModified: now,
             changeFrequency: 'weekly',
             priority: 1,
           },

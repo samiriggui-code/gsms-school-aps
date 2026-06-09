@@ -1,5 +1,5 @@
-# Stack GSMS / LMS — Traefik + infra + apps (profile `apps`)
-# Usage VPS : /opt/gsms — voir deploy/gsms/README.md
+# Stack GSMS / LMS — Traefik Hostinger (labels Docker, pas de gsms-traefik)
+# Usage VPS : /opt/gsms — code : /opt/gsms-school
 
 name: gsms
 
@@ -13,28 +13,11 @@ volumes:
   minio_data:
   portainer_data:
   uptime_kuma_data:
-  traefik_letsencrypt:
   netdata_config:
   netdata_lib:
   netdata_cache:
 
 services:
-  traefik:
-    image: traefik:v3.3
-    container_name: gsms-traefik
-    restart: unless-stopped
-    command:
-      - --configFile=/etc/traefik/traefik.yml
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
-      - ./traefik/dynamic:/etc/traefik/dynamic:ro
-      - traefik_letsencrypt:/letsencrypt
-    networks:
-      - gsms
-
   maintenance:
     image: nginx:1.27-alpine
     container_name: gsms-maintenance
@@ -43,6 +26,19 @@ services:
       - ./maintenance:/usr/share/nginx/html:ro
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.middlewares.gsms-secure-headers.headers.stsSeconds": "31536000"
+      "traefik.http.middlewares.gsms-secure-headers.headers.stsIncludeSubdomains": "true"
+      "traefik.http.middlewares.gsms-secure-headers.headers.stsPreload": "true"
+      "traefik.http.middlewares.gsms-secure-headers.headers.forceSTSHeader": "true"
+      "traefik.http.middlewares.gsms-secure-headers.headers.sslRedirect": "true"
+      "traefik.http.routers.gsms-docs-fallback.rule": "Host(`${DOCS_HOST}`)"
+      "traefik.http.routers.gsms-docs-fallback.entrypoints": "websecure"
+      "traefik.http.routers.gsms-docs-fallback.tls.certresolver": "letsencrypt"
+      "traefik.http.routers.gsms-docs-fallback.priority": "1"
+      "traefik.http.routers.gsms-docs-fallback.middlewares": "gsms-secure-headers@docker"
+      "traefik.http.services.gsms-docs-fallback.loadbalancer.server.port": "80"
 
   postgres:
     image: postgres:16-alpine
@@ -96,6 +92,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.routers.gsms-homepage.rule": "Host(`${MONITORING_HOST}`)"
+      "traefik.http.routers.gsms-homepage.entrypoints": "websecure"
+      "traefik.http.routers.gsms-homepage.tls.certresolver": "letsencrypt"
+      "traefik.http.services.gsms-homepage.loadbalancer.server.port": "3000"
 
   portainer:
     image: portainer/portainer-ce:latest
@@ -107,6 +109,12 @@ services:
       - portainer_data:/data
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.routers.gsms-portainer.rule": "Host(`${PORTAINER_HOST}`)"
+      "traefik.http.routers.gsms-portainer.entrypoints": "websecure"
+      "traefik.http.routers.gsms-portainer.tls.certresolver": "letsencrypt"
+      "traefik.http.services.gsms-portainer.loadbalancer.server.port": "9000"
 
   uptime-kuma:
     image: louislam/uptime-kuma:1
@@ -116,6 +124,12 @@ services:
       - uptime_kuma_data:/app/data
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.routers.gsms-uptime.rule": "Host(`${UPTIME_HOST}`)"
+      "traefik.http.routers.gsms-uptime.entrypoints": "websecure"
+      "traefik.http.routers.gsms-uptime.tls.certresolver": "letsencrypt"
+      "traefik.http.services.gsms-uptime.loadbalancer.server.port": "3001"
 
   netdata:
     image: netdata/netdata:stable
@@ -138,13 +152,20 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.routers.gsms-netdata.rule": "Host(`${NETDATA_HOST}`)"
+      "traefik.http.routers.gsms-netdata.entrypoints": "websecure"
+      "traefik.http.routers.gsms-netdata.tls.certresolver": "letsencrypt"
+      "traefik.http.services.gsms-netdata.loadbalancer.server.port": "19999"
 
   crm:
     profiles: [apps]
     image: gsms-crm:latest
     container_name: gsms-crm
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - ".env"
     environment:
       NODE_ENV: production
       PORT: "3001"
@@ -159,13 +180,34 @@ services:
         condition: service_started
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.routers.gsms-crm.rule": "Host(`${CRM_HOST}`)"
+      "traefik.http.routers.gsms-crm.entrypoints": "websecure"
+      "traefik.http.routers.gsms-crm.tls.certresolver": "letsencrypt"
+      "traefik.http.routers.gsms-crm.priority": "10"
+      "traefik.http.routers.gsms-crm.middlewares": "gsms-secure-headers@docker"
+      "traefik.http.routers.gsms-crm-app.rule": "Host(`app.${DOMAIN}`)"
+      "traefik.http.routers.gsms-crm-app.entrypoints": "websecure"
+      "traefik.http.routers.gsms-crm-app.tls.certresolver": "letsencrypt"
+      "traefik.http.routers.gsms-crm-app.priority": "10"
+      "traefik.http.routers.gsms-crm-app.middlewares": "gsms-secure-headers@docker"
+      "traefik.http.routers.gsms-crm-app.service": "gsms-crm"
+      "traefik.http.routers.gsms-crm-api.rule": "Host(`api.${DOMAIN}`)"
+      "traefik.http.routers.gsms-crm-api.entrypoints": "websecure"
+      "traefik.http.routers.gsms-crm-api.tls.certresolver": "letsencrypt"
+      "traefik.http.routers.gsms-crm-api.priority": "10"
+      "traefik.http.routers.gsms-crm-api.middlewares": "gsms-secure-headers@docker"
+      "traefik.http.routers.gsms-crm-api.service": "gsms-crm"
+      "traefik.http.services.gsms-crm.loadbalancer.server.port": "3001"
 
   landing:
     profiles: [apps]
     image: gsms-landing:latest
     container_name: gsms-landing
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - ".env"
     environment:
       NODE_ENV: production
       PORT: "3000"
@@ -177,26 +219,49 @@ services:
         condition: service_healthy
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.routers.gsms-landing.rule": "Host(`${DOMAIN}`)"
+      "traefik.http.routers.gsms-landing-www.rule": "Host(`www.${DOMAIN}`)"
+      "traefik.http.routers.gsms-landing-www.entrypoints": "websecure"
+      "traefik.http.routers.gsms-landing-www.tls.certresolver": "letsencrypt"
+      "traefik.http.routers.gsms-landing-www.priority": "10"
+      "traefik.http.routers.gsms-landing-www.middlewares": "gsms-secure-headers@docker"
+      "traefik.http.routers.gsms-landing-www.service": "gsms-landing"
+      "traefik.http.routers.gsms-landing.entrypoints": "websecure"
+      "traefik.http.routers.gsms-landing.tls.certresolver": "letsencrypt"
+      "traefik.http.routers.gsms-landing.priority": "10"
+      "traefik.http.routers.gsms-landing.middlewares": "gsms-secure-headers@docker"
+      "traefik.http.services.gsms-landing.loadbalancer.server.port": "3000"
 
   docs:
     profiles: [apps]
     image: gsms-docs:latest
     container_name: gsms-docs
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - ".env"
     environment:
       NODE_ENV: production
       PORT: "3004"
       HOSTNAME: "0.0.0.0"
     networks:
       - gsms
+    labels:
+      "traefik.enable": "true"
+      "traefik.http.routers.gsms-docs.rule": "Host(`${DOCS_HOST}`)"
+      "traefik.http.routers.gsms-docs.entrypoints": "websecure"
+      "traefik.http.routers.gsms-docs.tls.certresolver": "letsencrypt"
+      "traefik.http.routers.gsms-docs.priority": "20"
+      "traefik.http.services.gsms-docs.loadbalancer.server.port": "3004"
 
   worker:
     profiles: [apps]
     image: gsms-worker:latest
     container_name: gsms-worker
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - ".env"
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}

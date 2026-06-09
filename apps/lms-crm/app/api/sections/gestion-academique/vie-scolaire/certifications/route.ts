@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { issueFormationAttestation } from '@repo/api-core';
+import { issueFormationAttestation, createWorkflowEngine } from '@repo/api-core';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 
@@ -60,7 +60,12 @@ export async function POST(request: NextRequest) {
 
   const candidature = await prisma.candidature.findUnique({
     where: { id: candidatureId },
-    select: { id: true, userId: true, formationId: true },
+    select: {
+      id: true,
+      userId: true,
+      formationId: true,
+      user: { select: { name: true, email: true } },
+    },
   });
 
   if (!candidature) return fail('Candidature introuvable.', 404);
@@ -79,6 +84,23 @@ export async function POST(request: NextRequest) {
         certificateUrl,
       }),
     );
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.candidature.attestation.issued',
+        {
+          attestationId: attestation.id,
+          candidatureId: candidature.id,
+          userId: candidature.userId,
+          candidateName: candidature.user.name ?? candidature.user.email ?? 'Élève',
+          attestationTitle: title,
+          sessionId,
+        },
+        { dedupeKey: `workflow:attestation:${attestation.id}` },
+      );
+    } catch (e) {
+      console.error('[certifications] workflow', e);
+    }
     return ok({ attestation }, 201);
   } catch (e) {
     console.error('[certifications POST]', e);

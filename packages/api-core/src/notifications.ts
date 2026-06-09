@@ -59,7 +59,7 @@ export class NotificationService {
 
   /** Notifie plusieurs utilisateurs (ex. admins) */
   async emitMany(userIds: string[], input: Omit<EmitNotificationInput, 'userId'>) {
-    const unique = [...new Set(userIds.filter(Boolean))];
+    const unique = Array.from(new Set(userIds.filter(Boolean)));
     return Promise.all(
       unique.map((userId) => this.emit({ ...input, userId })),
     );

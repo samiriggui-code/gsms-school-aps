@@ -57,6 +57,9 @@ export function ModuleWorkspacePage({ viewKey, beforeContent, charts, afterConte
     return Math.max(1, Math.ceil(total / limit));
   }, [data?.pagination.limit, data?.pagination.total]);
 
+  const columns = data?.columns ?? [];
+  const columnCount = Math.max(columns.length, 4);
+
   const onSearch = () => {
     setPage(1);
     setSearch(q.trim());
@@ -154,7 +157,7 @@ export function ModuleWorkspacePage({ viewKey, beforeContent, charts, afterConte
               <table className="w-full min-w-[640px] text-sm">
                 <thead>
                   <tr className="border-b border-border/70 bg-muted/30">
-                    {(data?.columns ?? []).map((col) => (
+                    {columns.map((col) => (
                       <th
                         key={col.key}
                         className={cn(
@@ -171,7 +174,7 @@ export function ModuleWorkspacePage({ viewKey, beforeContent, charts, afterConte
                   {isLoading ? (
                     Array.from({ length: 5 }).map((_, i) => (
                       <tr key={i} className="border-b border-border/50">
-                        <td colSpan={Math.max(data?.columns.length ?? 4, 4)} className="px-4 py-4">
+                        <td colSpan={columnCount} className="px-4 py-4">
                           <Skeleton className="h-4 w-full" />
                         </td>
                       </tr>
@@ -179,7 +182,7 @@ export function ModuleWorkspacePage({ viewKey, beforeContent, charts, afterConte
                   ) : (data?.rows.length ?? 0) === 0 ? (
                     <tr>
                       <td
-                        colSpan={Math.max(data?.columns.length ?? 1, 1)}
+                        colSpan={Math.max(columns.length, 1)}
                         className="px-4 py-10 text-center text-muted-foreground"
                       >
                         {t('crud.emptyView')}
@@ -188,7 +191,7 @@ export function ModuleWorkspacePage({ viewKey, beforeContent, charts, afterConte
                   ) : (
                     data!.rows.map((row, idx) => (
                       <tr key={idx} className="border-b border-border/50 hover:bg-muted/20">
-                        {data!.columns.map((col) => (
+                        {columns.map((col) => (
                           <td
                             key={col.key}
                             className={cn(

@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { nullishId } from '../_lib/rh-teams-serialize';
+import { nullishId } from '../../_lib/rh-teams-serialize';
 
 type Params = { params: Promise<{ path?: string[] }> };
 

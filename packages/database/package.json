@@ -27,7 +27,7 @@
   },
   "scripts": {
     "db:push": "node --env-file=../../.env node_modules/prisma/build/index.js db push",
-    "db:generate": "node --env-file=../../.env node_modules/prisma/build/index.js generate",
+    "db:generate": "node node_modules/prisma/build/index.js generate",
     "db:seed": "node prisma/seed.js",
     "db:migrate": "node --env-file=../../.env node_modules/prisma/build/index.js migrate deploy",
     "db:migrate:dev": "node --env-file=../../.env node_modules/prisma/build/index.js migrate dev",

@@ -1,0 +1,20 @@
+---
+- resources:
+    label: Ressources VPS
+    cpu: true
+    memory: true
+    disk: /
+    expanded: true
+
+- datetime:
+    text_size: xl
+    locale: fr
+    format:
+      dateStyle: long
+      timeStyle: short
+      hourCycle: h23
+
+- search:
+    provider: duckduckgo
+    target: _blank
+    focus: false

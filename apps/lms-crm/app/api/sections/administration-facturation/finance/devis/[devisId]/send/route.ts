@@ -8,6 +8,7 @@ import { sendEmail, ensureEmailAssetsOrigin } from '@/services/send-email';
 import { isPlaquettePublicLinkConfigured, signPlaquettePublicToken } from '@/lib/devis-plaquette-public-token';
 import { absolutePublicPlaquetteUrl } from '@/lib/devis-plaquette-public-url';
 import { renderDevisQuoteEmailHtml } from '@/lib/render-devis-quote-email';
+import { createWorkflowEngine } from '@repo/api-core';
 
 type Ctx = { params: Promise<{ devisId: string }> };
 
@@ -103,6 +104,21 @@ export async function POST(request: NextRequest, context: Ctx) {
       where: { id: devisId },
       data: { status: FinanceDevisStatus.SENT },
     });
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.finance.devis.sent',
+        {
+          devisId,
+          referenceCode: row.referenceCode,
+          leadEmail: row.lead.email,
+        },
+        { dedupeKey: `workflow:devis-sent:${devisId}` },
+      );
+    } catch (e) {
+      console.error('[finance-devis send] workflow', e);
+    }
 
     return ok({ sent: true, status: FinanceDevisStatus.SENT });
   } catch (e) {

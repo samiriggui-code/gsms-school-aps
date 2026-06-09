@@ -5,7 +5,7 @@ import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
-import { fetchSectionHubMonthlyEvolution, fetchSectionHubDistribution } from '@/lib/section-hub-stats-client';
+import { fetchSectionHubStats } from '@/lib/section-hub-stats-client';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -21,7 +21,7 @@ interface ChartItem {
 export function CompagnieDistributionChart() {
   const { data: statsResponse, isLoading } = useQuery({
     queryKey: ['section-hub-distribution', 'compagnie'],
-    queryFn: () => fetchSectionHubDistribution('compagnie', 12),
+    queryFn: () => fetchSectionHubStats('compagnie', 12),
     staleTime: 2 * 60 * 1000,
   });
   const [mounted, setMounted] = useState(false);
@@ -30,7 +30,7 @@ export function CompagnieDistributionChart() {
     setMounted(true);
   }, []);
 
-  const categoryDistribution = statsResponse?.data?.categoryDistribution || [];
+  const categoryDistribution = statsResponse?.categoryDistribution ?? [];
   
   const chartData: ChartItem[] = categoryDistribution.map((item: any, index: number) => ({
     name: item.name,
@@ -38,7 +38,7 @@ export function CompagnieDistributionChart() {
     color: COLORS[index % COLORS.length]
   }));
 
-  const activeEmployees = statsResponse?.data?.activeCollaborators || 0;
+  const activeEmployees = statsResponse?.activeCollaborators ?? 0;
 
   const options: ApexOptions = {
     chart: {

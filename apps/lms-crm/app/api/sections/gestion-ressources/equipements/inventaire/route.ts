@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
+import { uploadFile } from '@repo/storage';
 import {
   buildUnitSerialNumber,
   defaultStatusForUnitIndex,
@@ -300,9 +301,16 @@ export async function POST(request: NextRequest) {
         data.assignedSite = { connect: { id: assignedSiteId as string } };
       }
       const avatar = formData.get('avatar');
-      if (avatar && avatar instanceof File) {
-        const avatarUrl = `/media/uploads/equipments/${avatar.name}`;
-        (data.metadata as Record<string, unknown>).avatar = avatarUrl;
+      if (avatar && avatar instanceof File && avatar.size > 0) {
+        const uploaded = await uploadFile({
+          file: avatar,
+          module: 'gestion-ressources',
+          entityType: 'equipment',
+          entityId: String(data.serialNumber || 'catalog'),
+          category: 'avatar',
+          visibility: 'public',
+        });
+        (data.metadata as Record<string, unknown>).avatar = uploaded.url;
       }
     } else {
       const body = await request.json();

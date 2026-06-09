@@ -9,4 +9,5 @@ export {
 export { getDateFnsLocale } from './date-locale';
 export { mergeTranslations } from './merge';
 export { useTranslation, useTypedTranslation, default } from './hooks';
+export type { TFunction } from 'i18next';
 export { SHARED_MESSAGES, sharedFr, sharedEn } from './shared-messages';

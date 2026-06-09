@@ -6,7 +6,7 @@
   "types": "src/index.ts",
   "scripts": {
     "dev": "node --env-file=../../.env ./node_modules/tsx/dist/cli.mjs src/run.ts",
-    "start": "pnpm run dev"
+    "start": "node ./node_modules/tsx/dist/cli.mjs src/run.ts"
   },
   "dependencies": {
     "@repo/api-core": "workspace:*",

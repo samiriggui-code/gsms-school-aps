@@ -5,6 +5,7 @@ import {
   Prisma,
 } from '@repo/database';
 import { prisma } from '@/lib/prisma';
+import { createWorkflowEngine } from '@repo/api-core';
 
 async function promoteUserToEleve(userId: string) {
   const eleveRole = await prisma.userRole.findFirst({
@@ -54,7 +55,7 @@ export async function getFormationSessionParticipants(sessionId: string) {
 export async function postFormationSessionParticipant(sessionId: string, request: NextRequest) {
   const formationSession = await prisma.formationSession.findUnique({
     where: { id: sessionId },
-    select: { id: true, formationId: true },
+    select: { id: true, formationId: true, dateDisplayLabel: true },
   });
   if (!formationSession) {
     return NextResponse.json({ message: 'Session formation introuvable.' }, { status: 404 });
@@ -148,6 +149,32 @@ export async function postFormationSessionParticipant(sessionId: string, request
         enrollmentStatus,
       },
     });
+
+    if (candidatureRef?.id) {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: userId! },
+          select: { name: true, email: true },
+        });
+        const workflows = createWorkflowEngine(prisma);
+        await workflows.emit(
+          'crm.candidature.session.enrolled',
+          {
+            participantId: row.id,
+            sessionId,
+            sessionLabel: formationSession.dateDisplayLabel,
+            candidatureId: candidatureRef.id,
+            userId: userId!,
+            candidateName: user?.name ?? user?.email ?? 'Participant',
+            enrollmentStatus,
+          },
+          { dedupeKey: `workflow:session-enroll:${row.id}` },
+        );
+      } catch (e) {
+        console.error('[session-participant] workflow', e);
+      }
+    }
+
     return NextResponse.json({ data: row }, { status: 201 });
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {

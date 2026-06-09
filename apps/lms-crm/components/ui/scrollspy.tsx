@@ -77,7 +77,7 @@ export function Scrollspy({
     const scrollTop =
       scrollElement === window
         ? window.scrollY || document.documentElement.scrollTop
-        : scrollElement.scrollTop;
+        : (scrollElement as HTMLElement).scrollTop;
 
     // Find the anchor whose section is closest to but not past the top
     let activeIdx = 0;

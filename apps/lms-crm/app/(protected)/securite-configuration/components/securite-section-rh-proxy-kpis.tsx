@@ -6,10 +6,9 @@ import {
   SECTION_KPI_CARD_ACCENTS,
 } from '@/components/common/stat-card-metric-layout';
 import { Users, UserCheck, AlertTriangle, FileWarning, UserMinus } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { apiFetch } from '@/lib/api';
+import { useSectionHubStats } from '@/hooks/use-section-hub-stats';
 
 type StatsApi = {
   totalCollaborators?: number;
@@ -37,7 +36,7 @@ export function SecuriteSectionRhProxyKpis({
     setMounted(true);
   }, []);
 
-  const { data: statsApi = {} } = useSectionHubStats('securite', 12);
+  const { data: statsApi = {}, isLoading, isError: error } = useSectionHubStats('securite', 12);
 
   const gridClasses =
     variant === 'row'
@@ -65,7 +64,7 @@ export function SecuriteSectionRhProxyKpis({
     return null;
   }
 
-  const statsData = statsResponse?.data ?? DEFAULT;
+  const statsData: StatsApi = statsApi ?? DEFAULT;
   const total = statsData?.totalCollaborators ?? 0;
   const active = statsData?.activeCollaborators ?? 0;
   const inactive = Math.max(0, total - active);

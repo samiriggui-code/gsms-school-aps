@@ -1179,7 +1179,7 @@ export class ModuleWorkspaceService {
       this.prisma.formationSessionParticipant.count({ where: { examOutcome: 'PASSED' } }),
       this.prisma.formationSessionParticipant.count({ where: { examOutcome: 'FAILED' } }),
       this.prisma.formationSessionParticipant.count({ where: { examOutcome: 'ABSENT' } }),
-      this.prisma.formationSessionParticipant.count({ where: { examOutcome: null } }),
+      this.prisma.formationSessionParticipant.count({ where: { examOutcome: 'PENDING' } }),
     ]);
 
     const evolution = await this.monthlySessionEvolution(PILOTAGE_CHART_MONTHS);

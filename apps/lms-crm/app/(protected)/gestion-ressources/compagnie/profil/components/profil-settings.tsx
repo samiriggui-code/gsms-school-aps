@@ -8,7 +8,7 @@ import { useForm, type FieldErrors } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { cn } from '@/lib/utils';
-import { getInitials } from '@/lib/helpers';
+import { getAvatarUrl, getInitials } from '@/lib/helpers';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -134,7 +134,7 @@ export function ProfilSettings({ profile, primaryAdminContact, formRef }: Profil
   }, [form, defaultValues]);
 
   useEffect(() => {
-    setLogoExistingPreview(profile.logo || null);
+    setLogoExistingPreview(profile.logo ? getAvatarUrl(profile.logo) : null);
     setLogoAttachedPreview(null);
   }, [profile?.logo]);
 
@@ -936,7 +936,7 @@ export function ProfilSettings({ profile, primaryAdminContact, formRef }: Profil
                       <AvatarImage
                         src={
                           directorAttachedPreview ||
-                          (form.watch('directorAvatar') || DEFAULT_DIRECTOR_AVATAR)
+                          getAvatarUrl(form.watch('directorAvatar'), DEFAULT_DIRECTOR_AVATAR)
                         }
                         alt=""
                       />
@@ -1079,7 +1079,7 @@ export function ProfilSettings({ profile, primaryAdminContact, formRef }: Profil
                         <AvatarImage
                           src={
                             adminAttachedPreview ||
-                            (form.watch('adminAvatar') || DEFAULT_ADMIN_AVATAR)
+                            getAvatarUrl(form.watch('adminAvatar'), DEFAULT_ADMIN_AVATAR)
                           }
                           alt=""
                         />

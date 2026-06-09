@@ -5,6 +5,7 @@ import {
   LANDING_PREINSCRIPTION_LEAD_SOURCE,
 } from '@repo/database';
 import { sendPreinscriptionEmails } from '@repo/mail';
+import { createWorkflowEngine } from '@repo/api-core';
 import { preinscriptionLabelForSlug } from '@/lib/preinscription-formation-options';
 import prisma from '@/lib/prisma';
 
@@ -298,6 +299,31 @@ export async function POST(request: NextRequest) {
     );
   } catch (e) {
     console.error('[preinscription] e-mail non envoyé', e);
+  }
+
+  try {
+    const workflows = createWorkflowEngine(prisma);
+    await workflows.emit(
+      'landing.preinscription.created',
+      {
+        candidatureId: candidature.id,
+        leadId: lead.id,
+        userId: user.id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        formationSlug,
+        formationLabel,
+        sessionId: matchedSession?.id ?? null,
+        sessionLabel: matchedSession?.dateDisplayLabel ?? (sessionLabel || null),
+        fundingMode,
+        sourceContext,
+      },
+      { dedupeKey: `landing-preinscription:${candidature.id}` },
+    );
+  } catch (e) {
+    console.error('[preinscription] workflow', e);
   }
 
   return NextResponse.json(

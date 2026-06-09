@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { createWorkflowEngine } from '@repo/api-core';
 import { FinancePaymentStatus, Prisma } from '@repo/database';
 
 function decimalNum(d: unknown): number {
@@ -112,6 +113,25 @@ export async function POST(request: NextRequest) {
         notes: String(body.notes ?? '').trim() || null,
       },
     });
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.finance.payment.recorded',
+        {
+          paymentId: row.id,
+          referenceCode: row.referenceCode,
+          amount,
+          currency: row.currency,
+          devisId: row.devisId,
+          status: row.status,
+        },
+        { dedupeKey: `workflow:payment:${row.id}` },
+      );
+    } catch (e) {
+      console.error('[finance-payment] workflow', e);
+    }
+
     return ok({ id: row.id, referenceCode: row.referenceCode }, 201);
   } catch (e) {
     return fail('Création impossible.', 500, e);

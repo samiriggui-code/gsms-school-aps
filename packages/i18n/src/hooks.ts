@@ -15,6 +15,7 @@ export const useTypedTranslation = () => {
     tButton: (key: string) => t(`common.buttons.${key}`),
     tLabel: (key: string) => t(`common.labels.${key}`),
     tMessage: (key: string) => t(`common.messages.${key}`),
+    tNav: (key: string) => t(`navigation.${key}`),
   };
 };
 

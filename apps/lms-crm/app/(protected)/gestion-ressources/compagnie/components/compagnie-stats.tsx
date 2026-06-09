@@ -2,71 +2,85 @@
 
 import { Users, ShieldCheck, Calendar, AlertTriangle } from 'lucide-react';
 import { useSectionHubStats } from '@/hooks/use-section-hub-stats';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   ModuleLandingStatGradientCard,
-  StatCardMetricLayout,
   type MetricStatTone,
 } from '@/components/common/stat-card-metric-layout';
-import type { ModuleStatsResponse } from '@repo/api-core';
 
 interface CompagnieStatsProps {
   variant?: 'grid' | 'row';
 }
 
+interface CompagnieStat {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  trend: 'up' | 'down' | 'neutral';
+  trendValue: string;
+  color: MetricStatTone;
+}
+
 export function CompagnieStats({ variant = 'grid' }: CompagnieStatsProps) {
   const { data: statsApi = {} } = useSectionHubStats('compagnie', 12);
+  const total = statsApi.totalCollaborators ?? 0;
+  const active = statsApi.activeCollaborators ?? 0;
+  const absences = statsApi.absentCollaborators ?? 0;
+  const complianceRate = statsApi.complianceRate ?? 0;
+  const alerts = statsApi.complianceIssues ?? 0;
 
-  const statsResponse: ModuleStatsResponse =
-    data?.data || { kpis: [], updatedAt: new Date().toISOString() };
-  const kpis = statsResponse.kpis || [];
+  const stats: CompagnieStat[] = [
+    {
+      icon: Users,
+      label: 'Sites actifs',
+      value: String(active),
+      trend: 'neutral',
+      trendValue: `${total}`,
+      color: 'primary',
+    },
+    {
+      icon: ShieldCheck,
+      label: 'Conformité',
+      value: `${complianceRate}%`,
+      trend: 'neutral',
+      trendValue: `${alerts}`,
+      color: 'success',
+    },
+    {
+      icon: Calendar,
+      label: 'Équipes',
+      value: String(absences),
+      trend: 'neutral',
+      trendValue: `${total}`,
+      color: 'warning',
+    },
+    {
+      icon: AlertTriangle,
+      label: 'Alertes',
+      value: String(alerts),
+      trend: 'neutral',
+      trendValue: `${complianceRate}%`,
+      color: 'destructive',
+    },
+  ];
 
   const gridClasses =
     variant === 'row'
       ? 'grid grid-cols-2 md:grid-cols-2 gap-5 lg:gap-8 w-full'
       : 'grid grid-cols-2 md:grid-cols-2 gap-5 lg:gap-8 h-full items-stretch';
 
-  if (isLoading) {
-    return (
-      <div className={gridClasses}>
-        {[1, 2, 3, 4].map((index) => (
-          <Card key={`skeleton-${index}`} className="border border-border/70 shadow-none">
-            <CardContent className="p-0">
-              <StatCardMetricLayout iconSlot={<Skeleton className="size-10 shrink-0 rounded-lg" />}>
-                <Skeleton className="h-3 w-28" />
-                <Skeleton className="h-7 w-16" />
-                <Skeleton className="h-3 w-20" />
-              </StatCardMetricLayout>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
-
   return (
     <div className={gridClasses}>
-      {kpis.map((kpi, idx) => {
-        const IconComponent = ({
-          Users,
-          ShieldCheck,
-          Calendar,
-          AlertTriangle,
-        } as any)[kpi.icon as string] || Users;
-
-        return (
-          <ModuleLandingStatGradientCard
-            key={kpi.label || idx}
-            icon={IconComponent}
-            tone={kpi.color as MetricStatTone}
-            label={kpi.label}
-            value={String(kpi.value)}
-            detail={kpi.trendValue || ''}
-            trend={(kpi.trend as any) || 'neutral'}
-          />
-        );
-      })}
+      {stats.map((stat) => (
+        <ModuleLandingStatGradientCard
+          key={stat.label}
+          icon={stat.icon}
+          tone={stat.color}
+          label={stat.label}
+          value={stat.value}
+          detail={stat.trendValue}
+          trend={stat.trend}
+        />
+      ))}
     </div>
   );
 }

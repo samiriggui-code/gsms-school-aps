@@ -21,7 +21,8 @@ param(
   [switch]$RebuildOnly,
   [switch]$NoCache,
   [switch]$RebuildDocs,
-  [switch]$DeployNow
+  [switch]$DeployNow,
+  [switch]$UseDeployConfig
 )
 
 $modeCount = @($PrepareOnly, $InfraOnly, $AppsOnly, $RebuildOnly).Where({ $_ }).Count
@@ -130,6 +131,16 @@ function Escape-EnvQuoted {
   return $Value
 }
 
+function Normalize-AppRootPath {
+  param([string]$Path)
+  $p = if ($Path) { $Path.Trim() } else { '' }
+  if (-not $p) { return '/opt/gsms-school' }
+  if ($p -match '^[A-Za-z]:\\') { return $p }
+  if ($p.StartsWith('/')) { return $p.TrimEnd('/') }
+  if ($p -match '^~') { return $p }
+  return '/opt/' + ($p -replace '^/+', '')
+}
+
 function Expand-TemplateFile {
   param([string]$TemplatePath, [string]$OutPath, [hashtable]$Vars)
   $text = Get-Content -LiteralPath $TemplatePath -Raw -Encoding UTF8
@@ -178,9 +189,26 @@ function Expand-StackStaging {
     Expand-TemplateFile (Join-Path $Templates 'traefik-dynamic.http.yaml.tpl') (Join-Path $Staging 'traefik\dynamic\routers.yaml') $Vars
   }
   Expand-TemplateFile (Join-Path $Templates 'homepage-services.yaml.tpl') (Join-Path $Staging 'homepage\config\services.yaml') $Vars
+  Expand-TemplateFile (Join-Path $Templates 'homepage-settings.yaml.tpl') (Join-Path $Staging 'homepage\config\settings.yaml') $Vars
+  Expand-TemplateFile (Join-Path $Templates 'homepage-docker.yaml.tpl') (Join-Path $Staging 'homepage\config\docker.yaml') $Vars
+  Expand-TemplateFile (Join-Path $Templates 'homepage-widgets.yaml.tpl') (Join-Path $Staging 'homepage\config\widgets.yaml') $Vars
+  Expand-TemplateFile (Join-Path $Templates 'homepage-bookmarks.yaml.tpl') (Join-Path $Staging 'homepage\config\bookmarks.yaml') $Vars
   Expand-TemplateFile (Join-Path $Templates 'SECRETS.txt.tpl') (Join-Path $Staging 'SECRETS.txt') $Vars
-  $json = $Vars | ConvertTo-Json -Compress
-  Set-Content (Join-Path $Staging 'traefik\dynamic\_vars.json') -Value $json -Encoding UTF8
+  Write-VarsJsonFile -Vars $Vars -OutPath (Join-Path $Staging 'traefik\dynamic\_vars.json')
+}
+
+function Write-VarsJsonFile {
+  param([hashtable]$Vars, [string]$OutPath)
+  # Exclure champs quotes .env (SMTP_PASS_QUOTED casse ConvertTo-Json sous Windows)
+  $skip = @('SMTP_PASS_QUOTED', 'SMTP_SENDER_QUOTED')
+  $safe = [ordered]@{}
+  foreach ($k in ($Vars.Keys | Sort-Object)) {
+    if ($skip -contains $k) { continue }
+    if ($k -match '_QUOTED$') { continue }
+    $safe[$k] = [string]$Vars[$k]
+  }
+  $json = $safe | ConvertTo-Json -Compress -Depth 4
+  [IO.File]::WriteAllText($OutPath, $json, [Text.UTF8Encoding]::new($false))
 }
 
 function New-StagingFromDeployConfig {
@@ -195,6 +223,8 @@ function New-StagingFromDeployConfig {
   $portainerHost = if ($Cfg.PortainerHost) { [string]$Cfg.PortainerHost } else { "portainer.$domain" }
   $uptimeHost = if ($Cfg.UptimeHost) { [string]$Cfg.UptimeHost } else { "uptime.$domain" }
   $netdataHost = if ($Cfg.NetdataHost) { [string]$Cfg.NetdataHost } else { "netdata.$domain" }
+  $n8nHost = if ($Cfg.N8nHost) { [string]$Cfg.N8nHost } else { "n8n.$domain" }
+  $openWebuiHost = if ($Cfg.OpenWebuiHost) { [string]$Cfg.OpenWebuiHost } else { "ia.$domain" }
   $serverIp = if ($Cfg.ServerIp) { [string]$Cfg.ServerIp } else { [string]$Cfg.SshHost }
   $projectName = if ($Cfg.ProjectName) { [string]$Cfg.ProjectName } else { 'GSMS' }
   $smtpHost = if ($Cfg.SmtpHost) { [string]$Cfg.SmtpHost } else { 'smtp.hostinger.com' }
@@ -218,7 +248,7 @@ function New-StagingFromDeployConfig {
     SMTP_PORT                      = $smtpPort
     SMTP_SECURE                    = $smtpSecure
     SMTP_USER                      = $smtpUser
-    SMTP_PASS_QUOTED               = '""'
+    SMTP_PASS_QUOTED               = $(if ($Cfg.SmtpPass) { Escape-EnvQuoted ([string]$Cfg.SmtpPass) } else { '""' })
     SMTP_FROM                      = $smtpUser
     SMTP_SENDER_QUOTED             = (Escape-EnvQuoted $projectName)
     CONTACT_TO_EMAIL               = $smtpUser
@@ -238,14 +268,28 @@ function New-StagingFromDeployConfig {
     PORTAINER_HOST                 = $portainerHost
     UPTIME_HOST                    = $uptimeHost
     NETDATA_HOST                   = $netdataHost
+    N8N_HOST                       = $n8nHost
+    OPEN_WEBUI_HOST                = $openWebuiHost
     SERVER_IP                      = $serverIp
     SCHEME                         = $scheme
     TRAEFIK_EMAIL                  = "admin@$domain"
     CADDY_EMAIL                    = "admin@$domain"
+    EXTERNAL_TRAEFIK               = 'true'
+    TRAEFIK_DYNAMIC_DIR            = if ($Cfg.TraefikDynamicDir) { [string]$Cfg.TraefikDynamicDir } else { '/opt/traefik/dynamic' }
+    TRAEFIK_CONTAINER_NAME         = if ($Cfg.TraefikContainerName) { [string]$Cfg.TraefikContainerName } else { 'traefik' }
   }
   Copy-StackToStaging
   Expand-StackStaging -Vars $vars -UseHttps $useHttps
   Write-Host "  -> Staging regenere: $Staging" -ForegroundColor Green
+}
+
+function Sync-CanonicalComposeToStaging {
+  $src = Join-Path $script:RepoRoot 'deploy\gsms\docker-compose.yml'
+  $dst = Join-Path $script:Staging 'docker-compose.yml'
+  if (-not (Test-Path $src)) {
+    throw "docker-compose.yml source introuvable: $src"
+  }
+  Copy-Item -LiteralPath $src -Destination $dst -Force
 }
 
 function Send-FullStackToVps {
@@ -254,6 +298,7 @@ function Send-FullStackToVps {
   if (-not (Test-Path $localEnv)) {
     throw ('Fichier local manquant : ' + $localEnv + ' - lancez .\scripts\1-etape-preparer-fichiers.ps1')
   }
+  Sync-CanonicalComposeToStaging
   Write-Host ('  -> Upload scripts\.deploy-staging vers ' + $script:gsmsDir) -ForegroundColor Cyan
   & scp @SshArgs -r ($script:Staging + '\*') ($SshTarget + ':' + $script:gsmsDir + '/')
   # Windows : le wildcard * n'inclut pas les fichiers masques (.env)
@@ -270,6 +315,25 @@ function Test-RemoteGsmsEnv {
   $remoteTest = 'test -f {0}/.env && echo yes || echo no' -f $script:gsmsDir
   $r = & ssh @SshArgs $SshTarget $remoteTest
   return ($r.Trim() -eq 'yes')
+}
+
+function Find-RemoteMonorepoPath {
+  param([string[]]$SshArgs, [string]$SshTarget, [string]$PreferredRoot)
+  $preferred = Normalize-AppRootPath $PreferredRoot
+  $remoteTest = @"
+for d in '$preferred' /opt/gsms-school /root/gsms-school /opt/app-prisma; do
+  if [ -d "`$d/packages/database" ]; then echo "`$d"; exit 0; fi
+done
+f=`$(find /opt /root -maxdepth 6 -type f -path '*/packages/database/prisma/schema.prisma' 2>/dev/null | head -1)
+if [ -n "`$f" ]; then dirname "`$(dirname "`$(dirname "`$f")")"); exit 0; fi
+exit 1
+"@
+  try {
+    $r = & ssh @SshArgs $SshTarget $remoteTest 2>$null
+    $p = ($r | Select-Object -Last 1).Trim()
+    if ($p -and $p.StartsWith('/')) { return $p }
+  } catch { /* ignore */ }
+  return $null
 }
 
 function Test-SshPrivateKeyFile {
@@ -336,8 +400,9 @@ function Invoke-LmsDeployExecute {
   & scp @sshArgs (Join-Path $PSScriptRoot 'prepare-vps.sh') "${sshTarget}:/tmp/prepare-vps.sh"
   & scp @sshArgs (Join-Path $PSScriptRoot 'install-docker-vps.sh') "${sshTarget}:/tmp/install-docker-vps.sh"
   & scp @sshArgs (Join-Path $PSScriptRoot '_deploy-remote-lib.sh') "${sshTarget}:/tmp/_deploy-remote-lib.sh"
-  $prepSed = 'sed -i ''s/\r$//'' /tmp/prepare-vps.sh /tmp/install-docker-vps.sh /tmp/_deploy-remote-lib.sh 2>/dev/null; true'
-  $prepChmod = 'chmod +x /tmp/prepare-vps.sh /tmp/install-docker-vps.sh /tmp/_deploy-remote-lib.sh 2>/dev/null; true'
+  & scp @sshArgs (Join-Path $PSScriptRoot 'install-external-traefik-routes.sh') "${sshTarget}:/tmp/install-external-traefik-routes.sh"
+  $prepSed = 'sed -i ''s/\r$//'' /tmp/prepare-vps.sh /tmp/install-docker-vps.sh /tmp/_deploy-remote-lib.sh /tmp/install-external-traefik-routes.sh 2>/dev/null; true'
+  $prepChmod = 'chmod +x /tmp/prepare-vps.sh /tmp/install-docker-vps.sh /tmp/_deploy-remote-lib.sh /tmp/install-external-traefik-routes.sh 2>/dev/null; true'
   & ssh @sshArgs $sshTarget ($prepSed + '; ' + $prepChmod)
 
   if (-not $script:skipStackUpload) {
@@ -362,6 +427,13 @@ function Invoke-LmsDeployExecute {
     Write-Host '  -> Stack envoyee' -ForegroundColor Green
   } else {
     Write-Host '  -> Pas de sync stack (/.env deja sur VPS)' -ForegroundColor DarkGray
+  }
+
+  # Toujours forcer le compose canonique (sans gsms-traefik) — le staging peut etre obsolete
+  $canonicalCompose = Join-Path $script:RepoRoot 'deploy\gsms\docker-compose.yml'
+  if (Test-Path $canonicalCompose) {
+    Write-Host '  -> Force docker-compose.yml (sans Traefik GSMS)' -ForegroundColor Cyan
+    & scp @sshArgs $canonicalCompose ($sshTarget + ':' + $script:gsmsDir + '/docker-compose.yml')
   }
 
   if (-not (Test-RemoteGsmsEnv -SshArgs $sshArgs -SshTarget $sshTarget)) {
@@ -392,6 +464,8 @@ function Invoke-LmsDeployExecute {
     $tarCmd += '; cp -f /tmp/_deploy-remote-lib.sh ' + $ar + '/scripts/deploy/_deploy-remote-lib.sh 2>/dev/null; true'
     $tarCmd += '; find ' + $ar + '/scripts -name ''*.sh'' -exec sed -i ''s/\r$//'' {} + 2>/dev/null; true'
     $tarCmd += '; chmod +x ' + $ar + '/scripts/deploy/*.sh 2>/dev/null; true'
+    $gd = $script:gsmsDir
+    $tarCmd += '; cp -f ' + $ar + '/deploy/gsms/Dockerfile.* ' + $gd + '/ 2>/dev/null; true'
     & ssh @sshArgs $sshTarget $tarCmd
     Remove-Item $tar -Force -ErrorAction SilentlyContinue
   }
@@ -456,6 +530,22 @@ function Invoke-LmsDeployExecute {
 
 if (($AppsOnly -or $RebuildOnly) -and -not $ConfigFile) {
   $ConfigFile = $DefaultConfigPath
+}
+
+if ($UseDeployConfig -and $PrepareOnly) {
+  $cfgPath = if ($ConfigFile -and (Test-Path $ConfigFile)) { $ConfigFile } else { $DefaultConfigPath }
+  if (-not (Test-Path $cfgPath)) { throw "Config introuvable: $cfgPath" }
+  $obj = Get-Content $cfgPath -Raw | ConvertFrom-Json
+  $ht = @{}
+  $obj.PSObject.Properties | ForEach-Object { $ht[$_.Name] = $_.Value }
+  if ($env:DEPLOY_SMTP_PASS) { $ht['SmtpPass'] = [string]$env:DEPLOY_SMTP_PASS }
+  Write-Host '=== Preparation depuis deploy.config.json ===' -ForegroundColor Cyan
+  Write-Host "  Domaine : $($ht.Domain)  |  SMTP : $($ht.SmtpUser)"
+  New-StagingFromDeployConfig -Cfg $ht
+  Write-Host ''
+  Write-Host "=== Staging pret : $Staging ===" -ForegroundColor Green
+  Write-Host '  Etape suivante : .\scripts\2-etape-infra-vps.ps1'
+  exit 0
 }
 
 Write-Host ''
@@ -529,14 +619,14 @@ if ($AppsOnly) {
   $sshUser = Get-Cfg 'SshUser' 'root'
   $sshKey = Get-Cfg 'SshKey' $DefaultKey
   $gsmsDir = Get-Cfg 'GsmsDir' '/opt/gsms'
-  $appRoot = Get-Cfg 'AppRoot' '/opt/app-prisma'
+  $appRoot = Normalize-AppRootPath (Get-Cfg 'AppRoot' '/opt/gsms-school')
   $domain = Get-Cfg 'Domain' 'example.com'
   $crmHost = Get-Cfg 'CrmHost' "crm.$domain"
   $scheme = Get-Cfg 'Scheme' 'https'
   $useHttps = ($scheme -eq 'https')
   $serverIp = Get-Cfg 'ServerIp' $sshHost
   $script:smtpPass = ''
-  Write-Host "  VPS: ${sshUser}@${sshHost}  |  ${scheme}://$domain"
+  Write-Host "  VPS: ${sshUser}@${sshHost}  |  ${scheme}://$domain  |  code: $appRoot"
 
   $sshTarget = "${sshUser}@${sshHost}"
   $sshArgs = @('-i', $sshKey, '-o', 'StrictHostKeyChecking=accept-new')
@@ -570,7 +660,18 @@ if ($AppsOnly) {
     Write-Host 'Infra presente sur le VPS (.env OK).' -ForegroundColor DarkGray
   }
 
-  $syncMonorepo = Read-YesNo 'Synchroniser le monorepo depuis ce PC' $true
+  $remoteMono = Find-RemoteMonorepoPath -SshArgs $sshArgs -SshTarget $sshTarget -PreferredRoot $appRoot
+  if ($env:LMS_DEPLOY_SKIP_MONOREPO_SYNC -eq '1') {
+    Write-Host 'Sync monorepo : ignoree (LMS_DEPLOY_SKIP_MONOREPO_SYNC)' -ForegroundColor DarkGray
+    $syncMonorepo = $false
+  } elseif ($remoteMono) {
+    Write-Host "Monorepo DEJA sur le VPS : $remoteMono" -ForegroundColor Green
+    $appRoot = Normalize-AppRootPath $remoteMono
+    $syncMonorepo = Read-YesNo 'Re-synchroniser le monorepo depuis ce PC (45 Mo, lent)' $false
+  } else {
+    Write-Host 'Monorepo ABSENT sur le VPS — sync obligatoire.' -ForegroundColor Yellow
+    $syncMonorepo = Read-YesNo 'Synchroniser le monorepo depuis ce PC' $true
+  }
   $deployApps = $true
   $deployMigrate = Read-YesNo 'Executer migrations Prisma + seed' $true
   $withMonitoring = $false
@@ -588,13 +689,13 @@ if ($RebuildOnly) {
   $sshUser = Get-Cfg 'SshUser' 'root'
   $sshKey = Get-Cfg 'SshKey' $DefaultKey
   $gsmsDir = Get-Cfg 'GsmsDir' '/opt/gsms'
-  $appRoot = Get-Cfg 'AppRoot' '/opt/app-prisma'
+  $appRoot = Normalize-AppRootPath (Get-Cfg 'AppRoot' '/opt/gsms-school')
   $domain = Get-Cfg 'Domain' 'example.com'
   $crmHost = Get-Cfg 'CrmHost' "crm.$domain"
   $scheme = Get-Cfg 'Scheme' 'https'
   $serverIp = Get-Cfg 'ServerIp' $sshHost
   $script:smtpPass = ''
-  Write-Host "  VPS: ${sshUser}@${sshHost}"
+  Write-Host "  VPS: ${sshUser}@${sshHost}  |  code: $appRoot"
   Write-Host '  Rebuild : images Docker CRM + landing + worker (pas docs sauf -RebuildDocs)' -ForegroundColor DarkGray
   Write-Host '  Donnees : Postgres/Redis/MinIO = volumes Docker — NON supprimes par le rebuild' -ForegroundColor DarkGray
   Write-Host '  Sauvegarde auto : dump BDD + .env + compose dans .gsms-cockpit/backups/pre-*' -ForegroundColor DarkGray
@@ -662,15 +763,17 @@ if ($InfraOnly -and (Test-Path $stagingEnv) -and (Test-Path $DefaultConfigPath))
     $sshUser = Get-Cfg 'SshUser' 'root'
     $sshKey = Get-Cfg 'SshKey' $DefaultKey
     $gsmsDir = Get-Cfg 'GsmsDir' '/opt/gsms'
-    $appRoot = Get-Cfg 'AppRoot' '/opt/app-prisma'
+    $appRoot = Normalize-AppRootPath (Get-Cfg 'AppRoot' '/opt/gsms-school')
     $projectName = Get-Cfg 'ProjectName' 'GSMS'
-    $domain = Get-Cfg 'Domain' 'gsms-security.com'
+    $domain = Get-Cfg 'Domain' 'hosting-global-it-ss.com'
     $crmHost = Get-Cfg 'CrmHost' "crm.$domain"
     $docsHost = Get-Cfg 'DocsHost' "docs.$domain"
     $monitoringHost = Get-Cfg 'MonitoringHost' "monitoring.$domain"
     $portainerHost = Get-Cfg 'PortainerHost' "portainer.$domain"
     $uptimeHost = Get-Cfg 'UptimeHost' "uptime.$domain"
     $netdataHost = Get-Cfg 'NetdataHost' "netdata.$domain"
+    $n8nHost = Get-Cfg 'N8nHost' "n8n.$domain"
+    $openWebuiHost = Get-Cfg 'OpenWebuiHost' "ia.$domain"
     $scheme = Get-Cfg 'Scheme' 'https'
     $useHttps = ($scheme -eq 'https')
     $serverIp = Get-Cfg 'ServerIp' $sshHost
@@ -703,7 +806,7 @@ $sshHost = Read-Default 'IP ou hostname du VPS' (Get-Cfg 'SshHost' '192.168.1.37
 $sshUser = Read-Default 'Utilisateur SSH' (Get-Cfg 'SshUser' 'root')
 $sshKey = Read-Default 'Cle SSH' (Get-Cfg 'SshKey' $DefaultKey)
 $gsmsDir = Read-Default 'Dossier stack sur le VPS' (Get-Cfg 'GsmsDir' '/opt/gsms')
-$appRoot = Read-Default 'Dossier monorepo sur le VPS' (Get-Cfg 'AppRoot' '/opt/app-prisma')
+$appRoot = Normalize-AppRootPath (Read-Default 'Dossier monorepo sur le VPS (absolu)' (Get-Cfg 'AppRoot' '/opt/gsms-school'))
 
 $projectName = Read-Default 'Nom du projet / client' (Get-Cfg 'ProjectName' 'GSMS')
 $domain = Read-Default 'Domaine principal (landing)' (Get-Cfg 'Domain' 'gsms-security.com')
@@ -717,6 +820,8 @@ $monitoringHost = Read-Default 'Homepage / monitoring' "monitoring.$domain"
 $portainerHost = Read-Default 'Portainer' "portainer.$domain"
 $uptimeHost = Read-Default 'Uptime Kuma' "uptime.$domain"
 $netdataHost = Read-Default 'Netdata' "netdata.$domain"
+$n8nHost = Read-Default 'n8n (workflows)' (Get-Cfg 'N8nHost' "n8n.$domain")
+$openWebuiHost = Read-Default 'Open WebUI (IA)' (Get-Cfg 'OpenWebuiHost' "ia.$domain")
 $traefikEmail = Read-Default 'Email Traefik (Let us Encrypt)' "admin@$domain"
 
 Write-Host ''
@@ -773,11 +878,15 @@ if ($PrepareOnly) {
   }
 }
 
+# Toujours reverse proxy externe (hPanel / Traefik VPS) — pas de gsms-traefik
+$externalTraefik = $true
+$traefikDynamicDir = Get-Cfg 'TraefikDynamicDir' '/opt/traefik/dynamic'
+$traefikContainerName = Get-Cfg 'TraefikContainerName' 'traefik'
 Write-Host ''
-Write-Host '--- HTTPS (Let''s Encrypt) ---' -ForegroundColor Yellow
-Write-Host '  Traefik obtient les certificats si le DNS pointe deja vers le VPS (ports 80/443).' -ForegroundColor DarkGray
-$useHttps = Read-YesNo 'Activer HTTPS (Let''s Encrypt via Traefik)' $true
-$scheme = if ($useHttps) { 'https' } else { 'http' }
+Write-Host '--- Reverse proxy ---' -ForegroundColor Yellow
+Write-Host '  hPanel / Traefik VPS : apps sur 127.0.0.1:3000 (landing), :3001 (crm), :3004 (docs)' -ForegroundColor DarkGray
+$useHttps = $true
+$scheme = 'https'
 $nextAuthSecret = New-Secret
 $authSecret = New-Secret
 
@@ -817,10 +926,15 @@ $vars = @{
   PORTAINER_HOST                 = $portainerHost
   UPTIME_HOST                    = $uptimeHost
   NETDATA_HOST                   = $netdataHost
+  N8N_HOST                       = $n8nHost
+  OPEN_WEBUI_HOST                = $openWebuiHost
   SERVER_IP                      = $serverIp
   SCHEME                         = $scheme
   TRAEFIK_EMAIL                  = $traefikEmail
   CADDY_EMAIL                    = $traefikEmail
+  EXTERNAL_TRAEFIK               = 'true'
+  TRAEFIK_DYNAMIC_DIR            = $traefikDynamicDir
+  TRAEFIK_CONTAINER_NAME         = $traefikContainerName
 }
 
 } # fin if (-not $script:skipWizard)
@@ -843,7 +957,11 @@ $toSave = @{
   Domain = $domain; ServerIp = $serverIp; Scheme = $scheme
   CrmHost = $crmHost; DocsHost = $docsHost; MonitoringHost = $monitoringHost
   PortainerHost = $portainerHost; UptimeHost = $uptimeHost; NetdataHost = $netdataHost
+  N8nHost = $n8nHost; OpenWebuiHost = $openWebuiHost
   SmtpHost = $smtpHost; SmtpPort = $smtpPort; SmtpSecure = $smtpSecure; SmtpUser = $smtpUser
+  ExternalTraefik = [bool]$externalTraefik
+  TraefikDynamicDir = $traefikDynamicDir
+  TraefikContainerName = $traefikContainerName
 }
 if ($PrepareOnly -or $InfraOnly) {
   $toSave | ConvertTo-Json | Set-Content $DefaultConfigPath -Encoding UTF8

@@ -21,3 +21,4 @@ export {
   normalizeLandingSections,
   type LandingSectionConfig,
 } from './landing-sections';
+// Re-export landing CMS helpers (no Prisma / pg) for composants client Next.js

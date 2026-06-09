@@ -12,6 +12,8 @@ source "$SCRIPT_DIR/_build-gsms-images.sh"
 source "$SCRIPT_DIR/_deploy-maintenance.sh"
 # shellcheck source=scripts/deploy/_gsms-storage.sh
 source "$SCRIPT_DIR/_gsms-storage.sh"
+# shellcheck source=scripts/deploy/_free-app-ports.sh
+source "$SCRIPT_DIR/_free-app-ports.sh"
 
 capture_gsms_storage_backup rebuild rebuild
 
@@ -21,8 +23,9 @@ trap disable_deploy_maintenance EXIT
 build_gsms_images
 
 cd "$GSMS_DIR"
+free_app_ports
 SERVICES=(crm landing)
-[[ "${REBUILD_WORKER:-1}" != "0" ]] && SERVICES+=(worker)
+[[ "${REBUILD_WORKER:-0}" == "1" ]] && SERVICES+=(worker)
 [[ "${REBUILD_DOCS:-0}" == "1" ]] && SERVICES+=(docs)
 
 echo "==> Redemarrage conteneurs (${SERVICES[*]})..."

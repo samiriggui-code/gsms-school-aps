@@ -212,6 +212,17 @@ const authOptions: NextAuthOptions = {
         session.user.roleId = token.roleId;
         session.user.roleName = token.roleName;
         session.user.roleSlug = token.roleSlug;
+
+        if (token.id) {
+          const fresh = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { avatar: true, name: true },
+          });
+          if (fresh) {
+            session.user.avatar = fresh.avatar;
+            if (fresh.name) session.user.name = fresh.name;
+          }
+        }
       }
       return session;
     },

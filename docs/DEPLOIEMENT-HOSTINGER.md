@@ -14,23 +14,24 @@ Stack : **Docker** + **Traefik** (HTTPS Let's Encrypt) + **Postgres** + **Redis*
 ## 1. Préparer les fichiers (PC)
 
 ```powershell
-cd c:\laragon\www\app-prisma
+cd c:\laragon\www\gsms-school
 .\scripts\1-etape-preparer-fichiers.ps1
 ```
 
-Réponses typiques :
+Réponses typiques (FORM'SSI / `hosting-global-it-ss.com`) :
 
 | Question | Valeur |
 |----------|--------|
-| IP VPS | `187.77.166.124` |
-| Domaine | `gsms-security.com` |
+| IP VPS | IP Hostinger (panneau VPS) |
+| Domaine | `hosting-global-it-ss.com` |
+| Dossier code VPS | `/opt/gsms-school` |
 | SMTP | `smtp.hostinger.com` / `465` / `true` |
-| Email SMTP | `admin@gsms-security.com` + mot de passe boîte Hostinger |
+| Email SMTP | boîte Hostinger du domaine + mot de passe |
 | HTTPS | Oui (Traefik + Let's Encrypt) |
 
 Sortie : `scripts\.deploy-staging\` (`.env`, secrets générés, Traefik, compose).
 
-Modèle config : `scripts\deploy.config.hostinger.example.json`
+Modèles config : `scripts\deploy.config.hostinger-global-it.example.json`
 
 ## 2. Infra sur le VPS
 
@@ -52,13 +53,13 @@ Sync le code, build les images `gsms-crm`, `gsms-landing`, `gsms-worker`, migrat
 
 | Service | URL |
 |---------|-----|
-| Landing | `https://gsms-security.com` |
-| CRM | `https://crm.gsms-security.com` |
-| Docs | `https://docs.gsms-security.com` |
-| Monitoring | `https://monitoring.gsms-security.com` |
-| Portainer | `https://portainer.gsms-security.com` |
-| Uptime | `https://uptime.gsms-security.com` |
-| Netdata | `https://netdata.gsms-security.com` |
+| Landing | `https://hosting-global-it-ss.com` |
+| CRM | `https://crm.hosting-global-it-ss.com` |
+| Docs | `https://docs.hosting-global-it-ss.com` |
+| Monitoring | `https://monitoring.hosting-global-it-ss.com` |
+| Portainer | `https://portainer.hosting-global-it-ss.com` |
+| Uptime | `https://uptime.hosting-global-it-ss.com` |
+| Netdata | `https://netdata.hosting-global-it-ss.com` |
 
 ## Secrets
 
@@ -70,10 +71,10 @@ Sync le code, build les images `gsms-crm`, `gsms-landing`, `gsms-worker`, migrat
 ## Manuel sur le VPS (secours)
 
 ```bash
-git clone https://github.com/samiriggui-code/gsms-school.git /opt/app-prisma
+git clone https://github.com/samiriggui-code/gsms-school.git /opt/gsms-school
 # Copier scripts/.deploy-staging/* vers /opt/gsms/
 cd /opt/gsms && docker compose up -d
-cd /opt/app-prisma && docker build -f deploy/gsms/Dockerfile.crm -t gsms-crm:latest .
+cd /opt/gsms-school && docker build -f deploy/gsms/Dockerfile.crm -t gsms-crm:latest .
 docker compose -f /opt/gsms/docker-compose.yml --profile apps up -d
 ```
 

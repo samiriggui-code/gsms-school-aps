@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { FinanceDevisStatus, Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { parseLinesJson, totalsFromLines } from '@/lib/finance-devis-totals';
+import { getStoredFinancePdf } from '@/lib/finance/store-finance-pdf-asset';
 
 /**
  * Détail / mise à jour d’un dossier **accepté** à facturer (`FinanceDevis` avec statut ACCEPTED).
@@ -58,6 +59,8 @@ export async function GET(_request: NextRequest, context: Ctx) {
       return fail('Ce dossier ne figure pas dans les propositions acceptées à facturer.', 404);
     }
 
+    const invoicePdfAsset = await getStoredFinancePdf(row.id, 'invoice-pdf');
+
     return ok({
       id: row.id,
       referenceCode: row.referenceCode,
@@ -82,6 +85,15 @@ export async function GET(_request: NextRequest, context: Ctx) {
       formation: row.formation,
       candidature: row.candidature,
       formationSession: row.formationSession,
+      invoicePdf: invoicePdfAsset
+        ? {
+            id: invoicePdfAsset.id,
+            url: invoicePdfAsset.url,
+            originalName: invoicePdfAsset.originalName,
+            size: invoicePdfAsset.size,
+            createdAt: invoicePdfAsset.createdAt.toISOString(),
+          }
+        : null,
     });
   } catch (e) {
     console.error('[finance-factures GET one]', e);

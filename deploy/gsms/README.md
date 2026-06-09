@@ -1,64 +1,36 @@
-# Stack Docker GSMS / LMS (Traefik)
+# Stack Docker GSMS / LMS (sans Traefik integre)
 
-Déploiement production du monorepo sur VPS (Hostinger, etc.).
+Deploiement sur VPS Hostinger : **reverse proxy hPanel / Traefik deja en place** (80/443).
 
-## Contenu
+## Principe
 
-| Fichier | Rôle |
-|---------|------|
-| `docker-compose.yml` | Traefik, Postgres, Redis, MinIO, monitoring, apps |
-| `templates/` | `.env`, Traefik, Homepage (générés par `scripts/1-etape-preparer-fichiers.ps1`) |
-| `Dockerfile.crm` / `.landing` / `.worker` / `.docs` | Images Next.js / worker / Mintlify |
-| `traefik/` | Config statique HTTP de secours |
+- **Aucun** conteneur `gsms-traefik` — jamais.
+- Apps exposees en **local uniquement** :
+  - Landing : `http://127.0.0.1:3000`
+  - CRM : `http://127.0.0.1:3001`
+  - Docs : `http://127.0.0.1:3004`
+- Dans **hPanel** (ou Traefik VPS), configurez les domaines vers ces ports.
 
-## Préparation (PC Windows)
+| Domaine (exemple) | Cible hPanel |
+|-------------------|--------------|
+| `hosting-global-it-ss.com` | `http://127.0.0.1:3000` |
+| `crm.hosting-global-it-ss.com` | `http://127.0.0.1:3001` |
+| `docs.hosting-global-it-ss.com` | `http://127.0.0.1:3004` |
+
+## Deploiement (PC Windows)
 
 ```powershell
-cd c:\laragon\www\app-prisma
+cd c:\laragon\www\gsms-school
 .\scripts\1-etape-preparer-fichiers.ps1
+.\scripts\2-etape-infra-vps.ps1
+.\scripts\3-etape-apps-vps.ps1
 ```
 
-Génère `scripts\.deploy-staging\` avec secrets **aléatoires** (Postgres, MinIO, `NEXTAUTH_SECRET`, `AUTH_SECRET`) et URLs selon vos domaines.
+Chemins VPS : `/opt/gsms` (stack), `/opt/gsms-school` (code build).
 
-SMTP Hostinger par défaut : `smtp.hostinger.com:465` — saisir le mot de passe boîte mail à l’étape 1 ou dans `/opt/gsms/.env` sur le VPS.
-
-## Déploiement VPS
-
-```powershell
-.\scripts\2-etape-infra-vps.ps1   # Docker, infra, Traefik, Postgres
-.\scripts\3-etape-apps-vps.ps1   # Build images + CRM + landing + worker
-```
-
-Chemins VPS par défaut : `/opt/gsms` (stack), `/opt/app-prisma` (code pour build).
-
-## DNS (exemple)
-
-Tous les enregistrements **A** vers l’IP du VPS :
-
-| Hôte | Service |
-|------|---------|
-| `@` / `www` | Landing |
-| `crm` | CRM |
-| `app` / `api` | Alias → CRM |
-| `docs` | Documentation Mintlify |
-| `monitoring` | Homepage ops |
-| `portainer` | Portainer |
-| `uptime` | Uptime Kuma |
-| `netdata` | Netdata |
-
-## Build manuel (sur le VPS)
+## Si gsms-traefik existe encore (ancien deploy)
 
 ```bash
-cd /opt/app-prisma
-docker build -f deploy/gsms/Dockerfile.crm -t gsms-crm:latest .
-docker build -f deploy/gsms/Dockerfile.landing -t gsms-landing:latest .
-docker build -f deploy/gsms/Dockerfile.worker -t gsms-worker:latest .
-cd /opt/gsms
-docker compose --profile apps up -d
+docker rm -f gsms-traefik
+cd /opt/gsms && docker compose up -d
 ```
-
-Migrations : `scripts/deploy/gsms-db-init.sh` (via étape 3).
-
-## HTTPS
-
-Traefik + Let's Encrypt (`TRAEFIK_EMAIL` dans les templates). Ports **80** et **443** ouverts vers le VPS.

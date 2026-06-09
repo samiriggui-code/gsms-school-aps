@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { DEFAULT_LANDING_SECTIONS, normalizeLandingSections } from '@repo/database';
+import { DEFAULT_LANDING_SECTIONS, normalizeLandingSections, type Prisma } from '@repo/database';
 
 async function getOrCreateConfig() {
   const existing = await prisma.landingConfig.findFirst({ orderBy: { updatedAt: 'desc' } });
@@ -43,11 +43,11 @@ export async function PATCH(request: NextRequest) {
     return fail('Corps JSON invalide.', 400);
   }
 
-  const data: { enabled?: boolean; sections?: unknown } = {};
+  const data: { enabled?: boolean; sections?: Prisma.InputJsonValue } = {};
   if (body.enabled !== undefined) data.enabled = Boolean(body.enabled);
   if (body.sections !== undefined) {
     if (!Array.isArray(body.sections)) return fail('sections doit être un tableau.', 400);
-    data.sections = body.sections;
+    data.sections = body.sections as Prisma.InputJsonValue;
   }
 
   if (!Object.keys(data).length) return fail('Aucune modification.', 400);

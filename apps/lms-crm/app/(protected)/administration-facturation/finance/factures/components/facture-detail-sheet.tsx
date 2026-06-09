@@ -42,6 +42,8 @@ import {
   Percent,
   Receipt,
   Building2,
+  Download,
+  Loader2,
   Printer,
   UserRound,
 } from 'lucide-react';
@@ -50,6 +52,7 @@ import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { useFinanceFactureDetailQuery, type FinanceFactureDetail } from '../hooks/use-finance-facture-detail-query';
 import { useFacturePatchMutation } from '../hooks/use-facture-patch-mutation';
+import { useFacturePdfMutation } from '../hooks/use-facture-pdf-mutation';
 import { FACTURE_STATUS_LABEL_FR } from '../constants/status-labels';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import { Upload } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/upload';
@@ -367,6 +370,7 @@ export function FactureDetailSheet({
 }: FactureDetailSheetProps) {
   const { data: detail, isLoading } = useFinanceFactureDetailQuery(factureId, open && !!factureId);
   const facturePatch = useFacturePatchMutation(factureId);
+  const facturePdf = useFacturePdfMutation(factureId);
   const [detailTab, setDetailTab] = useState<FactureDetailInitialTab>('overview');
   const tabSyncRef = useRef<{ factureId: string | null; initialTab: FactureDetailInitialTab }>({
     factureId: null,
@@ -528,8 +532,42 @@ export function FactureDetailSheet({
                   }}
                 >
                   <Printer className="size-3.5" />
-                  Aperçu imprimable (proposition)
+                  Aperçu imprimable
                 </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  disabled={!factureId || facturePdf.isPending}
+                  onClick={() => {
+                    if (!factureId) return;
+                    facturePdf.mutate(undefined, {
+                      onSuccess: (stored) => {
+                        toast.success('PDF facture archivé sur le stockage.');
+                        window.open(stored.url, '_blank', 'noopener,noreferrer');
+                      },
+                      onError: (err) => {
+                        toast.error(err instanceof Error ? err.message : 'Génération impossible.');
+                      },
+                    });
+                  }}
+                >
+                  {facturePdf.isPending ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <FileText className="size-3.5" />
+                  )}
+                  {detail?.invoicePdf ? 'Régénérer PDF facture' : 'Générer PDF facture'}
+                </Button>
+                {detail?.invoicePdf ? (
+                  <Button asChild variant="outline" size="sm" className="gap-1.5">
+                    <a href={detail.invoicePdf.url} target="_blank" rel="noopener noreferrer">
+                      <Download className="size-3.5" />
+                      Télécharger PDF archivé
+                    </a>
+                  </Button>
+                ) : null}
               </div>
 
               {detail.candidature || detail.formationSession ? (
