@@ -107,7 +107,7 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'Support tickets and catalog sheets used as self-service help.',
   'support-qualite.support.tickets': 'Create, assign and track support requests.',
   'support-qualite.support.base-aide':
-    'Active training catalog sheets — full documentation in Mintlify (Documentation tab).',
+    'Active training catalog sheets — full documentation in the integrated school guide (Documentation tab).',
   'support-qualite.qualite.incidents':
     'Out-of-service equipment and system errors — summary with quality charts.',
 };

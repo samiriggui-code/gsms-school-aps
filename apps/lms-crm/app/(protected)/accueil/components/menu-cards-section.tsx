@@ -1,8 +1,11 @@
 'use client';
 
-import { MenuCard, menuCardPagesBadge, type MenuCardTone } from '@/components/common/menu-card';
+import { useSession } from 'next-auth/react';
+import { MenuCard, type MenuCardTone } from '@/components/common/menu-card';
 import { useAppContext } from '@/lib/app-context';
+import { crmPermissionForPath } from '@/config/menu-crm-access';
 import { useTranslation } from '@/hooks/useTranslation';
+import { sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { translateMenuTitle } from '@/lib/menu-i18n';
 import { Lock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -113,9 +116,38 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
   },
 ];
 
+function filterCardByPermissions(
+  card: AccueilCardDef,
+  session: ReturnType<typeof useSession>['data'],
+): AccueilCardDef | null {
+  const visibleIndices = card.subSectionPaths
+    .map((subPath, index) => {
+      const slug = crmPermissionForPath(subPath);
+      if (!slug) return index;
+      return sessionHasPermission(session, slug) ? index : -1;
+    })
+    .filter((index) => index >= 0);
+
+  if (visibleIndices.length === 0) {
+    const moduleSlug = crmPermissionForPath(card.path);
+    if (moduleSlug && !sessionHasPermission(session, moduleSlug)) {
+      return null;
+    }
+    if (!moduleSlug) return null;
+  }
+
+  return {
+    ...card,
+    subSections: visibleIndices.map((i) => card.subSections[i]),
+    subSectionPaths: visibleIndices.map((i) => card.subSectionPaths[i]),
+    moduleCount: visibleIndices.length || card.moduleCount,
+  };
+}
+
 export const MenuCardsSection = () => {
   const { t } = useTranslation();
   const { isLoading } = useAppContext();
+  const { data: session } = useSession();
 
   if (isLoading) {
     return (
@@ -135,7 +167,9 @@ export const MenuCardsSection = () => {
     );
   }
 
-  const menuItems = ACCUEIL_CARDS;
+  const menuItems = ACCUEIL_CARDS.map((card) => filterCardByPermissions(card, session)).filter(
+    (card): card is AccueilCardDef => card !== null,
+  );
 
   return (
     <div className="grid gap-5 lg:gap-8">

@@ -1,89 +1,66 @@
 'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { UserIcon } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import Link from 'next/link'; 
-import { toAbsoluteUrl } from "@/lib/helpers";
+import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
+import { formationLogos } from '@/lib/certification-logos';
+import { useTranslation } from '@/hooks/useTranslation';
 
-export function Upload() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+type UploadProps = {
+  logoSrc?: string;
+  logoAlt?: string;
+};
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
+export function Upload({
+  logoSrc = formationLogos.default,
+  logoAlt,
+}: UploadProps) {
+  const { t } = useTranslation();
+  const resolvedLogoAlt = logoAlt ?? t('landing.sheets.upload.logoAlt');
+
+  const rows = [
+    { key: 'company' as const, value: "Form'SSI" },
+    { key: 'email' as const, value: 'contact@form-ssi.fr' },
+    { key: 'phone' as const, value: '01 71 11 39 63' },
+    { key: 'address' as const, value: '9 AV Alexandre Maistrasse, 92500' },
+    { key: 'session' as const, value: t('landing.sheets.upload.sessionValue') },
+  ];
+
   return (
     <div className="space-y-5">
-      <div className="w-full h-[240px] bg-accent/70 border border-border rounded-lg flex items-center justify-center">
-        <div className="relative flex items-center justify-center w-full h-full">
-          {selectedImage ? (
-            <img src={selectedImage} alt="Selected" className="max-w-full max-h-full object-contain" />
-          ) : (
-            <UserIcon className="size-[40px] text-muted-foreground/60" />
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-            id="category-image-upload"
+      <div className="flex h-[180px] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-accent/70">
+        <div className="relative flex h-full w-full items-center justify-center bg-white">
+          <img
+            src={logoSrc}
+            alt={resolvedLogoAlt}
+            className="max-h-full max-w-full object-contain p-4"
           />
-          <label htmlFor="category-image-upload" className="absolute bottom-3 right-3">
-            <Button size="sm" variant="outline" asChild>
-              <span>Upload</span>
-            </Button>
-          </label>
         </div>
       </div>
 
-      {/* Company */}
-      <div className="">
-        {[
-          { label: "Company", value: "HorizonTech" },
-          { label: "Email", value: "j.dejong@htech.com" },
-          { label: "Phone No.", value: "+31 6 1234 5678" },
-          { 
-            label: "Country", 
-            value: (
-              <div className="flex items-center gap-1.5">
-                <img
-                  src={toAbsoluteUrl(`/media/brand-logos/netherlands.svg`)}
-                  alt="Netherlands flag"
-                  className="w-4 h-4"
-                />
-                <span>Netherlands</span>
-              </div>
-            )
-          },
-          { label: "Time Zone", value: "CET, Amsterdam" }
-        ].map((item, index) => (
-          <div key={index}>
-            <div className="flex justify-between items-center">
-              <span className="text-xs font-normal text-secondary-foreground/80">{item.label}</span>
-              {item.label === "Email" ? (
+      <div className="space-y-0">
+        {rows.map((item, index) => (
+          <div key={item.key}>
+            <div className="flex items-center justify-between py-1.5">
+              <span className="text-[10px] font-medium uppercase tracking-tight text-muted-foreground/70">
+                {t(`landing.sheets.upload.${item.key}`)}
+              </span>
+              {item.key === 'email' ? (
                 <Link
-                  href={"#"} 
-                  className="text-2sm font-normal text-foreground hover:text-primary"
+                  href="mailto:contact@form-ssi.fr"
+                  className="max-w-[130px] truncate text-end text-[11px] font-medium text-foreground hover:text-primary"
                 >
                   {item.value}
                 </Link>
               ) : (
-                <span className="text-2sm font-normal text-foreground">{item.value}</span>
+                <span className="max-w-[130px] truncate text-end text-[11px] font-medium text-foreground">
+                  {item.value}
+                </span>
               )}
             </div>
-            {index < 4 && <Separator className="my-2.5" />}
+            {index < rows.length - 1 ? <Separator className="opacity-40" /> : null}
           </div>
         ))}
       </div>
     </div>
   );
-}   
+}

@@ -41,19 +41,19 @@ export default function CompagnieDashboardPage() {
 
         <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
           <div className="min-w-0 h-full lg:col-span-1">
-            <CompagnieDistributionChart />
+            <ComplianceAlerts />
           </div>
           <div className="min-w-0 h-full lg:col-span-2">
-            <CompagnieEvolutionChart />
+            <CompagnieOverviewTable />
           </div>
         </div>
 
         <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
           <div className="min-w-0 h-full lg:col-span-1">
-            <ComplianceAlerts />
+            <CompagnieDistributionChart />
           </div>
           <div className="min-w-0 h-full lg:col-span-2">
-            <CompagnieOverviewTable />
+            <CompagnieEvolutionChart />
           </div>
         </div>
       </Container>

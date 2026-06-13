@@ -12,7 +12,7 @@ export interface EngageProps {
   more: {
     url: string;
     title: string;
-    /** Lien absolu (Mintlify, etc.) — nouvel onglet. */
+    /** Lien absolu externe — nouvel onglet. */
     external?: boolean;
   };
 }

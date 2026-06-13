@@ -1,15 +1,18 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 import { CandidatureStatus } from '@repo/database';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
-  try {
+try {
     const grouped = await prisma.candidature.groupBy({
       by: ['status'],
       _count: { _all: true },

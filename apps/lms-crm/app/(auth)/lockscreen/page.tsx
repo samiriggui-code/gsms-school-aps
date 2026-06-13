@@ -33,7 +33,7 @@ export default function Page() {
         const errorData = JSON.parse(response.error);
         setError(errorData.message);
       } else {
-        router.push('/');
+        router.push('/accueil');
       }
     } catch {
       setError('Impossible de deverrouiller la session.');

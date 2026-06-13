@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES2017",
+    "downlevelIteration": true,
     "lib": [
       "dom",
       "dom.iterable",
@@ -24,13 +25,8 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*",
-        "./app/components/*"
-      ],
-      "@landing/*": [
-        "../lms-landing/*"
-      ]
+      "@/*": ["./*"],
+      "@/partials/*": ["./app/components/partials/*"]
     }
   },
   "include": [
@@ -41,6 +37,7 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "components/_deprecated-metronic"
   ]
 }

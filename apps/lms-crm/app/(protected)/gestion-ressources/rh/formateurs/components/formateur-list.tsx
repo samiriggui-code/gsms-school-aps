@@ -1,6 +1,6 @@
 'use client';
 import { useTranslation } from '@/hooks/useTranslation';
-import { MODULE_LANDING_DATAGRID_PAGE_SIZE } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { MODULE_LANDING_DATAGRID_PAGE_SIZE, DATAGRID_SELECTION_BAR_WRAPPER, DATAGRID_SELECTION_BAR_INNER, DATAGRID_SELECTION_BAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -213,7 +213,7 @@ const FormateurList = () => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => <DataGridTableRowSelectAll table={table} />,
+        header: () => <DataGridTableRowSelectAll />,
         cell: ({ row }) => <DataGridTableRowSelect row={row} />,
         size: 50,
         enableSorting: false,
@@ -404,10 +404,7 @@ const FormateurList = () => {
              isLoading={isLoading}
              tableLayout={{ columnsResizable: true, columnsPinnable: true, columnsMovable: true, columnsVisibility: true }}
             tableClassNames={{
-              bodyRow: (row) => cn(
-                "transition-colors relative",
-                row.getIsSelected() && "bg-primary/5 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary"
-              )
+              bodyRow: 'transition-colors relative',
             }}
           >
             <Card>
@@ -515,13 +512,13 @@ const FormateurList = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
+            className={DATAGRID_SELECTION_BAR_WRAPPER}
           >
-            <div className="bg-popover text-popover-foreground rounded-xl px-4 py-2.5 flex items-center gap-6 shadow-2xl border border-border min-w-[500px]">
-              <div className="text-sm font-medium border-r border-border pr-6">
+            <div className={DATAGRID_SELECTION_BAR_INNER}>
+              <div className="text-sm font-medium sm:border-r sm:border-border sm:pr-6">
                  <span className="text-muted-foreground">{selectedRowsCount} sur {Array.isArray(data?.data) ? data.data.length : 0} sélectionnés</span>
               </div>
-              <div className="flex items-center gap-4">
+              <div className={DATAGRID_SELECTION_BAR_ACTIONS}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors">

@@ -1,66 +1,65 @@
-# Metronic 9 | All-in-One Tailwind based HTML/React/Next.js Template for Modern Web Applications
+# FORM'SSI — application unique
 
-## Getting Started
+Site public, CRM, documentation et futurs espaces candidat/LMS : une seule app Next.js (`@lms-crm`, port **3001**).
 
-The official [Metronic Next.js Documentation](https://docs.keenthemes.com/metronic-nextjs) will be released soon,
-alongside the stable Metronic release, expected within the next week.
+## URLs
 
-### Prerequisites
+| Zone | URL |
+|------|-----|
+| Site public (landing) | `/` |
+| Connexion | `/signin` |
+| Espace candidat | `/mon-dossier` |
+| Suivi CNAPS | `/cnaps` |
+| LMS (aperçu) | `/apprendre` |
+| Tableau de bord CRM | `/accueil` |
+| Leads & devis | `/communication-contenu/marketing/formulaires-leads` |
+| Préinscriptions | `/gestion-academique/vie-scolaire/etudiants` |
+| Sessions | `/gestion-academique/vie-scolaire/sessions` |
+| Utilisateurs | `/securite-configuration/acces/users` |
+| Documentation | `/docs` |
 
-- Node.js 16.x or higher
-- Npm or Yarn
-- Tailwind CSS 4.x
-- React 19.x
-- Next.js 15.3.x
-- PostgreSQL 17.4.x
-
-## ReUI Components
-
-Metronic now leverages [ReUI](https://v1.reui.io), our open-source React component library.
-
-Star the [ReUI on GitHub](https://github.com/keenthemes/reui) to help us grow the project and stay updated on new features!
-
-### Installation
-
-To set up the project dependencies, including those required for React 19, use the `--force` flag to resolve any dependency conflicts:
+## Démarrage
 
 ```bash
-npm install --force
+# Racine monorepo
+pnpm install
+pnpm db:push
+pnpm dev
 ```
 
-### Database Deployment
+Variables : `apps/lms-crm/.env.local` (copier depuis `.env.example` + `DATABASE_URL`).
 
-This will create the necessary tables in database for user authorization and user management apps :
+Comptes démo visibles sur `/signin` en développement.
 
-```bash
-npx prisma db push
+## Architecture
+
+```
+apps/lms-crm/
+├── app/
+│   ├── (site)/       # landing publique
+│   ├── (auth)/       # connexion
+│   ├── mon-dossier/  # espace candidat (layout partagé cnaps, apprendre)
+│   ├── (protected)/  # CRM backoffice
+│   ├── docs/         # rendu MDX
+│   └── api/          # routes publiques + sections CRM
+├── content/docs/     # fichiers MDX (ex apps/lms-docs)
+└── components/       # UI partagée landing + CRM
 ```
 
-Once your schema is deployed, you need to generate the Prisma Client:
+Packages partagés : `packages/database`, `auth`, `api-core`, `redis`, `storage`, `workers`.
 
-```bash
-npx prisma generate
-```
+## Documentation (`/docs`)
 
-### Development
+- Contenu : `content/docs/*.mdx` — guide métier FORM'SSI (FR + EN).
+- Navigation : `content/docs/docs.json` (héritage format Mintlify, rendu custom).
+- Rendu : `app/docs/` + `react-markdown` (composants Mintlify convertis à la volée).
+- Archives template TurboStack : `content/docs/_archive/` (hors navigation).
 
-Start the development server:
+Pour ajouter une page : créer le `.mdx`, l'ajouter dans `docs.json`, liens internes en `/docs/...`.
 
-```bash
-npm run dev
-```
+## Monorepo
 
-### Setting Up the Demo Layout
-
-Open `app/(protected)/layout.tsx` and change `Demo1Layout` to any demo, for example, `Demo5Layout` and you will switch entire app layout to the selected demo.
-
-```bash
-<Demo5Layout>
-	{children}
-</Demo5Layout>
-```
-
-### Reporting Issues
-
-If you encounter any issues or have suggestions for improvement, please contact us at [support@keenthemes.com](mailto:support@keenthemes.com).
-Include a detailed description of the issue or suggestion, and we will work to address it in the next stable release.
+| Chemin | Rôle |
+|--------|------|
+| **`apps/lms-crm`** | Seule app Next.js — `pnpm dev` |
+| `packages/*` | Prisma, auth, logique métier, workers |

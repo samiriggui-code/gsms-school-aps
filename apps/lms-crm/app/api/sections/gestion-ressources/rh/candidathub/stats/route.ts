@@ -1,14 +1,17 @@
-import { getServerSession } from 'next-auth/next';
 import { CandidatureStatus, Prisma } from '@repo/database';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
-  const baseWhere: Prisma.UserWhereInput = {
+const baseWhere: Prisma.UserWhereInput = {
     isTrashed: false,
     role: { slug: { in: ['candidat', 'eleve'] }, isTrashed: false },
   };

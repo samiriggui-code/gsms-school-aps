@@ -1,0 +1,78 @@
+{
+  "landing": {
+    "nav": {
+      "home": "Home",
+      "training": "Courses",
+      "trainers": "Trainers",
+      "school": "School",
+      "help": "Help"
+    },
+    "sidebar": {
+      "training": {
+        "surete": "Security",
+        "incendie": "Fire safety",
+        "habilitation": "Authorisation",
+        "sst": "First aid (SST)",
+        "entreprise": "Corporate",
+        "autres": "Other"
+      },
+      "trainers": {
+        "experts": "Our expert trainers",
+        "pedagogical": "Teaching team",
+        "hr": "HR team"
+      },
+      "school": {
+        "about": "About us",
+        "method": "Our method",
+        "partners": "Partners",
+        "contact": "Contact"
+      },
+      "help": {
+        "faq": "FAQ",
+        "funding": "Funding"
+      }
+    },
+    "cta": {
+      "signup": "Sign up"
+    },
+    "header": {
+      "signIn": "Sign in",
+      "phoneDisplay": "+33 1 71 11 39 63",
+      "phoneAria": "Call FORM'SSI"
+    },
+    "a11y": {
+      "openMenu": "Open menu",
+      "navTitle": "Navigation menu",
+      "navDescription": "Courses, trainers, school and help — main site navigation"
+    },
+    "footer": {
+      "description": "Private security and fire safety training school. We prepare your teams for real-world requirements.",
+      "columns": {
+        "formations": {
+          "title": "Courses",
+          "privateSecurity": "Private security",
+          "fireSafety": "Fire safety",
+          "recycling": "Refresher courses",
+          "certification": "Certification"
+        },
+        "school": {
+          "title": "School",
+          "about": "About us",
+          "trainers": "Our trainers",
+          "partners": "Partners",
+          "contact": "Contact"
+        },
+        "help": {
+          "title": "Help",
+          "faq": "FAQ",
+          "funding": "Funding",
+          "calendar": "Calendar",
+          "regulations": "Regulations"
+        }
+      },
+      "copyright": "© 2026 Form'SSI. All rights reserved.",
+      "cgv": "Terms and conditions of sale",
+      "tagline": "Built for professional security training"
+    }
+  }
+}

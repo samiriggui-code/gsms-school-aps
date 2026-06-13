@@ -1,5 +1,5 @@
 /**
- * Catalogue aligné sur `apps/lms-landing/components/pricing.tsx` (section Formations).
+ * Catalogue aligné sur `components/pricing.tsx` (section Formations landing).
  * Chaque entrée est classée par parcours pédagogique métier : Initial, MAC, RAN ou Autre.
  */
 

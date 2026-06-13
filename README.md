@@ -5,19 +5,17 @@ Ce document est la reference de pilotage du projet pour eviter toute perte de co
 ## 1) Vision et scope
 
 - Monorepo single-tenant pour une ecole (pas de multi-tenant actif).
-- Apps principales:
-  - `apps/lms-landing` (entree publique, acquisition, formulaire candidat/prospect)
-  - `apps/lms-app` (LMS: formation, formateur, candidat)
-  - `apps/lms-crm` (administratif, suivi, facturation, dossiers)
-  - `apps/docs-lms` (documentation interne equipe)
+- App unique:
+  - `apps/lms-crm` (landing publique, CRM, documentation, futurs espaces candidat/LMS)
 - Shared packages:
   - `packages/database` (Prisma schema + seed + client)
   - `packages/auth` (config auth partagee)
+  - `packages/api-core`, `redis`, `storage`, `workers`
 
 ## 2) Technologies utilisees
 
 - Runtime/outillage:
-  - `Node.js` + `npm workspaces`
+  - `Node.js` + `pnpm` workspaces
 - Frontend:
   - `Next.js 16` (App Router)
   - `React 19`
@@ -31,7 +29,8 @@ Ce document est la reference de pilotage du projet pour eviter toute perte de co
   - `Prisma ORM`
   - `PostgreSQL` (DB unique `lms_app`)
 - Documentation:
-  - `Mintlify` pour `apps/docs-lms`
+  - Fichiers MDX dans `apps/lms-crm/content/docs` (navigation `docs.json`, rendu `/docs`)
+  - Ancien contenu TurboStack/Mintlify archive dans `content/docs/_archive/`
 
 ### Briques techniques complementaires (prevues / optionnelles)
 
@@ -53,12 +52,12 @@ Ce document est la reference de pilotage du projet pour eviter toute perte de co
 
 ### Architecture monorepo
 
-- Workspace npm racine configure (`apps/*`, `packages/*`).
-- Scripts dev par app configures:
-  - landing: `3000`
-  - crm: `3001`
-  - docs: `3002`
-  
+- Workspace pnpm racine (`apps/*`, `packages/*`).
+- **App unique** `apps/lms-crm` — port dev **3001** :
+  - landing publique `(site)/`
+  - CRM `(protected)/`
+  - espaces candidat / formateur / e-formation
+  - documentation `/docs`
 
 ### Base de donnees unique
 
@@ -66,16 +65,16 @@ Ce document est la reference de pilotage du projet pour eviter toute perte de co
 - Schema Prisma unique centralise dans `packages/database/prisma/schema.prisma`.
 - Seed unique centralise dans `packages/database/prisma/seed.js`.
 - Scripts DB racine disponibles:
-  - `npm run db:generate`
-  - `npm run db:push`
-  - `npm run db:seed`
+  - `pnpm db:generate`
+  - `pnpm db:push`
+  - `pnpm db:seed`
 
 ### Authentification et securite de base
 
 - Logique NextAuth centralisee dans `packages/auth`.
-- `lms-app` et `lms-crm` raccordes a la logique partagee.
-- Signup public desactive dans `lms-app` et `lms-crm` (route + UI).
-- Pages `2fa` et `lockscreen` creees dans les deux apps auth.
+- App unique `lms-crm` raccordee a la logique partagee.
+- Signup public desactive dans le backoffice CRM (acquisition via landing).
+- Pages `2fa` et `lockscreen` dans l'app unique.
 - Comptes de dev seeds:
   - `superadmin@lms.local`
   - `admin@ecole.local`
@@ -123,7 +122,7 @@ Ce document est la reference de pilotage du projet pour eviter toute perte de co
 
 ## Phase E - Landing signup special
 
-- [ ] Creer formulaire independant sur `lms-landing`.
+- [ ] Finaliser formulaire candidat sur la landing (`app/(site)/`).
 - [ ] Pipeline de qualification (prospect/candidat) vers DB.
 - [ ] Workflow "validation dossier/paiement -> activation acces LMS".
 
@@ -156,17 +155,13 @@ Ce document est la reference de pilotage du projet pour eviter toute perte de co
 
 ## 6) Commandes utiles
 
-- Install:
-  - `npm install`
-- Dev:
-  - `npm run dev:landing`
-  - `npm run dev:app`
-  - `npm run dev:crm`
-  - `npm run dev:docs`
-- DB:
-  - `npm run db:generate`
-  - `npm run db:push`
-  - `npm run db:seed`
+- Install : `pnpm install`
+- Dev (app unique) : `pnpm dev` → http://localhost:3001
+- Build : `pnpm build`
+- DB :
+  - `pnpm db:generate`
+  - `pnpm db:push`
+  - `pnpm db:seed`
 
 ## 7) Convention de suivi
 

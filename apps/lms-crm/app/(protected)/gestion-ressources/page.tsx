@@ -41,7 +41,7 @@ export default function SectionBLandingPage() {
   useEffect(() => {
     const fetchStatsData = async () => {
       try {
-        const response = await fetch('/api/dashboard/stats');
+        const response = await fetch('/api/sections/gestion-ressources/landing');
         if (!response.ok) {
           throw new Error(t('sectionLanding.loadError'));
         }

@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { Prisma, RhAbsenceStatus, RhAbsenceType } from '@repo/database';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import {
@@ -9,6 +7,10 @@ import {
   computeAbsenceStats,
   serializeAbsence,
 } from '../../_lib/rh-absences-serialize';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -22,14 +24,16 @@ function parseDateOnly(value: unknown): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-async function requireSession() {
-  const session = await getServerSession(authOptions);
-  if (!session) return null;
-  return session;
+async function requireSession(method: string) {
+  const auth =
+    method === 'GET' ? await requireGestionRessourcesView() : await requireGestionRessourcesEdit();
+  if (!auth.ok) return { session: null, response: auth.response };
+  return { session: auth.session, response: null };
 }
 
 export async function GET(request: NextRequest, { params }: Params) {
-  if (!(await requireSession())) return fail('Unauthorized request', 401);
+  const auth = await requireSession('GET');
+  if (!auth.session) return auth.response!;
 
   const parts = (await params).path ?? [];
   const url = new URL(request.url);
@@ -79,7 +83,8 @@ export async function GET(request: NextRequest, { params }: Params) {
 }
 
 export async function POST(request: NextRequest, { params }: Params) {
-  if (!(await requireSession())) return fail('Unauthorized request', 401);
+  const auth = await requireSession('POST');
+  if (!auth.session) return auth.response!;
   if ((await params).path?.length) return fail('Méthode non autorisée sur ce chemin.', 405);
 
   try {
@@ -119,8 +124,9 @@ export async function POST(request: NextRequest, { params }: Params) {
 }
 
 export async function PATCH(request: NextRequest, { params }: Params) {
-  const session = await requireSession();
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireSession('PATCH');
+  if (!auth.session) return auth.response!;
+  const session = auth.session;
 
   const id = (await params).path?.[0];
   if (!id) return fail('Identifiant requis.', 400);
@@ -167,7 +173,8 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: Params) {
-  if (!(await requireSession())) return fail('Unauthorized request', 401);
+  const auth = await requireSession('DELETE');
+  if (!auth.session) return auth.response!;
 
   const id = (await params).path?.[0];
   if (!id) return fail('Identifiant requis.', 400);

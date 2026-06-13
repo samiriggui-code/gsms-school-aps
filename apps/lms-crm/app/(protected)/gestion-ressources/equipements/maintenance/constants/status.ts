@@ -15,7 +15,7 @@ export const EquipmentStatusProps: Record<string, EquipmentStatusProps> = {
   },
   IN_USE: {
     label: 'EN SERVICE',
-    variant: 'primary',
+    variant: 'default',
   },
   MAINTENANCE: {
     label: 'MAINTENANCE',

@@ -1,4 +1,5 @@
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
+import type { NotificationsScope } from '@/lib/notifications-scope';
 
 export type TopbarSummary = {
   notificationUnread: number;
@@ -52,8 +53,9 @@ async function parseApi<T>(res: Response): Promise<T> {
   return unwrapSectionApiData<T>(json) as T;
 }
 
-export async function fetchTopbarSummary() {
-  const res = await apiFetch('/api/common/topbar/summary');
+export async function fetchTopbarSummary(scope?: NotificationsScope) {
+  const qs = scope ? `?scope=${encodeURIComponent(scope)}` : '';
+  const res = await apiFetch(`/api/common/topbar/summary${qs}`);
   return parseApi<TopbarSummary>(res);
 }
 
@@ -63,6 +65,7 @@ export type NotificationsListParams = {
   limit?: number;
   query?: string;
   category?: string;
+  scope?: NotificationsScope;
 };
 
 export type NotificationsListResponse = {
@@ -74,6 +77,7 @@ export type NotificationsListResponse = {
     unread: number;
     read: number;
     archived: number;
+    today: number;
     byCategory: Record<string, number>;
   };
 };
@@ -91,12 +95,14 @@ export async function fetchNotifications(
   if (p.limit != null) qs.set('limit', String(p.limit));
   if (p.query?.trim()) qs.set('query', p.query.trim());
   if (p.category && p.category !== 'all') qs.set('category', p.category);
+  if (p.scope) qs.set('scope', p.scope);
   const res = await apiFetch(`/api/common/notifications?${qs.toString()}`);
   return parseApi<NotificationsListResponse>(res);
 }
 
-export async function markAllNotificationsRead() {
-  const res = await apiFetch('/api/common/notifications', {
+export async function markAllNotificationsRead(scope?: NotificationsScope) {
+  const qs = scope ? `?scope=${encodeURIComponent(scope)}` : '';
+  const res = await apiFetch(`/api/common/notifications${qs}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'read_all' }),
@@ -104,8 +110,9 @@ export async function markAllNotificationsRead() {
   return parseApi<{ ok: boolean }>(res);
 }
 
-export async function archiveAllNotifications() {
-  const res = await apiFetch('/api/common/notifications', {
+export async function archiveAllNotifications(scope?: NotificationsScope) {
+  const qs = scope ? `?scope=${encodeURIComponent(scope)}` : '';
+  const res = await apiFetch(`/api/common/notifications${qs}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'archive_all' }),

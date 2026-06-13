@@ -1,16 +1,18 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { uploadFile } from '@repo/storage';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
 
@@ -61,8 +63,8 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const resolvedParams = await params;
   const id = resolvedParams?.id;
@@ -176,8 +178,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
 

@@ -109,7 +109,7 @@ export async function GET() {
       {
         id: 'docs',
         label: 'Documentation interne',
-        description: 'Lien vers lms-docs depuis le CRM.',
+        description: 'Documentation intégrée (/docs) depuis le CRM.',
         connected: Boolean(docsUrl),
         detail: docsUrl || 'NEXT_PUBLIC_LMS_DOCS_URL non défini',
         href: docsUrl || undefined,

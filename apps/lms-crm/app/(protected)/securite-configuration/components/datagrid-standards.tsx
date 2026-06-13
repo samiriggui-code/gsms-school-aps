@@ -1,5 +1,6 @@
 import type { PaginationState } from '@tanstack/react-table';
 import { Container } from '@/components/common/container';
+import type { HelpAudience } from '@/partials/common/help';
 import { Help } from '@/partials/common/help';
 import { cn } from '@/lib/utils';
 
@@ -22,11 +23,29 @@ export const USER_MANAGEMENT_TABLE_CLASSNAMES = {
   edgeCell: 'px-5',
 };
 
+/** Barre flottante de sélection (listes gestion-ressources) — responsive mobile. */
+export const DATAGRID_SELECTION_BAR_WRAPPER =
+  'fixed bottom-4 inset-x-3 z-50 sm:bottom-8 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-[calc(100vw-2rem)]';
+
+export const DATAGRID_SELECTION_BAR_INNER =
+  'bg-popover text-popover-foreground rounded-xl px-3 py-2.5 sm:px-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6 shadow-2xl border border-border w-full sm:min-w-0 sm:max-w-3xl';
+
+export const DATAGRID_SELECTION_BAR_ACTIONS =
+  'flex flex-wrap items-center gap-3 sm:gap-4';
+
+export const DATAGRID_TOOLBAR_ACTIONS = 'flex flex-wrap items-center gap-2';
+
 /**
- * Cartes « Questions ? » + « Contacter le support » — une seule fois, injectées par `demo1/layout`.
- * Ne pas ré-importer ce composant dans les pages (sinon doublon).
+ * Cartes « Questions ? » + « Contacter le support » — injectées une fois par layout
+ * (`demo1`, formateur, portail stagiaire). Ne pas ré-importer dans les pages.
  */
-export function UserManagementSupportSection({ className }: { className?: string }) {
+export function UserManagementSupportSection({
+  className,
+  audience = 'crm',
+}: {
+  className?: string;
+  audience?: HelpAudience;
+}) {
   return (
     <section
       aria-label="Aide et support"
@@ -36,7 +55,7 @@ export function UserManagementSupportSection({ className }: { className?: string
       <div className="h-16 min-h-16 lg:h-24 lg:min-h-24" aria-hidden />
       <div className="border-t border-border/60 bg-muted/10 pt-10 pb-10 lg:pt-12 lg:pb-12">
         <Container>
-          <Help />
+          <Help audience={audience} />
         </Container>
       </div>
     </section>

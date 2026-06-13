@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { nullishId } from '../../_lib/rh-teams-serialize';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -39,8 +41,8 @@ function serializeOrgUnit(row: {
 }
 
 export async function GET(_request: NextRequest, { params }: Params) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
   const parts = (await params).path ?? [];
   if (parts.length === 1 && parts[0]) {
@@ -73,8 +75,8 @@ export async function GET(_request: NextRequest, { params }: Params) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   try {
     const body = (await request.json()) as Record<string, unknown>;
@@ -104,8 +106,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest, { params }: Params) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const id = (await params).path?.[0];
   if (!id) return fail('Identifiant requis', 400);
@@ -140,8 +142,8 @@ export async function PUT(request: NextRequest, ctx: Params) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: Params) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const id = (await params).path?.[0];
   if (!id) return fail('Identifiant requis', 400);

@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../_lib/require-gestion-ressources-auth';
 import {
   CandidatureSource,
   CandidatureStatus,
   Prisma,
 } from '@repo/database';
 import bcrypt from 'bcrypt';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { qualificationMetierLabel } from '@/lib/rh-qualification-metier';
 import { UserStatus } from '@/app/models/user';
@@ -19,10 +22,10 @@ import {
 } from '../../_lib/rh-learners-shared';
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
-  const { searchParams } = new URL(request.url);
+const { searchParams } = new URL(request.url);
   const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '10', 10)));
   const query = (searchParams.get('query') || '').trim();
@@ -107,8 +110,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const contentType = request.headers.get('content-type') || '';
   if (!contentType.includes('multipart/form-data')) {

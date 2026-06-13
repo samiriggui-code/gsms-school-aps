@@ -14,10 +14,30 @@ const POOL_OPTIONS = {
   allowExitOnIdle: true,
 } as const;
 
+/** Délégués requis — si absents, le singleton dev est recréé (après `pnpm db:generate`). */
+const REQUIRED_DELEGATES = ['quizAttempt'] as const;
+
+function isStalePrismaClient(client: PrismaClient): boolean {
+  return REQUIRED_DELEGATES.some((key) => !(key in client));
+}
+
+async function disposePrismaClient(client: PrismaClient, pool?: Pool) {
+  await client.$disconnect().catch(() => undefined);
+  if (pool) await pool.end().catch(() => undefined);
+}
+
 export function createPrismaClient(scope: string): PrismaClient {
   const globalRef = globalThis as PrismaGlobal;
   const clients = globalRef.__lmsPrismaClients ?? {};
   const pools = globalRef.__lmsPgPools ?? {};
+
+  if (clients[scope] && isStalePrismaClient(clients[scope])) {
+    const staleClient = clients[scope];
+    const stalePool = pools[scope];
+    delete clients[scope];
+    delete pools[scope];
+    void disposePrismaClient(staleClient, stalePool);
+  }
 
   if (!clients[scope]) {
     const connectionString = process.env.DATABASE_URL;

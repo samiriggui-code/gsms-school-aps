@@ -1,6 +1,9 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../_lib/require-gestion-ressources-auth';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 
@@ -12,8 +15,8 @@ function toNumber(value: bigint | number | null | undefined) {
 }
 
 export async function GET(_request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
   try {
     const [totalRows, availableRows, maintenanceRows, alertRows] = await Promise.all([

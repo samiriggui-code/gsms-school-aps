@@ -1,14 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowDown, ArrowUp, ExternalLink, Save, Trash2 } from 'lucide-react';
+import { ChevronRight, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
-import { useTranslation } from '@/hooks/useTranslation';
 import {
   DEFAULT_LANDING_SECTIONS,
   LANDING_SECTION_CATALOG,
-  landingSectionLabel,
   type LandingSectionConfig,
 } from '@repo/database/browser';
 import { Container } from '@/components/common/container';
@@ -24,14 +22,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
@@ -44,13 +34,93 @@ type LandingConfigData = {
   updatedAt: string;
 };
 
+type SectionEditGuide = {
+  type: string;
+  anchor?: string;
+  editPath: string;
+  editLabel: string;
+  hint: string;
+};
+
+const SECTION_EDIT_GUIDE: SectionEditGuide[] = [
+  {
+    type: 'hero',
+    editPath: '/gestion-ressources/compagnie/profil',
+    editLabel: 'Profil compagnie',
+    hint: 'Logo, nom de l’école et identité visuelle.',
+  },
+  {
+    type: 'trusted-brands',
+    anchor: '#trusted-brands',
+    editPath: '/communication-contenu/cms/contenus',
+    editLabel: 'CMS contenus',
+    hint: 'Logos partenaires et marques de confiance.',
+  },
+  {
+    type: 'how-it-works',
+    anchor: '#how-it-works',
+    editPath: '/communication-contenu/cms/contenus',
+    editLabel: 'CMS contenus',
+    hint: 'Étapes parcours et textes explicatifs.',
+  },
+  {
+    type: 'features',
+    anchor: '#features',
+    editPath: '/communication-contenu/cms/contenus',
+    editLabel: 'CMS contenus',
+    hint: 'Atouts, arguments et points différenciants.',
+  },
+  {
+    type: 'trainers',
+    anchor: '#trainers',
+    editPath: '/gestion-ressources/rh/formateurs',
+    editLabel: 'Formateurs RH',
+    hint: 'Profils, photos et compétences des formateurs.',
+  },
+  {
+    type: 'testimonials',
+    anchor: '#testimonials',
+    editPath: '/communication-contenu/cms/contenus',
+    editLabel: 'CMS contenus',
+    hint: 'Témoignages et avis clients.',
+  },
+  {
+    type: 'catalogue',
+    anchor: '#pricing',
+    editPath: '/gestion-academique/vie-scolaire/formations',
+    editLabel: 'Catalogue formations',
+    hint: 'Offres, tarifs, sessions et fiches formation.',
+  },
+  {
+    type: 'faq',
+    anchor: '#faq',
+    editPath: '/communication-contenu/cms/contenus',
+    editLabel: 'CMS contenus',
+    hint: 'Questions fréquentes et réponses.',
+  },
+  {
+    type: 'call-to-action',
+    anchor: '#call-to-action',
+    editPath: '/communication-contenu/cms/contenus',
+    editLabel: 'CMS contenus',
+    hint: 'Bandeau d’appel à l’action et boutons.',
+  },
+  {
+    type: 'contact',
+    anchor: '#contact',
+    editPath: '/gestion-ressources/compagnie/profil',
+    editLabel: 'Profil compagnie',
+    hint: 'Coordonnées, adresse et formulaire contact.',
+  },
+];
+
+function guideFor(type: string): SectionEditGuide | undefined {
+  return SECTION_EDIT_GUIDE.find((g) => g.type === type);
+}
+
 export default function CmsPagesLandingPage() {
-  const { t } = useTranslation();
   const { title, description } = usePageToolbarMeta('/communication-contenu/cms/pages-landing');
   const qc = useQueryClient();
-  const [enabled, setEnabled] = useState(true);
-  const [sections, setSections] = useState<LandingSectionConfig[]>(DEFAULT_LANDING_SECTIONS);
-  const [saving, setSaving] = useState(false);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['landing-config'] as const,
@@ -58,89 +128,40 @@ export default function CmsPagesLandingPage() {
       const res = await apiFetch('/api/sections/communication-contenu/cms/landing-config');
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error((json as { error?: { message?: string } }).error?.message ?? 'Erreur');
-      const payload = unwrapSectionApiData<LandingConfigData>(json);
-      if (payload) {
-        setEnabled(payload.enabled);
-        setSections(payload.sections?.length ? payload.sections : DEFAULT_LANDING_SECTIONS);
-      }
-      return payload;
+      return unwrapSectionApiData<LandingConfigData>(json);
     },
   });
 
-  useEffect(() => {
-    if (data?.sections?.length) setSections(data.sections);
-  }, [data]);
+  const enabled = data?.enabled ?? true;
+  const sections = DEFAULT_LANDING_SECTIONS;
+  const landingUrl =
+    (process.env.NEXT_PUBLIC_LANDING_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 
   async function saveEnabled(next: boolean) {
-    setEnabled(next);
-    setSaving(true);
     const res = await apiFetch('/api/sections/communication-contenu/cms/landing-config', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ enabled: next }),
     });
-    setSaving(false);
     if (!res.ok) {
       toast.error('Publication impossible');
-      setEnabled(!next);
       return;
     }
-    toast.success(next ? 'Landing publiée' : 'Landing désactivée');
+    toast.success(next ? 'Landing publiée' : 'Landing en maintenance');
     qc.invalidateQueries({ queryKey: ['landing-config'] });
-  }
-
-  async function saveSections() {
-    setSaving(true);
-    const res = await apiFetch('/api/sections/communication-contenu/cms/landing-config', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sections }),
-    });
-    setSaving(false);
-    if (!res.ok) {
-      toast.error('Enregistrement impossible');
-      return;
-    }
-    toast.success(t('cms.sectionsSaved'));
-    qc.invalidateQueries({ queryKey: ['landing-config'] });
-  }
-
-  function moveSection(index: number, dir: -1 | 1) {
-    const next = [...sections];
-    const target = index + dir;
-    if (target < 0 || target >= next.length) return;
-    [next[index], next[target]] = [next[target], next[index]];
-    setSections(next);
-  }
-
-  function removeSection(index: number) {
-    setSections(sections.filter((_, i) => i !== index));
-  }
-
-  function addSection(type: string) {
-    const label = LANDING_SECTION_CATALOG.find((c) => c.type === type)?.label ?? type;
-    setSections([...sections, { type, title: label, enabled: true }]);
-  }
-
-  function resetDefaults() {
-    setSections(DEFAULT_LANDING_SECTIONS);
   }
 
   const stats = [
-    { label: 'Sections', value: sections.length, subtitle: 'Blocs actifs' },
-    { label: 'Publication', value: enabled ? 'Active' : 'Off', subtitle: 'Site public' },
+    { label: 'Sections', value: sections.length, subtitle: 'Toujours visibles sur le site' },
+    { label: 'Publication', value: enabled ? 'Active' : 'Maintenance', subtitle: 'Site public' },
     {
       label: 'Dernière MAJ',
       value: data?.updatedAt ? new Date(data.updatedAt).toLocaleDateString('fr-FR') : '—',
       subtitle: 'LandingConfig',
     },
-    { label: 'Types de blocs', value: new Set(sections.map((s) => s.type)).size, subtitle: 'Sections distinctes' },
-    { label: 'Site vitrine', value: 1, subtitle: 'Page unique' },
+    { label: 'SEO', value: 'Meta', subtitle: 'Titres & indexation' },
+    { label: 'Site vitrine', value: 1, subtitle: 'Page unique /' },
   ];
-
-  const usedTypes = new Set(sections.map((s) => s.type));
-  const landingUrl =
-    (process.env.NEXT_PUBLIC_LANDING_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 
   return (
     <>
@@ -160,9 +181,11 @@ export default function CmsPagesLandingPage() {
             <Button variant="outline" onClick={() => refetch()} disabled={isLoading}>
               Actualiser
             </Button>
-            <Button onClick={saveSections} disabled={saving || isLoading}>
-              <Save className="size-4" />
-              Enregistrer sections
+            <Button variant="outline" asChild>
+              <Link href="/communication-contenu/seo/meta-indexation">
+                SEO & meta
+                <ChevronRight className="size-4" />
+              </Link>
             </Button>
           </ToolbarActions>
         </Toolbar>
@@ -187,95 +210,71 @@ export default function CmsPagesLandingPage() {
         </div>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Publication</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-base">Publication du site</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Désactive la landing publique et affiche la page maintenance. Les 10 sections restent configurées.
+              </p>
+            </div>
             <div className="flex items-center gap-2">
-              <Switch checked={enabled} disabled={saving || isLoading} onCheckedChange={saveEnabled} id="landing-enabled" />
-              <Label htmlFor="landing-enabled">{enabled ? 'En ligne' : 'Hors ligne'}</Label>
+              <Switch checked={enabled} disabled={isLoading} onCheckedChange={saveEnabled} id="landing-enabled" />
+              <Label htmlFor="landing-enabled">{enabled ? 'En ligne' : 'Maintenance'}</Label>
             </div>
           </CardHeader>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle className="text-base">Éditeur de sections</CardTitle>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" onClick={resetDefaults}>
-                Réinitialiser
-              </Button>
-              <Select key={sections.length} onValueChange={addSection}>
-                <SelectTrigger className="w-[220px]">
-                  <SelectValue placeholder="Ajouter une section" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LANDING_SECTION_CATALOG.filter((c) => !usedTypes.has(c.type)).map((c) => (
-                    <SelectItem key={c.type} value={c.type}>
-                      {c.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <CardHeader>
+            <CardTitle className="text-base">Contenu des sections landing</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              Les blocs de la page d’accueil sont toujours affichés. Modifiez le contenu métier depuis les modules
+              CRM ci-dessous (logo, formateurs, formations, textes…).
+            </p>
           </CardHeader>
           <CardContent className="space-y-3 p-4">
             {isLoading ? (
               <p className="py-8 text-center text-sm text-muted-foreground">Chargement…</p>
-            ) : sections.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">Aucune section</p>
             ) : (
-              sections.map((section, index) => (
-                <div
-                  key={`${section.type}-${index}`}
-                  className="flex flex-col gap-3 rounded-lg border border-border/70 p-3 sm:flex-row sm:items-center"
-                >
-                  <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
-                    <span className="w-8 text-sm text-muted-foreground">{index + 1}.</span>
-                    <div className="min-w-[140px] text-sm font-medium">
-                      {LANDING_SECTION_CATALOG.find((c) => c.type === section.type)?.label ?? section.type}
+              sections.map((section, index) => {
+                const catalogLabel =
+                  LANDING_SECTION_CATALOG.find((c) => c.type === section.type)?.label ?? section.type;
+                const guide = guideFor(section.type);
+                const previewHref = guide?.anchor ? `${landingUrl}${guide.anchor}` : landingUrl;
+
+                return (
+                  <div
+                    key={section.type}
+                    className="flex flex-col gap-3 rounded-lg border border-border/70 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">{index + 1}.</span>
+                        <span className="font-medium">{catalogLabel}</span>
+                      </div>
+                      {guide ? (
+                        <p className="text-sm text-muted-foreground">{guide.hint}</p>
+                      ) : null}
                     </div>
-                    <Input
-                      value={section.title ?? ''}
-                      onChange={(e) => {
-                        const next = [...sections];
-                        next[index] = { ...section, title: e.target.value };
-                        setSections(next);
-                      }}
-                      placeholder={landingSectionLabel(section)}
-                      className="flex-1"
-                    />
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        checked={section.enabled !== false}
-                        onCheckedChange={(v) => {
-                          const next = [...sections];
-                          next[index] = { ...section, enabled: v };
-                          setSections(next);
-                        }}
-                        id={`section-enabled-${index}`}
-                      />
-                      <Label htmlFor={`section-enabled-${index}`} className="text-xs">
-                        Visible
-                      </Label>
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={previewHref} target="_blank" rel="noreferrer">
+                          <ExternalLink className="size-3.5" />
+                          Voir sur le site
+                        </a>
+                      </Button>
+                      {guide ? (
+                        <Button size="sm" asChild>
+                          <Link href={guide.editPath}>
+                            {guide.editLabel}
+                            <ChevronRight className="size-3.5" />
+                          </Link>
+                        </Button>
+                      ) : null}
                     </div>
                   </div>
-                  <div className="flex gap-1 sm:ms-auto">
-                    <Button size="icon" variant="ghost" disabled={index === 0} onClick={() => moveSection(index, -1)}>
-                      <ArrowUp className="size-4" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      disabled={index === sections.length - 1}
-                      onClick={() => moveSection(index, 1)}
-                    >
-                      <ArrowDown className="size-4" />
-                    </Button>
-                    <Button size="icon" variant="ghost" onClick={() => removeSection(index)}>
-                      <Trash2 className="size-4 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </CardContent>
         </Card>

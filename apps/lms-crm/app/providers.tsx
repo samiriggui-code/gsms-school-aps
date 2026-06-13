@@ -26,7 +26,9 @@ export function AppProviders({ children, session }: Props) {
             <I18nProvider>
               <TooltipsProvider>
                 <ModulesProvider>
-                  <Suspense>{children}</Suspense>
+                  <div className="min-h-screen w-full">
+                    <Suspense>{children}</Suspense>
+                  </div>
                   <Toaster />
                 </ModulesProvider>
               </TooltipsProvider>

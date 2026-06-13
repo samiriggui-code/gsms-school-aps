@@ -18,7 +18,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../constants/sheet-shell-classes';
+import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
+import { GESTION_RESSOURCES_SHEET_TABS_LIST } from '@/lib/gestion-ressources/ui';
 import { Equipment as Inventaire, type EquipmentSheetInput } from '@/app/models/equipment';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime } from '@/lib/helpers';
@@ -81,7 +82,7 @@ export function MaintenanceEquipmentSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE}>
+      <SheetContent className={VIE_SCOLAIRE_SHEET_AUTO}>
         <SheetHeader className="border-b py-3.5 px-5 border-border bg-background shrink-0">
           <SheetTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground/80">
             Fiche pièce — Maintenance
@@ -127,7 +128,7 @@ export function MaintenanceEquipmentSheet({
           <ScrollArea className="flex-1 min-h-0 mx-1.5">
             <div className="px-5 py-5">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="mb-4 flex-wrap h-auto">
+                <TabsList className={GESTION_RESSOURCES_SHEET_TABS_LIST}>
                   <TabsTrigger value="overview">Vue d&apos;ensemble</TabsTrigger>
                   <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
                   <TabsTrigger value="parametres" className="gap-1.5">

@@ -181,7 +181,7 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
     () => [
       {
         id: 'select',
-        header: ({ table }) => <DataGridTableRowSelectAll table={table} />,
+        header: () => <DataGridTableRowSelectAll />,
         cell: ({ row }) => <DataGridTableRowSelect row={row} />,
         size: 48,
         enableSorting: false,
@@ -486,12 +486,7 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
             columnsVisibility: true,
           }}
           tableClassNames={{
-            bodyRow: (row) =>
-              cn(
-                'transition-colors relative',
-                row.getIsSelected() &&
-                  'bg-primary/5 before:absolute before:start-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary',
-              ),
+            bodyRow: 'transition-colors relative',
           }}
         >
           <Card className="border-border shadow-none">

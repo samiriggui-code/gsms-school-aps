@@ -69,7 +69,7 @@ export function EquipmentAlerts() {
               <Clock3 className="size-3.5 text-blue-500" />
               En service
             </div>
-            <Badge variant="info" appearance="light">{inUse}</Badge>
+            <Badge variant="secondary" appearance="light">{inUse}</Badge>
           </div>
         </div>
       </CardContent>

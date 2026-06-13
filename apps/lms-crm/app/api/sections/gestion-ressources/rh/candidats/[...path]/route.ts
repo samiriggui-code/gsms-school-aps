@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 import { prisma } from '@/lib/prisma';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserStatus } from '@/app/models/user';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { uploadFile } from '@repo/storage';
@@ -210,13 +213,11 @@ async function parseBody(request: NextRequest) {
 }
 
 async function handler(request: NextRequest, { params }: Params) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return fail('Unauthorized request', 401);
-  }
+  const method = request.method.toUpperCase();
+  const auth = await requireGestionRessourcesForMethod(method);
+  if (!auth.ok) return auth.response;
 
   const parts = (await params).path || [];
-  const method = request.method.toUpperCase();
 
   if (parts.length === 0) {
     if (method === 'GET') {
@@ -326,7 +327,7 @@ async function handler(request: NextRequest, { params }: Params) {
         include: { role: true },
       });
 
-      const createdById = session.user.id;
+      const createdById = auth.session.user.id;
       const fileUpdates: Record<string, string> = {};
       if (payload.avatar instanceof File && payload.avatar.size > 0) {
         fileUpdates.avatar = await storeCandidatFile(
@@ -488,7 +489,7 @@ async function handler(request: NextRequest, { params }: Params) {
 
   if (method === 'PATCH' || method === 'PUT') {
     const payload = await parseBody(request);
-    const createdById = session.user.id;
+    const createdById = auth.session.user.id;
     const data: any = {};
     if (payload.name) data.name = payload.name;
     if (payload.firstName !== undefined) data.firstName = payload.firstName || null;

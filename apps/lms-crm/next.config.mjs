@@ -32,16 +32,31 @@ const nextConfig = {
   transpilePackages: ['@repo/i18n'],
   basePath: basePath || '',
   ...(assetPrefix ? { assetPrefix } : {}),
-  images: {},
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+    ],
+  },
   outputFileTracingExcludes: {
     '*': ['next.config.mjs'],
+  },
+  outputFileTracingIncludes: {
+    '/*': ['./content/docs/**/*'],
   },
   allowedDevOrigins: getAllowedDevOrigins({ ports: [3000, 3001] }),
   experimental: {
     externalDir: true,
-    /** Évite les erreurs « Persisting failed / SST » (cache Turbopack) surtout sous Windows si `.next` est supprimé à chaud. */
-    turbopackFileSystemCacheForDev: false,
+    /**
+     * Cache Turbopack entre les redémarrages dev (sinon chaque page CRM recompile 30s–5min).
+     * Désactiver si erreurs SST Windows : TURBOPACK_DEV_CACHE=false pnpm dev
+     */
+    turbopackFileSystemCacheForDev: process.env.TURBOPACK_DEV_CACHE !== 'false',
   },
+  serverExternalPackages: ['pdfkit'],
   /**
    * Utilisé par `next build` et par `next dev --webpack` (pas par Turbopack en dev).
    * Dev Turbopack : garder allowedDevOrigins + pas d’assetPrefix localhost pour le LAN.
@@ -108,6 +123,9 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
-  silent: true,
-});
+const sentryWrap =
+  process.env.NODE_ENV === 'production' || process.env.SENTRY_DEV === 'true';
+
+export default sentryWrap
+  ? withSentryConfig(nextConfig, { silent: true })
+  : nextConfig;

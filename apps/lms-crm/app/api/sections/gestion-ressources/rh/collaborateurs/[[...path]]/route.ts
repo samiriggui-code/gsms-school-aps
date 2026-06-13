@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import { qualificationMetierLabel } from '@/lib/rh-qualification-metier';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserStatus } from '@/app/models/user';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { uploadFile } from '@repo/storage';
 import { mapSystemLogsToRhActivity } from '@/lib/rh-iam-activity-history';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -429,13 +431,13 @@ async function parseBody(request: NextRequest) {
 }
 
 async function handler(request: NextRequest, { params }: Params) {
-  const session = await getServerSession(authOptions);
-  if (!session) {
-    return fail('Unauthorized request', 401);
-  }
+  const method = request.method.toUpperCase();
+  const auth =
+    method === 'GET' ? await requireGestionRessourcesView() : await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
+  const session = auth.session;
 
   const parts = (await params).path || [];
-  const method = request.method.toUpperCase();
 
   if (parts.length === 0) {
     if (method === 'GET') {

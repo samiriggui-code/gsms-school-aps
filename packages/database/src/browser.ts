@@ -18,6 +18,7 @@ export {
   DEFAULT_LANDING_SECTIONS,
   LANDING_SECTION_CATALOG,
   landingSectionLabel,
+  mergeLandingSectionsWithDefaults,
   normalizeLandingSections,
   type LandingSectionConfig,
 } from './landing-sections';

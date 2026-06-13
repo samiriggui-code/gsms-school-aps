@@ -43,7 +43,7 @@ export default function Page() {
   } = useQuery({
     queryKey: ['company-profile'],
     queryFn: async () => {
-      const response = await apiFetch('/api/sections/administration-facturation/tenant/profile');
+      const response = await apiFetch('/api/sections/gestion-ressources/compagnie/profil');
       if (!response.ok) throw new Error('fetch');
       const json = (await response.json()) as { data?: CompanyProfileApiData };
       return json.data;

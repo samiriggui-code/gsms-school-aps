@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { SearchDialog } from '@/partials/dialogs/search/search-dialog';
 import { ChatSheet } from '@/partials/topbar/chat-sheet';
 import { NotificationsSheet } from '@/partials/topbar/notifications-sheet';
+import { UserPresenceDot } from '@/components/common/user-presence-picker';
 import { UserDropdownMenu } from '@/partials/topbar/user-dropdown-menu';
 import { Bell, Menu, MessageCircleMore, Moon, Search, Sun } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
@@ -225,7 +226,7 @@ export function Header() {
                     alt="User Avatar"
                     fallback="/media/avatars/300-2.png"
                   />
-                  <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 border-2 border-background" />
+                  <UserPresenceDot />
                 </div>
               }
             />

@@ -44,7 +44,7 @@ export const MODULE_WORKSPACE_PAGE_META: Record<ModuleWorkspaceViewKey, ModuleWo
   },
   'support-base-aide': {
     title: 'Catalogue formations (aide)',
-    description: 'Fiches catalogue actives — documentation complète dans Mintlify.',
+    description: 'Fiches catalogue actives — documentation complète dans le guide école (/docs).',
   },
   'support-incidents': {
     title: 'Incidents',

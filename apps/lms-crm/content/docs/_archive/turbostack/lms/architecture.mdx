@@ -1,0 +1,37 @@
+# Architecture du monorepo LMS
+
+## Choix structurant
+
+Monorepo **single-tenant** pour une école : une base PostgreSQL (`lms_app`), un schéma Prisma partagé, une application Next.js unique.
+
+## Application web (`apps/lms-crm`)
+
+Une seule app Next.js regroupe les espaces produit :
+
+| Route group | Rôle |
+|-------------|------|
+| `(site)/` | Landing publique — acquisition, catalogue, préinscriptions |
+| `(auth)/` | Connexion NextAuth |
+| `(protected)/` | CRM / backoffice école |
+| `docs/` | Documentation interne (MDX dans `content/docs/`) |
+| `api/` | API publiques (`catalog`, `preinscriptions`…) + `api/sections/*` CRM |
+
+Espaces à venir dans la même app :
+
+- `(portal)/` — candidat / stagiaire (dossier CNAPS, LMS)
+- `(trainer)/` — formateur (pédagogie)
+
+## Packages partagés
+
+- `packages/database` — Prisma, migrations, seed
+- `packages/auth` — NextAuth
+- `packages/api-core` — logique métier (candidatures, stats…)
+- `packages/redis`, `storage`, `workers`
+
+## Données métier
+
+- **Rôles** (`UserRole`) : `candidat`, `eleve`, `formateur`, `collaborateur`, `admin`, `superadmin`
+- **Parcours** (`Candidature` + `CandidatureStatus`) : dossier, CNAPS, validation, diplôme
+- **LMS** (`Course`, `Chapter`, `Activity`, `Enrollment`) : contenu pédagogique et progression
+
+Le statut de parcours (`CandidatureStatus`) et le rôle utilisateur restent distincts : le rôle ouvre un espace, le statut débloque des modules LMS.

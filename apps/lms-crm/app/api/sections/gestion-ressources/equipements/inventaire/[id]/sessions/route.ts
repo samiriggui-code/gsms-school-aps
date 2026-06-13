@@ -1,9 +1,8 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { formationSessionRelationInclude } from '@/app/api/sections/gestion-academique/vie-scolaire/sessions/_session-include';
+import { requireGestionRessourcesView } from '../../../../_lib/require-gestion-ressources-auth';
 
 function normalizeEquipmentIds(value: unknown): string[] {
   if (!value) return [];
@@ -21,8 +20,8 @@ function normalizeEquipmentIds(value: unknown): string[] {
 }
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
   if (!id) return fail('ID manquant', 400);

@@ -141,7 +141,7 @@ export function InventaireCatalogUnitsTable({
           const statusProps = getInventaireStatusProps(row.original.status);
           return (
             <Badge
-              variant={statusProps.variant as 'success' | 'warning' | 'primary' | 'outline'}
+              variant={statusProps.variant as 'success' | 'warning' | 'default' | 'outline'}
               appearance="light"
               size="sm"
               className="font-bold uppercase text-[9px]"

@@ -26,6 +26,7 @@ import {
   MoreHorizontal,
   RefreshCw,
   Search,
+  ShieldOff,
   SquarePen,
   Trash,
   Trash2,
@@ -143,10 +144,14 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
   const [confirmStatus, setConfirmStatus] = useState<
     null | { row: CandidatHubListRow; status: typeof CandidatureStatus.ARCHIVED | typeof CandidatureStatus.REJECTED }
   >(null);
+  const [disableRow, setDisableRow] = useState<CandidatHubListRow | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
   const batchMutation = useMutation({
-    mutationFn: async (input: { candidatureIds: string[]; action: 'archive' | 'reject' }) => {
+    mutationFn: async (input: {
+      candidatureIds: string[];
+      action: 'archive' | 'reject' | 'disable_access';
+    }) => {
       const res = await apiFetch('/api/sections/gestion-ressources/rh/CandidatHub/batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -167,7 +172,9 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
       toast.success(
         vars.action === 'archive'
           ? `${n} dossier(s) archivé(s).`
-          : `${n} dossier(s) refusé(s).`,
+          : vars.action === 'disable_access'
+            ? `${n} accès stagiaire(s) désactivé(s).`
+            : `${n} dossier(s) refusé(s).`,
       );
       if (data?.errors?.length) toast.warning(data.errors.slice(0, 2).join(' · '));
     },
@@ -298,6 +305,15 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-52">
           <DropdownMenuItem
+            disabled={!canTerminalAct(r) || !r.candidatureId}
+            className="gap-2 text-destructive focus:text-destructive"
+            onClick={() => setDisableRow(r)}
+          >
+            <ShieldOff className="size-4" />
+            Désactiver accès + e-formation
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
             disabled={!canTerminalAct(r)}
             className="gap-2"
             onClick={() => setConfirmStatus({ row: r, status: CandidatureStatus.ARCHIVED })}
@@ -324,7 +340,7 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
     () => [
       {
         id: 'select',
-        header: ({ table }) => <DataGridTableRowSelectAll table={table} />,
+        header: () => <DataGridTableRowSelectAll />,
         cell: ({ row }) => <DataGridTableRowSelect row={row} />,
         size: 48,
         enableSorting: false,
@@ -569,6 +585,45 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
         </AlertDialogContent>
       </AlertDialog>
 
+      <AlertDialog open={disableRow !== null} onOpenChange={(o) => !o && setDisableRow(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Désactiver l&apos;accès stagiaire ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Archive le dossier, suspend le compte et coupe l&apos;e-formation pour{' '}
+              <span className="font-medium text-foreground">{disableRow?.email}</span>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="outline" type="button" disabled={batchMutation.isPending}>
+                Annuler
+              </Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={batchMutation.isPending || !disableRow?.candidatureId}
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!disableRow?.candidatureId) return;
+                  batchMutation.mutate(
+                    {
+                      candidatureIds: [disableRow.candidatureId],
+                      action: 'disable_access',
+                    },
+                    { onSuccess: () => setDisableRow(null) },
+                  );
+                }}
+              >
+                Désactiver
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <Tabs value={view} onValueChange={(v) => setView(v as 'table' | 'grid')} className="w-full">
         <TabsContent value="table" className="mt-0">
           <DataGrid
@@ -583,13 +638,7 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
               width: 'auto',
             }}
             tableClassNames={{
-              bodyRow: (row) =>
-                cn(
-                  'transition-colors relative',
-                  typeof row.getIsSelected === 'function' &&
-                    row.getIsSelected() &&
-                    'bg-primary/5 before:absolute before:start-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary',
-                ),
+              bodyRow: 'transition-colors relative',
             }}
           >
             <Card className="border-border shadow-none">

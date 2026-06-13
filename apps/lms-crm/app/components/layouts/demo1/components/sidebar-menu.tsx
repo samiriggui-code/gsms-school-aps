@@ -3,8 +3,11 @@
 import { JSX, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { MENU_SIDEBAR } from '@/config/menu.config';
+import { applyCrmMenuAccess } from '@/config/menu-crm-access';
 import { MenuConfig, MenuItem } from '@/config/types';
+import { filterMenuConfig } from '@/lib/menu-access';
 import { translateMenuTitle } from '@/lib/menu-i18n';
 import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/lib/utils';
@@ -25,9 +28,16 @@ export function SidebarMenu() {
   const { t, i18n } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
+  const { data: session } = useSession();
   const { startNavigation } = useNavigationLoading();
 
   const menuTitle = (item: MenuItem) => translateMenuTitle(item, t);
+  const menuItems = filterMenuConfig(applyCrmMenuAccess(MENU_SIDEBAR), {
+    roleSlug: session?.user?.roleSlug,
+    permissionSlugs: session?.user?.permissionSlugs
+      ? new Set(session.user.permissionSlugs)
+      : undefined,
+  });
 
   // Memoize matchPath to prevent unnecessary re-renders
   const matchPath = useCallback(
@@ -257,7 +267,7 @@ export function SidebarMenu() {
         collapsible
         classNames={classNames}
       >
-        {buildMenu(MENU_SIDEBAR)}
+        {buildMenu(menuItems)}
       </AccordionMenu>
     </div>
   );

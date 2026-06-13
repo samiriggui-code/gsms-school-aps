@@ -199,17 +199,21 @@ model User {
   Session   Session[]
 
   // LMS relations
-  courses            Course[]
-  userProgress       UserProgress[]
-  purchases          Purchase[]
-  stripeCustomer     StripeCustomer?
-  activitiesModified Activity[]      @relation("ActivityModifier")
+  courses                  Course[]
+  userProgress             UserProgress[]
+  purchases                Purchase[]
+  stripeCustomer           StripeCustomer?
+  activitiesModified       Activity[]         @relation("ActivityModifier")
+  chaptersReviewed         Chapter[]          @relation("ChapterReviewer")
+  activitiesReviewed       Activity[]         @relation("ActivityReviewer")
+  quizQuestionBanksCreated QuizQuestionBank[] @relation("QuizBankCreator")
 
   instructorSessions TrainingSession[]      @relation("Instructor")
   enrollments        Enrollment[]
   attendances        Attendance[]
   grades             Grade[]
   submissions        AssignmentSubmission[]
+  quizAttempts       QuizAttempt[]
 
   formationSessionParticipants FormationSessionParticipant[]
   formationAttestations        FormationAttestation[]
@@ -836,9 +840,11 @@ model Formation {
   courseId String? @unique
   course   Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
 
-  sessions FormationSession[]
+  sessions            FormationSession[]
+  portalAnnouncements PortalSessionAnnouncement[]
+  quizQuestionBanks   QuizQuestionBank[]
 
-  /// Offre catalogue CRM (surcharges prix / financement / prérequis ; statut actif ou suspendu).
+  /// Offre catalogue CRM
   catalogOffer FormationCatalogOffer?
 
   /// Ligne catalogue finance (prestations / tarifs devis), synchronisée depuis l’offre catalogue.
@@ -943,8 +949,9 @@ model FormationSession {
   bookingEnabled Boolean @default(false)
   bookingUrl     String? @db.Text
 
-  participants FormationSessionParticipant[]
-  attestations FormationAttestation[]
+  participants        FormationSessionParticipant[]
+  attestations        FormationAttestation[]
+  portalAnnouncements PortalSessionAnnouncement[]
 
   candidaturesInterested   Candidature[]  @relation("CandidatureInterestedSession")
   financeDevisSessionLinks FinanceDevis[] @relation("FinanceDevisLinkedSession")
@@ -957,7 +964,26 @@ model FormationSession {
   @@index([venueRoomId])
 }
 
-/// Dossier d’entrée CRM : rattache une personne (compte au rôle `candidat` ou `eleve`) à une intention de formation catalogue.
+/// Annonce portail candidat — cible une session ou toute la formation (sessionId null).
+model PortalSessionAnnouncement {
+  id          String            @id @default(uuid())
+  formationId String
+  formation   Formation         @relation(fields: [formationId], references: [id], onDelete: Cascade)
+  sessionId   String?
+  session     FormationSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  title       String
+  content     String            @db.Text
+  publishedAt DateTime          @default(now())
+  isPublished Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([formationId])
+  @@index([sessionId])
+  @@index([publishedAt])
+}
+
+/// Dossier d’entrée CRM
 model Candidature {
   id String @id @default(uuid())
 
@@ -1089,7 +1115,8 @@ model Course {
   leads          Lead[]
   trailSteps     TrailStep[]
 
-  formationCatalog Formation?
+  formationCatalog  Formation?
+  quizQuestionBanks QuizQuestionBank[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1127,6 +1154,13 @@ model Chapter {
   isPublished Boolean @default(false)
   isFree      Boolean @default(false)
 
+  reviewStatus         LmsContentReviewStatus @default(APPROVED)
+  submittedForReviewAt DateTime?
+  reviewedAt           DateTime?
+  reviewNote           String?                @db.Text
+  reviewedById         String?
+  reviewedBy           User?                  @relation("ChapterReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
   muxData      MuxData?
   course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId     String
@@ -1137,6 +1171,7 @@ model Chapter {
   updatedAt DateTime @updatedAt
 
   @@index([courseId])
+  @@index([reviewStatus])
 }
 
 enum ActivityType {
@@ -1156,6 +1191,14 @@ enum ActivitySubType {
   QUIZ_MULTIPLE_CHOICE
 }
 
+/// Workflow brouillon → validation admin (optionnel via LMS_CONTENT_REVIEW_REQUIRED).
+enum LmsContentReviewStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
 model Activity {
   id          String          @id @default(uuid())
   name        String
@@ -1166,11 +1209,19 @@ model Activity {
   isPublished Boolean         @default(false)
   position    Int
 
+  reviewStatus         LmsContentReviewStatus @default(APPROVED)
+  submittedForReviewAt DateTime?
+  reviewedAt           DateTime?
+  reviewNote           String?                @db.Text
+  reviewedById         String?
+  reviewedBy           User?                  @relation("ActivityReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
   chapterId String
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
 
-  assignment Assignment?
-  embeddings CourseEmbedding[]
+  assignment   Assignment?
+  embeddings   CourseEmbedding[]
+  quizAttempts QuizAttempt[]
 
   lastModifiedById String?
   lastModifiedBy   User?   @relation("ActivityModifier", fields: [lastModifiedById], references: [id], onDelete: SetNull)
@@ -1179,6 +1230,7 @@ model Activity {
   updatedAt DateTime @updatedAt
 
   @@index([chapterId])
+  @@index([reviewStatus])
 }
 
 model MuxData {
@@ -1188,6 +1240,43 @@ model MuxData {
 
   chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   chapterId String  @unique
+}
+
+/// Banque de questions QCM réutilisable (par formation ou cours LMS).
+model QuizQuestionBank {
+  id          String                 @id @default(uuid())
+  title       String
+  formationId String?
+  formation   Formation?             @relation(fields: [formationId], references: [id], onDelete: Cascade)
+  courseId    String?
+  course      Course?                @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdById String
+  createdBy   User                   @relation("QuizBankCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  items       QuizQuestionBankItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([formationId])
+  @@index([courseId])
+  @@index([createdById])
+}
+
+model QuizQuestionBankItem {
+  id           String           @id @default(uuid())
+  bankId       String
+  bank         QuizQuestionBank @relation(fields: [bankId], references: [id], onDelete: Cascade)
+  position     Int              @default(0)
+  prompt       String           @db.Text
+  /// Liste de réponses proposées (JSON string[]).
+  choices      Json             @default("[]")
+  correctIndex Int              @default(0)
+  tags         String[]         @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bankId])
 }
 
 model UserProgress {
@@ -1205,6 +1294,23 @@ model UserProgress {
 
   @@unique([userId, chapterId])
   @@index([chapterId])
+}
+
+/// Tentative quiz portail candidat (correction serveur).
+model QuizAttempt {
+  id         String   @id @default(uuid())
+  userId     String
+  activityId String
+  answers    Json     @default("{}")
+  score      Int
+  passed     Boolean
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@index([userId, activityId])
+  @@index([activityId])
 }
 
 model Purchase {

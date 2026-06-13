@@ -1,43 +1,23 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
+import { useSheetContent } from '@/hooks/useSheetContent';
+import { SheetStatGrid } from '@/components/sheet-shared/stat-grid';
 
 export function Statistics4({}: object) {
+  const content = useSheetContent('landing.sheetContent.tfp');
+  const stats = content.t(`${content.path}.prerequisiteStats`, { returnObjects: true }) as {
+    age: string;
+    french: string;
+    cnaps: string;
+    criminalRecord: string;
+  };
+
   const items = [
-    { 
-      total: '320', 
-      label: 'Total Invoices'
-    }, 
-    { 
-      total: '6', 
-      label: 'Paid Invoices'
-    }, 
-    { 
-      total: '290', 
-      label: 'Paid Invoices'
-    }, 
-    { 
-      total: '24', 
-      label: 'Overdue Invoices'
-    }
+    { total: stats.age, label: content.common('prerequisiteStats.age') },
+    { total: stats.french, label: content.common('prerequisiteStats.french') },
+    { total: stats.cnaps, label: content.common('prerequisiteStats.cnaps') },
+    { total: stats.criminalRecord, label: content.common('prerequisiteStats.criminalRecord') },
   ];
 
-  return (
-    <Card className="rounded-md mb-5 bg-accent/70 p-1">
-      <CardContent className="rounded-md p-0 bg-background border border-border">
-        <div className="grid sm:grid-cols-4 lg:gap-5">
-          {items.map((item, index) => ( 
-            <div key={index} className={`flex flex-col px-4 py-3 ${index > 0 ? 'sm:border-s border-border' : ''}`}>
-              <span className="text-2xl font-semibold text-foreground">
-                {item.total} 
-              </span>
-              <span className="text-xs font-normal text-secondary-foreground/70">
-                {item.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
+  return <SheetStatGrid items={items} columnsClassName="sm:grid-cols-4" />;
 }

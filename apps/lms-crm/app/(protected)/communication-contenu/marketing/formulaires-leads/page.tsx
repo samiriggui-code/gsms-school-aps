@@ -18,7 +18,7 @@ import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import {
   LeadsDetailSheet,
   type LeadsDetailSheetInitialTab,
-} from '@/app/(protected)/communication-contenu/marketing/formulaires-leads/components/leads-detail-sheet';
+} from '@/app/(protected)/communication-contenu/marketing/formulaires-leads/components/leads-details-sheet';
 import { LeadsHubStats } from '@/app/(protected)/communication-contenu/marketing/formulaires-leads/components/leads-hub-stats';
 import {
   LeadsHubList,

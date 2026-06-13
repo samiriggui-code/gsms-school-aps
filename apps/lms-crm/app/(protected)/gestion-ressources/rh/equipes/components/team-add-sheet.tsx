@@ -332,7 +332,7 @@ const TeamAddSheet = ({
                           <div className="space-y-3">
                             <FormLabel className="text-2sm font-semibold text-foreground flex items-center gap-2">
                               Illustration de l'équipe
-                              <Badge variant="outline" size="xs" className="font-normal opacity-60 italic">Identité Visuelle</Badge>
+                              <Badge variant="outline" size="sm" className="font-normal opacity-60 italic">Identité Visuelle</Badge>
                             </FormLabel>
                             <div className="grid grid-cols-7 sm:grid-cols-9 gap-2 p-3 border border-dashed border-border rounded-xl bg-muted/5">
                               {illustrations.map((illus) => (
@@ -381,7 +381,7 @@ const TeamAddSheet = ({
                               <FormItem className="space-y-2">
                                 <FormLabel className="text-2sm font-semibold text-foreground flex items-center gap-2">
                                   Chef d'Équipe / Responsable
-                                  <Badge variant="outline" size="xs" className="font-normal opacity-60 italic">Hiérarchie</Badge>
+                                  <Badge variant="outline" size="sm" className="font-normal opacity-60 italic">Hiérarchie</Badge>
                                 </FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value || 'none'}>
                                   <FormControl>
@@ -416,7 +416,7 @@ const TeamAddSheet = ({
                               <FormItem className="space-y-2">
                                 <FormLabel className="text-2sm font-semibold text-foreground flex items-center gap-2">
                                   Unité Organisationnelle
-                                  <Badge variant="outline" size="xs" className="font-normal opacity-60 italic">Structure</Badge>
+                                  <Badge variant="outline" size="sm" className="font-normal opacity-60 italic">Structure</Badge>
                                 </FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
@@ -431,7 +431,7 @@ const TeamAddSheet = ({
                                         <div className="flex items-center gap-2">
                                           <LayoutGrid className="size-3.5 text-muted-foreground/60" />
                                           <span className="font-medium">{unit.name}</span>
-                                          <Badge variant="outline" size="xs" className="ml-2 opacity-50 uppercase text-[9px]">
+                                          <Badge variant="outline" size="sm" className="ml-2 opacity-50 uppercase text-[9px]">
                                             {unit.type}
                                           </Badge>
                                         </div>
@@ -451,7 +451,7 @@ const TeamAddSheet = ({
                               <FormItem className="space-y-2">
                                 <FormLabel className="text-2sm font-semibold text-foreground flex items-center gap-2">
                                   Affectation Site Client
-                                  <Badge variant="outline" size="xs" className="font-normal opacity-60 italic">Optionnel</Badge>
+                                  <Badge variant="outline" size="sm" className="font-normal opacity-60 italic">Optionnel</Badge>
                                 </FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>

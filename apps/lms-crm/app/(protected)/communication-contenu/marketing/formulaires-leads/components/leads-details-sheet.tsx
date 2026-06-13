@@ -2,8 +2,8 @@
 
 import { Badge, BadgeDot } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useState, useRef, useEffect } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -1098,5 +1098,71 @@ export function EtudiantDetailsSheet({
   );
 }
 
+export type LeadsDetailSheetInitialTab = 'overview' | 'pipeline' | 'documents' | 'activity' | 'settings';
 
+/** Point d'entrée unique leads marketing (ex-leads-detail-sheet.tsx). */
+export function LeadsDetailSheet(props: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  hubUserId: string | null;
+  initialCandidatureId?: string | null;
+  initialTab?: LeadsDetailSheetInitialTab;
+  leadRow?: import('./leads-hub-list').LeadsHubListRow | null;
+}) {
+  const fallbackLeadAsEtudiant: Etudiant | null = useMemo(
+    () =>
+      props.leadRow
+        ? {
+            id: props.leadRow.raw.candidature?.userId ?? props.leadRow.raw.id,
+            email: props.leadRow.raw.email,
+            name:
+              `${props.leadRow.raw.firstName} ${props.leadRow.raw.lastName}`.trim() ||
+              props.leadRow.raw.email,
+            firstName: props.leadRow.raw.firstName,
+            lastName: props.leadRow.raw.lastName,
+            phone: props.leadRow.raw.phone ?? null,
+            jobFunction: props.leadRow.raw.formation?.name ?? null,
+            roleId: 'lead',
+            status: 'ACTIVE',
+            createdAt: new Date(props.leadRow.raw.createdAt),
+            updatedAt: new Date(props.leadRow.raw.updatedAt),
+            isTrashed: false,
+            isProtected: false,
+            role: {
+              id: 'lead',
+              slug: 'candidat',
+              name: 'Lead',
+              isTrashed: false,
+              createdAt: new Date(props.leadRow.raw.createdAt),
+              isProtected: false,
+              isDefault: false,
+            },
+          }
+        : null,
+    [props.leadRow],
+  );
+
+  const { data } = useQuery({
+    queryKey: ['formulaires-leads', 'etudiant-detail', props.hubUserId ?? ''],
+    queryFn: async () => {
+      if (!props.hubUserId) return null;
+      const res = await apiFetch(`/api/sections/gestion-ressources/rh/etudiants/${props.hubUserId}`);
+      if (!res.ok) return null;
+      return (await res.json()) as Etudiant;
+    },
+    enabled: props.open && !!props.hubUserId && !!props.leadRow?.raw.candidature?.userId,
+  });
+
+  const isFallbackLead = !data && !!fallbackLeadAsEtudiant;
+
+  return (
+    <EtudiantDetailsSheet
+      open={props.open}
+      onOpenChange={props.onOpenChange}
+      Etudiant={data ?? fallbackLeadAsEtudiant}
+      leadRow={props.leadRow ?? null}
+      disableAutoFetch={isFallbackLead}
+    />
+  );
+}
 

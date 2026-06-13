@@ -34,18 +34,64 @@ export const DEFAULT_LANDING_SECTIONS: LandingSectionConfig[] = [
 
 export function normalizeLandingSections(raw: unknown): LandingSectionConfig[] {
   if (!Array.isArray(raw) || raw.length === 0) return DEFAULT_LANDING_SECTIONS;
-  return raw
+  const parsed = raw
     .filter((item) => item && typeof item === 'object' && typeof (item as LandingSectionConfig).type === 'string')
     .map((item) => {
       const s = item as LandingSectionConfig;
+      const type = normalizeSectionType(String(s.type));
       return {
-        type: s.type,
-        title: s.title ?? LANDING_SECTION_CATALOG.find((c) => c.type === s.type)?.label ?? s.type,
+        type,
+        title: s.title ?? LANDING_SECTION_CATALOG.find((c) => c.type === type)?.label ?? type,
         enabled: s.enabled !== false,
       };
     });
+  return mergeLandingSectionsWithDefaults(parsed);
 }
 
 export function landingSectionLabel(section: LandingSectionConfig): string {
   return section.title ?? LANDING_SECTION_CATALOG.find((c) => c.type === section.type)?.label ?? section.type;
+}
+
+const KNOWN_SECTION_TYPES = new Set([
+  ...LANDING_SECTION_CATALOG.map((c) => c.type),
+  'pricing', // alias historique → catalogue
+]);
+
+function normalizeSectionType(type: string): string {
+  return type === 'pricing' ? 'catalogue' : type;
+}
+
+/**
+ * Complète la config CMS/DB avec toutes les sections du catalogue par défaut
+ * (ordre CMS conservé, blocs manquants ajoutés à la fin, enabled conservé).
+ */
+export function mergeLandingSectionsWithDefaults(
+  fromDb: LandingSectionConfig[],
+): LandingSectionConfig[] {
+  if (!fromDb?.length) return DEFAULT_LANDING_SECTIONS;
+
+  const seen = new Set<string>();
+  const merged: LandingSectionConfig[] = [];
+
+  for (const item of fromDb) {
+    if (!item?.type) continue;
+    const type = normalizeSectionType(String(item.type));
+    if (!KNOWN_SECTION_TYPES.has(type) && !KNOWN_SECTION_TYPES.has(String(item.type))) continue;
+    if (seen.has(type)) continue;
+    seen.add(type);
+    const def = DEFAULT_LANDING_SECTIONS.find((d) => d.type === type);
+    merged.push({
+      type,
+      title: item.title ?? def?.title ?? landingSectionLabel({ type, title: type }),
+      enabled: item.enabled !== false,
+    });
+  }
+
+  for (const def of DEFAULT_LANDING_SECTIONS) {
+    if (!seen.has(def.type)) {
+      merged.push({ ...def });
+    }
+  }
+
+  return merged;
 }

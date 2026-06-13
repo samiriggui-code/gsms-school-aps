@@ -11,6 +11,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { apiFetch } from '@/lib/api';
+import { buildDataGridListResponse } from '@/lib/gestion-ressources/datagrid-response';
 import { Equipment } from '@/app/models/equipment';
 import { formatDateTime } from '@/lib/helpers';
 import { Badge } from '@/components/ui/badge';
@@ -69,15 +70,10 @@ export function InventaireDetailsMaintenance({ equipment }: InventaireDetailsMai
     const json = await response.json();
     const payload = json?.data ?? json;
     const rows = payload?.data ?? payload?.items ?? [];
-    return {
-      data: rows,
-      pagination: payload?.pagination ?? {
-        total: rows.length,
-        page: pageIndex + 1,
-        limit: pageSize,
-        totalPages: 1,
-      },
-    };
+    return buildDataGridListResponse(rows, {
+      total: payload?.pagination?.total ?? rows.length,
+      page: payload?.pagination?.page ?? pageIndex + 1,
+    });
   };
 
   const { data: response, isLoading } = useQuery({

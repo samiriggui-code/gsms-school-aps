@@ -1,21 +1,17 @@
 Generate a complete feature for this LMS monorepo (single-tenant).
 
 Context:
-- Targets are:
-  - `apps/lms-app` (LMS)
-  - `apps/lms-crm` (CRM/admin)
-  - `apps/lms-landing` (public/acquisition)
-  - `apps/docs-lms` (internal docs)
+- Single app: `apps/lms-crm` (landing `(site)/`, CRM `(protected)/`, docs `/docs`, APIs)
 - Shared packages:
   - `packages/database` (Prisma schema/seed/client)
   - `packages/auth` (NextAuth shared logic)
 
 Must include (when relevant):
 - database impact on shared schema `packages/database/prisma/schema.prisma`
-- API routes
+- API routes under `apps/lms-crm/app/api/` (`sections/*` for CRM, short public routes at root)
 - server actions
 - UI pages/components
-- integration (menu, permissions, navigation between apps)
+- integration (menu, permissions, navigation between route groups)
 
 Strict constraints:
 - **Step 0**: Read `packages/database/prisma/schema.prisma` — reuse or extend schema before UI/API (see `.cursor/rules/monorepo-feature-workflow.mdc`)

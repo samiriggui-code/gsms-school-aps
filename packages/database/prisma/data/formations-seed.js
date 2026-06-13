@@ -580,7 +580,7 @@ function buildFormationPayload(item, programConfig) {
     successRate: item.slug === 'tfp-aps' ? 97 : item.slug === 'asc-cynophile' ? 90 : 92,
     clientSatisfactionRate: item.slug === 'tfp-aps' ? 94 : item.slug === 'asc-cynophile' ? 88 : 90,
 
-    unitsCount: item.modules.length,
+    unitsCount: item.slug === 'tfp-aps' ? tfpProgramModules.length : item.modules.length,
     volumeHoursLabel: volumeHoursLabel(hMin, hMax, item.duration),
     theoryPercent: tp.theoryPercent,
     practicePercent: tp.practicePercent,
@@ -624,6 +624,13 @@ function buildFormationPayload(item, programConfig) {
       complementaryDetails: {
         commercialShortName: 'TFP APS',
         contentVersion: 'Version 1',
+        portalDisplay: {
+          ratingScore: 4.5,
+          ratingCount: 72,
+          alumniCount: 1589,
+          language: 'Français',
+          authorLabel: "Form'SSI",
+        },
         progressAxisLabels: ['Secourisme', 'Juridique', 'Conflits', 'Professionnel', 'Risque'],
         targetAudience: {
           title: 'Public concerné',

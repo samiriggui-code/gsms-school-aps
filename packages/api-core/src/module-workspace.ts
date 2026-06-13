@@ -709,7 +709,7 @@ export class ModuleWorkspaceService {
       ],
       rows: slice,
       pagination: { page, limit, total },
-      footnote: 'Fiches catalogue formations actives (aide self-service). Documentation : Mintlify @lms/docs.',
+      footnote: 'Fiches catalogue formations actives (aide self-service). Documentation : /docs dans l’app.',
     };
   }
 

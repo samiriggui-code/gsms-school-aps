@@ -143,6 +143,10 @@ export const MENU_SIDEBAR: MenuConfig = [
             title: 'Certifications',
             path: '/gestion-academique/vie-scolaire/certifications',
           },
+          {
+            title: 'Contenu e-formation',
+            path: '/gestion-academique/vie-scolaire/contenu-e-formation',
+          },
         ],
       },
     ],

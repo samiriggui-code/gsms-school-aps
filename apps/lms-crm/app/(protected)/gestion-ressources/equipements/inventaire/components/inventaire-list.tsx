@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
+import { buildDataGridListResponse } from '@/lib/gestion-ressources/datagrid-response';
 import { useCallback, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -40,7 +41,12 @@ import { DataGridTableRowSelect, DataGridTableRowSelectAll } from '@/components/
 import { EquipmentDataGridCard } from '../../components/equipment-datagrid-card';
 import { EquipmentRowActions } from '../../components/equipment-row-actions';
 import { EquipmentDeleteDialog } from '../../components/equipment-delete-dialog';
-import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import {
+  createModuleLandingPagination,
+  DATAGRID_SELECTION_BAR_WRAPPER,
+  DATAGRID_SELECTION_BAR_INNER,
+  DATAGRID_SELECTION_BAR_ACTIONS,
+} from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -133,15 +139,10 @@ const InventaireList = ({
     const json = await response.json();
     const payload = json?.data ?? json;
     const rows = Array.isArray(payload?.data) ? payload.data : [];
-    return {
-      data: rows,
-      pagination: payload?.pagination ?? {
-        total: rows.length,
-        page: pageIndex + 1,
-        limit: pageSize,
-        totalPages: 1,
-      },
-    };
+    return buildDataGridListResponse(rows, {
+      total: payload?.pagination?.total ?? rows.length,
+      page: payload?.pagination?.page ?? pageIndex + 1,
+    });
   };
 
   const { data: response, isLoading, error, isError } = useQuery({
@@ -459,13 +460,13 @@ const InventaireList = ({
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
+            className={DATAGRID_SELECTION_BAR_WRAPPER}
           >
-            <div className="bg-popover text-popover-foreground rounded-xl px-4 py-2.5 flex items-center gap-6 shadow-2xl border border-border min-w-[500px]">
-              <div className="text-sm font-medium border-r border-border pr-6">
+            <div className={DATAGRID_SELECTION_BAR_INNER}>
+              <div className="text-sm font-medium sm:border-r sm:border-border sm:pr-6">
                 <span className="text-muted-foreground">{selectedRowsCount} sur {items.length} sélectionnés</span>
               </div>
-              <div className="flex items-center gap-4">
+              <div className={DATAGRID_SELECTION_BAR_ACTIONS}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors">

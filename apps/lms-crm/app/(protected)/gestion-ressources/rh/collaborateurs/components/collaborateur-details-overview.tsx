@@ -17,10 +17,13 @@ export type RhOverviewVariant = 'collaborateur' | 'formateur';
 export function CollaborateurDetailsOverview({
   collaborateur,
   overviewVariant,
+  showRecentActivity = true,
 }: {
   collaborateur: Collaborateur;
   /** Sinon déduit du rôle `formateur`. */
   overviewVariant?: RhOverviewVariant;
+  /** Désactivé sur l’espace formateur (API historique réservée aux RH). */
+  showRecentActivity?: boolean;
 }) {
   const mode: RhOverviewVariant =
     overviewVariant ??
@@ -65,11 +68,13 @@ export function CollaborateurDetailsOverview({
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-1 gap-5">
-        {mode === 'formateur' ?
-          <FormateurRecentActivity collaborateur={collaborateur} />
-        : <CollaborateurRecentActivity collaborateur={collaborateur} />}
-      </div>
+      {showRecentActivity ? (
+        <div className="grid lg:grid-cols-1 gap-5">
+          {mode === 'formateur' ?
+            <FormateurRecentActivity collaborateur={collaborateur} />
+          : <CollaborateurRecentActivity collaborateur={collaborateur} />}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -1,18 +1,30 @@
-import { delCache } from '@repo/redis';
-import { prisma } from '@/lib/prisma';
+import { getCache, setCache, delCache } from '@repo/redis';
 
+const REDIRECT_MAP_KEY = 'lms:seo:redirects:map';
 const REDIRECT_ENTRY_PREFIX = 'lms:seo:redirect:';
+const TTL_SECONDS = 300;
 
-/** Invalide le cache Redis des redirections SEO landing. */
-export async function invalidateLandingSeoRedirectCache(sourcePath?: string) {
+export type SeoRedirectEntry = { target: string; type: number };
+
+export async function getSeoRedirectFromCache(sourcePath: string): Promise<SeoRedirectEntry | null> {
   try {
-    if (sourcePath) {
-      await delCache(`${REDIRECT_ENTRY_PREFIX}${sourcePath}`);
-      return;
-    }
-    const rows = await prisma.seoRedirect.findMany({ select: { sourcePath: true } });
-    await Promise.all(rows.map((r) => delCache(`${REDIRECT_ENTRY_PREFIX}${r.sourcePath}`)));
-  } catch (e) {
-    console.warn('[seo-cache-invalidate]', e);
+    const cached = await getCache<SeoRedirectEntry>(`${REDIRECT_ENTRY_PREFIX}${sourcePath}`);
+    return cached;
+  } catch {
+    return null;
   }
 }
+
+export async function setSeoRedirectCache(sourcePath: string, entry: SeoRedirectEntry): Promise<void> {
+  await setCache(`${REDIRECT_ENTRY_PREFIX}${sourcePath}`, entry, TTL_SECONDS);
+}
+
+export async function invalidateSeoRedirectCache(sourcePath?: string): Promise<void> {
+  if (sourcePath) {
+    await delCache(`${REDIRECT_ENTRY_PREFIX}${sourcePath}`);
+  }
+  await delCache(REDIRECT_MAP_KEY);
+}
+
+/** @deprecated Alias historique — préférer invalidateSeoRedirectCache */
+export const invalidateLandingSeoRedirectCache = invalidateSeoRedirectCache;

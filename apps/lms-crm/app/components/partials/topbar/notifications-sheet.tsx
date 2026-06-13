@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { LoaderCircleIcon } from 'lucide-react';
@@ -30,6 +31,9 @@ import {
   markNotificationRead,
   type InAppNotificationItem,
 } from '@/lib/topbar-api';
+import { scopeFromPathname } from '@/lib/notifications-scope';
+import type { NotificationsScope } from '@/lib/notifications-scope';
+import { resolveNotificationsHubPath } from '@/lib/notifications-hub-path';
 
 function NotificationRow({
   item,
@@ -97,15 +101,17 @@ function NotificationRow({
 
 function NotificationsList({
   tab,
+  scope,
   onRead,
 }: {
   tab: 'all' | 'unread';
+  scope: NotificationsScope;
   onRead: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['topbar-notifications', tab],
-    queryFn: () => fetchNotifications(tab),
+    queryKey: ['topbar-notifications', tab, scope],
+    queryFn: () => fetchNotifications({ tab, scope, limit: 50 }),
     staleTime: 10_000,
   });
 
@@ -148,6 +154,9 @@ function NotificationsList({
 
 export function NotificationsSheet({ trigger }: { trigger: ReactNode }) {
   const { t } = useTranslation();
+  const pathname = usePathname();
+  const scope = scopeFromPathname(pathname);
+  const viewAllHref = resolveNotificationsHubPath(pathname);
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
@@ -168,7 +177,7 @@ export function NotificationsSheet({ trigger }: { trigger: ReactNode }) {
   });
 
   const readAllMutation = useMutation({
-    mutationFn: markAllNotificationsRead,
+    mutationFn: () => markAllNotificationsRead(scope),
     onSuccess: () => {
       invalidate();
       toast.success(t('topbar.notifications.readAllSuccess'));
@@ -177,7 +186,7 @@ export function NotificationsSheet({ trigger }: { trigger: ReactNode }) {
   });
 
   const archiveAllMutation = useMutation({
-    mutationFn: archiveAllNotifications,
+    mutationFn: () => archiveAllNotifications(scope),
     onSuccess: () => {
       invalidate();
       toast.success(t('topbar.notifications.archivedSuccess'));
@@ -202,12 +211,14 @@ export function NotificationsSheet({ trigger }: { trigger: ReactNode }) {
               <TabsContent value="all" className="mt-0">
                 <NotificationsList
                   tab="all"
+                  scope={scope}
                   onRead={(id) => readMutation.mutate(id)}
                 />
               </TabsContent>
               <TabsContent value="unread" className="mt-0">
                 <NotificationsList
                   tab="unread"
+                  scope={scope}
                   onRead={(id) => readMutation.mutate(id)}
                 />
               </TabsContent>
@@ -216,7 +227,7 @@ export function NotificationsSheet({ trigger }: { trigger: ReactNode }) {
         </SheetBody>
         <SheetFooter className="border-t border-border p-5 flex flex-col gap-2.5">
           <Button variant="mono" className="w-full" asChild>
-            <Link href="/account/notifications" onClick={() => setOpen(false)}>
+            <Link href={viewAllHref} onClick={() => setOpen(false)}>
               {t('topbar.notifications.viewAll')}
             </Link>
           </Button>

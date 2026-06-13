@@ -5,7 +5,7 @@ import { useState } from 'react';
 import InventaireList from './components/inventaire-list';
 import { InventaireStats } from './components/inventaire-stats';
 import { Button } from '@/components/ui/button';
-import { Download, PackagePlus } from 'lucide-react';
+import { Download, Loader2, PackagePlus } from 'lucide-react';
 import InventaireAddSheet from './components/inventaire-add-sheet';
 import { Container } from '@/components/common/container';
 import {
@@ -16,6 +16,8 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { useInventaireExport } from '@/lib/gestion-ressources/use-rh-list-export';
 
 export default function Page() {
   const { t } = useTranslation();
@@ -23,6 +25,7 @@ export default function Page() {
   const { title, description } = usePageToolbarMeta('/gestion-ressources/equipements/inventaire');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { exportCsv, isExporting } = useInventaireExport();
 
   return (
     <div className="flex flex-col gap-5 lg:gap-7.5 w-full min-w-0 overflow-hidden">
@@ -32,9 +35,11 @@ export default function Page() {
             <ToolbarTitle>{title}</ToolbarTitle>
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
-          <ToolbarActions className="flex items-center gap-2">
-            <Button variant="outline">
-              <Download className="size-4" />{t('common.actions.export')}</Button>
+          <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
+            <Button variant="outline" onClick={() => void exportCsv()} disabled={isExporting}>
+              {isExporting ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+              {t('common.actions.export')}
+            </Button>
             <Button onClick={() => setIsAddSheetOpen(true)} className="gap-2">
               <PackagePlus className="size-4" />
               Ajouter un équipement

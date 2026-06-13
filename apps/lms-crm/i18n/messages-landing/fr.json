@@ -1,0 +1,78 @@
+{
+  "landing": {
+    "nav": {
+      "home": "Accueil",
+      "training": "Formations",
+      "trainers": "Formateurs",
+      "school": "Ecole",
+      "help": "Aide"
+    },
+    "sidebar": {
+      "training": {
+        "surete": "Surete",
+        "incendie": "Incendie",
+        "habilitation": "Habilitation",
+        "sst": "SST",
+        "entreprise": "Entreprise",
+        "autres": "Autres"
+      },
+      "trainers": {
+        "experts": "Nos formateurs experts",
+        "pedagogical": "Equipe pedagogique",
+        "hr": "Equipe RH"
+      },
+      "school": {
+        "about": "A propos",
+        "method": "Notre methode",
+        "partners": "Partenaires",
+        "contact": "Contact"
+      },
+      "help": {
+        "faq": "FAQ",
+        "funding": "Financement"
+      }
+    },
+    "cta": {
+      "signup": "S'inscrire"
+    },
+    "header": {
+      "signIn": "Connexion",
+      "phoneDisplay": "+33 1 71 11 39 63",
+      "phoneAria": "Appeler FORM'SSI"
+    },
+    "a11y": {
+      "openMenu": "Ouvrir le menu",
+      "navTitle": "Menu de navigation",
+      "navDescription": "Formations, formateurs, ecole et aide — navigation principale du site"
+    },
+    "footer": {
+      "description": "Ecole de formation en securite privee et incendie. Nous preparons vos equipes aux exigences du terrain.",
+      "columns": {
+        "formations": {
+          "title": "Formations",
+          "privateSecurity": "Securite privee",
+          "fireSafety": "Securite incendie",
+          "recycling": "Recyclage",
+          "certification": "Certification"
+        },
+        "school": {
+          "title": "Ecole",
+          "about": "A propos",
+          "trainers": "Nos formateurs",
+          "partners": "Partenaires",
+          "contact": "Contact"
+        },
+        "help": {
+          "title": "Aide",
+          "faq": "FAQ",
+          "funding": "Financement",
+          "calendar": "Calendrier",
+          "regulations": "Reglementation"
+        }
+      },
+      "copyright": "© 2026 Form'SSI. Tous droits reserves.",
+      "cgv": "Conditions generales de vente",
+      "tagline": "Concu pour la formation professionnelle en securite"
+    }
+  }
+}

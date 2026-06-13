@@ -14,7 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { VIE_SCOLAIRE_SHEET_LARGE_1000 } from '../../../constants/sheet-shell-classes';
+import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
@@ -152,7 +152,7 @@ export function AffectationAddSheet({
         onOpenChange(v);
       }}
     >
-      <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE_1000}>
+      <SheetContent className={VIE_SCOLAIRE_SHEET_AUTO}>
         <SheetHeader className="border-b py-3.5 px-5 border-border bg-background shrink-0">
           <SheetTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground/80">
             Nouvelle affectation

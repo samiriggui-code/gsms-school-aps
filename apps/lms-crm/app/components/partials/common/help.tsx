@@ -5,14 +5,42 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { generalSettings } from '@/config/general.config';
 import { Engage } from './engage';
 
-export function Help() {
+export type HelpAudience = 'crm' | 'instructor' | 'portal';
+
+type HelpProps = {
+  audience?: HelpAudience;
+};
+
+function supportLinkFor(audience: HelpAudience) {
+  if (audience === 'crm') {
+    return { url: '/support-qualite/support/tickets', external: false as const };
+  }
+  return { url: '/#contact', external: false as const };
+}
+
+export function Help({ audience = 'crm' }: HelpProps) {
   const { t } = useTranslation();
+  const supportLink = supportLinkFor(audience);
+
+  const questionsDescription =
+    audience === 'portal'
+      ? t('help.questionsDescriptionPortal')
+      : audience === 'instructor'
+        ? t('help.questionsDescriptionInstructor')
+        : t('help.questionsDescription');
+
+  const supportDescription =
+    audience === 'portal'
+      ? t('help.supportDescriptionPortal')
+      : audience === 'instructor'
+        ? t('help.supportDescriptionInstructor')
+        : t('help.supportDescription');
 
   return (
     <div className="grid lg:grid-cols-2 gap-5 lg:gap-7.5">
       <Engage
         title={t('help.questionsTitle')}
-        description={t('help.questionsDescription')}
+        description={questionsDescription}
         image={
           <>
             <img
@@ -35,7 +63,7 @@ export function Help() {
       />
       <Engage
         title={t('help.supportTitle')}
-        description={t('help.supportDescription')}
+        description={supportDescription}
         image={
           <>
             <img
@@ -52,7 +80,8 @@ export function Help() {
         }
         more={{
           title: t('help.supportCta'),
-          url: '/support-qualite/support/tickets',
+          url: supportLink.url,
+          external: supportLink.external,
         }}
       />
     </div>

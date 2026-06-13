@@ -20,7 +20,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../constants/sheet-shell-classes';
+import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
+import { GESTION_RESSOURCES_SHEET_TABS_LIST } from '@/lib/gestion-ressources/ui';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Equipment as Inventaire, EquipmentStatus } from '@/app/models/equipment';
 import { cn } from '@/lib/utils';
@@ -474,7 +475,7 @@ export function InventaireDetailsSheet({
   return (
     <>
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE}>
+      <SheetContent className={VIE_SCOLAIRE_SHEET_AUTO}>
         <SheetHeader className="border-b py-3.5 px-5 border-border bg-background shrink-0">
           <SheetTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground/80">
             {isCatalogMode ? 'Fiche catégorie — Catalogue' : "Détails de l'équipement"}
@@ -671,7 +672,7 @@ export function InventaireDetailsSheet({
 
               <div className="grow lg:border-s border-border space-y-5 py-5 lg:ps-5">   
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto text-sm text-muted-foreground">
-                  <TabsList className="inline-flex w-auto grow-0 mb-2.5 flex-wrap">
+                  <TabsList className={GESTION_RESSOURCES_SHEET_TABS_LIST}>
                     <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
                     {isCatalogMode && (
                       <TabsTrigger value="inventaire">Inventaire</TabsTrigger>

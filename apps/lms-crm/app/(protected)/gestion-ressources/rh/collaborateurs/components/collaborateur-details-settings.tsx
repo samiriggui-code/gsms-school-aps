@@ -47,6 +47,7 @@ import {
 import { RhMetierQualificationPicker } from '@/components/rh/metier-qualification-picker';
 import { isFormateurRole } from '@/lib/rh-agrement';
 import { cn } from '@/lib/utils';
+import { AccountLifecycleActions } from '@/components/rh/account-lifecycle-actions';
 
 interface CollaborateurDetailsSettingsProps {
   collaborateur: Collaborateur;
@@ -367,6 +368,12 @@ interface ManagerPickItem {
   };
 
   return (
+    <div className="space-y-6">
+      <AccountLifecycleActions
+        user={collaborateur}
+        onSuccess={onSuccess}
+        queryKeys={[['rh-collaborators'], ['collaborateur', collaborateur.id]]}
+      />
     <Card className="border-none shadow-none bg-transparent">
       <CardContent className="p-0">
         <Form {...form}>
@@ -1171,5 +1178,6 @@ interface ManagerPickItem {
         </Form>
       </CardContent>
     </Card>
+    </div>
   );
 }

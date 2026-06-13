@@ -728,11 +728,11 @@
     },
     "support-base-aide": {
       "title": "Training catalog (help)",
-      "description": "Active catalog sheets used for self-service help — full docs in Mintlify.",
-      "footnote": "Sheets from the active training catalog. FAQ and analytics: see Mintlify documentation tab.",
+      "description": "Active catalog sheets used for self-service help — full docs in the school guide.",
+      "footnote": "Sheets from the active training catalog. FAQ and analytics: see the school guide documentation tab.",
       "stats": {
         "articles": { "label": "Catalog sheets", "subtitle": "Active trainings" },
-        "faq": { "label": "Mintlify guide", "subtitle": "Procedures & support" },
+        "faq": { "label": "School guide", "subtitle": "Procedures & support" },
         "searches": { "label": "Searches", "subtitle": "Analytics pending" },
         "satisfaction": { "label": "Satisfaction", "subtitle": "Surveys pending" },
         "coverage": { "label": "Coverage", "subtitle": "Active sheets" }
@@ -997,10 +997,14 @@
   },
   "help": {
     "questionsTitle": "Questions?",
-    "questionsDescription": "CRM procedures, training catalog and support: see the Mintlify product guide.",
+    "questionsDescription": "CRM procedures, training catalog and support: see the school guide product documentation.",
+    "questionsDescriptionInstructor": "Sessions, trainees and teaching tools: see the instructor documentation and training catalog guide.",
+    "questionsDescriptionPortal": "Your application, training path and e-learning: see the documentation and catalog guide.",
     "questionsCta": "Open documentation",
     "supportTitle": "Contact support",
     "supportDescription": "Need help? Contact our support team for fast, personalized assistance.",
+    "supportDescriptionInstructor": "Need help with your sessions or instructor workspace? Our team will get back to you quickly.",
+    "supportDescriptionPortal": "Need help with your file or training? Contact the school through the contact form.",
     "supportCta": "Contact support",
     "imageAlt": "Illustration"
   },
@@ -1149,7 +1153,9 @@
           "read": "Read",
           "readHint": "Already opened",
           "archived": "Archived",
-          "archivedHint": "Removed from active list"
+          "archivedHint": "Removed from active list",
+          "today": "Today",
+          "todayHint": "Received since midnight (business alerts)"
         },
         "landingAlertsTitle": "Alerts & events",
         "landingAlertsSubtitle": "School life · catalog, sessions, compliance",

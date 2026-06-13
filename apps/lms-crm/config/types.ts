@@ -16,6 +16,10 @@ export interface MenuItem {
   expandTitle?: string;
   badge?: string;
   separator?: boolean;
+  /** Slugs `UserRole.slug` autorisés (ex. formateur, candidat). */
+  roleSlugs?: string[];
+  /** Slug `UserPermission.slug` requis (ex. in_app_notifications.view). */
+  permissionSlug?: string;
 }
 
 export type MenuConfig = MenuItem[];

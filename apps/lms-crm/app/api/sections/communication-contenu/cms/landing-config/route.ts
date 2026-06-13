@@ -3,11 +3,20 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { DEFAULT_LANDING_SECTIONS, normalizeLandingSections, type Prisma } from '@repo/database';
+import { DEFAULT_LANDING_SECTIONS, type Prisma } from '@repo/database';
 
 async function getOrCreateConfig() {
   const existing = await prisma.landingConfig.findFirst({ orderBy: { updatedAt: 'desc' } });
-  if (existing) return existing;
+  if (existing) {
+    const stored = Array.isArray(existing.sections) ? existing.sections : [];
+    if (stored.length !== DEFAULT_LANDING_SECTIONS.length) {
+      return prisma.landingConfig.update({
+        where: { id: existing.id },
+        data: { sections: DEFAULT_LANDING_SECTIONS },
+      });
+    }
+    return existing;
+  }
   return prisma.landingConfig.create({
     data: { sections: DEFAULT_LANDING_SECTIONS, enabled: true },
   });
@@ -19,12 +28,11 @@ export async function GET() {
 
   try {
     const row = await getOrCreateConfig();
-    const sections = normalizeLandingSections(row.sections);
     return ok({
       id: row.id,
       enabled: row.enabled,
-      sections,
-      sectionCount: sections.length,
+      sections: DEFAULT_LANDING_SECTIONS,
+      sectionCount: DEFAULT_LANDING_SECTIONS.length,
       updatedAt: row.updatedAt.toISOString(),
     });
   } catch (e) {
@@ -46,8 +54,8 @@ export async function PATCH(request: NextRequest) {
   const data: { enabled?: boolean; sections?: Prisma.InputJsonValue } = {};
   if (body.enabled !== undefined) data.enabled = Boolean(body.enabled);
   if (body.sections !== undefined) {
-    if (!Array.isArray(body.sections)) return fail('sections doit être un tableau.', 400);
-    data.sections = body.sections as Prisma.InputJsonValue;
+    // Les sections affichées sont fixes côté site ; on normalise la DB au catalogue complet.
+    data.sections = DEFAULT_LANDING_SECTIONS as Prisma.InputJsonValue;
   }
 
   if (!Object.keys(data).length) return fail('Aucune modification.', 400);
@@ -58,7 +66,7 @@ export async function PATCH(request: NextRequest) {
       where: { id: row.id },
       data,
     });
-    const sections = normalizeLandingSections(updated.sections);
+    const sections = DEFAULT_LANDING_SECTIONS;
     return ok({
       id: updated.id,
       enabled: updated.enabled,

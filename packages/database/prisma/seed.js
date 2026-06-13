@@ -39,7 +39,9 @@ const bcrypt = require('bcrypt');
 const rolesData = require('./data/roles');
 const usersData = require('./data/users');
 const permissionsData = require('./data/permissions');
+const { CRM_PERMISSIONS } = require('./data/crm-role-permissions');
 const { seedFormationsCatalog } = require('./data/formations-seed');
+const { seedPortalLmsContent, seedPortalLmsEnrollments, seedPortalAnnouncements } = require('./data/portal-lms-seed');
 const { FORMATION_VENUE_ROOMS } = require('./data/formation-venue-rooms-seed');
 const { seedLandingLeadsAndDevis } = require('./data/landing-leads-devis-seed');
 const { seedOperationalModules } = require('./data/operational-modules-seed');
@@ -96,8 +98,338 @@ function buildUsersFromMetronic() {
       roleSlug: 'superadmin',
       isProtected: true,
     },
+    // Comptes démo espace candidat (boutons /signin — mot de passe seed : demo1234)
+    {
+      name: 'Candidat Dev 1',
+      email: 'candidat.dev.1@ecole.local',
+      avatar: null,
+      roleSlug: 'candidat',
+    },
+    {
+      name: 'Candidat Dev 2',
+      email: 'candidat.dev.2@ecole.local',
+      avatar: null,
+      roleSlug: 'candidat',
+    },
+    {
+      name: 'Stagiaire Dev 1',
+      email: 'stagiaire.dev.1@ecole.local',
+      avatar: null,
+      roleSlug: 'eleve',
+    },
     ...base,
   ];
+}
+
+/** Dossiers démo pour l’espace candidat (/mon-dossier). */
+async function seedDemoPortalCandidatures(tx) {
+  const formation = await tx.formation.findFirst({
+    where: { slug: 'tfp-aps' },
+    select: { id: true, name: true, priceFrom: true, currency: true },
+  });
+  if (!formation) {
+    console.warn('[seed] demo-portal-candidatures: formation tfp-aps introuvable — ignoré.');
+    return;
+  }
+
+  const session = await tx.formationSession.findFirst({
+    where: { formationId: formation.id },
+    orderBy: { sortOrder: 'asc' },
+    select: { id: true, dateDisplayLabel: true },
+  });
+
+  const demoTrainer = await tx.user.findUnique({
+    where: { email: 'formateur.dev.1@ecole.local' },
+    select: { id: true },
+  });
+
+  if (demoTrainer && session?.id) {
+    await tx.formationSession.update({
+      where: { id: session.id },
+      data: { trainerUserId: demoTrainer.id },
+    });
+
+    await tx.user.update({
+      where: { id: demoTrainer.id },
+      data: {
+        firstName: 'Laurent',
+        lastName: 'Dubois',
+        name: 'Laurent Dubois',
+        avatar: '/media/avatars/300-1.png',
+        jobFunction: 'Formateur TFP APS & BP ARS',
+        qualification:
+          "Ancien gendarme reconverti, 18 ans d'expérience en sécurité privée. Formateur TFP APS et BP ARS, il prépare les futurs agents aux réalités du terrain avec rigueur et professionnalisme.",
+        phone: '+33 6 12 34 56 78',
+        proEmail: 'laurent.dubois@form-ssi.fr',
+      },
+    });
+
+    await tx.formateurProfile.upsert({
+      where: { userId: demoTrainer.id },
+      create: {
+        userId: demoTrainer.id,
+        isInternal: true,
+        speciality: 'TFP APS · Surveillance · CNAPS',
+        specialties: ['TFP APS', 'SST', 'Gestion des conflits', 'Sécurité incendie'],
+        certifications: [
+          'Carte professionnelle CNAPS — activité surveillance',
+          'Formateur certifié INRS (SST)',
+          'Qualiopi — intervenant référent',
+        ],
+        pedagogicalReferences: [
+          "Formateur principal sur les sessions TFP APS depuis 2018.",
+          'Interventions en entreprise sur la prévention des risques professionnels.',
+        ],
+        yearsOfExperience: 18,
+        metadata: {
+          portalBio:
+            "Ancien gendarme reconverti, Laurent Dubois cumule 18 ans d'expérience en sécurité privée et en formation professionnelle. Spécialiste du TFP APS et du BP ARS, il met l'accent sur la mise en situation réelle, la déontologie CNAPS et la préparation aux épreuves finales. Ses stagiaires apprécient sa pédagogie directe et son exigence bienveillante.",
+        },
+      },
+      update: {
+        isInternal: true,
+        speciality: 'TFP APS · Surveillance · CNAPS',
+        specialties: ['TFP APS', 'SST', 'Gestion des conflits', 'Sécurité incendie'],
+        certifications: [
+          'Carte professionnelle CNAPS — activité surveillance',
+          'Formateur certifié INRS (SST)',
+          'Qualiopi — intervenant référent',
+        ],
+        pedagogicalReferences: [
+          "Formateur principal sur les sessions TFP APS depuis 2018.",
+          'Interventions en entreprise sur la prévention des risques professionnels.',
+        ],
+        yearsOfExperience: 18,
+        metadata: {
+          portalBio:
+            "Ancien gendarme reconverti, Laurent Dubois cumule 18 ans d'expérience en sécurité privée et en formation professionnelle. Spécialiste du TFP APS et du BP ARS, il met l'accent sur la mise en situation réelle, la déontologie CNAPS et la préparation aux épreuves finales. Ses stagiaires apprécient sa pédagogie directe et son exigence bienveillante.",
+        },
+      },
+    });
+  }
+
+  const now = new Date();
+  const daysAgo = (n) => new Date(now.getTime() - n * 24 * 60 * 60 * 1000);
+  const demoPdfUrl =
+    'https://www.cnaps.interieur.gouv.fr/contenu/telechargement/5034/42210/file/20260210%20Formulaire%20d%27autorisation%20pr%C3%A9alable%20ou%20provisoire%20d%27entr%C3%A9e%20en%20formation.pdf';
+
+  async function seedCnapsFiles(userId, files) {
+    await tx.fileAsset.deleteMany({
+      where: { module: 'portal-candidat', entityType: 'User', entityId: userId },
+    });
+    for (const f of files) {
+      await tx.fileAsset.create({
+        data: {
+          module: 'portal-candidat',
+          entityType: 'User',
+          entityId: userId,
+          category: f.category,
+          originalName: f.name,
+          mimeType: 'application/pdf',
+          size: 4096,
+          storageKey: `demo-cnaps-${userId}-${f.category}`,
+          url: demoPdfUrl,
+          visibility: 'PRIVATE',
+          metadata: f.metadata ?? {},
+        },
+      });
+    }
+  }
+
+  const demos = [
+    {
+      email: 'candidat.dev.1@ecole.local',
+      status: 'DRAFT',
+      source: 'LANDING_SESSION',
+      fundingMode: 'CPF (Mon Compte Formation)',
+      metadata: { fundingMode: 'CPF (Mon Compte Formation)' },
+      notes: `Dossier démo seed — ${formation.name}\nMode de financement souhaité: CPF (Mon Compte Formation)`,
+      createdAt: daysAgo(12),
+      cnapsFiles: [
+        {
+          category: 'CNAPS_IDENTITY',
+          name: 'cni-candidat-dev-1.pdf',
+          metadata: { schoolVerified: false },
+        },
+      ],
+    },
+    {
+      email: 'candidat.dev.2@ecole.local',
+      status: 'PENDING_CNAPS',
+      source: 'LANDING_SESSION',
+      fundingMode: 'OPCO entreprise',
+      metadata: {
+        fundingMode: 'OPCO entreprise',
+        submittedAt: daysAgo(8).toISOString(),
+      },
+      notes: `Dossier démo seed — ${formation.name}\nMode de financement souhaité: OPCO entreprise`,
+      createdAt: daysAgo(21),
+      cnapsSubmittedAt: daysAgo(5),
+      cnapsReference: 'CNAPS-DEMO-2026-0042',
+      cnapsPrefavorable: null,
+      cnapsFiles: [
+        {
+          category: 'CNAPS_IDENTITY',
+          name: 'cni-candidat-dev-2.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(10).toISOString() },
+        },
+        {
+          category: 'CNAPS_JUSTIFICATIFS',
+          name: 'casier-candidat-dev-2.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(10).toISOString() },
+        },
+        {
+          category: 'CNAPS_DIVERS',
+          name: 'photo-candidat-dev-2.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(9).toISOString() },
+        },
+        {
+          category: 'CNAPS_FORM_OF',
+          name: 'formulaire-cnaps-vise-ecole.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(6).toISOString() },
+        },
+      ],
+    },
+    {
+      email: 'stagiaire.dev.1@ecole.local',
+      status: 'VALIDATED',
+      source: 'MANUAL',
+      fundingMode: 'Pôle emploi / France Travail',
+      metadata: {
+        fundingMode: 'Pôle emploi / France Travail',
+        submittedAt: daysAgo(45).toISOString(),
+        dossierSubmittedAt: daysAgo(45).toISOString(),
+      },
+      notes: `Dossier démo seed — ${formation.name}\nMode de financement souhaité: Pôle emploi / France Travail`,
+      createdAt: daysAgo(60),
+      cnapsSubmittedAt: daysAgo(30),
+      cnapsReference: 'CNAPS-DEMO-2026-0018',
+      cnapsPrefavorable: true,
+      cnapsDecisionAt: daysAgo(28),
+      validatedAt: daysAgo(14),
+      withDevis: true,
+      enrollSession: true,
+      cnapsFiles: [
+        {
+          category: 'CNAPS_IDENTITY',
+          name: 'cni-stagiaire-dev-1.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(40).toISOString() },
+        },
+        {
+          category: 'CNAPS_JUSTIFICATIFS',
+          name: 'casier-stagiaire-dev-1.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(40).toISOString() },
+        },
+        {
+          category: 'CNAPS_DIVERS',
+          name: 'photo-stagiaire-dev-1.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(39).toISOString() },
+        },
+        {
+          category: 'CNAPS_FORM_OF',
+          name: 'formulaire-cnaps-vise-ecole.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(35).toISOString() },
+        },
+        {
+          category: 'CNAPS_AUTHORIZATION',
+          name: 'autorisation-cnaps-favorable.pdf',
+          metadata: { schoolVerified: true, verifiedAt: daysAgo(28).toISOString() },
+        },
+      ],
+    },
+  ];
+
+  for (const demo of demos) {
+    const user = await tx.user.findUnique({
+      where: { email: demo.email },
+      select: { id: true },
+    });
+    if (!user) continue;
+
+    await tx.financeDevis.deleteMany({ where: { candidature: { userId: user.id } } });
+    await tx.candidature.deleteMany({ where: { userId: user.id } });
+
+    const candidature = await tx.candidature.create({
+      data: {
+        userId: user.id,
+        formationId: formation.id,
+        interestedSessionId: session?.id ?? null,
+        source: demo.source,
+        status: demo.status,
+        notes: demo.notes,
+        metadata: demo.metadata,
+        createdAt: demo.createdAt,
+        cnapsSubmittedAt: demo.cnapsSubmittedAt ?? null,
+        cnapsReference: demo.cnapsReference ?? null,
+        cnapsPrefavorable: demo.cnapsPrefavorable ?? null,
+        cnapsDecisionAt: demo.cnapsDecisionAt ?? null,
+        validatedAt: demo.validatedAt ?? null,
+      },
+      select: { id: true },
+    });
+
+    if (demo.withDevis) {
+      const price = formation.priceFrom != null ? Number(formation.priceFrom) : 1190;
+      const vatRate = 20;
+      const subtotalHt = price;
+      const vatTotal = Math.round(subtotalHt * vatRate) / 100;
+      const totalTtc = subtotalHt + vatTotal;
+      await tx.financeDevis.create({
+        data: {
+          referenceCode: `DEV-PORTAL-${user.id.slice(0, 8).toUpperCase()}`,
+          title: `Devis ${formation.name} — dossier candidat`,
+          status: 'SENT',
+          candidatureId: candidature.id,
+          formationId: formation.id,
+          formationSessionId: session?.id ?? null,
+          clientSnapshot: {
+            fundingHint: demo.fundingMode,
+            preferredDates: session?.dateDisplayLabel ?? null,
+          },
+          lines: [
+            {
+              label: formation.name,
+              quantity: 1,
+              unitPriceHt: subtotalHt,
+              vatRate,
+            },
+          ],
+          subtotalHt,
+          vatTotal,
+          totalTtc,
+          currency: formation.currency ?? 'EUR',
+          validUntil: new Date(now.getFullYear(), 11, 31),
+        },
+      });
+    }
+
+    if (demo.cnapsFiles?.length) {
+      await seedCnapsFiles(user.id, demo.cnapsFiles);
+    }
+
+    if (
+      session?.id &&
+      (demo.status === 'VALIDATED' || demo.status === 'COMPLETED') &&
+      demo.enrollSession
+    ) {
+      await tx.formationSessionParticipant.upsert({
+        where: {
+          sessionId_userId: { sessionId: session.id, userId: user.id },
+        },
+        create: {
+          sessionId: session.id,
+          userId: user.id,
+          candidatureId: candidature.id,
+          enrollmentStatus: 'CONFIRMED',
+        },
+        update: {
+          candidatureId: candidature.id,
+          enrollmentStatus: 'CONFIRMED',
+        },
+      });
+    }
+  }
+  console.log('Candidatures démo portail candidat seedées.');
 }
 
 function buildLargeUsers() {
@@ -187,6 +519,12 @@ async function main() {
           isProtected: true,
         },
         {
+          slug: 'admin',
+          name: 'Admin école',
+          description: 'Administration de l\'école (hors configuration système)',
+          isProtected: true,
+        },
+        {
           slug: 'collaborateur',
           name: 'Collaborateur',
           description: 'Collaborateur CRM',
@@ -250,32 +588,43 @@ async function main() {
       const seededRoles = await tx.userRole.findMany();
       const seededPermissions = await tx.userPermission.findMany();
 
-      const userRolePermissionPromises = seededRoles.flatMap((role) => {
-        const numberOfPermissions = Math.floor(Math.random() * (12 - 3 + 1)) + 3;
-        const randomizedPermissions = seededPermissions
-          .sort(() => Math.random() - 0.5)
-          .slice(0, numberOfPermissions);
+      const permissionBySlug = new Map(seededPermissions.map((p) => [p.slug, p]));
+      const allPermissionIds = seededPermissions.map((p) => p.id);
 
-        return randomizedPermissions.map((permission) =>
-          tx.userRolePermission.upsert({
+      for (const role of seededRoles) {
+        const matrixEntry = CRM_PERMISSIONS[role.slug];
+        let slugList = [];
+        if (matrixEntry === '*') {
+          slugList = seededPermissions.map((p) => p.slug);
+        } else if (Array.isArray(matrixEntry)) {
+          slugList = matrixEntry;
+        }
+
+        const permissionIds =
+          matrixEntry === '*'
+            ? allPermissionIds
+            : slugList
+                .map((slug) => permissionBySlug.get(slug)?.id)
+                .filter((id) => Boolean(id));
+
+        for (const permissionId of permissionIds) {
+          await tx.userRolePermission.upsert({
             where: {
               roleId_permissionId: {
                 roleId: role.id,
-                permissionId: permission.id,
+                permissionId,
               },
             },
-            update: {},
+            update: { assignedAt: new Date() },
             create: {
               roleId: role.id,
-              permissionId: permission.id,
+              permissionId,
               assignedAt: new Date(),
             },
-          }),
-        );
-      });
-
-      await Promise.all(userRolePermissionPromises);
-      console.log('UserRolePermissions seeded.');
+          });
+        }
+      }
+      console.log('UserRolePermissions seeded (deterministic CRM matrix).');
 
        const seededUsers = buildUsersFromMetronic();
       for (const user of seededUsers) {
@@ -525,6 +874,10 @@ async function main() {
       console.log('Salles formation (FormationVenueRoom) seedees.');
 
       await seedFormationsCatalog(tx);
+      await seedPortalLmsContent(tx);
+      await seedDemoPortalCandidatures(tx);
+      await seedPortalLmsEnrollments(tx);
+      await seedPortalAnnouncements(tx);
       await seedLandingLeadsAndDevis(tx);
       await seedOperationalModules(tx);
 

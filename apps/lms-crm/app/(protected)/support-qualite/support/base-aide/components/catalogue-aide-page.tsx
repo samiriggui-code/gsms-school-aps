@@ -41,7 +41,7 @@ export function CatalogueAidePage() {
       <Container className="pb-0">
         <TabsList className="mb-4">
           <TabsTrigger value="catalogue">Fiches catalogue</TabsTrigger>
-          <TabsTrigger value="documentation">Documentation Mintlify</TabsTrigger>
+          <TabsTrigger value="documentation">Guide école</TabsTrigger>
         </TabsList>
       </Container>
 
@@ -53,7 +53,7 @@ export function CatalogueAidePage() {
             <AlertDescription>
               Les fiches listées proviennent du catalogue formations actif — ce n&apos;est pas une FAQ
               autonome. La documentation complète (procédures, support) est dans l&apos;onglet
-              Mintlify ou via{' '}
+              guide école intégré ou via{' '}
               <Link href={generalSettings.docsLink} className="font-medium text-primary underline">
                 le guide école
               </Link>
@@ -68,7 +68,7 @@ export function CatalogueAidePage() {
         <Container className="space-y-5 pb-8 lg:space-y-7.5">
           <Alert variant="secondary">
             <AlertDescription>
-              Ouvrez le guide Mintlify (<code className="text-xs">@lms/docs</code>) pour les
+              Ouvrez la documentation intégrée (<code className="text-xs">/docs</code>) pour les
               procédures détaillées. Les fiches catalogue restent dans l&apos;onglet « Fiches
               catalogue ».
             </AlertDescription>
@@ -82,10 +82,10 @@ export function CatalogueAidePage() {
                 </CardHeader>
                 <CardContent className="mt-auto pt-0">
                   <Button variant="outline" size="sm" asChild>
-                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                    <Link href={item.href}>
                       <ExternalLink className="size-4" />
-                      Ouvrir dans Mintlify
-                    </a>
+                      Ouvrir la documentation
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>

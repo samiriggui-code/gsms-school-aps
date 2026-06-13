@@ -1,6 +1,9 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { formationSessionRelationInclude } from '@/app/api/sections/gestion-academique/vie-scolaire/sessions/_session-include';
@@ -24,8 +27,8 @@ function normalizeEquipmentIds(value: unknown): string[] {
 
 /** Réserve une pièce (unité) sur une session FormationSession. */
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   try {
     const body = await request.json();

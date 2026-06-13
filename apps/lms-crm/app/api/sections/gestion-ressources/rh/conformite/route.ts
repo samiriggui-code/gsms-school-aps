@@ -1,13 +1,26 @@
+import { Prisma } from '@repo/database';
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { qualificationMetierLabel } from '@/lib/rh-qualification-metier';
+import {
+  mapRhConformiteListRow,
+  type RhComplianceStatus,
+} from '@/lib/gestion-ressources/rh-conformite-compliance';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesView,
+} from '../../_lib/require-gestion-ressources-auth';
+
+const COMPLIANCE_STATUSES = new Set<RhComplianceStatus>([
+  'COMPLIANT',
+  'WARNING',
+  'NON_COMPLIANT',
+]);
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
   try {
     const url = new URL(request.url);
@@ -20,10 +33,15 @@ export async function GET(request: NextRequest) {
     const status = url.searchParams.get('status') || undefined;
     const userCategory = url.searchParams.get('userCategory') || undefined;
     const profileType = url.searchParams.get('profileType') || undefined;
+    const complianceStatusParam = url.searchParams.get('complianceStatus') || undefined;
+    const complianceStatus =
+      complianceStatusParam && COMPLIANCE_STATUSES.has(complianceStatusParam as RhComplianceStatus)
+        ? (complianceStatusParam as RhComplianceStatus)
+        : undefined;
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.UserWhereInput = {};
     if (query) {
       where.OR = [
         { firstName: { contains: query, mode: 'insensitive' } },
@@ -32,13 +50,12 @@ export async function GET(request: NextRequest) {
       ];
     }
     if (roleId) where.roleId = roleId;
-    if (status) where.status = status;
-    if (userCategory) where.userCategory = userCategory;
+    if (status) where.status = status as Prisma.EnumUserStatusFilter['equals'];
+    if (userCategory) where.userCategory = userCategory as Prisma.EnumUserCategoryFilter['equals'];
     if (profileType) {
       if (profileType === 'formateur') {
         where.qualification = { not: 'None' };
       } else if (profileType === 'interne') {
-        // Example filter; adjust based on actual logic
         where.userCategory = 'INTERNAL';
       }
     }
@@ -47,8 +64,8 @@ export async function GET(request: NextRequest) {
       prisma.user.count({ where }),
       prisma.user.findMany({
         where,
-        skip,
-        take: limit,
+        skip: complianceStatus ? 0 : skip,
+        take: complianceStatus ? undefined : limit,
         orderBy: { [sort]: dir },
         include: {
           role: true,
@@ -59,9 +76,8 @@ export async function GET(request: NextRequest) {
       }),
     ]);
 
-    return ok({
-      data: data.map((u: any) => ({
-        ...u,
+    const mapped = data.map((u) =>
+      mapRhConformiteListRow(u, {
         qualification:
           qualificationMetierLabel({
             qualification: u.qualification,
@@ -70,8 +86,21 @@ export async function GET(request: NextRequest) {
             collaborateurProfile: u.collaborateurProfile ?? null,
             formateurProfile: u.formateurProfile ?? null,
           }) ?? u.qualification ?? null,
-      })),
-      pagination: { total, page },
+      }),
+    );
+
+    const filtered = complianceStatus
+      ? mapped.filter((row) => row.complianceStatus === complianceStatus)
+      : mapped;
+
+    const paged = complianceStatus ? filtered.slice(skip, skip + limit) : filtered;
+
+    return ok({
+      data: paged,
+      pagination: {
+        total: complianceStatus ? filtered.length : total,
+        page,
+      },
     });
   } catch (error) {
     return fail('Impossible de récupérer les conformités.', 500, error);
@@ -79,8 +108,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   try {
     const body = await request.json();
@@ -90,8 +119,6 @@ export async function POST(request: NextRequest) {
       lastName,
       email,
       phone,
-      proEmail,
-      password,
       roleId,
       userCategory,
       subcontractorId,
@@ -112,14 +139,8 @@ export async function POST(request: NextRequest) {
       address,
       city,
       postalCode,
-      documentCni,
-      documentAssurance,
-      documentResidencePermit,
-      documentCartePro,
-      avatar,
     } = body;
 
-    // Basic validation
     if (!firstName || !lastName || !email || !roleId || !userCategory) {
       return fail('Champs requis manquants', 400);
     }
@@ -131,7 +152,7 @@ export async function POST(request: NextRequest) {
       return fail('Cet email est déjà utilisé.', 409);
     }
 
-    const userData: any = {
+    const userData: Prisma.UserUncheckedCreateInput = {
       firstName,
       lastName,
       email,
@@ -156,7 +177,6 @@ export async function POST(request: NextRequest) {
       address,
       city,
       postalCode,
-      // Note: avatar and documents handling would require file upload logic; skipping for now
     };
 
     const newUser = await prisma.user.create({
@@ -164,7 +184,7 @@ export async function POST(request: NextRequest) {
       include: { role: true },
     });
 
-    return ok(newUser, 201);
+    return ok(mapRhConformiteListRow(newUser), 201);
   } catch (error) {
     return fail('Impossible de créer la conformité.', 500, error);
   }

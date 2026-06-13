@@ -10,6 +10,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { apiFetch } from '@/lib/api';
+import { buildDataGridListResponse } from '@/lib/gestion-ressources/datagrid-response';
 import { Equipment } from '@/app/models/equipment';
 import { formatDateTime } from '@/lib/helpers';
 import { Badge } from '@/components/ui/badge';
@@ -64,7 +65,13 @@ export function InventaireDetailsMovements({ equipment }: InventaireDetailsMovem
 
     const response = await apiFetch(`/api/sections/gestion-ressources/equipements/inventaire/${equipment.id}/movements?${params.toString()}`);
     if (!response.ok) throw new Error('Échec du chargement des mouvements');
-    return response.json();
+    const json = await response.json();
+    const payload = json?.data ?? json;
+    const rows = Array.isArray(payload?.data) ? payload.data : [];
+    return buildDataGridListResponse(rows, {
+      total: payload?.pagination?.total ?? rows.length,
+      page: payload?.pagination?.page ?? pageIndex + 1,
+    });
   };
 
   const { data: response, isLoading } = useQuery({

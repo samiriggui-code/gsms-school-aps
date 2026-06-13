@@ -165,7 +165,7 @@ export function ProfilSettings({ profile, primaryAdminContact, formRef }: Profil
         if (values.directorAvatarFile) fd.append('directorAvatarFile', values.directorAvatarFile);
         if (values.adminAvatarFile) fd.append('adminAvatarFile', values.adminAvatarFile);
 
-        const response = await apiFetch(`/api/sections/administration-facturation/tenant/profile`, {
+        const response = await apiFetch(`/api/sections/gestion-ressources/compagnie/profil`, {
           method: 'POST',
           body: fd,
         });
@@ -195,7 +195,7 @@ export function ProfilSettings({ profile, primaryAdminContact, formRef }: Profil
       void _df;
       void _af;
 
-      const response = await apiFetch(`/api/sections/administration-facturation/tenant/profile`, {
+      const response = await apiFetch(`/api/sections/gestion-ressources/compagnie/profil`, {
         method: 'POST',
         body: JSON.stringify(serializable),
         headers: {

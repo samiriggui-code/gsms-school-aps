@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 import { Prisma } from '@repo/database';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import {
@@ -11,10 +14,10 @@ import {
 } from '../../../_lib/rh-learners-shared';
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
-  const url = new URL(request.url);
+const url = new URL(request.url);
   const months = Math.max(1, Math.min(24, Number(url.searchParams.get('months') || 12)));
   const roleSlug = parseLearnerRoleSlug(url.searchParams.get('roleSlug'));
   const where = getLearnerScopedWhere(roleSlug);

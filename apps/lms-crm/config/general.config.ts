@@ -1,14 +1,17 @@
-/** Mintlify `@lms/docs` — `pnpm --filter @lms/docs dev` (port 3002 par défaut). */
+const defaultAppOrigin =
+  typeof process !== 'undefined' && process.env.NEXT_PUBLIC_APP_URL
+    ? process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '')
+    : 'http://localhost:3001';
+
 const defaultDocsOrigin =
   typeof process !== 'undefined' && process.env.NEXT_PUBLIC_LMS_DOCS_URL
     ? process.env.NEXT_PUBLIC_LMS_DOCS_URL.replace(/\/$/, '')
-    : 'http://localhost:3002';
+    : defaultAppOrigin;
 
 const generalSettings = {
-  /** Documentation produit (apps/lms-docs). */
-  docsLink: `${defaultDocsOrigin}/introduction`,
-  /** Page Mintlify liée à l’aide catalogue / support CRM. */
-  docsHelpCatalogLink: `${defaultDocsOrigin}/crm/aide-catalogue-formations`,
+  /** Documentation produit intégrée (`content/docs`, rendu `/docs`). */
+  docsLink: `${defaultDocsOrigin}/docs/introduction`,
+  docsHelpCatalogLink: `${defaultDocsOrigin}/docs/crm/aide-catalogue-formations`,
   purchaseLink: 'https://1.envato.market/Vm7VRE',
   licenseLink: '',
   devsLink: 'https://devs.keenthemes.com',

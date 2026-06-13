@@ -116,7 +116,6 @@ async function handler(request: NextRequest, { params }: Params) {
   }
 
   if (
-    joined.startsWith('rh/documents') ||
     joined.startsWith('rh/certifications') ||
     joined.startsWith('partenaires/prestataires') ||
     joined.startsWith('partenaires/compliance') ||

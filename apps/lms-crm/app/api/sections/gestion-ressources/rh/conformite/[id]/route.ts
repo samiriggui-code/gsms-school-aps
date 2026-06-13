@@ -1,15 +1,17 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
 
@@ -33,10 +35,10 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
 
@@ -70,15 +72,9 @@ export async function PATCH(
       address,
       city,
       postalCode,
-      avatarFile,
-      avatarAction,
-      documentCni,
-      documentAssurance,
-      documentResidencePermit,
-      documentCartePro,
     } = body;
 
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (firstName !== undefined) updateData.firstName = firstName;
     if (lastName !== undefined) updateData.lastName = lastName;
     if (email !== undefined) updateData.email = email;
@@ -95,18 +91,23 @@ export async function PATCH(
     if (socialSecurityNumber !== undefined) updateData.socialSecurityNumber = socialSecurityNumber;
     if (cniNumber !== undefined) updateData.cniNumber = cniNumber;
     if (residencePermitNumber !== undefined) updateData.residencePermitNumber = residencePermitNumber;
-    if (residencePermitExpiry !== undefined) updateData.residencePermitExpiry = residencePermitExpiry ? new Date(residencePermitExpiry) : null;
+    if (residencePermitExpiry !== undefined) {
+      updateData.residencePermitExpiry = residencePermitExpiry ? new Date(residencePermitExpiry) : null;
+    }
     if (carteProNumber !== undefined) updateData.carteProNumber = carteProNumber;
     if (carteProExpiry !== undefined) updateData.carteProExpiry = carteProExpiry ? new Date(carteProExpiry) : null;
     if (isSchedulable !== undefined) updateData.isSchedulable = isSchedulable;
     if (contractType !== undefined) updateData.contractType = contractType;
     if (workTimeType !== undefined) updateData.workTimeType = workTimeType;
-    if (contractStartDate !== undefined) updateData.contractStartDate = contractStartDate ? new Date(contractStartDate) : null;
-    if (contractEndDate !== undefined) updateData.contractEndDate = contractEndDate ? new Date(contractEndDate) : null;
+    if (contractStartDate !== undefined) {
+      updateData.contractStartDate = contractStartDate ? new Date(contractStartDate) : null;
+    }
+    if (contractEndDate !== undefined) {
+      updateData.contractEndDate = contractEndDate ? new Date(contractEndDate) : null;
+    }
     if (address !== undefined) updateData.address = address;
     if (city !== undefined) updateData.city = city;
     if (postalCode !== undefined) updateData.postalCode = postalCode;
-    // Avatar/document file handling would go here
 
     const updatedUser = await prisma.user.update({
       where: { id },
@@ -121,32 +122,28 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
 
   try {
-    await prisma.user.delete({
-      where: { id },
-    });
-
+    await prisma.user.delete({ where: { id } });
     return ok({ message: 'Conformité supprimée avec succès' });
   } catch (error) {
     return fail('Impossible de supprimer la conformité.', 500, error);
   }
 }
 
-// Restoration endpoint (POST /:id) - used to reactivate a deactivated account
 export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
 

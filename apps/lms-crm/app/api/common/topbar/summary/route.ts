@@ -1,12 +1,21 @@
+import { NextRequest } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import { requireSessionUserId } from '@/app/api/_shared/topbar-auth';
+import {
+  buildNotificationScopeWhere,
+  resolveNotificationsScope,
+} from '@/lib/notifications-scope';
 
-export async function GET() {
-  const auth = await requireSessionUserId();
-  if ('error' in auth) return auth.error;
+export async function GET(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  if (!userId) return fail('Unauthorized request', 401);
 
-  const { userId } = auth;
+  const scopeParam = new URL(request.url).searchParams.get('scope');
+  const scope = resolveNotificationsScope(session.user.roleSlug, scopeParam);
+  const scopeWhere = buildNotificationScopeWhere(scope);
 
   const [notificationUnread, chatParticipantRows] = await Promise.all([
     prisma.inAppNotification.count({
@@ -14,6 +23,7 @@ export async function GET() {
         userId,
         archivedAt: null,
         readAt: null,
+        ...scopeWhere,
       },
     }),
     prisma.chatParticipant.findMany({
@@ -43,5 +53,5 @@ export async function GET() {
     }
   }
 
-  return ok({ notificationUnread, chatUnread });
+  return ok({ notificationUnread, chatUnread, scope });
 }

@@ -61,7 +61,7 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "support-qualite.support": "Gestion des tickets et fiches catalogue utilisées comme aide self-service.",
   "support-qualite.support.tickets": "Création, affectation et suivi des demandes support.",
   "support-qualite.support.base-aide":
-    "Fiches du catalogue formations actif — documentation complète dans Mintlify (onglet Documentation).",
+    "Fiches du catalogue formations actif — documentation complète dans le guide école (onglet Documentation).",
   "support-qualite.qualite.incidents":
     "Matériel hors service et erreurs système — synthèse avec graphiques qualité.",
   "securite-configuration.acces.logs":

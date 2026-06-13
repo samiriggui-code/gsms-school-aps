@@ -11,6 +11,7 @@ import {
 } from '@tanstack/react-table';
 import { Search, Calendar, RefreshCw } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
+import { buildDataGridListResponse } from '@/lib/gestion-ressources/datagrid-response';
 import { formatDateTime } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -60,10 +61,11 @@ export function AffectationsList({
     if (!response.ok) throw new Error('Échec du chargement des affectations');
     const json = await response.json();
     const payload = json?.data;
-    return {
-      data: payload?.data ?? [],
-      pagination: payload?.pagination ?? { total: 0, page: 1, limit: pageSize, totalPages: 1 },
-    };
+    const rows = payload?.data ?? [];
+    return buildDataGridListResponse(rows, {
+      total: payload?.pagination?.total ?? rows.length,
+      page: payload?.pagination?.page ?? pageIndex + 1,
+    });
   };
 
   const { data: response, isLoading, refetch, isRefetching } = useQuery({

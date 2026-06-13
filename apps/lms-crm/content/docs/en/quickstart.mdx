@@ -1,0 +1,59 @@
+---
+title: Quickstart
+description: Validate the candidate journey end to end
+---
+
+# Getting started — candidate journey
+
+## 1) Access
+
+Single Next.js application on port **3001**:
+
+| Area | URL |
+|------|-----|
+| Public site (landing) | `/` |
+| CRM sign-in | `/signin` |
+| Documentation | `/docs` |
+| Candidate portal | `/mon-dossier` |
+
+```bash
+# Monorepo root
+pnpm install
+pnpm db:push
+pnpm dev
+```
+
+## 2) Test scenario (30 min)
+
+### Publish course + session
+
+CRM → Courses (active catalogue) → Upcoming sessions.
+
+### Landing pre-registration
+
+Form with email `test+…@domain.com`. See [pre-registration](/docs/en/landing/preinscription).
+
+### Validate the file
+
+CRM → Application → **Validated** status. Lead becomes **Converted**.
+
+### Enroll in session
+
+Sessions → enroll the file. See [enroll in session](/docs/en/crm/inscrire-session).
+
+### Passed exam + certificate
+
+Exams → PASSED then Certifications → certificate.
+
+### Close and archive
+
+Candidate file → Journey → Close then Archive. See [closure](/docs/en/crm/cloture-archivage).
+
+> **Tip** — See the [complete journey](/docs/en/lms/parcours-candidat-complet) for database status details.
+
+## 3) Checklist
+
+- [ ] Lead visible in CRM Marketing
+- [ ] Application validated with compliant documents
+- [ ] Session enrollment confirmed
+- [ ] Certificate issued after passed exam

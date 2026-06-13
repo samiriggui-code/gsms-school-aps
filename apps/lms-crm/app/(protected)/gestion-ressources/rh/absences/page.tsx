@@ -3,7 +3,7 @@
 import { useTranslation } from '@/hooks/useTranslation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CalendarPlus, Download } from 'lucide-react';
+import { CalendarPlus, Download, Loader2 } from 'lucide-react';
 import AbsenceList from './components/absence-list';
 import { AbsenceStats } from './components/absence-stats';
 import AbsenceAddSheet from './components/absence-add-sheet';
@@ -16,12 +16,15 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { useAbsencesExport } from '@/lib/gestion-ressources/use-rh-list-export';
 
 export default function AbsencesPage() {
   const { t } = useTranslation();
 
   const { title, description } = usePageToolbarMeta('/gestion-ressources/rh/absences');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const { exportCsv, isExporting } = useAbsencesExport();
 
   return (
     <>
@@ -31,9 +34,11 @@ export default function AbsencesPage() {
             <ToolbarTitle>{title}</ToolbarTitle>
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
-          <ToolbarActions className="flex items-center gap-2">
-            <Button variant="outline">
-              <Download />{t('common.actions.export')}</Button>
+          <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
+            <Button variant="outline" onClick={() => void exportCsv()} disabled={isExporting}>
+              {isExporting ? <Loader2 className="size-4 animate-spin" /> : <Download />}
+              {t('common.actions.export')}
+            </Button>
             <Button
               onClick={() => setIsAddSheetOpen(true)}
               className="gap-2 font-bold uppercase text-2sm shadow-sm"

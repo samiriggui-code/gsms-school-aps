@@ -10,8 +10,8 @@ alwaysApply: true
 - NextAuth uniquement (jamais Clerk)
 - Single-tenant : une école, DB `lms_app` ; pas de `tenantId` / GSMS
 - Signup désactivé sur le CRM ; landing = entrée publique acquisition
-- Apps actives : `lms-crm`, `lms-landing`, `lms-docs` (pas de second schema par app)
+- App unique : `apps/lms-crm` (landing + CRM + docs + futurs espaces candidat/LMS)
 - Prisma uniquement dans `packages/database/prisma` — `pnpm db:push|generate|seed`
-- Ports : landing 3000, **crm 3002**, docs 3004
+- Port dev unique : **3001** (`apps/lms-crm`)
 
 Références : `.cursor/context.md` · workflow feature `.cursor/rules/monorepo-feature-workflow.mdc`

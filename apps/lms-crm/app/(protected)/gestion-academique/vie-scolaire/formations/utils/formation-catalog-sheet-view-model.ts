@@ -72,6 +72,13 @@ function numStr(n: unknown, fallback: string): string {
   return Number.isFinite(v) ? String(v) : fallback;
 }
 
+/** UV affichées = max(programme détaillé, scalaire fiche) pour éviter 5 vs 14 modules. */
+function resolveUvCount(unitsCount: unknown, programModuleCount: number): string {
+  const fromDb = Number(unitsCount);
+  const dbVal = Number.isFinite(fromDb) && fromDb > 0 ? fromDb : 0;
+  return String(Math.max(programModuleCount, dbVal, 1));
+}
+
 export function stringArrayFromJson(raw: unknown): string[] {
   if (!Array.isArray(raw)) return [];
   return raw.filter((x): x is string => typeof x === 'string').map((s) => s.trim());
@@ -230,7 +237,7 @@ export function buildFormationSheetViewModel(
     ];
   }
 
-  const uvCount = numStr(src.unitsCount, String(Math.max(programModules.length, 1)));
+  const uvCount = resolveUvCount(src.unitsCount, programModules.length);
   const volume =
     pickStr(src.volumeHoursLabel) ??
     pickStr(src.duration) ??

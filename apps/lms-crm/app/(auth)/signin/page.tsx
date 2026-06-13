@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RiErrorWarningFill } from '@remixicon/react';
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { signIn } from 'next-auth/react';
+import { fetchSessionRoleSlug, resolvePostLoginDestination } from '@/lib/auth/app-routing';
 import { useForm } from 'react-hook-form';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,9 @@ const DEV_ACCOUNTS = [
   { label: 'Admin', email: 'john.doe@ecole.local', password: 'demo1234' },
   { label: 'Collaborateur', email: 'michael.brown@ecole.local', password: 'demo1234' },
   { label: 'Formateur', email: 'david.miller@ecole.local', password: 'demo1234' },
+  { label: 'Candidat', email: 'candidat.dev.1@ecole.local', password: 'demo1234' },
+  { label: 'CNAPS en cours', email: 'candidat.dev.2@ecole.local', password: 'demo1234' },
+  { label: 'Stagiaire', email: 'stagiaire.dev.1@ecole.local', password: 'demo1234' },
 ] as const;
 
 export default function Page() {
@@ -48,11 +52,30 @@ export default function Page() {
       }),
     ),
     defaultValues: {
-      email: 'samir.iggui@ecole.local',
-      password: 'demo1234',
+      email: '',
+      password: '',
       rememberMe: false,
     },
   });
+
+  function prefillAccount(email: string, password: string) {
+    form.setValue('email', email, { shouldValidate: true, shouldDirty: true });
+    form.setValue('password', password, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const intent = params.get('intent');
+    if (intent === 'candidat') {
+      prefillAccount('candidat.dev.1@ecole.local', 'demo1234');
+    } else if (intent === 'admin') {
+      prefillAccount('samir.iggui@ecole.local', 'demo1234');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intent URL uniquement au montage
+  }, []);
 
   async function onSubmit(values: SigninSchemaType) {
     setIsProcessing(true);
@@ -67,10 +90,25 @@ export default function Page() {
       });
 
       if (response?.error) {
-        const errorData = JSON.parse(response.error);
-        setError(errorData.message);
+        try {
+          const errorData = JSON.parse(response.error) as {
+            code?: string;
+            reason?: string;
+            message?: string;
+          };
+          if (errorData.code === 'ACCOUNT_DEACTIVATED') {
+            const q = errorData.reason ? `?reason=${encodeURIComponent(errorData.reason)}` : '';
+            router.push(`/account-deactivated${q}`);
+            return;
+          }
+          setError(errorData.message ?? t('auth.unexpectedError'));
+        } catch {
+          setError(response.error);
+        }
       } else {
-        router.push('/');
+        const roleSlug = await fetchSessionRoleSlug();
+        const callbackUrl = new URLSearchParams(window.location.search).get('callbackUrl');
+        router.push(resolvePostLoginDestination(roleSlug, callbackUrl));
       }
     } catch (err) {
       setError(
@@ -79,14 +117,6 @@ export default function Page() {
     } finally {
       setIsProcessing(false);
     }
-  }
-
-  function prefillAccount(email: string, password: string) {
-    form.setValue('email', email, { shouldValidate: true, shouldDirty: true });
-    form.setValue('password', password, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
   }
 
   return (
@@ -124,6 +154,11 @@ export default function Page() {
               </Button>
             ))}
           </div>
+          <p className="text-xs text-muted-foreground">
+            Même page de connexion : le rôle en base décide de la destination — candidat →{' '}
+            <span className="font-medium text-foreground">/mon-dossier</span>, équipe →{' '}
+            <span className="font-medium text-foreground">/accueil</span> (CRM).
+          </p>
         </div>
 
         {error && (

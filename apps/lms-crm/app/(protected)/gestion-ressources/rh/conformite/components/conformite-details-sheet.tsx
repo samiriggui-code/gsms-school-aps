@@ -21,7 +21,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../constants/sheet-shell-classes';
+import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
+import { GESTION_RESSOURCES_SHEET_TABS_LIST } from '@/lib/gestion-ressources/ui';
+import { useMaxWidthLg } from '@/hooks/use-max-width-lg';
+import { cn } from '@/lib/utils';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { User as Conformite, UserStatus } from '@/app/models/user';
 import { getConformiteStatusProps } from '../constants/status';
@@ -352,6 +355,7 @@ export function ConformiteDetailsSheet({
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const settingsFormRef = useRef<HTMLFormElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
+  const hideActivityTab = useMaxWidthLg();
 
   useEffect(() => {
     if (initialConformite) {
@@ -555,7 +559,12 @@ export function ConformiteDetailsSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE}>
+      <SheetContent
+        className={cn(
+          VIE_SCOLAIRE_SHEET_AUTO,
+          'h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] min-h-0',
+        )}
+      >
         <SheetHeader className="border-b py-3.5 px-5 border-border bg-background shrink-0">
           <SheetTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground/80">Détails du conformite</SheetTitle>
         </SheetHeader>
@@ -694,7 +703,7 @@ export function ConformiteDetailsSheet({
 
               <div className="grow lg:border-s border-border space-y-5 py-5 lg:ps-5">   
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto text-sm text-muted-foreground">
-                  <TabsList className="inline-flex w-auto grow-0 mb-2.5">
+                  <TabsList className={GESTION_RESSOURCES_SHEET_TABS_LIST}>
                     <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
                     <TabsTrigger value="permissions">Permissions</TabsTrigger>
                     <TabsTrigger value="absences" className="relative">
@@ -708,7 +717,7 @@ export function ConformiteDetailsSheet({
                     </TabsTrigger>
                     <TabsTrigger value="documents">Documents</TabsTrigger>
                     <TabsTrigger value="compliance">Conformité</TabsTrigger>
-                    <TabsTrigger value="activity">Activité</TabsTrigger>
+                    {!hideActivityTab ? <TabsTrigger value="activity">Activité</TabsTrigger> : null}
                     <TabsTrigger value="settings">Paramètres</TabsTrigger>
                   </TabsList>
                   <TabsContent value="overview">

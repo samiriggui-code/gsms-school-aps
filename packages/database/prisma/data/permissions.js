@@ -135,6 +135,77 @@ const permissions = [
     description:
       'Permission to view and edit all system settings, including general, notifications, and integrations.',
   },
+  {
+    slug: 'in_app_notifications.view',
+    name: 'View In-App Notifications',
+    description:
+      'Access the notifications and alerts hub (formateur, candidat, stagiaire or CRM).',
+  },
+  {
+    slug: 'crm.dashboard.view',
+    name: 'CRM Dashboard',
+    description: 'Access the CRM home dashboard.',
+  },
+  {
+    slug: 'crm.ressources.view',
+    name: 'View Resources',
+    description: 'View company, HR and equipment sections.',
+  },
+  {
+    slug: 'crm.ressources.edit',
+    name: 'Edit Resources',
+    description: 'Create and edit HR, company and equipment records.',
+  },
+  {
+    slug: 'crm.academique.view',
+    name: 'View Academic',
+    description: 'View formations, sessions and student records.',
+  },
+  {
+    slug: 'crm.academique.edit',
+    name: 'Edit Academic',
+    description: 'Manage formations, sessions and academic workflows.',
+  },
+  {
+    slug: 'crm.finance.view',
+    name: 'View Finance',
+    description: 'View quotes, invoices and payments.',
+  },
+  {
+    slug: 'crm.finance.edit',
+    name: 'Edit Finance',
+    description: 'Create and edit financial documents.',
+  },
+  {
+    slug: 'crm.communication.view',
+    name: 'View Communication',
+    description: 'View CMS, marketing and SEO modules.',
+  },
+  {
+    slug: 'crm.communication.edit',
+    name: 'Edit Communication',
+    description: 'Edit landing content, campaigns and SEO.',
+  },
+  {
+    slug: 'crm.support.view',
+    name: 'View Support',
+    description: 'Access support tickets and help base.',
+  },
+  {
+    slug: 'crm.securite.view',
+    name: 'View Security',
+    description: 'View users, roles and system configuration.',
+  },
+  {
+    slug: 'crm.securite.edit',
+    name: 'Edit Security',
+    description: 'Manage IAM, settings and data governance.',
+  },
+  {
+    slug: 'crm.pilotage.view',
+    name: 'View Pilotage',
+    description: 'Access pilotage, quality incidents and advanced reports.',
+  },
 ];
 
 module.exports = permissions;

@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
 import { fail } from '@/app/api/_shared/http/response';
 
 type Params = { params: Promise<{ id: string }> };
 
 async function forwardTo(request: NextRequest, targetPath: string) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
 
-  const url = new URL(request.url);
+const url = new URL(request.url);
   const target = `${url.origin}${targetPath}${url.search}`;
   const method = request.method.toUpperCase();
   const init: RequestInit = {

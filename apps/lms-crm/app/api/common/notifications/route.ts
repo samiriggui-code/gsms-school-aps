@@ -1,8 +1,14 @@
 import { NextRequest } from 'next/server';
-import type { InAppNotificationCategory } from '@repo/database';
+import { getServerSession } from 'next-auth/next';
+import type { InAppNotificationCategory, Prisma } from '@repo/database';
+import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import { requireSessionUserId } from '@/app/api/_shared/topbar-auth';
+import {
+  buildNotificationScopeWhere,
+  resolveNotificationsScope,
+  startOfTodayUtc,
+} from '@/lib/notifications-scope';
 
 function serializeNotification(row: {
   id: string;
@@ -27,15 +33,28 @@ function serializeNotification(row: {
   };
 }
 
-function tabFilter(tab: string) {
+function tabFilter(tab: string): Prisma.InAppNotificationWhereInput {
   if (tab === 'unread') return { archivedAt: null, readAt: null };
   if (tab === 'archived') return { archivedAt: { not: null } };
   return { archivedAt: null };
 }
 
+async function scopedUserWhere(scopeParam: string | null) {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  if (!userId) return null;
+
+  const scope = resolveNotificationsScope(session.user.roleSlug, scopeParam);
+  return {
+    userId,
+    scope,
+    base: { userId, ...buildNotificationScopeWhere(scope) } satisfies Prisma.InAppNotificationWhereInput,
+  };
+}
+
 export async function GET(request: NextRequest) {
-  const auth = await requireSessionUserId();
-  if ('error' in auth) return auth.error;
+  const ctx = await scopedUserWhere(new URL(request.url).searchParams.get('scope'));
+  if (!ctx) return fail('Unauthorized request', 401);
 
   const url = new URL(request.url);
   const tab = url.searchParams.get('tab') || 'all';
@@ -62,39 +81,54 @@ export async function GET(request: NextRequest) {
       ? { category: categoryRaw as InAppNotificationCategory }
       : {};
 
-  const where = {
-    userId: auth.userId,
+  const where: Prisma.InAppNotificationWhereInput = {
+    ...ctx.base,
     ...tabFilter(tab),
     ...searchWhere,
     ...categoryWhere,
   };
 
-  const activeWhere = { userId: auth.userId, archivedAt: null };
+  const activeWhere: Prisma.InAppNotificationWhereInput = {
+    ...ctx.base,
+    archivedAt: null,
+  };
 
-  const [items, total, unreadCount, readCount, archivedCount, categoryGroups] =
-    await Promise.all([
-      prisma.inAppNotification.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit,
-      }),
-      prisma.inAppNotification.count({ where }),
-      prisma.inAppNotification.count({
-        where: { ...activeWhere, readAt: null },
-      }),
-      prisma.inAppNotification.count({
-        where: { ...activeWhere, readAt: { not: null } },
-      }),
-      prisma.inAppNotification.count({
-        where: { userId: auth.userId, archivedAt: { not: null } },
-      }),
-      prisma.inAppNotification.groupBy({
-        by: ['category'],
-        where: activeWhere,
-        _count: { _all: true },
-      }),
-    ]);
+  const todayStart = startOfTodayUtc();
+
+  const [
+    items,
+    total,
+    unreadCount,
+    readCount,
+    archivedCount,
+    todayCount,
+    categoryGroups,
+  ] = await Promise.all([
+    prisma.inAppNotification.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    prisma.inAppNotification.count({ where }),
+    prisma.inAppNotification.count({
+      where: { ...activeWhere, readAt: null },
+    }),
+    prisma.inAppNotification.count({
+      where: { ...activeWhere, readAt: { not: null } },
+    }),
+    prisma.inAppNotification.count({
+      where: { ...ctx.base, archivedAt: { not: null } },
+    }),
+    prisma.inAppNotification.count({
+      where: { ...activeWhere, createdAt: { gte: todayStart } },
+    }),
+    prisma.inAppNotification.groupBy({
+      by: ['category'],
+      where: activeWhere,
+      _count: { _all: true },
+    }),
+  ]);
 
   const byCategory = Object.fromEntries(
     categoryGroups.map((g) => [g.category, g._count._all]),
@@ -103,20 +137,22 @@ export async function GET(request: NextRequest) {
   return ok({
     items: items.map(serializeNotification),
     unreadCount,
+    scope: ctx.scope,
     pagination: isPaginated ? { page, limit, total } : undefined,
     stats: {
       active: unreadCount + readCount,
       unread: unreadCount,
       read: readCount,
       archived: archivedCount,
+      today: todayCount,
       byCategory,
     },
   });
 }
 
 export async function PATCH(request: NextRequest) {
-  const auth = await requireSessionUserId();
-  if ('error' in auth) return auth.error;
+  const ctx = await scopedUserWhere(new URL(request.url).searchParams.get('scope'));
+  if (!ctx) return fail('Unauthorized request', 401);
 
   const body = await request.json().catch(() => ({}));
   const action = body?.action as string | undefined;
@@ -124,7 +160,7 @@ export async function PATCH(request: NextRequest) {
   if (action === 'read_all') {
     await prisma.inAppNotification.updateMany({
       where: {
-        userId: auth.userId,
+        ...ctx.base,
         archivedAt: null,
         readAt: null,
       },
@@ -136,7 +172,7 @@ export async function PATCH(request: NextRequest) {
   if (action === 'archive_all') {
     await prisma.inAppNotification.updateMany({
       where: {
-        userId: auth.userId,
+        ...ctx.base,
         archivedAt: null,
       },
       data: { archivedAt: new Date(), readAt: new Date() },

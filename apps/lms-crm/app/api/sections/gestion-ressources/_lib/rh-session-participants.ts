@@ -55,7 +55,7 @@ export async function getFormationSessionParticipants(sessionId: string) {
 export async function postFormationSessionParticipant(sessionId: string, request: NextRequest) {
   const formationSession = await prisma.formationSession.findUnique({
     where: { id: sessionId },
-    select: { id: true, formationId: true, dateDisplayLabel: true },
+    select: { id: true, formationId: true, dateDisplayLabel: true, formation: { select: { courseId: true } } },
   });
   if (!formationSession) {
     return NextResponse.json({ message: 'Session formation introuvable.' }, { status: 404 });
@@ -172,6 +172,29 @@ export async function postFormationSessionParticipant(sessionId: string, request
         );
       } catch (e) {
         console.error('[session-participant] workflow', e);
+      }
+    }
+
+    const courseId = formationSession.formation?.courseId;
+    if (courseId) {
+      const existingLms = await prisma.enrollment.findFirst({
+        where: { userId: userId!, courseId, sessionId: null },
+      });
+      if (!existingLms) {
+        await prisma.enrollment.create({
+          data: {
+            userId: userId!,
+            courseId,
+            sessionId: null,
+            status: 'VALIDATED',
+            notes: `Inscription session ${formationSession.dateDisplayLabel}`,
+          },
+        });
+      } else if (existingLms.status === 'PENDING') {
+        await prisma.enrollment.update({
+          where: { id: existingLms.id },
+          data: { status: 'VALIDATED' },
+        });
       }
     }
 

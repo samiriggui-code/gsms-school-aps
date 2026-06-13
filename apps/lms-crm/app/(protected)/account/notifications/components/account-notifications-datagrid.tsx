@@ -14,6 +14,7 @@ import {
 import {
   Archive,
   Bell,
+  CalendarClock,
   CheckCheck,
   ExternalLink,
   Inbox,
@@ -30,10 +31,7 @@ import { DataGrid } from '@/components/ui/data-grid';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { DataGridPagination } from '@/components/ui/data-grid-pagination';
 import { DataGridTable } from '@/components/ui/data-grid-table';
-import {
-  MODULE_LANDING_STATS_GRID_ROW,
-  SECTION_KPI_CARD_ACCENTS,
-} from '@/components/common/stat-card-metric-layout';
+import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
 import {
   USER_MANAGEMENT_TABLE_CLASSNAMES,
   USER_MANAGEMENT_TABLE_LAYOUT,
@@ -48,10 +46,14 @@ import {
   markNotificationRead,
   type InAppNotificationItem,
 } from '@/lib/topbar-api';
+import type { NotificationsScope } from '@/lib/notifications-scope';
+import { scopeNotificationCategories } from '@/lib/notifications-scope';
 
 const ACCOUNT_NOTIFICATIONS_PAGE_SIZE = 10;
 
-const NOTIFICATION_CATEGORIES = ['SYSTEM', 'TICKET', 'FINANCE', 'ACADEMIC', 'TEAM'] as const;
+type Props = {
+  scope?: NotificationsScope;
+};
 
 function categoryBadgeVariant(
   category: string,
@@ -76,9 +78,10 @@ function statusBadgeVariant(item: InAppNotificationItem): 'primary' | 'secondary
   return 'secondary';
 }
 
-export function AccountNotificationsDatagrid() {
+export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const notificationCategories = scopeNotificationCategories(scope);
   const [tab, setTab] = useState<'all' | 'unread' | 'archived'>('all');
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<string>('all');
@@ -90,6 +93,7 @@ export function AccountNotificationsDatagrid() {
   const listQuery = useQuery({
     queryKey: [
       'account-notifications',
+      scope,
       tab,
       query,
       category,
@@ -103,11 +107,12 @@ export function AccountNotificationsDatagrid() {
         category,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
+        scope,
       }),
   });
 
   const readAll = useMutation({
-    mutationFn: markAllNotificationsRead,
+    mutationFn: () => markAllNotificationsRead(scope),
     onSuccess: () => {
       toast.success(t('topbar.notifications.readAllSuccess'));
       queryClient.invalidateQueries({ queryKey: ['account-notifications'] });
@@ -116,7 +121,7 @@ export function AccountNotificationsDatagrid() {
   });
 
   const archiveAll = useMutation({
-    mutationFn: archiveAllNotifications,
+    mutationFn: () => archiveAllNotifications(scope),
     onSuccess: () => {
       toast.success(t('topbar.notifications.archivedSuccess'));
       queryClient.invalidateQueries({ queryKey: ['account-notifications'] });
@@ -150,6 +155,12 @@ export function AccountNotificationsDatagrid() {
         value: stats?.archived ?? '—',
         subtitle: t('account.notifications.page.kpi.archivedHint'),
         icon: Archive,
+      },
+      {
+        label: t('account.notifications.page.kpi.today'),
+        value: stats?.today ?? '—',
+        subtitle: t('account.notifications.page.kpi.todayHint'),
+        icon: CalendarClock,
       },
     ],
     [listQuery.data?.unreadCount, stats, t],
@@ -299,30 +310,11 @@ export function AccountNotificationsDatagrid() {
 
   return (
     <div className="space-y-5 lg:space-y-7.5">
-      <div className={MODULE_LANDING_STATS_GRID_ROW}>
-        {kpiCards.map((card, i) => {
-          const accent = SECTION_KPI_CARD_ACCENTS[i % SECTION_KPI_CARD_ACCENTS.length];
-          const Icon = card.icon;
-          return (
-            <div
-              key={card.label}
-              className="relative overflow-hidden rounded-xl border border-border/70 bg-gradient-to-br from-background via-background to-muted/30 px-4 py-4"
-            >
-              <div className={cn('absolute -end-8 -top-8 size-24 rounded-full', accent.orb)} aria-hidden />
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">{card.label}</p>
-                <Icon className={cn('size-4 shrink-0', accent.icon)} aria-hidden />
-              </div>
-              <p className="mt-1 text-2xl font-semibold tabular-nums">{card.value}</p>
-              <p className="text-xs text-muted-foreground">{card.subtitle}</p>
-            </div>
-          );
-        })}
-      </div>
+      <ModuleKpiStatsRow items={kpiCards} />
 
       {stats?.byCategory ? (
         <div className="flex flex-wrap gap-2">
-          {NOTIFICATION_CATEGORIES.map((cat) => {
+          {notificationCategories.map((cat) => {
             const count = stats.byCategory[cat] ?? 0;
             if (count === 0) return null;
             return (
@@ -414,7 +406,7 @@ export function AccountNotificationsDatagrid() {
               >
                 {t('account.notifications.page.categoryAll')}
               </Button>
-              {NOTIFICATION_CATEGORIES.map((cat) => (
+              {notificationCategories.map((cat) => (
                 <Button
                   key={cat}
                   type="button"

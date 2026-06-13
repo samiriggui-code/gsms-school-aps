@@ -1,0 +1,46 @@
+---
+title: Quickstart
+description: Valider le parcours candidat de bout en bout
+---
+
+## Accès
+
+Une seule application sur le port **3001** :
+
+| Zone | URL |
+|------|-----|
+| Site public | `/` |
+| Connexion CRM | `/signin` |
+| Documentation | `/docs` |
+| Espace candidat | `/mon-dossier` |
+
+```bash
+pnpm install && pnpm db:push && pnpm dev
+```
+
+## Scénario test (30 min)
+
+<Steps>
+  <Step title="Publier formation + session">
+    CRM → Formations (catalogue actif) → Sessions à venir.
+  </Step>
+  <Step title="Préinscription landing">
+    Formulaire avec e-mail `test+…@domaine.fr`. Voir [Préinscription](/landing/preinscription).
+  </Step>
+  <Step title="Valider le dossier">
+    CRM → Candidature → statut **Validé**. Le lead passe **Converti**.
+  </Step>
+  <Step title="Inscrire à la session">
+    Sessions → inscription du dossier. Voir [Inscrire session](/crm/inscrire-session).
+  </Step>
+  <Step title="Examen + attestation">
+    Examens → PASSED puis Certifications → attestation.
+  </Step>
+  <Step title="Clôturer et archiver">
+    Fiche candidat → Parcours → Clôturer puis Archiver.
+  </Step>
+</Steps>
+
+<Tip>
+  Consultez le [parcours complet](/lms/parcours-candidat-complet) pour le détail des statuts en base.
+</Tip>

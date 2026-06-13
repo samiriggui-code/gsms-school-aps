@@ -213,7 +213,7 @@ const ExamenList = () => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => <DataGridTableRowSelectAll table={table} />,
+        header: () => <DataGridTableRowSelectAll />,
         cell: ({ row }) => <DataGridTableRowSelect row={row} />,
         size: 50,
         enableSorting: false,
@@ -417,10 +417,7 @@ const ExamenList = () => {
              isLoading={isLoading}
              tableLayout={{ columnsResizable: true, columnsPinnable: true, columnsMovable: true, columnsVisibility: true }}
             tableClassNames={{
-              bodyRow: (row) => cn(
-                "transition-colors relative",
-                row.getIsSelected() && "bg-primary/5 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary"
-              )
+              bodyRow: 'transition-colors relative',
             }}
           >
             <Card>

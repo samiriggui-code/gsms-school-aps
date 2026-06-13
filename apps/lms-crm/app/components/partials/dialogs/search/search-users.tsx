@@ -58,7 +58,6 @@ export function SearchUsers({
                     size="md"
                     variant={item.color}
                     appearance="light"
-                    shape="circle"
                   >
                     <BadgeDot /> {item.label}
                   </Badge>

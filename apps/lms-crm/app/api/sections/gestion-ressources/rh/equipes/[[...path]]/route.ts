@@ -1,17 +1,16 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { NotificationService } from '@repo/api-core';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { nullishId, serializeTeam, teamInclude } from '../../_lib/rh-teams-serialize';
+import { requireGestionRessourcesForMethod } from '../../../_lib/require-gestion-ressources-auth';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
-async function requireSession() {
-  const session = await getServerSession(authOptions);
-  if (!session) return null;
-  return session;
+async function requireSession(method: string) {
+  const auth = await requireGestionRessourcesForMethod(method);
+  if (!auth.ok) return { session: null, response: auth.response };
+  return { session: auth.session, response: null };
 }
 
 function parseTeamBody(body: Record<string, unknown>) {
@@ -32,7 +31,8 @@ function parseTeamBody(body: Record<string, unknown>) {
 }
 
 export async function GET(request: NextRequest, { params }: Params) {
-  if (!(await requireSession())) return fail('Unauthorized request', 401);
+  const auth = await requireSession(request.method);
+  if (!auth.session) return auth.response!;
 
   const parts = (await params).path ?? [];
   const joined = parts.join('/');
@@ -110,7 +110,8 @@ export async function GET(request: NextRequest, { params }: Params) {
 }
 
 export async function POST(request: NextRequest, { params }: Params) {
-  if (!(await requireSession())) return fail('Unauthorized request', 401);
+  const auth = await requireSession(request.method);
+  if (!auth.session) return auth.response!;
 
   const parts = (await params).path ?? [];
   const teamId = parts[0];
@@ -195,7 +196,8 @@ export async function POST(request: NextRequest, { params }: Params) {
 }
 
 export async function PUT(request: NextRequest, { params }: Params) {
-  if (!(await requireSession())) return fail('Unauthorized request', 401);
+  const auth = await requireSession(request.method);
+  if (!auth.session) return auth.response!;
 
   const parts = (await params).path ?? [];
   const teamId = parts[0];
@@ -241,7 +243,8 @@ export async function PATCH(request: NextRequest, ctx: Params) {
 }
 
 export async function DELETE(request: NextRequest, { params }: Params) {
-  if (!(await requireSession())) return fail('Unauthorized request', 401);
+  const auth = await requireSession(request.method);
+  if (!auth.session) return auth.response!;
 
   const parts = (await params).path ?? [];
   const teamId = parts[0];

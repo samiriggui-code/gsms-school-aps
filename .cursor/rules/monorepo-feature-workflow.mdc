@@ -30,9 +30,7 @@ Client app : `import { prisma } from '@/lib/prisma'` → `createPrismaClient('lm
 
 ```
 apps/
-  lms-crm/          # CRM admin (port 3002) — (protected) + app/api
-  lms-landing/      # Public (3000) — API minimales acquisition/catalogue
-  lms-docs/         # Doc interne (3004)
+  lms-crm/          # App unique (port 3001) — (site) + (protected) + docs + api
 packages/
   database/         # SEUL schema Prisma + migrations + seed + client
   api-core/         # StatService, contrats stats, logique métier partagée API
@@ -87,7 +85,7 @@ if (!session) return fail('Unauthorized request', 401);
 
 Ne pas créer d’API à la racine `app/api/foo` si le domaine appartient à une `sections/*` existante.
 
-`lms-landing` : garder API publiques courtes sous `app/api/` (`catalog`, `preinscriptions`, `quote-requests`) — pas de duplication CRM.
+API publiques courtes sous `apps/lms-crm/app/api/` (`catalog`, `preinscriptions`, `quote-requests`) — pas de duplication dans `sections/*`.
 
 ---
 

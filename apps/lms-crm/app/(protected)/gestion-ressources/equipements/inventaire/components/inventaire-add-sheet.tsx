@@ -18,7 +18,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { VIE_SCOLAIRE_SHEET_LARGE_1000 } from '../../../constants/sheet-shell-classes';
+import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
 import {
   Form,
   FormControl,
@@ -140,8 +140,6 @@ const InventaireAddSheet = ({
 
       queryClient.invalidateQueries({ queryKey: ['equipment-catalog'] });
       queryClient.invalidateQueries({ queryKey: ['equipment-stock-available'] });
-      queryClient.invalidateQueries({ queryKey: ['equipment-current-stock'] });
-      queryClient.invalidateQueries({ queryKey: ['equipment-maintenance-stock'] });
       onOpenChange(false);
       reset({
         label: '',
@@ -184,7 +182,7 @@ const InventaireAddSheet = ({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE_1000}>
+      <SheetContent className={VIE_SCOLAIRE_SHEET_AUTO}>
         <SheetHeader className="border-b py-3.5 px-5 border-border bg-background shrink-0">
           <SheetTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground/80">
             Nouvelle catégorie — Inventaire

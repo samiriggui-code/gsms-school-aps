@@ -1,16 +1,20 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { CandidatureStatus } from '@repo/database';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import {
+  requireGestionRessourcesEdit,
+  requireGestionRessourcesForMethod,
+  requireGestionRessourcesView,
+} from '../../../_lib/require-gestion-ressources-auth';
+import { CandidatureStatus, UserStatus } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { applyCandidatureStatusChange } from '@repo/api-core';
+import { disableLearnerAccess } from '@/lib/rh/account-lifecycle';
 
-type BatchAction = 'archive' | 'reject';
+type BatchAction = 'archive' | 'reject' | 'disable_access';
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireGestionRessourcesEdit();
+  if (!auth.ok) return auth.response;
 
   const body = await request.json().catch(() => ({}));
   const action = body.action as BatchAction;
@@ -21,8 +25,22 @@ export async function POST(request: NextRequest) {
     : [];
 
   if (!ids.length) return fail('candidatureIds requis', 400);
-  if (action !== 'archive' && action !== 'reject') {
-    return fail('action invalide (archive | reject)', 400);
+  if (action !== 'archive' && action !== 'reject' && action !== 'disable_access') {
+    return fail('action invalide (archive | reject | disable_access)', 400);
+  }
+
+  if (action === 'disable_access') {
+    let updated = 0;
+    const errors: string[] = [];
+    for (const candidatureId of ids) {
+      try {
+        await disableLearnerAccess(candidatureId, auth.session.user.id);
+        updated += 1;
+      } catch (e) {
+        errors.push(`${candidatureId}: ${e instanceof Error ? e.message : 'erreur'}`);
+      }
+    }
+    return ok({ action, requested: ids.length, updated, errors });
   }
 
   const targetStatus =
@@ -39,12 +57,18 @@ export async function POST(request: NextRequest) {
   for (const c of candidatures) {
     if (c.status === targetStatus) continue;
     try {
-      await prisma.$transaction((tx) =>
-        applyCandidatureStatusChange(tx, c.id, targetStatus, {
+      await prisma.$transaction(async (tx) => {
+        await applyCandidatureStatusChange(tx, c.id, targetStatus, {
           userId: c.userId,
           status: c.status,
-        }),
-      );
+        });
+        if (action === 'reject') {
+          await tx.user.update({
+            where: { id: c.userId },
+            data: { status: UserStatus.BLOCKED },
+          });
+        }
+      });
       updated += 1;
     } catch (e) {
       errors.push(`${c.id}: ${e instanceof Error ? e.message : 'erreur'}`);

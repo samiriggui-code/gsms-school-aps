@@ -12,7 +12,11 @@ declare module 'next-auth' {
       roleName?: string | null;
       /** Slug Prisma `UserRole.slug` (ex. formateur, candidat, eleve). */
       roleSlug?: string | null;
+      /** Slugs `UserPermission` du rôle courant (CRM). */
+      permissionSlugs?: string[];
       status: string;
+      /** Session JWT : compte suspendu / archivé — déconnexion côté client. */
+      accessBlocked?: boolean;
     };
   }
 
@@ -35,6 +39,7 @@ declare module 'next-auth/jwt' {
     roleId?: string | null;
     roleName?: string | null;
     roleSlug?: string | null;
+    permissionSlugs?: string[];
     status: string;
   }
 }

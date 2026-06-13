@@ -1,0 +1,51 @@
+---
+title: Introduction
+description: Guide métier FORM'SSI — landing et CRM
+---
+
+## Parcours candidat
+
+Tout le flux métier est documenté page par page :
+
+<Card title="Parcours complet" icon="route" href="/lms/parcours-candidat-complet">
+  Lead → candidature → session → examen → attestation → archivage en base.
+</Card>
+
+## Écrans CRM
+
+| Menu | Rôle dans le parcours |
+|------|------------------------|
+| Marketing → Formulaires leads | Entrées landing |
+| Vie scolaire → Candidature | Instruction dossier |
+| Vie scolaire → Sessions | Inscription |
+| Vie scolaire → Planning | Suivi calendrier |
+| Vie scolaire → Examens | Résultats |
+| Vie scolaire → Certifications | Attestations |
+| Finance → Devis | Optionnel |
+
+## Démarrage rapide
+
+<CardGroup cols={2}>
+  <Card title="Prise en main" icon="rocket" href="/quickstart">
+    Parcours test en 30 minutes sur l'app unique (port 3001).
+  </Card>
+  <Card title="Préinscription" icon="globe" href="/landing/preinscription">
+    Formulaire public et création lead.
+  </Card>
+  <Card title="Traiter candidature" icon="user-check" href="/crm/traiter-candidature">
+    Validation dossier et conformité CNAPS.
+  </Card>
+  <Card title="Archivage" icon="archive" href="/crm/cloture-archivage">
+    Clôture et archivage en base.
+  </Card>
+</CardGroup>
+
+<Note>
+  La documentation est intégrée à l'application (`/docs`) — plus besoin d'un site Mintlify séparé.
+</Note>
+
+## Architecture
+
+<Card title="État du monorepo" icon="book" href="/lms/monorepo-status">
+  App unique `lms-crm`, packages partagés et roadmap technique.
+</Card>

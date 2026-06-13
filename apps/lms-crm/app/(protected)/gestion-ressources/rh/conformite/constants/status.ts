@@ -39,3 +39,19 @@ export const getConformiteStatusProps = (status: string): ConformiteStatusProps 
   const normalizedStatus = (status || '').toUpperCase();
   return ConformiteStatusProps[normalizedStatus] || { label: normalizedStatus || 'Inconnu', variant: 'outline' as BadgeVariant };
 };
+
+export type ComplianceDocumentStatus = 'COMPLIANT' | 'WARNING' | 'NON_COMPLIANT';
+
+const ComplianceDocumentStatusMap: Record<ComplianceDocumentStatus, ConformiteStatusProps> = {
+  COMPLIANT: { label: 'Conforme', variant: 'success' },
+  WARNING: { label: 'Alerte', variant: 'warning' },
+  NON_COMPLIANT: { label: 'Non conforme', variant: 'destructive' },
+};
+
+/** Statut documentaire / agrément (API `complianceStatus`). */
+export const getComplianceDocumentStatusProps = (
+  status: string | null | undefined,
+): ConformiteStatusProps => {
+  const key = (status || '').toUpperCase() as ComplianceDocumentStatus;
+  return ComplianceDocumentStatusMap[key] ?? { label: '—', variant: 'outline' };
+};

@@ -45,8 +45,8 @@ import {
   type CatalogProgramOpen,
   type FormationParcoursSpecialite,
   type FormationVitrineTrack,
-  getFormationCatalogProgram,
 } from '../data/formation-vitrine-catalog';
+import { resolveCatalogProgramOpen } from '@/lib/formation/resolve-catalog-program';
 import type { FormationCatalogApiRow } from '../types/catalog-api';
 import { FormationLogoThumb } from './formation-logo-thumb';
 import {
@@ -173,8 +173,7 @@ const FormationList = () => {
   const openCatalogProgram = useCallback(
     (row: FormationCatalogApiRow, mode: 'view' | 'edit' = 'view') => {
       const program =
-        row.catalogProgramConfig ??
-        getFormationCatalogProgram(row.slug) ??
+        resolveCatalogProgramOpen(row) ??
         ({ sheet: 'customer' } as CatalogProgramOpen);
       setSelectedFormationItem(row);
       setCatalogSheetMode(mode);
@@ -210,7 +209,7 @@ const FormationList = () => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => <DataGridTableRowSelectAll table={table} />,
+        header: () => <DataGridTableRowSelectAll />,
         cell: ({ row }) => <DataGridTableRowSelect row={row} />,
         size: 48,
         enableSorting: false,
@@ -534,13 +533,7 @@ const FormationList = () => {
             columnsVisibility: true,
           }}
           tableClassNames={{
-            bodyRow: (row) =>
-              cn(
-                'transition-colors relative',
-                typeof row.getIsSelected === 'function' &&
-                  row.getIsSelected() &&
-                  'bg-primary/5 before:absolute before:start-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary',
-              ),
+            bodyRow: 'transition-colors relative',
           }}
         >
           <Card className="border-border shadow-none">

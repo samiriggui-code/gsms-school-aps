@@ -1,6 +1,6 @@
 'use client';
 import { useTranslation } from '@/hooks/useTranslation';
-import { MODULE_LANDING_DATAGRID_PAGE_SIZE } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { MODULE_LANDING_DATAGRID_PAGE_SIZE, DATAGRID_SELECTION_BAR_WRAPPER, DATAGRID_SELECTION_BAR_INNER, DATAGRID_SELECTION_BAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -59,7 +59,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { User as Conformite, UserStatus } from '@/app/models/user';
-import { getConformiteStatusProps } from '../constants/status';
+
+type ConformiteListRow = Conformite & {
+  complianceStatus?: 'COMPLIANT' | 'WARNING' | 'NON_COMPLIANT';
+  complianceIssueCount?: number;
+  canBeAssigned?: boolean;
+};
+import { getConformiteStatusProps, getComplianceDocumentStatusProps } from '../constants/status';
 import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { ConformiteDetailsSheet } from './conformite-details-sheet';
@@ -164,8 +170,14 @@ const ConformiteList = () => {
 
      const response = await apiFetch(`/api/sections/gestion-ressources/rh/conformite?${params.toString()}`);
     if (!response.ok) throw new Error('Échec du chargement des conformites');
-    const result = await response.json();
-    return result.data;
+     const result = await response.json();
+    const payload = result?.data ?? result;
+    const rows = Array.isArray(payload?.data) ? payload.data : [];
+    return {
+      data: rows,
+      pagination: payload?.pagination || { total: rows.length, page: 1 },
+      empty: rows.length === 0,
+    };
   };
 
   const { data, isLoading } = useQuery({
@@ -204,7 +216,7 @@ const ConformiteList = () => {
     }
   };
 
-  const columns = useMemo<ColumnDef<Conformite>[]>(
+  const columns = useMemo<ColumnDef<ConformiteListRow>[]>(
     () => [
        {
         id: 'select',
@@ -263,19 +275,46 @@ const ConformiteList = () => {
         cell: ({ row }) => {
           const category = row.original.userCategory;
           const label = { 'INTERNAL': 'Interne', 'CLIENT': 'Client', 'SUBCONTRACTOR': 'Sous-traitant' }[category as string] || category;
-          return <Badge variant="primary" appearance="light" size="sm" className="font-bold uppercase text-[10px] tracking-wider">{label}</Badge>;
+          return <Badge variant="default" appearance="light" size="sm" className="font-bold uppercase text-[10px] tracking-wider">{label}</Badge>;
         },
         size: 130,
       },
       {
+        accessorKey: 'complianceStatus',
+        id: 'complianceStatus',
+        header: ({ column }) => <DataGridColumnHeader title="Conformité" column={column} />,
+        cell: ({ row }) => {
+          const props = getComplianceDocumentStatusProps(row.original.complianceStatus);
+          const issueCount = row.original.complianceIssueCount ?? 0;
+          return (
+            <div className="flex flex-col gap-0.5">
+              <Badge
+                variant={props.variant}
+                appearance="light"
+                size="sm"
+                className="font-bold uppercase text-[10px] tracking-wider w-fit"
+              >
+                {props.label}
+              </Badge>
+              {issueCount > 0 ? (
+                <span className="text-[10px] text-muted-foreground">
+                  {issueCount} point{issueCount > 1 ? 's' : ''}
+                </span>
+              ) : null}
+            </div>
+          );
+        },
+        size: 140,
+      },
+      {
         accessorKey: 'status',
         id: 'status',
-        header: ({ column }) => <DataGridColumnHeader title={t('datagrid.columns.status')} column={column} />,
+        header: ({ column }) => <DataGridColumnHeader title="Compte" column={column} />,
         cell: ({ row }) => {
           const statusProps = getConformiteStatusProps(row.original.status as UserStatus);
           return (
             <Badge 
-              variant={statusProps.variant as any} 
+              variant={statusProps.variant} 
               appearance="light"
               size="sm"
               className="font-bold uppercase text-[10px] tracking-wider"
@@ -412,10 +451,7 @@ const ConformiteList = () => {
             isLoading={isLoading}
             tableLayout={{ columnsResizable: true, columnsPinnable: true, columnsMovable: true, columnsVisibility: true }}
             tableClassNames={{
-              bodyRow: (row) => cn(
-                "transition-colors relative",
-                row.getIsSelected() && "bg-primary/5 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[3px] before:bg-primary"
-              )
+              bodyRow: 'transition-colors relative',
             }}
           >
             <Card>
@@ -453,8 +489,9 @@ const ConformiteList = () => {
                      </Card>
                    </div>
                  ) : (
-                   data.data.map((conformite: Conformite) => {
+                   data.data.map((conformite: ConformiteListRow) => {
                      const statusProps = getConformiteStatusProps(conformite.status as UserStatus);
+                     const complianceProps = getComplianceDocumentStatusProps(conformite.complianceStatus);
                      return (
                        <Card key={conformite.id} className="group hover:border-primary/50 transition-all duration-300 overflow-hidden">
                          <CardContent className="p-6">
@@ -483,8 +520,16 @@ const ConformiteList = () => {
                                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[10px] font-bold uppercase">
                                  {{ 'INTERNAL': 'Interne', 'CLIENT': 'Client', 'SUBCONTRACTOR': 'Sous-traitant' }[conformite.userCategory as string] || conformite.userCategory}
                                </Badge>
+                               <Badge
+                                 variant={complianceProps.variant}
+                                 appearance="light"
+                                 size="sm"
+                                 className="text-[10px] font-bold uppercase"
+                               >
+                                 {complianceProps.label}
+                               </Badge>
                                <Badge 
-                                 variant={statusProps.variant as any} 
+                                 variant={statusProps.variant} 
                                  className={cn(
                                    "text-[10px] font-bold uppercase",
                                    statusProps.variant === 'success' && "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none",
@@ -536,13 +581,13 @@ const ConformiteList = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
+            className={DATAGRID_SELECTION_BAR_WRAPPER}
           >
-            <div className="bg-popover text-popover-foreground rounded-xl px-4 py-2.5 flex items-center gap-6 shadow-2xl border border-border min-w-[500px]">
-              <div className="text-sm font-medium border-r border-border pr-6">
+            <div className={DATAGRID_SELECTION_BAR_INNER}>
+              <div className="text-sm font-medium sm:border-r sm:border-border sm:pr-6">
                  <span className="text-muted-foreground">{selectedRowsCount} sur {Array.isArray(data?.data) ? data.data.length : 0} sélectionnés</span>
               </div>
-              <div className="flex items-center gap-4">
+              <div className={DATAGRID_SELECTION_BAR_ACTIONS}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors">

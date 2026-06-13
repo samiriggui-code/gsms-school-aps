@@ -251,7 +251,7 @@ export function ConformiteDetailsCompliance({ conformite }: { conformite: Confor
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <p className="text-xs font-bold text-foreground/90 uppercase">{cert.type}</p>
-                      {cert.level && <Badge size="xs" variant="outline" className="text-[9px]">{cert.level}</Badge>}
+                      {cert.level && <Badge size="sm" variant="outline" className="text-[9px]">{cert.level}</Badge>}
                     </div>
                     
                     <div className="flex flex-col gap-1.5 mt-2">

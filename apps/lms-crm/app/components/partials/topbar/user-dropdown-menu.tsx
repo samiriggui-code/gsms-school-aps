@@ -5,6 +5,7 @@ import Link from 'next/link';
 import {
   FileText,
   Lock,
+  Settings,
   User,
   UserCircle,
 } from 'lucide-react';
@@ -19,6 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { UserPresenceDot, UserPresencePicker } from '@/components/common/user-presence-picker';
 import { useTranslation } from '@/hooks/useTranslation';
 
 export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
@@ -35,40 +37,43 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-64" side="bottom" align="end">
-        <div className="flex items-center justify-between p-3">
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <UserAvatar
-                avatar={session?.user?.avatar}
-                className="w-9 h-9 rounded-full border border-border"
-                fallback="/media/avatars/300-2.png"
-              />
-              <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-green-500 border-2 border-background" />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <Link
-                href="/mon-profil"
-                className="text-sm text-mono hover:text-primary font-semibold truncate"
-              >
-                {session?.user.name || ''}
-              </Link>
-              {mailto ? (
+        <div className="p-3 pb-0">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <div className="relative shrink-0">
+                <UserAvatar
+                  avatar={session?.user?.avatar}
+                  className="h-9 w-9 rounded-full border border-border"
+                  fallback="/media/avatars/300-2.png"
+                />
+                <UserPresenceDot />
+              </div>
+              <div className="flex min-w-0 flex-col">
                 <Link
-                  href={mailto}
-                  className="text-xs text-muted-foreground hover:text-primary truncate"
+                  href="/mon-profil"
+                  className="truncate text-sm font-semibold text-mono hover:text-primary"
                 >
-                  {session?.user.email || ''}
+                  {session?.user.name || ''}
                 </Link>
-              ) : (
-                <span className="text-xs text-muted-foreground truncate">
-                  {session?.user.email || ''}
-                </span>
-              )}
+                {mailto ? (
+                  <Link
+                    href={mailto}
+                    className="truncate text-xs text-muted-foreground hover:text-primary"
+                  >
+                    {session?.user.email || ''}
+                  </Link>
+                ) : (
+                  <span className="truncate text-xs text-muted-foreground">
+                    {session?.user.email || ''}
+                  </span>
+                )}
+              </div>
             </div>
+            <Badge variant="primary" appearance="light" size="sm" className="shrink-0">
+              {t('userMenu.active')}
+            </Badge>
           </div>
-          <Badge variant="primary" appearance="light" size="sm">
-            {t('userMenu.active')}
-          </Badge>
+          <UserPresencePicker className="px-0 pt-2.5" />
         </div>
 
         <DropdownMenuSeparator />
@@ -77,6 +82,12 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
           <Link href="/mon-profil" className="flex items-center gap-2">
             <UserCircle />
             {t('userMenu.publicProfile')}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/account/parametres" className="flex items-center gap-2">
+            <Settings />
+            Paramètres du compte
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

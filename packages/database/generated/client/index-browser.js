@@ -611,6 +611,18 @@ exports.Prisma.FormationSessionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PortalSessionAnnouncementScalarFieldEnum = {
+  id: 'id',
+  formationId: 'formationId',
+  sessionId: 'sessionId',
+  title: 'title',
+  content: 'content',
+  publishedAt: 'publishedAt',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CandidatureScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -696,6 +708,11 @@ exports.Prisma.ChapterScalarFieldEnum = {
   position: 'position',
   isPublished: 'isPublished',
   isFree: 'isFree',
+  reviewStatus: 'reviewStatus',
+  submittedForReviewAt: 'submittedForReviewAt',
+  reviewedAt: 'reviewedAt',
+  reviewNote: 'reviewNote',
+  reviewedById: 'reviewedById',
   courseId: 'courseId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -710,6 +727,11 @@ exports.Prisma.ActivityScalarFieldEnum = {
   details: 'details',
   isPublished: 'isPublished',
   position: 'position',
+  reviewStatus: 'reviewStatus',
+  submittedForReviewAt: 'submittedForReviewAt',
+  reviewedAt: 'reviewedAt',
+  reviewNote: 'reviewNote',
+  reviewedById: 'reviewedById',
   chapterId: 'chapterId',
   lastModifiedById: 'lastModifiedById',
   createdAt: 'createdAt',
@@ -723,6 +745,28 @@ exports.Prisma.MuxDataScalarFieldEnum = {
   chapterId: 'chapterId'
 };
 
+exports.Prisma.QuizQuestionBankScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  formationId: 'formationId',
+  courseId: 'courseId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuizQuestionBankItemScalarFieldEnum = {
+  id: 'id',
+  bankId: 'bankId',
+  position: 'position',
+  prompt: 'prompt',
+  choices: 'choices',
+  correctIndex: 'correctIndex',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserProgressScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -730,6 +774,16 @@ exports.Prisma.UserProgressScalarFieldEnum = {
   isCompleted: 'isCompleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QuizAttemptScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  activityId: 'activityId',
+  answers: 'answers',
+  score: 'score',
+  passed: 'passed',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.PurchaseScalarFieldEnum = {
@@ -1361,6 +1415,13 @@ exports.FormationExamOutcome = exports.$Enums.FormationExamOutcome = {
   ABSENT: 'ABSENT'
 };
 
+exports.LmsContentReviewStatus = exports.$Enums.LmsContentReviewStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.ActivityType = exports.$Enums.ActivityType = {
   VIDEO: 'VIDEO',
   DOCUMENT: 'DOCUMENT',
@@ -1496,6 +1557,7 @@ exports.Prisma.ModelName = {
   FormationCatalogOffer: 'FormationCatalogOffer',
   FormationVenueRoom: 'FormationVenueRoom',
   FormationSession: 'FormationSession',
+  PortalSessionAnnouncement: 'PortalSessionAnnouncement',
   Candidature: 'Candidature',
   FormationSessionParticipant: 'FormationSessionParticipant',
   FormationAttestation: 'FormationAttestation',
@@ -1505,7 +1567,10 @@ exports.Prisma.ModelName = {
   Chapter: 'Chapter',
   Activity: 'Activity',
   MuxData: 'MuxData',
+  QuizQuestionBank: 'QuizQuestionBank',
+  QuizQuestionBankItem: 'QuizQuestionBankItem',
   UserProgress: 'UserProgress',
+  QuizAttempt: 'QuizAttempt',
   Purchase: 'Purchase',
   StripeCustomer: 'StripeCustomer',
   TrainingSession: 'TrainingSession',

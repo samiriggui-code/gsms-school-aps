@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { StatService } from '@repo/api-core';
+import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
+import { requireCrmApiAuth } from '@/lib/auth/require-permission';
 
 export async function GET(request: Request) {
+  const auth = await requireCrmApiAuth(CRM_PERMISSION.dashboard);
+  if (!auth.ok) return auth.response;
   const { searchParams } = new URL(request.url);
   const section = searchParams.get('section');
 

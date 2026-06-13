@@ -1,73 +1,219 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { TrendingDown, TrendingUp } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { TrendingUp } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { useTranslation } from '@/hooks/useTranslation';
 
+type CatalogFormationStats = {
+  hoursDisplay: string;
+  traineesDisplay: string;
+  priceAmountText: string;
+  priceFormatted: string;
+  successDisplay: string;
+};
 
-export function Statistics1({}: object) {
-  const items = [
-    { 
-      total: '1,246', 
-      label: 'Total Orders',
-      badgeLabel: '23.08',
+type BadgeTone = 'success' | 'warning';
+
+type StatRowItem = {
+  total: string;
+  label: string;
+  badgeLabel: string;
+  badgeColor: BadgeTone;
+  text: string;
+  number: string;
+  icon: ReactNode;
+};
+
+export type Statistics1StaticPreset = 'tfp-aps' | 'asc-cynophile';
+
+function buildStaticItems(
+  t: (key: string) => string,
+  preset: Statistics1StaticPreset,
+): StatRowItem[] {
+  const icon = <TrendingUp />;
+  if (preset === 'asc-cynophile') {
+    return [
+      {
+        total: '—',
+        label: t('landing.sheets.stats.ascHours.label'),
+        badgeLabel: t('landing.sheets.stats.ascHours.badge'),
+        badgeColor: 'success',
+        text: t('landing.sheets.stats.ascHours.text'),
+        number: '',
+        icon,
+      },
+      {
+        total: '—',
+        label: t('landing.sheets.stats.ascTrainees.label'),
+        badgeLabel: t('landing.sheets.stats.ascTrainees.badge'),
+        badgeColor: 'success',
+        text: t('landing.sheets.stats.ascTrainees.text'),
+        number: '',
+        icon,
+      },
+      {
+        total: '—',
+        label: t('landing.sheets.stats.ascPrice.label'),
+        badgeLabel: t('landing.sheets.stats.ascPrice.badge'),
+        badgeColor: 'warning',
+        text: t('landing.sheets.stats.ascPrice.text'),
+        number: '',
+        icon,
+      },
+      {
+        total: '—',
+        label: t('landing.sheets.stats.ascSuccess.label'),
+        badgeLabel: t('landing.sheets.stats.ascSuccess.badge'),
+        badgeColor: 'success',
+        text: t('landing.sheets.stats.ascSuccess.text'),
+        number: '',
+        icon,
+      },
+    ];
+  }
+
+  return [
+    {
+      total: '175h',
+      label: t('landing.sheets.stats.hours.label'),
+      badgeLabel: t('landing.sheets.stats.hours.badge'),
       badgeColor: 'success',
-      text: 'Annual trend',
+      text: t('landing.sheets.stats.hours.text'),
       number: '',
-      icon: <TrendingUp />,
-    }, 
-    { 
-      total: '$89,378', 
-      label: 'Cumulative Spend',
-      badgeLabel: '3.82',
+      icon,
+    },
+    {
+      total: '4-12',
+      label: t('landing.sheets.stats.trainees.label'),
+      badgeLabel: t('landing.sheets.stats.trainees.badge'),
       badgeColor: 'success',
-      text: 'Monthly trend',
-      number: '.02',
-      icon: <TrendingUp />,
-    }, 
-    { 
-      total: '$68', 
-      label: 'Avg. Order Value(AOV)',
-      badgeLabel: '0.39',
-      badgeColor: 'destructive',
-      text: 'Weekly trend',
-      number: '.50',
-      icon: <TrendingDown />,
-    }, 
-    { 
-      total: '$2,345', 
-      label: 'Account Balance',
-      badgeLabel: '104',
+      text: t('landing.sheets.stats.trainees.text'),
+      number: '',
+      icon,
+    },
+    {
+      total: '1190',
+      label: t('landing.sheets.stats.price.label'),
+      badgeLabel: t('landing.sheets.stats.price.badge'),
+      badgeColor: 'warning',
+      text: t('landing.sheets.stats.price.text'),
+      number: '€',
+      icon,
+    },
+    {
+      total: '97%',
+      label: t('landing.sheets.stats.success.label'),
+      badgeLabel: t('landing.sheets.stats.success.badge'),
       badgeColor: 'success',
-      text: 'Daily trend',
-      number: '.94',
-      icon: <TrendingUp />,
-    }
+      text: t('landing.sheets.stats.success.text'),
+      number: '',
+      icon,
+    },
   ];
+}
+
+export function Statistics1({
+  catalogSlug,
+  staticPreset = 'tfp-aps',
+}: {
+  catalogSlug?: string | null;
+  /** Jeu de KPI affichés tant que le catalogue CRM ne répond pas */
+  staticPreset?: Statistics1StaticPreset;
+}) {
+  const { t } = useTranslation();
+  const [stats, setStats] = useState<CatalogFormationStats | null>(null);
+
+  useEffect(() => {
+    setStats(null);
+    if (!catalogSlug?.trim()) {
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch(
+          `/api/catalog/formation?slug=${encodeURIComponent(catalogSlug.trim())}`,
+          { cache: 'no-store' },
+        );
+        const json = (await res.json()) as {
+          stats: CatalogFormationStats | null;
+          catalogInactive?: boolean;
+        };
+        if (!cancelled && json.stats && !json.catalogInactive) {
+          setStats(json.stats);
+        }
+      } catch {
+        /* garde les valeurs statiques */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [catalogSlug]);
+
+  const priceText = t('landing.sheets.stats.price.text');
+
+  const items = useMemo(() => {
+    const base = buildStaticItems(t, staticPreset);
+    const row = base.map((i) => ({ ...i }));
+    if (!stats) return row;
+
+    if (stats.hoursDisplay) {
+      row[0] = { ...row[0], total: stats.hoursDisplay };
+    }
+    if (stats.traineesDisplay) {
+      row[1] = { ...row[1], total: stats.traineesDisplay };
+    }
+    if (stats.priceAmountText) {
+      row[2] = {
+        ...row[2],
+        total: stats.priceAmountText,
+        number: '€',
+        badgeLabel: t('landing.sheets.stats.price.badge'),
+        text: priceText,
+      };
+    } else if (stats.priceFormatted) {
+      row[2] = {
+        ...row[2],
+        total: stats.priceFormatted,
+        number: '',
+        badgeLabel: t('landing.sheets.stats.price.badge'),
+        text: priceText,
+      };
+    }
+    if (stats.successDisplay) {
+      row[3] = { ...row[3], total: stats.successDisplay };
+    }
+    return row;
+  }, [stats, staticPreset, t, priceText]);
 
   return (
-    <Card className="rounded-md mb-5 bg-accent/70 p-1">
-      <CardContent className="rounded-md p-0 bg-background border border-border">
+    <Card className="mb-5 rounded-md bg-accent/70 p-1">
+      <CardContent className="rounded-md border border-border bg-background p-0">
         <div className="grid md:grid-cols-4 lg:gap-5">
-          {items.map((item, index) => ( 
-            <div key={index} className={`flex flex-col justify-between gap-5 p-4.5 pb-3.5 ${index > 0 ? 'md:border-s border-border' : ''}`}>
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className={`flex flex-col justify-between gap-5 p-4.5 pb-3.5 ${index > 0 ? 'border-border md:border-s' : ''}`}
+            >
               <div className="flex flex-col gap-0.5">
-                <span className="text-xl lg:text-2xl font-semibold text-foreground">
-                  {item.total}<span className="text-xl lg:text-2xl font-semibold text-secondary-foreground/30">{item.number}</span>
+                <span className="text-xl font-semibold text-foreground lg:text-2xl">
+                  {item.total}
+                  <span className="text-xl font-semibold text-secondary-foreground/30 lg:text-2xl">
+                    {item.number}
+                  </span>
                 </span>
-                <span className="text-xs font-normal text-secondary-foreground/70">
-                  {item.label}
-                </span>
+                <span className="text-xs font-normal text-secondary-foreground/70">{item.label}</span>
               </div>
 
-              <div className="flex items-center flex-wrap gap-1.5">
-                <Badge variant={item.badgeColor as any} size="sm" appearance="light" className="w-fit">
-                {item.icon} {item.badgeLabel}%
+              <div className="flex flex-wrap items-center gap-1.5">
+                <Badge variant={item.badgeColor} size="sm" appearance="light" className="w-fit">
+                  {item.icon} {item.badgeLabel}
                 </Badge>
-                <span className="text-xs font-normal text-secondary-foreground">
-                  {item.text}
-                </span>
+                <span className="text-xs font-normal text-secondary-foreground">{item.text}</span>
               </div>
             </div>
           ))}

@@ -174,7 +174,7 @@ export function OrgUnitManager() {
             <div className="flex items-center gap-2">
               <Building2 className="size-4 text-muted-foreground/70" />
               <span className="text-sm font-bold text-foreground/90">{unit.name}</span>
-              <Badge variant="outline" size="xs" className="uppercase text-[9px] font-black opacity-60 tracking-tighter h-4 px-1">
+              <Badge variant="outline" size="sm" className="uppercase text-[9px] font-black opacity-60 tracking-tighter h-4 px-1">
                 {unit.type}
               </Badge>
               {unit.Memberships && unit.Memberships.length > 0 && (
@@ -313,7 +313,7 @@ export function OrgUnitManager() {
                     <span className="text-[11px] font-medium">
                       {unit.Memberships[0].TenantUser.firstName} {unit.Memberships[0].TenantUser.lastName}
                     </span>
-                    <Badge variant="outline" size="xs" className="text-[8px] bg-primary/5 text-primary h-3.5 px-1 py-0">
+                    <Badge variant="outline" size="sm" className="text-[8px] bg-primary/5 text-primary h-3.5 px-1 py-0">
                       {unit.Memberships[0].Position?.name || 'Manager'}
                     </Badge>
                   </div>
@@ -348,7 +348,7 @@ export function OrgUnitManager() {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-foreground leading-tight">{unit.name}</h4>
-                  <Badge variant="outline" size="xs" className="uppercase text-[8px] font-bold h-4 tracking-tighter mt-0.5">
+                  <Badge variant="outline" size="sm" className="uppercase text-[8px] font-bold h-4 tracking-tighter mt-0.5">
                     {unit.type}
                   </Badge>
                 </div>

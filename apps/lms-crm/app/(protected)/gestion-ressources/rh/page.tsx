@@ -41,19 +41,19 @@ export default function RHDashboardPage() {
 
         <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
           <div className="min-w-0 h-full lg:col-span-1">
-            <RHDistributionChart />
+            <ComplianceAlerts />
           </div>
           <div className="min-w-0 h-full lg:col-span-2">
-            <RHEvolutionChart />
+            <RHStaffTable />
           </div>
         </div>
 
         <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
           <div className="min-w-0 h-full lg:col-span-1">
-            <ComplianceAlerts />
+            <RHDistributionChart />
           </div>
           <div className="min-w-0 h-full lg:col-span-2">
-            <RHStaffTable />
+            <RHEvolutionChart />
           </div>
         </div>
       </Container>

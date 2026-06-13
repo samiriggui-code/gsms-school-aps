@@ -50,6 +50,8 @@ interface CollaborateurDetailsSheetProps {
   variant?: 'collaborateur' | 'formateur';
   /** Pleine page (ex. `/mon-profil`) : pas de Sheet, même contenu qu’une fiche RH. */
   presentation?: 'sheet' | 'page';
+  /** Onglet initial (ex. `settings` depuis `/formateur/profil?tab=settings`). */
+  initialTab?: string;
 }
 
 const escapeHtml = (value: any) => {
@@ -349,6 +351,7 @@ export function CollaborateurDetailsSheet({
   onEditClick,
   variant: variantProp,
   presentation = 'sheet',
+  initialTab = 'overview',
 }: CollaborateurDetailsSheetProps) {
   const { t } = useTranslation();
   const isPage = presentation === 'page';
@@ -361,7 +364,11 @@ export function CollaborateurDetailsSheet({
   const [isLoadingEmail, setIsLoadingEmail] = useState(false);
   const [isLoadingRestore, setIsLoadingRestore] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
   const hideActivityTab = useMaxWidthLg();
   const [complianceStatus, setComplianceStatus] = useState<any>(null);
   const [companyProfile, setCompanyProfile] = useState<any>(null);

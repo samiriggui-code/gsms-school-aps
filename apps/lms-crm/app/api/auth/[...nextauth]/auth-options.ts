@@ -6,6 +6,11 @@ import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import prisma from '@/lib/prisma';
+import {
+  assertLoginAllowed,
+  isAccountAccessAllowed,
+} from '@/lib/auth/account-access';
+import { loadRolePermissionSlugs } from '@/lib/auth/load-role-permission-slugs';
 
 const adapter: Adapter = PrismaAdapter(prisma as never);
 
@@ -31,6 +36,16 @@ const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
+          select: {
+            id: true,
+            email: true,
+            password: true,
+            name: true,
+            roleId: true,
+            avatar: true,
+            status: true,
+            isTrashed: true,
+          },
         });
 
         if (!user) {
@@ -56,14 +71,7 @@ const authOptions: NextAuthOptions = {
           );
         }
 
-        if (user.status !== 'ACTIVE') {
-          throw new Error(
-            JSON.stringify({
-              code: 403,
-              message: 'Account not activated. Please verify your email.',
-            }),
-          );
-        }
+        assertLoginAllowed(user);
 
         // Update `lastSignInAt` field
         await prisma.user.update({
@@ -99,6 +107,8 @@ const authOptions: NextAuthOptions = {
         });
 
         if (existingUser) {
+          assertLoginAllowed(existingUser);
+
           // Update `lastSignInAt` field for existing users
           await prisma.user.update({
             where: { id: existingUser.id },
@@ -186,6 +196,7 @@ const authOptions: NextAuthOptions = {
         token.roleId = user.roleId;
         token.roleName = role?.name ?? token.roleName;
         token.roleSlug = role?.slug ?? null;
+        token.permissionSlugs = await loadRolePermissionSlugs(user.roleId);
       }
 
       // Jetons anciens sans slug : hydrate une fois depuis le rôle courant.
@@ -200,6 +211,10 @@ const authOptions: NextAuthOptions = {
         }
       }
 
+      if (token.roleId && (!token.permissionSlugs || token.permissionSlugs.length === 0)) {
+        token.permissionSlugs = await loadRolePermissionSlugs(token.roleId as string);
+      }
+
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
@@ -212,19 +227,28 @@ const authOptions: NextAuthOptions = {
         session.user.roleId = token.roleId;
         session.user.roleName = token.roleName;
         session.user.roleSlug = token.roleSlug;
+        session.user.permissionSlugs = token.permissionSlugs ?? [];
 
         if (token.id) {
           const fresh = await prisma.user.findUnique({
             where: { id: token.id as string },
-            select: { avatar: true, name: true },
+            select: { avatar: true, name: true, status: true, isTrashed: true },
           });
           if (fresh) {
             session.user.avatar = fresh.avatar;
             if (fresh.name) session.user.name = fresh.name;
+            session.user.status = fresh.status;
+            (session.user as { accessBlocked?: boolean }).accessBlocked =
+              !isAccountAccessAllowed(fresh);
           }
         }
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return `${baseUrl}/accueil`;
     },
   },
   pages: {

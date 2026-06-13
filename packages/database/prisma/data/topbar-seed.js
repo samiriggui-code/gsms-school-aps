@@ -52,8 +52,73 @@ async function seedTopbarDemo(tx) {
     const existing = await tx.inAppNotification.count({ where: { userId: user.id } });
     if (existing > 0) continue;
 
-    for (let i = 0; i < sampleNotifications.length; i += 1) {
-      const sample = sampleNotifications[i];
+    const role = await tx.user.findUnique({
+      where: { id: user.id },
+      select: { role: { select: { slug: true } } },
+    });
+    const roleSlug = role?.role?.slug ?? 'collaborateur';
+
+    const samples =
+      roleSlug === 'formateur'
+        ? [
+            {
+              category: 'ACADEMIC',
+              title: 'Session à animer demain',
+              body: 'Votre session TFP APS démarre à 8h — vérifiez la salle et la liste stagiaires.',
+              href: '/formateur/sessions',
+            },
+            {
+              category: 'TEAM',
+              title: 'Message équipe pédagogique',
+              body: 'Note interne sur le catalogue formations SSIAP.',
+              href: '/formateur/annonces',
+            },
+            {
+              category: 'TICKET',
+              title: 'Demande chat stagiaire',
+              body: 'Un stagiaire vous a contacté via le portail — réponse attendue.',
+              href: '/formateur/stagiaires',
+              metadata: { moduleKey: 'portal-candidat', eventType: 'learner.chat_request' },
+            },
+            {
+              category: 'TICKET',
+              title: 'Email stagiaire — pièce dossier',
+              body: 'Notification mail : un candidat a déposé un document sur son dossier.',
+              href: '/formateur/stagiaires',
+              metadata: { moduleKey: 'portal-candidat', eventType: 'learner.mail' },
+            },
+            {
+              category: 'ACADEMIC',
+              title: 'Parcours e-learning mis à jour',
+              body: 'Un module de votre formation a été publié.',
+              href: '/formateur/parcours',
+            },
+          ]
+        : roleSlug === 'candidat' || roleSlug === 'eleve'
+          ? [
+              {
+                category: 'ACADEMIC',
+                title: 'Convocation session',
+                body: 'Votre session de formation est confirmée — consultez Mon dossier.',
+                href: '/mon-dossier',
+              },
+              {
+                category: 'TEAM',
+                title: 'Message de l\'établissement',
+                body: 'L\'équipe administrative a répondu à votre demande.',
+                href: '/mon-dossier/notifications',
+              },
+              {
+                category: 'TICKET',
+                title: 'Demande support dossier',
+                body: 'Votre ticket concernant les pièces CNAPS est en cours de traitement.',
+                href: '/mon-dossier',
+              },
+            ]
+          : sampleNotifications;
+
+    for (let i = 0; i < samples.length; i += 1) {
+      const sample = samples[i];
       const moduleKeyByCategory = {
         SYSTEM: 'securite-configuration',
         FINANCE: 'administration-facturation.finance',
@@ -68,13 +133,13 @@ async function seedTopbarDemo(tx) {
           title: sample.title,
           body: sample.body,
           href: sample.href,
-          metadata: {
+          metadata: sample.metadata ?? {
             moduleKey: moduleKeyByCategory[sample.category] ?? 'gestion-academique',
             eventType: 'seed.demo',
             severity: i < 2 ? 'WARNING' : 'INFO',
           },
           readAt: i >= 3 ? null : new Date(now - (i + 1) * 3600000),
-          createdAt: new Date(now - (sampleNotifications.length - i) * 7200000),
+          createdAt: new Date(now - (samples.length - i) * 7200000),
         },
       });
     }

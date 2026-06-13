@@ -221,7 +221,7 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => <DataGridTableRowSelectAll table={table} />,
+        header: () => <DataGridTableRowSelectAll />,
         cell: ({ row }) => <DataGridTableRowSelect row={row} />,
         size: 50,
         enableSorting: false,
@@ -252,7 +252,7 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                   <Badge 
                     variant="outline" 
                     appearance="light"
-                    size="xs" 
+                    size="sm" 
                     className={cn("text-[9px] font-bold uppercase tracking-wider h-4 bg-transparent", config.color, "border-current/20")}
                   >
                     {config.label}
@@ -289,7 +289,7 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
         header: ({ column }) => <DataGridColumnHeader title="Membres" column={column} />,
         cell: ({ row }) => (
           <div className="flex flex-col gap-1">
-            <Badge variant="primary" appearance="light" className="font-bold text-[11px] px-2.5 w-fit">
+            <Badge variant="default" appearance="light" className="font-bold text-[11px] px-2.5 w-fit">
               {row.original._count?.members || 0} collaborateurs
             </Badge>
           </div>

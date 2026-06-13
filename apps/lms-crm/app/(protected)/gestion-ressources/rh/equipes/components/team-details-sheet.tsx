@@ -15,7 +15,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../constants/sheet-shell-classes';
+import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
+import { GESTION_RESSOURCES_SHEET_TABS_LIST } from '@/lib/gestion-ressources/ui';
+import { useMaxWidthLg } from '@/hooks/use-max-width-lg';
 import {
   Users,
   Info,
@@ -54,6 +56,7 @@ const TeamDetailsSheet = ({
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('overview');
   const settingsFormRef = useRef<any>(null);
+  const hideActivityTab = useMaxWidthLg();
 
   const { data: team, isLoading } = useQuery({
     queryKey: ['rh-team', teamId],
@@ -96,7 +99,7 @@ const TeamDetailsSheet = ({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE}>
+      <SheetContent className={VIE_SCOLAIRE_SHEET_AUTO}>
         <SheetHeader className="border-b py-3.5 px-5 border-border bg-background shrink-0">
           <SheetTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2">
             <Users className="size-3.5" />
@@ -190,9 +193,9 @@ const TeamDetailsSheet = ({
                   {/* Right Column: Content */}
                   <div className="grow lg:border-s border-border space-y-5 py-5 lg:ps-5">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto text-sm text-muted-foreground">
-                      <TabsList className="inline-flex w-auto grow-0 mb-2.5">
+                      <TabsList className={GESTION_RESSOURCES_SHEET_TABS_LIST}>
                         <TabsTrigger value="overview">Membres</TabsTrigger>
-                        <TabsTrigger value="activity">Activité</TabsTrigger>
+                        {!hideActivityTab ? <TabsTrigger value="activity">Activité</TabsTrigger> : null}
                         <TabsTrigger value="settings">Paramètres</TabsTrigger>
                       </TabsList>
                       
@@ -215,9 +218,9 @@ const TeamDetailsSheet = ({
           )}
         </SheetBody>
 
-        <SheetFooter className="flex-row border-t pb-4 p-5 border-border gap-2.5 lg:gap-0 bg-background shrink-0">
+        <SheetFooter className="flex flex-col gap-2.5 border-t pb-4 p-5 border-border sm:flex-row sm:gap-0 bg-background shrink-0">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Fermer</Button>
-          <div className="flex gap-2.5 ml-auto">
+          <div className="flex flex-wrap gap-2.5 sm:ml-auto">
             <Button 
               variant="ghost" 
               className="text-muted-foreground hover:text-destructive hover:bg-destructive/5"

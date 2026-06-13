@@ -702,11 +702,11 @@
     },
     "support-base-aide": {
       "title": "Catalogue formations (aide)",
-      "description": "Fiches catalogue actives réutilisées pour l'aide self-service — documentation complète dans Mintlify.",
-      "footnote": "Fiches issues du catalogue formations actif. FAQ et analytics : voir onglet Documentation Mintlify.",
+      "description": "Fiches catalogue actives réutilisées pour l'aide self-service — documentation complète dans le guide école.",
+      "footnote": "Fiches issues du catalogue formations actif. FAQ et analytics : voir onglet Documentation du guide école.",
       "stats": {
         "articles": { "label": "Fiches catalogue", "subtitle": "Formations actives" },
-        "faq": { "label": "Guide Mintlify", "subtitle": "Procédures & support" },
+        "faq": { "label": "Guide école", "subtitle": "Procédures & support" },
         "searches": { "label": "Recherches", "subtitle": "Analytics à brancher" },
         "satisfaction": { "label": "Satisfaction", "subtitle": "Enquêtes à brancher" },
         "coverage": { "label": "Couverture", "subtitle": "Fiches actives" }
@@ -997,10 +997,14 @@
   },
   "help": {
     "questionsTitle": "Questions ?",
-    "questionsDescription": "Procédures CRM, catalogue formations et support : consultez le guide Mintlify (documentation produit).",
+    "questionsDescription": "Procédures CRM, catalogue formations et support : consultez le guide école (documentation produit).",
+    "questionsDescriptionInstructor": "Sessions, stagiaires et outils pédagogiques : consultez la documentation formateur et le catalogue formations.",
+    "questionsDescriptionPortal": "Parcours, dossier candidat et e-formation : consultez la documentation et le guide catalogue formations.",
     "questionsCta": "Ouvrir la documentation",
     "supportTitle": "Contacter le support",
     "supportDescription": "Besoin d'aide ? Contactez notre équipe support pour une assistance rapide et personnalisée.",
+    "supportDescriptionInstructor": "Besoin d'aide sur vos sessions ou votre espace formateur ? Notre équipe vous répond rapidement.",
+    "supportDescriptionPortal": "Besoin d'aide sur votre dossier ou votre formation ? Contactez l'établissement via le formulaire de contact.",
     "supportCta": "Contacter le support",
     "imageAlt": "Illustration"
   },
@@ -1149,7 +1153,9 @@
           "read": "Lues",
           "readHint": "Déjà consultées",
           "archived": "Archivées",
-          "archivedHint": "Retirées de la liste active"
+          "archivedHint": "Retirées de la liste active",
+          "today": "Aujourd'hui",
+          "todayHint": "Reçues depuis minuit (alertes métier)"
         },
         "landingAlertsTitle": "Alertes & événements",
         "landingAlertsSubtitle": "Vie scolaire · catalogue, sessions, conformité",
