@@ -1,0 +1,16 @@
+# Worker async LMS (rapports PDF, stats Redis, notifications, RH)
+# Prérequis : CRM accessible à REPORT_APP_BASE_URL pour le rendu HTML des rapports.
+services:
+  lms-workers:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.workers
+    env_file:
+      - ../.env
+    environment:
+      REPORT_APP_BASE_URL: ${REPORT_APP_BASE_URL:-http://host.docker.internal:3001}
+      PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /ms-playwright/chromium-1169/chrome-linux/chrome
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    restart: unless-stopped
+    depends_on: []

@@ -73,6 +73,7 @@ import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import TeamDetailsSheet from './team-details-sheet';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -83,6 +84,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
 interface TeamListProps {
+  /** @deprecated CTA création — utiliser la toolbar page (⓪). */
   onAddClick?: () => void;
 }
 
@@ -133,7 +135,6 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
   const [view, setView] = useState<'table' | 'grid'>('table');
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: MODULE_LANDING_DATAGRID_PAGE_SIZE,
@@ -143,24 +144,11 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
   ]);
   const [rowSelection, setRowSelection] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: ['rh-teams'] });
-    
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom((toastId) => (
-        <Alert variant="mono" icon="success" onClose={() => toast.dismiss(toastId)}>
-          <AlertIcon><RiCheckboxCircleFill className="size-4" /></AlertIcon>
-          <AlertTitle>{t('datagrid.syncSuccess')}</AlertTitle>
-        </Alert>
-      ), {
-        duration: 3000,
-        position: 'top-center'
-      });
-    }, 800);
-  };
+
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'rhTeams',
+    queryKeys: [['rh-teams']],
+  });
 
   const deleteMutation = useMutation({
     mutationFn: async (teamId: string) => {
@@ -430,12 +418,6 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                 <RefreshCw className={cn("size-4", isSyncing && "animate-spin")} />
                 <span className="font-bold uppercase tracking-wider text-[11px]">{t('datagrid.sync')}</span>
               </Button>
-              {onAddClick && (
-                <Button onClick={onAddClick} className="h-10 gap-2 font-bold uppercase text-[11px] shadow-sm">
-                  <Users className="size-4" />
-                  Nouvelle Équipe
-                </Button>
-              )}
               <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg border h-10 shadow-sm">
                 <Button
                   variant={view === 'table' ? 'secondary' : 'ghost'}

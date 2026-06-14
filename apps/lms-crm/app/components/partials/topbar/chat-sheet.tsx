@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/sheet';
 import { getDateFnsLocale } from '@/i18n/date-locale';
 import { useTranslation } from '@/hooks/useTranslation';
+import { usePusher } from '@/hooks/use-pusher';
 import { useLanguage } from '@/providers/i18n-provider';
 import {
   createChatConversation,
@@ -110,6 +111,18 @@ function MessageThread({
     queryFn: () => fetchChatMessages(conversationId),
     refetchInterval: 15000,
   });
+
+  usePusher(
+    undefined,
+    () => {
+      void queryClient.invalidateQueries({
+        queryKey: ['topbar-chat-messages', conversationId],
+      });
+      void queryClient.invalidateQueries({ queryKey: ['topbar-chat-conversations'] });
+      void queryClient.invalidateQueries({ queryKey: ['topbar-summary'] });
+    },
+    { channelName: `chat-${conversationId}`, eventName: 'chat.message' },
+  );
 
   const sendMutation = useMutation({
     mutationFn: (body: string) => sendChatMessage(conversationId, body),

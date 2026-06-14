@@ -1,7 +1,7 @@
 'use client';
 
-import { PilotageRapportsPage } from '../components/pilotage-rapports-page';
+import { PilotageRapportsContent } from '../components/pilotage-rapports-content';
 
 export default function Page() {
-  return <PilotageRapportsPage />;
+  return <PilotageRapportsContent />;
 }

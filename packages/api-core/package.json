@@ -4,8 +4,15 @@
   "private": true,
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./venue-room-usage": "./src/venue-room-usage.ts"
+  },
   "dependencies": {
     "@repo/database": "workspace:*",
-    "@repo/redis": "workspace:*"
+    "@repo/mail": "workspace:*",
+    "@repo/redis": "workspace:*",
+    "@repo/realtime": "workspace:*",
+    "@repo/report-engine": "workspace:*"
   }
 }

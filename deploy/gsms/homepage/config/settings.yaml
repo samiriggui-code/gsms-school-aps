@@ -1,0 +1,29 @@
+---
+title: GSMS — Cockpit
+description: État stack LMS · app, worker, données, n8n
+headerStyle: boxedWidgets
+theme: dark
+color: slate
+language: fr
+statusStyle: dot
+showStats: true
+fullWidth: true
+useEqualHeights: true
+iconStyle: theme
+
+layout:
+  Application:
+    tab: App
+    style: row
+    columns: 2
+    icon: mdi-school-outline
+  Stack:
+    tab: Stack
+    style: row
+    columns: 4
+    icon: mdi-database-outline
+  Ops:
+    tab: Ops
+    style: row
+    columns: 3
+    icon: mdi-monitor-dashboard

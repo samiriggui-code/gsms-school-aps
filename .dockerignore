@@ -1,6 +1,8 @@
-# Contexte docker build (racine monorepo) — aligné sur l’archive tar deploy-lms.ps1
+# Contexte docker build (racine monorepo)
 node_modules
 **/.next
+!apps/lms-crm/.next/standalone/**
+!apps/lms-crm/.next/static/**
 .git
 .turbo
 **/.turbo

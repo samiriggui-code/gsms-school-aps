@@ -31,7 +31,6 @@ import {
   DataGrid,
   DataGridApiFetchParams,
   DataGridApiResponse,
-  useDataGrid,
 } from '@/components/ui/data-grid';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { DataGridColumnVisibility } from '@/components/ui/data-grid-column-visibility';
@@ -328,7 +327,6 @@ const RoleList = () => {
   });
 
   const DataGridToolbar = () => {
-    const { table } = useDataGrid();
     const [inputValue, setInputValue] = useState(searchQuery);
 
     const handleSearch = () => {
@@ -415,6 +413,9 @@ const RoleList = () => {
 
    return (
      <>
+       <Card className="mb-5 border-border shadow-none">
+         <DataGridToolbar />
+       </Card>
        <DataGrid
          table={table}
          recordCount={data?.pagination.total || 0}
@@ -422,8 +423,7 @@ const RoleList = () => {
          tableLayout={USER_MANAGEMENT_TABLE_LAYOUT}
          tableClassNames={USER_MANAGEMENT_TABLE_CLASSNAMES}
        >
-         <Card>
-          <DataGridToolbar />
+         <Card className="border-border shadow-sm overflow-hidden">
           <CardTable>
             <ScrollArea>
               <DataGridTable />

@@ -14,17 +14,19 @@ export default function AccountNotificationsPage() {
   const { title, description } = usePageToolbarMeta('/account/notifications');
 
   return (
-    <Container className="pb-8">
-      <Toolbar>
-        <ToolbarHeading>
-          <ToolbarTitle>{title}</ToolbarTitle>
-          <ToolbarDescription>{description}</ToolbarDescription>
-        </ToolbarHeading>
-      </Toolbar>
+    <>
+      <Container>
+        <Toolbar>
+          <ToolbarHeading>
+            <ToolbarTitle>{title}</ToolbarTitle>
+            <ToolbarDescription>{description}</ToolbarDescription>
+          </ToolbarHeading>
+        </Toolbar>
+      </Container>
 
-      <div className="mt-6">
+      <Container className="space-y-5 pb-8 lg:space-y-7.5">
         <AccountNotificationsDatagrid />
-      </div>
-    </Container>
+      </Container>
+    </>
   );
 }

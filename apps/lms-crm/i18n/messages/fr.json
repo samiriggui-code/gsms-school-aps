@@ -921,9 +921,9 @@
   "sections": {
     "gestionRessources": {
       "welcomeDescription": "Centralisez compagnie, RH et équipements — structure interne, personnel et matériel pédagogique au même endroit.",
-      "menuCardsTitle": "Accès rapide — Gestion administrative",
-      "menuCardsSubtitle": "3 modules : 10 pages au menu latéral (compagnie 3, RH 4, équipements 3)",
-      "securityHighlightsTitle": "Indicateurs clés — Gestion administrative",
+      "menuCardsTitle": "Accès rapide — Gestion ressources",
+      "menuCardsSubtitle": "3 modules : 10 pages au menu latéral (compagnie 3, RH 5, équipements 4)",
+      "securityHighlightsTitle": "Indicateurs clés — Gestion ressources",
       "cards": {
         "compagnie": "Profil entreprise, structure interne et documents administratifs.",
         "rh": "Collaborateurs, formateurs, absences et conformité au menu latéral.",

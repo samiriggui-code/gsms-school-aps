@@ -1,12 +1,13 @@
 'use client';
 
-import { User as Etudiant, UserStatus } from "@/app/models/user";
+import { User as Etudiant } from "@/app/models/user";
 import { EtudiantOverviewStats } from "./details/etudiant-overview-stats";
 import { EtudiantRecentActivity } from "./details/etudiant-recent-activity";
 import { EtudiantReliabilityTier } from "./details/etudiant-reliability-tier";
 import { EtudiantHRInfo } from "./details/etudiant-hr-info";
 import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { CalendarX2 } from "lucide-react";
+import { isUserCurrentlyAbsent, userAbsenceAlertPeriod } from '@/lib/rh/user-absence-ui';
 import { CandidatFormationViseeCard } from "./candidat-formation-visee-card";
 
 export function EtudiantDetailsOverview({
@@ -27,7 +28,8 @@ export function EtudiantDetailsOverview({
   /** Libellés d’alerte (fiche hub candidat vs fiche élève/apprenant). */
   personaCopy?: 'etudiant' | 'candidat';
 }) {
-  const isAbsent = Etudiant.status === UserStatus.ABSENT;
+  const isAbsent = isUserCurrentlyAbsent(Etudiant);
+  const absencePeriod = userAbsenceAlertPeriod(Etudiant);
   const absentSubject = personaCopy === 'candidat' ? 'Candidat' : 'Étudiant';
 
   return (
@@ -42,7 +44,10 @@ export function EtudiantDetailsOverview({
               {absentSubject} absent
             </AlertTitle>
             <AlertDescription className="text-muted-foreground text-sm">
-              Ce compte est marqué comme absent : accès plateforme et disponibilités peuvent être restreints.
+              Ce compte est en absence : accès plateforme et disponibilités peuvent être restreints.
+              {absencePeriod ? (
+                <span className="mt-1 block text-xs font-medium text-foreground/80">{absencePeriod}</span>
+              ) : null}
             </AlertDescription>
           </div>
         </Alert>

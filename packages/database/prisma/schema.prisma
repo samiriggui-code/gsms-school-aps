@@ -47,6 +47,25 @@ enum FileAssetStatus {
   ARCHIVED
 }
 
+enum ReportJobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum ReportOutputFormat {
+  PDF
+  EXCEL
+  CSV
+}
+
+enum ReportScheduleFrequency {
+  DAILY
+  MONTHLY
+  QUARTERLY
+}
+
 enum EnrollmentStatus {
   PENDING
   VALIDATED
@@ -236,6 +255,7 @@ model User {
   formateurProfile      FormateurProfile?
   managedCollaborateurs CollaborateurProfile[] @relation("CollaborateurManager")
   createdFileAssets     FileAsset[]            @relation("FileAssetCreatedBy")
+  requestedReportJobs   ReportGenerationJob[]  @relation("ReportJobsRequested")
   assignedSupportTickets SupportTicket[]       @relation("SupportTicketAssignee")
   createdSupportTickets  SupportTicket[]       @relation("SupportTicketCreatedBy")
 
@@ -275,10 +295,61 @@ model FileAsset {
   deletedAt     DateTime?
 
   createdBy User? @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  reportJobs  ReportGenerationJob[]
 
   @@index([module, entityType, entityId])
   @@index([status, visibility])
   @@index([createdById])
+}
+
+/// Job asynchrone de génération document (PDF / Excel / CSV) — traité par @repo/workers.
+model ReportGenerationJob {
+  id            String             @id @default(uuid())
+  templateKey   String
+  format        ReportOutputFormat
+  period        String
+  periodStart   DateTime
+  periodEnd     DateTime
+  periodLabel   String
+  title         String
+  summary       String?
+  status        ReportJobStatus    @default(PENDING)
+  progress      Int                @default(0)
+  errorMessage  String?
+  renderToken   String             @unique @default(uuid())
+  parameters    Json               @default("{}")
+  fileAssetId   String?
+  requestedById String
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  completedAt   DateTime?
+
+  requestedBy User       @relation("ReportJobsRequested", fields: [requestedById], references: [id])
+  fileAsset   FileAsset? @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([requestedById])
+  @@index([templateKey])
+}
+
+/// Planification automatique des rapports (quotidien, mensuel, trimestriel).
+model ReportGenerationSchedule {
+  id          String                  @id @default(uuid())
+  templateKey String
+  format      ReportOutputFormat      @default(PDF)
+  frequency   ReportScheduleFrequency
+  title       String
+  summary     String?
+  parameters  Json                    @default("{}")
+  enabled     Boolean                 @default(true)
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+  createdById String?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  @@index([enabled, nextRunAt])
+  @@index([frequency])
 }
 
 model UserBusinessRole {

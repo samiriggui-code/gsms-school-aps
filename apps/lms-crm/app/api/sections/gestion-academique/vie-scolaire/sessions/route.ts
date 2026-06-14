@@ -3,6 +3,10 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@repo/database';
+import {
+  buildSessionVenueNotificationContext,
+  notifyVenueRoomReserved,
+} from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { FormationSessionCreateSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/forms/session-crud-schema';
 import {
@@ -191,6 +195,17 @@ export async function POST(request: NextRequest) {
     });
 
     const [item] = await serializeFormationSessionRows([created as SessionRowPayload]);
+
+    if (venueRoomId) {
+      const ctx = await buildSessionVenueNotificationContext(prisma, created.id);
+      if (ctx) {
+        await notifyVenueRoomReserved(prisma, {
+          ...ctx,
+          actorUserId: sessionAuth.user?.id ?? null,
+        });
+      }
+    }
+
     return ok({ item }, 201);
   } catch (error) {
     if (error instanceof Error && error.message.includes('Salle déjà réservée')) {

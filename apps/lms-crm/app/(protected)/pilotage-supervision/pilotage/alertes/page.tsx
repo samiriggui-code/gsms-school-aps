@@ -1,7 +1,7 @@
 'use client';
 
-import { PilotageAlertsPage } from '../components/pilotage-alerts-page';
+import { PilotageAlertsDatagrid } from '../components/pilotage-alerts-datagrid';
 
 export default function Page() {
-  return <PilotageAlertsPage viewKey="pilotage-alertes" />;
+  return <PilotageAlertsDatagrid />;
 }

@@ -53,10 +53,10 @@ export function SidebarMenu() {
     label:
       'uppercase text-xs font-medium text-muted-foreground/70 pt-2.25 pb-px',
     separator: '',
-    item: 'h-10 hover:bg-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-muted data-[selected=true]:font-medium',
+    item: 'h-9 hover:bg-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-muted data-[selected=true]:font-medium [&_[data-slot=accordion-menu-title]]:truncate',
     sub: '',
     subTrigger:
-      'h-10 hover:bg-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-muted data-[selected=true]:font-medium',
+      'h-9 hover:bg-transparent text-accent-foreground hover:text-primary data-[selected=true]:text-primary data-[selected=true]:bg-muted data-[selected=true]:font-medium [&_[data-slot=accordion-menu-title]]:truncate',
     subContent: 'py-0',
     indicator: '',
   };
@@ -77,12 +77,13 @@ export function SidebarMenu() {
     if (item.children) {
       return (
         <AccordionMenuSub key={index} value={item.path || `root-${index}`}>
-          <AccordionMenuSubTrigger className="text-[15px] font-medium">
-            {item.icon && <item.icon data-slot="accordion-menu-icon" />}
+          <AccordionMenuSubTrigger className="min-w-0 text-sm font-medium">
+            {item.icon && <item.icon data-slot="accordion-menu-icon" className="shrink-0" />}
             {item.path ? (
               <span
                 data-slot="accordion-menu-title"
-                className="cursor-pointer hover:text-primary"
+                title={menuTitle(item)}
+                className="cursor-pointer hover:text-primary truncate min-w-0 flex-1 text-start"
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
@@ -93,7 +94,13 @@ export function SidebarMenu() {
                 {menuTitle(item)}
               </span>
             ) : (
-              <span data-slot="accordion-menu-title">{menuTitle(item)}</span>
+              <span
+                data-slot="accordion-menu-title"
+                title={menuTitle(item)}
+                className="truncate min-w-0 flex-1 text-start"
+              >
+                {menuTitle(item)}
+              </span>
             )}
           </AccordionMenuSubTrigger>
           <AccordionMenuSubContent
@@ -172,7 +179,7 @@ export function SidebarMenu() {
           key={index}
           value={item.path || `child-${level}-${index}`}
         >
-          <AccordionMenuSubTrigger className="text-[14px]">
+          <AccordionMenuSubTrigger className="text-sm">
             {item.collapse ? (
               <span className="text-muted-foreground">
                 <span className="hidden [[data-state=open]>span>&]:inline">
@@ -224,7 +231,7 @@ export function SidebarMenu() {
         <AccordionMenuItem
           key={index}
           value={item.path || ''}
-          className="text-[14px] h-9"
+          className="h-9 text-sm"
         >
           <Link href={item.path || '#'}>{menuTitle(item)}</Link>
         </AccordionMenuItem>
@@ -258,7 +265,7 @@ export function SidebarMenu() {
   };
 
   return (
-    <div className="kt-scrollable-y-hover flex grow shrink-0 py-5 px-5 lg:max-h-[calc(100vh-5.5rem)]">
+    <div className="kt-scrollable-y-hover flex grow shrink-0 px-2.5 py-3.5 lg:max-h-[calc(100vh-4.75rem)]">
       <AccordionMenu
         key={i18n.language}
         selectedValue={pathname}

@@ -1,18 +1,13 @@
 @layer components {
-  /* Variables */
+  /* Variables — largeurs réelles dans ui-density.css (--app-sidebar-width, etc.) */
   .demo1 {
     --sidebar-transition-duration: 0.3s;
     --sidebar-transition-timing: ease;
-    --sidebar-width: 280px;
-    --sidebar-width-collapse: 80px;
-    --sidebar-default-width: 280px;
-    --header-height: 70px;
   }
 
   @media (max-width: theme(--breakpoint-lg)) {
     .demo1 {
-      --sidebar-width: 280px;
-      --header-height: 60px;
+      --header-height: calc(var(--app-header-height, 58px) + 2px);
     }
   }
 

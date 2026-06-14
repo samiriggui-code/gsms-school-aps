@@ -16,6 +16,9 @@ export type InAppNotificationItem = {
   archivedAt: string | null;
   createdAt: string;
   unread: boolean;
+  moduleKey?: string | null;
+  eventType?: string | null;
+  severity?: 'CRITICAL' | 'WARNING' | 'INFO' | null;
 };
 
 export type ChatConversationItem = {
@@ -66,6 +69,8 @@ export type NotificationsListParams = {
   query?: string;
   category?: string;
   scope?: NotificationsScope;
+  /** Préfixe moduleKey (ex. gestion-ressources) */
+  module?: string;
 };
 
 export type NotificationsListResponse = {
@@ -79,6 +84,7 @@ export type NotificationsListResponse = {
     archived: number;
     today: number;
     byCategory: Record<string, number>;
+    bySeverity?: { CRITICAL: number; WARNING: number; INFO: number };
   };
 };
 
@@ -96,6 +102,7 @@ export async function fetchNotifications(
   if (p.query?.trim()) qs.set('query', p.query.trim());
   if (p.category && p.category !== 'all') qs.set('category', p.category);
   if (p.scope) qs.set('scope', p.scope);
+  if (p.module?.trim()) qs.set('module', p.module.trim());
   const res = await apiFetch(`/api/common/notifications?${qs.toString()}`);
   return parseApi<NotificationsListResponse>(res);
 }

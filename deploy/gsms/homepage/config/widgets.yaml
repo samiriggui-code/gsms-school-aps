@@ -1,0 +1,15 @@
+---
+- Ressources:
+    label: VPS
+    cpu: true
+    memory: true
+    disk: /
+    expanded: true
+
+- datetime:
+    text_size: md
+    locale: fr
+    format:
+      dateStyle: medium
+      timeStyle: short
+      hourCycle: h23

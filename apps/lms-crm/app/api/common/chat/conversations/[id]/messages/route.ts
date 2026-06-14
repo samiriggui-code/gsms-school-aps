@@ -95,6 +95,28 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     data: { updatedAt: new Date() },
   });
 
+  const { triggerActivityEvent, triggerUserNotification } = await import('@repo/realtime');
+  const participants = await prisma.chatParticipant.findMany({
+    where: { conversationId },
+    select: { userId: true },
+  });
+  const payload = {
+    conversationId,
+    messageId: message.id,
+    body: message.body,
+    createdAt: message.createdAt.toISOString(),
+    senderId: message.senderId,
+  };
+  await triggerActivityEvent(`chat-${conversationId}`, 'chat.message', payload);
+  for (const p of participants) {
+    if (p.userId !== auth.userId) {
+      void triggerUserNotification(p.userId, {
+        type: 'chat',
+        ...payload,
+      });
+    }
+  }
+
   return ok({
     message: {
       id: message.id,

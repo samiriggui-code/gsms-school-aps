@@ -3,6 +3,10 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@repo/database';
+import {
+  emitVenueRoomSessionPatchNotifications,
+  notifyVenueRoomReleased,
+} from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { FormationSessionPatchSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/forms/session-crud-schema';
 import {
@@ -128,7 +132,12 @@ export async function PATCH(
 
     const current = await prisma.formationSession.findUnique({
       where: { id: id.trim() },
-      select: { startDate: true, endDate: true, venueRoomId: true },
+      select: {
+        startDate: true,
+        endDate: true,
+        venueRoomId: true,
+        venueRoom: { select: { id: true, name: true } },
+      },
     });
     if (!current) return fail('Session introuvable.', 404);
 
@@ -239,6 +248,30 @@ export async function PATCH(
     });
 
     const item = await serializeFormationSessionRow(updated as SessionRowPayload);
+
+    const venuePatchRequested =
+      d.venueRoomId !== undefined || d.startDate !== undefined || d.endDate !== undefined;
+
+    if (venuePatchRequested) {
+      const afterVenueRoomId =
+        nextVenueRoomId === '' || nextVenueRoomId === undefined
+          ? null
+          : nextVenueRoomId;
+      await emitVenueRoomSessionPatchNotifications(prisma, {
+        sessionId: id.trim(),
+        actorUserId: session.user?.id ?? null,
+        before: {
+          venueRoomId: current.venueRoomId,
+          startDate: current.startDate,
+          endDate: current.endDate,
+        },
+        afterVenueRoomId,
+        afterStart: nextStart,
+        afterEnd: nextEnd,
+        datesOrRoomChanged: venuePatchRequested,
+      });
+    }
+
     return ok({ item });
   } catch (error) {
     const code =
@@ -264,10 +297,30 @@ export async function DELETE(
   if (!id?.trim()) return fail('Identifiant session manquant.', 400);
 
   try {
-    const exists = await sessionInActiveCatalog(id.trim());
-    if (!exists) return fail('Session introuvable ou formation hors catalogue actif.', 404);
+    const existing = await prisma.formationSession.findFirst({
+      where: {
+        id: id.trim(),
+        formation: { catalogOffer: { catalogStatus: 'ACTIVE' } },
+      },
+      select: {
+        id: true,
+        venueRoomId: true,
+        venueRoom: { select: { id: true, name: true } },
+      },
+    });
+    if (!existing) return fail('Session introuvable ou formation hors catalogue actif.', 404);
 
     await prisma.formationSession.delete({ where: { id: id.trim() } });
+
+    if (existing.venueRoomId && existing.venueRoom) {
+      await notifyVenueRoomReleased(prisma, {
+        roomId: existing.venueRoom.id,
+        roomName: existing.venueRoom.name,
+        sessionId: existing.id,
+        actorUserId: session.user?.id ?? null,
+      });
+    }
+
     return ok({ deleted: true });
   } catch (error) {
     return fail('Impossible de supprimer la session.', 500, error);

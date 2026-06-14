@@ -1,0 +1,91 @@
+/**
+ * Densité interface CRM — reproduit le rendu « zoom navigateur 90 % » à 100 %.
+ * Ajuster uniquement les variables :root ci-dessous.
+ */
+@layer base {
+  :root {
+    /* 0.9 ≈ zoom 90 % sur polices / espacements en rem */
+    --app-ui-scale: 0.9;
+    /* Sidebar étroite — plus de largeur pour le contenu des pages */
+    --app-sidebar-width: 204px;
+    --app-sidebar-collapse: 60px;
+    --app-header-height: 58px;
+    --app-content-px: 0.75rem;
+    --app-content-px-lg: 1rem;
+    --app-section-gap: 1.125rem;
+  }
+
+  html {
+    font-size: calc(100% * var(--app-ui-scale));
+  }
+}
+
+@layer components {
+  /* Conteneurs pages CRM */
+  .container-fluid {
+    padding-inline: var(--app-content-px);
+  }
+
+  @media (min-width: 1024px) {
+    .container-fluid {
+      padding-inline: var(--app-content-px-lg);
+    }
+  }
+
+  /* Layout demo1 — sidebar + header compacts */
+  .demo1 {
+    --sidebar-width: var(--app-sidebar-width);
+    --sidebar-width-collapse: var(--app-sidebar-collapse);
+    --sidebar-default-width: var(--app-sidebar-width);
+    --header-height: var(--app-header-height);
+  }
+
+  .demo1 .sidebar .sidebar-header {
+    padding-inline: 0.625rem;
+  }
+
+  .demo1 .sidebar .default-logo {
+    max-width: min(100%, calc(var(--app-sidebar-width) - 2.5rem));
+    height: 2.25rem;
+  }
+
+  .demo1 .sidebar .kt-scrollable-y-hover,
+  .demo1 [data-slot='accordion-menu'] {
+    padding-inline: calc(0.875rem * var(--app-ui-scale));
+  }
+
+  /* KPI bandeaux module */
+  .demo1 .relative.overflow-hidden.rounded-xl.border {
+    padding: calc(0.75rem * var(--app-ui-scale)) calc(0.875rem * var(--app-ui-scale));
+  }
+
+  /* Cartes listes — header moins haut */
+  .demo1 [class*='CardHeader'] {
+    --tw-space-y-reverse: 0;
+  }
+
+  /* DataGrid : lignes plus serrées (sans toucher chaque liste) */
+  .demo1 [data-slot='data-grid-table'] thead th {
+    height: 2rem;
+    padding-inline: 0.625rem;
+    font-size: 0.75rem;
+  }
+
+  .demo1 [data-slot='data-grid-table'] tbody td {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+
+  /* Avatars listes RH / absences */
+  .demo1 [data-slot='data-grid-table'] .size-9 {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  /* Toolbar page module */
+  .demo1 .crm-page-toolbar,
+  .demo1 [data-slot='toolbar'] {
+    gap: calc(0.75rem * var(--app-ui-scale));
+  }
+}

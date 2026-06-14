@@ -57,8 +57,8 @@ export function Demo1Layout({ children }: { children: ReactNode }) {
       <div className="wrapper flex min-h-0 min-w-0 w-full grow flex-col">
         <Header />
 
-        <main className="flex min-w-0 w-full grow flex-col pt-5" role="content">
-          <div className="page-main-content min-w-0 w-full min-h-0 flex-1 pb-6 lg:pb-10">
+        <main className="flex min-w-0 w-full grow flex-col pt-4" role="content">
+          <div className="page-main-content min-w-0 w-full min-h-0 flex-1 pb-5 lg:pb-8">
             {children}
           </div>
           <UserManagementSupportSection />

@@ -14,6 +14,7 @@ import { prisma } from '@/lib/prisma';
 import { qualificationMetierLabel } from '@/lib/rh-qualification-metier';
 import { UserStatus } from '@/app/models/user';
 import { fail } from '@/app/api/_shared/http/response';
+import { attachActiveAbsencesToUsers } from '@repo/api-core';
 import {
   getLearnerScopedWhere,
   mapFormEtudiantUserCategory,
@@ -94,17 +95,20 @@ const { searchParams } = new URL(request.url);
   });
 
   return NextResponse.json({
-    data: users.map((u) => ({
-      ...u,
-      qualification:
-        qualificationMetierLabel({
-          qualification: u.qualification,
-          jobFunction: u.jobFunction,
-          roleSlug: u.role?.slug,
-          collaborateurProfile: u.collaborateurProfile ?? null,
-          formateurProfile: u.formateurProfile ?? null,
-        }) || null,
-    })),
+    data: await attachActiveAbsencesToUsers(
+      prisma,
+      users.map((u) => ({
+        ...u,
+        qualification:
+          qualificationMetierLabel({
+            qualification: u.qualification,
+            jobFunction: u.jobFunction,
+            roleSlug: u.role?.slug,
+            collaborateurProfile: u.collaborateurProfile ?? null,
+            formateurProfile: u.formateurProfile ?? null,
+          }) || null,
+      })),
+    ),
     pagination: { total: totalCount, page, limit },
   });
 }

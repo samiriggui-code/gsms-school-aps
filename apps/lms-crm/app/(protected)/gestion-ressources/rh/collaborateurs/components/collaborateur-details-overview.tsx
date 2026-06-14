@@ -1,6 +1,6 @@
 'use client';
 
-import { User as Collaborateur, UserStatus } from '@/app/models/user';
+import { User as Collaborateur } from '@/app/models/user';
 import { CollaborateurOverviewStats } from './details/collaborateur-overview-stats';
 import { CollaborateurRecentActivity } from './details/collaborateur-recent-activity';
 import { CollaborateurReliabilityTier } from './details/collaborateur-reliability-tier';
@@ -11,6 +11,7 @@ import { FormateurReliabilityTier } from '../../formateurs/components/details/fo
 import { FormateurHRInfo } from '../../formateurs/components/details/formateur-hr-info';
 import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { CalendarX2 } from 'lucide-react';
+import { isUserCurrentlyAbsent, userAbsenceAlertPeriod } from '@/lib/rh/user-absence-ui';
 
 export type RhOverviewVariant = 'collaborateur' | 'formateur';
 
@@ -29,7 +30,8 @@ export function CollaborateurDetailsOverview({
     overviewVariant ??
     (collaborateur.role?.slug === 'formateur' ? 'formateur' : 'collaborateur');
 
-  const isAbsent = collaborateur.status === UserStatus.ABSENT;
+  const isAbsent = isUserCurrentlyAbsent(collaborateur);
+  const absencePeriod = userAbsenceAlertPeriod(collaborateur);
 
   return (
     <div className="space-y-5">
@@ -44,8 +46,11 @@ export function CollaborateurDetailsOverview({
             </AlertTitle>
             <AlertDescription className="text-muted-foreground text-sm">
               {mode === 'formateur' ?
-                'Ce formateur est actuellement marqué comme absent. Ses accès et sa disponibilité pour animer les sessions sont limités.'
-              : 'Ce collaborateur est actuellement marqué comme absent. Ses accès et sa disponibilité dans le planning sont limités.'}
+                'Ce formateur est actuellement en absence. Ses accès et sa disponibilité pour animer les sessions sont limités.'
+              : 'Ce collaborateur est actuellement en absence. Ses accès et sa disponibilité dans le planning sont limités.'}
+              {absencePeriod ? (
+                <span className="mt-1 block text-xs font-medium text-foreground/80">{absencePeriod}</span>
+              ) : null}
             </AlertDescription>
           </div>
         </Alert>

@@ -64,7 +64,24 @@ export const MENU_SIDEBAR: MenuConfig = [
     path: '/accueil',
   },
   {
-    title: 'Gestion administrative',
+    title: 'Pilotage supervision',
+    icon: TrendingUp,
+    path: '/pilotage-supervision',
+    children: [
+      {
+        title: 'Pilotage',
+        path: '/pilotage-supervision/pilotage',
+        children: [
+          { title: 'Alertes', path: '/pilotage-supervision/pilotage/alertes' },
+          { title: 'Indicateurs', path: '/pilotage-supervision/pilotage/indicateurs' },
+          { title: 'Rapports', path: '/pilotage-supervision/pilotage/rapports' },
+          { title: 'Risques', path: '/pilotage-supervision/pilotage/risques' },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Gestion ressources',
     icon: Users,
     path: '/gestion-ressources',
     children: [
@@ -90,11 +107,11 @@ export const MENU_SIDEBAR: MenuConfig = [
         ],
       },
       {
-        title: 'Equipements',
+        title: 'Équipements',
         path: '/gestion-ressources/equipements',
         children: [
           {
-            title: 'Inventaire & stock',
+            title: 'Inventaire',
             path: '/gestion-ressources/equipements/inventaire',
             icon: PackagePlus,
           },
@@ -105,6 +122,11 @@ export const MENU_SIDEBAR: MenuConfig = [
           {
             title: 'Maintenance',
             path: '/gestion-ressources/equipements/maintenance',
+          },
+          {
+            title: 'Salles',
+            path: '/gestion-ressources/equipements/salles',
+            icon: Theater,
           },
         ],
       },
@@ -128,7 +150,7 @@ export const MENU_SIDEBAR: MenuConfig = [
             path: '/gestion-academique/vie-scolaire/sessions',
           },
           {
-            title: 'Candidature',
+            title: 'Étudiants',
             path: '/gestion-academique/vie-scolaire/etudiants',
           },
           {
@@ -152,7 +174,7 @@ export const MENU_SIDEBAR: MenuConfig = [
     ],
   },
   {
-    title: 'Administration & facturation',
+    title: 'Admin facturation',
     icon: Euro,
     path: '/administration-facturation',
     children: [
@@ -170,7 +192,7 @@ export const MENU_SIDEBAR: MenuConfig = [
     ],
   },
   {
-    title: 'Communication & contenu',
+    title: 'Communication contenu',
     icon: MessageSquare,
     path: '/communication-contenu',
     children: [
@@ -194,14 +216,14 @@ export const MENU_SIDEBAR: MenuConfig = [
         title: 'SEO',
         path: '/communication-contenu/seo',
         children: [
-          { title: 'Meta & indexation', path: '/communication-contenu/seo/meta-indexation' },
+          { title: 'Meta indexation', path: '/communication-contenu/seo/meta-indexation' },
           { title: 'Redirections', path: '/communication-contenu/seo/redirections' },
         ],
       },
     ],
   },
   {
-    title: 'Support & qualite',
+    title: 'Support qualité',
     icon: LifeBuoy,
     path: '/support-qualite',
     children: [
@@ -211,78 +233,61 @@ export const MENU_SIDEBAR: MenuConfig = [
         children: [
           { title: 'Tickets', path: '/support-qualite/support/tickets' },
           {
-            title: 'Catalogue formations (aide)',
+            title: 'Base aide',
             path: '/support-qualite/support/base-aide',
           },
         ],
       },
       {
-        title: 'Qualite',
+        title: 'Qualité',
         path: '/support-qualite/qualite',
         children: [{ title: 'Incidents', path: '/support-qualite/qualite/incidents' }],
       },
     ],
   },
   {
-    title: 'Securite & configuration',
+    title: 'Sécurité configuration',
     icon: Shield,
     path: '/securite-configuration',
     children: [
       {
-        title: 'Acces',
+        title: 'Accès',
         path: '/securite-configuration/acces',
         children: [
-          { title: 'Utilisateurs CRM', path: '/securite-configuration/acces/users' },
-          { title: 'Roles', path: '/securite-configuration/acces/roles' },
+          { title: 'Utilisateurs', path: '/securite-configuration/acces/users' },
+          { title: 'Rôles', path: '/securite-configuration/acces/roles' },
           { title: 'Permissions', path: '/securite-configuration/acces/permissions' },
-          { title: "Logs d'activite", path: '/securite-configuration/acces/logs' },
+          { title: 'Logs', path: '/securite-configuration/acces/logs' },
         ],
       },
       {
-        title: 'Parametres',
+        title: 'Paramètres',
         path: '/securite-configuration/parametres',
         children: [
-          { title: 'Parametres systeme', path: '/securite-configuration/parametres/settings' },
-          { title: 'Sante du systeme', path: '/securite-configuration/parametres/sante-systeme' },
+          { title: 'Paramètres système', path: '/securite-configuration/parametres/settings' },
+          { title: 'Santé système', path: '/securite-configuration/parametres/sante-systeme' },
         ],
       },
       {
-        title: 'Gouvernance des donnees',
+        title: 'Gouvernance données',
         path: '/securite-configuration/gouvernance-donnees',
         children: [
           {
-            title: 'Storage & conformite',
+            title: 'Storage conformité',
             path: '/securite-configuration/gouvernance-donnees/storage-conformite',
           },
           {
-            title: 'Demandes de documents',
+            title: 'Demandes documents',
             path: '/securite-configuration/gouvernance-donnees/demandes-documents',
           },
           {
-            title: 'Corbeille & archivage',
+            title: 'Corbeille archivage',
             path: '/securite-configuration/gouvernance-donnees/corbeille-archivage',
           },
           {
             title: 'Audit documentaire',
             path: '/securite-configuration/gouvernance-donnees/audit-documentaire',
           },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'Pilotage & supervision',
-    icon: TrendingUp,
-    path: '/pilotage-supervision',
-    children: [
-      {
-        title: 'Pilotage',
-        path: '/pilotage-supervision/pilotage',
-        children: [
-          { title: 'Alertes', path: '/pilotage-supervision/pilotage/alertes' },
-          { title: 'Indicateurs', path: '/pilotage-supervision/pilotage/indicateurs' },
-          { title: 'Rapports & exports', path: '/pilotage-supervision/pilotage/rapports' },
-          { title: 'Risques', path: '/pilotage-supervision/pilotage/risques' },
         ],
       },
     ],

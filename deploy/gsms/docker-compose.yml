@@ -1,0 +1,116 @@
+# Stack GSMS minimale — app unique lms-crm + worker + infra
+# Traefik externe (host network) : ports 3001 (app) et 3005 (homepage) publiés sur l'hôte
+# Pas de netdata / portainer / uptime-kuma
+
+name: gsms
+
+networks:
+  gsms:
+    name: gsms
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gsms-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - gsms
+
+  redis:
+    image: redis:7-alpine
+    container_name: gsms-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - gsms
+
+  minio:
+    image: minio/minio:latest
+    container_name: gsms-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    networks:
+      - gsms
+
+  app:
+    image: gsms-app:latest
+    container_name: gsms-app
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      HOSTNAME: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      DIRECT_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+      STORAGE_ENDPOINT: http://minio:9000
+      REPORT_APP_BASE_URL: http://gsms-app:3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - gsms
+
+  worker:
+    image: gsms-worker:latest
+    container_name: gsms-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      DIRECT_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD_ENCODED}@postgres:5432/${POSTGRES_DB}
+      REDIS_URL: redis://redis:6379
+      REPORT_APP_BASE_URL: http://gsms-app:3001
+      STORAGE_ENDPOINT: http://minio:9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - gsms
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:v0.9.12
+    container_name: gsms-homepage
+    restart: unless-stopped
+    ports:
+      - "3005:3000"
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
+    volumes:
+      - ./homepage/config:/app/config:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - gsms

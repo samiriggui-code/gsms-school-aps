@@ -1,4 +1,5 @@
 import type { InAppNotificationCategory, PrismaClient } from '@repo/database';
+import { triggerUserNotification } from '@repo/realtime';
 
 /**
  * Catégories in-app (Prisma `InAppNotificationCategory`) :
@@ -42,7 +43,7 @@ export class NotificationService {
       if (existing) return existing;
     }
 
-    return this.prisma.inAppNotification.create({
+    const row = await this.prisma.inAppNotification.create({
       data: {
         userId: input.userId,
         category: input.category,
@@ -55,6 +56,17 @@ export class NotificationService {
         },
       },
     });
+
+    void triggerUserNotification(input.userId, {
+      id: row.id,
+      category: row.category,
+      title: row.title,
+      body: row.body,
+      href: row.href,
+      createdAt: row.createdAt.toISOString(),
+    });
+
+    return row;
   }
 
   /** Notifie plusieurs utilisateurs (ex. admins) */

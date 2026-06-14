@@ -27,6 +27,7 @@ import { usePusher } from '@/hooks/use-pusher';
 import { formatDateTime, toAbsoluteUrl, getAvatarUrl, getInitials } from '@/lib/helpers';
 import { agrementUiLabels, showsCollaboratorAgrementSchedulingSection, isParcoursApprenantRole } from '@/lib/rh-agrement';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../constants/sheet-shell-classes';
+import { isUserCurrentlyAbsent } from '@/lib/rh/user-absence-ui';
 
 // Imports des composants modernisés
 import { EtudiantDetailsOverview } from './etudiant-details-overview'; 
@@ -679,7 +680,7 @@ export function EtudiantDetailsSheet({
                 </div>
               )}
 
-              {Etudiant.status === 'ABSENT' && (
+              {isUserCurrentlyAbsent(Etudiant) && (
                 <div className="flex items-center gap-2 px-3 py-2 bg-muted/30 border border-border/50 rounded-lg">
                   <AlertCircle className="size-4 text-foreground/70" />
                   <span className="text-xs font-bold text-foreground/80 uppercase tracking-wide">
@@ -783,7 +784,7 @@ export function EtudiantDetailsSheet({
                     <TabsTrigger value="permissions">Accès &amp; permissions</TabsTrigger>
                     <TabsTrigger value="absences" className="relative">
                       Absences
-                      {Etudiant.status === 'ABSENT' && (
+                      {isUserCurrentlyAbsent(Etudiant) && (
                         <span className="absolute -top-1 -right-1 flex h-2 w-2">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>

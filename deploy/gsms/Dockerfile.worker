@@ -1,0 +1,35 @@
+# Worker async (rapports PDF Playwright, stats, notifications)
+# Build : docker build -f deploy/gsms/Dockerfile.worker -t gsms-worker:latest .
+FROM mcr.microsoft.com/playwright:v1.52.0-jammy
+
+WORKDIR /app
+ENV NODE_ENV=production
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/ms-playwright/chromium-1169/chrome-linux/chrome
+ENV REPORT_APP_BASE_URL=http://gsms-app:3001
+
+RUN corepack enable && corepack prepare pnpm@11.5.1 --activate
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY packages/database/package.json packages/database/
+COPY packages/api-core/package.json packages/api-core/
+COPY packages/report-engine/package.json packages/report-engine/
+COPY packages/redis/package.json packages/redis/
+COPY packages/storage/package.json packages/storage/
+COPY packages/mail/package.json packages/mail/
+COPY packages/workers/package.json packages/workers/
+COPY patches ./patches
+
+ENV DATABASE_URL="postgresql://lms:lms@localhost:5432/lms_app"
+RUN pnpm install --frozen-lockfile --filter @repo/workers...
+
+COPY packages/database packages/database
+COPY packages/api-core packages/api-core
+COPY packages/report-engine packages/report-engine
+COPY packages/redis packages/redis
+COPY packages/storage packages/storage
+COPY packages/mail packages/mail
+COPY packages/workers packages/workers
+
+RUN pnpm -C packages/database db:generate
+
+CMD ["pnpm", "--filter", "@repo/workers", "start"]

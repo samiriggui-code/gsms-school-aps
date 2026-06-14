@@ -1,5 +1,6 @@
 'use client';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 import { MODULE_LANDING_DATAGRID_PAGE_SIZE } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -125,7 +126,11 @@ export function DocumentsList() {
   const [rowSelection, setRowSelection] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [volet, setVolet] = useState<DossierVolet>('all');
-  const [isSyncing, setIsSyncing] = useState(false);
+
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'compagnieDocuments',
+    queryKeys: [['dossier-administratif']],
+  });
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetSlot, setSheetSlot] = useState<DossierSlotPayload | null>(null);
@@ -175,22 +180,6 @@ export function DocumentsList() {
     setPagination((p) => ({ ...p, pageIndex: 0 }));
     setRowSelection({});
   }, [volet, searchQuery]);
-
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: ['dossier-administratif'] });
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom((toastId) => (
-        <Alert variant="mono" icon="success" onClose={() => toast.dismiss(toastId)}>
-          <AlertIcon>
-            <RiCheckboxCircleFill className="size-4 text-green-600" />
-          </AlertIcon>
-          <AlertTitle>{t('datagrid.syncSuccess')}</AlertTitle>
-        </Alert>
-      ));
-    }, 400);
-  };
 
   const openSheet = useCallback((row: DossierSlotPayload, mode: 'view' | 'edit') => {
     setSheetSlot(row);

@@ -18,13 +18,13 @@ export function SidebarHeader() {
   };
 
   return (
-    <div className="sidebar-header hidden lg:flex items-center relative justify-between px-3 lg:px-6 shrink-0">
+    <div className="sidebar-header hidden lg:flex items-center relative justify-between px-2.5 lg:px-3 shrink-0">
       <Link href="/">
         {/* Clair : logo clair. Sombre : logo complet. Sidebar réduite : pictogramme. */}
         <div className="dark:hidden">
           <img
             src={toAbsoluteUrl('/brand/formssi-logo-light.png')}
-            className="default-logo h-[42px] max-w-[min(100%,260px)] object-contain object-left"
+            className="default-logo h-9 max-w-[min(100%,11.5rem)] object-contain object-left"
             alt="FORM'SSI"
           />
           <img
@@ -36,7 +36,7 @@ export function SidebarHeader() {
         <div className="hidden dark:block">
           <img
             src={toAbsoluteUrl('/brand/formssi-logo-full.png')}
-            className="default-logo h-[46px] max-w-[min(100%,260px)] object-contain object-left"
+            className="default-logo h-9 max-w-[min(100%,11.5rem)] object-contain object-left"
             alt="FORM'SSI"
           />
           <img

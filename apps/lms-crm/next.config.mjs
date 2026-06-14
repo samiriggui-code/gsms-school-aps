@@ -1,5 +1,10 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { withSentryConfig } from '@sentry/nextjs';
 import { getAllowedDevOrigins } from '../../scripts/allowed-dev-origins.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const monorepoRoot = path.join(__dirname, '../..');
 
 /** @type {import('next').NextConfig} */
 const basePathEnv = (process.env.NEXT_PUBLIC_BASE_PATH || '').trim();
@@ -29,7 +34,8 @@ if (basePathEnv.startsWith('http')) {
 
 const nextConfig = {
   output: 'standalone',
-  transpilePackages: ['@repo/i18n'],
+  outputFileTracingRoot: monorepoRoot,
+  transpilePackages: ['@repo/i18n', '@repo/api-core', '@repo/realtime'],
   basePath: basePath || '',
   ...(assetPrefix ? { assetPrefix } : {}),
   images: {

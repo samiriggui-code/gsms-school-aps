@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { financeFactureListQueryKey } from '../constants/query-keys';
 import { useFinanceFactureQuery } from '../hooks/use-finance-facture-query';
 import { FactureDetailSheet, type FactureDetailInitialTab } from './facture-detail-sheet';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 interface FactureListProps {
   leaderSlot?: ReactNode;
@@ -26,7 +27,10 @@ export function FactureList({ leaderSlot }: FactureListProps) {
   const pathname = usePathname();
   const queryClient = useQueryClient();
 
-  const [isSyncing, setIsSyncing] = useState(false);
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'finance',
+    queryKeys: [[...financeFactureListQueryKey]],
+  });
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
   const [selectedFactureId, setSelectedFactureId] = useState<string | null>(null);
@@ -51,13 +55,6 @@ export function FactureList({ leaderSlot }: FactureListProps) {
     sort: 'updatedAt',
     dir: 'desc',
   });
-
-  const handleSync = () => {
-    setIsSyncing(true);
-    queryClient.invalidateQueries({ queryKey: [...financeFactureListQueryKey] }).then(() => {
-      setTimeout(() => setIsSyncing(false), 600);
-    });
-  };
 
   const stripFactureIdFromUrl = () => {
     const next = new URLSearchParams(sp.toString());

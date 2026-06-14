@@ -921,9 +921,9 @@
   "sections": {
     "gestionRessources": {
       "welcomeDescription": "Centralize company, HR and equipment — internal structure, staff and teaching resources in one place.",
-      "menuCardsTitle": "Quick access — Administrative management",
-      "menuCardsSubtitle": "3 modules: 10 sidebar pages (company 3, HR 4, equipment 3)",
-      "securityHighlightsTitle": "Key metrics — Administrative management",
+      "menuCardsTitle": "Quick access — Resource management",
+      "menuCardsSubtitle": "3 modules: 12 sidebar pages (company 3, HR 5, equipment 4)",
+      "securityHighlightsTitle": "Key metrics — Resource management",
       "cards": {
         "compagnie": "Company profile, internal structure and administrative documents.",
         "rh": "Staff, trainers, absences and compliance from the sidebar menu.",

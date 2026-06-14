@@ -31,27 +31,29 @@ export function EquipmentDataGridCard<T extends object>({
   alternateBody,
 }: EquipmentDataGridCardProps<T>) {
   return (
-    <DataGrid
-      table={table}
-      recordCount={recordCount}
-      isLoading={isLoading}
-      tableLayout={USER_MANAGEMENT_TABLE_LAYOUT}
-      tableClassNames={USER_MANAGEMENT_TABLE_CLASSNAMES}
-    >
-      <Card>
-        {toolbar}
-        {alternateBody ?? (
-          <>
-            <CardTable>
-              <ScrollArea>
-                <DataGridTable />
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </CardTable>
-            <CardFooter>{footer ?? <DataGridPagination />}</CardFooter>
-          </>
-        )}
-      </Card>
-    </DataGrid>
+    <>
+      <Card className="mb-5 border-border shadow-none">{toolbar}</Card>
+      <DataGrid
+        table={table}
+        recordCount={recordCount}
+        isLoading={isLoading}
+        tableLayout={USER_MANAGEMENT_TABLE_LAYOUT}
+        tableClassNames={USER_MANAGEMENT_TABLE_CLASSNAMES}
+      >
+        <Card className="border-border shadow-sm overflow-hidden">
+          {alternateBody ?? (
+            <>
+              <CardTable>
+                <ScrollArea>
+                  <DataGridTable />
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              </CardTable>
+              <CardFooter>{footer ?? <DataGridPagination />}</CardFooter>
+            </>
+          )}
+        </Card>
+      </DataGrid>
+    </>
   );
 }

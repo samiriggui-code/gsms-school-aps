@@ -29,6 +29,16 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type FileAsset = $Result.DefaultSelection<Prisma.$FileAssetPayload>
 /**
+ * Model ReportGenerationJob
+ * Job asynchrone de génération document (PDF / Excel / CSV) — traité par @repo/workers.
+ */
+export type ReportGenerationJob = $Result.DefaultSelection<Prisma.$ReportGenerationJobPayload>
+/**
+ * Model ReportGenerationSchedule
+ * Planification automatique des rapports (quotidien, mensuel, trimestriel).
+ */
+export type ReportGenerationSchedule = $Result.DefaultSelection<Prisma.$ReportGenerationSchedulePayload>
+/**
  * Model UserBusinessRole
  * 
  */
@@ -480,6 +490,34 @@ export const FileAssetStatus: {
 export type FileAssetStatus = (typeof FileAssetStatus)[keyof typeof FileAssetStatus]
 
 
+export const ReportJobStatus: {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type ReportJobStatus = (typeof ReportJobStatus)[keyof typeof ReportJobStatus]
+
+
+export const ReportOutputFormat: {
+  PDF: 'PDF',
+  EXCEL: 'EXCEL',
+  CSV: 'CSV'
+};
+
+export type ReportOutputFormat = (typeof ReportOutputFormat)[keyof typeof ReportOutputFormat]
+
+
+export const ReportScheduleFrequency: {
+  DAILY: 'DAILY',
+  MONTHLY: 'MONTHLY',
+  QUARTERLY: 'QUARTERLY'
+};
+
+export type ReportScheduleFrequency = (typeof ReportScheduleFrequency)[keyof typeof ReportScheduleFrequency]
+
+
 export const EnrollmentStatus: {
   PENDING: 'PENDING',
   VALIDATED: 'VALIDATED',
@@ -827,6 +865,18 @@ export type FileAssetStatus = $Enums.FileAssetStatus
 
 export const FileAssetStatus: typeof $Enums.FileAssetStatus
 
+export type ReportJobStatus = $Enums.ReportJobStatus
+
+export const ReportJobStatus: typeof $Enums.ReportJobStatus
+
+export type ReportOutputFormat = $Enums.ReportOutputFormat
+
+export const ReportOutputFormat: typeof $Enums.ReportOutputFormat
+
+export type ReportScheduleFrequency = $Enums.ReportScheduleFrequency
+
+export const ReportScheduleFrequency: typeof $Enums.ReportScheduleFrequency
+
 export type EnrollmentStatus = $Enums.EnrollmentStatus
 
 export const EnrollmentStatus: typeof $Enums.EnrollmentStatus
@@ -1105,6 +1155,26 @@ export class PrismaClient<
     * ```
     */
   get fileAsset(): Prisma.FileAssetDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reportGenerationJob`: Exposes CRUD operations for the **ReportGenerationJob** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReportGenerationJobs
+    * const reportGenerationJobs = await prisma.reportGenerationJob.findMany()
+    * ```
+    */
+  get reportGenerationJob(): Prisma.ReportGenerationJobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.reportGenerationSchedule`: Exposes CRUD operations for the **ReportGenerationSchedule** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReportGenerationSchedules
+    * const reportGenerationSchedules = await prisma.reportGenerationSchedule.findMany()
+    * ```
+    */
+  get reportGenerationSchedule(): Prisma.ReportGenerationScheduleDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.userBusinessRole`: Exposes CRUD operations for the **UserBusinessRole** model.
@@ -2322,6 +2392,8 @@ export namespace Prisma {
     LandingConfig: 'LandingConfig',
     User: 'User',
     FileAsset: 'FileAsset',
+    ReportGenerationJob: 'ReportGenerationJob',
+    ReportGenerationSchedule: 'ReportGenerationSchedule',
     UserBusinessRole: 'UserBusinessRole',
     CollaborateurProfile: 'CollaborateurProfile',
     FormateurProfile: 'FormateurProfile',
@@ -2415,7 +2487,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "formationVenueRoom" | "formationSession" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatParticipant" | "chatMessage"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "reportGenerationJob" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "formationVenueRoom" | "formationSession" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatParticipant" | "chatMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2638,6 +2710,154 @@ export namespace Prisma {
           count: {
             args: Prisma.FileAssetCountArgs<ExtArgs>
             result: $Utils.Optional<FileAssetCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReportGenerationJob: {
+        payload: Prisma.$ReportGenerationJobPayload<ExtArgs>
+        fields: Prisma.ReportGenerationJobFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReportGenerationJobFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReportGenerationJobFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>
+          }
+          findFirst: {
+            args: Prisma.ReportGenerationJobFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReportGenerationJobFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>
+          }
+          findMany: {
+            args: Prisma.ReportGenerationJobFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>[]
+          }
+          create: {
+            args: Prisma.ReportGenerationJobCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>
+          }
+          createMany: {
+            args: Prisma.ReportGenerationJobCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReportGenerationJobCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>[]
+          }
+          delete: {
+            args: Prisma.ReportGenerationJobDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>
+          }
+          update: {
+            args: Prisma.ReportGenerationJobUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>
+          }
+          deleteMany: {
+            args: Prisma.ReportGenerationJobDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReportGenerationJobUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReportGenerationJobUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>[]
+          }
+          upsert: {
+            args: Prisma.ReportGenerationJobUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationJobPayload>
+          }
+          aggregate: {
+            args: Prisma.ReportGenerationJobAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReportGenerationJob>
+          }
+          groupBy: {
+            args: Prisma.ReportGenerationJobGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReportGenerationJobGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReportGenerationJobCountArgs<ExtArgs>
+            result: $Utils.Optional<ReportGenerationJobCountAggregateOutputType> | number
+          }
+        }
+      }
+      ReportGenerationSchedule: {
+        payload: Prisma.$ReportGenerationSchedulePayload<ExtArgs>
+        fields: Prisma.ReportGenerationScheduleFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReportGenerationScheduleFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReportGenerationScheduleFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>
+          }
+          findFirst: {
+            args: Prisma.ReportGenerationScheduleFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReportGenerationScheduleFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>
+          }
+          findMany: {
+            args: Prisma.ReportGenerationScheduleFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>[]
+          }
+          create: {
+            args: Prisma.ReportGenerationScheduleCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>
+          }
+          createMany: {
+            args: Prisma.ReportGenerationScheduleCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReportGenerationScheduleCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>[]
+          }
+          delete: {
+            args: Prisma.ReportGenerationScheduleDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>
+          }
+          update: {
+            args: Prisma.ReportGenerationScheduleUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>
+          }
+          deleteMany: {
+            args: Prisma.ReportGenerationScheduleDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReportGenerationScheduleUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReportGenerationScheduleUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>[]
+          }
+          upsert: {
+            args: Prisma.ReportGenerationScheduleUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReportGenerationSchedulePayload>
+          }
+          aggregate: {
+            args: Prisma.ReportGenerationScheduleAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReportGenerationSchedule>
+          }
+          groupBy: {
+            args: Prisma.ReportGenerationScheduleGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReportGenerationScheduleGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReportGenerationScheduleCountArgs<ExtArgs>
+            result: $Utils.Optional<ReportGenerationScheduleCountAggregateOutputType> | number
           }
         }
       }
@@ -8524,6 +8744,8 @@ export namespace Prisma {
     landingConfig?: LandingConfigOmit
     user?: UserOmit
     fileAsset?: FileAssetOmit
+    reportGenerationJob?: ReportGenerationJobOmit
+    reportGenerationSchedule?: ReportGenerationScheduleOmit
     userBusinessRole?: UserBusinessRoleOmit
     collaborateurProfile?: CollaborateurProfileOmit
     formateurProfile?: FormateurProfileOmit
@@ -8714,6 +8936,7 @@ export namespace Prisma {
     businessRoles: number
     managedCollaborateurs: number
     createdFileAssets: number
+    requestedReportJobs: number
     assignedSupportTickets: number
     createdSupportTickets: number
     inAppNotifications: number
@@ -8759,6 +8982,7 @@ export namespace Prisma {
     businessRoles?: boolean | UserCountOutputTypeCountBusinessRolesArgs
     managedCollaborateurs?: boolean | UserCountOutputTypeCountManagedCollaborateursArgs
     createdFileAssets?: boolean | UserCountOutputTypeCountCreatedFileAssetsArgs
+    requestedReportJobs?: boolean | UserCountOutputTypeCountRequestedReportJobsArgs
     assignedSupportTickets?: boolean | UserCountOutputTypeCountAssignedSupportTicketsArgs
     createdSupportTickets?: boolean | UserCountOutputTypeCountCreatedSupportTicketsArgs
     inAppNotifications?: boolean | UserCountOutputTypeCountInAppNotificationsArgs
@@ -9009,6 +9233,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountRequestedReportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportGenerationJobWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountAssignedSupportTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SupportTicketWhereInput
   }
@@ -9074,6 +9305,37 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRhAbsencesValidatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RhAbsenceWhereInput
+  }
+
+
+  /**
+   * Count Type FileAssetCountOutputType
+   */
+
+  export type FileAssetCountOutputType = {
+    reportJobs: number
+  }
+
+  export type FileAssetCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reportJobs?: boolean | FileAssetCountOutputTypeCountReportJobsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FileAssetCountOutputType without action
+   */
+  export type FileAssetCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileAssetCountOutputType
+     */
+    select?: FileAssetCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FileAssetCountOutputType without action
+   */
+  export type FileAssetCountOutputTypeCountReportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportGenerationJobWhereInput
   }
 
 
@@ -11776,6 +12038,7 @@ export namespace Prisma {
     formateurProfile?: boolean | User$formateurProfileArgs<ExtArgs>
     managedCollaborateurs?: boolean | User$managedCollaborateursArgs<ExtArgs>
     createdFileAssets?: boolean | User$createdFileAssetsArgs<ExtArgs>
+    requestedReportJobs?: boolean | User$requestedReportJobsArgs<ExtArgs>
     assignedSupportTickets?: boolean | User$assignedSupportTicketsArgs<ExtArgs>
     createdSupportTickets?: boolean | User$createdSupportTicketsArgs<ExtArgs>
     inAppNotifications?: boolean | User$inAppNotificationsArgs<ExtArgs>
@@ -11973,6 +12236,7 @@ export namespace Prisma {
     formateurProfile?: boolean | User$formateurProfileArgs<ExtArgs>
     managedCollaborateurs?: boolean | User$managedCollaborateursArgs<ExtArgs>
     createdFileAssets?: boolean | User$createdFileAssetsArgs<ExtArgs>
+    requestedReportJobs?: boolean | User$requestedReportJobsArgs<ExtArgs>
     assignedSupportTickets?: boolean | User$assignedSupportTicketsArgs<ExtArgs>
     createdSupportTickets?: boolean | User$createdSupportTicketsArgs<ExtArgs>
     inAppNotifications?: boolean | User$inAppNotificationsArgs<ExtArgs>
@@ -12034,6 +12298,7 @@ export namespace Prisma {
       formateurProfile: Prisma.$FormateurProfilePayload<ExtArgs> | null
       managedCollaborateurs: Prisma.$CollaborateurProfilePayload<ExtArgs>[]
       createdFileAssets: Prisma.$FileAssetPayload<ExtArgs>[]
+      requestedReportJobs: Prisma.$ReportGenerationJobPayload<ExtArgs>[]
       assignedSupportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
       createdSupportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
       inAppNotifications: Prisma.$InAppNotificationPayload<ExtArgs>[]
@@ -12521,6 +12786,7 @@ export namespace Prisma {
     formateurProfile<T extends User$formateurProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$formateurProfileArgs<ExtArgs>>): Prisma__FormateurProfileClient<$Result.GetResult<Prisma.$FormateurProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     managedCollaborateurs<T extends User$managedCollaborateursArgs<ExtArgs> = {}>(args?: Subset<T, User$managedCollaborateursArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CollaborateurProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdFileAssets<T extends User$createdFileAssetsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdFileAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    requestedReportJobs<T extends User$requestedReportJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedReportJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedSupportTickets<T extends User$assignedSupportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedSupportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdSupportTickets<T extends User$createdSupportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdSupportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inAppNotifications<T extends User$inAppNotificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$inAppNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InAppNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -13831,6 +14097,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.requestedReportJobs
+   */
+  export type User$requestedReportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    where?: ReportGenerationJobWhereInput
+    orderBy?: ReportGenerationJobOrderByWithRelationInput | ReportGenerationJobOrderByWithRelationInput[]
+    cursor?: ReportGenerationJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportGenerationJobScalarFieldEnum | ReportGenerationJobScalarFieldEnum[]
+  }
+
+  /**
    * User.assignedSupportTickets
    */
   export type User$assignedSupportTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14388,6 +14678,8 @@ export namespace Prisma {
     updatedAt?: boolean
     deletedAt?: boolean
     createdBy?: boolean | FileAsset$createdByArgs<ExtArgs>
+    reportJobs?: boolean | FileAsset$reportJobsArgs<ExtArgs>
+    _count?: boolean | FileAssetCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fileAsset"]>
 
   export type FileAssetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14458,6 +14750,8 @@ export namespace Prisma {
   export type FileAssetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "module" | "entityType" | "entityId" | "category" | "originalName" | "mimeType" | "size" | "storageKey" | "url" | "visibility" | "status" | "provider" | "metadata" | "createdById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["fileAsset"]>
   export type FileAssetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | FileAsset$createdByArgs<ExtArgs>
+    reportJobs?: boolean | FileAsset$reportJobsArgs<ExtArgs>
+    _count?: boolean | FileAssetCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FileAssetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | FileAsset$createdByArgs<ExtArgs>
@@ -14470,6 +14764,7 @@ export namespace Prisma {
     name: "FileAsset"
     objects: {
       createdBy: Prisma.$UserPayload<ExtArgs> | null
+      reportJobs: Prisma.$ReportGenerationJobPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14885,6 +15180,7 @@ export namespace Prisma {
   export interface Prisma__FileAssetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     createdBy<T extends FileAsset$createdByArgs<ExtArgs> = {}>(args?: Subset<T, FileAsset$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    reportJobs<T extends FileAsset$reportJobsArgs<ExtArgs> = {}>(args?: Subset<T, FileAsset$reportJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15352,6 +15648,30 @@ export namespace Prisma {
   }
 
   /**
+   * FileAsset.reportJobs
+   */
+  export type FileAsset$reportJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    where?: ReportGenerationJobWhereInput
+    orderBy?: ReportGenerationJobOrderByWithRelationInput | ReportGenerationJobOrderByWithRelationInput[]
+    cursor?: ReportGenerationJobWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ReportGenerationJobScalarFieldEnum | ReportGenerationJobScalarFieldEnum[]
+  }
+
+  /**
    * FileAsset without action
    */
   export type FileAssetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15367,6 +15687,2408 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FileAssetInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReportGenerationJob
+   */
+
+  export type AggregateReportGenerationJob = {
+    _count: ReportGenerationJobCountAggregateOutputType | null
+    _avg: ReportGenerationJobAvgAggregateOutputType | null
+    _sum: ReportGenerationJobSumAggregateOutputType | null
+    _min: ReportGenerationJobMinAggregateOutputType | null
+    _max: ReportGenerationJobMaxAggregateOutputType | null
+  }
+
+  export type ReportGenerationJobAvgAggregateOutputType = {
+    progress: number | null
+  }
+
+  export type ReportGenerationJobSumAggregateOutputType = {
+    progress: number | null
+  }
+
+  export type ReportGenerationJobMinAggregateOutputType = {
+    id: string | null
+    templateKey: string | null
+    format: $Enums.ReportOutputFormat | null
+    period: string | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    periodLabel: string | null
+    title: string | null
+    summary: string | null
+    status: $Enums.ReportJobStatus | null
+    progress: number | null
+    errorMessage: string | null
+    renderToken: string | null
+    fileAssetId: string | null
+    requestedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type ReportGenerationJobMaxAggregateOutputType = {
+    id: string | null
+    templateKey: string | null
+    format: $Enums.ReportOutputFormat | null
+    period: string | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    periodLabel: string | null
+    title: string | null
+    summary: string | null
+    status: $Enums.ReportJobStatus | null
+    progress: number | null
+    errorMessage: string | null
+    renderToken: string | null
+    fileAssetId: string | null
+    requestedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type ReportGenerationJobCountAggregateOutputType = {
+    id: number
+    templateKey: number
+    format: number
+    period: number
+    periodStart: number
+    periodEnd: number
+    periodLabel: number
+    title: number
+    summary: number
+    status: number
+    progress: number
+    errorMessage: number
+    renderToken: number
+    parameters: number
+    fileAssetId: number
+    requestedById: number
+    createdAt: number
+    updatedAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type ReportGenerationJobAvgAggregateInputType = {
+    progress?: true
+  }
+
+  export type ReportGenerationJobSumAggregateInputType = {
+    progress?: true
+  }
+
+  export type ReportGenerationJobMinAggregateInputType = {
+    id?: true
+    templateKey?: true
+    format?: true
+    period?: true
+    periodStart?: true
+    periodEnd?: true
+    periodLabel?: true
+    title?: true
+    summary?: true
+    status?: true
+    progress?: true
+    errorMessage?: true
+    renderToken?: true
+    fileAssetId?: true
+    requestedById?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type ReportGenerationJobMaxAggregateInputType = {
+    id?: true
+    templateKey?: true
+    format?: true
+    period?: true
+    periodStart?: true
+    periodEnd?: true
+    periodLabel?: true
+    title?: true
+    summary?: true
+    status?: true
+    progress?: true
+    errorMessage?: true
+    renderToken?: true
+    fileAssetId?: true
+    requestedById?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type ReportGenerationJobCountAggregateInputType = {
+    id?: true
+    templateKey?: true
+    format?: true
+    period?: true
+    periodStart?: true
+    periodEnd?: true
+    periodLabel?: true
+    title?: true
+    summary?: true
+    status?: true
+    progress?: true
+    errorMessage?: true
+    renderToken?: true
+    parameters?: true
+    fileAssetId?: true
+    requestedById?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type ReportGenerationJobAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportGenerationJob to aggregate.
+     */
+    where?: ReportGenerationJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationJobs to fetch.
+     */
+    orderBy?: ReportGenerationJobOrderByWithRelationInput | ReportGenerationJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReportGenerationJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReportGenerationJobs
+    **/
+    _count?: true | ReportGenerationJobCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReportGenerationJobAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReportGenerationJobSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReportGenerationJobMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReportGenerationJobMaxAggregateInputType
+  }
+
+  export type GetReportGenerationJobAggregateType<T extends ReportGenerationJobAggregateArgs> = {
+        [P in keyof T & keyof AggregateReportGenerationJob]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReportGenerationJob[P]>
+      : GetScalarType<T[P], AggregateReportGenerationJob[P]>
+  }
+
+
+
+
+  export type ReportGenerationJobGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportGenerationJobWhereInput
+    orderBy?: ReportGenerationJobOrderByWithAggregationInput | ReportGenerationJobOrderByWithAggregationInput[]
+    by: ReportGenerationJobScalarFieldEnum[] | ReportGenerationJobScalarFieldEnum
+    having?: ReportGenerationJobScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReportGenerationJobCountAggregateInputType | true
+    _avg?: ReportGenerationJobAvgAggregateInputType
+    _sum?: ReportGenerationJobSumAggregateInputType
+    _min?: ReportGenerationJobMinAggregateInputType
+    _max?: ReportGenerationJobMaxAggregateInputType
+  }
+
+  export type ReportGenerationJobGroupByOutputType = {
+    id: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date
+    periodEnd: Date
+    periodLabel: string
+    title: string
+    summary: string | null
+    status: $Enums.ReportJobStatus
+    progress: number
+    errorMessage: string | null
+    renderToken: string
+    parameters: JsonValue
+    fileAssetId: string | null
+    requestedById: string
+    createdAt: Date
+    updatedAt: Date
+    completedAt: Date | null
+    _count: ReportGenerationJobCountAggregateOutputType | null
+    _avg: ReportGenerationJobAvgAggregateOutputType | null
+    _sum: ReportGenerationJobSumAggregateOutputType | null
+    _min: ReportGenerationJobMinAggregateOutputType | null
+    _max: ReportGenerationJobMaxAggregateOutputType | null
+  }
+
+  type GetReportGenerationJobGroupByPayload<T extends ReportGenerationJobGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReportGenerationJobGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReportGenerationJobGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReportGenerationJobGroupByOutputType[P]>
+            : GetScalarType<T[P], ReportGenerationJobGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReportGenerationJobSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    period?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    periodLabel?: boolean
+    title?: boolean
+    summary?: boolean
+    status?: boolean
+    progress?: boolean
+    errorMessage?: boolean
+    renderToken?: boolean
+    parameters?: boolean
+    fileAssetId?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    fileAsset?: boolean | ReportGenerationJob$fileAssetArgs<ExtArgs>
+  }, ExtArgs["result"]["reportGenerationJob"]>
+
+  export type ReportGenerationJobSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    period?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    periodLabel?: boolean
+    title?: boolean
+    summary?: boolean
+    status?: boolean
+    progress?: boolean
+    errorMessage?: boolean
+    renderToken?: boolean
+    parameters?: boolean
+    fileAssetId?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    fileAsset?: boolean | ReportGenerationJob$fileAssetArgs<ExtArgs>
+  }, ExtArgs["result"]["reportGenerationJob"]>
+
+  export type ReportGenerationJobSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    period?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    periodLabel?: boolean
+    title?: boolean
+    summary?: boolean
+    status?: boolean
+    progress?: boolean
+    errorMessage?: boolean
+    renderToken?: boolean
+    parameters?: boolean
+    fileAssetId?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    fileAsset?: boolean | ReportGenerationJob$fileAssetArgs<ExtArgs>
+  }, ExtArgs["result"]["reportGenerationJob"]>
+
+  export type ReportGenerationJobSelectScalar = {
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    period?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    periodLabel?: boolean
+    title?: boolean
+    summary?: boolean
+    status?: boolean
+    progress?: boolean
+    errorMessage?: boolean
+    renderToken?: boolean
+    parameters?: boolean
+    fileAssetId?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type ReportGenerationJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "templateKey" | "format" | "period" | "periodStart" | "periodEnd" | "periodLabel" | "title" | "summary" | "status" | "progress" | "errorMessage" | "renderToken" | "parameters" | "fileAssetId" | "requestedById" | "createdAt" | "updatedAt" | "completedAt", ExtArgs["result"]["reportGenerationJob"]>
+  export type ReportGenerationJobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    fileAsset?: boolean | ReportGenerationJob$fileAssetArgs<ExtArgs>
+  }
+  export type ReportGenerationJobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    fileAsset?: boolean | ReportGenerationJob$fileAssetArgs<ExtArgs>
+  }
+  export type ReportGenerationJobIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    fileAsset?: boolean | ReportGenerationJob$fileAssetArgs<ExtArgs>
+  }
+
+  export type $ReportGenerationJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReportGenerationJob"
+    objects: {
+      requestedBy: Prisma.$UserPayload<ExtArgs>
+      fileAsset: Prisma.$FileAssetPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      templateKey: string
+      format: $Enums.ReportOutputFormat
+      period: string
+      periodStart: Date
+      periodEnd: Date
+      periodLabel: string
+      title: string
+      summary: string | null
+      status: $Enums.ReportJobStatus
+      progress: number
+      errorMessage: string | null
+      renderToken: string
+      parameters: Prisma.JsonValue
+      fileAssetId: string | null
+      requestedById: string
+      createdAt: Date
+      updatedAt: Date
+      completedAt: Date | null
+    }, ExtArgs["result"]["reportGenerationJob"]>
+    composites: {}
+  }
+
+  type ReportGenerationJobGetPayload<S extends boolean | null | undefined | ReportGenerationJobDefaultArgs> = $Result.GetResult<Prisma.$ReportGenerationJobPayload, S>
+
+  type ReportGenerationJobCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReportGenerationJobFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReportGenerationJobCountAggregateInputType | true
+    }
+
+  export interface ReportGenerationJobDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReportGenerationJob'], meta: { name: 'ReportGenerationJob' } }
+    /**
+     * Find zero or one ReportGenerationJob that matches the filter.
+     * @param {ReportGenerationJobFindUniqueArgs} args - Arguments to find a ReportGenerationJob
+     * @example
+     * // Get one ReportGenerationJob
+     * const reportGenerationJob = await prisma.reportGenerationJob.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReportGenerationJobFindUniqueArgs>(args: SelectSubset<T, ReportGenerationJobFindUniqueArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReportGenerationJob that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReportGenerationJobFindUniqueOrThrowArgs} args - Arguments to find a ReportGenerationJob
+     * @example
+     * // Get one ReportGenerationJob
+     * const reportGenerationJob = await prisma.reportGenerationJob.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReportGenerationJobFindUniqueOrThrowArgs>(args: SelectSubset<T, ReportGenerationJobFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportGenerationJob that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationJobFindFirstArgs} args - Arguments to find a ReportGenerationJob
+     * @example
+     * // Get one ReportGenerationJob
+     * const reportGenerationJob = await prisma.reportGenerationJob.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReportGenerationJobFindFirstArgs>(args?: SelectSubset<T, ReportGenerationJobFindFirstArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportGenerationJob that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationJobFindFirstOrThrowArgs} args - Arguments to find a ReportGenerationJob
+     * @example
+     * // Get one ReportGenerationJob
+     * const reportGenerationJob = await prisma.reportGenerationJob.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReportGenerationJobFindFirstOrThrowArgs>(args?: SelectSubset<T, ReportGenerationJobFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReportGenerationJobs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationJobFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReportGenerationJobs
+     * const reportGenerationJobs = await prisma.reportGenerationJob.findMany()
+     * 
+     * // Get first 10 ReportGenerationJobs
+     * const reportGenerationJobs = await prisma.reportGenerationJob.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reportGenerationJobWithIdOnly = await prisma.reportGenerationJob.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReportGenerationJobFindManyArgs>(args?: SelectSubset<T, ReportGenerationJobFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReportGenerationJob.
+     * @param {ReportGenerationJobCreateArgs} args - Arguments to create a ReportGenerationJob.
+     * @example
+     * // Create one ReportGenerationJob
+     * const ReportGenerationJob = await prisma.reportGenerationJob.create({
+     *   data: {
+     *     // ... data to create a ReportGenerationJob
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReportGenerationJobCreateArgs>(args: SelectSubset<T, ReportGenerationJobCreateArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReportGenerationJobs.
+     * @param {ReportGenerationJobCreateManyArgs} args - Arguments to create many ReportGenerationJobs.
+     * @example
+     * // Create many ReportGenerationJobs
+     * const reportGenerationJob = await prisma.reportGenerationJob.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReportGenerationJobCreateManyArgs>(args?: SelectSubset<T, ReportGenerationJobCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReportGenerationJobs and returns the data saved in the database.
+     * @param {ReportGenerationJobCreateManyAndReturnArgs} args - Arguments to create many ReportGenerationJobs.
+     * @example
+     * // Create many ReportGenerationJobs
+     * const reportGenerationJob = await prisma.reportGenerationJob.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReportGenerationJobs and only return the `id`
+     * const reportGenerationJobWithIdOnly = await prisma.reportGenerationJob.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReportGenerationJobCreateManyAndReturnArgs>(args?: SelectSubset<T, ReportGenerationJobCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReportGenerationJob.
+     * @param {ReportGenerationJobDeleteArgs} args - Arguments to delete one ReportGenerationJob.
+     * @example
+     * // Delete one ReportGenerationJob
+     * const ReportGenerationJob = await prisma.reportGenerationJob.delete({
+     *   where: {
+     *     // ... filter to delete one ReportGenerationJob
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReportGenerationJobDeleteArgs>(args: SelectSubset<T, ReportGenerationJobDeleteArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReportGenerationJob.
+     * @param {ReportGenerationJobUpdateArgs} args - Arguments to update one ReportGenerationJob.
+     * @example
+     * // Update one ReportGenerationJob
+     * const reportGenerationJob = await prisma.reportGenerationJob.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReportGenerationJobUpdateArgs>(args: SelectSubset<T, ReportGenerationJobUpdateArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReportGenerationJobs.
+     * @param {ReportGenerationJobDeleteManyArgs} args - Arguments to filter ReportGenerationJobs to delete.
+     * @example
+     * // Delete a few ReportGenerationJobs
+     * const { count } = await prisma.reportGenerationJob.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReportGenerationJobDeleteManyArgs>(args?: SelectSubset<T, ReportGenerationJobDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportGenerationJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationJobUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReportGenerationJobs
+     * const reportGenerationJob = await prisma.reportGenerationJob.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReportGenerationJobUpdateManyArgs>(args: SelectSubset<T, ReportGenerationJobUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportGenerationJobs and returns the data updated in the database.
+     * @param {ReportGenerationJobUpdateManyAndReturnArgs} args - Arguments to update many ReportGenerationJobs.
+     * @example
+     * // Update many ReportGenerationJobs
+     * const reportGenerationJob = await prisma.reportGenerationJob.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReportGenerationJobs and only return the `id`
+     * const reportGenerationJobWithIdOnly = await prisma.reportGenerationJob.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReportGenerationJobUpdateManyAndReturnArgs>(args: SelectSubset<T, ReportGenerationJobUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReportGenerationJob.
+     * @param {ReportGenerationJobUpsertArgs} args - Arguments to update or create a ReportGenerationJob.
+     * @example
+     * // Update or create a ReportGenerationJob
+     * const reportGenerationJob = await prisma.reportGenerationJob.upsert({
+     *   create: {
+     *     // ... data to create a ReportGenerationJob
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReportGenerationJob we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReportGenerationJobUpsertArgs>(args: SelectSubset<T, ReportGenerationJobUpsertArgs<ExtArgs>>): Prisma__ReportGenerationJobClient<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReportGenerationJobs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationJobCountArgs} args - Arguments to filter ReportGenerationJobs to count.
+     * @example
+     * // Count the number of ReportGenerationJobs
+     * const count = await prisma.reportGenerationJob.count({
+     *   where: {
+     *     // ... the filter for the ReportGenerationJobs we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReportGenerationJobCountArgs>(
+      args?: Subset<T, ReportGenerationJobCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReportGenerationJobCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReportGenerationJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationJobAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReportGenerationJobAggregateArgs>(args: Subset<T, ReportGenerationJobAggregateArgs>): Prisma.PrismaPromise<GetReportGenerationJobAggregateType<T>>
+
+    /**
+     * Group by ReportGenerationJob.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationJobGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReportGenerationJobGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReportGenerationJobGroupByArgs['orderBy'] }
+        : { orderBy?: ReportGenerationJobGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReportGenerationJobGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReportGenerationJobGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReportGenerationJob model
+   */
+  readonly fields: ReportGenerationJobFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReportGenerationJob.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReportGenerationJobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    requestedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    fileAsset<T extends ReportGenerationJob$fileAssetArgs<ExtArgs> = {}>(args?: Subset<T, ReportGenerationJob$fileAssetArgs<ExtArgs>>): Prisma__FileAssetClient<$Result.GetResult<Prisma.$FileAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReportGenerationJob model
+   */
+  interface ReportGenerationJobFieldRefs {
+    readonly id: FieldRef<"ReportGenerationJob", 'String'>
+    readonly templateKey: FieldRef<"ReportGenerationJob", 'String'>
+    readonly format: FieldRef<"ReportGenerationJob", 'ReportOutputFormat'>
+    readonly period: FieldRef<"ReportGenerationJob", 'String'>
+    readonly periodStart: FieldRef<"ReportGenerationJob", 'DateTime'>
+    readonly periodEnd: FieldRef<"ReportGenerationJob", 'DateTime'>
+    readonly periodLabel: FieldRef<"ReportGenerationJob", 'String'>
+    readonly title: FieldRef<"ReportGenerationJob", 'String'>
+    readonly summary: FieldRef<"ReportGenerationJob", 'String'>
+    readonly status: FieldRef<"ReportGenerationJob", 'ReportJobStatus'>
+    readonly progress: FieldRef<"ReportGenerationJob", 'Int'>
+    readonly errorMessage: FieldRef<"ReportGenerationJob", 'String'>
+    readonly renderToken: FieldRef<"ReportGenerationJob", 'String'>
+    readonly parameters: FieldRef<"ReportGenerationJob", 'Json'>
+    readonly fileAssetId: FieldRef<"ReportGenerationJob", 'String'>
+    readonly requestedById: FieldRef<"ReportGenerationJob", 'String'>
+    readonly createdAt: FieldRef<"ReportGenerationJob", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReportGenerationJob", 'DateTime'>
+    readonly completedAt: FieldRef<"ReportGenerationJob", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReportGenerationJob findUnique
+   */
+  export type ReportGenerationJobFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationJob to fetch.
+     */
+    where: ReportGenerationJobWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationJob findUniqueOrThrow
+   */
+  export type ReportGenerationJobFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationJob to fetch.
+     */
+    where: ReportGenerationJobWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationJob findFirst
+   */
+  export type ReportGenerationJobFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationJob to fetch.
+     */
+    where?: ReportGenerationJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationJobs to fetch.
+     */
+    orderBy?: ReportGenerationJobOrderByWithRelationInput | ReportGenerationJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportGenerationJobs.
+     */
+    cursor?: ReportGenerationJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportGenerationJobs.
+     */
+    distinct?: ReportGenerationJobScalarFieldEnum | ReportGenerationJobScalarFieldEnum[]
+  }
+
+  /**
+   * ReportGenerationJob findFirstOrThrow
+   */
+  export type ReportGenerationJobFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationJob to fetch.
+     */
+    where?: ReportGenerationJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationJobs to fetch.
+     */
+    orderBy?: ReportGenerationJobOrderByWithRelationInput | ReportGenerationJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportGenerationJobs.
+     */
+    cursor?: ReportGenerationJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportGenerationJobs.
+     */
+    distinct?: ReportGenerationJobScalarFieldEnum | ReportGenerationJobScalarFieldEnum[]
+  }
+
+  /**
+   * ReportGenerationJob findMany
+   */
+  export type ReportGenerationJobFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationJobs to fetch.
+     */
+    where?: ReportGenerationJobWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationJobs to fetch.
+     */
+    orderBy?: ReportGenerationJobOrderByWithRelationInput | ReportGenerationJobOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReportGenerationJobs.
+     */
+    cursor?: ReportGenerationJobWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationJobs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationJobs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportGenerationJobs.
+     */
+    distinct?: ReportGenerationJobScalarFieldEnum | ReportGenerationJobScalarFieldEnum[]
+  }
+
+  /**
+   * ReportGenerationJob create
+   */
+  export type ReportGenerationJobCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReportGenerationJob.
+     */
+    data: XOR<ReportGenerationJobCreateInput, ReportGenerationJobUncheckedCreateInput>
+  }
+
+  /**
+   * ReportGenerationJob createMany
+   */
+  export type ReportGenerationJobCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReportGenerationJobs.
+     */
+    data: ReportGenerationJobCreateManyInput | ReportGenerationJobCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportGenerationJob createManyAndReturn
+   */
+  export type ReportGenerationJobCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReportGenerationJobs.
+     */
+    data: ReportGenerationJobCreateManyInput | ReportGenerationJobCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReportGenerationJob update
+   */
+  export type ReportGenerationJobUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReportGenerationJob.
+     */
+    data: XOR<ReportGenerationJobUpdateInput, ReportGenerationJobUncheckedUpdateInput>
+    /**
+     * Choose, which ReportGenerationJob to update.
+     */
+    where: ReportGenerationJobWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationJob updateMany
+   */
+  export type ReportGenerationJobUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReportGenerationJobs.
+     */
+    data: XOR<ReportGenerationJobUpdateManyMutationInput, ReportGenerationJobUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportGenerationJobs to update
+     */
+    where?: ReportGenerationJobWhereInput
+    /**
+     * Limit how many ReportGenerationJobs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportGenerationJob updateManyAndReturn
+   */
+  export type ReportGenerationJobUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * The data used to update ReportGenerationJobs.
+     */
+    data: XOR<ReportGenerationJobUpdateManyMutationInput, ReportGenerationJobUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportGenerationJobs to update
+     */
+    where?: ReportGenerationJobWhereInput
+    /**
+     * Limit how many ReportGenerationJobs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReportGenerationJob upsert
+   */
+  export type ReportGenerationJobUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReportGenerationJob to update in case it exists.
+     */
+    where: ReportGenerationJobWhereUniqueInput
+    /**
+     * In case the ReportGenerationJob found by the `where` argument doesn't exist, create a new ReportGenerationJob with this data.
+     */
+    create: XOR<ReportGenerationJobCreateInput, ReportGenerationJobUncheckedCreateInput>
+    /**
+     * In case the ReportGenerationJob was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReportGenerationJobUpdateInput, ReportGenerationJobUncheckedUpdateInput>
+  }
+
+  /**
+   * ReportGenerationJob delete
+   */
+  export type ReportGenerationJobDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+    /**
+     * Filter which ReportGenerationJob to delete.
+     */
+    where: ReportGenerationJobWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationJob deleteMany
+   */
+  export type ReportGenerationJobDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportGenerationJobs to delete
+     */
+    where?: ReportGenerationJobWhereInput
+    /**
+     * Limit how many ReportGenerationJobs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportGenerationJob.fileAsset
+   */
+  export type ReportGenerationJob$fileAssetArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileAsset
+     */
+    select?: FileAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileAsset
+     */
+    omit?: FileAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileAssetInclude<ExtArgs> | null
+    where?: FileAssetWhereInput
+  }
+
+  /**
+   * ReportGenerationJob without action
+   */
+  export type ReportGenerationJobDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationJob
+     */
+    select?: ReportGenerationJobSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationJob
+     */
+    omit?: ReportGenerationJobOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReportGenerationJobInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ReportGenerationSchedule
+   */
+
+  export type AggregateReportGenerationSchedule = {
+    _count: ReportGenerationScheduleCountAggregateOutputType | null
+    _min: ReportGenerationScheduleMinAggregateOutputType | null
+    _max: ReportGenerationScheduleMaxAggregateOutputType | null
+  }
+
+  export type ReportGenerationScheduleMinAggregateOutputType = {
+    id: string | null
+    templateKey: string | null
+    format: $Enums.ReportOutputFormat | null
+    frequency: $Enums.ReportScheduleFrequency | null
+    title: string | null
+    summary: string | null
+    enabled: boolean | null
+    lastRunAt: Date | null
+    nextRunAt: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReportGenerationScheduleMaxAggregateOutputType = {
+    id: string | null
+    templateKey: string | null
+    format: $Enums.ReportOutputFormat | null
+    frequency: $Enums.ReportScheduleFrequency | null
+    title: string | null
+    summary: string | null
+    enabled: boolean | null
+    lastRunAt: Date | null
+    nextRunAt: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ReportGenerationScheduleCountAggregateOutputType = {
+    id: number
+    templateKey: number
+    format: number
+    frequency: number
+    title: number
+    summary: number
+    parameters: number
+    enabled: number
+    lastRunAt: number
+    nextRunAt: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ReportGenerationScheduleMinAggregateInputType = {
+    id?: true
+    templateKey?: true
+    format?: true
+    frequency?: true
+    title?: true
+    summary?: true
+    enabled?: true
+    lastRunAt?: true
+    nextRunAt?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReportGenerationScheduleMaxAggregateInputType = {
+    id?: true
+    templateKey?: true
+    format?: true
+    frequency?: true
+    title?: true
+    summary?: true
+    enabled?: true
+    lastRunAt?: true
+    nextRunAt?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ReportGenerationScheduleCountAggregateInputType = {
+    id?: true
+    templateKey?: true
+    format?: true
+    frequency?: true
+    title?: true
+    summary?: true
+    parameters?: true
+    enabled?: true
+    lastRunAt?: true
+    nextRunAt?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ReportGenerationScheduleAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportGenerationSchedule to aggregate.
+     */
+    where?: ReportGenerationScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationSchedules to fetch.
+     */
+    orderBy?: ReportGenerationScheduleOrderByWithRelationInput | ReportGenerationScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReportGenerationScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReportGenerationSchedules
+    **/
+    _count?: true | ReportGenerationScheduleCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReportGenerationScheduleMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReportGenerationScheduleMaxAggregateInputType
+  }
+
+  export type GetReportGenerationScheduleAggregateType<T extends ReportGenerationScheduleAggregateArgs> = {
+        [P in keyof T & keyof AggregateReportGenerationSchedule]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReportGenerationSchedule[P]>
+      : GetScalarType<T[P], AggregateReportGenerationSchedule[P]>
+  }
+
+
+
+
+  export type ReportGenerationScheduleGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReportGenerationScheduleWhereInput
+    orderBy?: ReportGenerationScheduleOrderByWithAggregationInput | ReportGenerationScheduleOrderByWithAggregationInput[]
+    by: ReportGenerationScheduleScalarFieldEnum[] | ReportGenerationScheduleScalarFieldEnum
+    having?: ReportGenerationScheduleScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReportGenerationScheduleCountAggregateInputType | true
+    _min?: ReportGenerationScheduleMinAggregateInputType
+    _max?: ReportGenerationScheduleMaxAggregateInputType
+  }
+
+  export type ReportGenerationScheduleGroupByOutputType = {
+    id: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    frequency: $Enums.ReportScheduleFrequency
+    title: string
+    summary: string | null
+    parameters: JsonValue
+    enabled: boolean
+    lastRunAt: Date | null
+    nextRunAt: Date | null
+    createdById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ReportGenerationScheduleCountAggregateOutputType | null
+    _min: ReportGenerationScheduleMinAggregateOutputType | null
+    _max: ReportGenerationScheduleMaxAggregateOutputType | null
+  }
+
+  type GetReportGenerationScheduleGroupByPayload<T extends ReportGenerationScheduleGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReportGenerationScheduleGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReportGenerationScheduleGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReportGenerationScheduleGroupByOutputType[P]>
+            : GetScalarType<T[P], ReportGenerationScheduleGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReportGenerationScheduleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    frequency?: boolean
+    title?: boolean
+    summary?: boolean
+    parameters?: boolean
+    enabled?: boolean
+    lastRunAt?: boolean
+    nextRunAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["reportGenerationSchedule"]>
+
+  export type ReportGenerationScheduleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    frequency?: boolean
+    title?: boolean
+    summary?: boolean
+    parameters?: boolean
+    enabled?: boolean
+    lastRunAt?: boolean
+    nextRunAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["reportGenerationSchedule"]>
+
+  export type ReportGenerationScheduleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    frequency?: boolean
+    title?: boolean
+    summary?: boolean
+    parameters?: boolean
+    enabled?: boolean
+    lastRunAt?: boolean
+    nextRunAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["reportGenerationSchedule"]>
+
+  export type ReportGenerationScheduleSelectScalar = {
+    id?: boolean
+    templateKey?: boolean
+    format?: boolean
+    frequency?: boolean
+    title?: boolean
+    summary?: boolean
+    parameters?: boolean
+    enabled?: boolean
+    lastRunAt?: boolean
+    nextRunAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ReportGenerationScheduleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "templateKey" | "format" | "frequency" | "title" | "summary" | "parameters" | "enabled" | "lastRunAt" | "nextRunAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["reportGenerationSchedule"]>
+
+  export type $ReportGenerationSchedulePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReportGenerationSchedule"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      templateKey: string
+      format: $Enums.ReportOutputFormat
+      frequency: $Enums.ReportScheduleFrequency
+      title: string
+      summary: string | null
+      parameters: Prisma.JsonValue
+      enabled: boolean
+      lastRunAt: Date | null
+      nextRunAt: Date | null
+      createdById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["reportGenerationSchedule"]>
+    composites: {}
+  }
+
+  type ReportGenerationScheduleGetPayload<S extends boolean | null | undefined | ReportGenerationScheduleDefaultArgs> = $Result.GetResult<Prisma.$ReportGenerationSchedulePayload, S>
+
+  type ReportGenerationScheduleCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReportGenerationScheduleFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReportGenerationScheduleCountAggregateInputType | true
+    }
+
+  export interface ReportGenerationScheduleDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReportGenerationSchedule'], meta: { name: 'ReportGenerationSchedule' } }
+    /**
+     * Find zero or one ReportGenerationSchedule that matches the filter.
+     * @param {ReportGenerationScheduleFindUniqueArgs} args - Arguments to find a ReportGenerationSchedule
+     * @example
+     * // Get one ReportGenerationSchedule
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReportGenerationScheduleFindUniqueArgs>(args: SelectSubset<T, ReportGenerationScheduleFindUniqueArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReportGenerationSchedule that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReportGenerationScheduleFindUniqueOrThrowArgs} args - Arguments to find a ReportGenerationSchedule
+     * @example
+     * // Get one ReportGenerationSchedule
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReportGenerationScheduleFindUniqueOrThrowArgs>(args: SelectSubset<T, ReportGenerationScheduleFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportGenerationSchedule that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationScheduleFindFirstArgs} args - Arguments to find a ReportGenerationSchedule
+     * @example
+     * // Get one ReportGenerationSchedule
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReportGenerationScheduleFindFirstArgs>(args?: SelectSubset<T, ReportGenerationScheduleFindFirstArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReportGenerationSchedule that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationScheduleFindFirstOrThrowArgs} args - Arguments to find a ReportGenerationSchedule
+     * @example
+     * // Get one ReportGenerationSchedule
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReportGenerationScheduleFindFirstOrThrowArgs>(args?: SelectSubset<T, ReportGenerationScheduleFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReportGenerationSchedules that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationScheduleFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReportGenerationSchedules
+     * const reportGenerationSchedules = await prisma.reportGenerationSchedule.findMany()
+     * 
+     * // Get first 10 ReportGenerationSchedules
+     * const reportGenerationSchedules = await prisma.reportGenerationSchedule.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reportGenerationScheduleWithIdOnly = await prisma.reportGenerationSchedule.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReportGenerationScheduleFindManyArgs>(args?: SelectSubset<T, ReportGenerationScheduleFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReportGenerationSchedule.
+     * @param {ReportGenerationScheduleCreateArgs} args - Arguments to create a ReportGenerationSchedule.
+     * @example
+     * // Create one ReportGenerationSchedule
+     * const ReportGenerationSchedule = await prisma.reportGenerationSchedule.create({
+     *   data: {
+     *     // ... data to create a ReportGenerationSchedule
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReportGenerationScheduleCreateArgs>(args: SelectSubset<T, ReportGenerationScheduleCreateArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReportGenerationSchedules.
+     * @param {ReportGenerationScheduleCreateManyArgs} args - Arguments to create many ReportGenerationSchedules.
+     * @example
+     * // Create many ReportGenerationSchedules
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReportGenerationScheduleCreateManyArgs>(args?: SelectSubset<T, ReportGenerationScheduleCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReportGenerationSchedules and returns the data saved in the database.
+     * @param {ReportGenerationScheduleCreateManyAndReturnArgs} args - Arguments to create many ReportGenerationSchedules.
+     * @example
+     * // Create many ReportGenerationSchedules
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReportGenerationSchedules and only return the `id`
+     * const reportGenerationScheduleWithIdOnly = await prisma.reportGenerationSchedule.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReportGenerationScheduleCreateManyAndReturnArgs>(args?: SelectSubset<T, ReportGenerationScheduleCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReportGenerationSchedule.
+     * @param {ReportGenerationScheduleDeleteArgs} args - Arguments to delete one ReportGenerationSchedule.
+     * @example
+     * // Delete one ReportGenerationSchedule
+     * const ReportGenerationSchedule = await prisma.reportGenerationSchedule.delete({
+     *   where: {
+     *     // ... filter to delete one ReportGenerationSchedule
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReportGenerationScheduleDeleteArgs>(args: SelectSubset<T, ReportGenerationScheduleDeleteArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReportGenerationSchedule.
+     * @param {ReportGenerationScheduleUpdateArgs} args - Arguments to update one ReportGenerationSchedule.
+     * @example
+     * // Update one ReportGenerationSchedule
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReportGenerationScheduleUpdateArgs>(args: SelectSubset<T, ReportGenerationScheduleUpdateArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReportGenerationSchedules.
+     * @param {ReportGenerationScheduleDeleteManyArgs} args - Arguments to filter ReportGenerationSchedules to delete.
+     * @example
+     * // Delete a few ReportGenerationSchedules
+     * const { count } = await prisma.reportGenerationSchedule.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReportGenerationScheduleDeleteManyArgs>(args?: SelectSubset<T, ReportGenerationScheduleDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportGenerationSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationScheduleUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReportGenerationSchedules
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReportGenerationScheduleUpdateManyArgs>(args: SelectSubset<T, ReportGenerationScheduleUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReportGenerationSchedules and returns the data updated in the database.
+     * @param {ReportGenerationScheduleUpdateManyAndReturnArgs} args - Arguments to update many ReportGenerationSchedules.
+     * @example
+     * // Update many ReportGenerationSchedules
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReportGenerationSchedules and only return the `id`
+     * const reportGenerationScheduleWithIdOnly = await prisma.reportGenerationSchedule.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReportGenerationScheduleUpdateManyAndReturnArgs>(args: SelectSubset<T, ReportGenerationScheduleUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReportGenerationSchedule.
+     * @param {ReportGenerationScheduleUpsertArgs} args - Arguments to update or create a ReportGenerationSchedule.
+     * @example
+     * // Update or create a ReportGenerationSchedule
+     * const reportGenerationSchedule = await prisma.reportGenerationSchedule.upsert({
+     *   create: {
+     *     // ... data to create a ReportGenerationSchedule
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReportGenerationSchedule we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReportGenerationScheduleUpsertArgs>(args: SelectSubset<T, ReportGenerationScheduleUpsertArgs<ExtArgs>>): Prisma__ReportGenerationScheduleClient<$Result.GetResult<Prisma.$ReportGenerationSchedulePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReportGenerationSchedules.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationScheduleCountArgs} args - Arguments to filter ReportGenerationSchedules to count.
+     * @example
+     * // Count the number of ReportGenerationSchedules
+     * const count = await prisma.reportGenerationSchedule.count({
+     *   where: {
+     *     // ... the filter for the ReportGenerationSchedules we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReportGenerationScheduleCountArgs>(
+      args?: Subset<T, ReportGenerationScheduleCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReportGenerationScheduleCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReportGenerationSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationScheduleAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReportGenerationScheduleAggregateArgs>(args: Subset<T, ReportGenerationScheduleAggregateArgs>): Prisma.PrismaPromise<GetReportGenerationScheduleAggregateType<T>>
+
+    /**
+     * Group by ReportGenerationSchedule.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReportGenerationScheduleGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReportGenerationScheduleGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReportGenerationScheduleGroupByArgs['orderBy'] }
+        : { orderBy?: ReportGenerationScheduleGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReportGenerationScheduleGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReportGenerationScheduleGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReportGenerationSchedule model
+   */
+  readonly fields: ReportGenerationScheduleFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReportGenerationSchedule.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReportGenerationScheduleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReportGenerationSchedule model
+   */
+  interface ReportGenerationScheduleFieldRefs {
+    readonly id: FieldRef<"ReportGenerationSchedule", 'String'>
+    readonly templateKey: FieldRef<"ReportGenerationSchedule", 'String'>
+    readonly format: FieldRef<"ReportGenerationSchedule", 'ReportOutputFormat'>
+    readonly frequency: FieldRef<"ReportGenerationSchedule", 'ReportScheduleFrequency'>
+    readonly title: FieldRef<"ReportGenerationSchedule", 'String'>
+    readonly summary: FieldRef<"ReportGenerationSchedule", 'String'>
+    readonly parameters: FieldRef<"ReportGenerationSchedule", 'Json'>
+    readonly enabled: FieldRef<"ReportGenerationSchedule", 'Boolean'>
+    readonly lastRunAt: FieldRef<"ReportGenerationSchedule", 'DateTime'>
+    readonly nextRunAt: FieldRef<"ReportGenerationSchedule", 'DateTime'>
+    readonly createdById: FieldRef<"ReportGenerationSchedule", 'String'>
+    readonly createdAt: FieldRef<"ReportGenerationSchedule", 'DateTime'>
+    readonly updatedAt: FieldRef<"ReportGenerationSchedule", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReportGenerationSchedule findUnique
+   */
+  export type ReportGenerationScheduleFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationSchedule to fetch.
+     */
+    where: ReportGenerationScheduleWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationSchedule findUniqueOrThrow
+   */
+  export type ReportGenerationScheduleFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationSchedule to fetch.
+     */
+    where: ReportGenerationScheduleWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationSchedule findFirst
+   */
+  export type ReportGenerationScheduleFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationSchedule to fetch.
+     */
+    where?: ReportGenerationScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationSchedules to fetch.
+     */
+    orderBy?: ReportGenerationScheduleOrderByWithRelationInput | ReportGenerationScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportGenerationSchedules.
+     */
+    cursor?: ReportGenerationScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportGenerationSchedules.
+     */
+    distinct?: ReportGenerationScheduleScalarFieldEnum | ReportGenerationScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * ReportGenerationSchedule findFirstOrThrow
+   */
+  export type ReportGenerationScheduleFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationSchedule to fetch.
+     */
+    where?: ReportGenerationScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationSchedules to fetch.
+     */
+    orderBy?: ReportGenerationScheduleOrderByWithRelationInput | ReportGenerationScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReportGenerationSchedules.
+     */
+    cursor?: ReportGenerationScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportGenerationSchedules.
+     */
+    distinct?: ReportGenerationScheduleScalarFieldEnum | ReportGenerationScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * ReportGenerationSchedule findMany
+   */
+  export type ReportGenerationScheduleFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * Filter, which ReportGenerationSchedules to fetch.
+     */
+    where?: ReportGenerationScheduleWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReportGenerationSchedules to fetch.
+     */
+    orderBy?: ReportGenerationScheduleOrderByWithRelationInput | ReportGenerationScheduleOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReportGenerationSchedules.
+     */
+    cursor?: ReportGenerationScheduleWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReportGenerationSchedules from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReportGenerationSchedules.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReportGenerationSchedules.
+     */
+    distinct?: ReportGenerationScheduleScalarFieldEnum | ReportGenerationScheduleScalarFieldEnum[]
+  }
+
+  /**
+   * ReportGenerationSchedule create
+   */
+  export type ReportGenerationScheduleCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ReportGenerationSchedule.
+     */
+    data: XOR<ReportGenerationScheduleCreateInput, ReportGenerationScheduleUncheckedCreateInput>
+  }
+
+  /**
+   * ReportGenerationSchedule createMany
+   */
+  export type ReportGenerationScheduleCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReportGenerationSchedules.
+     */
+    data: ReportGenerationScheduleCreateManyInput | ReportGenerationScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportGenerationSchedule createManyAndReturn
+   */
+  export type ReportGenerationScheduleCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReportGenerationSchedules.
+     */
+    data: ReportGenerationScheduleCreateManyInput | ReportGenerationScheduleCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ReportGenerationSchedule update
+   */
+  export type ReportGenerationScheduleUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ReportGenerationSchedule.
+     */
+    data: XOR<ReportGenerationScheduleUpdateInput, ReportGenerationScheduleUncheckedUpdateInput>
+    /**
+     * Choose, which ReportGenerationSchedule to update.
+     */
+    where: ReportGenerationScheduleWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationSchedule updateMany
+   */
+  export type ReportGenerationScheduleUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReportGenerationSchedules.
+     */
+    data: XOR<ReportGenerationScheduleUpdateManyMutationInput, ReportGenerationScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportGenerationSchedules to update
+     */
+    where?: ReportGenerationScheduleWhereInput
+    /**
+     * Limit how many ReportGenerationSchedules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportGenerationSchedule updateManyAndReturn
+   */
+  export type ReportGenerationScheduleUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * The data used to update ReportGenerationSchedules.
+     */
+    data: XOR<ReportGenerationScheduleUpdateManyMutationInput, ReportGenerationScheduleUncheckedUpdateManyInput>
+    /**
+     * Filter which ReportGenerationSchedules to update
+     */
+    where?: ReportGenerationScheduleWhereInput
+    /**
+     * Limit how many ReportGenerationSchedules to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportGenerationSchedule upsert
+   */
+  export type ReportGenerationScheduleUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ReportGenerationSchedule to update in case it exists.
+     */
+    where: ReportGenerationScheduleWhereUniqueInput
+    /**
+     * In case the ReportGenerationSchedule found by the `where` argument doesn't exist, create a new ReportGenerationSchedule with this data.
+     */
+    create: XOR<ReportGenerationScheduleCreateInput, ReportGenerationScheduleUncheckedCreateInput>
+    /**
+     * In case the ReportGenerationSchedule was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReportGenerationScheduleUpdateInput, ReportGenerationScheduleUncheckedUpdateInput>
+  }
+
+  /**
+   * ReportGenerationSchedule delete
+   */
+  export type ReportGenerationScheduleDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
+    /**
+     * Filter which ReportGenerationSchedule to delete.
+     */
+    where: ReportGenerationScheduleWhereUniqueInput
+  }
+
+  /**
+   * ReportGenerationSchedule deleteMany
+   */
+  export type ReportGenerationScheduleDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReportGenerationSchedules to delete
+     */
+    where?: ReportGenerationScheduleWhereInput
+    /**
+     * Limit how many ReportGenerationSchedules to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReportGenerationSchedule without action
+   */
+  export type ReportGenerationScheduleDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReportGenerationSchedule
+     */
+    select?: ReportGenerationScheduleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReportGenerationSchedule
+     */
+    omit?: ReportGenerationScheduleOmit<ExtArgs> | null
   }
 
 
@@ -107214,6 +109936,50 @@ export namespace Prisma {
   export type FileAssetScalarFieldEnum = (typeof FileAssetScalarFieldEnum)[keyof typeof FileAssetScalarFieldEnum]
 
 
+  export const ReportGenerationJobScalarFieldEnum: {
+    id: 'id',
+    templateKey: 'templateKey',
+    format: 'format',
+    period: 'period',
+    periodStart: 'periodStart',
+    periodEnd: 'periodEnd',
+    periodLabel: 'periodLabel',
+    title: 'title',
+    summary: 'summary',
+    status: 'status',
+    progress: 'progress',
+    errorMessage: 'errorMessage',
+    renderToken: 'renderToken',
+    parameters: 'parameters',
+    fileAssetId: 'fileAssetId',
+    requestedById: 'requestedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    completedAt: 'completedAt'
+  };
+
+  export type ReportGenerationJobScalarFieldEnum = (typeof ReportGenerationJobScalarFieldEnum)[keyof typeof ReportGenerationJobScalarFieldEnum]
+
+
+  export const ReportGenerationScheduleScalarFieldEnum: {
+    id: 'id',
+    templateKey: 'templateKey',
+    format: 'format',
+    frequency: 'frequency',
+    title: 'title',
+    summary: 'summary',
+    parameters: 'parameters',
+    enabled: 'enabled',
+    lastRunAt: 'lastRunAt',
+    nextRunAt: 'nextRunAt',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ReportGenerationScheduleScalarFieldEnum = (typeof ReportGenerationScheduleScalarFieldEnum)[keyof typeof ReportGenerationScheduleScalarFieldEnum]
+
+
   export const UserBusinessRoleScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -108687,6 +111453,48 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ReportOutputFormat'
+   */
+  export type EnumReportOutputFormatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportOutputFormat'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportOutputFormat[]'
+   */
+  export type ListEnumReportOutputFormatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportOutputFormat[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportJobStatus'
+   */
+  export type EnumReportJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportJobStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportJobStatus[]'
+   */
+  export type ListEnumReportJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportJobStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportScheduleFrequency'
+   */
+  export type EnumReportScheduleFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportScheduleFrequency'>
+    
+
+
+  /**
+   * Reference to a field of type 'ReportScheduleFrequency[]'
+   */
+  export type ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportScheduleFrequency[]'>
+    
+
+
+  /**
    * Reference to a field of type 'UserBusinessLabel'
    */
   export type EnumUserBusinessLabelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserBusinessLabel'>
@@ -109316,6 +112124,7 @@ export namespace Prisma {
     formateurProfile?: XOR<FormateurProfileNullableScalarRelationFilter, FormateurProfileWhereInput> | null
     managedCollaborateurs?: CollaborateurProfileListRelationFilter
     createdFileAssets?: FileAssetListRelationFilter
+    requestedReportJobs?: ReportGenerationJobListRelationFilter
     assignedSupportTickets?: SupportTicketListRelationFilter
     createdSupportTickets?: SupportTicketListRelationFilter
     inAppNotifications?: InAppNotificationListRelationFilter
@@ -109410,6 +112219,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileOrderByWithRelationInput
     managedCollaborateurs?: CollaborateurProfileOrderByRelationAggregateInput
     createdFileAssets?: FileAssetOrderByRelationAggregateInput
+    requestedReportJobs?: ReportGenerationJobOrderByRelationAggregateInput
     assignedSupportTickets?: SupportTicketOrderByRelationAggregateInput
     createdSupportTickets?: SupportTicketOrderByRelationAggregateInput
     inAppNotifications?: InAppNotificationOrderByRelationAggregateInput
@@ -109507,6 +112317,7 @@ export namespace Prisma {
     formateurProfile?: XOR<FormateurProfileNullableScalarRelationFilter, FormateurProfileWhereInput> | null
     managedCollaborateurs?: CollaborateurProfileListRelationFilter
     createdFileAssets?: FileAssetListRelationFilter
+    requestedReportJobs?: ReportGenerationJobListRelationFilter
     assignedSupportTickets?: SupportTicketListRelationFilter
     createdSupportTickets?: SupportTicketListRelationFilter
     inAppNotifications?: InAppNotificationListRelationFilter
@@ -109644,6 +112455,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FileAsset"> | Date | string
     deletedAt?: DateTimeNullableFilter<"FileAsset"> | Date | string | null
     createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reportJobs?: ReportGenerationJobListRelationFilter
   }
 
   export type FileAssetOrderByWithRelationInput = {
@@ -109666,6 +112478,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     deletedAt?: SortOrderInput | SortOrder
     createdBy?: UserOrderByWithRelationInput
+    reportJobs?: ReportGenerationJobOrderByRelationAggregateInput
   }
 
   export type FileAssetWhereUniqueInput = Prisma.AtLeast<{
@@ -109691,6 +112504,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FileAsset"> | Date | string
     deletedAt?: DateTimeNullableFilter<"FileAsset"> | Date | string | null
     createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    reportJobs?: ReportGenerationJobListRelationFilter
   }, "id" | "storageKey">
 
   export type FileAssetOrderByWithAggregationInput = {
@@ -109741,6 +112555,228 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"FileAsset"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FileAsset"> | Date | string
     deletedAt?: DateTimeNullableWithAggregatesFilter<"FileAsset"> | Date | string | null
+  }
+
+  export type ReportGenerationJobWhereInput = {
+    AND?: ReportGenerationJobWhereInput | ReportGenerationJobWhereInput[]
+    OR?: ReportGenerationJobWhereInput[]
+    NOT?: ReportGenerationJobWhereInput | ReportGenerationJobWhereInput[]
+    id?: StringFilter<"ReportGenerationJob"> | string
+    templateKey?: StringFilter<"ReportGenerationJob"> | string
+    format?: EnumReportOutputFormatFilter<"ReportGenerationJob"> | $Enums.ReportOutputFormat
+    period?: StringFilter<"ReportGenerationJob"> | string
+    periodStart?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    periodEnd?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    periodLabel?: StringFilter<"ReportGenerationJob"> | string
+    title?: StringFilter<"ReportGenerationJob"> | string
+    summary?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    status?: EnumReportJobStatusFilter<"ReportGenerationJob"> | $Enums.ReportJobStatus
+    progress?: IntFilter<"ReportGenerationJob"> | number
+    errorMessage?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    renderToken?: StringFilter<"ReportGenerationJob"> | string
+    parameters?: JsonFilter<"ReportGenerationJob">
+    fileAssetId?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    requestedById?: StringFilter<"ReportGenerationJob"> | string
+    createdAt?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ReportGenerationJob"> | Date | string | null
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    fileAsset?: XOR<FileAssetNullableScalarRelationFilter, FileAssetWhereInput> | null
+  }
+
+  export type ReportGenerationJobOrderByWithRelationInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    period?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    periodLabel?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    status?: SortOrder
+    progress?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    renderToken?: SortOrder
+    parameters?: SortOrder
+    fileAssetId?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    requestedBy?: UserOrderByWithRelationInput
+    fileAsset?: FileAssetOrderByWithRelationInput
+  }
+
+  export type ReportGenerationJobWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    renderToken?: string
+    AND?: ReportGenerationJobWhereInput | ReportGenerationJobWhereInput[]
+    OR?: ReportGenerationJobWhereInput[]
+    NOT?: ReportGenerationJobWhereInput | ReportGenerationJobWhereInput[]
+    templateKey?: StringFilter<"ReportGenerationJob"> | string
+    format?: EnumReportOutputFormatFilter<"ReportGenerationJob"> | $Enums.ReportOutputFormat
+    period?: StringFilter<"ReportGenerationJob"> | string
+    periodStart?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    periodEnd?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    periodLabel?: StringFilter<"ReportGenerationJob"> | string
+    title?: StringFilter<"ReportGenerationJob"> | string
+    summary?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    status?: EnumReportJobStatusFilter<"ReportGenerationJob"> | $Enums.ReportJobStatus
+    progress?: IntFilter<"ReportGenerationJob"> | number
+    errorMessage?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    parameters?: JsonFilter<"ReportGenerationJob">
+    fileAssetId?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    requestedById?: StringFilter<"ReportGenerationJob"> | string
+    createdAt?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ReportGenerationJob"> | Date | string | null
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    fileAsset?: XOR<FileAssetNullableScalarRelationFilter, FileAssetWhereInput> | null
+  }, "id" | "renderToken">
+
+  export type ReportGenerationJobOrderByWithAggregationInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    period?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    periodLabel?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    status?: SortOrder
+    progress?: SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    renderToken?: SortOrder
+    parameters?: SortOrder
+    fileAssetId?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    _count?: ReportGenerationJobCountOrderByAggregateInput
+    _avg?: ReportGenerationJobAvgOrderByAggregateInput
+    _max?: ReportGenerationJobMaxOrderByAggregateInput
+    _min?: ReportGenerationJobMinOrderByAggregateInput
+    _sum?: ReportGenerationJobSumOrderByAggregateInput
+  }
+
+  export type ReportGenerationJobScalarWhereWithAggregatesInput = {
+    AND?: ReportGenerationJobScalarWhereWithAggregatesInput | ReportGenerationJobScalarWhereWithAggregatesInput[]
+    OR?: ReportGenerationJobScalarWhereWithAggregatesInput[]
+    NOT?: ReportGenerationJobScalarWhereWithAggregatesInput | ReportGenerationJobScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReportGenerationJob"> | string
+    templateKey?: StringWithAggregatesFilter<"ReportGenerationJob"> | string
+    format?: EnumReportOutputFormatWithAggregatesFilter<"ReportGenerationJob"> | $Enums.ReportOutputFormat
+    period?: StringWithAggregatesFilter<"ReportGenerationJob"> | string
+    periodStart?: DateTimeWithAggregatesFilter<"ReportGenerationJob"> | Date | string
+    periodEnd?: DateTimeWithAggregatesFilter<"ReportGenerationJob"> | Date | string
+    periodLabel?: StringWithAggregatesFilter<"ReportGenerationJob"> | string
+    title?: StringWithAggregatesFilter<"ReportGenerationJob"> | string
+    summary?: StringNullableWithAggregatesFilter<"ReportGenerationJob"> | string | null
+    status?: EnumReportJobStatusWithAggregatesFilter<"ReportGenerationJob"> | $Enums.ReportJobStatus
+    progress?: IntWithAggregatesFilter<"ReportGenerationJob"> | number
+    errorMessage?: StringNullableWithAggregatesFilter<"ReportGenerationJob"> | string | null
+    renderToken?: StringWithAggregatesFilter<"ReportGenerationJob"> | string
+    parameters?: JsonWithAggregatesFilter<"ReportGenerationJob">
+    fileAssetId?: StringNullableWithAggregatesFilter<"ReportGenerationJob"> | string | null
+    requestedById?: StringWithAggregatesFilter<"ReportGenerationJob"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ReportGenerationJob"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReportGenerationJob"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"ReportGenerationJob"> | Date | string | null
+  }
+
+  export type ReportGenerationScheduleWhereInput = {
+    AND?: ReportGenerationScheduleWhereInput | ReportGenerationScheduleWhereInput[]
+    OR?: ReportGenerationScheduleWhereInput[]
+    NOT?: ReportGenerationScheduleWhereInput | ReportGenerationScheduleWhereInput[]
+    id?: StringFilter<"ReportGenerationSchedule"> | string
+    templateKey?: StringFilter<"ReportGenerationSchedule"> | string
+    format?: EnumReportOutputFormatFilter<"ReportGenerationSchedule"> | $Enums.ReportOutputFormat
+    frequency?: EnumReportScheduleFrequencyFilter<"ReportGenerationSchedule"> | $Enums.ReportScheduleFrequency
+    title?: StringFilter<"ReportGenerationSchedule"> | string
+    summary?: StringNullableFilter<"ReportGenerationSchedule"> | string | null
+    parameters?: JsonFilter<"ReportGenerationSchedule">
+    enabled?: BoolFilter<"ReportGenerationSchedule"> | boolean
+    lastRunAt?: DateTimeNullableFilter<"ReportGenerationSchedule"> | Date | string | null
+    nextRunAt?: DateTimeNullableFilter<"ReportGenerationSchedule"> | Date | string | null
+    createdById?: StringNullableFilter<"ReportGenerationSchedule"> | string | null
+    createdAt?: DateTimeFilter<"ReportGenerationSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportGenerationSchedule"> | Date | string
+  }
+
+  export type ReportGenerationScheduleOrderByWithRelationInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    frequency?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    parameters?: SortOrder
+    enabled?: SortOrder
+    lastRunAt?: SortOrderInput | SortOrder
+    nextRunAt?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReportGenerationScheduleWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ReportGenerationScheduleWhereInput | ReportGenerationScheduleWhereInput[]
+    OR?: ReportGenerationScheduleWhereInput[]
+    NOT?: ReportGenerationScheduleWhereInput | ReportGenerationScheduleWhereInput[]
+    templateKey?: StringFilter<"ReportGenerationSchedule"> | string
+    format?: EnumReportOutputFormatFilter<"ReportGenerationSchedule"> | $Enums.ReportOutputFormat
+    frequency?: EnumReportScheduleFrequencyFilter<"ReportGenerationSchedule"> | $Enums.ReportScheduleFrequency
+    title?: StringFilter<"ReportGenerationSchedule"> | string
+    summary?: StringNullableFilter<"ReportGenerationSchedule"> | string | null
+    parameters?: JsonFilter<"ReportGenerationSchedule">
+    enabled?: BoolFilter<"ReportGenerationSchedule"> | boolean
+    lastRunAt?: DateTimeNullableFilter<"ReportGenerationSchedule"> | Date | string | null
+    nextRunAt?: DateTimeNullableFilter<"ReportGenerationSchedule"> | Date | string | null
+    createdById?: StringNullableFilter<"ReportGenerationSchedule"> | string | null
+    createdAt?: DateTimeFilter<"ReportGenerationSchedule"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportGenerationSchedule"> | Date | string
+  }, "id">
+
+  export type ReportGenerationScheduleOrderByWithAggregationInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    frequency?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    parameters?: SortOrder
+    enabled?: SortOrder
+    lastRunAt?: SortOrderInput | SortOrder
+    nextRunAt?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ReportGenerationScheduleCountOrderByAggregateInput
+    _max?: ReportGenerationScheduleMaxOrderByAggregateInput
+    _min?: ReportGenerationScheduleMinOrderByAggregateInput
+  }
+
+  export type ReportGenerationScheduleScalarWhereWithAggregatesInput = {
+    AND?: ReportGenerationScheduleScalarWhereWithAggregatesInput | ReportGenerationScheduleScalarWhereWithAggregatesInput[]
+    OR?: ReportGenerationScheduleScalarWhereWithAggregatesInput[]
+    NOT?: ReportGenerationScheduleScalarWhereWithAggregatesInput | ReportGenerationScheduleScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ReportGenerationSchedule"> | string
+    templateKey?: StringWithAggregatesFilter<"ReportGenerationSchedule"> | string
+    format?: EnumReportOutputFormatWithAggregatesFilter<"ReportGenerationSchedule"> | $Enums.ReportOutputFormat
+    frequency?: EnumReportScheduleFrequencyWithAggregatesFilter<"ReportGenerationSchedule"> | $Enums.ReportScheduleFrequency
+    title?: StringWithAggregatesFilter<"ReportGenerationSchedule"> | string
+    summary?: StringNullableWithAggregatesFilter<"ReportGenerationSchedule"> | string | null
+    parameters?: JsonWithAggregatesFilter<"ReportGenerationSchedule">
+    enabled?: BoolWithAggregatesFilter<"ReportGenerationSchedule"> | boolean
+    lastRunAt?: DateTimeNullableWithAggregatesFilter<"ReportGenerationSchedule"> | Date | string | null
+    nextRunAt?: DateTimeNullableWithAggregatesFilter<"ReportGenerationSchedule"> | Date | string | null
+    createdById?: StringNullableWithAggregatesFilter<"ReportGenerationSchedule"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ReportGenerationSchedule"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ReportGenerationSchedule"> | Date | string
   }
 
   export type UserBusinessRoleWhereInput = {
@@ -116626,6 +119662,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -116719,6 +119756,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -116812,6 +119850,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -116905,6 +119944,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -117079,6 +120119,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     deletedAt?: Date | string | null
     createdBy?: UserCreateNestedOneWithoutCreatedFileAssetsInput
+    reportJobs?: ReportGenerationJobCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateInput = {
@@ -117100,6 +120141,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUpdateInput = {
@@ -117121,6 +120163,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdBy?: UserUpdateOneWithoutCreatedFileAssetsNestedInput
+    reportJobs?: ReportGenerationJobUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateInput = {
@@ -117142,6 +120185,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetCreateManyInput = {
@@ -117204,6 +120248,270 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportGenerationJobCreateInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    requestedBy: UserCreateNestedOneWithoutRequestedReportJobsInput
+    fileAsset?: FileAssetCreateNestedOneWithoutReportJobsInput
+  }
+
+  export type ReportGenerationJobUncheckedCreateInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: string | null
+    requestedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportGenerationJobUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requestedBy?: UserUpdateOneRequiredWithoutRequestedReportJobsNestedInput
+    fileAsset?: FileAssetUpdateOneWithoutReportJobsNestedInput
+  }
+
+  export type ReportGenerationJobUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportGenerationJobCreateManyInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: string | null
+    requestedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportGenerationJobUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportGenerationJobUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportGenerationScheduleCreateInput = {
+    id?: string
+    templateKey: string
+    format?: $Enums.ReportOutputFormat
+    frequency: $Enums.ReportScheduleFrequency
+    title: string
+    summary?: string | null
+    parameters?: JsonNullValueInput | InputJsonValue
+    enabled?: boolean
+    lastRunAt?: Date | string | null
+    nextRunAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportGenerationScheduleUncheckedCreateInput = {
+    id?: string
+    templateKey: string
+    format?: $Enums.ReportOutputFormat
+    frequency: $Enums.ReportScheduleFrequency
+    title: string
+    summary?: string | null
+    parameters?: JsonNullValueInput | InputJsonValue
+    enabled?: boolean
+    lastRunAt?: Date | string | null
+    nextRunAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportGenerationScheduleUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    frequency?: EnumReportScheduleFrequencyFieldUpdateOperationsInput | $Enums.ReportScheduleFrequency
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    parameters?: JsonNullValueInput | InputJsonValue
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportGenerationScheduleUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    frequency?: EnumReportScheduleFrequencyFieldUpdateOperationsInput | $Enums.ReportScheduleFrequency
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    parameters?: JsonNullValueInput | InputJsonValue
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportGenerationScheduleCreateManyInput = {
+    id?: string
+    templateKey: string
+    format?: $Enums.ReportOutputFormat
+    frequency: $Enums.ReportScheduleFrequency
+    title: string
+    summary?: string | null
+    parameters?: JsonNullValueInput | InputJsonValue
+    enabled?: boolean
+    lastRunAt?: Date | string | null
+    nextRunAt?: Date | string | null
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ReportGenerationScheduleUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    frequency?: EnumReportScheduleFrequencyFieldUpdateOperationsInput | $Enums.ReportScheduleFrequency
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    parameters?: JsonNullValueInput | InputJsonValue
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ReportGenerationScheduleUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    frequency?: EnumReportScheduleFrequencyFieldUpdateOperationsInput | $Enums.ReportScheduleFrequency
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    parameters?: JsonNullValueInput | InputJsonValue
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    lastRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nextRunAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserBusinessRoleCreateInput = {
@@ -125051,6 +128359,12 @@ export namespace Prisma {
     none?: FileAssetWhereInput
   }
 
+  export type ReportGenerationJobListRelationFilter = {
+    every?: ReportGenerationJobWhereInput
+    some?: ReportGenerationJobWhereInput
+    none?: ReportGenerationJobWhereInput
+  }
+
   export type SupportTicketListRelationFilter = {
     every?: SupportTicketWhereInput
     some?: SupportTicketWhereInput
@@ -125225,6 +128539,10 @@ export namespace Prisma {
   }
 
   export type FileAssetOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ReportGenerationJobOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -125660,16 +128978,190 @@ export namespace Prisma {
     _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
-  export type EnumUserBusinessLabelFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserBusinessLabel | EnumUserBusinessLabelFieldRefInput<$PrismaModel>
-    in?: $Enums.UserBusinessLabel[] | ListEnumUserBusinessLabelFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserBusinessLabel[] | ListEnumUserBusinessLabelFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserBusinessLabelFilter<$PrismaModel> | $Enums.UserBusinessLabel
+  export type EnumReportOutputFormatFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportOutputFormat | EnumReportOutputFormatFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportOutputFormatFilter<$PrismaModel> | $Enums.ReportOutputFormat
+  }
+
+  export type EnumReportJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportJobStatus | EnumReportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportJobStatusFilter<$PrismaModel> | $Enums.ReportJobStatus
   }
 
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type FileAssetNullableScalarRelationFilter = {
+    is?: FileAssetWhereInput | null
+    isNot?: FileAssetWhereInput | null
+  }
+
+  export type ReportGenerationJobCountOrderByAggregateInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    period?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    periodLabel?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    status?: SortOrder
+    progress?: SortOrder
+    errorMessage?: SortOrder
+    renderToken?: SortOrder
+    parameters?: SortOrder
+    fileAssetId?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ReportGenerationJobAvgOrderByAggregateInput = {
+    progress?: SortOrder
+  }
+
+  export type ReportGenerationJobMaxOrderByAggregateInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    period?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    periodLabel?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    status?: SortOrder
+    progress?: SortOrder
+    errorMessage?: SortOrder
+    renderToken?: SortOrder
+    fileAssetId?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ReportGenerationJobMinOrderByAggregateInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    period?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    periodLabel?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    status?: SortOrder
+    progress?: SortOrder
+    errorMessage?: SortOrder
+    renderToken?: SortOrder
+    fileAssetId?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type ReportGenerationJobSumOrderByAggregateInput = {
+    progress?: SortOrder
+  }
+
+  export type EnumReportOutputFormatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportOutputFormat | EnumReportOutputFormatFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportOutputFormatWithAggregatesFilter<$PrismaModel> | $Enums.ReportOutputFormat
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportOutputFormatFilter<$PrismaModel>
+    _max?: NestedEnumReportOutputFormatFilter<$PrismaModel>
+  }
+
+  export type EnumReportJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportJobStatus | EnumReportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReportJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumReportJobStatusFilter<$PrismaModel>
+  }
+
+  export type EnumReportScheduleFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportScheduleFrequency | EnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportScheduleFrequencyFilter<$PrismaModel> | $Enums.ReportScheduleFrequency
+  }
+
+  export type ReportGenerationScheduleCountOrderByAggregateInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    frequency?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    parameters?: SortOrder
+    enabled?: SortOrder
+    lastRunAt?: SortOrder
+    nextRunAt?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReportGenerationScheduleMaxOrderByAggregateInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    frequency?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    enabled?: SortOrder
+    lastRunAt?: SortOrder
+    nextRunAt?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ReportGenerationScheduleMinOrderByAggregateInput = {
+    id?: SortOrder
+    templateKey?: SortOrder
+    format?: SortOrder
+    frequency?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    enabled?: SortOrder
+    lastRunAt?: SortOrder
+    nextRunAt?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumReportScheduleFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportScheduleFrequency | EnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportScheduleFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.ReportScheduleFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportScheduleFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumReportScheduleFrequencyFilter<$PrismaModel>
+  }
+
+  export type EnumUserBusinessLabelFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserBusinessLabel | EnumUserBusinessLabelFieldRefInput<$PrismaModel>
+    in?: $Enums.UserBusinessLabel[] | ListEnumUserBusinessLabelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserBusinessLabel[] | ListEnumUserBusinessLabelFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserBusinessLabelFilter<$PrismaModel> | $Enums.UserBusinessLabel
   }
 
   export type UserBusinessRoleUserIdLabelCompoundUniqueInput = {
@@ -130387,6 +133879,13 @@ export namespace Prisma {
     connect?: FileAssetWhereUniqueInput | FileAssetWhereUniqueInput[]
   }
 
+  export type ReportGenerationJobCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutRequestedByInput, ReportGenerationJobUncheckedCreateWithoutRequestedByInput> | ReportGenerationJobCreateWithoutRequestedByInput[] | ReportGenerationJobUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutRequestedByInput | ReportGenerationJobCreateOrConnectWithoutRequestedByInput[]
+    createMany?: ReportGenerationJobCreateManyRequestedByInputEnvelope
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+  }
+
   export type SupportTicketCreateNestedManyWithoutAssignedToInput = {
     create?: XOR<SupportTicketCreateWithoutAssignedToInput, SupportTicketUncheckedCreateWithoutAssignedToInput> | SupportTicketCreateWithoutAssignedToInput[] | SupportTicketUncheckedCreateWithoutAssignedToInput[]
     connectOrCreate?: SupportTicketCreateOrConnectWithoutAssignedToInput | SupportTicketCreateOrConnectWithoutAssignedToInput[]
@@ -130697,6 +134196,13 @@ export namespace Prisma {
     connectOrCreate?: FileAssetCreateOrConnectWithoutCreatedByInput | FileAssetCreateOrConnectWithoutCreatedByInput[]
     createMany?: FileAssetCreateManyCreatedByInputEnvelope
     connect?: FileAssetWhereUniqueInput | FileAssetWhereUniqueInput[]
+  }
+
+  export type ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutRequestedByInput, ReportGenerationJobUncheckedCreateWithoutRequestedByInput> | ReportGenerationJobCreateWithoutRequestedByInput[] | ReportGenerationJobUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutRequestedByInput | ReportGenerationJobCreateOrConnectWithoutRequestedByInput[]
+    createMany?: ReportGenerationJobCreateManyRequestedByInputEnvelope
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
   }
 
   export type SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput = {
@@ -131277,6 +134783,20 @@ export namespace Prisma {
     update?: FileAssetUpdateWithWhereUniqueWithoutCreatedByInput | FileAssetUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: FileAssetUpdateManyWithWhereWithoutCreatedByInput | FileAssetUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: FileAssetScalarWhereInput | FileAssetScalarWhereInput[]
+  }
+
+  export type ReportGenerationJobUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutRequestedByInput, ReportGenerationJobUncheckedCreateWithoutRequestedByInput> | ReportGenerationJobCreateWithoutRequestedByInput[] | ReportGenerationJobUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutRequestedByInput | ReportGenerationJobCreateOrConnectWithoutRequestedByInput[]
+    upsert?: ReportGenerationJobUpsertWithWhereUniqueWithoutRequestedByInput | ReportGenerationJobUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: ReportGenerationJobCreateManyRequestedByInputEnvelope
+    set?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    disconnect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    delete?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    update?: ReportGenerationJobUpdateWithWhereUniqueWithoutRequestedByInput | ReportGenerationJobUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: ReportGenerationJobUpdateManyWithWhereWithoutRequestedByInput | ReportGenerationJobUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
   }
 
   export type SupportTicketUpdateManyWithoutAssignedToNestedInput = {
@@ -131897,6 +135417,20 @@ export namespace Prisma {
     deleteMany?: FileAssetScalarWhereInput | FileAssetScalarWhereInput[]
   }
 
+  export type ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutRequestedByInput, ReportGenerationJobUncheckedCreateWithoutRequestedByInput> | ReportGenerationJobCreateWithoutRequestedByInput[] | ReportGenerationJobUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutRequestedByInput | ReportGenerationJobCreateOrConnectWithoutRequestedByInput[]
+    upsert?: ReportGenerationJobUpsertWithWhereUniqueWithoutRequestedByInput | ReportGenerationJobUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: ReportGenerationJobCreateManyRequestedByInputEnvelope
+    set?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    disconnect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    delete?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    update?: ReportGenerationJobUpdateWithWhereUniqueWithoutRequestedByInput | ReportGenerationJobUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: ReportGenerationJobUpdateManyWithWhereWithoutRequestedByInput | ReportGenerationJobUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
+  }
+
   export type SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput = {
     create?: XOR<SupportTicketCreateWithoutAssignedToInput, SupportTicketUncheckedCreateWithoutAssignedToInput> | SupportTicketCreateWithoutAssignedToInput[] | SupportTicketUncheckedCreateWithoutAssignedToInput[]
     connectOrCreate?: SupportTicketCreateOrConnectWithoutAssignedToInput | SupportTicketCreateOrConnectWithoutAssignedToInput[]
@@ -132043,6 +135577,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type ReportGenerationJobCreateNestedManyWithoutFileAssetInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutFileAssetInput, ReportGenerationJobUncheckedCreateWithoutFileAssetInput> | ReportGenerationJobCreateWithoutFileAssetInput[] | ReportGenerationJobUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutFileAssetInput | ReportGenerationJobCreateOrConnectWithoutFileAssetInput[]
+    createMany?: ReportGenerationJobCreateManyFileAssetInputEnvelope
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+  }
+
+  export type ReportGenerationJobUncheckedCreateNestedManyWithoutFileAssetInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutFileAssetInput, ReportGenerationJobUncheckedCreateWithoutFileAssetInput> | ReportGenerationJobCreateWithoutFileAssetInput[] | ReportGenerationJobUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutFileAssetInput | ReportGenerationJobCreateOrConnectWithoutFileAssetInput[]
+    createMany?: ReportGenerationJobCreateManyFileAssetInputEnvelope
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -132067,6 +135615,76 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedFileAssetsInput, UserUpdateWithoutCreatedFileAssetsInput>, UserUncheckedUpdateWithoutCreatedFileAssetsInput>
+  }
+
+  export type ReportGenerationJobUpdateManyWithoutFileAssetNestedInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutFileAssetInput, ReportGenerationJobUncheckedCreateWithoutFileAssetInput> | ReportGenerationJobCreateWithoutFileAssetInput[] | ReportGenerationJobUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutFileAssetInput | ReportGenerationJobCreateOrConnectWithoutFileAssetInput[]
+    upsert?: ReportGenerationJobUpsertWithWhereUniqueWithoutFileAssetInput | ReportGenerationJobUpsertWithWhereUniqueWithoutFileAssetInput[]
+    createMany?: ReportGenerationJobCreateManyFileAssetInputEnvelope
+    set?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    disconnect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    delete?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    update?: ReportGenerationJobUpdateWithWhereUniqueWithoutFileAssetInput | ReportGenerationJobUpdateWithWhereUniqueWithoutFileAssetInput[]
+    updateMany?: ReportGenerationJobUpdateManyWithWhereWithoutFileAssetInput | ReportGenerationJobUpdateManyWithWhereWithoutFileAssetInput[]
+    deleteMany?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
+  }
+
+  export type ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput = {
+    create?: XOR<ReportGenerationJobCreateWithoutFileAssetInput, ReportGenerationJobUncheckedCreateWithoutFileAssetInput> | ReportGenerationJobCreateWithoutFileAssetInput[] | ReportGenerationJobUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutFileAssetInput | ReportGenerationJobCreateOrConnectWithoutFileAssetInput[]
+    upsert?: ReportGenerationJobUpsertWithWhereUniqueWithoutFileAssetInput | ReportGenerationJobUpsertWithWhereUniqueWithoutFileAssetInput[]
+    createMany?: ReportGenerationJobCreateManyFileAssetInputEnvelope
+    set?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    disconnect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    delete?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+    update?: ReportGenerationJobUpdateWithWhereUniqueWithoutFileAssetInput | ReportGenerationJobUpdateWithWhereUniqueWithoutFileAssetInput[]
+    updateMany?: ReportGenerationJobUpdateManyWithWhereWithoutFileAssetInput | ReportGenerationJobUpdateManyWithWhereWithoutFileAssetInput[]
+    deleteMany?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutRequestedReportJobsInput = {
+    create?: XOR<UserCreateWithoutRequestedReportJobsInput, UserUncheckedCreateWithoutRequestedReportJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRequestedReportJobsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type FileAssetCreateNestedOneWithoutReportJobsInput = {
+    create?: XOR<FileAssetCreateWithoutReportJobsInput, FileAssetUncheckedCreateWithoutReportJobsInput>
+    connectOrCreate?: FileAssetCreateOrConnectWithoutReportJobsInput
+    connect?: FileAssetWhereUniqueInput
+  }
+
+  export type EnumReportOutputFormatFieldUpdateOperationsInput = {
+    set?: $Enums.ReportOutputFormat
+  }
+
+  export type EnumReportJobStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ReportJobStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutRequestedReportJobsNestedInput = {
+    create?: XOR<UserCreateWithoutRequestedReportJobsInput, UserUncheckedCreateWithoutRequestedReportJobsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRequestedReportJobsInput
+    upsert?: UserUpsertWithoutRequestedReportJobsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRequestedReportJobsInput, UserUpdateWithoutRequestedReportJobsInput>, UserUncheckedUpdateWithoutRequestedReportJobsInput>
+  }
+
+  export type FileAssetUpdateOneWithoutReportJobsNestedInput = {
+    create?: XOR<FileAssetCreateWithoutReportJobsInput, FileAssetUncheckedCreateWithoutReportJobsInput>
+    connectOrCreate?: FileAssetCreateOrConnectWithoutReportJobsInput
+    upsert?: FileAssetUpsertWithoutReportJobsInput
+    disconnect?: FileAssetWhereInput | boolean
+    delete?: FileAssetWhereInput | boolean
+    connect?: FileAssetWhereUniqueInput
+    update?: XOR<XOR<FileAssetUpdateToOneWithWhereWithoutReportJobsInput, FileAssetUpdateWithoutReportJobsInput>, FileAssetUncheckedUpdateWithoutReportJobsInput>
+  }
+
+  export type EnumReportScheduleFrequencyFieldUpdateOperationsInput = {
+    set?: $Enums.ReportScheduleFrequency
   }
 
   export type UserCreateNestedOneWithoutBusinessRolesInput = {
@@ -137206,6 +140824,57 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumReportOutputFormatFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportOutputFormat | EnumReportOutputFormatFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportOutputFormatFilter<$PrismaModel> | $Enums.ReportOutputFormat
+  }
+
+  export type NestedEnumReportJobStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportJobStatus | EnumReportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportJobStatusFilter<$PrismaModel> | $Enums.ReportJobStatus
+  }
+
+  export type NestedEnumReportOutputFormatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportOutputFormat | EnumReportOutputFormatFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportOutputFormat[] | ListEnumReportOutputFormatFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportOutputFormatWithAggregatesFilter<$PrismaModel> | $Enums.ReportOutputFormat
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportOutputFormatFilter<$PrismaModel>
+    _max?: NestedEnumReportOutputFormatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumReportJobStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportJobStatus | EnumReportJobStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportJobStatus[] | ListEnumReportJobStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportJobStatusWithAggregatesFilter<$PrismaModel> | $Enums.ReportJobStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportJobStatusFilter<$PrismaModel>
+    _max?: NestedEnumReportJobStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumReportScheduleFrequencyFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportScheduleFrequency | EnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportScheduleFrequencyFilter<$PrismaModel> | $Enums.ReportScheduleFrequency
+  }
+
+  export type NestedEnumReportScheduleFrequencyWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ReportScheduleFrequency | EnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    in?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
+    not?: NestedEnumReportScheduleFrequencyWithAggregatesFilter<$PrismaModel> | $Enums.ReportScheduleFrequency
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumReportScheduleFrequencyFilter<$PrismaModel>
+    _max?: NestedEnumReportScheduleFrequencyFilter<$PrismaModel>
+  }
+
   export type NestedEnumUserBusinessLabelFilter<$PrismaModel = never> = {
     equals?: $Enums.UserBusinessLabel | EnumUserBusinessLabelFieldRefInput<$PrismaModel>
     in?: $Enums.UserBusinessLabel[] | ListEnumUserBusinessLabelFieldRefInput<$PrismaModel>
@@ -139230,6 +142899,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reportJobs?: ReportGenerationJobCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutCreatedByInput = {
@@ -139250,6 +142920,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+    reportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutCreatedByInput = {
@@ -139259,6 +142930,58 @@ export namespace Prisma {
 
   export type FileAssetCreateManyCreatedByInputEnvelope = {
     data: FileAssetCreateManyCreatedByInput | FileAssetCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ReportGenerationJobCreateWithoutRequestedByInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    fileAsset?: FileAssetCreateNestedOneWithoutReportJobsInput
+  }
+
+  export type ReportGenerationJobUncheckedCreateWithoutRequestedByInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportGenerationJobCreateOrConnectWithoutRequestedByInput = {
+    where: ReportGenerationJobWhereUniqueInput
+    create: XOR<ReportGenerationJobCreateWithoutRequestedByInput, ReportGenerationJobUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type ReportGenerationJobCreateManyRequestedByInputEnvelope = {
+    data: ReportGenerationJobCreateManyRequestedByInput | ReportGenerationJobCreateManyRequestedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -140784,6 +144507,47 @@ export namespace Prisma {
     deletedAt?: DateTimeNullableFilter<"FileAsset"> | Date | string | null
   }
 
+  export type ReportGenerationJobUpsertWithWhereUniqueWithoutRequestedByInput = {
+    where: ReportGenerationJobWhereUniqueInput
+    update: XOR<ReportGenerationJobUpdateWithoutRequestedByInput, ReportGenerationJobUncheckedUpdateWithoutRequestedByInput>
+    create: XOR<ReportGenerationJobCreateWithoutRequestedByInput, ReportGenerationJobUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type ReportGenerationJobUpdateWithWhereUniqueWithoutRequestedByInput = {
+    where: ReportGenerationJobWhereUniqueInput
+    data: XOR<ReportGenerationJobUpdateWithoutRequestedByInput, ReportGenerationJobUncheckedUpdateWithoutRequestedByInput>
+  }
+
+  export type ReportGenerationJobUpdateManyWithWhereWithoutRequestedByInput = {
+    where: ReportGenerationJobScalarWhereInput
+    data: XOR<ReportGenerationJobUpdateManyMutationInput, ReportGenerationJobUncheckedUpdateManyWithoutRequestedByInput>
+  }
+
+  export type ReportGenerationJobScalarWhereInput = {
+    AND?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
+    OR?: ReportGenerationJobScalarWhereInput[]
+    NOT?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
+    id?: StringFilter<"ReportGenerationJob"> | string
+    templateKey?: StringFilter<"ReportGenerationJob"> | string
+    format?: EnumReportOutputFormatFilter<"ReportGenerationJob"> | $Enums.ReportOutputFormat
+    period?: StringFilter<"ReportGenerationJob"> | string
+    periodStart?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    periodEnd?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    periodLabel?: StringFilter<"ReportGenerationJob"> | string
+    title?: StringFilter<"ReportGenerationJob"> | string
+    summary?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    status?: EnumReportJobStatusFilter<"ReportGenerationJob"> | $Enums.ReportJobStatus
+    progress?: IntFilter<"ReportGenerationJob"> | number
+    errorMessage?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    renderToken?: StringFilter<"ReportGenerationJob"> | string
+    parameters?: JsonFilter<"ReportGenerationJob">
+    fileAssetId?: StringNullableFilter<"ReportGenerationJob"> | string | null
+    requestedById?: StringFilter<"ReportGenerationJob"> | string
+    createdAt?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    updatedAt?: DateTimeFilter<"ReportGenerationJob"> | Date | string
+    completedAt?: DateTimeNullableFilter<"ReportGenerationJob"> | Date | string | null
+  }
+
   export type SupportTicketUpsertWithWhereUniqueWithoutAssignedToInput = {
     where: SupportTicketWhereUniqueInput
     update: XOR<SupportTicketUpdateWithoutAssignedToInput, SupportTicketUncheckedUpdateWithoutAssignedToInput>
@@ -141139,6 +144903,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -141231,6 +144996,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -141246,6 +145012,58 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutCreatedFileAssetsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCreatedFileAssetsInput, UserUncheckedCreateWithoutCreatedFileAssetsInput>
+  }
+
+  export type ReportGenerationJobCreateWithoutFileAssetInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    requestedBy: UserCreateNestedOneWithoutRequestedReportJobsInput
+  }
+
+  export type ReportGenerationJobUncheckedCreateWithoutFileAssetInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    requestedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportGenerationJobCreateOrConnectWithoutFileAssetInput = {
+    where: ReportGenerationJobWhereUniqueInput
+    create: XOR<ReportGenerationJobCreateWithoutFileAssetInput, ReportGenerationJobUncheckedCreateWithoutFileAssetInput>
+  }
+
+  export type ReportGenerationJobCreateManyFileAssetInputEnvelope = {
+    data: ReportGenerationJobCreateManyFileAssetInput | ReportGenerationJobCreateManyFileAssetInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserUpsertWithoutCreatedFileAssetsInput = {
@@ -141339,6 +145157,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -141431,6 +145250,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -141441,6 +145261,510 @@ export namespace Prisma {
     rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
     rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
     rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+  }
+
+  export type ReportGenerationJobUpsertWithWhereUniqueWithoutFileAssetInput = {
+    where: ReportGenerationJobWhereUniqueInput
+    update: XOR<ReportGenerationJobUpdateWithoutFileAssetInput, ReportGenerationJobUncheckedUpdateWithoutFileAssetInput>
+    create: XOR<ReportGenerationJobCreateWithoutFileAssetInput, ReportGenerationJobUncheckedCreateWithoutFileAssetInput>
+  }
+
+  export type ReportGenerationJobUpdateWithWhereUniqueWithoutFileAssetInput = {
+    where: ReportGenerationJobWhereUniqueInput
+    data: XOR<ReportGenerationJobUpdateWithoutFileAssetInput, ReportGenerationJobUncheckedUpdateWithoutFileAssetInput>
+  }
+
+  export type ReportGenerationJobUpdateManyWithWhereWithoutFileAssetInput = {
+    where: ReportGenerationJobScalarWhereInput
+    data: XOR<ReportGenerationJobUpdateManyMutationInput, ReportGenerationJobUncheckedUpdateManyWithoutFileAssetInput>
+  }
+
+  export type UserCreateWithoutRequestedReportJobsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutRequestedReportJobsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutRequestedReportJobsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRequestedReportJobsInput, UserUncheckedCreateWithoutRequestedReportJobsInput>
+  }
+
+  export type FileAssetCreateWithoutReportJobsInput = {
+    id?: string
+    module: string
+    entityType: string
+    entityId?: string | null
+    category?: string | null
+    originalName: string
+    mimeType: string
+    size: number
+    storageKey: string
+    url: string
+    visibility?: $Enums.FileAssetVisibility
+    status?: $Enums.FileAssetStatus
+    provider?: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    createdBy?: UserCreateNestedOneWithoutCreatedFileAssetsInput
+  }
+
+  export type FileAssetUncheckedCreateWithoutReportJobsInput = {
+    id?: string
+    module: string
+    entityType: string
+    entityId?: string | null
+    category?: string | null
+    originalName: string
+    mimeType: string
+    size: number
+    storageKey: string
+    url: string
+    visibility?: $Enums.FileAssetVisibility
+    status?: $Enums.FileAssetStatus
+    provider?: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+  }
+
+  export type FileAssetCreateOrConnectWithoutReportJobsInput = {
+    where: FileAssetWhereUniqueInput
+    create: XOR<FileAssetCreateWithoutReportJobsInput, FileAssetUncheckedCreateWithoutReportJobsInput>
+  }
+
+  export type UserUpsertWithoutRequestedReportJobsInput = {
+    update: XOR<UserUpdateWithoutRequestedReportJobsInput, UserUncheckedUpdateWithoutRequestedReportJobsInput>
+    create: XOR<UserCreateWithoutRequestedReportJobsInput, UserUncheckedCreateWithoutRequestedReportJobsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRequestedReportJobsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRequestedReportJobsInput, UserUncheckedUpdateWithoutRequestedReportJobsInput>
+  }
+
+  export type UserUpdateWithoutRequestedReportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRequestedReportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+  }
+
+  export type FileAssetUpsertWithoutReportJobsInput = {
+    update: XOR<FileAssetUpdateWithoutReportJobsInput, FileAssetUncheckedUpdateWithoutReportJobsInput>
+    create: XOR<FileAssetCreateWithoutReportJobsInput, FileAssetUncheckedCreateWithoutReportJobsInput>
+    where?: FileAssetWhereInput
+  }
+
+  export type FileAssetUpdateToOneWithWhereWithoutReportJobsInput = {
+    where?: FileAssetWhereInput
+    data: XOR<FileAssetUpdateWithoutReportJobsInput, FileAssetUncheckedUpdateWithoutReportJobsInput>
+  }
+
+  export type FileAssetUpdateWithoutReportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    storageKey?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    visibility?: EnumFileAssetVisibilityFieldUpdateOperationsInput | $Enums.FileAssetVisibility
+    status?: EnumFileAssetStatusFieldUpdateOperationsInput | $Enums.FileAssetStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: UserUpdateOneWithoutCreatedFileAssetsNestedInput
+  }
+
+  export type FileAssetUncheckedUpdateWithoutReportJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    storageKey?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    visibility?: EnumFileAssetVisibilityFieldUpdateOperationsInput | $Enums.FileAssetVisibility
+    status?: EnumFileAssetStatusFieldUpdateOperationsInput | $Enums.FileAssetStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserCreateWithoutBusinessRolesInput = {
@@ -141523,6 +145847,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -141615,6 +145940,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -141723,6 +146049,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -141815,6 +146142,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -141907,6 +146235,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -141999,6 +146328,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -142096,6 +146426,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -142188,6 +146519,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -142296,6 +146628,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -142388,6 +146721,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -142491,6 +146825,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -142583,6 +146918,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -142675,6 +147011,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -142767,6 +147104,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -142875,6 +147213,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -142967,6 +147306,7 @@ export namespace Prisma {
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -143059,6 +147399,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -143151,6 +147492,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -143526,6 +147868,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -143618,6 +147961,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -143726,6 +148070,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -143818,6 +148163,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -143910,6 +148256,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -144002,6 +148349,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -144110,6 +148458,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -144202,6 +148551,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -144294,6 +148644,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -144386,6 +148737,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -144494,6 +148846,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -144586,6 +148939,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -144868,6 +149222,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -144960,6 +149315,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -145157,6 +149513,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -145249,6 +149606,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -145417,6 +149775,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -145509,6 +149868,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -145711,6 +150071,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -145803,6 +150164,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -145944,6 +150306,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -146036,6 +150399,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -146183,6 +150547,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -146275,6 +150640,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -146367,6 +150733,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -146459,6 +150826,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -146556,6 +150924,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -146648,6 +151017,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -146756,6 +151126,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -146848,6 +151219,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -146951,6 +151323,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -147043,6 +151416,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -148767,6 +153141,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -148859,6 +153234,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -149355,6 +153731,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -149447,6 +153824,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -150056,6 +154434,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -150148,6 +154527,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -150619,6 +154999,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -150711,6 +155092,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -151163,6 +155545,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -151255,6 +155638,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -151481,6 +155865,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -151573,6 +155958,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -151722,6 +156108,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -151814,6 +156201,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -152167,6 +156555,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -152259,6 +156648,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -152729,6 +157119,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -152821,6 +157212,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -153443,6 +157835,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -153535,6 +157928,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -154183,6 +158577,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -154275,6 +158670,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -154537,6 +158933,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -154629,6 +159026,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -154839,6 +159237,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -154931,6 +159330,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -155156,6 +159556,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -155248,6 +159649,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -155356,6 +159758,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -155448,6 +159851,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -155667,6 +160071,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -155759,6 +160164,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -156137,6 +160543,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -156229,6 +160636,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -156571,6 +160979,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -156663,6 +161072,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -156887,6 +161297,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -156979,6 +161390,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -157138,6 +161550,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -157230,6 +161643,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -157322,6 +161736,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -157414,6 +161829,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -157571,6 +161987,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -157663,6 +162080,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -157867,6 +162285,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -157959,6 +162378,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -158130,6 +162550,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -158222,6 +162643,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -158314,6 +162736,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -158406,6 +162829,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -158514,6 +162938,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -158606,6 +163031,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -158698,6 +163124,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -158790,6 +163217,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -159050,6 +163478,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -159142,6 +163571,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -159345,6 +163775,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -159437,6 +163868,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -159637,6 +164069,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -159729,6 +164162,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -159925,6 +164359,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -160017,6 +164452,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -160160,6 +164596,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -160252,6 +164689,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -160385,6 +164823,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -160477,6 +164916,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -160642,6 +165082,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -160734,6 +165175,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -162780,6 +167222,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -162872,6 +167315,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -163001,6 +167445,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -163093,6 +167538,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -163388,6 +167834,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -163480,6 +167927,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -163665,6 +168113,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -163757,6 +168206,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -163945,6 +168395,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -164037,6 +168488,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -164267,6 +168719,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -164359,6 +168812,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -164551,6 +169005,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -164643,6 +169098,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -164792,6 +169248,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -164884,6 +169341,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -165003,6 +169461,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -165095,6 +169554,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -165236,6 +169696,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -165328,6 +169789,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -165599,6 +170061,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -165691,6 +170154,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -165832,6 +170296,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -165924,6 +170389,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -166016,6 +170482,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -166108,6 +170575,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -166264,6 +170732,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -166356,6 +170825,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -166681,6 +171151,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -166773,6 +171244,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -166912,6 +171384,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -167004,6 +171477,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -167169,6 +171643,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -167261,6 +171736,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -167369,6 +171845,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -167461,6 +171938,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -167553,6 +172031,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -167645,6 +172124,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -167785,6 +172265,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -167877,6 +172358,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -168328,6 +172810,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -168420,6 +172903,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -168517,6 +173001,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -168609,6 +173094,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -168762,6 +173248,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -168854,6 +173341,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -168957,6 +173445,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -169049,6 +173538,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -169249,6 +173739,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -169341,6 +173832,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -169449,6 +173941,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -169541,6 +174034,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -169736,6 +174230,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -169828,6 +174323,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -169965,6 +174461,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -170057,6 +174554,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -170172,6 +174670,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
@@ -170264,6 +174763,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
@@ -170401,6 +174901,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -170493,6 +174994,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -170897,6 +175399,27 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deletedAt?: Date | string | null
+  }
+
+  export type ReportGenerationJobCreateManyRequestedByInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
   }
 
   export type SupportTicketCreateManyAssignedToInput = {
@@ -172237,6 +176760,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reportJobs?: ReportGenerationJobUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutCreatedByInput = {
@@ -172257,6 +176781,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateManyWithoutCreatedByInput = {
@@ -172277,6 +176802,69 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportGenerationJobUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fileAsset?: FileAssetUpdateOneWithoutReportJobsNestedInput
+  }
+
+  export type ReportGenerationJobUncheckedUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportGenerationJobUncheckedUpdateManyWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SupportTicketUpdateWithoutAssignedToInput = {
@@ -172618,6 +177206,90 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReportGenerationJobCreateManyFileAssetInput = {
+    id?: string
+    templateKey: string
+    format: $Enums.ReportOutputFormat
+    period: string
+    periodStart: Date | string
+    periodEnd: Date | string
+    periodLabel: string
+    title: string
+    summary?: string | null
+    status?: $Enums.ReportJobStatus
+    progress?: number
+    errorMessage?: string | null
+    renderToken?: string
+    parameters?: JsonNullValueInput | InputJsonValue
+    requestedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type ReportGenerationJobUpdateWithoutFileAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requestedBy?: UserUpdateOneRequiredWithoutRequestedReportJobsNestedInput
+  }
+
+  export type ReportGenerationJobUncheckedUpdateWithoutFileAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type ReportGenerationJobUncheckedUpdateManyWithoutFileAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    templateKey?: StringFieldUpdateOperationsInput | string
+    format?: EnumReportOutputFormatFieldUpdateOperationsInput | $Enums.ReportOutputFormat
+    period?: StringFieldUpdateOperationsInput | string
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodLabel?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumReportJobStatusFieldUpdateOperationsInput | $Enums.ReportJobStatus
+    progress?: IntFieldUpdateOperationsInput | number
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    renderToken?: StringFieldUpdateOperationsInput | string
+    parameters?: JsonNullValueInput | InputJsonValue
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type UserCreateManyRoleInput = {
     id?: string
     email: string
@@ -172751,6 +177423,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
@@ -172843,6 +177516,7 @@ export namespace Prisma {
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput

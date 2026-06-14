@@ -11,8 +11,12 @@
   "dependencies": {
     "@repo/api-core": "workspace:*",
     "@repo/database": "workspace:*",
+    "@repo/mail": "workspace:*",
     "@repo/redis": "workspace:*",
-    "node-cron": "^4.2.1"
+    "@repo/report-engine": "workspace:*",
+    "@repo/storage": "workspace:*",
+    "node-cron": "^4.2.1",
+    "playwright": "^1.52.0"
   },
   "devDependencies": {
     "@types/node-cron": "^3.0.11",

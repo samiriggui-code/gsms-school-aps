@@ -69,6 +69,7 @@ import { getConformiteStatusProps, getComplianceDocumentStatusProps } from '../c
 import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { ConformiteDetailsSheet } from './conformite-details-sheet';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 const ConformiteList = () => {
   const { t } = useTranslation();
@@ -93,25 +94,11 @@ const ConformiteList = () => {
   
   const [selectedConformiteForDetails, setSelectedConformiteForDetails] = useState<Conformite | null>(null);
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: ['conformite-equipements'] });
-    
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom((toastId) => (
-        <Alert variant="mono" icon="success" onClose={() => toast.dismiss(toastId)}>
-          <AlertIcon><RiCheckboxCircleFill className="size-4 text-green-600" /></AlertIcon>
-          <AlertTitle>{t('datagrid.syncSuccess')}</AlertTitle>
-        </Alert>
-      ), {
-        duration: 3000,
-        position: 'top-center'
-      });
-    }, 800);
-  };
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'rhConformite',
+    queryKeys: [['conformite-equipements'], ['dashboard-stats', 'rh']],
+  });
 
   const deleteMutation = useMutation({
     mutationFn: async (conformiteId: string) => {

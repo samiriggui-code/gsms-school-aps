@@ -63,6 +63,7 @@ import { getExamenStatusProps } from '../constants/status';
 import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { ExamenDetailsSheet } from './examen-details-sheet';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 const ExamenList = () => {
   const { t } = useTranslation();
@@ -87,25 +88,11 @@ const ExamenList = () => {
   
   const [selectedExamenForDetails, setSelectedExamenForDetails] = useState<Examen | null>(null);
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: ['rh-collaborators'] });
-    
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom((toastId) => (
-        <Alert variant="mono" icon="success" onClose={() => toast.dismiss(toastId)}>
-          <AlertIcon><RiCheckboxCircleFill className="size-4 text-green-600" /></AlertIcon>
-          <AlertTitle>{t('datagrid.syncSuccess')}</AlertTitle>
-        </Alert>
-      ), {
-        duration: 3000,
-        position: 'top-center'
-      });
-    }, 800);
-  };
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'vieScolaire',
+    queryKeys: [['rh-collaborators']],
+  });
 
   const deleteMutation = useMutation({
     mutationFn: async (ExamenId: string) => {

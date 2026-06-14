@@ -1,7 +1,7 @@
 'use client';
 
-import { PilotageWorkspacePage } from '@/components/workspace/pilotage-workspace-page';
+import { PilotageRisquesContent } from '../components/pilotage-risques-content';
 
 export default function Page() {
-  return <PilotageWorkspacePage viewKey="pilotage-risques" />;
+  return <PilotageRisquesContent />;
 }

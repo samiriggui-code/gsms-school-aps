@@ -1,6 +1,6 @@
 /**
- * Typographie globale — stack système (Segoe UI / SF / Roboto), corps 14px,
- * titres serrés (tracking-tight), graisses medium → bold.
+ * Typographie globale — stack système (Segoe UI / SF / Roboto).
+ * Échelle : voir css/ui-density.css (--app-ui-scale).
  */
 @layer base {
   html {
@@ -9,7 +9,7 @@
   }
 
   body {
-    @apply text-sm font-medium leading-normal;
+    @apply text-sm font-medium leading-snug;
   }
 
   h1,

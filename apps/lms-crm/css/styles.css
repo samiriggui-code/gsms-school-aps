@@ -4,6 +4,9 @@
 /* ReUI Configs */
 @import './config.reui.css';
 
+/* Densité CRM (sidebar, typo, grilles) — avant typography */
+@import './ui-density.css';
+
 /* Typographie globale (landing, CRM, portails, toasts, sheets) */
 @import './typography.css';
 

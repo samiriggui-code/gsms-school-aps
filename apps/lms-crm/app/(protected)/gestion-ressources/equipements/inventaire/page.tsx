@@ -28,7 +28,7 @@ export default function Page() {
   const { exportCsv, isExporting } = useInventaireExport();
 
   return (
-    <div className="flex flex-col gap-5 lg:gap-7.5 w-full min-w-0 overflow-hidden">
+    <>
       <Container className="w-full">
         <Toolbar>
           <ToolbarHeading>
@@ -48,18 +48,15 @@ export default function Page() {
         </Toolbar>
       </Container>
 
-      <Container className="space-y-5 lg:space-y-7.5 w-full min-w-0">
+      <Container className="space-y-5 lg:space-y-7.5 pb-8 w-full min-w-0">
         <InventaireStats variant="row" searchQuery={searchQuery} />
         <InventaireList searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       </Container>
-
-      <div className="mt-auto">
-</div>
 
       <InventaireAddSheet
         open={isAddSheetOpen}
         onOpenChange={setIsAddSheetOpen}
       />
-    </div>
+    </>
   );
 }

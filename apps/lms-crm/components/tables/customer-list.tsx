@@ -1575,67 +1575,67 @@ export function CustomerListTable({
           </div>
         )}
 
-        <Card className="min-w-0">
         {showHeader && (
-          <CardHeader className="min-w-0 py-3">
-            <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <h3 className="shrink-0 text-base font-semibold leading-tight text-foreground">
-                Liste des utilisateurs
-              </h3>
-              <CardToolbar className="flex min-w-0 w-full flex-1 flex-wrap items-stretch gap-2 lg:w-auto lg:justify-end">
-                {/* Search */}
-                <div className="min-w-0 w-full flex-1 sm:min-w-[200px] sm:max-w-[280px]">
-                  <InputWrapper>
-                    <Search />
-                    <Input
-                      placeholder="Rechercher un utilisateur"
-                      ref={inputRef}
-                      value={inputValue}
-                      onChange={(e) => {
-                        setInputValue(e.target.value);
-                        setSearchQuery(e.target.value);
-                      }}
-                      onMouseDown={(e) => e.stopPropagation()}
-                      onKeyDown={(e) => e.stopPropagation()}
-                    />
-                    <Button
-                      onClick={handleClearInput}
-                      variant="dim"
-                      className="-me-4"
-                      disabled={inputValue === ''}
-                    >
-                      {inputValue !== '' && <X size={16} />}
-                    </Button>
-                  </InputWrapper>
-                </div>
-                <Select
-                  value={statusFilter}
-                  onValueChange={(value) =>
-                    setStatusFilter(
-                      value as 'all' | 'active' | 'inactive' | 'blocked',
-                    )
-                  }
-                >
-                  <SelectTrigger className="w-full min-w-0 sm:w-[170px]">
-                    <SelectValue placeholder="Filtrer statut" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les statuts</SelectItem>
-                    <SelectItem value="active">Actifs</SelectItem>
-                    <SelectItem value="inactive">Inactifs</SelectItem>
-                    <SelectItem value="blocked">Bloques</SelectItem>
-                  </SelectContent>
-                </Select>
-                <DataGridColumnVisibility
-                  table={table}
-                  trigger={<Button variant="outline">Colonnes</Button>}
-                />
-              </CardToolbar>
-            </div>
-          </CardHeader>
+          <Card className="mb-5 min-w-0 border-border shadow-none">
+            <CardHeader className="min-w-0 py-3">
+              <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <h3 className="shrink-0 text-base font-semibold leading-tight text-foreground">
+                  Liste des utilisateurs
+                </h3>
+                <CardToolbar className="flex min-w-0 w-full flex-1 flex-wrap items-stretch gap-2 lg:w-auto lg:justify-end">
+                  {/* Search */}
+                  <div className="min-w-0 w-full flex-1 sm:min-w-[200px] sm:max-w-[280px]">
+                    <InputWrapper>
+                      <Search />
+                      <Input
+                        placeholder="Rechercher un utilisateur"
+                        ref={inputRef}
+                        value={inputValue}
+                        onChange={(e) => {
+                          setInputValue(e.target.value);
+                          setSearchQuery(e.target.value);
+                        }}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
+                      />
+                      <Button
+                        onClick={handleClearInput}
+                        variant="dim"
+                        className="-me-4"
+                        disabled={inputValue === ''}
+                      >
+                        {inputValue !== '' && <X size={16} />}
+                      </Button>
+                    </InputWrapper>
+                  </div>
+                  <Select
+                    value={statusFilter}
+                    onValueChange={(value) =>
+                      setStatusFilter(
+                        value as 'all' | 'active' | 'inactive' | 'blocked',
+                      )
+                    }
+                  >
+                    <SelectTrigger className="w-full min-w-0 sm:w-[170px]">
+                      <SelectValue placeholder="Filtrer statut" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tous les statuts</SelectItem>
+                      <SelectItem value="active">Actifs</SelectItem>
+                      <SelectItem value="inactive">Inactifs</SelectItem>
+                      <SelectItem value="blocked">Bloques</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <DataGridColumnVisibility
+                    table={table}
+                    trigger={<Button variant="outline">Colonnes</Button>}
+                  />
+                </CardToolbar>
+              </div>
+            </CardHeader>
+          </Card>
         )}
 
-        {/* Table Content */}
         <DataGrid
           table={table}
           recordCount={filteredData?.length || 0}
@@ -1652,6 +1652,7 @@ export function CustomerListTable({
             base: 'min-w-[1100px]',
           }}
         >
+          <Card className="min-w-0 border-border shadow-sm overflow-hidden">
           <CardTable>
             <ScrollArea>
               <DataGridTable />
@@ -1661,8 +1662,8 @@ export function CustomerListTable({
           <CardFooter>
             <DataGridPagination />
           </CardFooter>
+          </Card>
         </DataGrid>
-      </Card>
 
       {/* Bottom Action Bar */}
       <BottomActionBar />

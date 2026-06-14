@@ -9,6 +9,10 @@ import {
   requireGestionRessourcesEdit,
   requireGestionRessourcesView,
 } from '../../../_lib/require-gestion-ressources-auth';
+import {
+  attachActiveAbsencesToUsers,
+  syncUserAbsenceStatus,
+} from '@repo/api-core';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -481,7 +485,7 @@ async function handler(request: NextRequest, { params }: Params) {
       ]);
 
       return NextResponse.json({
-        data: users.map(toCollaborateur),
+        data: await attachActiveAbsencesToUsers(prisma, users.map(toCollaborateur)),
         pagination: { page, limit, total },
       });
     }
@@ -807,12 +811,14 @@ async function handler(request: NextRequest, { params }: Params) {
   }
 
   if (method === 'GET') {
+    await syncUserAbsenceStatus(prisma, id);
     const user = await prisma.user.findUnique({
       where: { id },
       include: collaborateurHydrateInclude,
     });
     if (!user || user.isTrashed) return fail('Collaborateur introuvable.', 404);
-    return NextResponse.json(toCollaborateur(user));
+    const [enriched] = await attachActiveAbsencesToUsers(prisma, [toCollaborateur(user)]);
+    return NextResponse.json(enriched);
   }
 
   if (method === 'PATCH' || method === 'PUT') {

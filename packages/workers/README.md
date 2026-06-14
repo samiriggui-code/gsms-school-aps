@@ -25,3 +25,14 @@ Jobs planifies :
 
 - stats Redis : toutes les heures
 - file `CrmEventOutbox` → notifications in-app : chaque minute
+- **absences RH → statuts User** : chaque heure + quotidien a 00h10 (debut/fin de periode)
+- **rapports PDF + Excel** : toutes les 30 s (`ReportGenerationJob` → Playwright / exceljs → storage)
+
+Prerequis PDF local : `pnpm exec playwright install chromium` (depuis `packages/workers`).
+
+Production Docker :
+```bash
+docker compose -f docker-compose.workers.yml build
+docker compose -f docker-compose.workers.yml up -d
+```
+Image basée sur `mcr.microsoft.com/playwright` (Chromium préinstallé). `REPORT_APP_BASE_URL` doit pointer vers le CRM.

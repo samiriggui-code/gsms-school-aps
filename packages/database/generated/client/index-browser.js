@@ -197,6 +197,44 @@ exports.Prisma.FileAssetScalarFieldEnum = {
   deletedAt: 'deletedAt'
 };
 
+exports.Prisma.ReportGenerationJobScalarFieldEnum = {
+  id: 'id',
+  templateKey: 'templateKey',
+  format: 'format',
+  period: 'period',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  periodLabel: 'periodLabel',
+  title: 'title',
+  summary: 'summary',
+  status: 'status',
+  progress: 'progress',
+  errorMessage: 'errorMessage',
+  renderToken: 'renderToken',
+  parameters: 'parameters',
+  fileAssetId: 'fileAssetId',
+  requestedById: 'requestedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+};
+
+exports.Prisma.ReportGenerationScheduleScalarFieldEnum = {
+  id: 'id',
+  templateKey: 'templateKey',
+  format: 'format',
+  frequency: 'frequency',
+  title: 'title',
+  summary: 'summary',
+  parameters: 'parameters',
+  enabled: 'enabled',
+  lastRunAt: 'lastRunAt',
+  nextRunAt: 'nextRunAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserBusinessRoleScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1303,6 +1341,25 @@ exports.FileAssetStatus = exports.$Enums.FileAssetStatus = {
   ARCHIVED: 'ARCHIVED'
 };
 
+exports.ReportOutputFormat = exports.$Enums.ReportOutputFormat = {
+  PDF: 'PDF',
+  EXCEL: 'EXCEL',
+  CSV: 'CSV'
+};
+
+exports.ReportJobStatus = exports.$Enums.ReportJobStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+exports.ReportScheduleFrequency = exports.$Enums.ReportScheduleFrequency = {
+  DAILY: 'DAILY',
+  MONTHLY: 'MONTHLY',
+  QUARTERLY: 'QUARTERLY'
+};
+
 exports.UserBusinessLabel = exports.$Enums.UserBusinessLabel = {
   COLLABORATEUR: 'COLLABORATEUR',
   FORMATEUR: 'FORMATEUR'
@@ -1533,6 +1590,8 @@ exports.Prisma.ModelName = {
   LandingConfig: 'LandingConfig',
   User: 'User',
   FileAsset: 'FileAsset',
+  ReportGenerationJob: 'ReportGenerationJob',
+  ReportGenerationSchedule: 'ReportGenerationSchedule',
   UserBusinessRole: 'UserBusinessRole',
   CollaborateurProfile: 'CollaborateurProfile',
   FormateurProfile: 'FormateurProfile',

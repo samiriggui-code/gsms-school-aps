@@ -11,6 +11,7 @@ import { NotificationService } from './notifications';
 export const CRM_MODULE_KEYS = {
   VIE_SCOLAIRE: 'gestion-academique.vie-scolaire',
   GESTION_ACADEMIQUE: 'gestion-academique',
+  EQUIPEMENTS: 'gestion-ressources.equipements',
   RH: 'gestion-ressources.rh',
   FINANCE: 'administration-facturation.finance',
   SUPPORT: 'support-qualite.support',
@@ -106,6 +107,42 @@ export const CRM_EVENT_CATALOG: Record<
     category: 'ACADEMIC',
     severity: 'INFO',
     labelFr: 'Préinscription landing',
+  },
+  'venue.room.deactivated': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'WARNING',
+    labelFr: 'Salle désactivée',
+  },
+  'venue.room.reactivated': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Salle disponible',
+  },
+  'venue.room.reserved': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Salle occupée',
+  },
+  'venue.room.released': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Salle libérée',
+  },
+  'venue.room.reservation_updated': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Réservation salle modifiée',
+  },
+  'pilotage.report.generated': {
+    moduleKey: CRM_MODULE_KEYS.PILOTAGE,
+    category: 'SYSTEM',
+    severity: 'INFO',
+    labelFr: 'Rapport pilotage généré',
   },
 };
 

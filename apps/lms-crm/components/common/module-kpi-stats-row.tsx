@@ -26,7 +26,7 @@ export function ModuleKpiStatsRow({ items }: { items: ModuleKpiStatItem[] }) {
         return (
           <div
             key={card.label}
-            className="relative overflow-hidden rounded-xl border border-border/70 bg-gradient-to-br from-background via-background to-muted/30 px-4 py-4"
+            className="relative overflow-hidden rounded-xl border border-border/70 bg-gradient-to-br from-background via-background to-muted/30 px-3 py-3"
           >
             <div className={cn('absolute -end-8 -top-8 size-24 rounded-full', accent.orb)} aria-hidden />
             <div className="flex items-start justify-between gap-2">
@@ -35,7 +35,7 @@ export function ModuleKpiStatsRow({ items }: { items: ModuleKpiStatItem[] }) {
               </p>
               <Icon className={cn('size-4 shrink-0', accent.icon)} aria-hidden />
             </div>
-            <p className="mt-1 text-2xl font-semibold tabular-nums">{card.value}</p>
+            <p className="mt-0.5 text-xl font-semibold tabular-nums">{card.value}</p>
             <p className="text-xs text-muted-foreground">{card.subtitle}</p>
           </div>
         );

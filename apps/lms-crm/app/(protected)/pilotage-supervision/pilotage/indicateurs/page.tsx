@@ -1,7 +1,7 @@
 'use client';
 
-import { PilotageWorkspacePage } from '@/components/workspace/pilotage-workspace-page';
+import { PilotageIndicateursContent } from '../components/pilotage-indicateurs-content';
 
 export default function Page() {
-  return <PilotageWorkspacePage viewKey="pilotage-indicateurs" />;
+  return <PilotageIndicateursContent />;
 }

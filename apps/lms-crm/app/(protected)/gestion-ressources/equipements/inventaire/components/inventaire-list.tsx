@@ -57,6 +57,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { InventaireDetailsSheet } from './inventaire-details-sheet';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 import { EquipmentStockStatsCell } from './equipment-stock-stats-cell';
 import { EquipmentThumbnail } from './equipment-thumbnail';
 import { EQUIPMENT_HEADQUARTERS_SITE_NAME } from '@/lib/equipment-catalog';
@@ -81,7 +82,11 @@ const InventaireList = ({
   const [detailsDefaultTab, setDetailsDefaultTab] = useState('overview');
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<any>(null);
-  const [isSyncing, setIsSyncing] = useState(false);
+
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'equipements',
+    queryKeys: [['equipment-catalog'], ['inventaire-stats']],
+  });
   const selectedRowsCount = Object.keys(rowSelection).length;
 
   const deleteMutation = useMutation({
@@ -102,20 +107,6 @@ const InventaireList = ({
       toast.error(t('equipment.deleteFailed'));
     },
   });
-
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: ['equipment-catalog'] });
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom((toastId) => (
-        <Alert variant="mono" icon="success" onClose={() => toast.dismiss(toastId)}>
-          <AlertIcon><RiCheckboxCircleFill className="size-4 text-green-600" /></AlertIcon>
-          <AlertTitle>{t('datagrid.syncSuccess')}</AlertTitle>
-        </Alert>
-      ), { duration: 3000, position: 'top-center' });
-    }, 800);
-  };
 
   const fetchCatalog = async ({
     pageIndex,

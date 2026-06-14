@@ -29,7 +29,7 @@ const KPI_GRID_LG_COLS: Record<1 | 2 | 3 | 4 | 5, string> = {
 };
 
 const KPI_GRID_BASE =
-  'grid w-full grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-4 lg:gap-4 h-full items-stretch';
+  'grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-3 lg:gap-3 h-full items-stretch';
 
 /** Grille KPI alignée sur le **nombre réel** de cartes (évite une 5e colonne vide). */
 export function kpiStatsGridClass(itemCount: number): string {

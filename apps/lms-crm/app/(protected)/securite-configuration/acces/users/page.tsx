@@ -17,6 +17,7 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { useTranslation } from '@/hooks/useTranslation';
 import { UsersStatsSection } from './components/users-stats-section';
 import { UserListTable } from './components/user-list-table';
@@ -33,7 +34,7 @@ export default function Page() {
             <ToolbarTitle>{title}</ToolbarTitle>
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
-          <ToolbarActions className="flex items-center gap-2">
+          <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
             <Button variant="outline">
               <Download />
               {t('common.actions.export')}
@@ -52,11 +53,8 @@ export default function Page() {
         </Toolbar>
       </Container>
 
-      <Container>
+      <Container className="space-y-5 lg:space-y-7.5 pb-8">
         <UsersStatsSection firstMetricTitle="Utilisateurs" />
-      </Container>
-
-      <Container>
         <UserListTable showStats={false} />
       </Container>
 </>

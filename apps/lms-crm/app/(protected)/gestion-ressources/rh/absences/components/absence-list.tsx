@@ -66,6 +66,7 @@ import AbsenceDetailsSheet from './absence-details-sheet';
 import { ABSENCE_TYPES, ABSENCE_STATUSES } from '../constants';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 const AbsenceList = () => {
   const { t } = useTranslation();
@@ -86,7 +87,17 @@ const AbsenceList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [rowSelection, setRowSelection] = useState({});
-  const [isSyncing, setIsSyncing] = useState(false);
+
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'rhAbsences',
+    queryKeys: [
+      ['rh-absences'],
+      ['rh-collaborators'],
+      ['rh-formateurs'],
+      ['gestion-academique', 'vie-scolaire', 'etudiants'],
+      ['dashboard-stats', 'rh'],
+    ],
+  });
 
   const normalizeAbsences = (payload: unknown): Absence[] => {
     if (!payload || typeof payload !== 'object') return [];
@@ -118,12 +129,6 @@ const AbsenceList = () => {
 
   const tableData = useMemo(() => normalizeAbsences(queryData), [queryData]);
 
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: ['rh-absences'] });
-    setTimeout(() => setIsSyncing(false), 800);
-  };
-
   const handleOpenDetails = (id: string) => {
     setSelectedAbsenceId(id);
     setDetailsOpen(true);
@@ -143,6 +148,9 @@ const AbsenceList = () => {
         description: "Le statut de l'absence a été modifié avec succès.",
       });
       queryClient.invalidateQueries({ queryKey: ['rh-absences'] });
+      queryClient.invalidateQueries({ queryKey: ['rh-collaborators'] });
+      queryClient.invalidateQueries({ queryKey: ['rh-formateurs'] });
+      queryClient.invalidateQueries({ queryKey: ['gestion-academique', 'vie-scolaire', 'etudiants'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', 'rh'] });
     },
     onError: (error: Error) => {
@@ -163,6 +171,9 @@ const AbsenceList = () => {
         description: "La demande a été définitivement supprimée.",
       });
       queryClient.invalidateQueries({ queryKey: ['rh-absences'] });
+      queryClient.invalidateQueries({ queryKey: ['rh-collaborators'] });
+      queryClient.invalidateQueries({ queryKey: ['rh-formateurs'] });
+      queryClient.invalidateQueries({ queryKey: ['gestion-academique', 'vie-scolaire', 'etudiants'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-stats', 'rh'] });
     },
     onError: (error: Error) => {
@@ -198,7 +209,7 @@ const AbsenceList = () => {
                 {user.avatar && <AvatarImage src={user.avatar} alt={name} />}
                 <AvatarFallback className="bg-muted text-muted-foreground">{initials}</AvatarFallback>
                 <AvatarIndicator className="-end-0.5 -top-0.5">
-                   <AvatarStatus variant={user.status === 'ACTIVE' ? "online" : "offline"} className="size-2.5" />
+                   <AvatarStatus variant={user.status === 'ACTIVE' ? "online" : user.status === 'ABSENT' ? "away" : "offline"} className="size-2.5" />
                 </AvatarIndicator>
               </Avatar>
               <div className="flex flex-col">
@@ -260,10 +271,18 @@ const AbsenceList = () => {
         header: ({ column }) => <DataGridColumnHeader title={t('datagrid.columns.status')} column={column} />,
         cell: ({ row }) => {
           const status = ABSENCE_STATUSES.find(s => s.id === row.original.status) || ABSENCE_STATUSES[0];
+          const isActive = row.original.isActive;
           return (
-            <Badge variant={status.variant as any} appearance="light" size="sm" className="font-bold uppercase text-[10px] tracking-wider">
-              {status.label}
-            </Badge>
+            <div className="flex flex-col gap-1">
+              <Badge variant={status.variant as any} appearance="light" size="sm" className="font-bold uppercase text-[10px] tracking-wider">
+                {status.label}
+              </Badge>
+              {isActive ? (
+                <Badge variant="destructive" appearance="light" size="xs" className="w-fit font-bold uppercase text-[9px] tracking-wider">
+                  En cours
+                </Badge>
+              ) : null}
+            </div>
           );
         },
         size: 130,

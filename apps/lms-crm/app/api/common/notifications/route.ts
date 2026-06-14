@@ -19,7 +19,18 @@ function serializeNotification(row: {
   readAt: Date | null;
   archivedAt: Date | null;
   createdAt: Date;
+  metadata?: unknown;
 }) {
+  const meta =
+    row.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata)
+      ? (row.metadata as Record<string, unknown>)
+      : {};
+  const severityRaw = meta.severity;
+  const severity =
+    severityRaw === 'CRITICAL' || severityRaw === 'WARNING' || severityRaw === 'INFO'
+      ? severityRaw
+      : null;
+
   return {
     id: row.id,
     category: row.category,
@@ -30,6 +41,9 @@ function serializeNotification(row: {
     archivedAt: row.archivedAt?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     unread: !row.readAt && !row.archivedAt,
+    moduleKey: typeof meta.moduleKey === 'string' ? meta.moduleKey : null,
+    eventType: typeof meta.eventType === 'string' ? meta.eventType : null,
+    severity,
   };
 }
 
@@ -81,11 +95,22 @@ export async function GET(request: NextRequest) {
       ? { category: categoryRaw as InAppNotificationCategory }
       : {};
 
+  const modulePrefix = url.searchParams.get('module')?.trim() || '';
+  const moduleWhere: Prisma.InAppNotificationWhereInput = modulePrefix
+    ? {
+        OR: [
+          { metadata: { path: ['moduleKey'], equals: modulePrefix } },
+          { metadata: { path: ['moduleKey'], string_starts_with: `${modulePrefix}.` } },
+        ],
+      }
+    : {};
+
   const where: Prisma.InAppNotificationWhereInput = {
     ...ctx.base,
     ...tabFilter(tab),
     ...searchWhere,
     ...categoryWhere,
+    ...moduleWhere,
   };
 
   const activeWhere: Prisma.InAppNotificationWhereInput = {
@@ -109,6 +134,17 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
       skip,
       take: limit,
+      select: {
+        id: true,
+        category: true,
+        title: true,
+        body: true,
+        href: true,
+        readAt: true,
+        archivedAt: true,
+        createdAt: true,
+        metadata: true,
+      },
     }),
     prisma.inAppNotification.count({ where }),
     prisma.inAppNotification.count({
@@ -134,6 +170,23 @@ export async function GET(request: NextRequest) {
     categoryGroups.map((g) => [g.category, g._count._all]),
   ) as Record<string, number>;
 
+  const severityCounts = { CRITICAL: 0, WARNING: 0, INFO: 0 };
+  const severityRows = await prisma.inAppNotification.findMany({
+    where: { ...activeWhere, ...moduleWhere },
+    select: { metadata: true },
+    take: 500,
+  });
+  for (const row of severityRows) {
+    const meta =
+      row.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata)
+        ? (row.metadata as Record<string, unknown>)
+        : {};
+    const s = meta.severity;
+    if (s === 'CRITICAL' || s === 'WARNING' || s === 'INFO') {
+      severityCounts[s] += 1;
+    }
+  }
+
   return ok({
     items: items.map(serializeNotification),
     unreadCount,
@@ -146,6 +199,7 @@ export async function GET(request: NextRequest) {
       archived: archivedCount,
       today: todayCount,
       byCategory,
+      bySeverity: severityCounts,
     },
   });
 }

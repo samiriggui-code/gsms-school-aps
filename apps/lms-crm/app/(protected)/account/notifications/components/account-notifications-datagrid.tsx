@@ -326,10 +326,13 @@ export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
         </div>
       ) : null}
 
-      <Card className="border-border shadow-none">
-        <CardHeader className="space-y-4 border-b border-border py-4">
+      <Card className="mb-5 border-border shadow-none">
+        <CardHeader className="space-y-4 py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-foreground">{t('account.notifications.page.tableTitle')}</p>
+            <div className="space-y-1">
+              <h3 className="text-base font-semibold text-foreground">{t('account.notifications.page.tableTitle')}</h3>
+              <p className="text-xs text-muted-foreground">{t('account.notifications.page.tableHint', { defaultValue: 'Filtrez, marquez comme lues ou archivez vos notifications.' })}</p>
+            </div>
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
@@ -425,28 +428,30 @@ export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </CardHeader>
+      </Card>
 
-        <DataGrid
-          table={table}
-          recordCount={total}
-          isLoading={listQuery.isLoading}
-          loadingMessage={t('topbar.notifications.loading')}
-          emptyMessage={
-            listQuery.isError
-              ? t('topbar.notifications.loadError')
-              : tab === 'unread'
-                ? t('topbar.notifications.emptyUnread')
-                : tab === 'archived'
-                  ? t('account.notifications.page.emptyArchived')
-                  : t('topbar.notifications.empty')
-          }
-          tableLayout={{
-            ...USER_MANAGEMENT_TABLE_LAYOUT,
-            headerSticky: true,
-            dense: false,
-          }}
-          tableClassNames={USER_MANAGEMENT_TABLE_CLASSNAMES}
-        >
+      <DataGrid
+        table={table}
+        recordCount={total}
+        isLoading={listQuery.isLoading}
+        loadingMessage={t('topbar.notifications.loading')}
+        emptyMessage={
+          listQuery.isError
+            ? t('topbar.notifications.loadError')
+            : tab === 'unread'
+              ? t('topbar.notifications.emptyUnread')
+              : tab === 'archived'
+                ? t('account.notifications.page.emptyArchived')
+                : t('topbar.notifications.empty')
+        }
+        tableLayout={{
+          ...USER_MANAGEMENT_TABLE_LAYOUT,
+          headerSticky: true,
+          dense: false,
+        }}
+        tableClassNames={USER_MANAGEMENT_TABLE_CLASSNAMES}
+      >
+        <Card className="border-border shadow-sm overflow-hidden">
           <CardTable>
             <ScrollArea>
               <DataGridTable />
@@ -456,8 +461,8 @@ export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
           <CardFooter className="border-t border-border px-4 py-3">
             <DataGridPagination />
           </CardFooter>
-        </DataGrid>
-      </Card>
+        </Card>
+      </DataGrid>
     </div>
   );
 }

@@ -1,4 +1,8 @@
 import type { RhAbsence, RhAbsenceStatus, RhAbsenceType, User } from '@repo/database';
+import {
+  computeAbsenceDuration,
+  isAbsenceActiveNow,
+} from '@repo/api-core';
 
 type UserPick = Pick<
   User,
@@ -20,6 +24,8 @@ export function serializeAbsence(
   row: RhAbsence & { user: UserPick },
 ) {
   const user = serializeAbsenceUser(row.user);
+  const duration = computeAbsenceDuration(row.startDate, row.endDate);
+  const isActive = isAbsenceActiveNow(row.status, row.startDate, row.endDate);
   return {
     id: row.id,
     userId: row.userId,
@@ -28,6 +34,8 @@ export function serializeAbsence(
     startDate: row.startDate.toISOString().slice(0, 10),
     endDate: row.endDate.toISOString().slice(0, 10),
     reason: row.reason,
+    duration,
+    isActive,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     User: user,

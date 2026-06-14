@@ -10,6 +10,10 @@ import {
 } from '@/app/(protected)/securite-configuration/acces/users/[id]/forms/user-profile-schema';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserStatus } from '@/app/models/user';
+import {
+  attachActiveAbsencesToUsers,
+  syncUserAbsenceStatus,
+} from '@repo/api-core';
 
 // GET: Fetch a specific user by ID, including role
 export async function GET(
@@ -28,6 +32,8 @@ export async function GET(
     }
 
     const { id } = await params;
+
+    await syncUserAbsenceStatus(prisma, id);
 
     // Fetch the user and their associated roles
     const user = await prisma.user.findUnique({
@@ -54,7 +60,8 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(user);
+    const [enriched] = await attachActiveAbsencesToUsers(prisma, [user]);
+    return NextResponse.json(enriched);
   } catch {
     return NextResponse.json(
       { message: 'Oops! Something went wrong. Please try again in a moment.' },

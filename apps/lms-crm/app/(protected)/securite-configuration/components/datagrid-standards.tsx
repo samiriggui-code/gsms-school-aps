@@ -17,6 +17,7 @@ export const USER_MANAGEMENT_TABLE_LAYOUT = {
   columnsMovable: true,
   columnsVisibility: true,
   cellBorder: true,
+  dense: true,
 };
 
 export const USER_MANAGEMENT_TABLE_CLASSNAMES = {

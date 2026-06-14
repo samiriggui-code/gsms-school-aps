@@ -43,7 +43,16 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "account.notifications":
     "Historique des alertes CRM : tickets, finance, formation et équipe — marquage lu et archivage.",
   "pilotage-supervision": "Tableaux de bord, indicateurs clés, performance et veille opérationnelle en temps réel.",
-  "pilotage-supervision.pilotage": "Tableaux de bord, alertes, rapports et suivi opérationnel en temps réel.",
+  "pilotage-supervision.pilotage":
+    "Vue consolidée multi-modules — alertes, KPI transverses, flux événements et signaux opérationnels en temps réel.",
+  "pilotage-supervision.pilotage.alertes":
+    "Registre central des alertes CRM — notifications in-app synchronisées avec la cloche header, filtrables par module.",
+  "pilotage-supervision.pilotage.indicateurs":
+    "KPI et graphiques consolidés par module (gestion ressources actif) — évolution, répartition et accès rapides.",
+  "pilotage-supervision.pilotage.rapports":
+    "Exports CSV, modèles de rapports et historique d&apos;activité sur la période choisie.",
+  "pilotage-supervision.pilotage.risques":
+    "Registre des risques : gravité, exposition et recommandations pour maintenir l&apos;école opérationnelle.",
   "securite-configuration.acces": "Gérez les utilisateurs, rôles et permissions avec traçabilité des accès en temps réel.",
   "securite-configuration.acces.permissions": "Droits fins sur les écrans et actions ; affectation aux rôles et utilisateurs.",
   "securite-configuration.acces.roles": "Profils d&apos;autorisation et regroupements de permissions réutilisables.",

@@ -89,6 +89,7 @@ import {
   candidatHubStatsQueryKey,
   candidaturesListQueryKey,
 } from '../constants/query-keys';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 export type CandidatHubListRow = {
   userId: string;
@@ -145,7 +146,15 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
     null | { row: CandidatHubListRow; status: typeof CandidatureStatus.ARCHIVED | typeof CandidatureStatus.REJECTED }
   >(null);
   const [disableRow, setDisableRow] = useState<CandidatHubListRow | null>(null);
-  const [isSyncing, setIsSyncing] = useState(false);
+
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'candidats',
+    queryKeys: [
+      [...candidatHubListQueryKey],
+      [...candidatHubStatsQueryKey],
+      [...candidatHubDetailQueryKey],
+    ],
+  });
 
   const batchMutation = useMutation({
     mutationFn: async (input: {
@@ -239,26 +248,6 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
     },
     staleTime: 1000 * 60 * 2,
   });
-
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: [...candidatHubListQueryKey] });
-    await queryClient.invalidateQueries({ queryKey: [...candidatHubStatsQueryKey] });
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom(
-        (t) => (
-          <Alert variant="mono" icon="success" onClose={() => toast.dismiss(t)}>
-            <AlertIcon>
-              <RiCheckboxCircleFill className="size-4 text-green-600" />
-            </AlertIcon>
-            <AlertTitle>Liste candidats synchronisée</AlertTitle>
-          </Alert>
-        ),
-        { duration: 3000, position: 'top-center' },
-      );
-    }, 600);
-  };
 
   function canTerminalAct(r: CandidatHubListRow) {
     if (!r.candidatureId || !r.dossierStatus) return false;

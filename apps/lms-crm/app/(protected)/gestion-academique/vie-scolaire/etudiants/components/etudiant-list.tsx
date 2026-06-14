@@ -59,10 +59,12 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { User as Etudiant, UserStatus } from '@/app/models/user';
 import { getEtudiantStatusProps } from '../constants/status';
+import { userPresenceAvatarVariant } from '@/lib/rh/user-absence-ui';
 import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { etudiantsListQueryKey, etudiantsStatsQueryKey } from '../constants/query-keys';
 import { EtudiantDetailsSheet } from './etudiant-details-sheet';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 
 const EtudiantList = ({
@@ -89,31 +91,11 @@ const EtudiantList = ({
   const selectedCategory = 'all';
   const [selectedEtudiantForDetails, setSelectedEtudiantForDetails] = useState<Etudiant | null>(null);
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: [...etudiantsListQueryKey] });
-    await queryClient.invalidateQueries({ queryKey: [...etudiantsStatsQueryKey] });
-
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom(
-        (toastId) => (
-          <Alert variant="mono" icon="success" onClose={() => toast.dismiss(toastId)}>
-            <AlertIcon>
-              <RiCheckboxCircleFill className="size-4 text-green-600" />
-            </AlertIcon>
-            <AlertTitle>{t('datagrid.syncSuccess')}</AlertTitle>
-          </Alert>
-        ),
-        {
-          duration: 3000,
-          position: 'top-center',
-        },
-      );
-    }, 800);
-  };
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'vieScolaire',
+    queryKeys: [[...etudiantsListQueryKey], [...etudiantsStatsQueryKey]],
+  });
 
   const deleteMutation = useMutation({
     mutationFn: async (EtudiantId: string) => {
@@ -238,7 +220,7 @@ const EtudiantList = ({
                 {Etudiant.avatar && <AvatarImage src={Etudiant.avatar} alt={Etudiant.name || ''} />}
                 <AvatarFallback>{initials}</AvatarFallback>
                 <AvatarIndicator className="-end-0.5 -top-0.5">
-                   <AvatarStatus variant={Etudiant.status === 'ACTIVE' ? "online" : "offline"} className="size-2.5" />
+                   <AvatarStatus variant={userPresenceAvatarVariant(Etudiant)} className="size-2.5" />
                 </AvatarIndicator>
               </Avatar>
               <div className="flex flex-col">
@@ -459,7 +441,7 @@ const EtudiantList = ({
                                  <AvatarFallback className="text-xl">{getInitials(Etudiant.name || Etudiant.email)}</AvatarFallback>
                                </Avatar>
                                <AvatarIndicator className="-end-1 -top-1">
-                                 <AvatarStatus variant={Etudiant.status === 'ACTIVE' ? "online" : "offline"} className="size-3.5 border-2 border-background" />
+                                 <AvatarStatus variant={userPresenceAvatarVariant(Etudiant)} className="size-3.5 border-2 border-background" />
                                </AvatarIndicator>
                              </div>
 

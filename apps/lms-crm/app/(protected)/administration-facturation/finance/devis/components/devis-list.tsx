@@ -27,6 +27,7 @@ import { DevisDetailSheet, type DevisDetailInitialTab } from './devis-detail-she
 import { apiFetch } from '@/lib/api';
 import { toast } from 'sonner';
 import { financeDevisListQueryKey } from '../constants/query-keys';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 interface DevisListProps {
   leaderSlot?: ReactNode;
@@ -42,7 +43,11 @@ export function DevisList({ leaderSlot }: DevisListProps) {
   const [status, setStatus] = useState<string>('all');
   const [q, setQ] = useState('');
   const [page, setPage] = useState(1);
-  const [isSyncing, setIsSyncing] = useState(false);
+
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'finance',
+    queryKeys: [[...financeDevisListQueryKey]],
+  });
   const [selectedDevisId, setSelectedDevisId] = useState<string | null>(null);
   const [sheetInitialTab, setSheetInitialTab] = useState<DevisDetailInitialTab>('overview');
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; referenceCode: string } | null>(null);
@@ -67,13 +72,6 @@ export function DevisList({ leaderSlot }: DevisListProps) {
     sort: 'updatedAt',
     dir: 'desc',
   });
-
-  const handleSync = () => {
-    setIsSyncing(true);
-    queryClient.invalidateQueries({ queryKey: [...financeDevisListQueryKey] }).then(() => {
-      setTimeout(() => setIsSyncing(false), 600);
-    });
-  };
 
   const stripDevisIdFromUrl = () => {
     const next = new URLSearchParams(sp.toString());

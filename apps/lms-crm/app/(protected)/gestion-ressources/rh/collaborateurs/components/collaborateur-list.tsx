@@ -60,9 +60,11 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { User as Collaborateur, UserStatus } from '@/app/models/user';
 import { getCollaborateurStatusProps } from '../constants/status';
+import { userPresenceAvatarVariant } from '@/lib/rh/user-absence-ui';
 import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { CollaborateurDetailsSheet } from './collaborateur-details-sheet';
+import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 type CollaborateurListProps = {
   profileSegment: 'collaborateur' | 'interne';
@@ -91,25 +93,11 @@ const CollaborateurList = ({
   
   const [selectedCollaborateurForDetails, setSelectedCollaborateurForDetails] = useState<Collaborateur | null>(null);
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleSync = async () => {
-    setIsSyncing(true);
-    await queryClient.invalidateQueries({ queryKey: ['rh-collaborators'] });
-    
-    setTimeout(() => {
-      setIsSyncing(false);
-      toast.custom((toastId) => (
-        <Alert variant="mono" icon="success" onClose={() => toast.dismiss(toastId)}>
-          <AlertIcon><RiCheckboxCircleFill className="size-4 text-green-600" /></AlertIcon>
-          <AlertTitle>{t('datagrid.syncSuccess')}</AlertTitle>
-        </Alert>
-      ), {
-        duration: 3000,
-        position: 'top-center'
-      });
-    }, 800);
-  };
+  const { isSyncing, sync: handleSync } = useDatagridSync({
+    preset: 'rhPersonnel',
+    queryKeys: [['rh-collaborators'], ['dashboard-stats', 'rh']],
+  });
 
   const deleteMutation = useMutation({
     mutationFn: async (collaborateurId: string) => {
@@ -234,7 +222,7 @@ const CollaborateurList = ({
                 {collaborateur.avatar && <AvatarImage src={collaborateur.avatar} alt={collaborateur.name || ''} />}
                 <AvatarFallback>{initials}</AvatarFallback>
                 <AvatarIndicator className="-end-0.5 -top-0.5">
-                   <AvatarStatus variant={collaborateur.status === 'ACTIVE' ? "online" : "offline"} className="size-2.5" />
+                   <AvatarStatus variant={userPresenceAvatarVariant(collaborateur)} className="size-2.5" />
                 </AvatarIndicator>
               </Avatar>
               <div className="flex flex-col">
@@ -465,7 +453,7 @@ const CollaborateurList = ({
                                  <AvatarFallback className="text-xl">{getInitials(collaborateur.name || collaborateur.email)}</AvatarFallback>
                                </Avatar>
                                <AvatarIndicator className="-end-1 -top-1">
-                                 <AvatarStatus variant={collaborateur.status === 'ACTIVE' ? "online" : "offline"} className="size-3.5 border-2 border-background" />
+                                 <AvatarStatus variant={userPresenceAvatarVariant(collaborateur)} className="size-3.5 border-2 border-background" />
                                </AvatarIndicator>
                              </div>
 

@@ -29,6 +29,7 @@ import { usePusher } from '@/hooks/use-pusher';
 import { agrementBadgeSuffix, agrementUiLabels } from '@/lib/rh-agrement';
 import { formatDateTime, getAvatarUrl, getInitials, toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
+import { isUserCurrentlyAbsent } from '@/lib/rh/user-absence-ui';
 
 // Imports des composants modernisés
 import { CollaborateurDetailsOverview } from './collaborateur-details-overview'; 
@@ -643,7 +644,7 @@ export function CollaborateurDetailsSheet({
                 </div>
               )}
 
-              {collaborateur.status === 'ABSENT' && (
+              {isUserCurrentlyAbsent(collaborateur) && (
                 <div className="flex items-center gap-2 px-3 py-2 bg-muted/30 border border-border/50 rounded-lg">
                   <AlertCircle className="size-4 text-foreground/70" />
                   <span className="text-xs font-bold text-foreground/80 uppercase tracking-wide">
@@ -747,7 +748,7 @@ export function CollaborateurDetailsSheet({
                     <TabsTrigger value="permissions">Permissions</TabsTrigger>
                     <TabsTrigger value="absences" className="relative">
                       Absences
-                      {collaborateur.status === 'ABSENT' && (
+                      {isUserCurrentlyAbsent(collaborateur) && (
                         <span className="absolute -top-1 -right-1 flex h-2 w-2">
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>

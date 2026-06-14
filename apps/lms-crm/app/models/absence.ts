@@ -27,6 +27,8 @@ export interface Absence {
   startDate: Date | string;
   endDate: Date | string;
   reason?: string | null;
+  duration?: number;
+  isActive?: boolean;
   createdAt: Date | string;
   updatedAt: Date | string;
   User?: AbsenceUser | null;

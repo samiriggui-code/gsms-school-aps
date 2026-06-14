@@ -20,9 +20,13 @@
 
     "postinstall": "pnpm db:generate",
 
-    "dev": "pnpm -C apps/lms-crm dev",
+    "predev": "node scripts/free-dev-port.mjs 3001",
 
-    "dev:lan": "pnpm -C apps/lms-crm dev:lan",
+    "dev": "concurrently -n crm,workers -c cyan,magenta \"pnpm -C apps/lms-crm dev\" \"pnpm --filter @repo/workers dev\"",
+
+    "dev:crm": "pnpm -C apps/lms-crm dev",
+
+    "dev:lan": "concurrently -n crm,workers -c cyan,magenta \"pnpm -C apps/lms-crm dev:lan\" \"pnpm --filter @repo/workers dev\"",
 
     "dev:workers": "pnpm --filter @repo/workers dev",
 

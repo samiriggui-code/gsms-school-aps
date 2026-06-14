@@ -3,6 +3,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { LoaderCircleIcon } from 'lucide-react';
@@ -34,6 +35,7 @@ import {
 import { scopeFromPathname } from '@/lib/notifications-scope';
 import type { NotificationsScope } from '@/lib/notifications-scope';
 import { resolveNotificationsHubPath } from '@/lib/notifications-hub-path';
+import { usePusher } from '@/hooks/use-pusher';
 
 function NotificationRow({
   item,
@@ -154,11 +156,17 @@ function NotificationsList({
 
 export function NotificationsSheet({ trigger }: { trigger: ReactNode }) {
   const { t } = useTranslation();
+  const { data: session } = useSession();
   const pathname = usePathname();
   const scope = scopeFromPathname(pathname);
   const viewAllHref = resolveNotificationsHubPath(pathname);
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
+
+  usePusher(session?.user?.id, () => {
+    void queryClient.invalidateQueries({ queryKey: ['topbar-notifications'] });
+    void queryClient.invalidateQueries({ queryKey: ['topbar-summary'] });
+  });
 
   useEffect(() => {
     if (open) {

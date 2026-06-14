@@ -74,6 +74,15 @@ export interface User {
   };
   /** `User.formateurProfile.specialties` agrégées (liste collaborateurs RH). */
   teachingSpecialties?: string[];
+  /** Absence RH approuvée en cours (période incluant aujourd’hui). */
+  activeAbsence?: {
+    id: string;
+    type: string;
+    startDate: string;
+    endDate: string;
+    duration: number;
+  } | null;
+  hasActiveAbsence?: boolean;
 }
 
 export interface UserRole {

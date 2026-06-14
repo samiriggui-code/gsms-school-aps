@@ -11,6 +11,10 @@ import {
   requireGestionRessourcesEdit,
   requireGestionRessourcesView,
 } from '../../../_lib/require-gestion-ressources-auth';
+import {
+  syncAllUsersAbsenceStatus,
+  syncUserAbsenceStatus,
+} from '@repo/api-core';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -85,7 +89,16 @@ export async function GET(request: NextRequest, { params }: Params) {
 export async function POST(request: NextRequest, { params }: Params) {
   const auth = await requireSession('POST');
   if (!auth.session) return auth.response!;
-  if ((await params).path?.length) return fail('Méthode non autorisée sur ce chemin.', 405);
+
+  const parts = (await params).path ?? [];
+  if (parts.length === 1 && parts[0] === 'sync') {
+    try {
+      const result = await syncAllUsersAbsenceStatus(prisma);
+      return ok(result);
+    } catch (error) {
+      return fail('Impossible de synchroniser les statuts d’absence.', 500, error);
+    }
+  }
 
   try {
     const body = (await request.json()) as Record<string, unknown>;
@@ -166,7 +179,14 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       include: { user: absenceUserInclude },
     });
 
-    return ok(serializeAbsence(row));
+    await syncUserAbsenceStatus(prisma, row.userId);
+
+    const synced = await prisma.rhAbsence.findUnique({
+      where: { id },
+      include: { user: absenceUserInclude },
+    });
+
+    return ok(serializeAbsence(synced ?? row));
   } catch (error) {
     return fail('Impossible de mettre à jour l’absence.', 500, error);
   }
@@ -180,7 +200,14 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
   if (!id) return fail('Identifiant requis.', 400);
 
   try {
+    const existing = await prisma.rhAbsence.findUnique({
+      where: { id },
+      select: { userId: true },
+    });
+    if (!existing) return fail('Absence introuvable', 404);
+
     await prisma.rhAbsence.delete({ where: { id } });
+    await syncUserAbsenceStatus(prisma, existing.userId);
     return ok({ deleted: true });
   } catch (error) {
     return fail('Impossible de supprimer l’absence.', 500, error);

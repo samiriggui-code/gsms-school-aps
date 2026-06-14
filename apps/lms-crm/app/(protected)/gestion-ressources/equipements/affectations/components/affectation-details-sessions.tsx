@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/hooks/useTranslation';
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -16,7 +16,8 @@ import { Equipment } from '@/app/models/equipment';
 import { formatDateTime } from '@/lib/helpers';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { User, ExternalLink, MapPin } from 'lucide-react';
+import { User, ExternalLink, MapPin, Undo2 } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   DataGrid,
   DataGridApiFetchParams,
@@ -40,6 +41,7 @@ interface SessionRow {
 
 export function AffectationDetailsSessions({ equipment }: { equipment: Equipment }) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 5,
@@ -85,6 +87,34 @@ export function AffectationDetailsSessions({ equipment }: { equipment: Equipment
 
   const items = response?.data ?? [];
   const totalCount = response?.pagination?.total ?? 0;
+
+  const unassignMutation = useMutation({
+    mutationFn: async (row: SessionRow) => {
+      const res = await apiFetch(
+        '/api/sections/gestion-ressources/equipements/affectations/unassign',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            equipmentId: equipment.id,
+            sessionId: row.sessionId,
+          }),
+        },
+      );
+      if (!res.ok) {
+        const j = await res.json();
+        throw new Error(j?.error?.message || 'Désaffectation impossible');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['affectation-equipment-sessions', equipment.id] });
+      void queryClient.invalidateQueries({ queryKey: ['equipment-affectations-list'] });
+      void queryClient.invalidateQueries({ queryKey: ['equipment-catalog'] });
+      toast.success('Pièce désaffectée — retour stock si possible');
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const columns = useMemo<ColumnDef<SessionRow>[]>(
     () => [
@@ -140,17 +170,29 @@ export function AffectationDetailsSessions({ equipment }: { equipment: Equipment
         id: 'actions',
         header: '',
         cell: ({ row }) => (
-          <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs" asChild>
-            <Link href={`/gestion-academique/vie-scolaire/sessions?highlight=${row.original.sessionId}`}>
-              <ExternalLink className="size-3.5" />
-              Session
-            </Link>
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 text-xs"
+              disabled={unassignMutation.isPending}
+              onClick={() => unassignMutation.mutate(row.original)}
+            >
+              <Undo2 className="size-3.5" />
+              Retirer
+            </Button>
+            <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs" asChild>
+              <Link href={`/gestion-academique/vie-scolaire/sessions?highlight=${row.original.sessionId}`}>
+                <ExternalLink className="size-3.5" />
+                Session
+              </Link>
+            </Button>
+          </div>
         ),
-        size: 100,
+        size: 160,
       },
     ],
-    [t],
+    [t, unassignMutation],
   );
 
   const table = useReactTable({
@@ -167,8 +209,8 @@ export function AffectationDetailsSessions({ equipment }: { equipment: Equipment
   return (
     <div className="space-y-4">
       <p className="text-xs text-muted-foreground">
-        Sessions où cette pièce est réservée. Pour retirer ou ajouter une réservation, utilisez la fiche
-        session (Vie scolaire) ou « Nouvelle affectation » en haut de page.
+        Sessions où cette pièce est réservée. Utilisez « Retirer » pour désaffecter et remettre en stock,
+        ou la fiche session (Vie scolaire) pour ajuster la réservation.
       </p>
       <DataGrid table={table} recordCount={totalCount} isLoading={isLoading}>
         <div className="border border-border rounded-xl overflow-hidden bg-card">
