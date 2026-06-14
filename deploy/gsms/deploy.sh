@@ -49,14 +49,20 @@ git_sync() {
 
 build_monorepo() {
   cd "$APP_ROOT"
+  if [[ -f apps/lms-crm/.next/standalone/apps/lms-crm/server.js ]]; then
+    echo "==> Build standalone deja present (skip pnpm build)"
+    return 0
+  fi
+  if [[ "${SKIP_BUILD:-0}" == "1" ]]; then
+    echo "ERREUR: standalone manquant et SKIP_BUILD=1"
+    exit 1
+  fi
   echo "==> pnpm install ..."
   corepack enable 2>/dev/null || true
   corepack prepare pnpm@11.5.1 --activate 2>/dev/null || true
   pnpm install --frozen-lockfile
-
-  echo "==> pnpm build (lms-crm standalone) ..."
+  echo "==> pnpm build ..."
   pnpm build
-
   if [[ ! -f apps/lms-crm/.next/standalone/apps/lms-crm/server.js ]]; then
     echo "ERREUR: build standalone manquant"
     exit 1
