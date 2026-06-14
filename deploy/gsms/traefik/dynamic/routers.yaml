@@ -1,41 +1,10 @@
-# Routage Traefik externe (host network) — une seule app lms-crm
-# Copié vers /opt/traefik/dynamic/gsms-lms-routes.yaml au deploy
+# Routage Traefik externe (host network)
+# App : hosting-global-it-ss.com → 127.0.0.1:3001
+# Homepage : monitoring.hosting-global-it-ss.com → 127.0.0.1:3005
 http:
   routers:
-    site:
+    app:
       rule: Host(`hosting-global-it-ss.com`) || Host(`www.hosting-global-it-ss.com`)
-      entryPoints: [websecure]
-      service: app
-      tls:
-        certResolver: letsencrypt
-      priority: 10
-
-    crm:
-      rule: Host(`crm.hosting-global-it-ss.com`)
-      entryPoints: [websecure]
-      service: app
-      tls:
-        certResolver: letsencrypt
-      priority: 10
-
-    app-alias:
-      rule: Host(`app.hosting-global-it-ss.com`)
-      entryPoints: [websecure]
-      service: app
-      tls:
-        certResolver: letsencrypt
-      priority: 10
-
-    api-alias:
-      rule: Host(`api.hosting-global-it-ss.com`)
-      entryPoints: [websecure]
-      service: app
-      tls:
-        certResolver: letsencrypt
-      priority: 10
-
-    docs:
-      rule: Host(`docs.hosting-global-it-ss.com`)
       entryPoints: [websecure]
       service: app
       tls:

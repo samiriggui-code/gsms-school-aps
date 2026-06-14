@@ -1,9 +1,10 @@
 ---
-- Ressources:
-    label: VPS
+- Ressources VPS:
+    label: Serveur 187.77.166.124
     cpu: true
     memory: true
     disk: /
+    uptime: true
     expanded: true
 
 - datetime:

@@ -1,9 +1,9 @@
 ---
 - Application:
-    - Site & CRM:
+    - LMS CRM:
         href: https://hosting-global-it-ss.com
-        description: App unique lms-crm — landing, CRM, docs, portails
-        icon: mdi-web
+        description: App unique — site, CRM, docs, portails
+        icon: mdi-school
         siteMonitor: https://hosting-global-it-ss.com/api/common/health
         statusStyle: dot
         server: local
@@ -11,54 +11,43 @@
         showStats: true
         target: _blank
 
-    - CRM direct:
-        href: https://crm.hosting-global-it-ss.com
-        description: Administration école
-        icon: mdi-school
-        siteMonitor: https://crm.hosting-global-it-ss.com/api/common/health
-        statusStyle: dot
-        server: local
-        container: gsms-app
-        showStats: true
-        target: _blank
-
-- Stack:
+- Infrastructure:
     - PostgreSQL:
-        description: Base lms_app
         icon: si-postgresql-#336791
+        description: Base lms_app (volume persistant)
         server: local
         container: gsms-postgres
         showStats: true
         statusStyle: dot
 
     - Redis:
-        description: Cache sessions & stats
         icon: si-redis-#DC382D
+        description: Cache sessions & stats
         server: local
         container: gsms-redis
         showStats: true
         statusStyle: dot
 
     - MinIO:
-        description: Stockage S3 uploads
         icon: si-minio-#C72E49
+        description: Stockage S3 uploads
         server: local
         container: gsms-minio
         showStats: true
         statusStyle: dot
 
     - Worker:
-        description: Rapports PDF & jobs async
         icon: mdi-cog-sync
+        description: Rapports PDF, stats, sync RH
         server: local
         container: gsms-worker
         showStats: true
         statusStyle: dot
 
-- Ops:
+- Externe:
     - n8n:
         href: https://n8n-k2pw.srv1722028.hstgr.cloud
-        description: Automatisations & webhooks GSMS
+        description: Automatisations
         icon: si-n8n-#EA4B71
         siteMonitor: https://n8n-k2pw.srv1722028.hstgr.cloud
         statusStyle: dot
@@ -66,14 +55,8 @@
 
     - Traefik:
         href: https://hosting-global-it-ss.com
-        description: Reverse proxy TLS Hostinger
+        description: TLS Let's Encrypt
         icon: si-traefikproxy-#24A1C1
-        siteMonitor: https://hosting-global-it-ss.com
+        siteMonitor: https://hosting-global-it-ss.com/api/common/health
         statusStyle: dot
         target: _blank
-
-    - VPS:
-        description: "187.77.166.124 · /opt/gsms"
-        icon: mdi-server-network
-        siteMonitor: https://crm.hosting-global-it-ss.com/api/common/health
-        statusStyle: dot

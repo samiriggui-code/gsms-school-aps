@@ -1,6 +1,6 @@
 ---
-title: GSMS — Cockpit
-description: État stack LMS · app, worker, données, n8n
+title: GSMS — Monitoring
+description: État stack · métriques VPS · conteneurs Docker
 headerStyle: boxedWidgets
 theme: dark
 color: slate
@@ -15,15 +15,15 @@ layout:
   Application:
     tab: App
     style: row
-    columns: 2
-    icon: mdi-school-outline
-  Stack:
-    tab: Stack
+    columns: 1
+    icon: mdi-web
+  Infrastructure:
+    tab: Infra
     style: row
     columns: 4
-    icon: mdi-database-outline
-  Ops:
+    icon: mdi-docker
+  Externe:
     tab: Ops
     style: row
-    columns: 3
-    icon: mdi-monitor-dashboard
+    columns: 2
+    icon: mdi-lan-connect
