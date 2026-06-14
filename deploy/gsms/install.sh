@@ -5,7 +5,7 @@ set -euo pipefail
 
 APP_ROOT="${APP_ROOT:-/opt/gsms-school}"
 GSMS_DIR="${GSMS_DIR:-/opt/gsms}"
-GIT_REPO="${GIT_REPO:-https://github.com/samiriggui-code/gsms-school-final.git}"
+GIT_REPO="${GIT_REPO:-git@github.com:samiriggui-code/gsms-school-final.git}"
 
 echo "========== Installation GSMS from Git =========="
 

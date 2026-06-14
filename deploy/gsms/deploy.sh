@@ -6,7 +6,9 @@ set -euo pipefail
 
 APP_ROOT="${APP_ROOT:-/opt/gsms-school}"
 GSMS_DIR="${GSMS_DIR:-/opt/gsms}"
-GIT_REPO="${GIT_REPO:-https://github.com/samiriggui-code/gsms-school-final.git}"
+# Repo UNIQUE — jamais gsms-school (ancien)
+GIT_REPO="${GIT_REPO:-git@github.com:samiriggui-code/gsms-school-final.git}"
+GIT_REPO_HTTPS="https://github.com/samiriggui-code/gsms-school-final.git"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "========== GSMS deploy =========="
@@ -27,24 +29,21 @@ sync_stack_config() {
 }
 
 git_sync() {
-  if [[ "${SKIP_GIT:-0}" == "1" ]]; then
-    echo "==> SKIP_GIT"
-    return 0
-  fi
   if [[ -d "$APP_ROOT/.git" ]]; then
-    echo "==> git pull ..."
+    echo "==> git pull origin main (gsms-school-final)..."
     cd "$APP_ROOT"
+    git remote set-url origin "$GIT_REPO" 2>/dev/null || true
     git fetch origin main
     git reset --hard origin/main
     return 0
   fi
-  if [[ -f "$APP_ROOT/package.json" ]]; then
-    echo "==> Source presente (archive) — pas de git"
+  echo "==> Clone gsms-school-final ..."
+  mkdir -p "$(dirname "$APP_ROOT")"
+  if git clone "$GIT_REPO" "$APP_ROOT" 2>/dev/null; then
     return 0
   fi
-  echo "==> Clone $GIT_REPO ..."
-  mkdir -p "$(dirname "$APP_ROOT")"
-  git clone "$GIT_REPO" "$APP_ROOT"
+  echo "==> SSH echoue, essai HTTPS (repo prive : deploy key requise en SSH)..."
+  git clone "$GIT_REPO_HTTPS" "$APP_ROOT"
 }
 
 build_monorepo() {

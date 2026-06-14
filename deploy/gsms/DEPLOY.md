@@ -1,4 +1,6 @@
-# Déploiement production GSMS
+# Déploiement production — repo **gsms-school-final** uniquement
+
+> Ancien repo `gsms-school` : **ne plus utiliser**.
 
 ## URLs
 
@@ -7,41 +9,44 @@
 | App LMS | https://hosting-global-it-ss.com |
 | Monitoring | https://monitoring.hosting-global-it-ss.com |
 
-Traefik externe Hostinger (host network) — ports hôte `3001` (app) et `3005` (homepage).
+## Repo Git
 
-## Stack Docker (`/opt/gsms`)
+```
+git@github.com:samiriggui-code/gsms-school-final.git
+```
 
-- `gsms-app` — Next.js lms-crm (standalone)
-- `gsms-worker` — rapports PDF, stats Redis, sync RH
-- `gsms-postgres` — volume `gsms_postgres_data`
-- `gsms-redis` — volume `gsms_redis_data`
-- `gsms-minio` — volume `gsms_minio_data`
-- `gsms-homepage` — gethomepage (CPU/RAM/disque + état conteneurs)
+Remote local : `final` → `git push final main`
 
-Conservés hors stack : **n8n**, **traefik**.
-
-## Premier déploiement (VPS vide)
+## Premier déploiement (VPS)
 
 ```bash
+# 1. Clé SSH deploy sur le VPS (Settings GitHub → Deploy keys)
+ssh-keygen -t ed25519 -f ~/.ssh/github_gsms_final -N ""
+cat ~/.ssh/github_gsms_final.pub   # à coller sur GitHub gsms-school-final
+
+# 2. ~/.ssh/config
+Host github.com
+  IdentityFile ~/.ssh/github_gsms_final
+
+# 3. Env prod (hors Git)
 mkdir -p /opt/gsms
-git clone https://github.com/samiriggui-code/gsms-school-final.git /opt/gsms-school
-cp /opt/gsms-school/deploy/gsms/.env /opt/gsms/.env   # ou créer depuis .env.example
+# copier deploy/gsms/.env → /opt/gsms/.env
 chmod 600 /opt/gsms/.env
+
+# 4. Install
+git clone git@github.com:samiriggui-code/gsms-school-final.git /opt/gsms-school
 bash /opt/gsms-school/deploy/gsms/install.sh
 ```
 
-## Mise à jour
+## Mise à jour (depuis ton PC)
 
-```bash
-cd /opt/gsms-school
-git pull origin main
-bash deploy/gsms/deploy.sh
+```powershell
+git push final main
+.\scripts\vps-git-deploy.ps1 -SkipPush   # si déjà pushé
 ```
 
-Sans reset DB : `SKIP_DB_INIT=1 bash deploy/gsms/deploy.sh`
+Ou sur le VPS :
 
-## Variables critiques
-
-Voir `deploy/gsms/.env.example` — Postgres, MinIO, SMTP, Pusher, n8n, `REPORT_APP_BASE_URL`.
-
-Le fichier `.env` réel est dans `/opt/gsms/.env` (jamais commité).
+```bash
+cd /opt/gsms-school && git pull origin main && bash deploy/gsms/deploy.sh
+```
