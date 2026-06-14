@@ -27,16 +27,24 @@ sync_stack_config() {
 }
 
 git_sync() {
-  if [[ ! -d "$APP_ROOT/.git" ]]; then
-    echo "==> Clone $GIT_REPO ..."
-    rm -rf "$APP_ROOT"
-    git clone "$GIT_REPO" "$APP_ROOT"
-  else
+  if [[ "${SKIP_GIT:-0}" == "1" ]]; then
+    echo "==> SKIP_GIT"
+    return 0
+  fi
+  if [[ -d "$APP_ROOT/.git" ]]; then
     echo "==> git pull ..."
     cd "$APP_ROOT"
     git fetch origin main
     git reset --hard origin/main
+    return 0
   fi
+  if [[ -f "$APP_ROOT/package.json" ]]; then
+    echo "==> Source presente (archive) — pas de git"
+    return 0
+  fi
+  echo "==> Clone $GIT_REPO ..."
+  mkdir -p "$(dirname "$APP_ROOT")"
+  git clone "$GIT_REPO" "$APP_ROOT"
 }
 
 build_monorepo() {
