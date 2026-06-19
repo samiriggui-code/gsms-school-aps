@@ -1,22 +1,41 @@
 ---
 title: Catalogue de formations
-description: Enrichir le catalogue CRM et le landing
+description: Publier et mettre à jour le catalogue visible sur le site public
 ---
 
 # Catalogue formations
 
-## Accès
+## Accès CRM
 
 **Gestion académique → Vie scolaire → Formations**
 
-## Créer / publier
+## Publier sur le site public
 
-1. Renseigner la fiche formation (intitulé, parcours, durée, objectifs).
-2. Activer l'**offre catalogue**.
-3. Créer des **sessions** à venir.
+Le landing n'affiche que les formations **actives** de votre catalogue CRM (pas la liste complète du référentiel).
 
-## Lien landing
+### Workflow recommandé
 
-Formations actives + sessions = visibles sur le site public.
+<Steps>
+  <Step title="Mettre le landing en maintenance">
+    Bouton **« Mettre le landing en maintenance »** dans la barre d'outils du catalogue (ou CMS → Pages landing).
+    Les visiteurs voient une page de maintenance pendant vos modifications.
+  </Step>
+  <Step title="Modifier le catalogue">
+    Ajouter, éditer ou archiver des offres. Seules les offres au statut **Actif** seront visibles après republication.
+  </Step>
+  <Step title="Republier">
+    Bouton **« Republier le catalogue sur le landing »**. Le site repasse en ligne avec le catalogue à jour.
+  </Step>
+</Steps>
 
-Suite : [Catalogue landing](/landing/catalogue-sessions)
+## Créer une offre
+
+1. **Ajouter au catalogue** — choisir une formation du référentiel ou enrichir la fiche.
+2. Renseigner tarif, financement, prérequis et programme.
+3. Passer le statut catalogue à **Actif**.
+
+## Sessions
+
+Créer des **sessions à venir** pour chaque formation publiée.
+
+Suite : [Catalogue et sessions sur le landing](/landing/catalogue-sessions)

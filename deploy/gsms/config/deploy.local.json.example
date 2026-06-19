@@ -1,12 +1,12 @@
 {
-  "SshHost": "187.77.166.124",
+  "SshHost": "your.vps.ip.or.hostname",
   "SshUser": "root",
-  "SshKey": "C:\\Users\\samir\\.ssh\\id_ed25519",
+  "SshKey": "C:\\Users\\you\\.ssh\\id_ed25519",
   "AppRoot": "/opt/gsms-school",
   "GsmsDir": "/opt/gsms",
   "RemoteArchive": "/tmp/gsms-school.tar.gz",
-  "Domain": "hosting-global-it-ss.com",
-  "ServerIp": "187.77.166.124",
+  "Domain": "app.example.com",
+  "ServerIp": "your.vps.ip",
   "RebuildWorker": true,
   "SkipDbInit": false,
   "ResetDb": false

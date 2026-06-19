@@ -26,7 +26,6 @@
 								"pages": [
 									"introduction",
 									"quickstart",
-									"lms/monorepo-status",
 									"lms/parcours-candidat-complet"
 								]
 							},
@@ -94,7 +93,6 @@
 								"pages": [
 									"en/introduction",
 									"en/quickstart",
-									"lms/monorepo-status",
 									"en/lms/parcours-candidat-complet"
 								]
 							},

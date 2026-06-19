@@ -29,6 +29,15 @@ build/
 # Archives déploiement SCP (scripts/pack-for-vps.ps1)
 gsms-school-*.tar.gz
 
+# Fichiers médias uploadés en local (ne pas versionner)
+apps/lms-crm/public/uploads/**
+!apps/lms-crm/public/uploads/**/.keep
+!apps/lms-crm/public/uploads/**/.gitkeep
+!apps/lms-crm/public/uploads/.gitkeep
+
+# Artefacts temporaires
+tmp-landing.html
+
 # Logs & OS
 *.log
 .DS_Store
