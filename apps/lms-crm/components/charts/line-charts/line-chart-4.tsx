@@ -37,7 +37,7 @@ const engagementData = [
 const chartConfig = {
   facebook: {
     label: 'Facebook',
-    color: 'var(--color-blue-600)',
+    color: 'var(--color-indigo-600)',
   },
   instagram: {
     label: 'Instagram',

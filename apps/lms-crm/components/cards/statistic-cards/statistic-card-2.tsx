@@ -74,7 +74,7 @@ const stats = [
     positive: false,
     prefix: '',
     suffix: '',
-    bg: 'bg-blue-600',
+    bg: 'bg-indigo-600',
     svg: (
       <svg
         className="absolute right-0 top-0 w-48 h-48 pointer-events-none"

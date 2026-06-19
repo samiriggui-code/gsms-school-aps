@@ -15,15 +15,19 @@ export async function POST(request: NextRequest, { params }: Params) {
   if (!maintenanceId) return fail('Identifiant intervention requis.', 400);
 
   let notes: string | null | undefined;
+  let outcome: 'restock' | 'out_of_service' | undefined;
   try {
     const body = await request.json();
     notes = body?.notes !== undefined ? String(body.notes || '').trim() || null : undefined;
+    if (body?.outcome === 'out_of_service' || body?.outcome === 'restock') {
+      outcome = body.outcome;
+    }
   } catch {
     notes = undefined;
   }
 
   try {
-    const item = await completeEquipmentMaintenance(prisma, maintenanceId, notes);
+    const item = await completeEquipmentMaintenance(prisma, maintenanceId, { notes, outcome });
     return ok({ item });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Clôture impossible.';

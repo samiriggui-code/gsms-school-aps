@@ -47,6 +47,13 @@ enum FileAssetStatus {
   ARCHIVED
 }
 
+enum FileAssetVersionStatus {
+  ACTIVE
+  SUPERSEDED
+  ARCHIVED
+  LEGAL_HOLD
+}
+
 enum ReportJobStatus {
   PENDING
   RUNNING
@@ -187,6 +194,7 @@ model User {
   userCategory            UserCategory  @default(INTERNAL)
   subcontractorId         String?
   jobFunction             String?
+  jobPositionId           String?
   qualification           String?
   birthDate               DateTime?
   birthPlace              String?
@@ -212,10 +220,11 @@ model User {
   invitedByUserId         String?
   isProtected             Boolean       @default(false)
 
-  role      UserRole    @relation(fields: [roleId], references: [id])
-  systemLog SystemLog[]
-  accounts  Account[]
-  Session   Session[]
+  role        UserRole    @relation(fields: [roleId], references: [id])
+  jobPosition RhPosition? @relation(fields: [jobPositionId], references: [id], onDelete: SetNull)
+  systemLog   SystemLog[]
+  accounts    Account[]
+  Session     Session[]
 
   // LMS relations
   courses                  Course[]
@@ -237,10 +246,18 @@ model User {
   formationSessionParticipants FormationSessionParticipant[]
   formationAttestations        FormationAttestation[]
   candidatures                 Candidature[]
+  complianceDossiers           ComplianceDossier[]           @relation("ComplianceDossierUser")
+  complianceItemsValidated     ComplianceDossierItem[]       @relation("ComplianceItemValidator")
+  documentRequestsRequested    DocumentRequest[]             @relation("DocumentRequestRequester")
+  complianceEventsActed        ComplianceItemEvent[]         @relation("ComplianceEventActor")
   /**
    * Sessions formation CRM dont cet utilisateur est le formateur référent.
    */
   formationSessionsTrained     FormationSession[]            @relation("FormationSessionTrainer")
+  /**
+   * Sessions dont cet utilisateur modère le chat pédagogique.
+   */
+  formationSessionsModerated   FormationSession[]            @relation("FormationSessionModerator")
 
   certificates    UserCertificate[]
   discussions     Discussion[]
@@ -248,60 +265,101 @@ model User {
   discussionVotes DiscussionVote[]
   commentVotes    CommentVote[]
 
-  trails                 Trail[]
-  trailRuns              TrailRun[]
-  apiTokens              ApiToken[]
-  webhooks               WebhookEndpoint[]
-  businessRoles          UserBusinessRole[]
-  collaborateurProfile   CollaborateurProfile?
-  formateurProfile       FormateurProfile?
-  managedCollaborateurs  CollaborateurProfile[] @relation("CollaborateurManager")
-  createdFileAssets      FileAsset[]            @relation("FileAssetCreatedBy")
-  requestedReportJobs    ReportGenerationJob[]  @relation("ReportJobsRequested")
-  assignedSupportTickets SupportTicket[]        @relation("SupportTicketAssignee")
-  createdSupportTickets  SupportTicket[]        @relation("SupportTicketCreatedBy")
+  trails                   Trail[]
+  trailRuns                TrailRun[]
+  apiTokens                ApiToken[]
+  webhooks                 WebhookEndpoint[]
+  businessRoles            UserBusinessRole[]
+  collaborateurProfile     CollaborateurProfile?
+  formateurProfile         FormateurProfile?
+  managedCollaborateurs    CollaborateurProfile[] @relation("CollaborateurManager")
+  createdFileAssets        FileAsset[]            @relation("FileAssetCreatedBy")
+  createdFileAssetVersions FileAssetVersion[]     @relation("FileAssetVersionCreatedBy")
+  requestedReportJobs      ReportGenerationJob[]  @relation("ReportJobsRequested")
+  assignedSupportTickets   SupportTicket[]        @relation("SupportTicketAssignee")
+  createdSupportTickets    SupportTicket[]        @relation("SupportTicketCreatedBy")
 
-  inAppNotifications InAppNotification[]
-  chatParticipants   ChatParticipant[]
-  chatMessages       ChatMessage[]
+  inAppNotifications      InAppNotification[]
+  chatParticipants        ChatParticipant[]
+  chatMessages            ChatMessage[]
+  chatInvitationsReceived ChatInvitation[]    @relation("ChatInvitationInvitee")
+  chatInvitationsSent     ChatInvitation[]    @relation("ChatInvitationInviter")
 
-  rhTeamsLed          RhTeam[]       @relation("RhTeamLeader")
-  rhTeamMemberships   RhTeamMember[]
-  rhOrgUnitsManaged   RhOrgUnit[]    @relation("RhOrgUnitManager")
-  rhAbsences          RhAbsence[]
-  rhAbsencesValidated RhAbsence[]    @relation("RhAbsenceValidatedBy")
+  rhTeamsLed                 RhTeam[]           @relation("RhTeamLeader")
+  rhTeamMemberships          RhTeamMember[]
+  rhOrgUnitsManaged          RhOrgUnit[]        @relation("RhOrgUnitManager")
+  rhAbsences                 RhAbsence[]
+  rhAbsencesValidated        RhAbsence[]        @relation("RhAbsenceValidatedBy")
+  venueRoomBookingsOrganized VenueRoomBooking[] @relation("VenueRoomBookingOrganizer")
 
   @@index([invitedByUserId])
   @@index([roleId])
+  @@index([jobPositionId])
   @@index([status])
 }
 
 model FileAsset {
-  id           String              @id @default(uuid())
-  module       String
-  entityType   String
-  entityId     String?
-  category     String?
-  originalName String
-  mimeType     String
-  size         Int
-  storageKey   String              @unique
-  url          String
-  visibility   FileAssetVisibility @default(PRIVATE)
-  status       FileAssetStatus     @default(ACTIVE)
-  provider     String              @default("s3")
-  metadata     Json?               @default("{}")
-  createdById  String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
-  deletedAt    DateTime?
+  id               String              @id @default(uuid())
+  module           String
+  entityType       String
+  entityId         String?
+  category         String?
+  originalName     String
+  mimeType         String
+  size             Int
+  issuedAt         DateTime?
+  expiresAt        DateTime?
+  issuedBy         String?
+  documentRef      String?
+  storageKey       String              @unique
+  url              String
+  visibility       FileAssetVisibility @default(PRIVATE)
+  status           FileAssetStatus     @default(ACTIVE)
+  provider         String              @default("s3")
+  metadata         Json?               @default("{}")
+  createdById      String?
+  currentVersionId String?             @unique
+  archivedAt       DateTime?
+  archiveReason    String?
+  legalHold        Boolean             @default(false)
+  retentionUntil   DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  deletedAt        DateTime?
 
-  createdBy  User?                 @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  reportJobs ReportGenerationJob[]
+  createdBy              User?                   @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  currentVersion         FileAssetVersion?       @relation("FileAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
+  versions               FileAssetVersion[]      @relation("FileAssetVersions")
+  reportJobs             ReportGenerationJob[]
+  complianceDossierItems ComplianceDossierItem[]
+  complianceItemEvents   ComplianceItemEvent[]
 
   @@index([module, entityType, entityId])
   @@index([status, visibility])
   @@index([createdById])
+  @@index([archivedAt])
+}
+
+model FileAssetVersion {
+  id            String                 @id @default(uuid())
+  fileAssetId   String
+  versionNumber Int
+  storageKey    String                 @unique
+  url           String
+  mimeType      String
+  size          Int
+  checksum      String?
+  changeReason  String?
+  status        FileAssetVersionStatus @default(ACTIVE)
+  createdById   String?
+  createdAt     DateTime               @default(now())
+
+  fileAsset  FileAsset  @relation("FileAssetVersions", fields: [fileAssetId], references: [id], onDelete: Cascade)
+  currentFor FileAsset? @relation("FileAssetCurrentVersion")
+  createdBy  User?      @relation("FileAssetVersionCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([fileAssetId, versionNumber])
+  @@index([fileAssetId, status])
 }
 
 /// Job asynchrone de génération document (PDF / Excel / CSV) — traité par @repo/workers.
@@ -635,49 +693,86 @@ model ClientSite {
   @@index([name])
 }
 
-/// Unité organisationnelle RH (agence, pôle, etc.)
+enum RhOrgUnitType {
+  DIRECTION
+  SERVICE
+  POLE
+  CAMPUS
+}
+
+enum RhTeamType {
+  PEDAGOGICAL
+  TRAINER_POOL
+  HR_ADMIN
+  QUALITY
+  ADMIN
+}
+
+enum RhTeamSector {
+  HEADQUARTERS
+  CAMPUS
+  EXTERNAL
+}
+
+/// Cycle de vie d'une équipe liée à une session catalogue.
+enum RhTeamLifecycleStatus {
+  ACTIVE
+  POST_EXAM
+  ARCHIVED
+}
+
+/// Unité organisationnelle RH (direction, pôle, campus…)
 model RhOrgUnit {
-  id         String   @id @default(uuid())
+  id         String        @id @default(uuid())
   name       String
-  type       String   @default("AGENCE")
+  type       RhOrgUnitType @default(SERVICE)
   parentId   String?
   managerId  String?
   positionId String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 
   parent   RhOrgUnit?  @relation("RhOrgUnitTree", fields: [parentId], references: [id], onDelete: SetNull)
   children RhOrgUnit[] @relation("RhOrgUnitTree")
   manager  User?       @relation("RhOrgUnitManager", fields: [managerId], references: [id], onDelete: SetNull)
+  position RhPosition? @relation(fields: [positionId], references: [id], onDelete: SetNull)
   teams    RhTeam[]
 
   @@index([parentId])
   @@index([managerId])
+  @@index([positionId])
 }
 
-/// Équipe opérationnelle RH
+/// Équipe opérationnelle RH (pôles pédagogiques, formateurs, qualité…)
 model RhTeam {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  type        String   @default("SECURITE")
-  sector      String   @default("CLIENT")
-  image       String?
-  siteId      String?
-  orgUnitId   String?
-  leaderId    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String                @id @default(uuid())
+  name               String
+  description        String?
+  type               RhTeamType            @default(PEDAGOGICAL)
+  sector             RhTeamSector          @default(CAMPUS)
+  image              String?
+  siteId             String?
+  orgUnitId          String?
+  leaderId           String?
+  /// Équipe auto-provisionnée pour une session formation (1:1).
+  formationSessionId String?               @unique
+  lifecycleStatus    RhTeamLifecycleStatus @default(ACTIVE)
+  lifecycleClosedAt  DateTime?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
 
-  site    ClientSite?    @relation(fields: [siteId], references: [id], onDelete: SetNull)
-  orgUnit RhOrgUnit?     @relation(fields: [orgUnitId], references: [id], onDelete: SetNull)
-  leader  User?          @relation("RhTeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
-  members RhTeamMember[]
+  site              ClientSite?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  orgUnit           RhOrgUnit?         @relation(fields: [orgUnitId], references: [id], onDelete: SetNull)
+  leader            User?              @relation("RhTeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  formationSession  FormationSession?  @relation(fields: [formationSessionId], references: [id], onDelete: SetNull)
+  members           RhTeamMember[]
+  chatConversations ChatConversation[]
 
   @@index([siteId])
   @@index([orgUnitId])
   @@index([leaderId])
   @@index([name])
+  @@index([lifecycleStatus])
 }
 
 model RhTeamMember {
@@ -727,7 +822,7 @@ model RhAbsence {
   @@index([startDate])
 }
 
-/// Référentiel postes / fonctions (org units, équipes)
+/// Référentiel postes / fonctions métier école
 model RhPosition {
   id        String   @id @default(uuid())
   label     String
@@ -735,6 +830,9 @@ model RhPosition {
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  users    User[]
+  orgUnits RhOrgUnit[]
 
   @@index([sortOrder])
 }
@@ -973,11 +1071,45 @@ model FormationVenueRoom {
   isActive   Boolean            @default(true)
   sortOrder  Int                @default(0)
   sessions   FormationSession[]
+  bookings   VenueRoomBooking[]
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @updatedAt
 
   @@index([isActive])
   @@index([sortOrder])
+}
+
+enum VenueRoomBookingKind {
+  STAFF_MEETING
+  INFO_MEETING
+  OTHER
+}
+
+enum VenueRoomBookingStatus {
+  ACTIVE
+  CANCELLED
+}
+
+/// Réservation ponctuelle de salle (réunion staff, réunion info, etc.) — hors session catalogue.
+model VenueRoomBooking {
+  id              String                 @id @default(uuid())
+  venueRoomId     String
+  venueRoom       FormationVenueRoom     @relation(fields: [venueRoomId], references: [id], onDelete: Cascade)
+  title           String
+  kind            VenueRoomBookingKind   @default(STAFF_MEETING)
+  status          VenueRoomBookingStatus @default(ACTIVE)
+  startAt         DateTime
+  endAt           DateTime
+  notes           String?                @db.Text
+  organizerUserId String?
+  organizer       User?                  @relation("VenueRoomBookingOrganizer", fields: [organizerUserId], references: [id], onDelete: SetNull)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  @@index([venueRoomId])
+  @@index([startAt])
+  @@index([endAt])
+  @@index([status])
 }
 
 model FormationSession {
@@ -1001,6 +1133,13 @@ model FormationSession {
   trainerUserId String?
   trainer       User?   @relation("FormationSessionTrainer", fields: [trainerUserId], references: [id], onDelete: SetNull)
 
+  /// Référent pédagogique modérateur du chat de session.
+  moderatorUserId String?
+  moderator       User?   @relation("FormationSessionModerator", fields: [moderatorUserId], references: [id], onDelete: SetNull)
+
+  /// Groupe chat lié (formateur + élèves + modérateur) — relation inverse.
+  chatConversation ChatConversation?
+
   /// Salle allouée (disponibilité = pas de autre session même salle sur dates qui se chevauchent).
   venueRoomId String?
   venueRoom   FormationVenueRoom? @relation(fields: [venueRoomId], references: [id], onDelete: SetNull)
@@ -1023,6 +1162,7 @@ model FormationSession {
   participants        FormationSessionParticipant[]
   attestations        FormationAttestation[]
   portalAnnouncements PortalSessionAnnouncement[]
+  rhTeam              RhTeam?
 
   candidaturesInterested   Candidature[]  @relation("CandidatureInterestedSession")
   financeDevisSessionLinks FinanceDevis[] @relation("FinanceDevisLinkedSession")
@@ -1087,9 +1227,11 @@ model Candidature {
   notes    String? @db.Text
   metadata Json    @default("{}")
 
-  sessionEnrollments FormationSessionParticipant[]
-  attestations       FormationAttestation[]
-  financeDevis       FinanceDevis[]
+  documentsCompleteAt DateTime?
+  complianceDossiers  ComplianceDossier[]
+  sessionEnrollments  FormationSessionParticipant[]
+  attestations        FormationAttestation[]
+  financeDevis        FinanceDevis[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2087,6 +2229,13 @@ enum InAppNotificationCategory {
   TEAM
 }
 
+/// Canal UX simplifié — dossier apprenant, pédagogie, établissement CRM.
+enum InAppNotificationChannel {
+  DOSSIER
+  PEDAGOGIE
+  ETABLISSEMENT
+}
+
 /// File d'événements métier — traitée par `@repo/workers` → `InAppNotification` (+ widgets landing).
 enum CrmEventOutboxStatus {
   PENDING
@@ -2098,6 +2247,8 @@ enum CrmEventOutboxStatus {
 enum CrmEventAudience {
   BROADCAST_ACTIVE_USERS
   USER_IDS
+  ROLE_SLUGS
+  PERMISSION_SLUGS
 }
 
 enum CrmEventSeverity {
@@ -2107,23 +2258,25 @@ enum CrmEventSeverity {
 }
 
 model CrmEventOutbox {
-  id          String                    @id @default(uuid())
-  eventType   String
-  moduleKey   String
-  specialty   String?
-  category    InAppNotificationCategory
-  severity    CrmEventSeverity          @default(INFO)
-  title       String
-  body        String                    @db.Text
-  href        String?
-  audience    CrmEventAudience          @default(BROADCAST_ACTIVE_USERS)
-  userIds     String[]                  @default([])
-  payload     Json?                     @default("{}")
-  status      CrmEventOutboxStatus      @default(PENDING)
-  error       String?                   @db.Text
-  processedAt DateTime?
-  createdById String?
-  createdAt   DateTime                  @default(now())
+  id              String                    @id @default(uuid())
+  eventType       String
+  moduleKey       String
+  specialty       String?
+  category        InAppNotificationCategory
+  severity        CrmEventSeverity          @default(INFO)
+  title           String
+  body            String                    @db.Text
+  href            String?
+  audience        CrmEventAudience          @default(PERMISSION_SLUGS)
+  userIds         String[]                  @default([])
+  roleSlugs       String[]                  @default([])
+  permissionSlugs String[]                  @default([])
+  payload         Json?                     @default("{}")
+  status          CrmEventOutboxStatus      @default(PENDING)
+  error           String?                   @db.Text
+  processedAt     DateTime?
+  createdById     String?
+  createdAt       DateTime                  @default(now())
 
   @@index([status, createdAt])
   @@index([moduleKey, createdAt])
@@ -2134,6 +2287,7 @@ model InAppNotification {
   userId     String
   user       User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
   category   InAppNotificationCategory @default(SYSTEM)
+  channel    InAppNotificationChannel  @default(ETABLISSEMENT)
   title      String
   body       String                    @db.Text
   href       String?
@@ -2145,6 +2299,7 @@ model InAppNotification {
   @@index([userId, readAt])
   @@index([userId, archivedAt])
   @@index([userId, createdAt])
+  @@index([userId, channel])
 }
 
 enum ChatConversationType {
@@ -2152,26 +2307,68 @@ enum ChatConversationType {
   GROUP
 }
 
+enum ChatParticipantRole {
+  MEMBER
+  TRAINER
+  MODERATOR
+  OBSERVER
+}
+
+enum ChatInvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
 model ChatConversation {
-  id           String               @id @default(uuid())
-  type         ChatConversationType @default(GROUP)
-  title        String?
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-  participants ChatParticipant[]
-  messages     ChatMessage[]
+  id                 String               @id @default(uuid())
+  type               ChatConversationType @default(GROUP)
+  title              String?
+  rhTeamId           String?
+  formationSessionId String?              @unique
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  rhTeam             RhTeam?              @relation(fields: [rhTeamId], references: [id], onDelete: SetNull)
+  formationSession   FormationSession?    @relation(fields: [formationSessionId], references: [id], onDelete: SetNull)
+  participants       ChatParticipant[]
+  messages           ChatMessage[]
+  invitations        ChatInvitation[]
 
   @@index([updatedAt])
+  @@index([rhTeamId])
+}
+
+model ChatInvitation {
+  id             String               @id @default(uuid())
+  conversationId String
+  inviteeUserId  String
+  invitedById    String
+  status         ChatInvitationStatus @default(PENDING)
+  message        String?              @db.Text
+  expiresAt      DateTime?
+  respondedAt    DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  invitee      User             @relation("ChatInvitationInvitee", fields: [inviteeUserId], references: [id], onDelete: Cascade)
+  invitedBy    User             @relation("ChatInvitationInviter", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, inviteeUserId])
+  @@index([inviteeUserId, status])
+  @@index([conversationId])
 }
 
 model ChatParticipant {
-  id             String           @id @default(uuid())
+  id             String              @id @default(uuid())
   conversationId String
   userId         String
+  role           ChatParticipantRole @default(MEMBER)
   lastReadAt     DateTime?
-  joinedAt       DateTime         @default(now())
-  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt       DateTime            @default(now())
+  conversation   ChatConversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([conversationId, userId])
   @@index([userId])
@@ -2188,4 +2385,207 @@ model ChatMessage {
 
   @@index([conversationId, createdAt])
   @@index([senderId])
+}
+
+// ─── Conformité documentaire (gouvernance) ───────────────────────────────────
+
+enum ComplianceSubjectType {
+  USER
+  CANDIDATURE
+  COLLABORATEUR
+  FORMATEUR
+  STAGIAIRE
+  SCHOOL
+  FORMATION
+  SESSION
+  E_FORMATION_ENROLLMENT
+}
+
+enum ComplianceDossierKind {
+  CANDIDATURE_ADMISSION
+  CANDIDATURE_CNAPS
+  STAGIAIRE_SESSION
+  E_FORMATION_ACCESS
+  COLLABORATEUR_ONBOARDING
+  COLLABORATEUR_RH
+  FORMATEUR_HABILITATION
+  SCHOOL_QUALIOPI
+  SCHOOL_CNAPS_AGREMENT
+  SCHOOL_NDA
+}
+
+enum ComplianceDossierStatus {
+  INCOMPLETE
+  COMPLETE
+  EXPIRED
+  WAIVED
+  ARCHIVED
+}
+
+enum ComplianceItemStatus {
+  MISSING
+  REQUESTED
+  RECEIVED
+  VALIDATED
+  REJECTED
+  EXPIRED
+  WAIVED
+}
+
+enum ComplianceUploader {
+  SUBJECT
+  SCHOOL
+  RH
+  ADMIN
+}
+
+enum DocumentRequestStatus {
+  OPEN
+  FULFILLED
+  CANCELLED
+  EXPIRED
+}
+
+enum DocumentRequestChannel {
+  IN_APP
+  EMAIL
+  SMS
+}
+
+/// Catalogue : modèle de dossier par situation métier (admission, CNAPS, onboarding RH…).
+model DocumentRequirementTemplate {
+  id          String                @id @default(uuid())
+  kind        ComplianceDossierKind @unique
+  label       String
+  description String?               @db.Text
+  moduleKey   String
+  isActive    Boolean               @default(true)
+  rules       Json?                 @default("{}")
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  items DocumentRequirementTemplateItem[]
+}
+
+model DocumentRequirementTemplateItem {
+  id           String             @id @default(uuid())
+  templateId   String
+  code         String
+  label        String
+  description  String?            @db.Text
+  required     Boolean            @default(true)
+  fileCategory String
+  uploadedBy   ComplianceUploader @default(SUBJECT)
+  expiresField String?
+  sortOrder    Int                @default(0)
+  conditions   Json?              @default("{}")
+
+  template     DocumentRequirementTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  dossierItems ComplianceDossierItem[]
+
+  @@unique([templateId, code])
+  @@index([templateId, sortOrder])
+}
+
+/// Instance de dossier pour un sujet (candidature, user, école…).
+model ComplianceDossier {
+  id              String                  @id @default(uuid())
+  kind            ComplianceDossierKind
+  subjectType     ComplianceSubjectType
+  subjectId       String
+  userId          String?
+  candidatureId   String?
+  formationId     String?
+  sessionId       String?
+  status          ComplianceDossierStatus @default(INCOMPLETE)
+  completenessPct Int                     @default(0)
+  dueAt           DateTime?
+  metadata        Json                    @default("{}")
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  user        User?                   @relation("ComplianceDossierUser", fields: [userId], references: [id], onDelete: SetNull)
+  candidature Candidature?            @relation(fields: [candidatureId], references: [id], onDelete: Cascade)
+  items       ComplianceDossierItem[]
+  requests    DocumentRequest[]
+  events      ComplianceItemEvent[]
+
+  @@unique([kind, subjectType, subjectId])
+  @@index([userId])
+  @@index([candidatureId])
+  @@index([status])
+  @@index([kind])
+}
+
+model ComplianceDossierItem {
+  id                 String               @id @default(uuid())
+  dossierId          String
+  templateItemId     String?
+  code               String
+  label              String
+  fileCategory       String
+  required           Boolean              @default(true)
+  uploadedBy         ComplianceUploader   @default(SUBJECT)
+  status             ComplianceItemStatus @default(MISSING)
+  fileAssetId        String?
+  fileAssetVersionId String?
+  expiresAt          DateTime?
+  validatedAt        DateTime?
+  validatedById      String?
+  rejectionReason    String?              @db.Text
+  lastCheckedAt      DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  dossier      ComplianceDossier                @relation(fields: [dossierId], references: [id], onDelete: Cascade)
+  templateItem DocumentRequirementTemplateItem? @relation(fields: [templateItemId], references: [id], onDelete: SetNull)
+  fileAsset    FileAsset?                       @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+  validatedBy  User?                            @relation("ComplianceItemValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  requests     DocumentRequest[]
+  events       ComplianceItemEvent[]
+
+  @@unique([dossierId, code])
+  @@index([dossierId, status])
+  @@index([fileAssetId])
+}
+
+model DocumentRequest {
+  id            String                 @id @default(uuid())
+  dossierId     String
+  dossierItemId String
+  status        DocumentRequestStatus  @default(OPEN)
+  channel       DocumentRequestChannel @default(IN_APP)
+  message       String?                @db.Text
+  dueAt         DateTime?
+  sentAt        DateTime?
+  fulfilledAt   DateTime?
+  requestedById String?
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+
+  dossier     ComplianceDossier     @relation(fields: [dossierId], references: [id], onDelete: Cascade)
+  dossierItem ComplianceDossierItem @relation(fields: [dossierItemId], references: [id], onDelete: Cascade)
+  requestedBy User?                 @relation("DocumentRequestRequester", fields: [requestedById], references: [id], onDelete: SetNull)
+
+  @@index([dossierId, status])
+  @@index([dossierItemId])
+}
+
+model ComplianceItemEvent {
+  id            String   @id @default(uuid())
+  dossierId     String
+  dossierItemId String?
+  eventType     String
+  actorId       String?
+  fileAssetId   String?
+  payload       Json?    @default("{}")
+  createdAt     DateTime @default(now())
+
+  dossier     ComplianceDossier      @relation(fields: [dossierId], references: [id], onDelete: Cascade)
+  dossierItem ComplianceDossierItem? @relation(fields: [dossierItemId], references: [id], onDelete: SetNull)
+  actor       User?                  @relation("ComplianceEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+  fileAsset   FileAsset?             @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+
+  @@index([dossierId, createdAt])
+  @@index([dossierItemId])
 }

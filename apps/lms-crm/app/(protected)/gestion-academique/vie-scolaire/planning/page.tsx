@@ -8,7 +8,7 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { ParcoursSessionPlanningPanel } from './components/parcours-session-planning-panel';
+import { VieScolairePlanningPanel } from './components/vie-scolaire-planning-panel';
 
 export default function Page() {
   const { title, description } = usePageToolbarMeta('/gestion-academique/vie-scolaire/planning');
@@ -24,7 +24,7 @@ export default function Page() {
       </Container>
 
       <Container className="space-y-5 lg:space-y-7.5">
-        <ParcoursSessionPlanningPanel />
+        <VieScolairePlanningPanel />
       </Container>
     </>
   );

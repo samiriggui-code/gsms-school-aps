@@ -8,6 +8,7 @@ export {
   FormationSessionEnrollmentStatus,
   FinanceDevisStatus,
   LeadStatus,
+  ComplianceItemStatus,
 } from '../generated/client';
 export {
   LANDING_LEAD_SOURCES,

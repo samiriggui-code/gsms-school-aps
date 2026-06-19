@@ -64,7 +64,7 @@ export const MODULE_WORKSPACE_PAGE_META: Record<ModuleWorkspaceViewKey, ModuleWo
   },
   'gouvernance-audit': {
     title: 'Audit documentaire',
-    description: 'Journal des accès et actions sur la plateforme.',
+    description: 'Piste d\'audit conformité et cycle de vie des fichiers GED.',
   },
   'pilotage-alertes': {
     title: 'Alertes',

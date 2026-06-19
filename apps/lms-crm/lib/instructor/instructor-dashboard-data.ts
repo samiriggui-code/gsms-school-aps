@@ -146,7 +146,7 @@ function buildHighlights(
     overallProgress: stats.avgProgressPercent,
     trend: activeTrainees > 0 ? Math.min(100, Math.round((activeTrainees / Math.max(trainees.length, 1)) * 100)) : 0,
     categories: [
-      { badgeColor: 'bg-blue-500', label: 'Sessions' },
+      { badgeColor: 'bg-indigo-500', label: 'Sessions' },
       { badgeColor: 'bg-green-500', label: 'Stagiaires' },
       { badgeColor: 'bg-violet-500', label: 'E-formation' },
     ],

@@ -2,6 +2,10 @@
 
 import { useMemo } from 'react';
 import { useSession } from 'next-auth/react';
+import {
+  CRM_PERMISSION,
+  sessionHasPermission,
+} from '@/lib/auth/crm-permissions';
 
 type CompanyInfo = {
   id: string;
@@ -23,7 +27,7 @@ type AppState = {
   isLoading: boolean;
 };
 
-type PermissionsState = {
+export type PermissionsState = {
   canAccessPilotage: boolean;
   canAccessRessources: boolean;
   canAccessOperations: boolean;
@@ -38,23 +42,28 @@ type PermissionsState = {
   canAccessSupport: boolean;
 };
 
-const SOLO_PERMISSIONS: PermissionsState = {
-  canAccessPilotage: true,
-  canAccessRessources: true,
-  canAccessOperations: true,
-  canAccessSites: true,
-  canAccessInterventions: true,
-  canAccessQualite: true,
-  canAccessCommunication: true,
-  canAccessDocuments: true,
-  canAccessAdminFacturation: true,
-  canAccessParametres: true,
-  canAccessSecurite: true,
-  canAccessSupport: true,
-};
+function buildPermissions(session: ReturnType<typeof useSession>['data']): PermissionsState {
+  const check = (slug: string) => sessionHasPermission(session, slug);
+
+  return {
+    canAccessPilotage: check(CRM_PERMISSION.pilotageView),
+    canAccessRessources: check(CRM_PERMISSION.ressourcesView),
+    canAccessOperations: check(CRM_PERMISSION.academiqueView),
+    canAccessSites: check(CRM_PERMISSION.academiqueView),
+    canAccessInterventions: check(CRM_PERMISSION.academiqueView),
+    canAccessQualite: check(CRM_PERMISSION.pilotageView),
+    canAccessCommunication: check(CRM_PERMISSION.communicationView),
+    canAccessDocuments: check(CRM_PERMISSION.securiteView),
+    canAccessAdminFacturation: check(CRM_PERMISSION.financeView),
+    canAccessParametres: check(CRM_PERMISSION.securiteView),
+    canAccessSecurite: check(CRM_PERMISSION.securiteView),
+    canAccessSupport: check(CRM_PERMISSION.supportView),
+  };
+}
 
 export function usePermissions(): PermissionsState {
-  return SOLO_PERMISSIONS;
+  const { data: session } = useSession();
+  return useMemo(() => buildPermissions(session), [session]);
 }
 
 export function useAppContext(): AppState {
@@ -84,4 +93,3 @@ export function useAppContext(): AppState {
     };
   }, [session, status]);
 }
-

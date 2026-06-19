@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
+import { notifyEquipmentMaintenanceStarted } from '@repo/api-core';
 import {
   requireGestionRessourcesEdit,
   requireGestionRessourcesView,
@@ -95,6 +96,13 @@ export async function POST(
         data: { status: 'MAINTENANCE' },
       });
       return maintenance;
+    });
+
+    await notifyEquipmentMaintenanceStarted(prisma, {
+      equipmentId,
+      maintenanceId: item.id,
+      title,
+      actorUserId: auth.userId ?? null,
     });
 
     return ok({ item });

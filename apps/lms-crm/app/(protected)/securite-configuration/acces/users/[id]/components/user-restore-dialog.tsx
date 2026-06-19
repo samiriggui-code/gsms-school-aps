@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { LoaderCircleIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -10,12 +11,13 @@ import { apiFetch } from '@/lib/api';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import {
   Form,
   FormControl,
@@ -25,24 +27,21 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { LoaderCircleIcon } from 'lucide-react';
+import { VIE_SCOLAIRE_SHEET_COMPACT } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import { User } from '@/app/models/user';
 
-// Validation schema for email confirmation
 const EmailConfirmationSchema = (userEmail: string) =>
   z.object({
     confirmEmail: z
       .string()
-      .nonempty({ message: 'Email is required.' })
-      .email({ message: 'Please enter a valid email address.' })
+      .nonempty({ message: 'L’email est requis.' })
+      .email({ message: 'Email invalide.' })
       .refine((value) => value === userEmail, {
-        message: 'Email confirmation does not match.',
+        message: 'L’email ne correspond pas.',
       }),
   });
 
-type EmailConfirmationSchemaType = z.infer<
-  ReturnType<typeof EmailConfirmationSchema>
->;
+type EmailConfirmationSchemaType = z.infer<ReturnType<typeof EmailConfirmationSchema>>;
 
 interface UserRestoreDialogProps {
   open: boolean;
@@ -50,140 +49,111 @@ interface UserRestoreDialogProps {
   user: User;
 }
 
-const UserRestoreDialog = ({
-  open,
-  closeDialog,
-  user,
-}: UserRestoreDialogProps) => {
+const UserRestoreDialog = ({ open, closeDialog, user }: UserRestoreDialogProps) => {
   const queryClient = useQueryClient();
 
-  // Set up the form using react-hook-form and zod validation
   const form = useForm<EmailConfirmationSchemaType>({
     resolver: zodResolver(EmailConfirmationSchema(user.email)),
-    defaultValues: {
-      confirmEmail: '',
-    },
+    defaultValues: { confirmEmail: '' },
     mode: 'onChange',
   });
 
-  // Define the mutation for restoring the user
   const mutation = useMutation({
     mutationFn: async () => {
-      // Call the restore endpoint (adjust the endpoint/method as needed)
       const response = await apiFetch(
         `/api/sections/securite-configuration/acces/users/${user.id}/restore`,
-        {
-          method: 'PATCH',
-        },
+        { method: 'PATCH' },
       );
-
       if (!response.ok) {
         const { message } = await response.json();
         throw new Error(message);
       }
-
       return response.json();
     },
     onSuccess: () => {
-      const message = 'User restored successfully.';
       toast.custom(
         () => (
           <Alert variant="mono" icon="success">
             <AlertIcon>
               <RiCheckboxCircleFill />
             </AlertIcon>
-            <AlertTitle>{message}</AlertTitle>
+            <AlertTitle>Compte restauré</AlertTitle>
           </Alert>
         ),
-        {
-          position: 'top-center',
-        },
+        { position: 'top-center' },
       );
-
-      // Update user data
       queryClient.invalidateQueries({ queryKey: ['user-user'] });
-
       closeDialog();
     },
     onError: (error: Error) => {
-      const message = error.message;
       toast.custom(
         () => (
           <Alert variant="mono" icon="destructive">
             <AlertIcon>
               <RiErrorWarningFill />
             </AlertIcon>
-            <AlertTitle>{message}</AlertTitle>
+            <AlertTitle>{error.message}</AlertTitle>
           </Alert>
         ),
-        {
-          position: 'top-center',
-        },
+        { position: 'top-center' },
       );
     },
   });
 
-  const handleSubmit = () => {
-    mutation.mutate();
-  };
-
   return (
-    <Dialog open={open} onOpenChange={closeDialog}>
-      <DialogContent showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle>Confirm Restore</DialogTitle>
-        </DialogHeader>
-        <div>
-          <p className="text-sm text-accent-foreground mb-2.5">
-            Restoring user{' '}
-            <strong className="text-foreground">{user.email}</strong> will
-            reactivate the account and all related data.
+    <Sheet open={open} onOpenChange={(v) => !v && closeDialog()}>
+      <SheetContent className={VIE_SCOLAIRE_SHEET_COMPACT}>
+        <SheetHeader className="border-b border-border px-5 py-4">
+          <SheetTitle>Restaurer le compte</SheetTitle>
+        </SheetHeader>
+        <SheetBody className="px-5 py-4">
+          <p className="mb-4 text-sm text-muted-foreground">
+            Réactiver le compte <strong className="text-foreground">{user.email}</strong> et
+            toutes les données associées.
           </p>
-
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-2.5 pt-2.5"
+              onSubmit={form.handleSubmit(() => mutation.mutate())}
+              className="space-y-4"
+              id="user-restore-form"
             >
               <FormField
                 control={form.control}
                 name="confirmEmail"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-foreground font-semibold">
-                      Confirm the user&apos;s email address to proceed
-                    </FormLabel>
+                    <FormLabel>Saisir l&apos;email pour confirmer</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter email address" {...field} />
+                      <Input placeholder={user.email} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <DialogFooter>
-                <Button variant="outline" onClick={closeDialog}>
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  type="submit"
-                  disabled={
-                    !form.formState.isDirty ||
-                    !form.formState.isValid ||
-                    mutation.status === 'pending'
-                  }
-                >
-                  {mutation.status === 'pending' && (
-                    <LoaderCircleIcon className="animate-spin" />
-                  )}
-                  Restore user account
-                </Button>
-              </DialogFooter>
             </form>
           </Form>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </SheetBody>
+        <SheetFooter className="flex-row justify-end gap-2 border-t border-border px-5 py-4">
+          <Button variant="outline" onClick={closeDialog}>
+            Annuler
+          </Button>
+          <Button
+            type="submit"
+            form="user-restore-form"
+            disabled={
+              !form.formState.isDirty ||
+              !form.formState.isValid ||
+              mutation.status === 'pending'
+            }
+          >
+            {mutation.status === 'pending' && (
+              <LoaderCircleIcon className="animate-spin" />
+            )}
+            Restaurer
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 };
 

@@ -10,6 +10,7 @@ import {
 } from '@/app/(protected)/securite-configuration/acces/users/forms/user-add-schema';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserStatus } from '@/app/models/user';
+import { ensureUserStoragePrefix, provisionStoragePrefixSafe } from '@/lib/entity-storage';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -224,6 +225,10 @@ export async function POST(request: NextRequest) {
 
       return user;
     });
+
+    void provisionStoragePrefixSafe(`user:${result.id}`, () =>
+      ensureUserStoragePrefix(result.id),
+    );
 
     return NextResponse.json(
       {

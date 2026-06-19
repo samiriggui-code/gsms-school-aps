@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiFetch } from '@/lib/api';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -29,6 +29,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getAvatarUrl, getInitials } from '@/lib/helpers';
+import { orgUnitVisualSrc, resolveTeamTypeMeta } from '../lib/team-display';
+import { TeamPhoto } from './team-photo';
 
 interface OrgUnit {
   id: string;
@@ -60,11 +64,28 @@ export function OrgUnitManager() {
     queryFn: async () => {
       const response = await apiFetch('/api/sections/gestion-ressources/rh/org-units');
       if (!response.ok) throw new Error('Failed to fetch org units');
-      return response.json();
+      const json = await response.json();
+      return unwrapSectionApiData<OrgUnit[]>(json) ?? [];
     },
   });
 
-  const orgUnits: OrgUnit[] = Array.isArray(orgUnitsData?.data) ? orgUnitsData.data : [];
+  const orgUnits: OrgUnit[] = Array.isArray(orgUnitsData) ? orgUnitsData : [];
+
+  useEffect(() => {
+    if (!orgUnits.length) return;
+    setExpandedIds((prev) => {
+      if (prev.size > 0) return prev;
+      const toExpand = orgUnits
+        .filter(
+          (unit) =>
+            !unit.parentId ||
+            (unit._count?.Children ?? 0) > 0 ||
+            (unit._count?.Teams ?? 0) > 0,
+        )
+        .map((unit) => unit.id);
+      return new Set(toExpand);
+    });
+  }, [orgUnits]);
 
   const toggleExpand = (id: string) => {
     const newExpanded = new Set(expandedIds);
@@ -102,6 +123,49 @@ export function OrgUnitManager() {
   };
 
   const treeData = buildTree(null);
+
+  const UnitVisual = ({
+    unit,
+    className,
+    imgClassName,
+  }: {
+    unit: OrgUnit;
+    className?: string;
+    imgClassName?: string;
+  }) => {
+    const linkedTeam = unit.Teams?.[0];
+    const visualSrc = orgUnitVisualSrc(unit, orgUnits);
+
+    if (linkedTeam) {
+      return (
+        <TeamPhoto
+          team={linkedTeam}
+          alt={unit.name}
+          className={cn('rounded-xl border border-border/60 bg-muted/20', className)}
+          imgClassName={cn('object-cover', imgClassName)}
+          fallback={
+            <div className={cn('flex items-center justify-center bg-primary/5', className)}>
+              <Building2 className="size-5 text-primary/60" />
+            </div>
+          }
+        />
+      );
+    }
+
+    if (visualSrc) {
+      return (
+        <div className={cn('rounded-xl border border-border/60 overflow-hidden bg-muted/20', className)}>
+          <img src={visualSrc} alt={unit.name} className={cn('size-full object-cover', imgClassName)} />
+        </div>
+      );
+    }
+
+    return (
+      <div className={cn('flex items-center justify-center rounded-xl bg-primary/5 border border-border/60', className)}>
+        <Building2 className="size-5 text-primary/60" />
+      </div>
+    );
+  };
 
   const ActionMenu = ({ unit }: { unit: OrgUnit }) => (
     <DropdownMenu>
@@ -144,8 +208,13 @@ export function OrgUnitManager() {
   const renderUnit = (unit: OrgUnitWithChildren, depth = 0) => {
     const isExpanded = expandedIds.has(unit.id);
     const hasChildren = unit.children.length > 0;
-    const hasTeams = unit.Teams && unit.Teams.length > 0;
+    const teamCount = unit._count?.Teams ?? unit.Teams?.length ?? 0;
+    const hasTeams = teamCount > 0;
     const canExpand = hasChildren || hasTeams;
+    const manager = unit.Memberships?.[0]?.TenantUser;
+    const managerLabel = manager
+      ? [manager.firstName, manager.lastName].filter(Boolean).join(' ').trim()
+      : '';
 
     return (
       <div key={unit.id} className="flex flex-col">
@@ -172,21 +241,25 @@ export function OrgUnitManager() {
               )}
             </button>
             <div className="flex items-center gap-2">
-              <Building2 className="size-4 text-muted-foreground/70" />
+              <UnitVisual unit={unit} className="size-9 shrink-0" />
               <span className="text-sm font-bold text-foreground/90">{unit.name}</span>
               <Badge variant="outline" size="sm" className="uppercase text-[9px] font-black opacity-60 tracking-tighter h-4 px-1">
                 {unit.type}
               </Badge>
-              {unit.Memberships && unit.Memberships.length > 0 && (
+              {manager && (
                 <div className="flex items-center gap-1.5 ml-2 border-l border-border pl-2">
-                  <span className="text-[9px] text-muted-foreground uppercase font-black tracking-tight opacity-50">Manager:</span>
-                  {unit.Memberships.map((m: any) => (
-                    <div key={m.id} className="flex items-center gap-1">
-                      <span className="text-[11px] font-semibold text-foreground/70">
-                        {m.TenantUser.firstName} {m.TenantUser.lastName}
-                      </span>
-                    </div>
-                  ))}
+                  <span className="text-[9px] text-muted-foreground uppercase font-black tracking-tight opacity-50">Responsable:</span>
+                  <Avatar className="size-5">
+                    {manager.avatar ? (
+                      <AvatarImage src={getAvatarUrl(manager.avatar)} alt="" />
+                    ) : null}
+                    <AvatarFallback className="text-[8px]">
+                      {getInitials(managerLabel || manager.email || '?')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-[11px] font-semibold text-foreground/70">
+                    {managerLabel || manager.email}
+                  </span>
                 </div>
               )}
             </div>
@@ -220,10 +293,10 @@ export function OrgUnitManager() {
                 <div className="bg-muted/30 px-4 py-2 border-b flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Users2 className="size-3.5 text-primary/70" />
-                    <span className="text-[10px] font-black uppercase tracking-wider">Équipes Terrain de l'unité</span>
+                    <span className="text-[10px] font-black uppercase tracking-wider">Équipes rattachées</span>
                   </div>
                   <Badge className="text-[9px] font-black h-4 bg-primary/10 text-primary border-none">
-                    {unit.Teams?.length || 0} Équipes actives
+                    {teamCount} équipe{teamCount > 1 ? 's' : ''}
                   </Badge>
                 </div>
                 <Table>
@@ -236,12 +309,29 @@ export function OrgUnitManager() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {unit.Teams?.map((team: any) => (
+                    {unit.Teams?.map((team: any) => {
+                      const typeMeta = resolveTeamTypeMeta(team.type);
+                      return (
                       <TableRow key={team.id} className="hover:bg-primary/[0.01] border-border/30">
-                        <TableCell className="py-2 text-[11px] font-bold">{team.name}</TableCell>
+                        <TableCell className="py-2">
+                          <div className="flex items-center gap-2">
+                            <TeamPhoto
+                              team={team}
+                              alt={team.name}
+                              className="size-7 rounded-lg shrink-0"
+                              imgClassName="object-cover"
+                              fallback={
+                                <div className="size-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                                  <Users2 className="size-3.5 text-primary/70" />
+                                </div>
+                              }
+                            />
+                            <span className="text-[11px] font-bold">{team.name}</span>
+                          </div>
+                        </TableCell>
                         <TableCell className="py-2 text-center">
                           <Badge variant="outline" className="text-[8px] font-bold uppercase h-4 px-1">
-                            {team.type || 'Standard'}
+                            {typeMeta.label}
                           </Badge>
                         </TableCell>
                         <TableCell className="py-2 text-[11px] text-muted-foreground font-medium">
@@ -257,7 +347,7 @@ export function OrgUnitManager() {
                           </div>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    );})}
                   </TableBody>
                 </Table>
               </div>
@@ -298,7 +388,12 @@ export function OrgUnitManager() {
         <TableBody>
           {orgUnits.map((unit) => (
             <TableRow key={unit.id} className="hover:bg-muted/20">
-              <TableCell className="py-3 font-medium text-sm">{unit.name}</TableCell>
+              <TableCell className="py-3">
+                <div className="flex items-center gap-3">
+                  <UnitVisual unit={unit} className="size-9 shrink-0" />
+                  <span className="font-medium text-sm">{unit.name}</span>
+                </div>
+              </TableCell>
               <TableCell className="py-3">
                 <Badge variant="outline" className="uppercase text-[9px] font-semibold">
                   {unit.type}
@@ -343,9 +438,7 @@ export function OrgUnitManager() {
           <CardContent className="p-4">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-primary/5 rounded-xl group-hover:bg-primary/10 transition-colors">
-                  <Building2 className="size-5 text-primary" />
-                </div>
+                <UnitVisual unit={unit} className="size-12 shrink-0" />
                 <div>
                   <h4 className="text-sm font-bold text-foreground leading-tight">{unit.name}</h4>
                   <Badge variant="outline" size="sm" className="uppercase text-[8px] font-bold h-4 tracking-tighter mt-0.5">
@@ -449,7 +542,9 @@ export function OrgUnitManager() {
             </div>
             <div className="space-y-1">
               <p className="text-sm font-bold">Aucune structure définie</p>
-              <p className="text-xs text-muted-foreground italic">Commencez par créer une agence ou un département</p>
+              <p className="text-xs text-muted-foreground italic">
+                Aucune unité organisationnelle. Relancez le seed ou créez une direction / pôle.
+              </p>
             </div>
             <Button 
               variant="outline" 

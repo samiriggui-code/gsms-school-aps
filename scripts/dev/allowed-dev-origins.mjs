@@ -1,5 +1,7 @@
+import { getProductionAllowedOrigins } from '../production-allowed-origins.mjs';
+
 /**
- * Origines LAN pour Next.js allowedDevOrigins (landing, CRM).
+ * Origines LAN + domaine prod pour Next.js allowedDevOrigins (landing, CRM, Traefik).
  * .env.local : ALLOWED_DEV_ORIGINS=192.168.1.6,192.168.1.100
  * (legacy CRM : NEXT_DEV_ALLOWED_ORIGINS — toujours lu)
  */
@@ -22,5 +24,5 @@ export function getAllowedDevOrigins(options = {}) {
     }
   }
 
-  return [...new Set([...withPorts, ...fromEnv])];
+  return [...new Set([...withPorts, ...fromEnv, ...getProductionAllowedOrigins()])];
 }

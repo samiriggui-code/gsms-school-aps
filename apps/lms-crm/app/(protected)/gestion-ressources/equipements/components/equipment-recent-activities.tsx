@@ -21,8 +21,8 @@ const activities = [
     description: 'Le projecteur Salle A a été révisé avec succès.',
     time: 'Il y a 4 heures',
     icon: Wrench,
-    color: 'text-blue-500',
-    bg: 'bg-blue-500/10',
+    color: 'text-indigo-500',
+    bg: 'bg-indigo-500/10',
   },
   {
     id: 3,

@@ -26,8 +26,8 @@ const CommunityBadges = () => {
   const items: ICommunityBadgesItems = [
     {
       title: 'Expert Contributor Badge',
-      stroke: 'stroke-blue-200 dark:stroke-blue-950',
-      fill: 'fill-blue-50 dark:fill-blue-950/30',
+      stroke: 'stroke-indigo-200 dark:stroke-indigo-950',
+      fill: 'fill-indigo-50 dark:fill-indigo-950/30',
       icon: Volleyball,
       iconColor: 'text-primary',
     },

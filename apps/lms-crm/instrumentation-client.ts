@@ -1,5 +1,8 @@
+const sentryDsn =
+  process.env.NEXT_PUBLIC_SENTRY_DSN || process.env.SENTRY_DSN || '';
 const sentryEnabled =
-  process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_SENTRY_DEV === 'true';
+  Boolean(sentryDsn.trim()) &&
+  (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_SENTRY_DEV === 'true');
 
 if (sentryEnabled) {
   void import('@sentry/nextjs').then((Sentry) => {

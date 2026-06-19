@@ -58,7 +58,7 @@ function Card1Item({ stat }: { stat: ReuiPilotageKpiItem }) {
 
 const CARD7_ACCENTS = [
   { value: 'text-green-600', badge: 'bg-green-100 text-green-600 dark:bg-green-950 dark:text-green-400' },
-  { value: 'text-blue-600', badge: 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400' },
+  { value: 'text-indigo-600', badge: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400' },
   { value: 'text-amber-600', badge: 'bg-amber-100 text-amber-600 dark:bg-amber-950 dark:text-amber-400' },
   { value: 'text-violet-600', badge: 'bg-violet-100 text-violet-600 dark:bg-violet-950 dark:text-violet-400' },
   { value: 'text-red-500', badge: 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400' },

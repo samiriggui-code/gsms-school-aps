@@ -1,39 +1,47 @@
-import { getServerSession } from 'next-auth/next';
+import { getServerSession } from 'next-auth';
 import type { Session } from 'next-auth';
+import type { NextResponse } from 'next/server';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { fail } from '@/app/api/_shared/http/response';
-import {
-  hasAnyPermissionSlug,
-  isSuperAdminRole,
-  sessionHasPermission,
-} from '@/lib/auth/crm-permissions';
+import { sessionHasAnyPermission, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
-export { sessionHasPermission };
+type AuthOk = { session: Session; userId: string };
+type AuthErr = { error: NextResponse };
 
-type AuthOk = { ok: true; session: Session };
-type AuthFail = { ok: false; response: ReturnType<typeof fail> };
+export type CrmApiAuthResult =
+  | { ok: true; session: Session; userId: string }
+  | { ok: false; response: NextResponse };
 
-export async function requireCrmApiAuth(
-  required?: string | string[],
-): Promise<AuthOk | AuthFail> {
+export async function requireAuthenticatedSession(): Promise<AuthOk | AuthErr> {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
+  const userId = session?.user?.id;
+  if (!userId) return { error: fail('Unauthorized request', 401) };
+  return { session, userId };
+}
+
+export async function requireCrmApiAuth(permissionSlug: string): Promise<CrmApiAuthResult> {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  if (!userId) {
     return { ok: false, response: fail('Unauthorized request', 401) };
   }
-
-  if (isSuperAdminRole(session.user.roleSlug)) {
-    return { ok: true, session };
+  if (!sessionHasPermission(session, permissionSlug)) {
+    return { ok: false, response: fail('Accès refusé — permission requise.', 403) };
   }
+  return { ok: true, session, userId };
+}
 
-  if (!required) {
-    return { ok: true, session };
+export async function requirePermission(slug: string): Promise<AuthOk | AuthErr> {
+  const result = await requireCrmApiAuth(slug);
+  if (!result.ok) return { error: result.response };
+  return { session: result.session, userId: result.userId };
+}
+
+export async function requireAnyPermission(slugs: string[]): Promise<AuthOk | AuthErr> {
+  const auth = await requireAuthenticatedSession();
+  if ('error' in auth) return auth;
+  if (!sessionHasAnyPermission(auth.session, slugs)) {
+    return { error: fail('Accès refusé — permission requise.', 403) };
   }
-
-  const slugs = session.user.permissionSlugs ?? [];
-  const requiredList = Array.isArray(required) ? required : [required];
-  if (hasAnyPermissionSlug(slugs, requiredList)) {
-    return { ok: true, session };
-  }
-
-  return { ok: false, response: fail('Forbidden', 403) };
+  return auth;
 }

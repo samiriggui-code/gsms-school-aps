@@ -67,7 +67,7 @@ export function FormationRolesGroups({ Formation }: { Formation: Formation }) {
       isPrimary: true
     },
     {
-      icon: <UserCog className="size-5 text-blue-600" />,
+      icon: <UserCog className="size-5 text-indigo-600" />,
       name: "AccÃ¨s Mobile",
       details: "Autorise a se connecter via l'application LMS",
       isPrimary: false

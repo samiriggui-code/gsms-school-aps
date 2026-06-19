@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@repo/database';
-import { sendEmail } from '@repo/mail';
-import { CRM_MODULE_KEYS, CrmEventService } from './crm-events';
+import { isPilotageReportEmailEnabled, sendPilotageReportReadyEmail } from '@repo/mail';
+import { CrmEventService, CRM_MODULE_KEYS } from './crm-events';
 import type { ReportGenerationSource } from './report-dedup';
 
 export type NotifyReportGeneratedInput = {
@@ -84,7 +84,7 @@ export async function sendReportGeneratedEmails(
   prisma: PrismaClient,
   input: NotifyReportGeneratedInput,
 ): Promise<{ sent: number; skipped: boolean }> {
-  if (process.env.REPORT_EMAIL_DISABLED === '1') {
+  if (!isPilotageReportEmailEnabled()) {
     return { sent: 0, skipped: true };
   }
 
@@ -95,22 +95,28 @@ export async function sendReportGeneratedEmails(
   });
 
   const baseUrl = (process.env.NEXTAUTH_URL || 'http://localhost:3001').replace(/\/$/, '');
-  const link = `${baseUrl}${`/pilotage-supervision/pilotage/rapports`}`;
+  const link = `${baseUrl}/pilotage-supervision/pilotage/rapports`;
+  const sourceLabel =
+    input.source === 'schedule'
+      ? 'planification automatique'
+      : input.source === 'run_now'
+        ? 'lancement manuel'
+        : 'génération manuelle';
+
   let sent = 0;
 
   for (const user of users) {
     if (!user.email) continue;
     const name = user.firstName?.trim() || 'collaborateur';
     try {
-      await sendEmail({
+      await sendPilotageReportReadyEmail({
         to: user.email,
-        subject: `[Pilotage] Rapport disponible — ${input.title}`,
-        html: `
-          <p>Bonjour ${name},</p>
-          <p>Un nouveau rapport est disponible : <strong>${input.title}</strong> (${input.format}, ${input.periodLabel}).</p>
-          <p><a href="${link}">Consulter l'historique des rapports</a></p>
-        `,
-        text: `Rapport disponible : ${input.title} (${input.format}, ${input.periodLabel}). ${link}`,
+        recipientName: name,
+        title: input.title,
+        format: input.format,
+        periodLabel: input.periodLabel,
+        sourceLabel,
+        ctaUrl: link,
       });
       sent += 1;
     } catch (err) {

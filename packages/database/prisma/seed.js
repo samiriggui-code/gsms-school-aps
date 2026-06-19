@@ -48,6 +48,12 @@ const { seedOperationalModules } = require('./data/operational-modules-seed');
 const { seedTopbarDemo } = require('./data/topbar-seed');
 const { seedGsmsOpsChat } = require('./data/gsms-ops-chat-seed');
 const { seedRhAbsencesAndPositions } = require('./data/rh-absences-positions-seed');
+const {
+  seedComplianceTemplates,
+  seedComplianceDossiersForOpenCandidatures,
+  seedComplianceDossiersForStaff,
+} = require('./data/compliance-templates-seed');
+const { seedRhStructureTeams } = require('./data/rh-structure-teams-seed');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
@@ -61,6 +67,32 @@ function toEmail(fullName) {
       .replace(/[^a-z0-9]+/g, '.')
       .replace(/(^\.|\.$)/g, '') + '@ecole.local'
   );
+}
+
+function splitFullName(name) {
+  const parts = String(name || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (!parts.length) return { firstName: null, lastName: null };
+  if (parts.length === 1) return { firstName: parts[0], lastName: null };
+  return { firstName: parts[0], lastName: parts.slice(1).join(' ') };
+}
+
+const STAFF_ROLE_SLUGS = new Set(['formateur', 'collaborateur', 'admin', 'superadmin']);
+
+function resolveSeedAvatar(user, index) {
+  if (user.avatar) return user.avatar;
+  if (STAFF_ROLE_SLUGS.has(user.roleSlug)) {
+    const pool = [
+      '/uploads/crm/collaborateur/7fb47851-008f-44a4-9eed-301bb8ed3553/avatar/1781390225224-hd5za7yw.png',
+      '/uploads/crm/collaborateur/f51130ba-32ba-48e6-aba7-f43bf58508d9/avatar/1781390463820-zq5m6um2.png',
+      '/uploads/crm/collaborateur/1b0486b9-50cb-4820-8929-507fc6699681/avatar/1781390448477-gbi4z8g9.png',
+      '/uploads/company/avatars/1781389770744-xiymfnfs.png',
+    ];
+    return pool[index % pool.length];
+  }
+  return user.avatar ?? null;
 }
 
 function buildUsersFromMetronic() {
@@ -227,7 +259,7 @@ async function seedDemoPortalCandidatures(tx) {
           originalName: f.name,
           mimeType: 'application/pdf',
           size: 4096,
-          storageKey: `demo-cnaps-${userId}-${f.category}`,
+          storageKey: `academique/cnaps/${userId}/${f.category}/${f.name}`,
           url: demoPdfUrl,
           visibility: 'PRIVATE',
           metadata: f.metadata ?? {},
@@ -475,6 +507,29 @@ function buildLargeUsers() {
   return users;
 }
 
+/** Anciennes clés plates `demo-cnaps-{uuid}-{cat}` → socle `academique/cnaps/…`. */
+async function migrateLegacyCnapsStorageKeys(tx) {
+  const legacy = await tx.fileAsset.findMany({
+    where: { storageKey: { startsWith: 'demo-cnaps-' } },
+    select: {
+      id: true,
+      storageKey: true,
+      originalName: true,
+      entityId: true,
+      category: true,
+    },
+  });
+  for (const asset of legacy) {
+    if (!asset.entityId || !asset.category) continue;
+    const storageKey = `academique/cnaps/${asset.entityId}/${asset.category}/${asset.originalName}`;
+    if (storageKey === asset.storageKey) continue;
+    await tx.fileAsset.update({
+      where: { id: asset.id },
+      data: { storageKey },
+    });
+  }
+}
+
 async function main() {
   console.log('Running database seeding...');
 
@@ -484,27 +539,41 @@ async function main() {
 
       await tx.userRole.upsert({
         where: { slug: 'member' },
-        update: {},
+        update: { isTrashed: true, isDefault: false },
         create: {
           slug: 'member',
           name: 'Member',
-          description: 'Default member role',
-          isDefault: true,
+          description: 'Rôle Metronic legacy (masqué)',
+          isDefault: false,
           isProtected: true,
+          isTrashed: true,
           createdAt: new Date(),
         },
       });
 
+      const legacyMetronicSlugs = [
+        'vendor',
+        'customer',
+        'guest',
+        'manager',
+        'staff',
+        'support',
+        'member',
+        'owner',
+      ];
+
       for (const role of rolesData) {
+        const isLegacyMetronic = legacyMetronicSlugs.includes(role.slug);
         await tx.userRole.upsert({
           where: { slug: role.slug },
-          update: {},
+          update: { isTrashed: isLegacyMetronic },
           create: {
             slug: role.slug,
             name: role.name,
             description: role.description,
             isDefault: role.isDefault || false,
             isProtected: role.isProtected || false,
+            isTrashed: isLegacyMetronic,
             createdAt: new Date(),
           },
         });
@@ -571,10 +640,18 @@ async function main() {
       }
       console.log('Roles seeded.');
 
+      await tx.userRole.updateMany({
+        where: { slug: { in: legacyMetronicSlugs } },
+        data: { isTrashed: true, isDefault: false },
+      });
+
       for (const permission of permissionsData) {
         await tx.userPermission.upsert({
           where: { slug: permission.slug },
-          update: {},
+          update: {
+            name: permission.name,
+            description: permission.description,
+          },
           create: {
             slug: permission.slug,
             name: permission.name,
@@ -623,20 +700,38 @@ async function main() {
             },
           });
         }
+
+        if (matrixEntry && matrixEntry !== '*') {
+          const allowedSet = new Set(permissionIds);
+          await tx.userRolePermission.deleteMany({
+            where: {
+              roleId: role.id,
+              ...(allowedSet.size > 0
+                ? { permissionId: { notIn: [...allowedSet] } }
+                : {}),
+            },
+          });
+        }
       }
       console.log('UserRolePermissions seeded (deterministic CRM matrix).');
 
        const seededUsers = buildUsersFromMetronic();
-      for (const user of seededUsers) {
+      for (let i = 0; i < seededUsers.length; i += 1) {
+        const user = seededUsers[i];
         const role = await tx.userRole.findFirst({
           where: { slug: user.roleSlug },
         });
+        if (!role) continue;
+        const { firstName, lastName } = splitFullName(user.name);
+        const avatar = resolveSeedAvatar(user, i);
         await tx.user.upsert({
           where: { email: user.email },
           update: {
             name: user.name,
+            firstName,
+            lastName,
             password: hashedPassword,
-            avatar: user.avatar,
+            avatar,
             roleId: role.id,
             emailVerifiedAt: new Date(),
             status: 'ACTIVE',
@@ -646,8 +741,10 @@ async function main() {
           create: {
             email: user.email,
             name: user.name,
+            firstName,
+            lastName,
             password: hashedPassword,
-            avatar: user.avatar,
+            avatar,
             roleId: role.id,
             emailVerifiedAt: new Date(),
             status: 'ACTIVE',
@@ -875,11 +972,15 @@ async function main() {
 
       await seedFormationsCatalog(tx);
       await seedPortalLmsContent(tx);
+      await migrateLegacyCnapsStorageKeys(tx);
       await seedDemoPortalCandidatures(tx);
       await seedPortalLmsEnrollments(tx);
       await seedPortalAnnouncements(tx);
       await seedLandingLeadsAndDevis(tx);
       await seedOperationalModules(tx);
+      await seedComplianceTemplates(tx);
+      await seedComplianceDossiersForOpenCandidatures(tx);
+      await seedComplianceDossiersForStaff(tx);
 
       // Create a Course and a TrainingSession for testing assignments using raw SQL to bypass stale client
       const superadminRows = await tx.$queryRaw`SELECT "id" FROM "User" WHERE "email" = 'samir.iggui@ecole.local' LIMIT 1`;
@@ -1005,9 +1106,20 @@ async function main() {
       });
       console.log('Settings seeded.');
 
+      await seedRhStructureTeams(tx);
       await seedTopbarDemo(tx);
       await seedGsmsOpsChat(tx);
       await seedRhAbsencesAndPositions(tx);
+
+      await tx.$executeRawUnsafe(`
+        UPDATE "InAppNotification" SET channel = 'DOSSIER'::"InAppNotificationChannel"
+        WHERE href LIKE '/mon-dossier%'
+      `);
+      await tx.$executeRawUnsafe(`
+        UPDATE "InAppNotification" SET channel = 'PEDAGOGIE'::"InAppNotificationChannel"
+        WHERE href LIKE '/e-formation%' OR href LIKE '/formateur%'
+          OR category IN ('ACADEMIC', 'TEAM')
+      `);
 
       console.log('Database seeding completed!');
     },

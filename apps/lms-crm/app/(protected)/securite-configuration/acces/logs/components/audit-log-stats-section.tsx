@@ -7,7 +7,17 @@ import {
 } from '@/components/common/stat-card-metric-layout';
 import { Users, UserCheck, AlertTriangle, FileWarning, UserMinus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { cn } from '@/lib/utils';
+
+interface AuditLogStats {
+  total: number;
+  signIn: number;
+  signInFailed: number;
+  iam: number;
+  conformite: number;
+  documents: number;
+}
 
 interface AuditLogStatsSectionProps {
   variant?: 'grid' | 'row';
@@ -19,9 +29,31 @@ export function AuditLogStatsSection({
   firstMetricTitle = 'Journal d\'audit',
 }: AuditLogStatsSectionProps) {
   const [mounted, setMounted] = useState(false);
+  const [stats, setStats] = useState<AuditLogStats | null>(null);
+
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    const loadStats = async () => {
+      try {
+        const response = await apiFetch(
+          '/api/sections/securite-configuration/acces/logs/stats',
+        );
+        if (!response.ok) return;
+        const payload = await response.json();
+        const data = unwrapSectionApiData<AuditLogStats>(payload);
+        if (data) setStats(data);
+      } catch {
+        // KPI silencieux — la grille reste à 0
+      }
+    };
+
+    loadStats();
+  }, [mounted]);
 
   const gridClasses =
     variant === 'row'
@@ -45,42 +77,42 @@ export function AuditLogStatsSection({
     );
   }
 
-  const stats = [
+  const cards = [
     {
       icon: Users,
       title: firstMetricTitle,
-      value: 0,
-      subtitle: 'Actions auditees',
+      value: stats?.total ?? 0,
+      subtitle: 'Événements enregistrés',
     },
     {
       icon: UserCheck,
-      title: 'Actifs',
-      value: 0,
-      subtitle: 'Operations validees',
+      title: 'Connexions',
+      value: stats?.signIn ?? 0,
+      subtitle: 'Connexions validées',
     },
     {
       icon: AlertTriangle,
       title: 'Conformité',
-      value: 0,
-      subtitle: 'Aucun incident',
+      value: stats?.conformite ?? 0,
+      subtitle: 'Événements conformité',
     },
     {
       icon: FileWarning,
       title: 'Documents',
-      value: 0,
-      subtitle: 'À surveiller',
+      value: stats?.documents ?? 0,
+      subtitle: 'Fichiers et documents',
     },
     {
       icon: UserMinus,
-      title: 'Non actifs',
-      value: 0,
-      subtitle: 'Actions rejetees',
+      title: 'Échecs',
+      value: stats?.signInFailed ?? 0,
+      subtitle: 'Tentatives bloquées',
     },
   ];
 
   return (
     <div className={cn(gridClasses, 'mb-5')}>
-      {stats.map((stat, index) => {
+      {cards.map((stat, index) => {
         const Icon = stat.icon;
         const accent = SECTION_KPI_CARD_ACCENTS[index % SECTION_KPI_CARD_ACCENTS.length];
         return (

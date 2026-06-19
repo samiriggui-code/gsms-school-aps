@@ -57,8 +57,8 @@ const WelcomeCallout = ({ className }: IWelcomeCalloutProps) => {
         <CardContent className="p-8 sm:p-10 bg-cover bg-center bg-no-repeat welcome-callout-bg">
           <div className="flex min-w-0 flex-col justify-center gap-4 max-w-full sm:max-w-[60%]">
             <div className="flex min-w-0 flex-wrap items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900">
-                <Shield className="size-6 text-blue-600 dark:text-blue-400" />
+              <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900">
+                <Shield className="size-6 text-indigo-600 dark:text-indigo-400" />
               </div>
               <AvatarGroup
                 size="size-10"
@@ -87,12 +87,12 @@ const WelcomeCallout = ({ className }: IWelcomeCalloutProps) => {
                 {t('welcome.greeting')}{' '}
                 {(tenantUser?.firstName || tenantUser?.lastName) ? (
                   <>
-                    <span className="text-blue-600">{[tenantUser.firstName, tenantUser.lastName].filter(Boolean).join(' ')}</span>
+                    <span className="text-indigo-600">{[tenantUser.firstName, tenantUser.lastName].filter(Boolean).join(' ')}</span>
                     <br />
                   </>
                 ) : ''}
                 {t('welcome.onPlatform')}{' '}
-                <span className="text-blue-600">{tenant?.name || 'LMS'}</span>
+                <span className="text-indigo-600">{tenant?.name || 'LMS'}</span>
               </h2>
               
               {tenantUser?.UserRole && (
@@ -104,7 +104,7 @@ const WelcomeCallout = ({ className }: IWelcomeCalloutProps) => {
                   {tenant?.billingPlan && (
                     <>
                       <span className="text-gray-400">•</span>
-                      <span className="text-sm font-medium text-blue-600">
+                      <span className="text-sm font-medium text-indigo-600">
                         {t('welcome.plan', { plan: tenant.billingPlan })}
                       </span>
                     </>

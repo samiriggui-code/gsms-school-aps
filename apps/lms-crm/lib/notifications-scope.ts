@@ -1,4 +1,9 @@
-import type { Prisma } from '@repo/database';
+import type { InAppNotificationChannel, Prisma } from '@repo/database';
+import {
+  NOTIFICATION_MODULE_PERMISSIONS,
+  canViewModuleNotifications,
+} from '@repo/api-core/notification-audience';
+import { NOTIFICATION_CHANNELS } from '@repo/api-core/notification-channel';
 import type { WorkspaceAccountKind } from '@/config/workspace-settings.config';
 import {
   isCrmRole,
@@ -11,7 +16,19 @@ export type NotificationsScope = WorkspaceAccountKind;
 
 export const NOTIFICATIONS_VIEW_PERMISSION = 'in_app_notifications.view';
 
-/** Catégories visibles dans l'UI filtre — hors admin / finance pour espaces métier. */
+export type NotificationChannelFilter = InAppNotificationChannel;
+
+/** Canaux visibles par espace — modèle UX simplifié (Phase G). */
+export const SCOPE_NOTIFICATION_CHANNELS: Record<
+  NotificationsScope,
+  readonly NotificationChannelFilter[]
+> = {
+  'crm-user': NOTIFICATION_CHANNELS,
+  formateur: ['PEDAGOGIE', 'DOSSIER'],
+  stagiaire: ['DOSSIER', 'PEDAGOGIE'],
+};
+
+/** @deprecated Préférer `scopeNotificationChannels` — conservé pour compat filtres legacy. */
 export const CRM_NOTIFICATION_CATEGORIES = [
   'SYSTEM',
   'TICKET',
@@ -20,72 +37,28 @@ export const CRM_NOTIFICATION_CATEGORIES = [
   'TEAM',
 ] as const;
 
+/** @deprecated */
 export const WORKSPACE_NOTIFICATION_CATEGORIES = [
   'ACADEMIC',
   'TEAM',
   'TICKET',
 ] as const;
 
-const ADMIN_HREF_BLOCKS = [
-  '/administration-facturation',
-  '/securite-configuration',
-  '/communication-contenu/marketing/formulaires-leads',
-] as const;
-
-function hrefExclusionWhere(): Prisma.InAppNotificationWhereInput {
-  return {
-    NOT: {
-      OR: [
-        ...ADMIN_HREF_BLOCKS.map((prefix) => ({ href: { startsWith: prefix } })),
-        { href: { contains: '/devis' } },
-        { href: { contains: '/finance/' } },
-      ],
-    },
-  };
+export function scopeNotificationChannels(
+  scope: NotificationsScope,
+): readonly NotificationChannelFilter[] {
+  return SCOPE_NOTIFICATION_CHANNELS[scope];
 }
 
-/** Filtre Prisma : alertes métier uniquement (pas admin CRM, finance, devis). */
+/** Filtre Prisma par canal UX selon l'espace connecté. */
 export function buildNotificationScopeWhere(
   scope: NotificationsScope,
 ): Prisma.InAppNotificationWhereInput {
-  if (scope === 'crm-user') {
-    return {};
-  }
-
-  if (scope === 'formateur') {
-    return {
-      AND: [
-        {
-          OR: [
-            { category: { in: ['ACADEMIC', 'TEAM'] } },
-            {
-              category: 'TICKET',
-              OR: [
-                { href: { startsWith: '/support-qualite' } },
-                { href: { startsWith: '/formateur' } },
-                { href: { startsWith: '/gestion-academique' } },
-                { metadata: { path: ['moduleKey'], string_starts_with: 'portal-' } },
-                { metadata: { path: ['eventType'], string_starts_with: 'learner.' } },
-              ],
-            },
-          ],
-        },
-        { category: { notIn: ['SYSTEM', 'FINANCE'] } },
-        hrefExclusionWhere(),
-      ],
-    };
-  }
-
-  // stagiaire — dossier, formation, support, messages établissement
-  return {
-    AND: [
-      { category: { in: ['ACADEMIC', 'TEAM', 'TICKET'] } },
-      { category: { notIn: ['SYSTEM', 'FINANCE'] } },
-      hrefExclusionWhere(),
-    ],
-  };
+  const channels = scopeNotificationChannels(scope);
+  return { channel: { in: [...channels] } };
 }
 
+/** @deprecated Utiliser scopeNotificationChannels */
 export function scopeNotificationCategories(
   scope: NotificationsScope,
 ): readonly string[] {
@@ -133,3 +106,27 @@ export function startOfTodayUtc(): Date {
   d.setHours(0, 0, 0, 0);
   return d;
 }
+
+/** Préfixes moduleKey autorisés selon les permissions session (CRM). */
+export function allowedModuleKeyPrefixes(
+  permissionSlugs: ReadonlySet<string> | string[] | null | undefined,
+): string[] {
+  const slugs = permissionSlugs instanceof Set ? permissionSlugs : new Set(permissionSlugs ?? []);
+  if (slugs.has('settings.manage')) {
+    return Object.keys(NOTIFICATION_MODULE_PERMISSIONS);
+  }
+  return Object.entries(NOTIFICATION_MODULE_PERMISSIONS)
+    .filter(([, perm]) => slugs.has(perm))
+    .map(([prefix]) => prefix);
+}
+
+/** Filtre applicatif selon permissions module CRM. */
+export function filterNotificationItemsByModulePermission<
+  T extends { moduleKey?: string | null },
+>(items: T[], permissionSlugs: ReadonlySet<string> | string[] | null | undefined): T[] {
+  return items.filter((item) =>
+    canViewModuleNotifications(item.moduleKey ?? null, permissionSlugs ?? []),
+  );
+}
+
+export { NOTIFICATION_MODULE_PERMISSIONS, canViewModuleNotifications };

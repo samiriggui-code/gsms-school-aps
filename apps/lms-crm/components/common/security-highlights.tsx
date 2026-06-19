@@ -61,7 +61,7 @@ const SecurityHighlights = ({ limit }: ISecurityHighlightsProps) => {
           if (result.success) {
             setRows(result.stats || []);
             setItems(result.categories || [
-              { badgeColor: 'bg-blue-500', label: t('securityHighlights.categories.operations') },
+              { badgeColor: 'bg-indigo-500', label: t('securityHighlights.categories.operations') },
               { badgeColor: 'bg-green-500', label: t('securityHighlights.categories.personnel') },
               { badgeColor: 'bg-orange-500', label: t('securityHighlights.categories.clients') },
             ]);
@@ -147,7 +147,7 @@ const SecurityHighlights = ({ limit }: ISecurityHighlightsProps) => {
           </div>
         </div>
         <div className="grid w-full min-w-0 grid-cols-[9fr_7fr_4fr] gap-1 mb-1.5">
-          <div className="h-2 min-w-0 rounded-xs bg-blue-500" />
+          <div className="h-2 min-w-0 rounded-xs bg-indigo-500" />
           <div className="h-2 min-w-0 rounded-xs bg-green-500" />
           <div className="h-2 min-w-0 rounded-xs bg-orange-500" />
         </div>

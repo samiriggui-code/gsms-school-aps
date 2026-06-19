@@ -35,3 +35,6 @@ docker run --rm --network gsms --entrypoint /bin/sh minio/mc:latest -c "
   mc ls gsms/$BUCKET
 "
 echo "OK bucket $BUCKET"
+if [ -f "$(dirname "$0")/init-storage-socle.sh" ]; then
+  bash "$(dirname "$0")/init-storage-socle.sh" "$ENV_FILE" || true
+fi

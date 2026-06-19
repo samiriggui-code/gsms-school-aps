@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, Text } from '@react-email/components';
 import { BareboneShell } from '../barebone/barebone-shell';
 import { emailSiteUrl } from '../email-assets';

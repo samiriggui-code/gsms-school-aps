@@ -12,7 +12,7 @@ import { User as Certification } from "@/app/models/user";
 const tiers = [
   { name: "Niveau 1", color: "#e879f9", points: 0, nextGoal: 1000 },
   { name: "Niveau 2", color: "#8b5cf6", points: 1000, nextGoal: 2500 },
-  { name: "Niveau 3", color: "#3b82f6", points: 2500, nextGoal: 4250 },
+  { name: "Niveau 3", color: "#6366f1", points: 2500, nextGoal: 4250 },
   { name: "Gold", color: "#f59e0b", points: 4250, nextGoal: 5000 },
   { name: "VIP", color: "#ef4444", points: 5000, nextGoal: null },
 ]

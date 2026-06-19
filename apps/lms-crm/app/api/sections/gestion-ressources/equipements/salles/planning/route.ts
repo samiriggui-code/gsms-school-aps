@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   );
 
   try {
-    const [rooms, sessions] = await Promise.all([
+    const [rooms, sessions, bookings] = await Promise.all([
       prisma.formationVenueRoom.findMany({
         where: { isActive: true },
         orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
@@ -48,6 +48,24 @@ export async function GET(request: NextRequest) {
         },
         orderBy: { startDate: 'asc' },
       }),
+      prisma.venueRoomBooking.findMany({
+        where: {
+          status: 'ACTIVE',
+          startAt: { lte: to },
+          endAt: { gte: from },
+        },
+        select: {
+          id: true,
+          venueRoomId: true,
+          title: true,
+          kind: true,
+          startAt: true,
+          endAt: true,
+          notes: true,
+          organizer: { select: { firstName: true, lastName: true, name: true } },
+        },
+        orderBy: { startAt: 'asc' },
+      }),
     ]);
 
     const byRoom = new Map<string, typeof sessions>();
@@ -56,6 +74,13 @@ export async function GET(request: NextRequest) {
       const list = byRoom.get(s.venueRoomId) ?? [];
       list.push(s);
       byRoom.set(s.venueRoomId, list);
+    }
+
+    const bookingsByRoom = new Map<string, typeof bookings>();
+    for (const b of bookings) {
+      const list = bookingsByRoom.get(b.venueRoomId) ?? [];
+      list.push(b);
+      bookingsByRoom.set(b.venueRoomId, list);
     }
 
     return ok({
@@ -80,6 +105,20 @@ export async function GET(request: NextRequest) {
             [s.trainer?.firstName, s.trainer?.lastName].filter(Boolean).join(' ') ||
             s.trainer?.name ||
             null,
+          source: 'session' as const,
+        })),
+        bookings: (bookingsByRoom.get(room.id) ?? []).map((b) => ({
+          id: b.id,
+          title: b.title,
+          kind: b.kind,
+          startAt: b.startAt.toISOString(),
+          endAt: b.endAt.toISOString(),
+          notes: b.notes,
+          organizerName:
+            [b.organizer?.firstName, b.organizer?.lastName].filter(Boolean).join(' ') ||
+            b.organizer?.name ||
+            null,
+          source: 'booking' as const,
         })),
       })),
     });

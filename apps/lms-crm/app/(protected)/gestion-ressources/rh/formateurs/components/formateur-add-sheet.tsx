@@ -57,7 +57,7 @@ import {
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { UserRole } from '@/app/models/user';
-import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
+import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { useSubcontractorSelectQuery } from '../hooks/use-subcontractor-select-query';
 import {
   FormateurAddSchema,
@@ -87,7 +87,7 @@ const FormateurAddSheet = ({
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('identity');
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const { data: roleList } = useRoleSelectQuery();
+  const { data: roleList } = useSchoolRoleSelectQuery();
   const { data: subcontractorList } = useSubcontractorSelectQuery();
 
   const form = useForm<FormateurAddSchemaInput, unknown, FormateurAddSchemaType>({

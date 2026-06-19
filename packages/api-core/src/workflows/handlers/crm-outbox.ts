@@ -1,5 +1,6 @@
 import type { PrismaClient } from '@repo/database';
 import { CrmEventService } from '../../crm-events';
+import { defaultAudienceForEvent } from '../../notification-audience';
 import type { WorkflowEventDefinition } from '../catalog';
 
 export type CrmOutboxEmitOptions = {
@@ -15,6 +16,7 @@ export async function enqueueWorkflowCrmEvent(
   options?: CrmOutboxEmitOptions,
 ): Promise<void> {
   const events = new CrmEventService(prisma);
+  const audienceDefaults = defaultAudienceForEvent(definition.moduleKey, definition.category);
 
   await events.enqueue({
     eventType: definition.crmEventType,
@@ -24,7 +26,9 @@ export async function enqueueWorkflowCrmEvent(
     title: definition.buildTitle(payload),
     body: definition.buildBody(payload),
     href: definition.buildHref?.(payload) ?? null,
-    audience: 'BROADCAST_ACTIVE_USERS',
+    audience: audienceDefaults.audience,
+    roleSlugs: audienceDefaults.roleSlugs,
+    permissionSlugs: audienceDefaults.permissionSlugs,
     payload,
     dedupeKey: options?.dedupeKey,
     createdById: options?.createdById ?? null,

@@ -1,11 +1,11 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import InventaireList from './components/inventaire-list';
 import { InventaireStats } from './components/inventaire-stats';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, PackagePlus } from 'lucide-react';
+import { PackagePlus } from 'lucide-react';
 import InventaireAddSheet from './components/inventaire-add-sheet';
 import { Container } from '@/components/common/container';
 import {
@@ -17,7 +17,8 @@ import {
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import { useInventaireExport } from '@/lib/gestion-ressources/use-rh-list-export';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { inventaireExportConfig } from '@/lib/datagrid/export-presets';
 
 export default function Page() {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ export default function Page() {
   const { title, description } = usePageToolbarMeta('/gestion-ressources/equipements/inventaire');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { exportCsv, isExporting } = useInventaireExport();
+  const exportConfig = useMemo(() => inventaireExportConfig(searchQuery), [searchQuery]);
 
   return (
     <>
@@ -36,10 +37,7 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <Button variant="outline" onClick={() => void exportCsv()} disabled={isExporting}>
-              {isExporting ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
-              {t('common.actions.export')}
-            </Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button onClick={() => setIsAddSheetOpen(true)} className="gap-2">
               <PackagePlus className="size-4" />
               Ajouter un équipement
@@ -53,10 +51,7 @@ export default function Page() {
         <InventaireList searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       </Container>
 
-      <InventaireAddSheet
-        open={isAddSheetOpen}
-        onOpenChange={setIsAddSheetOpen}
-      />
+      <InventaireAddSheet open={isAddSheetOpen} onOpenChange={setIsAddSheetOpen} />
     </>
   );
 }

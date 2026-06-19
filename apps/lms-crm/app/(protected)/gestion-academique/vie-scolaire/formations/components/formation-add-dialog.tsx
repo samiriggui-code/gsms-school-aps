@@ -321,9 +321,9 @@ const FormationAddDialog = ({
                 </div>
               </div>
 
-              <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex gap-3">
-                <Info className="size-5 text-blue-500 shrink-0 mt-0.5" />
-                <p className="text-[12px] text-blue-400 leading-relaxed">
+              <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-4 flex gap-3">
+                <Info className="size-5 text-indigo-500 shrink-0 mt-0.5" />
+                <p className="text-[12px] text-indigo-400 leading-relaxed">
                   Le Formation recevra un email d'invitation pour activer son compte et dÃ©finir son mot de passe.
                 </p>
               </div>

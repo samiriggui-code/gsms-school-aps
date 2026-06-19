@@ -7,6 +7,7 @@ scripts/.deploy-staging-onboarding/
 scripts/deploy.config.json
 deploy/gsms/.env
 deploy/gsms/SECRETS.txt
+deploy/gsms/config/deploy.local.json
 
 # Dépendances & caches
 node_modules/
@@ -24,6 +25,9 @@ out/
 dist/
 build/
 *.tsbuildinfo
+
+# Archives déploiement SCP (scripts/pack-for-vps.ps1)
+gsms-school-*.tar.gz
 
 # Logs & OS
 *.log

@@ -1037,7 +1037,7 @@ export function EtudiantDetailsSheet({
         <SheetFooter className="flex-row border-t pb-4 p-5 border-border gap-2.5 lg:gap-0 bg-background shrink-0">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Fermer</Button>
           <div className="flex gap-2.5 ml-auto">
-            <Button variant="outline" onClick={handlePrintEtudiantFiche} className="font-bold border-none bg-blue-600 hover:bg-blue-700 text-white gap-2">
+            <Button variant="outline" onClick={handlePrintEtudiantFiche} className="font-bold border-none bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
               <Printer className="size-4" />
               Fiche lead
             </Button>

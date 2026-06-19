@@ -34,9 +34,15 @@ import {
 import { LoaderCircleIcon, Briefcase, Mail, User as UserIcon, ShieldCheck, Calendar, Hash, MapPin, CreditCard, FileText, Clock, Fingerprint, Shield, CloudUpload, Info } from 'lucide-react';
 import { User as Conformite, UserRole } from '@/app/models/user';
 import { ConformiteEditSchema, ConformiteEditSchemaType } from '../forms/conformite-edit-schema';
-import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
+import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import {
+  COLLABORATEUR_JOB_FUNCTION_OPTIONS,
+  SCHOOL_USER_CATEGORY_LABELS,
+} from '@/lib/rh-school-profile-fields';
+import { agrementUiLabels } from '@/lib/rh-agrement';
+import { CONTRACT_TYPE_VALUES, rhEnumFieldOrNull } from '@/lib/rh-form-schema-shared';
 
 interface ConformiteDetailsSettingsProps {
   conformite: Conformite;
@@ -46,7 +52,7 @@ interface ConformiteDetailsSettingsProps {
 
 export function ConformiteDetailsSettings({ conformite, formRef, onSuccess }: ConformiteDetailsSettingsProps) {
   const queryClient = useQueryClient();
-  const { data: roleList } = useRoleSelectQuery();
+  const { data: roleList } = useSchoolRoleSelectQuery();
 
   const [avatarExistingPreview, setAvatarExistingPreview] = useState<string | null>(null);
   const [avatarAttachedPreview, setAvatarAttachedPreview] = useState<string | null>(null);
@@ -70,7 +76,7 @@ export function ConformiteDetailsSettings({ conformite, formRef, onSuccess }: Co
       cniNumber: conformite.cniNumber || '',
       residencePermitNumber: conformite.residencePermitNumber || '',
       residencePermitExpiry: conformite.residencePermitExpiry ? new Date(conformite.residencePermitExpiry).toISOString().split('T')[0] : '',
-      contractType: conformite.contractType || '',
+      contractType: rhEnumFieldOrNull(conformite.contractType, CONTRACT_TYPE_VALUES),
       workTimeType: conformite.workTimeType || undefined,
       contractStartDate: conformite.contractStartDate ? new Date(conformite.contractStartDate).toISOString().split('T')[0] : '',
       contractEndDate: conformite.contractEndDate ? new Date(conformite.contractEndDate).toISOString().split('T')[0] : '',
@@ -413,9 +419,11 @@ export function ConformiteDetailsSettings({ conformite, formRef, onSuccess }: Co
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="INTERNAL">Interne (RH)</SelectItem>
-                          <SelectItem value="CLIENT">Client</SelectItem>
-                          <SelectItem value="SUBCONTRACTOR">Sous-traitant</SelectItem>
+                          {Object.entries(SCHOOL_USER_CATEGORY_LABELS).map(([value, label]) => (
+                            <SelectItem key={value} value={value}>
+                              {label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -464,16 +472,11 @@ export function ConformiteDetailsSettings({ conformite, formRef, onSuccess }: Co
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="Directeur">Directeur</SelectItem>
-                          <SelectItem value="Manager de Site">Manager de Site</SelectItem>
-                          <SelectItem value="Chef d'Équipe">Chef d'Équipe</SelectItem>
-                          <SelectItem value="Agent de Sécurité">Agent de Sécurité</SelectItem>
-                          <SelectItem value="SSIAP 1">SSIAP 1</SelectItem>
-                          <SelectItem value="SSIAP 2">SSIAP 2</SelectItem>
-                          <SelectItem value="SSIAP 3">SSIAP 3</SelectItem>
-                          <SelectItem value="Hôte/Hôtesse d'accueil">Hôte/Hôtesse d'accueil</SelectItem>
-                          <SelectItem value="Contrôleur">Contrôleur</SelectItem>
-                          <SelectItem value="Administratif">Administratif</SelectItem>
+                          {COLLABORATEUR_JOB_FUNCTION_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -622,7 +625,7 @@ export function ConformiteDetailsSettings({ conformite, formRef, onSuccess }: Co
                   render={({ field }) => (
                     <FormItem className="space-y-1.5">
                       <FormLabel className="text-2sm font-semibold text-foreground">Type de Contrat</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value || ''}>
+                      <Select onValueChange={field.onChange} value={field.value ?? ''}>
                         <FormControl>
                           <SelectTrigger className="h-10 bg-secondary/50 border-border">
                             <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireGestionRessourcesForMethod } from '../../../_lib/require-gestion-ressources-auth';
 import { fail } from '@/app/api/_shared/http/response';
+import { internalApiOrigin } from '@/lib/internal-api-origin';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -11,7 +12,7 @@ async function forwardTo(request: NextRequest, targetPath: string) {
   if (!auth.ok) return auth.response;
 
   const url = new URL(request.url);
-  const target = `${url.origin}${targetPath}${url.search}`;
+  const target = `${internalApiOrigin()}${targetPath}${url.search}`;
   const init: RequestInit = {
     method,
     headers: request.headers,

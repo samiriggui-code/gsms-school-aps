@@ -29,13 +29,28 @@ export function accountBlockMessage(reason: AccountBlockReason): string {
     case 'archived':
       return 'Ce compte a été archivé. Contactez l’administration pour le réactiver.';
     case 'blocked':
-      return 'Ce compte est suspendu. Contactez l’administration.';
+      return 'Votre compte a été suspendu par un administrateur. Contactez l’établissement pour plus d’informations.';
     case 'banned':
       return 'Ce compte est définitivement désactivé.';
     case 'pending':
       return 'Compte en attente d’activation. Vérifiez votre email ou contactez l’établissement.';
     default:
-      return 'Ce compte n’est pas actif. Contactez l’administration.';
+      return 'Votre compte a été désactivé. Contactez l’administration pour le réactiver.';
+  }
+}
+
+export function accountBlockTitle(reason: AccountBlockReason): string {
+  switch (reason) {
+    case 'archived':
+      return 'Compte archivé';
+    case 'blocked':
+      return 'Compte suspendu';
+    case 'banned':
+      return 'Compte banni';
+    case 'pending':
+      return 'Compte en attente';
+    default:
+      return 'Compte désactivé';
   }
 }
 

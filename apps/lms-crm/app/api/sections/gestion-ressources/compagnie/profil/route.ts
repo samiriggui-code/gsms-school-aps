@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireGestionRessourcesForMethod } from '../../_lib/require-gestion-ressources-auth';
+import { internalApiOrigin } from '@/lib/internal-api-origin';
 
 async function forward(request: NextRequest) {
   const url = new URL(request.url);
-  const target = `${url.origin}/api/sections/administration-facturation/tenant/profile${url.search}`;
+  const target = `${internalApiOrigin()}/api/sections/administration-facturation/tenant/profile${url.search}`;
   const method = request.method.toUpperCase();
   const headers = new Headers(request.headers);
 

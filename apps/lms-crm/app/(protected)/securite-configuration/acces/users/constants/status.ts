@@ -1,34 +1,50 @@
 import { UserStatus } from '@/app/models/user';
 
-// Default status mapping
-export const UserStatusProps: Record<UserStatus, { label: string; variant: string }> = {
+export const UserStatusProps: Record<
+  UserStatus,
+  { label: string; variant: string; description?: string }
+> = {
   [UserStatus.ACTIVE]: {
-    label: 'Active',
+    label: 'Actif',
     variant: 'success',
+    description: 'Compte opérationnel',
   },
   [UserStatus.INACTIVE]: {
-    label: 'Inactive',
+    label: 'Inactif',
     variant: 'warning',
+    description: 'Compte désactivé ou archivé',
   },
   [UserStatus.BLOCKED]: {
-    label: 'Blocked',
+    label: 'Suspendu',
     variant: 'destructive',
+    description: 'Accès bloqué par un administrateur',
   },
   [UserStatus.PENDING]: {
-    label: 'Pending',
+    label: 'En attente',
     variant: 'warning',
+    description: 'Invitation ou validation en cours',
   },
   [UserStatus.BANNED]: {
-    label: 'Banned',
+    label: 'Banni',
     variant: 'destructive',
+    description: 'Accès définitivement refusé',
   },
   [UserStatus.ABSENT]: {
     label: 'Absent',
     variant: 'mono',
+    description: 'Statut RH automatique (absence approuvée)',
   },
 };
 
-// Function to get status properties
 export const getUserStatusProps = (status: UserStatus) => {
-  return UserStatusProps[status] || { label: 'Unknown', variant: 'success' };
+  return UserStatusProps[status] || { label: 'Inconnu', variant: 'outline' };
 };
+
+/** Statuts modifiables manuellement depuis l’admin IAM. */
+export const USER_IAM_EDITABLE_STATUSES: UserStatus[] = [
+  UserStatus.ACTIVE,
+  UserStatus.INACTIVE,
+  UserStatus.BLOCKED,
+  UserStatus.PENDING,
+  UserStatus.BANNED,
+];

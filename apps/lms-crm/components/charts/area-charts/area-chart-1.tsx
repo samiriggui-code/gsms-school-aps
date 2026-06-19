@@ -81,7 +81,7 @@ const businessCards = [
     value: '6.202',
     timestamp: '3h ago',
     data: customersData,
-    color: 'var(--color-blue-500)',
+    color: 'var(--color-indigo-500)',
     icon: UserPlus,
     gradientId: 'customersGradient',
   },

@@ -32,7 +32,10 @@ Prerequis PDF local : `pnpm exec playwright install chromium` (depuis `packages/
 
 Production Docker :
 ```bash
-docker compose -f docker-compose.workers.yml build
-docker compose -f docker-compose.workers.yml up -d
+# Image prod (VPS) — deploy/gsms/deploy.sh
+docker build -f deploy/gsms/Dockerfile.worker -t gsms-worker:latest .
+
+# Dev local
+docker compose -f docker-compose.workers.yml up -d --build
 ```
-Image basée sur `mcr.microsoft.com/playwright` (Chromium préinstallé). `REPORT_APP_BASE_URL` doit pointer vers le CRM.
+Image basée sur `mcr.microsoft.com/playwright` (Chromium préinstallé). `REPORT_APP_BASE_URL` doit pointer vers le CRM (`http://gsms-app:3001` en prod, `http://host.docker.internal:3001` en dev Docker).

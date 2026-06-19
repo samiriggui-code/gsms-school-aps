@@ -1,29 +1,32 @@
 ---
-title: GSMS — Monitoring
-description: État stack · métriques VPS · conteneurs Docker
+title: Hosting Global IT
+subtitle: Supervision plateforme GSMS
+description: État des services · métriques VPS · conteneurs Docker
 headerStyle: boxedWidgets
 theme: dark
-color: slate
+color: zinc
 language: fr
 statusStyle: dot
 showStats: true
 fullWidth: true
 useEqualHeights: true
 iconStyle: theme
+cardBlur: md
+hideVersion: false
 
 layout:
-  Application:
-    tab: App
+  Plateforme:
+    tab: Plateforme
     style: row
-    columns: 1
-    icon: mdi-web
-  Infrastructure:
-    tab: Infra
+    columns: 2
+    icon: mdi-view-dashboard
+  Données:
+    tab: Données
     style: row
     columns: 4
-    icon: mdi-docker
-  Externe:
+    icon: mdi-database
+  Automatisation:
     tab: Ops
     style: row
     columns: 2
-    icon: mdi-lan-connect
+    icon: mdi-cog-transfer

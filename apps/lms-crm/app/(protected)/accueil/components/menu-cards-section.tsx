@@ -33,6 +33,16 @@ type AccueilCardDef = {
 
 const ACCUEIL_CARDS: AccueilCardDef[] = [
   {
+    moduleKey: 'pilotage-supervision',
+    path: '/pilotage-supervision',
+    descriptionKey: 'accueil.cards.pilotage-supervision',
+    icon: TrendingUp,
+    moduleCount: 1,
+    subSections: ['pilotage'],
+    subSectionPaths: ['/pilotage-supervision/pilotage'],
+    tone: 'cyan',
+  },
+  {
     moduleKey: 'gestion-ressources',
     path: '/gestion-ressources',
     descriptionKey: 'accueil.cards.gestion-ressources',
@@ -103,16 +113,6 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
       '/securite-configuration/gouvernance-donnees',
     ],
     tone: 'indigo',
-  },
-  {
-    moduleKey: 'pilotage-supervision',
-    path: '/pilotage-supervision',
-    descriptionKey: 'accueil.cards.pilotage-supervision',
-    icon: TrendingUp,
-    moduleCount: 1,
-    subSections: ['pilotage'],
-    subSectionPaths: ['/pilotage-supervision/pilotage'],
-    tone: 'cyan',
   },
 ];
 

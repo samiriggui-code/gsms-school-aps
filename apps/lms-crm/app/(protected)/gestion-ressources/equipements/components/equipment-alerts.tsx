@@ -91,7 +91,7 @@ export function EquipmentAlerts() {
           </div>
           <div className="bg-background border border-border rounded-lg p-3 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-bold uppercase">
-              <Clock3 className="size-3.5 text-blue-500" />
+              <Clock3 className="size-3.5 text-indigo-500" />
               En service
             </div>
             <Badge variant="secondary" appearance="light">{inUse}</Badge>

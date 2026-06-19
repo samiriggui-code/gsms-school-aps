@@ -40,6 +40,11 @@ import {
   showsCollaboratorAgrementSchedulingSection,
   showsUserStaffEmployerFields,
 } from '@/lib/rh-agrement';
+import {
+  CONTRACT_TYPE_VALUES,
+  WORK_TIME_TYPE_VALUES,
+  rhEnumFieldOrNull,
+} from '@/lib/rh-form-schema-shared';
 
 interface UserDetailsFormProps {
   user: User;
@@ -73,8 +78,8 @@ export function UserDetailsForm({ user, formRef, onSuccess }: UserDetailsFormPro
       cniNumber: user.cniNumber || '',
       residencePermitNumber: user.residencePermitNumber || '',
       residencePermitExpiry: user.residencePermitExpiry ? new Date(user.residencePermitExpiry).toISOString().split('T')[0] : '',
-      contractType: user.contractType || '',
-      workTimeType: user.workTimeType || '',
+      contractType: rhEnumFieldOrNull(user.contractType, CONTRACT_TYPE_VALUES),
+      workTimeType: rhEnumFieldOrNull(user.workTimeType, WORK_TIME_TYPE_VALUES),
       contractStartDate: user.contractStartDate ? new Date(user.contractStartDate).toISOString().split('T')[0] : '',
       contractEndDate: user.contractEndDate ? new Date(user.contractEndDate).toISOString().split('T')[0] : '',
       address: user.address || '',
@@ -461,7 +466,7 @@ export function UserDetailsForm({ user, formRef, onSuccess }: UserDetailsFormPro
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Type de contrat</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
+                      <Select onValueChange={field.onChange} value={field.value ?? ''}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Sélectionner" />
@@ -484,7 +489,7 @@ export function UserDetailsForm({ user, formRef, onSuccess }: UserDetailsFormPro
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Temps de travail</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
+                      <Select onValueChange={field.onChange} value={field.value ?? ''}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Sélectionner" />

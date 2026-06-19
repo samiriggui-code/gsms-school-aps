@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Container } from '@/components/common/container';
 import {
   Toolbar,
@@ -13,7 +13,9 @@ import {
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { Button } from '@/components/ui/button';
-import { Download, Wrench } from 'lucide-react';
+import { Wrench } from 'lucide-react';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { maintenanceExportConfig } from '@/lib/datagrid/export-presets';
 import { MaintenanceAddSheet } from './components/maintenance-add-sheet';
 import { MaintenanceStats } from './components/maintenance-stats';
 import { MaintenanceList } from './components/maintenance-list';
@@ -23,6 +25,7 @@ export default function EquipementsMaintenancePage() {
   const { title, description } = usePageToolbarMeta('/gestion-ressources/equipements/maintenance');
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const exportConfig = useMemo(() => maintenanceExportConfig(searchQuery), [searchQuery]);
 
   return (
     <>
@@ -33,10 +36,7 @@ export default function EquipementsMaintenancePage() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <Button variant="outline" type="button">
-              <Download className="size-4" />
-              {t('common.actions.export')}
-            </Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button onClick={() => setIsAddSheetOpen(true)} className="gap-2">
               <Wrench className="size-4" />
               Nouvelle intervention

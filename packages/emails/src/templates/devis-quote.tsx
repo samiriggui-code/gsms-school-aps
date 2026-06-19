@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Column, Row, Section, Text } from '@react-email/components';
 import { BareboneShell, EMAIL_BUTTON_CLASS } from '../barebone/barebone-shell';
 

@@ -54,7 +54,7 @@ type UserDetails = {
 interface UserDetailsSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onEditClick?: () => void;
+  onEditClick?: (user: UserDetails) => void;
   user?: UserDetails | null;
 }
 
@@ -209,8 +209,8 @@ export function UserDetailsSheet({
             <Button size="sm" className="shrink-0" asChild>
               <Link href={`/securite-configuration/acces/users/${displayUser?.id}`}>Voir le profil complet</Link>
             </Button>
-            {onEditClick ? (
-              <Button size="sm" className="shrink-0" onClick={onEditClick}>
+            {onEditClick && displayUser ? (
+              <Button size="sm" className="shrink-0" onClick={() => onEditClick(displayUser)}>
                 Modifier
               </Button>
             ) : null}

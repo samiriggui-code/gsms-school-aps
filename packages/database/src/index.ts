@@ -34,9 +34,17 @@ export {
   MarketingCampaignStatus,
   FinancePaymentStatus,
   InAppNotificationCategory,
+  InAppNotificationChannel,
   ChatConversationType,
+  ChatParticipantRole,
+  ComplianceItemStatus,
+  ComplianceDossierStatus,
+  ComplianceDossierKind,
+  ComplianceSubjectType,
+  DocumentRequestStatus,
   RhAbsenceType,
   RhAbsenceStatus,
+  RhTeamLifecycleStatus,
 } from '../generated/client';
 /** Types Prisma (modèles, inputs, enums) — sans ré-export runtime `export *`. */
 export type * from '../generated/client';

@@ -56,7 +56,7 @@ import {
   CloudUpload
 } from 'lucide-react';
 import { UserRole } from '@/app/models/user';
-import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
+import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { useSubcontractorSelectQuery } from '../hooks/use-subcontractor-select-query';
 import {
   ConformiteAddSchema,
@@ -81,7 +81,7 @@ const ConformiteAddSheet = ({
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('identity');
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const { data: roleList } = useRoleSelectQuery();
+  const { data: roleList } = useSchoolRoleSelectQuery();
   const { data: subcontractorList } = useSubcontractorSelectQuery();
 
   const form = useForm<ConformiteAddSchemaInput, unknown, ConformiteAddSchemaType>({
@@ -105,7 +105,7 @@ const ConformiteAddSheet = ({
       address: '',
       city: '',
       postalCode: '',
-      contractType: '',
+      contractType: undefined,
       workTimeType: 'FULL_TIME',
       isSchedulable: true,
       carteProNumber: '',
@@ -473,7 +473,7 @@ const ConformiteAddSheet = ({
                           <FormField control={form.control} name="phone" render={({ field }) => (
                             <FormItem className="space-y-1.5">
                               <FormLabel className="text-2sm font-semibold text-foreground">Téléphone Mobile</FormLabel>
-                              <FormControl><Input placeholder="+33 6 ..." {...field} className="h-10 bg-muted/50 border-border focus:bg-background transition-colors" /></FormControl>
+                              <FormControl><Input placeholder="+33 6 ..." {...field} value={field.value ?? ''} className="h-10 bg-muted/50 border-border focus:bg-background transition-colors" /></FormControl>
                               <FormMessage />
                             </FormItem>
                           )} />
@@ -495,7 +495,7 @@ const ConformiteAddSheet = ({
                               <FormLabel className="text-[13px] font-bold text-foreground">Email Professionnel LMS</FormLabel>
                               <FormControl>
                                 <div className="relative">
-                                  <Input {...field} readOnly className="h-11 bg-background/50 border-border font-medium text-foreground italic" />
+                                  <Input {...field} value={field.value ?? ''} readOnly className="h-11 bg-background/50 border-border font-medium text-foreground italic" />
                                   <div className="absolute right-3 top-1/2 -translate-y-1/2">
                                     <ShieldCheck className="size-4 text-foreground/30" />
                                   </div>
@@ -585,7 +585,7 @@ const ConformiteAddSheet = ({
                           <FormField control={form.control} name="subcontractorId" render={({ field }) => (
                             <FormItem className="space-y-1.5">
                               <FormLabel className="text-[13px] font-bold text-foreground text-amber-600">Entreprise de Sous-traitance affiliée</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <Select onValueChange={field.onChange} value={field.value ?? ''}>
                                 <FormControl>
                                   <SelectTrigger className="h-11 shadow-sm border-amber-500/30 bg-amber-500/5">
                                     <SelectValue placeholder="Sélectionner l'entreprise" />
@@ -730,7 +730,7 @@ const ConformiteAddSheet = ({
                             <FormField control={form.control} name="contractType" render={({ field }) => (
                               <FormItem className="space-y-1.5">
                                 <FormLabel className="text-[13px] font-bold text-foreground">Type de Contrat</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value ?? ''}>
                                   <FormControl><SelectTrigger className="h-11 shadow-sm"><SelectValue placeholder="Choisir un type" /></SelectTrigger></FormControl>
                                   <SelectContent>
                                     <SelectItem value="CDI">CDI</SelectItem>

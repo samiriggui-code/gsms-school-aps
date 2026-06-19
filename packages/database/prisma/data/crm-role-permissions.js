@@ -1,9 +1,10 @@
 /**
- * Matrice déterministe rôle → permissions CRM.
+ * Matrice déterministe rôle → permissions.
  * `superadmin` reçoit toutes les permissions en seed (wildcard ci-dessous ignoré).
  */
 const CRM_PERMISSIONS = {
   superadmin: '*',
+
   admin: [
     'crm.dashboard.view',
     'crm.ressources.view',
@@ -15,21 +16,52 @@ const CRM_PERMISSIONS = {
     'crm.communication.view',
     'crm.communication.edit',
     'crm.support.view',
+    'crm.support.edit',
+    'crm.securite.view',
+    'crm.securite.edit',
     'crm.pilotage.view',
+    'iam.users.view',
+    'iam.users.create',
+    'iam.users.edit',
+    'iam.roles.view',
+    'iam.roles.edit',
+    'iam.permissions.view',
+    'iam.logs.view',
+    'governance.storage.admin',
+    'governance.conformite.view',
+    'governance.audit.view',
+    'lms.catalog.manage',
+    'lms.content.review',
+    'lms.content.publish',
+    'lms.quiz.validate',
+    'lms.analytics.view',
+    'chat.internal.access',
+    'chat.session.moderate',
     'in_app_notifications.view',
     'settings.manage',
     'report.view',
     'report.export',
-    'user.view',
-    'user.edit',
+    'portal.mobile.access',
   ],
+
   collaborateur: [
     'crm.dashboard.view',
     'crm.ressources.view',
     'crm.academique.view',
+    'crm.academique.edit',
     'crm.support.view',
+    'crm.support.edit',
+    'lms.content.review',
+    'lms.quiz.correct',
+    'chat.internal.access',
+    'chat.session.moderate',
     'in_app_notifications.view',
+    'portal.mobile.access',
+    'portal.documents.own',
+    'portal.settings.own',
+    'governance.conformite.view',
   ],
+
   manager: [
     'crm.dashboard.view',
     'crm.ressources.view',
@@ -39,25 +71,60 @@ const CRM_PERMISSIONS = {
     'crm.support.view',
     'in_app_notifications.view',
     'report.view',
+    'chat.internal.access',
   ],
+
   staff: [
     'crm.dashboard.view',
     'crm.ressources.view',
     'crm.academique.view',
     'crm.support.view',
     'in_app_notifications.view',
+    'chat.internal.access',
   ],
+
   support: [
     'crm.dashboard.view',
     'crm.ressources.view',
     'crm.academique.view',
     'crm.support.view',
+    'crm.support.edit',
     'crm.communication.view',
     'in_app_notifications.view',
+    'chat.internal.access',
   ],
-  formateur: ['in_app_notifications.view'],
-  candidat: ['in_app_notifications.view'],
-  eleve: ['in_app_notifications.view'],
+
+  formateur: [
+    'lms.course.view',
+    'lms.course.progress',
+    'lms.content.draft',
+    'lms.content.submit_review',
+    'lms.quiz.author',
+    'lms.quiz.correct',
+    'chat.internal.access',
+    'chat.session.participate',
+    'in_app_notifications.view',
+    'portal.mobile.access',
+    'portal.documents.own',
+    'portal.settings.own',
+  ],
+
+  candidat: [
+    'in_app_notifications.view',
+    'portal.mobile.access',
+    'portal.documents.own',
+    'portal.settings.own',
+  ],
+
+  eleve: [
+    'lms.course.view',
+    'lms.course.progress',
+    'chat.session.participate',
+    'in_app_notifications.view',
+    'portal.mobile.access',
+    'portal.documents.own',
+    'portal.settings.own',
+  ],
 };
 
 module.exports = { CRM_PERMISSIONS };

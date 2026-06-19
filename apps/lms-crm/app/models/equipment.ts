@@ -26,6 +26,9 @@ export interface Equipment {
   metadata?: any;
   createdAt: Date;
   updatedAt: Date;
+  openMaintenanceId?: string | null;
+  openMaintenanceType?: string | null;
+  stockStats?: unknown;
   _count?: {
     maintenanceItems?: number;
     stockMovements?: number;

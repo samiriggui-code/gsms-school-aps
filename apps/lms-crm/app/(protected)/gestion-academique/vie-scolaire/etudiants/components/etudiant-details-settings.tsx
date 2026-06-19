@@ -42,6 +42,11 @@ import {
   COLLABORATEUR_JOB_FUNCTION_OPTIONS,
   SCHOOL_USER_CATEGORY_LABELS,
 } from '@/lib/rh-school-profile-fields';
+import {
+  CONTRACT_TYPE_VALUES,
+  WORK_TIME_TYPE_VALUES,
+  rhEnumFieldOrNull,
+} from '@/lib/rh-form-schema-shared';
 
 interface EtudiantDetailsSettingsProps {
   Etudiant: Etudiant;
@@ -67,6 +72,8 @@ export function EtudiantDetailsSettings({ Etudiant, formRef, onSuccess }: Etudia
       firstName: Etudiant.firstName || '',
       lastName: Etudiant.lastName || '',
       email: Etudiant.email || '',
+      phone: Etudiant.phone || '',
+      proEmail: Etudiant.proEmail || '',
       roleId: Etudiant.role?.id || '',
       userCategory: (Etudiant.userCategory as EtudiantEditSchemaType['userCategory']) || 'INTERNAL',
       jobFunction: Etudiant.jobFunction || '',
@@ -79,8 +86,8 @@ export function EtudiantDetailsSettings({ Etudiant, formRef, onSuccess }: Etudia
       cniNumber: Etudiant.cniNumber || '',
       residencePermitNumber: Etudiant.residencePermitNumber || '',
       residencePermitExpiry: Etudiant.residencePermitExpiry ? new Date(Etudiant.residencePermitExpiry).toISOString().split('T')[0] : '',
-      contractType: Etudiant.contractType || '',
-      workTimeType: Etudiant.workTimeType || '',
+      contractType: rhEnumFieldOrNull(Etudiant.contractType, CONTRACT_TYPE_VALUES),
+      workTimeType: rhEnumFieldOrNull(Etudiant.workTimeType, WORK_TIME_TYPE_VALUES),
       contractStartDate: Etudiant.contractStartDate ? new Date(Etudiant.contractStartDate).toISOString().split('T')[0] : '',
       contractEndDate: Etudiant.contractEndDate ? new Date(Etudiant.contractEndDate).toISOString().split('T')[0] : '',
       address: Etudiant.address || '',
@@ -342,6 +349,37 @@ export function EtudiantDetailsSettings({ Etudiant, formRef, onSuccess }: Etudia
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/50" />
                           <Input {...field} className="h-10 pl-10 bg-secondary/50 border-border focus:bg-background transition-colors" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-2sm font-semibold text-foreground">Téléphone</FormLabel>
+                      <FormControl>
+                        <Input {...field} value={field.value || ''} className="h-10 bg-secondary/50 border-border focus:bg-background transition-colors" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="proEmail"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-2sm font-semibold text-foreground">Email professionnel</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/50" />
+                          <Input {...field} value={field.value || ''} className="h-10 pl-10 bg-secondary/50 border-border focus:bg-background transition-colors" />
                         </div>
                       </FormControl>
                       <FormMessage />

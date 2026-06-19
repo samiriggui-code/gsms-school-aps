@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import type { Prisma, RhOrgUnitType } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { nullishId } from '../../_lib/rh-teams-serialize';
@@ -8,6 +9,21 @@ import {
 } from '../../../_lib/require-gestion-ressources-auth';
 
 type Params = { params: Promise<{ path?: string[] }> };
+
+const RH_ORG_UNIT_TYPE_VALUES: RhOrgUnitType[] = ['DIRECTION', 'SERVICE', 'POLE', 'CAMPUS'];
+
+const LEGACY_ORG_UNIT_TYPE_MAP: Record<string, RhOrgUnitType> = {
+  AGENCE: 'CAMPUS',
+  SIEGE: 'DIRECTION',
+};
+
+function parseRhOrgUnitType(value: unknown): RhOrgUnitType {
+  const raw = String(value ?? 'SERVICE').trim().toUpperCase();
+  if (LEGACY_ORG_UNIT_TYPE_MAP[raw]) return LEGACY_ORG_UNIT_TYPE_MAP[raw];
+  return RH_ORG_UNIT_TYPE_VALUES.includes(raw as RhOrgUnitType)
+    ? (raw as RhOrgUnitType)
+    : 'SERVICE';
+}
 
 function serializeOrgUnit(row: {
   id: string;
@@ -19,7 +35,28 @@ function serializeOrgUnit(row: {
   createdAt: Date;
   updatedAt: Date;
   parent?: { name: string } | null;
-  manager?: { id: string; firstName: string | null; lastName: string | null; email: string } | null;
+  manager?: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    email: string;
+    avatar: string | null;
+  } | null;
+  teams?: Array<{
+    id: string;
+    name: string;
+    type: string;
+    sector: string;
+    image: string | null;
+    site: { name: string } | null;
+    leader: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      avatar: string | null;
+    } | null;
+    _count: { members: number };
+  }>;
   _count?: { children: number; teams: number };
 }) {
   return {
@@ -35,10 +72,66 @@ function serializeOrgUnit(row: {
       Children: row._count?.children ?? 0,
       Teams: row._count?.teams ?? 0,
     },
-    Memberships: [],
-    Teams: [],
+    Memberships: row.manager
+      ? [
+          {
+            id: row.manager.id,
+            TenantUser: {
+              firstName: row.manager.firstName,
+              lastName: row.manager.lastName,
+              email: row.manager.email,
+              avatar: row.manager.avatar,
+            },
+          },
+        ]
+      : [],
+    Teams:
+      row.teams?.map((team) => ({
+        id: team.id,
+        name: team.name,
+        type: team.type,
+        sector: team.sector,
+        image: team.image,
+        Site: team.site,
+        leader: team.leader,
+        _count: { members: team._count.members },
+      })) ?? [],
   };
 }
+
+const orgUnitInclude = {
+  parent: { select: { name: true } },
+  manager: {
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      avatar: true,
+    },
+  },
+  teams: {
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      sector: true,
+      image: true,
+      site: { select: { name: true } },
+      leader: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatar: true,
+        },
+      },
+      _count: { select: { members: true } },
+    },
+    orderBy: { name: 'asc' as const },
+  },
+  _count: { select: { children: true, teams: true } },
+} satisfies Prisma.RhOrgUnitInclude;
 
 export async function GET(_request: NextRequest, { params }: Params) {
   const auth = await requireGestionRessourcesView();
@@ -48,13 +141,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
   if (parts.length === 1 && parts[0]) {
     const row = await prisma.rhOrgUnit.findUnique({
       where: { id: parts[0] },
-      include: {
-        parent: { select: { name: true } },
-        manager: {
-          select: { id: true, firstName: true, lastName: true, email: true },
-        },
-        _count: { select: { children: true, teams: true } },
-      },
+      include: orgUnitInclude,
     });
     if (!row) return fail('Unité introuvable', 404);
     return ok(serializeOrgUnit(row));
@@ -62,13 +149,7 @@ export async function GET(_request: NextRequest, { params }: Params) {
 
   const rows = await prisma.rhOrgUnit.findMany({
     orderBy: { name: 'asc' },
-    include: {
-      parent: { select: { name: true } },
-      manager: {
-        select: { id: true, firstName: true, lastName: true, email: true },
-      },
-      _count: { select: { children: true, teams: true } },
-    },
+    include: orgUnitInclude,
   });
 
   return ok(rows.map(serializeOrgUnit));
@@ -86,18 +167,12 @@ export async function POST(request: NextRequest) {
     const row = await prisma.rhOrgUnit.create({
       data: {
         name,
-        type: String(body.type ?? 'AGENCE').trim() || 'AGENCE',
+        type: parseRhOrgUnitType(body.type),
         parentId: nullishId(body.parentId),
         managerId: nullishId(body.managerId),
         positionId: nullishId(body.positionId),
       },
-      include: {
-        parent: { select: { name: true } },
-        manager: {
-          select: { id: true, firstName: true, lastName: true, email: true },
-        },
-        _count: { select: { children: true, teams: true } },
-      },
+      include: orgUnitInclude,
     });
     return ok(serializeOrgUnit(row), 201);
   } catch (error) {
@@ -118,18 +193,12 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       where: { id },
       data: {
         ...(body.name !== undefined ? { name: String(body.name).trim() } : {}),
-        ...(body.type !== undefined ? { type: String(body.type).trim() } : {}),
+        ...(body.type !== undefined ? { type: parseRhOrgUnitType(body.type) } : {}),
         ...(body.parentId !== undefined ? { parentId: nullishId(body.parentId) } : {}),
         ...(body.managerId !== undefined ? { managerId: nullishId(body.managerId) } : {}),
         ...(body.positionId !== undefined ? { positionId: nullishId(body.positionId) } : {}),
       },
-      include: {
-        parent: { select: { name: true } },
-        manager: {
-          select: { id: true, firstName: true, lastName: true, email: true },
-        },
-        _count: { select: { children: true, teams: true } },
-      },
+      include: orgUnitInclude,
     });
     return ok(serializeOrgUnit(row));
   } catch (error) {

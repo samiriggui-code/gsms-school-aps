@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 
 const cards = [
   {
-    color: 'bg-blue-600',
+    color: 'bg-indigo-600',
     icon: ChartNoAxesCombined,
     value: '27.3%',
     title: 'NPS Improvement',

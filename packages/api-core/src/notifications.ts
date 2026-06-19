@@ -1,5 +1,7 @@
 import type { InAppNotificationCategory, PrismaClient } from '@repo/database';
 import { triggerUserNotification } from '@repo/realtime';
+import { enrichNotificationMetadata } from './notification-avatar-enrich';
+import { resolveNotificationChannel } from './notification-channel';
 
 /**
  * Catégories in-app (Prisma `InAppNotificationCategory`) :
@@ -24,6 +26,8 @@ export type EmitNotificationInput = {
   body: string;
   href?: string | null;
   metadata?: Record<string, unknown>;
+  /** Canal UX explicite ; sinon déduit automatiquement. */
+  channel?: import('@repo/database').InAppNotificationChannel;
   /** Si fourni, évite les doublons (upsert logique via findFirst + skip) */
   dedupeKey?: string;
 };
@@ -43,17 +47,32 @@ export class NotificationService {
       if (existing) return existing;
     }
 
+    const enrichedMetadata = await enrichNotificationMetadata(
+      this.prisma,
+      input.category,
+      {
+        ...(input.metadata ?? {}),
+        ...(input.dedupeKey ? { dedupeKey: input.dedupeKey } : {}),
+      },
+    );
+
+    const channel =
+      input.channel ??
+      resolveNotificationChannel({
+        category: input.category,
+        href: input.href,
+        metadata: enrichedMetadata as Record<string, unknown>,
+      });
+
     const row = await this.prisma.inAppNotification.create({
       data: {
         userId: input.userId,
         category: input.category,
+        channel,
         title: input.title,
         body: input.body,
         href: input.href ?? null,
-        metadata: {
-          ...(input.metadata ?? {}),
-          ...(input.dedupeKey ? { dedupeKey: input.dedupeKey } : {}),
-        },
+        metadata: enrichedMetadata,
       },
     });
 
@@ -72,8 +91,10 @@ export class NotificationService {
   /** Notifie plusieurs utilisateurs (ex. admins) */
   async emitMany(userIds: string[], input: Omit<EmitNotificationInput, 'userId'>) {
     const unique = Array.from(new Set(userIds.filter(Boolean)));
-    return Promise.all(
-      unique.map((userId) => this.emit({ ...input, userId })),
-    );
+    const rows = [];
+    for (const userId of unique) {
+      rows.push(await this.emit({ ...input, userId }));
+    }
+    return rows;
   }
 }

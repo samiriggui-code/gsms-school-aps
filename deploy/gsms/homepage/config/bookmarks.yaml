@@ -1,11 +1,14 @@
 ---
-- Liens rapides:
-    - App:
-        - abbr: APP
+- Accès rapides:
+    - Site public:
+        - abbr: WEB
           href: https://hosting-global-it-ss.com
-    - CRM:
+    - Connexion CRM:
         - abbr: CRM
-          href: https://crm.hosting-global-it-ss.com
+          href: https://hosting-global-it-ss.com/signin
     - n8n:
         - abbr: n8n
           href: https://n8n-k2pw.srv1722028.hstgr.cloud
+    - Health API:
+        - abbr: API
+          href: https://hosting-global-it-ss.com/api/common/health

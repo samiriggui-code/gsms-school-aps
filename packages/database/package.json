@@ -18,8 +18,10 @@
     "pg": "^8.20.0"
   },
   "devDependencies": {
+    "@repo/api-core": "workspace:*",
     "@types/pg": "^8.16.0",
-    "prisma": "7.8.0"
+    "prisma": "7.8.0",
+    "tsx": "^4.21.0"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
@@ -27,6 +29,9 @@
   },
   "scripts": {
     "db:push": "node --env-file=../../.env node_modules/prisma/build/index.js db push",
+    "db:push:accept": "node --env-file=../../.env node_modules/prisma/build/index.js db push --accept-data-loss",
+    "db:backfill-file-versions": "node --env-file=../../.env prisma/backfill-file-asset-versions.js",
+    "db:backfill-compliance": "pnpm exec tsx --env-file=../../.env prisma/backfill-compliance-dossiers.ts",
     "db:generate": "node node_modules/prisma/build/index.js generate",
     "db:seed": "node prisma/seed.js",
     "db:migrate": "node --env-file=../../.env node_modules/prisma/build/index.js migrate deploy",

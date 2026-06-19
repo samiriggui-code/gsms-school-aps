@@ -11,7 +11,7 @@ const balanceData = {
   currencies: [
     { code: 'USD', percent: 30, color: 'bg-white' },
     { code: 'GBP', percent: 20, color: 'bg-indigo-400' },
-    { code: 'EUR', percent: 15, color: 'bg-blue-500' },
+    { code: 'EUR', percent: 15, color: 'bg-indigo-500' },
     { code: 'JPY', percent: 20, color: 'bg-violet-600' },
     { code: 'CNY', percent: 15, color: 'bg-fuchsia-600' },
   ],

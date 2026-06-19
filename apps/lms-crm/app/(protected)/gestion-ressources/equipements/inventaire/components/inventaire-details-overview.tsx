@@ -7,6 +7,7 @@ import { InventaireReliabilityTier } from "./details/inventaire-reliability-tier
 import { InventaireTechnicalInfo } from "./details/inventaire-technical-info";
 import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Wrench } from "lucide-react";
+import { MaintenanceCompleteActions } from "../../components/maintenance-complete-actions";
 
 export function InventaireDetailsOverview({ 
   equipment,
@@ -32,8 +33,22 @@ export function InventaireDetailsOverview({
           </AlertIcon>
           <div className="flex flex-col gap-1">
             <AlertTitle className="text-foreground font-bold uppercase text-[11px] tracking-wider">Équipement en Maintenance</AlertTitle>
-            <AlertDescription className="text-muted-foreground text-sm">
-              Cet équipement est actuellement en cours de maintenance. Il n'est pas disponible pour l'affectation ou l'utilisation.
+            <AlertDescription className="text-muted-foreground text-sm space-y-3">
+              <p>
+                Cet équipement est actuellement en cours de maintenance. Il n&apos;est pas disponible pour l&apos;affectation ou l&apos;utilisation.
+              </p>
+              <MaintenanceCompleteActions
+                equipmentId={equipment.id}
+                equipmentStatus={equipment.status}
+                maintenanceId={(equipment as { openMaintenanceId?: string | null }).openMaintenanceId}
+                layout="buttons"
+                size="sm"
+                invalidateKeys={[
+                  ['equipment-catalog'],
+                  ['equipment-maintenance-list'],
+                  ['equipment-maintenance-details', equipment.id],
+                ]}
+              />
             </AlertDescription>
           </div>
         </Alert>

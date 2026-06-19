@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import {
   getUserPresence,
+  getUsersPresence,
   setUserPresence,
   type UserPresenceStatus,
 } from '@/lib/user-presence-server';
@@ -11,9 +12,16 @@ import {
 const VALID: UserPresenceStatus[] = ['online', 'busy', 'away', 'offline'];
 
 /** Statut de présence (en ligne / occupé / absent) — partagé portail, CRM, formateur. */
-export async function GET() {
+export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+
+  const userIdsRaw = new URL(request.url).searchParams.get('userIds')?.trim();
+  if (userIdsRaw) {
+    const userIds = userIdsRaw.split(',').map((id) => id.trim()).filter(Boolean);
+    const presences = await getUsersPresence(userIds);
+    return ok({ presences });
+  }
 
   const status = await getUserPresence(session.user.id);
   return ok({ status });

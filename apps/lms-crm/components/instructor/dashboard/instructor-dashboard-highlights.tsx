@@ -48,7 +48,7 @@ export function InstructorDashboardHighlights({ highlights }: InstructorDashboar
           </div>
         </div>
         <div className="mb-1.5 grid w-full min-w-0 grid-cols-[9fr_7fr_4fr] gap-1">
-          <div className="h-2 min-w-0 rounded-xs bg-blue-500" />
+          <div className="h-2 min-w-0 rounded-xs bg-indigo-500" />
           <div className="h-2 min-w-0 rounded-xs bg-green-500" />
           <div className="h-2 min-w-0 rounded-xs bg-violet-500" />
         </div>

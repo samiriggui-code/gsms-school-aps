@@ -656,11 +656,30 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
         },
       );
       const j = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(j?.error?.message ?? 'Mise à jour impossible.');
+      if (!res.ok) {
+        const details = j?.error?.details;
+        const detailMsg =
+          details && typeof details === 'object' && 'fieldErrors' in details
+            ? Object.values(details.fieldErrors as Record<string, string[]>)
+                .flat()
+                .filter(Boolean)
+                .join(' ')
+            : '';
+        throw new Error(
+          [j?.error?.message, detailMsg].filter(Boolean).join(' — ') || 'Mise à jour impossible.',
+        );
+      }
       return j;
     },
-    onSuccess: () => {
-      toast.success(t('sessions.updated'));
+    onSuccess: (j) => {
+      const warnings = j?.data?.warnings;
+      if (Array.isArray(warnings) && warnings.length > 0) {
+        toast.warning('Session enregistrée avec avertissements', {
+          description: warnings.join(' · '),
+        });
+      } else {
+        toast.success(t('sessions.updated'));
+      }
       invalidateAll();
       onOpenChange(false);
       resetAll();

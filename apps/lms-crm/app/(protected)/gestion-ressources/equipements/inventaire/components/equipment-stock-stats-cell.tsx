@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDownLeft, ArrowUpRight, Layers } from 'lucide-react';
+import { Layers, Wrench, UserCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -10,8 +10,16 @@ import {
 } from '@/components/ui/tooltip';
 
 export type EquipmentStockStats = {
+  availableCount?: number;
+  inUseCount?: number;
+  maintenanceCount?: number;
+  outOfServiceCount?: number;
+  unitCount?: number;
+  /** @deprecated — disponibles */
   currentStock?: number;
+  /** @deprecated — en utilisation */
   totalIn?: number;
+  /** @deprecated — en maintenance */
   totalOut?: number;
   available?: number;
   maintenance?: number;
@@ -27,9 +35,9 @@ export function EquipmentStockStatsCell({
   compact?: boolean;
 }) {
   const s = {
-    currentStock: stats?.currentStock ?? stats?.available ?? 0,
-    totalIn: stats?.totalIn ?? 0,
-    totalOut: stats?.totalOut ?? stats?.maintenance ?? 0,
+    available: stats?.availableCount ?? stats?.currentStock ?? stats?.available ?? 0,
+    inUse: stats?.inUseCount ?? stats?.totalIn ?? 0,
+    maintenance: stats?.maintenanceCount ?? stats?.totalOut ?? stats?.maintenance ?? 0,
   };
 
   if (!stats && unitCount == null) {
@@ -54,14 +62,16 @@ export function EquipmentStockStatsCell({
               <span
                 className={cn(
                   'text-xs font-semibold tabular-nums',
-                  s.currentStock > 0 ? 'text-foreground' : 'text-muted-foreground/40',
+                  s.available > 0 ? 'text-foreground' : 'text-muted-foreground/40',
                 )}
               >
-                {s.currentStock}
+                {s.available}
               </span>
             </div>
           </TooltipTrigger>
-          <TooltipContent className="text-[10px]">Disponibles</TooltipContent>
+          <TooltipContent className="text-[10px] max-w-[200px]">
+            Disponibles (statut) — pas les entrées mouvement IN
+          </TooltipContent>
         </Tooltip>
 
         <span className="h-3 w-px bg-border/60" aria-hidden />
@@ -69,18 +79,20 @@ export function EquipmentStockStatsCell({
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-1 cursor-help">
-              <ArrowDownLeft className="size-3.5 text-sky-600 dark:text-sky-400" />
+              <UserCheck className="size-3.5 text-sky-600 dark:text-sky-400" />
               <span
                 className={cn(
                   'text-xs font-semibold tabular-nums',
-                  s.totalIn > 0 ? 'text-foreground' : 'text-muted-foreground/40',
+                  s.inUse > 0 ? 'text-foreground' : 'text-muted-foreground/40',
                 )}
               >
-                {s.totalIn}
+                {s.inUse}
               </span>
             </div>
           </TooltipTrigger>
-          <TooltipContent className="text-[10px]">Affectées / en utilisation</TooltipContent>
+          <TooltipContent className="text-[10px] max-w-[200px]">
+            En utilisation / affectées (statut IN_USE)
+          </TooltipContent>
         </Tooltip>
 
         <span className="h-3 w-px bg-border/60" aria-hidden />
@@ -88,18 +100,20 @@ export function EquipmentStockStatsCell({
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex items-center gap-1 cursor-help">
-              <ArrowUpRight className="size-3.5 text-amber-600 dark:text-amber-400" />
+              <Wrench className="size-3.5 text-amber-600 dark:text-amber-400" />
               <span
                 className={cn(
                   'text-xs font-semibold tabular-nums',
-                  s.totalOut > 0 ? 'text-foreground' : 'text-muted-foreground/40',
+                  s.maintenance > 0 ? 'text-foreground' : 'text-muted-foreground/40',
                 )}
               >
-                {s.totalOut}
+                {s.maintenance}
               </span>
             </div>
           </TooltipTrigger>
-          <TooltipContent className="text-[10px]">En maintenance</TooltipContent>
+          <TooltipContent className="text-[10px] max-w-[200px]">
+            En maintenance (statut) — pas les sorties mouvement OUT
+          </TooltipContent>
         </Tooltip>
       </div>
     </TooltipProvider>

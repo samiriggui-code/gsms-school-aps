@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import * as React from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
@@ -81,6 +81,7 @@ function DialogContent({
         data-slot="dialog-content"
         className={cn(dialogContentVariants({ variant }), className)}
         {...props}
+        aria-describedby={props['aria-describedby'] ?? undefined}
       >
         {children}
         {showCloseButton && (

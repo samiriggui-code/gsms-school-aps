@@ -35,6 +35,14 @@ import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { TEAM_TYPES, TEAM_SECTORS } from '../constants';
+import {
+  resolveTeamLeader,
+  resolveTeamTypeMeta,
+  teamVisualSrc,
+  isSessionPedagogicalTeam,
+  sessionTeamSubtitle,
+} from '../lib/team-display';
+import { TeamPhoto } from './team-photo';
 
 // New components
 import { TeamDetailsOverview } from './team-details-overview';
@@ -118,6 +126,14 @@ const TeamDetailsSheet = ({
               <p>Impossible de trouver l'équipe.</p>
             </div>
           ) : (
+            (() => {
+              const leader = resolveTeamLeader(team);
+              const typeMeta = resolveTeamTypeMeta(team.type);
+              const TypeIcon = typeMeta.icon;
+              const sessionTeam = isSessionPedagogicalTeam(team);
+              const lifecycleLabel = String(team.lifecycleStatus || 'ACTIVE').replace(/_/g, ' ');
+
+              return (
             <>
               <div className="flex justify-between flex-wrap gap-2 border-b border-border px-5 py-5 bg-background shrink-0">
                 <div className="flex flex-col gap-3">
@@ -135,7 +151,9 @@ const TeamDetailsSheet = ({
                       <span className="font-bold text-foreground/80">#{team.id.slice(-6).toUpperCase()}</span>
                     </div>
                     <span className="font-normal text-muted-foreground ml-2 line-clamp-1 italic">
-                      {team.description || "Aucune description fournie."}
+                      {sessionTeam
+                        ? sessionTeamSubtitle(team)
+                        : team.description || 'Aucune description fournie.'}
                     </span>
                   </div>
                 </div>
@@ -146,14 +164,21 @@ const TeamDetailsSheet = ({
                   {/* Left Column: Summary */}
                   <div className="w-full shrink-0 lg:w-[280px] py-5 lg:pe-5 space-y-4">
                     <div className="w-full h-[240px] bg-muted/5 border border-border/60 rounded-2xl flex items-center justify-center overflow-hidden relative group transition-all duration-300 hover:bg-muted/10">
-                       <img 
-                         src={`/media/images/600x600/${(team as any).image || '1.jpg'}`} 
-                         alt="Team illustration" 
-                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                       <TeamPhoto
+                         team={{ image: team.image, leader }}
+                         alt={team.name}
+                         className="size-full"
+                         imgClassName="object-cover transition-transform duration-700 group-hover:scale-105"
+                         fallback={
+                           <div className={cn('flex flex-col items-center gap-3', typeMeta.color)}>
+                             <TypeIcon className="size-20 opacity-40" />
+                             <span className="text-xs text-muted-foreground italic">Aucune photo</span>
+                           </div>
+                         }
                        />
                        <div className="absolute top-4 right-4">
                         <Badge variant="outline" className="bg-background text-[10px] font-bold uppercase">
-                          ACTIVE
+                          {lifecycleLabel}
                         </Badge>
                       </div>
                     </div>
@@ -161,6 +186,9 @@ const TeamDetailsSheet = ({
                     <div className="space-y-3">
                       {[
                         { label: "Nom équipe", value: team.name },
+                        ...(sessionTeam && team.formationSession?.formation?.name
+                          ? [{ label: "Formation", value: team.formationSession.formation.name }]
+                          : []),
                         { label: "Type", value: TEAM_TYPES.find(t => t.id === team.type)?.label || "Sécurité" },
                         { label: "Secteur", value: TEAM_SECTORS.find(s => s.id === team.sector)?.label || "Site Client" },
                         { label: "Site", value: (team as any).Site?.name || "Non affecté" },
@@ -215,6 +243,8 @@ const TeamDetailsSheet = ({
                 </div>
               </ScrollArea>
             </>
+              );
+            })()
           )}
         </SheetBody>
 

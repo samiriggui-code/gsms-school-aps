@@ -5,6 +5,7 @@ import {
   requireGestionRessourcesView,
 } from '../../../_lib/require-gestion-ressources-auth';
 import { fail } from '@/app/api/_shared/http/response';
+import { internalApiOrigin } from '@/lib/internal-api-origin';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -13,7 +14,7 @@ async function forwardTo(request: NextRequest, targetPath: string) {
   if (!auth.ok) return auth.response;
 
 const url = new URL(request.url);
-  const target = `${url.origin}${targetPath}${url.search}`;
+  const target = `${internalApiOrigin()}${targetPath}${url.search}`;
   const method = request.method.toUpperCase();
   const init: RequestInit = {
     method,

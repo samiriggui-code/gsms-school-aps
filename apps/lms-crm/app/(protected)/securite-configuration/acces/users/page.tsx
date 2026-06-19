@@ -1,6 +1,7 @@
 'use client';
 
-import { Download } from 'lucide-react';
+import { Download, RefreshCw } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { Container } from '@/components/common/container';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,12 +20,23 @@ import {
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { useTranslation } from '@/hooks/useTranslation';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { usersExportConfig } from '@/lib/datagrid/export-presets';
 import { UsersStatsSection } from './components/users-stats-section';
 import { UserListTable } from './components/user-list-table';
+import { cn } from '@/lib/utils';
 
 export default function Page() {
   const { t } = useTranslation();
   const { title, description } = usePageToolbarMeta('/securite-configuration/acces/users');
+  const exportConfig = useMemo(() => usersExportConfig(), []);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshUsers = () => {
+    setIsRefreshing(true);
+    window.dispatchEvent(new CustomEvent('lms-users-refresh'));
+    window.setTimeout(() => setIsRefreshing(false), 800);
+  };
 
   return (
     <>
@@ -35,10 +47,11 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <Button variant="outline">
-              <Download />
-              {t('common.actions.export')}
+            <Button variant="outline" type="button" disabled={isRefreshing} onClick={refreshUsers}>
+              <RefreshCw className={cn('size-4', isRefreshing && 'animate-spin')} />
+              {t('crud.refresh')}
             </Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">{t('common.actions.moreActions')}</Button>

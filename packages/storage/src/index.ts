@@ -6,6 +6,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { resolveEntityUploadDir } from './storage-constants';
 
 export type StorageVisibility = 'private' | 'internal' | 'public';
 export type StorageMode = 'local' | 'remote';
@@ -210,12 +211,7 @@ async function readLocalStoredFile(key: string): Promise<StoredFilePayload | nul
 }
 
 function buildStoragePath(input: UploadInput): string {
-  const moduleName = sanitizeSegment(input.module || 'misc');
-  const entityType = sanitizeSegment(input.entityType || 'file');
-  const entityId = sanitizeSegment(input.entityId || 'unassigned');
-  const category = sanitizeSegment(input.category || 'general');
-
-  return `${moduleName}/${entityType}/${entityId}/${category}`;
+  return resolveEntityUploadDir(input);
 }
 
 function localPublicUrl(key: string): string {
@@ -459,3 +455,21 @@ export function resolveKeyFromUrl(url: string): string | null {
 export function getS3ClientInstance(): S3Client {
   return getClient();
 }
+
+export {
+  ENTITY_UPLOAD_ROUTES,
+  STORAGE_SOCLE_MARKER,
+  STORAGE_SOCLE_PREFIXES,
+  buildEntityStoragePrefix,
+  resolveEntityUploadDir,
+} from './storage-constants';
+export type { StorageSoclePrefix } from './storage-constants';
+export {
+  ensureEntityStoragePrefix,
+  ensureStorageSocle,
+  getStorageSocleStatus,
+} from './storage-socle';
+export type {
+  EnsureStorageSocleResult,
+  StorageSoclePrefixStatus,
+} from './storage-socle';

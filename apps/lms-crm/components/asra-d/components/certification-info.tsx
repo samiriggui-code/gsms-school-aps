@@ -12,7 +12,7 @@ export function AsraCertificationInfo() {
       index === 0 ? (
         <Target className="size-5 text-red-500" />
       ) : index === 1 ? (
-        <ClipboardCheck className="size-5 text-blue-500" />
+        <ClipboardCheck className="size-5 text-indigo-500" />
       ) : (
         <CheckCircle2 className="size-5 text-green-500" />
       ),

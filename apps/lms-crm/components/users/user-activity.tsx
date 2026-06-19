@@ -12,7 +12,7 @@ import { History, LogIn, Settings, User as UserIcon, FileText, ShieldAlert, Wifi
 /** Coquille identique à `CollaborateurRecentActivity` — données issues des logs IAM. */
 function getRowIcon(event: string) {
   const e = event?.toLowerCase() || '';
-  if (e.includes('login')) return <LogIn className="size-5 text-blue-500" />;
+  if (e.includes('login')) return <LogIn className="size-5 text-indigo-500" />;
   if (e.includes('update')) return <Settings className="size-5 text-amber-500" />;
   if (e.includes('create')) return <UserIcon className="size-5 text-green-500" />;
   if (e.includes('permission') || e.includes('role')) return <ShieldAlert className="size-5 text-purple-500" />;

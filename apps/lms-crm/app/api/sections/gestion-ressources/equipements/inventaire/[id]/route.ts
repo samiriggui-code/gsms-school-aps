@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server';
+import { ensureOpenMaintenanceRecord } from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { uploadFile } from '@repo/storage';
@@ -6,6 +7,8 @@ import {
   requireGestionRessourcesEdit,
   requireGestionRessourcesView,
 } from '../../../_lib/require-gestion-ressources-auth';
+import { deleteEquipmentById } from '../_lib/equipment-delete';
+import { buildStatusStockStats } from '../_lib/stock-stats';
 
 export async function GET(
   request: NextRequest,
@@ -21,6 +24,12 @@ export async function GET(
       where: { id },
       include: {
         assignedSite: true,
+        maintenanceItems: {
+          where: { status: { in: ['SCHEDULED', 'IN_PROGRESS', 'OVERDUE'] } },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+          select: { id: true, status: true, title: true },
+        },
         _count: {
           select: {
             maintenanceItems: true,
@@ -33,17 +42,15 @@ export async function GET(
 
     if (!equipment) return fail('Équipement non trouvé', 404);
 
+    const openMaintenance = equipment.maintenanceItems[0] ?? null;
+
     // Calculer les stats globales pour ce modèle (même libellé)
     const statusStats = await prisma.equipment.findMany({
       where: { label: equipment.label },
       select: { status: true }
     });
 
-    const stats = {
-      currentStock: statusStats.filter(s => s.status === 'AVAILABLE').length,
-      totalIn: statusStats.filter(s => s.status === 'IN_USE').length,
-      totalOut: statusStats.filter(s => s.status === 'MAINTENANCE').length,
-    };
+    const stats = buildStatusStockStats(statusStats);
 
     // Merge avatar back from metadata for the response
     if (equipment.metadata && (equipment.metadata as any).avatar) {
@@ -52,6 +59,8 @@ export async function GET(
 
     return ok({
       ...equipment,
+      openMaintenanceId: openMaintenance?.id ?? null,
+      openMaintenanceType: openMaintenance?.title ?? null,
       stockStats: stats
     });
   } catch (error) {
@@ -163,6 +172,10 @@ export async function PATCH(
       include: { assignedSite: true },
     });
 
+    if (updatedEquipment.status === 'MAINTENANCE') {
+      await ensureOpenMaintenanceRecord(prisma, id);
+    }
+
     // Merge avatar back from metadata for the response
     if (updatedEquipment.metadata && (updatedEquipment.metadata as any).avatar) {
       (updatedEquipment as any).avatar = (updatedEquipment.metadata as any).avatar;
@@ -184,9 +197,7 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    await prisma.equipment.delete({
-      where: { id },
-    });
+    await deleteEquipmentById(prisma, id);
 
     return ok({ message: 'Équipement supprimé avec succès' });
   } catch (error) {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Font } from '@react-email/components';
 
 export function BareboneFonts() {

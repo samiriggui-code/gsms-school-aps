@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireGestionRessourcesView } from '../_lib/require-gestion-ressources-auth';
+import { internalApiOrigin } from '@/lib/internal-api-origin';
 
 /** Stats bandeau section `/gestion-ressources` — proxy vers le dashboard général. */
 export async function GET(request: NextRequest) {
@@ -7,7 +8,7 @@ export async function GET(request: NextRequest) {
   if (!auth.ok) return auth.response;
 
   const url = new URL(request.url);
-  const target = `${url.origin}/api/dashboard/stats${url.search}`;
+  const target = `${internalApiOrigin()}/api/dashboard/stats${url.search}`;
 
   const response = await fetch(target, {
     method: 'GET',

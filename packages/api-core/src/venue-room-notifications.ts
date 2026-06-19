@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@repo/database';
-import { CRM_MODULE_KEYS, CrmEventService } from './crm-events';
+import { dispatchCrmResourceEvent } from './crm-resource-dispatch';
 import {
   classifyVenueRoomUsage,
   venueUsageLabelFr,
@@ -44,12 +44,12 @@ async function dispatchVenueRoomEvent(
     payload?: Record<string, unknown>;
     createdById?: string | null;
     severity?: 'INFO' | 'WARNING' | 'CRITICAL';
+    detailLines?: string[];
+    eyebrow?: string;
   },
 ) {
-  const events = new CrmEventService(prisma);
-  await events.enqueue({
+  await dispatchCrmResourceEvent(prisma, {
     eventType: input.eventType,
-    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
     title: input.title,
     body: input.body,
     href: input.href ?? VENUE_ROOMS_HREF,
@@ -58,10 +58,11 @@ async function dispatchVenueRoomEvent(
       ...(input.payload ?? {}),
       ...(input.createdById ? { actorUserId: input.createdById } : {}),
     },
+    createdById: input.createdById,
     severity: input.severity,
-    // Pas de createdById : l'auteur doit aussi voir l'alerte (équipe réduite en dev).
+    detailLines: input.detailLines,
+    eyebrow: input.eyebrow ?? 'Salles de formation',
   });
-  await events.processPending(12);
 }
 
 export async function notifyVenueRoomDeactivated(
@@ -235,6 +236,89 @@ export async function buildSessionVenueNotificationContext(
     endDate: row.endDate,
     dateDisplayLabel: row.dateDisplayLabel,
   };
+}
+
+export async function notifyVenueRoomStaffBookingCreated(
+  prisma: PrismaClient,
+  args: {
+    bookingId: string;
+    roomId: string;
+    roomName: string;
+    title: string;
+    kind: string;
+    startAt: Date;
+    endAt: Date;
+    actorUserId?: string | null;
+  },
+) {
+  const kindLabel =
+    args.kind === 'STAFF_MEETING'
+      ? 'Réunion du personnel'
+      : args.kind === 'INFO_MEETING'
+        ? 'Réunion d\'information'
+        : 'Réservation ponctuelle';
+  const period = formatDateRangeFr(args.startAt, args.endAt);
+
+  await dispatchVenueRoomEvent(prisma, {
+    eventType: 'venue.room.booking_created',
+    title: 'Réservation salle — staff',
+    body: `« ${args.roomName} » — ${kindLabel} : ${args.title} (${period}).`,
+    href: VENUE_ROOMS_HREF,
+    dedupeKey: `venue-room:${args.roomId}:booking:${args.bookingId}`,
+    payload: {
+      roomId: args.roomId,
+      bookingId: args.bookingId,
+      kind: args.kind,
+    },
+    createdById: args.actorUserId,
+    severity: 'INFO',
+  });
+}
+
+export async function notifyVenueRoomStaffBookingCancelled(
+  prisma: PrismaClient,
+  args: {
+    bookingId: string;
+    roomId: string;
+    roomName: string;
+    title: string;
+    actorUserId?: string | null;
+  },
+) {
+  await dispatchVenueRoomEvent(prisma, {
+    eventType: 'venue.room.booking_cancelled',
+    title: 'Réservation salle annulée',
+    body: `« ${args.roomName} » — « ${args.title} » a été annulée.`,
+    href: VENUE_ROOMS_HREF,
+    dedupeKey: `venue-room:${args.roomId}:booking-cancel:${args.bookingId}:${Date.now()}`,
+    payload: { roomId: args.roomId, bookingId: args.bookingId },
+    createdById: args.actorUserId,
+    severity: 'INFO',
+  });
+}
+
+export async function notifyVenueRoomSessionEnded(
+  prisma: PrismaClient,
+  args: {
+    sessionId: string;
+    roomId: string;
+    roomName: string;
+    sessionLabel: string;
+    formationName?: string | null;
+  },
+) {
+  const label = args.formationName || args.sessionLabel;
+  await dispatchVenueRoomEvent(prisma, {
+    eventType: 'venue.room.session_ended',
+    title: 'Session terminée — salle disponible',
+    body: `« ${args.roomName} » est libre après la fin de « ${label} ».`,
+    href: VENUE_ROOMS_HREF,
+    dedupeKey: `venue-room:${args.roomId}:session-ended:${args.sessionId}`,
+    payload: { roomId: args.roomId, sessionId: args.sessionId },
+    severity: 'INFO',
+    detailLines: [`Session : ${label}`],
+    eyebrow: 'Salles — fin de session',
+  });
 }
 
 /** Compare avant/après PATCH session et émet les alertes salle adaptées. */

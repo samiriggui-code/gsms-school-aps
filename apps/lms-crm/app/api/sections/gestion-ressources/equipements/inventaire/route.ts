@@ -14,6 +14,7 @@ import {
   getCatalogBaseSerial,
   isLegacyEquipmentClone,
 } from '@/lib/equipment-catalog';
+import { buildStatusStockStats } from './_lib/stock-stats';
 
 function buildSearchWhere(query: string | null) {
   if (!query) return {};
@@ -41,6 +42,7 @@ function mapEquipmentRow(item: {
     maintenanceItems: number;
     sessions: number;
   };
+  maintenanceItems?: Array<{ id: string; status: string; title: string | null }>;
 }, statusStats: { label: string; status: string }[]) {
   const avatar =
     item.avatar?.trim() ||
@@ -49,13 +51,10 @@ function mapEquipmentRow(item: {
       : null);
 
   const related = statusStats.filter((s) => s.label === item.label);
-  const stats = {
-    currentStock: related.filter((r) => r.status === 'AVAILABLE').length,
-    totalIn: related.filter((r) => r.status === 'IN_USE').length,
-    totalOut: related.filter((r) => r.status === 'MAINTENANCE').length,
-  };
+  const stats = buildStatusStockStats(related);
 
   const unitIndex = extractUnitIndex(item.serialNumber);
+  const openMaintenance = item.maintenanceItems?.[0] ?? null;
 
   return {
     id: item.id,
@@ -71,6 +70,8 @@ function mapEquipmentRow(item: {
     createdAt: item.createdAt?.toISOString?.() ?? item.createdAt,
     updatedAt: item.updatedAt?.toISOString?.() ?? item.updatedAt,
     stockStats: stats,
+    openMaintenanceId: openMaintenance?.id ?? null,
+    openMaintenanceType: openMaintenance?.title ?? null,
     _count: item._count,
   };
 }
@@ -104,11 +105,7 @@ async function fetchCatalogEntries(query: string | null) {
   return Array.from(byLabel.entries()).map(([label, units]) => {
     const representative =
       units.find((u) => extractUnitIndex(u.serialNumber) === 1) ?? units[0];
-    const stats = {
-      currentStock: units.filter((u) => u.status === 'AVAILABLE').length,
-      totalIn: units.filter((u) => u.status === 'IN_USE').length,
-      totalOut: units.filter((u) => u.status === 'MAINTENANCE').length,
-    };
+    const stats = buildStatusStockStats(units);
 
     return {
       id: representative.id,
@@ -207,11 +204,7 @@ export async function GET(request: NextRequest) {
         isCatalogEntry: true,
         assignedSite: { name: EQUIPMENT_HEADQUARTERS_SITE_NAME },
         units: filtered.map((u) => mapEquipmentRow(u, statusStats)),
-        stockStats: {
-          currentStock: filtered.filter((u) => u.status === 'AVAILABLE').length,
-          totalIn: filtered.filter((u) => u.status === 'IN_USE').length,
-          totalOut: filtered.filter((u) => u.status === 'MAINTENANCE').length,
-        },
+        stockStats: buildStatusStockStats(filtered),
       });
     }
 
@@ -232,6 +225,12 @@ export async function GET(request: NextRequest) {
         orderBy: { createdAt: 'desc' },
         include: {
           assignedSite: true,
+          maintenanceItems: {
+            where: { status: { in: ['SCHEDULED', 'IN_PROGRESS', 'OVERDUE'] } },
+            orderBy: { scheduledDate: 'desc' },
+            take: 1,
+            select: { id: true, status: true, title: true },
+          },
           _count: {
             select: {
               stockMovements: true,

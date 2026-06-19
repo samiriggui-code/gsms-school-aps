@@ -1,11 +1,11 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CollaborateurList from './components/collaborateur-list';
 import { CollaborateurStats } from './components/collaborateur-stats';
 import { Button } from '@/components/ui/button';
-import { Download, Loader2, UserPlus } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import CollaborateurAddSheet from './components/collaborateur-add-sheet';
 import { Container } from '@/components/common/container';
 import {
@@ -17,7 +17,8 @@ import {
 } from '@/components/common/toolbar';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { useCollaborateursExport } from '@/lib/gestion-ressources/use-rh-list-export';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { collaborateursExportConfig } from '@/lib/datagrid/export-presets';
 
 export default function Page() {
   const { t } = useTranslation();
@@ -25,7 +26,10 @@ export default function Page() {
   const { title, description } = usePageToolbarMeta('/gestion-ressources/rh/collaborateurs');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
   const [listeSegment, setListeSegment] = useState<'collaborateur' | 'interne'>('collaborateur');
-  const { exportCsv, isExporting } = useCollaborateursExport(listeSegment);
+  const exportConfig = useMemo(
+    () => collaborateursExportConfig(listeSegment),
+    [listeSegment],
+  );
 
   return (
     <>
@@ -36,10 +40,7 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <Button variant="outline" onClick={() => void exportCsv()} disabled={isExporting}>
-              {isExporting ? <Loader2 className="size-4 animate-spin" /> : <Download />}
-              {t('common.actions.export')}
-            </Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button onClick={() => setIsAddSheetOpen(true)} className="gap-2">
               <UserPlus className="size-4" />
               {t('common.actions.addCollaborator')}

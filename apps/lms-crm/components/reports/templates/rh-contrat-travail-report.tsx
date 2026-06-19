@@ -23,7 +23,7 @@ export function RhContratTravailReport({ data }: { data: ContratTravailReportDat
         <h2 className="mt-2 text-2xl font-bold text-slate-900">{data.fullName}</h2>
         <p className="text-sm text-slate-600">{data.email}</p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <span className="rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white">{data.contractType}</span>
+          <span className="rounded-full bg-indigo-600 px-4 py-1 text-sm font-semibold text-white">{data.contractType}</span>
           <span className="rounded-full border border-slate-300 px-4 py-1 text-sm font-medium text-slate-700">
             {data.workTime}
           </span>

@@ -34,7 +34,7 @@ import {
 import { LoaderCircleIcon, Briefcase, Mail, User as UserIcon, ShieldCheck, Calendar, Hash, MapPin, CreditCard, FileText, Clock, Fingerprint, Shield, CloudUpload, Info, Network } from 'lucide-react';
 import { User as Collaborateur, UserRole } from '@/app/models/user';
 import { CollaborateurEditSchema, CollaborateurEditSchemaType } from '../forms/collaborateur-edit-schema';
-import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
+import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { Separator } from '@/components/ui/separator';
 import { agrementUiLabels } from '@/lib/rh-agrement';
 import {
@@ -47,7 +47,21 @@ import {
 import { RhMetierQualificationPicker } from '@/components/rh/metier-qualification-picker';
 import { isFormateurRole } from '@/lib/rh-agrement';
 import { cn } from '@/lib/utils';
+import { useRhPositionSelectQuery } from '../../hooks/use-rh-position-select-query';
 import { AccountLifecycleActions } from '@/components/rh/account-lifecycle-actions';
+import {
+  CONTRACT_TYPE_VALUES,
+  WORK_TIME_TYPE_VALUES,
+  rhEnumFieldOrNull,
+} from '@/lib/rh-form-schema-shared';
+import { useSubcontractorSelectQuery } from '../../formateurs/hooks/use-subcontractor-select-query';
+import { FileAssetMetaSheet } from '@/components/governance/file-asset-meta-sheet';
+import { useFileAssetMeta } from '@/hooks/use-file-asset-meta';
+import {
+  collectUploadedRhDocumentCategories,
+  resolveRhFileAssetsForMeta,
+} from '@/lib/governance/rh-document-upload-meta';
+
 
 interface CollaborateurDetailsSettingsProps {
   collaborateur: Collaborateur;
@@ -57,7 +71,14 @@ interface CollaborateurDetailsSettingsProps {
 
 export function CollaborateurDetailsSettings({ collaborateur, formRef, onSuccess }: CollaborateurDetailsSettingsProps) {
   const queryClient = useQueryClient();
-  const { data: roleList } = useRoleSelectQuery();
+  const { data: roleList } = useSchoolRoleSelectQuery();
+  const { data: positionList } = useRhPositionSelectQuery();
+  const { data: subcontractorList } = useSubcontractorSelectQuery();
+  const { metaSheetProps, openMeta } = useFileAssetMeta({
+    onAllSaved: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', collaborateur.id] });
+    },
+  });
 
   const agr = useMemo(
     () => agrementUiLabels(collaborateur.role?.slug),
@@ -74,9 +95,13 @@ export function CollaborateurDetailsSettings({ collaborateur, formRef, onSuccess
       firstName: collaborateur.firstName || '',
       lastName: collaborateur.lastName || '',
       email: collaborateur.email || '',
+      phone: collaborateur.phone || '',
+      proEmail: collaborateur.proEmail || '',
+      subcontractorId: collaborateur.subcontractorId || '',
       roleId: collaborateur.role?.id || '',
       userCategory: (collaborateur.userCategory as CollaborateurEditSchemaType['userCategory']) || 'INTERNAL',
       jobFunction: collaborateur.jobFunction || '',
+      jobPositionId: (collaborateur as any).jobPositionId || '',
       qualification: collaborateur.qualification || '',
       status: (collaborateur.status?.toUpperCase() as CollaborateurEditSchemaType['status']) || 'ACTIVE',
       birthDate: collaborateur.birthDate ? new Date(collaborateur.birthDate).toISOString().split('T')[0] : '',
@@ -86,8 +111,8 @@ export function CollaborateurDetailsSettings({ collaborateur, formRef, onSuccess
       cniNumber: collaborateur.cniNumber || '',
       residencePermitNumber: collaborateur.residencePermitNumber || '',
       residencePermitExpiry: collaborateur.residencePermitExpiry ? new Date(collaborateur.residencePermitExpiry).toISOString().split('T')[0] : '',
-      contractType: collaborateur.contractType || '',
-      workTimeType: collaborateur.workTimeType || '',
+      contractType: rhEnumFieldOrNull(collaborateur.contractType, CONTRACT_TYPE_VALUES),
+      workTimeType: rhEnumFieldOrNull(collaborateur.workTimeType, WORK_TIME_TYPE_VALUES),
       contractStartDate: collaborateur.contractStartDate ? new Date(collaborateur.contractStartDate).toISOString().split('T')[0] : '',
       contractEndDate: collaborateur.contractEndDate ? new Date(collaborateur.contractEndDate).toISOString().split('T')[0] : '',
       address: collaborateur.address || '',
@@ -287,10 +312,18 @@ interface ManagerPickItem {
 
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: async (_data, values) => {
       queryClient.invalidateQueries({ queryKey: ['rh-collaborators'] });
       queryClient.invalidateQueries({ queryKey: ['user', collaborateur.id] });
       queryClient.invalidateQueries({ queryKey: ['structure-staff'] });
+
+      const uploadedCategories = collectUploadedRhDocumentCategories(values);
+      if (uploadedCategories.length) {
+        const assets = await resolveRhFileAssetsForMeta(collaborateur.id, uploadedCategories);
+        if (assets.length) {
+          openMeta(assets);
+        }
+      }
 
       if (onSuccess) {
         onSuccess();
@@ -369,6 +402,7 @@ interface ManagerPickItem {
 
   return (
     <div className="space-y-6">
+      <FileAssetMetaSheet {...metaSheetProps} />
       <AccountLifecycleActions
         user={collaborateur}
         onSuccess={onSuccess}
@@ -564,6 +598,37 @@ interface ManagerPickItem {
 
                 <FormField
                   control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-2sm font-semibold text-foreground">Téléphone</FormLabel>
+                      <FormControl>
+                        <Input {...field} value={field.value || ''} className="h-10 bg-secondary/50 border-border focus:bg-background transition-colors" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="proEmail"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-2sm font-semibold text-foreground">Email professionnel</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/50" />
+                          <Input {...field} value={field.value || ''} className="h-10 pl-10 bg-secondary/50 border-border focus:bg-background transition-colors" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="birthDate"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5">
@@ -680,7 +745,16 @@ interface ManagerPickItem {
                   render={({ field }) => (
                     <FormItem className="space-y-1.5">
                       <FormLabel className="text-2sm font-semibold text-foreground">Poste / Fonction</FormLabel>
-                      <Select value={field.value || undefined} onValueChange={field.onChange}>
+                      <Select
+                        value={field.value || undefined}
+                        onValueChange={(v) => {
+                          field.onChange(v);
+                          const pos = (positionList ?? []).find((p) => p.label === v);
+                          if (pos) {
+                            form.setValue('jobPositionId', pos.id, { shouldDirty: true });
+                          }
+                        }}
+                      >
                         <FormControl>
                           <SelectTrigger className="h-10 bg-secondary/50 border-border">
                             <div className="flex items-center gap-2">
@@ -690,7 +764,10 @@ interface ManagerPickItem {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {COLLABORATEUR_JOB_FUNCTION_OPTIONS.map((opt) => (
+                          {(positionList?.length
+                            ? positionList.map((p) => ({ value: p.label, label: p.label }))
+                            : COLLABORATEUR_JOB_FUNCTION_OPTIONS
+                          ).map((opt) => (
                             <SelectItem key={opt.value} value={opt.value}>
                               {opt.label}
                             </SelectItem>
@@ -701,6 +778,33 @@ interface ManagerPickItem {
                     </FormItem>
                   )}
                 />
+
+                {selectedCategory === 'SUBCONTRACTOR' && (
+                  <FormField
+                    control={form.control}
+                    name="subcontractorId"
+                    render={({ field }) => (
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-2sm font-semibold text-foreground">Organisme partenaire</FormLabel>
+                        <Select value={field.value || undefined} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger className="h-10 bg-secondary/50 border-border">
+                              <SelectValue placeholder="Choisir un partenaire" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {(subcontractorList ?? []).map((s: { id: string; name: string }) => (
+                              <SelectItem key={s.id} value={s.id}>
+                                {s.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 <FormField
                   control={form.control}

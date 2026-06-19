@@ -1,3 +1,4 @@
+import React from 'react';
 import { Column, Link, Row, Section, Text } from '@react-email/components';
 import { FORMSSI_EMAIL_BRAND } from '../brand';
 import { emailSiteUrl } from '../email-assets';

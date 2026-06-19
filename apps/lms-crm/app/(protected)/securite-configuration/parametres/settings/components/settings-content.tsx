@@ -2,13 +2,13 @@
 
 import { GeneralSettingsForm } from './general-settings-form';
 import { EtablissementSettingsSection } from './sections/etablissement-settings-section';
-import { LegalSettingsSection } from '../legal/page';
-import { FormationSettingsSection } from '../formation/page';
-import { DirigeantSettingsSection } from '../dirigeant/page';
-import { RegistreSettingsSection } from '../registre/page';
-import { NotificationsSettingsSection } from '../notifications/page';
-import { SocialSettingsSection } from '../social/page';
-import { IntegrationsSettingsSection } from '../integrations/page';
+import { LegalSettingsSection } from './sections/legal-settings-section';
+import { FormationSettingsSection } from './sections/formation-settings-section';
+import { DirigeantSettingsSection } from './sections/dirigeant-settings-section';
+import { RegistreSettingsSection } from './sections/registre-settings-section';
+import { NotificationsSettingsSection } from './sections/notifications-settings-section';
+import { SocialSettingsSection } from './sections/social-settings-section';
+import { IntegrationsSettingsSection } from './sections/integrations-settings-section';
 import {
   SETTINGS_ANCHOR_IDS,
   SETTINGS_SECTION_SCROLL_MARGIN,

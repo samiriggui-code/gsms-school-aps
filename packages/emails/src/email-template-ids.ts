@@ -1,0 +1,21 @@
+export const EMAIL_TEMPLATE_IDS = [
+  'contact-notification',
+  'contact-confirmation',
+  'quote-request-notification',
+  'quote-request-confirmation',
+  'preinscription-notification',
+  'preinscription-confirmation',
+  'devis-quote',
+  'compliance-document-request',
+  'compliance-document-request-reminder',
+  'compliance-document-received',
+  'compliance-document-validated',
+  'compliance-document-rejected',
+  'compliance-document-expiring',
+  'compliance-dossier-complete',
+  'compliance-dossier-incomplete-admin',
+  'ops-resource-alert',
+  'pilotage-report-ready',
+] as const;
+
+export type EmailTemplateId = (typeof EMAIL_TEMPLATE_IDS)[number];

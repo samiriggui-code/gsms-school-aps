@@ -28,33 +28,12 @@ import {
   ShieldCheck,
   UserPlus,
   MapPin,
-  Shield,
-  Flame,
-  Truck,
-  Briefcase,
-  Dog,
-  Building2,
-  Store
 } from 'lucide-react';
-
-const TEAM_TYPE_CONFIG: Record<string, any> = {
-  'ADMIN': { icon: Briefcase, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-500/10', label: 'Administratif' },
-  'INCENDIE': { icon: Flame, color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-500/10', label: 'Incendie' },
-  'VOLANTE': { icon: Truck, color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-500/10', label: 'Volante' },
-  'SECURITE': { icon: Shield, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10', label: 'Sécurité' },
-  'CYNOPHILE': { icon: Dog, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10', label: 'Maître-chien' },
-};
-
-const SECTOR_CONFIG: Record<string, any> = {
-  'SIEGE': { label: 'Siège Social', icon: Building2 },
-  'SUCCURSALE': { label: 'Succursale', icon: Store },
-  'CLIENT': { label: 'Site Client', icon: Users },
-};
 
 import { RiCheckboxCircleFill } from '@remixicon/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
-import { formatDateTime, getInitials } from '@/lib/helpers';
+import { formatDateTime, getAvatarUrl, getInitials } from '@/lib/helpers';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
 import {
@@ -82,6 +61,15 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import {
+  resolveTeamLeader,
+  resolveTeamSectorMeta,
+  resolveTeamTypeMeta,
+  teamLeaderLabel,
+  isSessionPedagogicalTeam,
+  sessionTeamSubtitle,
+} from '../lib/team-display';
+import { TeamPhoto } from './team-photo';
 
 interface TeamListProps {
   /** @deprecated CTA création — utiliser la toolbar page (⓪). */
@@ -220,15 +208,26 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
         id: 'name',
         header: ({ column }) => <DataGridColumnHeader title="Équipe" column={column} />,
         cell: ({ row }) => {
-          const type = row.original.type || 'SECURITE';
-          const config = TEAM_TYPE_CONFIG[type] || TEAM_TYPE_CONFIG['SECURITE'];
-          const Icon = config.icon;
+          const typeMeta = resolveTeamTypeMeta(row.original.type);
+          const TypeIcon = typeMeta.icon;
+          const leader = resolveTeamLeader(row.original);
+          const sessionTeam = isSessionPedagogicalTeam(row.original);
+          const subtitle = sessionTeam
+            ? sessionTeamSubtitle(row.original)
+            : row.original.description || 'Pas de description';
           
           return (
             <div className="flex items-center gap-3">
-              <div className={cn("size-10 rounded-xl flex items-center justify-center border transition-colors", config.bg, "border-current/10")}>
-                <Icon className={cn("size-5", config.color)} />
-              </div>
+              <TeamPhoto
+                team={{ image: row.original.image, leader }}
+                className={cn("size-10 rounded-xl border shrink-0", typeMeta.bg, "border-current/10")}
+                imgClassName="object-cover"
+                fallback={
+                  <div className={cn("size-10 rounded-xl flex items-center justify-center border shrink-0", typeMeta.bg, "border-current/10")}>
+                    <TypeIcon className={cn("size-5", typeMeta.color)} />
+                  </div>
+                }
+              />
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <span 
@@ -241,12 +240,12 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                     variant="outline" 
                     appearance="light"
                     size="sm" 
-                    className={cn("text-[9px] font-bold uppercase tracking-wider h-4 bg-transparent", config.color, "border-current/20")}
+                    className={cn("text-[9px] font-bold uppercase tracking-wider h-4 bg-transparent", typeMeta.color, "border-current/20")}
                   >
-                    {config.label}
+                    {sessionTeam ? 'Session formation' : typeMeta.label}
                   </Badge>
                 </div>
-                <span className="text-muted-foreground text-xs line-clamp-1 italic">{row.original.description || 'Pas de description'}</span>
+                <span className="text-muted-foreground text-xs line-clamp-1 italic">{subtitle}</span>
               </div>
             </div>
           );
@@ -257,16 +256,23 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
         id: 'sector',
         header: ({ column }) => <DataGridColumnHeader title="Structure / Secteur" column={column} />,
         cell: ({ row }) => {
-          const sector = row.original.sector || 'CLIENT';
-          const config = SECTOR_CONFIG[sector] || SECTOR_CONFIG['CLIENT'];
-          const Icon = config.icon;
+          const sectorMeta = resolveTeamSectorMeta(row.original.sector);
+          const SectorIcon = sectorMeta.icon;
+          const orgUnitName =
+            row.original.orgUnit?.name ||
+            (row.original as { OrgUnit?: { name?: string } }).OrgUnit?.name;
           
           return (
-            <div className="flex items-center gap-2">
-              <Icon className="size-3.5 text-muted-foreground" />
-              <span className="text-2sm font-bold text-foreground">
-                {config.label}
-              </span>
+            <div className="flex flex-col gap-0.5">
+              {orgUnitName ? (
+                <span className="text-2sm font-bold text-foreground">{orgUnitName}</span>
+              ) : null}
+              <div className="flex items-center gap-2">
+                <SectorIcon className="size-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">
+                  {sectorMeta.label}
+                </span>
+              </div>
             </div>
           );
         },
@@ -278,7 +284,8 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
         cell: ({ row }) => (
           <div className="flex flex-col gap-1">
             <Badge variant="default" appearance="light" className="font-bold text-[11px] px-2.5 w-fit">
-              {row.original._count?.members || 0} collaborateurs
+              {row.original._count?.members || 0}{' '}
+              {isSessionPedagogicalTeam(row.original) ? 'membres' : 'collaborateurs'}
             </Badge>
           </div>
         ),
@@ -288,20 +295,34 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
         id: 'leader',
         header: ({ column }) => <DataGridColumnHeader title="Chef d'Équipe" column={column} />,
         cell: ({ row }) => {
-          const leader = row.original.members?.find((m: any) => m.isLeader);
-          if (!leader) return <span className="text-xs text-muted-foreground italic">Non assigné</span>;
-          
+          const leader = resolveTeamLeader(row.original);
+          const sessionTeam = isSessionPedagogicalTeam(row.original);
+          if (!leader) {
+            return (
+              <span className="text-xs text-muted-foreground italic">
+                {sessionTeam ? 'Formateur non assigné' : 'Non assigné'}
+              </span>
+            );
+          }
+
+          const leaderLabel = teamLeaderLabel(leader);
+          const avatarSrc = leader?.avatar ? getAvatarUrl(leader.avatar) : undefined;
+
           return (
             <div className="flex items-center gap-2">
               <Avatar className="size-6">
-                <AvatarImage src={leader.TenantUser?.avatar || undefined} />
-                <AvatarFallback className="text-[10px] bg-primary/10 text-primary">{leader.TenantUser?.firstName?.[0]}{leader.TenantUser?.lastName?.[0]}</AvatarFallback>
+                {avatarSrc ? <AvatarImage src={avatarSrc} alt="" /> : null}
+                <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                  {getInitials(leaderLabel)}
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <span className="text-2sm font-bold text-foreground leading-none">
-                  {leader.TenantUser?.firstName} {leader.TenantUser?.lastName}
+                  {leaderLabel}
                 </span>
-                <span className="text-[9px] text-primary uppercase font-bold tracking-tighter">Chef d'Équipe</span>
+                <span className="text-[9px] text-primary uppercase font-bold tracking-tighter">
+                  {sessionTeam ? 'Formateur' : "Chef d'équipe"}
+                </span>
               </div>
             </div>
           );
@@ -486,11 +507,11 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {data?.data.map((team: Team, index: number) => {
-                    const type = team.type || 'SECURITE';
-                    const config = TEAM_TYPE_CONFIG[type] || TEAM_TYPE_CONFIG['SECURITE'];
-                    const Icon = config.icon;
-                    const sectorConfig = SECTOR_CONFIG[team.sector || 'CLIENT'] || SECTOR_CONFIG['CLIENT'];
-                    const SectorIcon = sectorConfig.icon;
+                    const typeMeta = resolveTeamTypeMeta(team.type);
+                    const TypeIcon = typeMeta.icon;
+                    const sectorMeta = resolveTeamSectorMeta(team.sector);
+                    const SectorIcon = sectorMeta.icon;
+                    const leader = resolveTeamLeader(team);
 
                     return (
                       <motion.div
@@ -500,33 +521,27 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                         transition={{ delay: index * 0.05 }}
                       >
                         <Card className="group hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-md h-full flex flex-col relative overflow-hidden">
-                          <div className={cn("absolute top-0 right-0 p-2 opacity-[0.03] transition-transform duration-700 group-hover:scale-125 group-hover:rotate-6", config.color)}>
-                             {team.image ? (
-                               <img 
-                                 src={`/media/illustrations/${team.image}`} 
-                                 alt="" 
-                                 className="size-24 object-contain grayscale"
-                               />
-                             ) : (
-                               <Icon className="size-16" />
-                             )}
+                          <div className={cn("absolute top-0 right-0 p-2 opacity-[0.03] transition-transform duration-700 group-hover:scale-125 group-hover:rotate-6", typeMeta.color)}>
+                             <TeamPhoto
+                               team={team}
+                               className="size-24"
+                               imgClassName="object-cover grayscale"
+                               fallback={<TypeIcon className="size-16" />}
+                             />
                           </div>
 
                           <CardContent className="p-6 grow relative">
                             <div className="flex justify-between items-start mb-5">
-                              {team.image ? (
-                                <div className="size-12 rounded-2xl flex items-center justify-center border border-border bg-background overflow-hidden transition-all duration-500 group-hover:scale-110 shadow-sm p-1">
-                                  <img 
-                                    src={`/media/illustrations/${team.image}`} 
-                                    alt={team.name} 
-                                    className="w-full h-full object-contain"
-                                  />
-                                </div>
-                              ) : (
-                                <div className={cn("size-12 rounded-2xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 shadow-sm", config.bg, "border-current/10")}>
-                                  <Icon className={cn("size-6", config.color)} />
-                                </div>
-                              )}
+                              <TeamPhoto
+                                team={team}
+                                className="size-12 rounded-2xl border border-border bg-background overflow-hidden transition-all duration-500 group-hover:scale-110 shadow-sm"
+                                imgClassName="object-cover"
+                                fallback={
+                                  <div className={cn("size-12 rounded-2xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 shadow-sm", typeMeta.bg, "border-current/10")}>
+                                    <TypeIcon className={cn("size-6", typeMeta.color)} />
+                                  </div>
+                                }
+                              />
                               <div className="flex gap-1">
                                 <Button 
                                   variant="ghost" 
@@ -558,17 +573,19 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                               </div>
                               <div className="flex items-center gap-2">
                                 <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-wider py-0 px-2 h-5 border-none">
-                                  {config.label}
+                                  {typeMeta.label}
                                 </Badge>
                                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/50 border border-border/50">
                                    <SectorIcon className="size-2.5 text-muted-foreground" />
-                                   <span className="text-[9px] font-bold text-muted-foreground uppercase">{sectorConfig.label}</span>
+                                   <span className="text-[9px] font-bold text-muted-foreground uppercase">{sectorMeta.label}</span>
                                 </div>
                               </div>
                             </div>
 
                             <p className="text-sm text-muted-foreground line-clamp-2 mb-6 h-10 italic">
-                              {team.description || 'Équipe opérationnelle de sécurité.'}
+                              {isSessionPedagogicalTeam(team)
+                                ? sessionTeamSubtitle(team)
+                                : team.description || 'Équipe opérationnelle de sécurité.'}
                             </p>
                             
                             <div className="flex items-center justify-between pt-5 border-t border-dashed border-border/60">
@@ -581,13 +598,28 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                                  </div>
                                <div className="flex items-center gap-2">
                                   <div className="flex -space-x-2 overflow-hidden">
-                                     {team.members?.slice(0, 3).map((m: any) => (
+                                     {team.members?.slice(0, 3).map((m: any) => {
+                                       const memberLabel =
+                                         [m.TenantUser?.firstName, m.TenantUser?.lastName]
+                                           .filter(Boolean)
+                                           .join(' ')
+                                           .trim() ||
+                                         m.TenantUser?.email ||
+                                         '—';
+                                       const memberAvatar = m.TenantUser?.avatar
+                                         ? getAvatarUrl(m.TenantUser.avatar)
+                                         : undefined;
+                                       return (
                                        <Avatar key={m.id} className="size-7 border-2 border-background">
+                                         {memberAvatar ? (
+                                           <AvatarImage src={memberAvatar} alt="" />
+                                         ) : null}
                                          <AvatarFallback className="bg-primary/5 text-primary text-[10px] font-bold">
-                                           {getInitials(`${m.TenantUser?.firstName} ${m.TenantUser?.lastName}`)}
+                                           {getInitials(memberLabel)}
                                          </AvatarFallback>
                                        </Avatar>
-                                     ))}
+                                       );
+                                     })}
                                      {(team.members?.length || 0) > 3 && (
                                        <div className="size-7 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[10px] font-bold text-muted-foreground">
                                          +{(team.members?.length || 0) - 3}

@@ -30,8 +30,8 @@ const CommunityBadges = () => {
   const items = [
     {
       title: 'Compte Actif',
-      stroke: 'stroke-blue-200 dark:stroke-blue-950',
-      fill: 'fill-blue-50 dark:fill-blue-950/30',
+      stroke: 'stroke-indigo-200 dark:stroke-indigo-950',
+      fill: 'fill-indigo-50 dark:fill-indigo-950/30',
       icon: user?.status === 'ACTIVE' ? Zap : CircleAlert,
       iconColor: user?.status === 'ACTIVE' ? 'text-green-500' : 'text-orange-500',
     },

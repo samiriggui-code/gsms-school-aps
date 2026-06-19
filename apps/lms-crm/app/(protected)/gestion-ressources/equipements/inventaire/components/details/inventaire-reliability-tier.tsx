@@ -12,7 +12,7 @@ import { Equipment } from "@/app/models/equipment";
 const tiers = [
   { name: "Critique", color: "#ef4444", points: 0, nextGoal: 20 },
   { name: "Usé", color: "#f59e0b", points: 20, nextGoal: 50 },
-  { name: "Correct", color: "#3b82f6", points: 50, nextGoal: 80 },
+  { name: "Correct", color: "#6366f1", points: 50, nextGoal: 80 },
   { name: "Bon état", color: "#8b5cf6", points: 80, nextGoal: 100 },
   { name: "Neuf", color: "#e879f9", points: 100, nextGoal: null },
 ]

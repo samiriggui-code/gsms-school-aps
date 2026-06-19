@@ -19,8 +19,6 @@ import {
   List,
   LayoutGrid,
   ChevronDown,
-  Copy,
-  Download,
   MapPin,
   Eye,
   SquarePen,
@@ -90,9 +88,29 @@ const InventaireList = ({
   const selectedRowsCount = Object.keys(rowSelection).length;
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (target: {
+      id: string;
+      label: string;
+      catalogKey?: string;
+      isCatalogEntry?: boolean;
+    }) => {
+      if (target.isCatalogEntry) {
+        const response = await apiFetch(
+          '/api/sections/gestion-ressources/equipements/inventaire/catalog',
+          {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ label: target.catalogKey || target.label }),
+          },
+        );
+        if (!response.ok) {
+          const j = await response.json();
+          throw new Error(j?.error?.message || 'delete_failed');
+        }
+        return;
+      }
       const response = await apiFetch(
-        `/api/sections/gestion-ressources/equipements/inventaire/${id}`,
+        `/api/sections/gestion-ressources/equipements/inventaire/${target.id}`,
         { method: 'DELETE' },
       );
       if (!response.ok) throw new Error('delete_failed');
@@ -103,9 +121,38 @@ const InventaireList = ({
       await queryClient.invalidateQueries({ queryKey: ['inventaire-stats'] });
       toast.success(t('equipment.deletedSuccess'));
     },
-    onError: () => {
-      toast.error(t('equipment.deleteFailed'));
+    onError: (e: Error) => {
+      toast.error(e.message === 'delete_failed' ? t('equipment.deleteFailed') : e.message);
     },
+  });
+
+  const bulkMutation = useMutation({
+    mutationFn: async (payload: {
+      action: 'delete-catalog' | 'set-status-by-label';
+      labels: string[];
+      status?: string;
+    }) => {
+      const response = await apiFetch(
+        '/api/sections/gestion-ressources/equipements/inventaire/bulk',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!response.ok) {
+        const j = await response.json();
+        throw new Error(j?.error?.message || 'Action groupée impossible');
+      }
+      return response.json();
+    },
+    onSuccess: async (json) => {
+      setRowSelection({});
+      await queryClient.invalidateQueries({ queryKey: ['equipment-catalog'] });
+      await queryClient.invalidateQueries({ queryKey: ['inventaire-stats'] });
+      toast.success(json?.data?.message ?? 'Action effectuée');
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const fetchCatalog = async ({
@@ -200,6 +247,9 @@ const InventaireList = ({
       {
         id: 'stockBreakdown',
         header: ({ column }) => <DataGridColumnHeader title="Stock & répartition" column={column} />,
+        meta: {
+          headerTitle: 'Compteurs par statut (disponibles / en utilisation / maintenance)',
+        },
         cell: ({ row }) => (
           <EquipmentStockStatsCell
             stats={row.original.stockStats}
@@ -275,6 +325,13 @@ const InventaireList = ({
     manualSorting: true,
     enableRowSelection: true,
   });
+
+  const getSelectedCatalogLabels = useCallback(() => {
+    return table
+      .getSelectedRowModel()
+      .rows.map((row) => row.original.catalogKey || row.original.label)
+      .filter(Boolean);
+  }, [table]);
 
   const listToolbar = (
     <CardHeader className="py-3">
@@ -439,9 +496,18 @@ const InventaireList = ({
         open={Boolean(deleteTarget)}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
         label={deleteTarget?.label}
+        unitCount={deleteTarget?.unitCount}
+        isCatalogEntry={deleteTarget?.isCatalogEntry !== false}
         isPending={deleteMutation.isPending}
         onConfirm={() => {
-          if (deleteTarget?.id) deleteMutation.mutate(deleteTarget.id);
+          if (deleteTarget?.id) {
+            deleteMutation.mutate({
+              id: deleteTarget.id,
+              label: deleteTarget.label,
+              catalogKey: deleteTarget.catalogKey,
+              isCatalogEntry: deleteTarget.isCatalogEntry !== false,
+            });
+          }
         }}
       />
 
@@ -465,17 +531,69 @@ const InventaireList = ({
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-popover text-popover-foreground border-border">
-                    <DropdownMenuItem className="hover:bg-accent font-bold uppercase text-[10px]">Disponible</DropdownMenuItem>
-                    <DropdownMenuItem className="hover:bg-accent font-bold uppercase text-[10px]">En Maintenance</DropdownMenuItem>
-                    <DropdownMenuItem className="hover:bg-accent font-bold uppercase text-[10px] text-destructive">Hors Service</DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="hover:bg-accent font-bold uppercase text-[10px]"
+                      onClick={() => {
+                        const labels = getSelectedCatalogLabels();
+                        if (labels.length) {
+                          bulkMutation.mutate({
+                            action: 'set-status-by-label',
+                            labels,
+                            status: 'AVAILABLE',
+                          });
+                        }
+                      }}
+                    >
+                      Disponible
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="hover:bg-accent font-bold uppercase text-[10px]"
+                      onClick={() => {
+                        const labels = getSelectedCatalogLabels();
+                        if (labels.length) {
+                          bulkMutation.mutate({
+                            action: 'set-status-by-label',
+                            labels,
+                            status: 'MAINTENANCE',
+                          });
+                        }
+                      }}
+                    >
+                      En Maintenance
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="hover:bg-accent font-bold uppercase text-[10px] text-destructive"
+                      onClick={() => {
+                        const labels = getSelectedCatalogLabels();
+                        if (labels.length) {
+                          bulkMutation.mutate({
+                            action: 'set-status-by-label',
+                            labels,
+                            status: 'OUT_OF_SERVICE',
+                          });
+                        }
+                      }}
+                    >
+                      Hors Service
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <button className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors">
-                  <Copy className="size-4" /> {t('datagrid.duplicate')}
-                </button>
-                <button className="flex items-center gap-2 text-sm font-semibold hover:text-primary transition-colors">
-                  <Download className="size-4" />{t('common.actions.export')}</button>
-                <button className="flex items-center gap-2 text-sm font-semibold text-red-400 hover:text-red-300 transition-colors ml-4">
+                <button
+                  type="button"
+                  className="flex items-center gap-2 text-sm font-semibold text-red-400 hover:text-red-300 transition-colors ml-4"
+                  disabled={bulkMutation.isPending}
+                  onClick={() => {
+                    const labels = getSelectedCatalogLabels();
+                    if (
+                      labels.length &&
+                      window.confirm(
+                        `Supprimer ${labels.length} catégorie(s) et toutes leurs pièces ?`,
+                      )
+                    ) {
+                      bulkMutation.mutate({ action: 'delete-catalog', labels });
+                    }
+                  }}
+                >
                   <Trash className="size-4" /> {t('datagrid.delete')}
                 </button>
               </div>

@@ -2,81 +2,114 @@
 
 import { Fragment } from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Archive, Database, FileSearch, Files } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Archive, Database, FileSearch, Files, HardDrive, ShieldAlert } from 'lucide-react';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
+
+type DashboardResponse = {
+  stats: {
+    filesActive: number;
+    volumeMb: number;
+    openDemandes: number;
+    missingDocumentsDemandes: number;
+  };
+};
 
 export function GouvernanceWelcomeCallout() {
+  const { data } = useQuery({
+    queryKey: ['gouvernance-dashboard-callout'],
+    queryFn: async () => {
+      const res = await apiFetch(
+        '/api/sections/securite-configuration/gouvernance-donnees/dashboard',
+      );
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error('Dashboard load failed');
+      return unwrapSectionApiData<DashboardResponse>(json);
+    },
+    staleTime: 60_000,
+  });
+
+  const stats = data?.stats;
+
   return (
     <Fragment>
       <style>
         {`
-          .rh-callout-bg {
+          .governance-callout-bg {
             background-image: url('${toAbsoluteUrl('/media/images/2600x1600/bg-2.png')}');
           }
-          .dark .rh-callout-bg {
+          .dark .governance-callout-bg {
             background-image: url('${toAbsoluteUrl('/media/images/2600x1600/bg-2-dark.png')}');
           }
         `}
       </style>
 
       <Card className="h-full min-w-0 w-full overflow-hidden">
-        <CardContent className="p-4 sm:p-6 lg:p-8 bg-cover bg-center bg-no-repeat rh-callout-bg">
+        <CardContent className="governance-callout-bg bg-cover bg-center bg-no-repeat p-4 sm:p-6 lg:p-8">
           <div className="flex min-w-0 flex-col gap-4">
-            <div className="flex min-w-0 flex-wrap items-center gap-3">
-              <div className="p-3 rounded-lg bg-primary/10 shrink-0">
-                <Database className="w-8 h-8 text-primary" />
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="shrink-0 rounded-lg bg-primary/10 p-3">
+                <Database className="h-8 w-8 text-primary" />
               </div>
-              <div className="flex min-w-0 -space-x-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <Avatar className="size-10">
-                  <AvatarImage src={toAbsoluteUrl('/media/avatars/300-1.png')} />
-                  <AvatarFallback>1</AvatarFallback>
-                </Avatar>
-                <Avatar className="size-10">
-                  <AvatarImage src={toAbsoluteUrl('/media/avatars/300-2.png')} />
-                  <AvatarFallback>2</AvatarFallback>
-                </Avatar>
-                <Avatar className="size-10">
-                  <AvatarImage src={toAbsoluteUrl('/media/avatars/300-3.png')} />
-                  <AvatarFallback>3</AvatarFallback>
-                </Avatar>
-                <Avatar className="size-10 ring-2 ring-background bg-primary text-white text-xs">
-                  <AvatarFallback>+12</AvatarFallback>
-                </Avatar>
-              </div>
+              {stats ? (
+                <>
+                  <Badge variant="secondary">{stats.filesActive} fichiers actifs</Badge>
+                  <Badge variant="outline">
+                    <HardDrive className="me-1 size-3" />
+                    {stats.volumeMb} Mo
+                  </Badge>
+                  {stats.missingDocumentsDemandes > 0 ? (
+                    <Badge variant="warning">{stats.missingDocumentsDemandes} pièces manquantes</Badge>
+                  ) : null}
+                </>
+              ) : null}
             </div>
             <h2 className="text-xl font-semibold text-mono sm:text-2xl">
-              Module <span className="text-primary">Gouvernance des donnees</span>
+              Module <span className="text-primary">Gouvernance des données</span>
             </h2>
-            <p className="text-sm font-normal text-secondary-foreground leading-relaxed">
-              Pilote le storage, les demandes documentaires et le suivi d&apos;audit des contenus.
+            <p className="text-sm font-normal leading-relaxed text-secondary-foreground">
+              Pilotez le coffre documentaire MinIO, les demandes de pièces candidats et la
+              conformité des dépôts.
             </p>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-wrap gap-2 justify-start">
+        <CardFooter className="flex flex-wrap justify-start gap-2">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/securite-configuration/gouvernance-donnees/storage-conformite">
-              <Database className="size-4 mr-1" />
+            <Link href="/securite-configuration/gouvernance-donnees/conformite">
+              <ShieldAlert className="mr-1 size-4" />
+              Conformité
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/securite-configuration/gouvernance-donnees/storage">
+              <Database className="mr-1 size-4" />
               Storage
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link href="/securite-configuration/gouvernance-donnees/demandes-documents">
-              <Files className="size-4 mr-1" />
+              <Files className="mr-1 size-4" />
               Demandes
+              {stats && stats.openDemandes > 0 ? (
+                <Badge className="ms-1.5" variant="secondary">
+                  {stats.openDemandes}
+                </Badge>
+              ) : null}
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link href="/securite-configuration/gouvernance-donnees/corbeille-archivage">
-              <Archive className="size-4 mr-1" />
+              <Archive className="mr-1 size-4" />
               Archivage
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
             <Link href="/securite-configuration/gouvernance-donnees/audit-documentaire">
-              <FileSearch className="size-4 mr-1" />
+              <FileSearch className="mr-1 size-4" />
               Audit
             </Link>
           </Button>

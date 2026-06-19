@@ -41,7 +41,6 @@ type StockMovement = {
 };
 
 const EMPTY_INVENTAIRE: InventaireListPayload = { data: [] };
-const EMPTY_MAINTENANCE: ApiEnvelope<MaintenanceRecord[]> = { success: true, data: [] };
 const EMPTY_MOVEMENTS: ApiEnvelope<StockMovement[]> = { success: true, data: [] };
 
 async function safeGet<T>(url: string, fallback: ApiEnvelope<T>): Promise<ApiEnvelope<T>> {
@@ -133,10 +132,15 @@ export function useMaintenanceRecords() {
   return useQuery({
     queryKey: ['equipments-maintenance'],
     queryFn: () =>
-      safeGet<MaintenanceRecord[]>(
-        '/api/sections/gestion-ressources/equipements/maintenance?limit=100',
-        EMPTY_MAINTENANCE,
-      ),
+      safeGet<{ data: MaintenanceRecord[] }>(
+        '/api/sections/gestion-ressources/equipements/maintenance?open=1&limit=100',
+        { success: true, data: { data: [] } },
+      ).then((res) => ({
+        success: true,
+        data: Array.isArray((res.data as { data?: MaintenanceRecord[] })?.data)
+          ? (res.data as { data: MaintenanceRecord[] }).data
+          : [],
+      })),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
@@ -149,7 +153,7 @@ export function useStockMovements() {
     queryKey: ['equipments-stock-movements'],
     queryFn: () =>
       safeGet<StockMovement[]>(
-        '/api/sections/gestion-ressources/equipements/mouvements?limit=100',
+        '/api/sections/gestion-ressources/equipements/inventaire/movements?limit=100',
         EMPTY_MOVEMENTS,
       ),
     staleTime: 5 * 60 * 1000,

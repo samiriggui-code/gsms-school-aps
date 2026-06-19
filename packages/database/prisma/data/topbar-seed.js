@@ -4,7 +4,7 @@
 async function seedTopbarDemo(tx) {
   const users = await tx.user.findMany({
     where: { status: 'ACTIVE', isTrashed: false },
-    select: { id: true, email: true, name: true, firstName: true, lastName: true },
+    select: { id: true, email: true, name: true, firstName: true, lastName: true, avatar: true },
     take: 8,
     orderBy: { createdAt: 'asc' },
   });
@@ -126,10 +126,24 @@ async function seedTopbarDemo(tx) {
         TICKET: 'support-qualite.support',
         TEAM: 'gestion-academique.vie-scolaire',
       };
+      const channelByCategory = {
+        SYSTEM: 'ETABLISSEMENT',
+        FINANCE: 'ETABLISSEMENT',
+        ACADEMIC: 'PEDAGOGIE',
+        TICKET: 'ETABLISSEMENT',
+        TEAM: 'PEDAGOGIE',
+      };
+      const channel =
+        sample.href?.startsWith('/mon-dossier') || sample.href?.startsWith('/e-formation')
+          ? sample.href.startsWith('/mon-dossier')
+            ? 'DOSSIER'
+            : 'PEDAGOGIE'
+          : channelByCategory[sample.category] ?? 'ETABLISSEMENT';
       await tx.inAppNotification.create({
         data: {
           userId: user.id,
           category: sample.category,
+          channel,
           title: sample.title,
           body: sample.body,
           href: sample.href,
@@ -137,6 +151,15 @@ async function seedTopbarDemo(tx) {
             moduleKey: moduleKeyByCategory[sample.category] ?? 'gestion-academique',
             eventType: 'seed.demo',
             severity: i < 2 ? 'WARNING' : 'INFO',
+            entityImageUrl:
+              {
+                SYSTEM: '/media/app/mini-logo-circle-primary.svg',
+                FINANCE: '/media/brand-logos/stripe.svg',
+                ACADEMIC: '/media/brand-logos/google-webdev.svg',
+                TICKET: '/media/brand-logos/zoom.svg',
+                TEAM: '/media/avatars/300-14.png',
+              }[sample.category] ?? '/media/app/mini-logo.svg',
+            avatarKind: 'category_default',
           },
           readAt: i >= 3 ? null : new Date(now - (i + 1) * 3600000),
           createdAt: new Date(now - (samples.length - i) * 7200000),
@@ -147,29 +170,77 @@ async function seedTopbarDemo(tx) {
 
   const existingConv = await tx.chatConversation.findFirst({
     where: { title: 'Équipe FORM\'SSI' },
+    include: { participants: { select: { userId: true } } },
   });
 
   if (!existingConv) {
-    const participantIds = users.slice(0, Math.min(5, users.length)).map((u) => u.id);
+    const staffUsers = users;
+    const creator = staffUsers[0];
+    if (!creator) return;
+
+    const rhTeam = await tx.rhTeam.findFirst({
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, name: true },
+    });
+
     const conv = await tx.chatConversation.create({
       data: {
         type: 'GROUP',
-        title: 'Équipe FORM\'SSI',
+        title: rhTeam?.name ? `Chat — ${rhTeam.name}` : 'Équipe FORM\'SSI',
+        rhTeamId: rhTeam?.id ?? null,
         participants: {
-          create: participantIds.map((userId) => ({ userId })),
+          create: [{ userId: creator.id }],
         },
       },
     });
 
-    const sender = users[0];
-    const other = users[1] ?? users[0];
+    const inviteeIds = users
+      .slice(1, Math.min(5, users.length))
+      .map((u) => u.id)
+      .filter((id) => id !== creator.id);
+
+    for (const inviteeUserId of inviteeIds) {
+      const invitation = await tx.chatInvitation.create({
+        data: {
+          conversationId: conv.id,
+          inviteeUserId,
+          invitedById: creator.id,
+          message: rhTeam
+            ? `Invitation à rejoindre le canal de l'équipe ${rhTeam.name}.`
+            : 'Invitation à rejoindre la discussion équipe CRM.',
+        },
+      });
+
+      await tx.inAppNotification.create({
+        data: {
+          userId: inviteeUserId,
+          category: 'TEAM',
+          channel: 'PEDAGOGIE',
+          title: `${creator.name ?? 'Équipe CRM'} vous invite au chat`,
+          body: rhTeam
+            ? `Rejoignez la conversation « Chat — ${rhTeam.name} ».`
+            : 'Rejoignez la discussion équipe CRM.',
+          metadata: {
+            moduleKey: 'communication-contenu',
+            eventType: 'chat.invitation',
+            actionType: 'chat_invitation',
+            invitationId: invitation.id,
+            conversationId: conv.id,
+            conversationTitle: rhTeam?.name ? `Chat — ${rhTeam.name}` : 'Équipe FORM\'SSI',
+            teamName: rhTeam?.name ?? null,
+            actorId: creator.id,
+            actorName: creator.name ?? 'Équipe CRM',
+            actorAvatar: creator.avatar ?? null,
+            severity: 'INFO',
+          },
+        },
+      });
+    }
+
+    const other = users[1] ?? creator;
     const messages = [
-      { senderId: sender.id, body: 'Bonjour à tous — point CRM de la semaine ?' },
-      { senderId: other.id, body: 'Oui, les inscriptions landing sont stables. Je prépare le rapport.' },
-      {
-        senderId: sender.id,
-        body: 'Parfait. Pensez à valider les paramètres établissement dans Sécurité & configuration.',
-      },
+      { senderId: creator.id, body: 'Bonjour — point CRM de la semaine ?' },
+      { senderId: other.id, body: 'Les inscriptions landing sont stables. Je prépare le rapport.' },
     ];
 
     for (let i = 0; i < messages.length; i += 1) {
@@ -181,12 +252,57 @@ async function seedTopbarDemo(tx) {
           createdAt: new Date(now - (messages.length - i) * 600000),
         },
       });
+
+      if (i === 1 && inviteeIds.includes(other.id)) {
+        await tx.chatParticipant.upsert({
+          where: {
+            conversationId_userId: {
+              conversationId: conv.id,
+              userId: other.id,
+            },
+          },
+          create: { conversationId: conv.id, userId: other.id },
+          update: {},
+        });
+        await tx.chatInvitation.updateMany({
+          where: { conversationId: conv.id, inviteeUserId: other.id },
+          data: { status: 'ACCEPTED', respondedAt: new Date() },
+        });
+      }
     }
 
     await tx.chatConversation.update({
       where: { id: conv.id },
       data: { updatedAt: new Date() },
     });
+
+    const mentionActor = users[1] ?? creator;
+    const mentionTarget = users[2] ?? users[0];
+    if (mentionTarget && mentionActor) {
+      await tx.inAppNotification.create({
+        data: {
+          userId: mentionTarget.id,
+          category: 'ACADEMIC',
+          title: `${mentionActor.name ?? mentionActor.email} vous a mentionné`,
+          body: 'Répondez directement depuis la notification.',
+          href: '/gestion-academique/vie-scolaire/formations',
+          metadata: {
+            moduleKey: 'gestion-academique.vie-scolaire',
+            eventType: 'chat.mention',
+            actionType: 'mention',
+            actorId: mentionActor.id,
+            actorName: mentionActor.name ?? mentionActor.email,
+            actorAvatar: mentionActor.avatar ?? null,
+            mentionTopic: 'Catalogue formations',
+            mentionTopicHref: '/gestion-academique/vie-scolaire/formations',
+            mentionQuote: `@${mentionTarget.name?.split(' ')[0] ?? 'équipe'} Point sur le catalogue SSIAP — vos retours ?`,
+            contextLabel: 'Vie scolaire',
+            conversationId: conv.id,
+            severity: 'INFO',
+          },
+        },
+      });
+    }
   }
 
   console.log('Topbar notifications & chat seeded.');

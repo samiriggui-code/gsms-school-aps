@@ -1,4 +1,12 @@
 import { z } from 'zod';
+import {
+  rhContactFields,
+  zContractType,
+  zSchoolInternalService,
+  zUserCategory,
+  zUserStatusEdit,
+  zWorkTimeType,
+} from '@/lib/rh-form-schema-shared';
 
 export const CollaborateurEditSchema = z.object({
   firstName: z
@@ -14,14 +22,15 @@ export const CollaborateurEditSchema = z.object({
   email: z.string().email({
     message: 'Veuillez entrer une adresse email valide.',
   }),
+  ...rhContactFields,
   roleId: z.string().nonempty({
     message: 'Le rôle est requis.',
   }),
-  userCategory: z.enum(['INTERNAL', 'CLIENT', 'SUBCONTRACTOR']),
+  userCategory: zUserCategory,
   jobFunction: z.string().optional(),
+  jobPositionId: z.string().optional().nullable(),
   qualification: z.string().optional(),
-  status: z.enum(['ACTIVE', 'INACTIVE', 'PENDING', 'BANNED', 'ABSENT']),
-  // HR Information
+  status: zUserStatusEdit,
   birthDate: z.string().optional().nullable(),
   birthPlace: z.string().optional().nullable(),
   nationality: z.string().optional().nullable(),
@@ -29,8 +38,8 @@ export const CollaborateurEditSchema = z.object({
   cniNumber: z.string().optional().nullable(),
   residencePermitNumber: z.string().optional().nullable(),
   residencePermitExpiry: z.string().optional().nullable(),
-  contractType: z.string().optional().nullable(),
-  workTimeType: z.string().optional().nullable(),
+  contractType: zContractType,
+  workTimeType: zWorkTimeType,
   contractStartDate: z.string().optional().nullable(),
   contractEndDate: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
@@ -51,7 +60,7 @@ export const CollaborateurEditSchema = z.object({
     .optional()
     .refine(
       (file) => !file || file.size <= 1024 * 1024,
-      { message: 'L\'image doit faire moins de 1Mo' },
+      { message: "L'image doit faire moins de 1Mo" },
     )
     .refine(
       (file) =>
@@ -63,10 +72,8 @@ export const CollaborateurEditSchema = z.object({
   documentAssurance: z.any().optional(),
   documentResidencePermit: z.any().optional(),
   documentCartePro: z.any().optional(),
-  /** Responsable hiérarchique (organigramme page Structure). */
   managerUserId: z.string().optional(),
-  /** Pôle interne (`SchoolInternalService`). */
-  schoolInternalService: z.string().optional(),
+  schoolInternalService: zSchoolInternalService.optional(),
 });
 
 export type CollaborateurEditSchemaType = z.infer<typeof CollaborateurEditSchema>;

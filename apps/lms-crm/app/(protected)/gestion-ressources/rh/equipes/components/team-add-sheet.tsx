@@ -39,7 +39,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User as Collaborateur } from '@/app/models/user';
-import { TEAM_TYPES, TEAM_SECTORS } from '../constants';
+import { TEAM_TYPES, TEAM_SECTORS, TEAM_ILLUSTRATION_OPTIONS } from '../constants';
+import { teamIllustrationSrc } from '../lib/team-display';
 
 const TeamAddSheet = ({
   open,
@@ -64,7 +65,7 @@ const TeamAddSheet = ({
       sector: 'CLIENT',
       siteId: 'none',
       orgUnitId: 'none',
-      image: '1.jpg',
+      image: TEAM_ILLUSTRATION_OPTIONS[0],
     },
     mode: 'onSubmit',
   });
@@ -74,8 +75,7 @@ const TeamAddSheet = ({
   const teamImage = watch('image');
   const selectedMemberIds = watch('memberIds') || [];
 
-  // Illustrations disponibles
-  const illustrations = Array.from({ length: 35 }, (_, i) => `${i + 1}.jpg`);
+  const illustrations = TEAM_ILLUSTRATION_OPTIONS;
 
   // Fetch OrgUnits
   const { data: orgUnitsData, isLoading: isLoadingOrgUnits } = useQuery({
@@ -201,7 +201,7 @@ const TeamAddSheet = ({
                   <div className="w-full shrink-0 lg:w-[280px] lg:pe-5 space-y-4">
                     <div className="w-full h-[240px] bg-muted/10 border border-border rounded-lg flex items-center justify-center overflow-hidden relative group">
                        <img 
-                         src={`/media/images/600x600/${teamImage || '1.jpg'}`} 
+                         src={teamIllustrationSrc(teamImage || TEAM_ILLUSTRATION_OPTIONS[0])} 
                          alt="Team illustration" 
                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                        />
@@ -347,7 +347,7 @@ const TeamAddSheet = ({
                                   )}
                                 >
                                   <img 
-                                    src={`/media/images/600x600/${illus}`} 
+                                    src={teamIllustrationSrc(illus)} 
                                     alt={`Illustration ${illus}`}
                                     className="w-full h-full object-cover"
                                   />

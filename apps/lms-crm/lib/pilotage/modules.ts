@@ -26,22 +26,19 @@ export const PILOTAGE_MODULE_TABS: PilotageModuleTab[] = [
     id: 'gestion-academique',
     label: 'Gestion académique',
     moduleKeyPrefix: 'gestion-academique',
-    enabled: false,
-    hint: 'Bientôt',
+    enabled: true,
   },
   {
     id: 'administration-facturation',
     label: 'Admin facturation',
     moduleKeyPrefix: 'administration-facturation',
-    enabled: false,
-    hint: 'Bientôt',
+    enabled: true,
   },
   {
     id: 'support-qualite',
     label: 'Support qualité',
     moduleKeyPrefix: 'support-qualite',
-    enabled: false,
-    hint: 'Bientôt',
+    enabled: true,
   },
 ];
 

@@ -75,7 +75,7 @@ export function toAbsoluteUrl(pathname: string): string {
 
 export function getAvatarUrl(
   avatar?: string | null,
-  fallback = '/media/avatars/blank.png',
+  fallback = '/media/app/mini-logo-circle-primary.svg',
 ): string {
   if (!avatar || !avatar.trim()) {
     return toAbsoluteUrl(fallback);

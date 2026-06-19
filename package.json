@@ -39,6 +39,9 @@
     "dev:deploy:terminal": "node -e \"console.error('\\nCockpit deploy : cd ../gsms-deploy puis pnpm dev:deploy:terminal\\n');process.exit(1)\"",
 
     "db:push": "pnpm -C packages/database run db:push",
+    "db:push:accept": "pnpm -C packages/database run db:push:accept",
+    "db:backfill-file-versions": "pnpm -C packages/database run db:backfill-file-versions",
+    "db:backfill-compliance": "pnpm -C packages/database run db:backfill-compliance",
 
     "db:generate": "pnpm -C packages/database db:generate",
 
@@ -48,7 +51,9 @@
 
     "build": "pnpm --filter @lms-crm build",
 
-    "build:web": "pnpm --filter @lms-crm build"
+    "build:web": "pnpm --filter @lms-crm build",
+
+    "deploy:vps": "powershell -NoProfile -ExecutionPolicy Bypass -File deploy/gsms/deploy.ps1"
 
   },
 

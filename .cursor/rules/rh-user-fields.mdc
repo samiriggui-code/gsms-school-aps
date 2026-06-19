@@ -1,0 +1,70 @@
+---
+description: Champs User/RH — une table, rôles IAM, référentiels école
+globs:
+  - apps/lms-crm/app/(protected)/gestion-ressources/rh/**
+  - apps/lms-crm/lib/rh-*.ts
+  - apps/lms-crm/lib/gestion-ressources/**
+  - packages/database/prisma/schema.prisma
+---
+
+# User RH — règles métier école
+
+## Une table `User` pour tous les profils
+
+| Rôle IAM (`UserRole.slug`) | Catégorie | Sheet |
+|---|---|---|
+| `collaborateur`, `admin` | `INTERNAL` | Collaborateurs → Paramètres |
+| `formateur` | `INTERNAL` / `SUBCONTRACTOR` | Formateurs (sheet collaborateur) |
+| `candidat`, `eleve` | `CLIENT` | Vie scolaire → Étudiants |
+
+Pas de second schema Prisma pour stagiaire/candidat.
+
+## Sections formulaire (ordre)
+
+1. **État civil & contact** — identité, `phone`, `proEmail`, `email`
+2. **Profil métier** — `userCategory`, `roleId`, `jobFunction` (+ `jobPositionId` FK), `qualification`, `subcontractorId` si `SUBCONTRACTOR`
+3. **Équipe & organigramme** — `managerUserId`, `schoolInternalService` (enum Prisma)
+4. **Conformité sécurité** — CNI, titre de séjour, SS
+5. **Contrat & résidence** — `contractType`, `workTimeType` (enums), dates, adresse
+6. **Habilitation / agrément** — selon `rh-agrement.ts` (`formateur`, `superadmin`)
+7. **Documents** — upload **uniquement** onglet Paramètres → `FileAsset` GED
+
+## Onglet Conformité (fiche)
+
+- **Lecture seule** : DataGrid pièces non conformes + historique
+- **Pas d'upload** dans cet onglet
+- API : `GET /rh/collaborateurs/[id]/compliance`
+
+## Référentiels (listes déroulantes)
+
+- **Postes** : table `RhPosition` (seed école) → `GET /rh/positions` ; fallback `COLLABORATEUR_JOB_FUNCTION_OPTIONS`
+- **Catégories** : enum `UserCategory` + `SCHOOL_USER_CATEGORY_LABELS`
+- **Contrat** : enum `ContractType` — `CDI|CDD|INTERIM|STAGE`
+- **Temps** : enum `WorkTimeType` — `FULL_TIME|PART_TIME`
+- **Pôles** : enum `SchoolInternalService`
+- **Équipes** : enum `RhTeamType` / `RhTeamSector` — **pas** legacy sécurité (SSIAP, Cynophile)
+- **Org units** : enum `RhOrgUnitType` — `DIRECTION|SERVICE|POLE|CAMPUS`
+
+## Constantes partagées
+
+- `lib/rh-form-schema-shared.ts` — Zod enums alignés Prisma
+- `lib/rh-school-profile-fields.ts` — libellés UI + presets qualification
+- `lib/rh-agrement.ts` — labels habilitation par rôle
+
+## API mutations staff
+
+- **Toujours** `FormData` multipart pour create/update avec documents
+- Route canonique : `/api/sections/gestion-ressources/rh/collaborateurs`
+- Module Conformité liste : **délègue** à collaborateurs (ne pas dupliquer JSON-only)
+
+## Conformité documentaire
+
+- À la création collaborateur/formateur : `provisionStaffComplianceDossiers()` → `COLLABORATEUR_ONBOARDING` + `FORMATEUR_HABILITATION`
+- Évaluation runtime : `evaluateRhUserCompliance()` sur champs `User`
+- Dossiers gouvernance : `ComplianceDossier` (pas seulement candidatures)
+
+## Interdit
+
+- Catalogues « sécurité privée » (Directeur agence, SSIAP équipes…) dans contexte école
+- `request.json()` seul sur routes avec upload documents
+- Dupliquer `jobFunction` string sans lien `RhPosition` pour les nouveaux écrans

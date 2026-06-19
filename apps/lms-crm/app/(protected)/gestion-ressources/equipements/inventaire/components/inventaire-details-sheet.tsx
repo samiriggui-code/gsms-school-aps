@@ -37,6 +37,7 @@ import { InventaireDetailsCompliance } from './inventaire-details-compliance';
 import { InventaireDetailsDocuments } from './inventaire-details-documents';
 import { InventaireDetailsMovements } from './inventaire-details-movements';
 import { InventaireDetailsMaintenance } from './inventaire-details-maintenance';
+import { MaintenanceCompleteActions } from '../../components/maintenance-complete-actions';
 import { InventaireDetailsAffectations } from './inventaire-details-affectations';
 import {
   InventaireCatalogUnitsTable,
@@ -596,9 +597,11 @@ export function InventaireDetailsSheet({
                 
                 <div className="bg-muted/10 border border-border/50 rounded-md p-4 space-y-3">
                     <div className="flex items-center justify-between text-2sm">
-                        <span className="text-muted-foreground font-medium">Total en Stock (Modèle)</span>
+                        <span className="text-muted-foreground font-medium">Disponibles (modèle)</span>
                         <Badge variant="outline" className="font-bold h-4.5 px-1.5 text-[10px] bg-emerald-50 text-emerald-700 border-emerald-100">
-                            {(inventaire as any).stockStats?.currentStock || 0}
+                            {(inventaire as any).stockStats?.availableCount ??
+                              (inventaire as any).stockStats?.currentStock ??
+                              0}
                         </Badge>
                     </div>
                     {!isCatalogMode && (
@@ -625,8 +628,12 @@ export function InventaireDetailsSheet({
                       className="flex items-center justify-between text-2sm cursor-pointer hover:bg-muted/50 transition-colors p-1 -m-1 rounded"
                       onClick={() => setActiveTab('affectations')}
                     >
-                        <span className="text-muted-foreground">Affectations (sessions)</span>
-                        <span className="font-semibold text-foreground">{(inventaire as any).stockStats?.totalIn || 0}</span>
+                        <span className="text-muted-foreground">Affectations (statut IN_USE)</span>
+                        <span className="font-semibold text-foreground">
+                          {(inventaire as any).stockStats?.inUseCount ??
+                            (inventaire as any).stockStats?.totalIn ??
+                            0}
+                        </span>
                     </div>
                     )}
                     {!isCatalogMode && (
@@ -646,7 +653,11 @@ export function InventaireDetailsSheet({
                       onClick={() => setActiveTab('inventaire')}
                     >
                         <span className="text-muted-foreground">Inventaire</span>
-                        <span className="font-semibold text-foreground">{(inventaire as any).stockStats?.currentStock || 0}</span>
+                        <span className="font-semibold text-foreground">
+                          {(inventaire as any).stockStats?.availableCount ??
+                            (inventaire as any).stockStats?.currentStock ??
+                            0}
+                        </span>
                     </div>
                     )}
                     {isCatalogMode && (
@@ -781,9 +792,27 @@ export function InventaireDetailsSheet({
           </ScrollArea>
         </SheetBody>
 
-        <SheetFooter className="flex-row border-t pb-4 p-5 border-border gap-2.5 lg:gap-0 bg-background shrink-0">
+        <SheetFooter className="flex-row border-t pb-4 p-5 border-border gap-2.5 lg:gap-0 bg-background shrink-0 flex-wrap">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Fermer</Button>
-          <div className="flex gap-2.5 ml-auto">
+          <div className="flex gap-2.5 ml-auto flex-wrap">
+            {!isCatalogMode && inventaire.status === 'MAINTENANCE' && !showSaveFooter && (
+              <MaintenanceCompleteActions
+                maintenanceId={(inventaire as { openMaintenanceId?: string | null }).openMaintenanceId}
+                equipmentId={inventaire.id}
+                equipmentStatus={inventaire.status}
+                layout="buttons"
+                size="sm"
+                invalidateKeys={[
+                  ['equipment-catalog'],
+                  ['equipment-maintenance-list'],
+                  ['equipment-maintenance-details', inventaire.id],
+                ]}
+                onComplete={() => {
+                  void fetchInventaire();
+                  onOpenChange(false);
+                }}
+              />
+            )}
             {showSaveFooter ? (
               <Button 
                 variant="outline" 
@@ -798,7 +827,7 @@ export function InventaireDetailsSheet({
               </Button>
             ) : (
               <>
-                <Button variant="outline" onClick={handlePrintInventaireFiche} className="font-bold border-none bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                <Button variant="outline" onClick={handlePrintInventaireFiche} className="font-bold border-none bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
                   <Printer className="size-4" />
                   Fiche Technique
                 </Button>

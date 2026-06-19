@@ -2,6 +2,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { withSentryConfig } from '@sentry/nextjs';
 import { getAllowedDevOrigins } from '../../scripts/allowed-dev-origins.mjs';
+import { getProductionAllowedOrigins } from '../../scripts/production-allowed-origins.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const monorepoRoot = path.join(__dirname, '../..');
@@ -32,9 +33,17 @@ if (basePathEnv.startsWith('http')) {
   basePath = basePathEnv.replace(/\/$/, '');
 }
 
+const productionOrigins = getProductionAllowedOrigins();
+const localOrigins = ['localhost:3001', '127.0.0.1:3001', 'localhost:3000', '127.0.0.1:3000'];
+
 const nextConfig = {
   output: 'standalone',
   outputFileTracingRoot: monorepoRoot,
+  /** Monorepo : évite que Turbopack remonte vers un parent (ex. laragon/www) et corrompt le build prod */
+  turbopack: {
+    root: monorepoRoot,
+  },
+  staticPageGenerationTimeout: 180,
   transpilePackages: ['@repo/i18n', '@repo/api-core', '@repo/realtime'],
   basePath: basePath || '',
   ...(assetPrefix ? { assetPrefix } : {}),
@@ -55,6 +64,9 @@ const nextConfig = {
   },
   allowedDevOrigins: getAllowedDevOrigins({ ports: [3000, 3001] }),
   experimental: {
+    serverActions: {
+      allowedOrigins: [...new Set([...productionOrigins, ...localOrigins])],
+    },
     externalDir: true,
     /**
      * Cache Turbopack entre les redémarrages dev (sinon chaque page CRM recompile 30s–5min).
@@ -129,8 +141,11 @@ const nextConfig = {
   },
 };
 
+const sentryDsn =
+  process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN || '';
 const sentryWrap =
-  process.env.NODE_ENV === 'production' || process.env.SENTRY_DEV === 'true';
+  Boolean(sentryDsn.trim()) &&
+  (process.env.NODE_ENV === 'production' || process.env.SENTRY_DEV === 'true');
 
 export default sentryWrap
   ? withSentryConfig(nextConfig, { silent: true })

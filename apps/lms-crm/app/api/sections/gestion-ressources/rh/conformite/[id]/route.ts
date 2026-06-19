@@ -1,10 +1,10 @@
 import { NextRequest } from 'next/server';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import {
-  requireGestionRessourcesEdit,
-  requireGestionRessourcesView,
-} from '../../../_lib/require-gestion-ressources-auth';
+import { evaluateRhUserCompliance } from '@/lib/gestion-ressources/rh-conformite-compliance';
+import { requireGestionRessourcesEdit, requireGestionRessourcesView } from '../../../_lib/require-gestion-ressources-auth';
+import { PATCH as patchCollaborateur } from '../../collaborateurs/[[...path]]/route';
+import { mapRhConformiteListRow } from '@/lib/gestion-ressources/rh-conformite-compliance';
 
 export async function GET(
   _request: NextRequest,
@@ -18,126 +18,56 @@ export async function GET(
   try {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: {
-        role: true,
-        Session: true,
-        accounts: true,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        status: true,
+        userCategory: true,
+        qualification: true,
+        carteProNumber: true,
+        carteProExpiry: true,
+        documentCni: true,
+        documentAssurance: true,
+        documentCartePro: true,
+        documentResidencePermit: true,
+        birthDate: true,
+        residencePermitExpiry: true,
+        role: { select: { slug: true } },
       },
     });
 
     if (!user) return fail('Conformité non trouvée', 404);
 
-    return ok(user);
+    return ok(evaluateRhUserCompliance(user));
   } catch (error) {
     return fail('Impossible de récupérer la conformité.', 500, error);
   }
 }
 
+/** Délègue au handler collaborateur (FormData + FileAsset). */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const auth = await requireGestionRessourcesEdit();
-  if (!auth.ok) return auth.response;
-
   const { id } = await params;
+  const res = await patchCollaborateur(request, { params: Promise.resolve({ path: [id] }) });
+  if (!res.ok) return res;
 
   try {
-    const body = await request.json();
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      roleId,
-      userCategory,
-      subcontractorId,
-      jobFunction,
-      qualification,
-      status,
-      birthDate,
-      birthPlace,
-      nationality,
-      socialSecurityNumber,
-      cniNumber,
-      residencePermitNumber,
-      residencePermitExpiry,
-      carteProNumber,
-      carteProExpiry,
-      isSchedulable,
-      contractType,
-      workTimeType,
-      contractStartDate,
-      contractEndDate,
-      address,
-      city,
-      postalCode,
-    } = body;
-
-    const updateData: Record<string, unknown> = {};
-    if (firstName !== undefined) updateData.firstName = firstName;
-    if (lastName !== undefined) updateData.lastName = lastName;
-    if (email !== undefined) updateData.email = email;
-    if (phone !== undefined) updateData.phone = phone;
-    if (roleId !== undefined) updateData.roleId = roleId;
-    if (userCategory !== undefined) updateData.userCategory = userCategory;
-    if (subcontractorId !== undefined) updateData.subcontractorId = subcontractorId;
-    if (jobFunction !== undefined) updateData.jobFunction = jobFunction;
-    if (qualification !== undefined) updateData.qualification = qualification;
-    if (status !== undefined) updateData.status = status;
-    if (birthDate !== undefined) updateData.birthDate = birthDate ? new Date(birthDate) : null;
-    if (birthPlace !== undefined) updateData.birthPlace = birthPlace;
-    if (nationality !== undefined) updateData.nationality = nationality;
-    if (socialSecurityNumber !== undefined) updateData.socialSecurityNumber = socialSecurityNumber;
-    if (cniNumber !== undefined) updateData.cniNumber = cniNumber;
-    if (residencePermitNumber !== undefined) updateData.residencePermitNumber = residencePermitNumber;
-    if (residencePermitExpiry !== undefined) {
-      updateData.residencePermitExpiry = residencePermitExpiry ? new Date(residencePermitExpiry) : null;
+    const body = await res.clone().json();
+    const user = body?.data ?? body;
+    if (user?.id) {
+      return ok(mapRhConformiteListRow(user));
     }
-    if (carteProNumber !== undefined) updateData.carteProNumber = carteProNumber;
-    if (carteProExpiry !== undefined) updateData.carteProExpiry = carteProExpiry ? new Date(carteProExpiry) : null;
-    if (isSchedulable !== undefined) updateData.isSchedulable = isSchedulable;
-    if (contractType !== undefined) updateData.contractType = contractType;
-    if (workTimeType !== undefined) updateData.workTimeType = workTimeType;
-    if (contractStartDate !== undefined) {
-      updateData.contractStartDate = contractStartDate ? new Date(contractStartDate) : null;
-    }
-    if (contractEndDate !== undefined) {
-      updateData.contractEndDate = contractEndDate ? new Date(contractEndDate) : null;
-    }
-    if (address !== undefined) updateData.address = address;
-    if (city !== undefined) updateData.city = city;
-    if (postalCode !== undefined) updateData.postalCode = postalCode;
-
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: updateData,
-      include: { role: true },
-    });
-
-    return ok(updatedUser);
-  } catch (error) {
-    return fail('Impossible de mettre à jour la conformité.', 500, error);
+    return res;
+  } catch {
+    return res;
   }
 }
 
-export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  const auth = await requireGestionRessourcesEdit();
-  if (!auth.ok) return auth.response;
-
-  const { id } = await params;
-
-  try {
-    await prisma.user.delete({ where: { id } });
-    return ok({ message: 'Conformité supprimée avec succès' });
-  } catch (error) {
-    return fail('Impossible de supprimer la conformité.', 500, error);
-  }
-}
-
+/** Réintégration (restauration) d'un profil archivé — POST sur /conformite/:id. */
 export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -154,8 +84,28 @@ export async function POST(
       include: { role: true },
     });
 
-    return ok(updatedUser);
+    return ok(mapRhConformiteListRow(updatedUser));
   } catch (error) {
     return fail('Impossible de réintégrer le conformité.', 500, error);
+  }
+}
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const auth = await requireGestionRessourcesView();
+  if (!auth.ok) return auth.response;
+
+  const { id } = await params;
+
+  try {
+    await prisma.user.update({
+      where: { id },
+      data: { isTrashed: true, status: 'INACTIVE' },
+    });
+    return ok({ message: 'Conformité supprimée avec succès' });
+  } catch (error) {
+    return fail('Impossible de supprimer la conformité.', 500, error);
   }
 }

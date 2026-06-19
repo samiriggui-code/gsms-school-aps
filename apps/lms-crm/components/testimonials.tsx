@@ -40,7 +40,7 @@ const Testimonials = () => {
   const secondColumn = TESTIMONIAL_IDS.slice(5, 10);
 
   const TestimonialCard = ({ id }: { id: (typeof TESTIMONIAL_IDS)[number] }) => (
-    <div className="flex-shrink-0 w-[350px] bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/15 dark:to-indigo-900/15 rounded-xl p-6 border border-border/50 shadow-sm mx-1.5">
+    <div className="flex-shrink-0 w-[350px] bg-gradient-to-br from-indigo-50 to-indigo-50 dark:from-indigo-900/15 dark:to-indigo-900/15 rounded-xl p-6 border border-border/50 shadow-sm mx-1.5">
       <p className="text-muted-foreground mb-4 font-medium">{t(`landing.testimonials.items.${id}.content`)}</p>
       <div className="flex items-center gap-3">
         <Image

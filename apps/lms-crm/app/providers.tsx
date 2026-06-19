@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, Suspense } from 'react';
+import { ReactNode } from 'react';
 import type { Session } from 'next-auth';
 import { AuthProvider } from '@/providers/auth-provider';
 import { I18nProvider } from '@/providers/i18n-provider';
@@ -26,9 +26,7 @@ export function AppProviders({ children, session }: Props) {
             <I18nProvider>
               <TooltipsProvider>
                 <ModulesProvider>
-                  <div className="min-h-screen w-full">
-                    <Suspense>{children}</Suspense>
-                  </div>
+                  <div className="min-h-screen w-full">{children}</div>
                   <Toaster />
                 </ModulesProvider>
               </TooltipsProvider>

@@ -16,45 +16,51 @@ export function InventaireOverviewStats({
   equipment: Equipment;
   isCatalogMode?: boolean;
 }) {
-  const stats = (equipment as any).stockStats || { currentStock: 0, totalIn: 0, totalOut: 0 };
+  const stats = (equipment as any).stockStats || {
+    availableCount: 0,
+    inUseCount: 0,
+    maintenanceCount: 0,
+  };
   const unitCount =
     (equipment as { unitCount?: number }).unitCount ??
-    stats.currentStock + stats.totalIn + stats.totalOut;
+    (stats.availableCount ?? stats.currentStock ?? 0) +
+      (stats.inUseCount ?? stats.totalIn ?? 0) +
+      (stats.maintenanceCount ?? stats.totalOut ?? 0);
 
   const items = [
     { 
-      total: stats.currentStock?.toString() || '0', 
-      label: 'En Stock',
-      badgeLabel: stats.currentStock > 0 ? '100' : '0',
-      badgeColor: stats.currentStock > 0 ? 'success' : 'outline',
-      text: 'Disponibilité',
+      total: String(stats.availableCount ?? stats.currentStock ?? 0), 
+      label: 'Disponibles',
+      badgeLabel: (stats.availableCount ?? stats.currentStock) > 0 ? '100' : '0',
+      badgeColor: (stats.availableCount ?? stats.currentStock) > 0 ? 'success' : 'outline',
+      text: 'Par statut (pas mouvement IN)',
       number: '',
       icon: <TrendingUp className="size-3" />,
     }, 
     { 
       total: equipment._count?.stockMovements?.toString() || '0', 
-      label: 'Mouvements',
+      label: 'Mouvements ledger',
       badgeLabel: '100',
       badgeColor: 'success',
-      text: 'Flux historique',
+      text: 'Entrées / sorties historiques',
       number: '',
       icon: <TrendingUp className="size-3" />,
     }, 
     { 
-      total: stats.totalIn?.toString() || '0', 
-      label: 'Affectations',
-      badgeLabel: stats.totalIn > 0 ? '100' : '0',
-      badgeColor: stats.totalIn > 0 ? 'success' : 'outline',
-      text: 'Utilisation actuelle',
+      total: String(stats.inUseCount ?? stats.totalIn ?? 0), 
+      label: 'En utilisation',
+      badgeLabel: (stats.inUseCount ?? stats.totalIn) > 0 ? '100' : '0',
+      badgeColor: (stats.inUseCount ?? stats.totalIn) > 0 ? 'success' : 'outline',
+      text: 'Statut IN_USE',
       number: '',
       icon: <TrendingUp className="size-3" />,
     }, 
     { 
-      total: stats.totalOut?.toString() || '0', 
-      label: 'Maintenances',
-      badgeLabel: stats.totalOut > 0 ? '100' : '0',
-      badgeColor: stats.totalOut > 0 ? 'success' : 'outline',
-      text: 'Interventions',
+      total: String(stats.maintenanceCount ?? stats.totalOut ?? 0), 
+      label: 'En maintenance',
+      badgeLabel: (stats.maintenanceCount ?? stats.totalOut) > 0 ? '100' : '0',
+      badgeColor: (stats.maintenanceCount ?? stats.totalOut) > 0 ? 'success' : 'outline',
+      text: 'Statut MAINTENANCE',
       number: '',
       icon: <TrendingUp className="size-3" />,
     },
@@ -74,7 +80,7 @@ export function InventaireOverviewStats({
   ];
 
   const visibleItems = isCatalogMode
-    ? items.filter((item) => !['Affectations', 'Maintenances', 'Mouvements'].includes(item.label))
+    ? items.filter((item) => !['En utilisation', 'En maintenance', 'Mouvements ledger'].includes(item.label))
     : items;
 
   return (

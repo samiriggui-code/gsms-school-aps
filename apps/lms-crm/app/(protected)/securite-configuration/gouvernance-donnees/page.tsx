@@ -14,8 +14,8 @@ import {
   GouvernanceOverviewTable,
   GouvernanceDistributionChart,
   GouvernanceEvolutionChart,
+  GouvernanceDemandesAlerts,
 } from './components';
-import { ComplianceAlerts } from './components/compliance-alerts';
 
 export default function GouvernanceLandingPage() {
   const { title, description } = usePageToolbarMeta('/securite-configuration/gouvernance-donnees');
@@ -50,7 +50,7 @@ export default function GouvernanceLandingPage() {
 
         <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
           <div className="min-w-0 h-full lg:col-span-1">
-            <ComplianceAlerts />
+            <GouvernanceDemandesAlerts />
           </div>
           <div className="min-w-0 h-full lg:col-span-2">
             <GouvernanceOverviewTable />

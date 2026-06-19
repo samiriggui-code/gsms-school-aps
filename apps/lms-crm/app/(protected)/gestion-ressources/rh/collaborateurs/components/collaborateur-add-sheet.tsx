@@ -58,7 +58,7 @@ import {
   CloudUpload
 } from 'lucide-react';
 import { UserRole } from '@/app/models/user';
-import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
+import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { useSubcontractorSelectQuery } from '../hooks/use-subcontractor-select-query';
 import { CollaborateurAddSchema, CollaborateurAddSchemaType } from '../forms/collaborateur-add-schema';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -86,7 +86,7 @@ const CollaborateurAddSheet = ({
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('identity');
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const { data: roleList } = useRoleSelectQuery();
+  const { data: roleList } = useSchoolRoleSelectQuery();
   const { data: subcontractorList } = useSubcontractorSelectQuery();
 
   const form = useForm<CollaborateurAddSchemaType>({

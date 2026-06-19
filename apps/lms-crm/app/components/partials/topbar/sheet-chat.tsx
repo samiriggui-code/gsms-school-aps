@@ -123,7 +123,7 @@ export function SheetChat({ trigger }: { trigger: ReactNode }) {
                 <div>
                   <Link
                     href="#"
-                    className="text-sm font-semibold text-gray-900 hover:text-blue-600"
+                    className="text-sm font-semibold text-gray-900 hover:text-indigo-600"
                   >
                     HR Team
                   </Link>

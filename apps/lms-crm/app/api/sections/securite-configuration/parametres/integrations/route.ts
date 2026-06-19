@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { getDocsPublicUrl } from '@/config/general.config';
 import { prisma } from '@/lib/prisma';
 import redis, { isRedisCacheDisabled } from '@repo/redis';
 
@@ -25,7 +26,7 @@ export async function GET() {
       ''
     ).trim();
     const crmUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').trim();
-    const docsUrl = (process.env.NEXT_PUBLIC_LMS_DOCS_URL ?? '').trim();
+    const docsUrl = getDocsPublicUrl();
 
     const redisMemoryMode = isRedisCacheDisabled();
     let redisOk = false;
@@ -111,7 +112,7 @@ export async function GET() {
         label: 'Documentation interne',
         description: 'Documentation intégrée (/docs) depuis le CRM.',
         connected: Boolean(docsUrl),
-        detail: docsUrl || 'NEXT_PUBLIC_LMS_DOCS_URL non défini',
+        detail: docsUrl || 'NEXT_PUBLIC_SITE_URL non défini',
         href: docsUrl || undefined,
       },
       {

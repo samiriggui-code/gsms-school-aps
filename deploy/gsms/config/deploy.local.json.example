@@ -1,0 +1,13 @@
+{
+  "SshHost": "187.77.166.124",
+  "SshUser": "root",
+  "SshKey": "C:\\Users\\samir\\.ssh\\id_ed25519",
+  "AppRoot": "/opt/gsms-school",
+  "GsmsDir": "/opt/gsms",
+  "RemoteArchive": "/tmp/gsms-school.tar.gz",
+  "Domain": "hosting-global-it-ss.com",
+  "ServerIp": "187.77.166.124",
+  "RebuildWorker": true,
+  "SkipDbInit": false,
+  "ResetDb": false
+}

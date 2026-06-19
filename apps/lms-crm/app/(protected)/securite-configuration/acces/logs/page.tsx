@@ -1,8 +1,7 @@
 'use client';
 
+import { Fragment, useMemo } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Fragment } from 'react';
-import { Download } from 'lucide-react';
 import {
   ToolbarActions,
   Toolbar,
@@ -18,6 +17,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { accessLogsExportConfig } from '@/lib/datagrid/export-presets';
 import { AccountSecurityLogContent } from '../security-log/content';
 import { AuditLogStatsSection } from './components/audit-log-stats-section';
 
@@ -25,6 +26,7 @@ export default function UserManagementLogsPage() {
   const { t } = useTranslation();
 
   const { settings } = useSettings();
+  const exportConfig = useMemo(() => accessLogsExportConfig(), []);
 
   return (
     <Fragment>
@@ -35,8 +37,7 @@ export default function UserManagementLogsPage() {
               <ToolbarPageTitle />
             </ToolbarHeading>
             <ToolbarActions className="flex items-center gap-2">
-              <Button variant="outline">
-                <Download />{t('common.actions.export')}</Button>
+              <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">Plus d'actions</Button>

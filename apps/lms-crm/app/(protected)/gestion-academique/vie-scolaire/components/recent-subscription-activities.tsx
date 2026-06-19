@@ -55,12 +55,12 @@ export function RecentSubscriptionActivities() {
             <div className={`p-2 rounded-lg ${
               activity.status === 'success' ? 'bg-green-100 dark:bg-green-950/30' :
               activity.status === 'warning' ? 'bg-yellow-100 dark:bg-yellow-950/30' :
-              'bg-blue-100 dark:bg-blue-950/30'
+              'bg-indigo-100 dark:bg-indigo-950/30'
             }`}>
               <activity.icon className={`w-5 h-5 ${
                 activity.status === 'success' ? 'text-green-600' :
                 activity.status === 'warning' ? 'text-yellow-600' :
-                'text-blue-600'
+                'text-indigo-600'
               }`} />
             </div>
             <div className="flex-1 min-w-0">

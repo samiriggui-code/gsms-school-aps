@@ -7,6 +7,7 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { CrmEventService } from '@repo/api-core';
 import { mapCatalogOfferToApiRow } from '@/app/api/sections/gestion-academique/vie-scolaire/formations/_map-rows';
 import { FormationCatalogOfferCreateSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-catalog-api-schemas';
+import { invalidateFormationCatalogCaches } from '@/lib/catalog-public-cache';
 
 const formationSelect = {
   id: true,
@@ -173,6 +174,10 @@ export async function POST(request: NextRequest) {
     });
     void eventService.processPending(5).catch((e) => {
       console.error('[formations/catalog] dispatch événement', e);
+    });
+
+    void invalidateFormationCatalogCaches(slug).catch((e) => {
+      console.error('[formations/catalog] invalidation cache', e);
     });
 
     return ok({ item: mapCatalogOfferToApiRow(offer) }, 201);

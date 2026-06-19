@@ -28,6 +28,7 @@ import { formatDateTime, toAbsoluteUrl, getAvatarUrl, getInitials } from '@/lib/
 import { agrementUiLabels, showsCollaboratorAgrementSchedulingSection, isParcoursApprenantRole } from '@/lib/rh-agrement';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../constants/sheet-shell-classes';
 import { isUserCurrentlyAbsent } from '@/lib/rh/user-absence-ui';
+import { useOfficialDocumentPreview } from '@/hooks/use-official-document-preview';
 
 // Imports des composants modernisés
 import { EtudiantDetailsOverview } from './etudiant-details-overview'; 
@@ -84,10 +85,12 @@ export const EtudiantFicheTemplate = ({
   Etudiant,
   companyProfile,
   parcoursAnnex,
+  embedded = false,
 }: {
   Etudiant: Etudiant;
   companyProfile: any;
   parcoursAnnex?: FicheParcoursAnnex | null;
+  embedded?: boolean;
 }) => {
   const agr = agrementUiLabels(Etudiant.role?.slug);
   const showCollabPlanner = showsCollaboratorAgrementSchedulingSection(Etudiant.role?.slug);
@@ -129,7 +132,16 @@ export const EtudiantFicheTemplate = ({
   };
 
   return (
-    <div className="fiche-doc fiche-print w-full bg-white p-8 text-slate-900" style={{ width: '100%', margin: 0, fontFamily: 'sans-serif' }}>
+    <div
+      className={
+        embedded
+          ? 'official-fiche-body w-full text-slate-900'
+          : 'fiche-doc fiche-print w-full bg-white p-8 text-slate-900'
+      }
+      style={embedded ? undefined : { width: '100%', margin: 0, fontFamily: 'sans-serif' }}
+    >
+      {!embedded ? (
+      <>
       {/* Header */}
       <div className="flex justify-between items-start border-b-2 border-slate-900 pb-3 mb-4">
         <div className="flex gap-4 items-center">
@@ -156,6 +168,8 @@ export const EtudiantFicheTemplate = ({
           <div className="text-xs font-bold text-slate-900 uppercase">{Etudiant.id.substring(0, 12)}</div>
         </div>
       </div>
+      </>
+      ) : null}
 
       {/* Main Profile Header - Optimized size and larger avatar */}
       <div className="grid grid-cols-12 gap-6 mb-6 bg-slate-50 p-3 rounded-xl border border-slate-100">
@@ -391,6 +405,7 @@ export const EtudiantFicheTemplate = ({
         </div>
       </div>
 
+      {!embedded ? (
       <div className="mt-4 pt-3 border-t-2 border-slate-900">
         <div className="flex justify-between px-8 mb-2">
           <div className="text-center">
@@ -410,6 +425,7 @@ export const EtudiantFicheTemplate = ({
           </p>
         </div>
       </div>
+      ) : null}
     </div>
   );
 };
@@ -427,7 +443,7 @@ export function EtudiantDetailsSheet({
   const showCollabPlanner = showsCollaboratorAgrementSchedulingSection(Etudiant?.role?.slug);
   const [isLoadingEmail, setIsLoadingEmail] = useState(false);
   const [isLoadingRestore, setIsLoadingRestore] = useState(false);
-  const [isPrinting, setIsPrinting] = useState(false);
+  const { openPreview } = useOfficialDocumentPreview();
   const [activeTab, setActiveTab] = useState('overview');
   const [complianceStatus, setComplianceStatus] = useState<any>(null);
   const [companyProfile, setCompanyProfile] = useState<any>(null);
@@ -574,64 +590,12 @@ export function EtudiantDetailsSheet({
   };
 
   const handlePrintEtudiantFiche = () => {
-    if (typeof window !== 'undefined' && printRef.current) {
-      const printTarget = printRef.current;
-      const headMarkup = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-        .map((node) => node.outerHTML)
-        .join('\n');
-
-      const printFrame = document.createElement('iframe');
-      printFrame.setAttribute('aria-hidden', 'true');
-      printFrame.style.position = 'fixed';
-      printFrame.style.width = '0';
-      printFrame.style.height = '0';
-      printFrame.style.right = '0';
-      printFrame.style.bottom = '0';
-      printFrame.style.border = '0';
-      printFrame.style.opacity = '0';
-
-      const cleanup = () => {
-        window.setTimeout(() => {
-          printFrame.remove();
-        }, 150);
-      };
-
-      const printHtml = `
-        <!DOCTYPE html>
-        <html lang="fr">
-          <head>
-            <meta charset="utf-8" />
-            <title>Fiche Etudiant - ${escapeHtml(Etudiant?.name || '')}</title>
-            ${headMarkup}
-            <style>
-              @media print {
-                @page { size: A4; margin: 15mm; }
-                body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-              }
-            </style>
-          </head>
-          <body>
-            ${printTarget.innerHTML}
-          </body>
-        </html>
-      `;
-
-      printFrame.addEventListener('load', () => {
-        const frameWindow = printFrame.contentWindow;
-        if (!frameWindow) {
-          cleanup();
-          return;
-        }
-        frameWindow.onafterprint = cleanup;
-        window.setTimeout(() => {
-          frameWindow.focus();
-          frameWindow.print();
-        }, 300);
-      }, { once: true });
-
-      document.body.appendChild(printFrame);
-      printFrame.srcdoc = printHtml;
-    }
+    if (!Etudiant?.id) return;
+    void openPreview({
+      templateKey: 'academic.fiche-etudiant',
+      userId: Etudiant.id,
+      autoPrint: true,
+    });
   };
 
   return (
@@ -843,7 +807,7 @@ export function EtudiantDetailsSheet({
               </Button>
             ) : (
               <>
-                <Button variant="outline" onClick={handlePrintEtudiantFiche} className="font-bold border-none bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                <Button variant="outline" onClick={handlePrintEtudiantFiche} className="font-bold border-none bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
                   <Printer className="size-4" />
                   Fiche Etudiant
                 </Button>

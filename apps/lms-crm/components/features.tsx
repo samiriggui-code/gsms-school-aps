@@ -24,11 +24,11 @@ const FEATURE_ICONS = {
 
 const FEATURE_THEMES = {
   'task-automation': {
-    iconBg: 'from-blue-500/20 to-blue-600/5',
-    iconText: 'text-blue-600 dark:text-blue-400',
-    stat: 'from-blue-600 to-blue-400',
-    ring: 'group-hover:ring-blue-500/30',
-    orb: 'bg-blue-500/15',
+    iconBg: 'from-indigo-500/20 to-indigo-600/5',
+    iconText: 'text-indigo-600 dark:text-indigo-400',
+    stat: 'from-indigo-600 to-indigo-400',
+    ring: 'group-hover:ring-indigo-500/30',
+    orb: 'bg-indigo-500/15',
   },
   'workflow-optimization': {
     iconBg: 'from-rose-500/20 to-rose-600/5',

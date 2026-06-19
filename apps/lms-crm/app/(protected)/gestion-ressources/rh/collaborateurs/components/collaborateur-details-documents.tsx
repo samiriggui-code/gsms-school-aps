@@ -1,18 +1,18 @@
-﻿
+﻿'use client';
+
 import React, { useState, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, ExternalLink, Loader2, ShieldCheck, Printer, X } from 'lucide-react';
+import { FileText, Download, ExternalLink, Loader2, ShieldCheck, Printer } from 'lucide-react';
 import { User as Collaborateur } from '@/app/models/user';
 import { formatDateTime, toAbsoluteUrl, getAvatarUrl, getInitials } from '@/lib/helpers';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { apiFetch } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
-import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useOfficialDocumentPreview } from '@/hooks/use-official-document-preview';
 
 interface CollaborateurDetailsDocumentsProps {
   collaborateur: Collaborateur;
@@ -30,14 +30,16 @@ const formatDateFr = (date: Date | string | null | undefined) => {
   }
 };
 
-const CollaborateurContractTemplate = ({
+export const CollaborateurContractTemplate = ({
   collaborateur,
   companyProfile,
   signatureDateOverride,
+  embedded = false,
 }: {
   collaborateur: Collaborateur;
   companyProfile: any;
   signatureDateOverride?: string;
+  embedded?: boolean;
 }) => {
   const companyLogo = companyProfile?.companyProfile?.logo || toAbsoluteUrl('/media/app/default-logo.svg');
   const companyName = companyProfile?.companyProfile?.companyName || companyProfile?.tenant?.name || 'LMS';
@@ -63,8 +65,8 @@ const CollaborateurContractTemplate = ({
   };
 
   return (
-    <div className="contract-doc contract-print w-full bg-white" style={{ width: '100%', margin: 0 }}>
-      {/* En-tête Style Partenaire */}
+    <div className={`contract-doc ${embedded ? '' : 'contract-print'} w-full bg-white`} style={{ width: '100%', margin: 0 }}>
+      {!embedded ? (
       <div className="contract-doc__header contract-section p-8 pb-4 border-b-2 border-slate-900 flex justify-between items-start mb-6">
         <div className="contract-doc__brand flex items-center gap-4">
           <div className="contract-doc__logo w-16 h-16 border border-slate-200 rounded-lg flex items-center justify-center bg-slate-50 overflow-hidden">
@@ -87,8 +89,9 @@ const CollaborateurContractTemplate = ({
           </div>
         </div>
       </div>
+      ) : null}
 
-      <div className="px-10 pb-12 space-y-6 text-justify text-[13px] leading-relaxed text-slate-800">
+      <div className={embedded ? 'space-y-6 text-justify text-[13px] leading-relaxed text-slate-800' : 'px-10 pb-12 space-y-6 text-justify text-[13px] leading-relaxed text-slate-800'}>
         <div className="contract-doc__section pt-4">
           <div className="contract-doc__section-title border-b border-slate-200 pb-2 mb-4 text-[11px] font-black uppercase tracking-widest text-slate-900">Entre les soussignés</div>
           <div className="grid grid-cols-2 gap-8">
@@ -227,11 +230,10 @@ export const CollaborateurDetailsDocuments = ({ collaborateur, companyProfile }:
   const { t } = useTranslation();
   const [signatureDateOverride, setSignatureDateOverride] = useState<string>(new Date().toISOString().slice(0, 10));
   const [isUploading, setIsUploading] = useState(false);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const printFrameRef = useRef<HTMLIFrameElement>(null);
   const queryClient = useQueryClient();
+  const { openPreview, isOpening } = useOfficialDocumentPreview();
 
   // On récupère le contrat dans les documents du collaborateur
   const contractDoc = (collaborateur as any).documents?.find((doc: any) => doc.type === 'CONTRAT_TRAVAIL');
@@ -239,82 +241,21 @@ export const CollaborateurDetailsDocuments = ({ collaborateur, companyProfile }:
   const contractDocName = contractDocUrl ? contractDocUrl.split('/').pop() : 'Contrat_Travail_Signe.pdf';
 
   const handleOpenPreview = () => {
-    setIsPreviewOpen(true);
+    void openPreview({
+      templateKey: 'rh.contrat-travail',
+      userId: collaborateur.id,
+      options: { signatureDate: signatureDateOverride },
+      autoPrint: false,
+    });
   };
 
   const handlePrint = () => {
-    if (!printFrameRef.current) return;
-
-    const frame = printFrameRef.current;
-    const contentWindow = frame.contentWindow;
-    if (!contentWindow) return;
-
-    const contentDocument = frame.contentDocument || frame.contentWindow?.document;
-    if (!contentDocument) return;
-
-    // Récupérer les styles Tailwind
-    const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-      .map(style => style.outerHTML)
-      .join('');
-
-    contentDocument.open();
-    contentDocument.write(`
-      <html>
-        <head>
-          <title>Contrat - ${collaborateur.firstName} ${collaborateur.lastName}</title>
-          ${styles}
-          <style>
-            @page { 
-              size: A4; 
-              margin: 16mm 18mm 20mm 18mm; 
-            }
-            body { 
-              margin: 0; 
-              padding: 0; 
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .contract-print { 
-              width: 100%;
-            }
-            .contract-doc section {
-              break-inside: auto;
-              page-break-inside: auto;
-              margin-top: 20px;
-            }
-            .contract-doc h2 {
-              break-after: avoid;
-              page-break-after: avoid;
-            }
-            .mt-12, section {
-              break-inside: avoid;
-              page-break-inside: avoid;
-            }
-            @media print {
-              .contract-print { width: 100%; }
-            }
-          </style>
-        </head>
-        <body>
-          <div id="print-root"></div>
-        </body>
-      </html>
-    `);
-    contentDocument.close();
-
-    // On utilise un petit hack pour rendre le composant React dans l'iframe
-    // Mais ici on va juste copier le HTML pour plus de simplicité
-    const root = contentDocument.getElementById('print-root');
-    if (root) {
-      const templateElement = document.getElementById('collaborateur-contract-template-hidden');
-      if (templateElement) {
-        root.innerHTML = templateElement.innerHTML;
-        setTimeout(() => {
-          contentWindow.focus();
-          contentWindow.print();
-        }, 500);
-      }
-    }
+    void openPreview({
+      templateKey: 'rh.contrat-travail',
+      userId: collaborateur.id,
+      options: { signatureDate: signatureDateOverride },
+      autoPrint: true,
+    });
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -387,9 +328,13 @@ export const CollaborateurDetailsDocuments = ({ collaborateur, companyProfile }:
               </Button>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" className="gap-2" onClick={handleOpenPreview}>
+              <Button variant="outline" className="gap-2" onClick={handleOpenPreview} disabled={isOpening}>
                 <ExternalLink className="size-4" />
                 Consulter
+              </Button>
+              <Button className="gap-2" onClick={handlePrint} disabled={isOpening}>
+                <Printer className="size-4" />
+                Imprimer
               </Button>
             </div>
           </CardContent>
@@ -465,59 +410,6 @@ export const CollaborateurDetailsDocuments = ({ collaborateur, companyProfile }:
           </Button>
         </div>
       )}
-
-      {/* Dialogue de preview plein écran */}
-      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-w-[95vw] w-[1200px] h-[90vh] p-0 gap-0 overflow-hidden flex flex-col bg-slate-100 border-none shadow-2xl">
-          <DialogHeader className="bg-white border-b px-6 py-3 flex flex-row items-center justify-between shrink-0 space-y-0">
-            <div className="flex items-center gap-3">
-              <div className="bg-primary/10 p-2 rounded-lg">
-                <FileText className="size-5 text-primary" />
-              </div>
-              <div>
-                <DialogTitle className="text-base font-bold">Aperçu du contrat de travail</DialogTitle>
-                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">
-                  {collaborateur.firstName} {collaborateur.lastName} • Réf: CTR-{collaborateur.id.substring(0, 8)}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={handlePrint} className="gap-2 font-bold shadow-sm">
-                <Printer className="size-4" />
-                Imprimer le contrat
-              </Button>
-              <Button variant="outline" size="icon" onClick={() => setIsPreviewOpen(false)} className="rounded-full size-9">
-                <X className="size-4" />
-              </Button>
-            </div>
-          </DialogHeader>
-          
-          <ScrollArea className="flex-1 p-8 bg-slate-200/50">
-            <div className="mx-auto shadow-2xl bg-white min-h-[297mm] w-full max-w-[210mm] overflow-hidden rounded-sm transition-all duration-300 ring-1 ring-slate-300/50 hover:ring-slate-400/50">
-              <div id="collaborateur-contract-preview-target">
-                <CollaborateurContractTemplate 
-                  collaborateur={collaborateur} 
-                  companyProfile={companyProfile}
-                  signatureDateOverride={signatureDateOverride}
-                />
-              </div>
-            </div>
-            <div className="h-12" />
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
-
-      {/* Hidden template for printing */}
-      <div id="collaborateur-contract-template-hidden" className="hidden">
-        <CollaborateurContractTemplate 
-          collaborateur={collaborateur} 
-          companyProfile={companyProfile}
-          signatureDateOverride={signatureDateOverride}
-        />
-      </div>
-
-      {/* Iframe for printing */}
-      <iframe ref={printFrameRef} className="hidden" title="Print Frame" />
 
       <style jsx global>{`
         .contract-doc {

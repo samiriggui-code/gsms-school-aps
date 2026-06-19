@@ -2,11 +2,12 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { RouteTransitionLoader } from '@/components/common/route-transition-loader';
 import { NavigationLoadingProvider } from '@/providers/navigation-loading-provider';
 import { fetchSessionRoleSlug, isInstructorRole, isPortalRole } from '@/lib/auth/app-routing';
 import { useAccountAccessGuard } from '@/hooks/use-account-access-guard';
+import { AccountAccessBlockedShell } from '@/components/auth/account-access-blocked-dialog';
 import { Demo1Layout } from '../components/layouts/demo1/layout';
 
 export default function ProtectedLayout({
@@ -16,7 +17,7 @@ export default function ProtectedLayout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const accessBlocked = useAccountAccessGuard();
+  const { blocked, reason } = useAccountAccessGuard();
   const [allowDevBypass, setAllowDevBypass] = useState(false);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function ProtectedLayout({
       router.replace('/signin');
       return;
     }
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && !blocked) {
       const slug = session?.user?.roleSlug;
       if (isPortalRole(slug)) {
         router.replace('/mon-dossier');
@@ -41,7 +42,7 @@ export default function ProtectedLayout({
         });
       }
     }
-  }, [status, session?.user?.roleSlug, router]);
+  }, [status, session?.user?.roleSlug, router, blocked]);
 
   useEffect(() => {
     if (status !== 'loading') {
@@ -56,25 +57,46 @@ export default function ProtectedLayout({
     return () => window.clearTimeout(timer);
   }, [status]);
 
+  const handleBlockedAcknowledge = () => {
+    void signOut({
+      callbackUrl: `/signin?accountBlocked=${encodeURIComponent(reason)}`,
+    });
+  };
+
   if (status === 'loading' && !allowDevBypass) {
     return <RouteTransitionLoader />;
   }
 
-  if (status === 'unauthenticated' || accessBlocked) {
+  if (status === 'unauthenticated') {
     return null;
   }
 
-  if (status === 'authenticated' && (isPortalRole(session?.user?.roleSlug) || isInstructorRole(session?.user?.roleSlug))) {
+  if (
+    status === 'authenticated' &&
+    !blocked &&
+    (isPortalRole(session?.user?.roleSlug) || isInstructorRole(session?.user?.roleSlug))
+  ) {
     return null;
   }
 
-  return session || allowDevBypass ? (
-    <div className="flex min-h-screen w-full">
-      <Suspense fallback={<RouteTransitionLoader />}>
-        <NavigationLoadingProvider>
-          <Demo1Layout>{children}</Demo1Layout>
-        </NavigationLoadingProvider>
-      </Suspense>
-    </div>
-  ) : null;
+  const content =
+    session || allowDevBypass ? (
+      <div className="flex min-h-screen w-full">
+        <Suspense fallback={<RouteTransitionLoader />}>
+          <NavigationLoadingProvider>
+            <Demo1Layout>{children}</Demo1Layout>
+          </NavigationLoadingProvider>
+        </Suspense>
+      </div>
+    ) : null;
+
+  return (
+    <AccountAccessBlockedShell
+      blocked={blocked}
+      reason={reason}
+      onAcknowledge={handleBlockedAcknowledge}
+    >
+      {content}
+    </AccountAccessBlockedShell>
+  );
 }

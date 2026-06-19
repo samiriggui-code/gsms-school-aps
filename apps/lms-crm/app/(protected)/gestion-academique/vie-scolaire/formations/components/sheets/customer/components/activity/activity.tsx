@@ -14,7 +14,7 @@ function stepIcon(iconKey?: string) {
     return <CheckCircle2 className="size-5 text-green-500" />;
   }
   if (k.includes('clipboard')) {
-    return <ClipboardCheck className="size-5 text-blue-500" />;
+    return <ClipboardCheck className="size-5 text-indigo-500" />;
   }
   return <ListTodo className="size-5 text-muted-foreground" />;
 }

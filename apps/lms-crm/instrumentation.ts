@@ -1,4 +1,8 @@
+const sentryDsn =
+  process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN || '';
+
 export async function register() {
+  if (!sentryDsn.trim()) return;
   if (process.env.NODE_ENV !== 'production' && process.env.SENTRY_DEV !== 'true') {
     return;
   }
@@ -11,6 +15,7 @@ export async function register() {
 }
 
 export async function onRequestError(...args: Parameters<typeof import('@sentry/nextjs').captureRequestError>) {
+  if (!sentryDsn.trim()) return;
   if (process.env.NODE_ENV !== 'production' && process.env.SENTRY_DEV !== 'true') {
     return;
   }

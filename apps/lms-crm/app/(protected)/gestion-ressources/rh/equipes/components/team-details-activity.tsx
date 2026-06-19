@@ -40,7 +40,7 @@ function TimelineItem({
 export function TeamDetailsActivity({ team }: { team: Team }) {
   return (
     <div className="space-y-4 mt-2">
-      <TimelineItem icon={Users} className="text-blue-500" line={true}>
+      <TimelineItem icon={Users} className="text-indigo-500" line={true}>
         <div className="flex flex-col gap-1">
           <div className="text-sm font-semibold text-foreground">Mise à jour de la composition</div>
           <div className="text-xs text-muted-foreground">Récemment • 2 nouveaux membres ajoutés</div>

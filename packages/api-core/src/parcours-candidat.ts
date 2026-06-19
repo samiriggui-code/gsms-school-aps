@@ -6,6 +6,10 @@ import {
   LeadStatus,
   FormationExamOutcome,
 } from '@repo/database';
+import {
+  maybeAdvanceSessionTeamToPostExam,
+  revokeArchivedLearnerAccess,
+} from './session-team';
 
 export type ParcoursStepId =
   | 'lead'
@@ -102,6 +106,10 @@ export async function applyCandidatureStatusChange(
     await promoteUserToEleve(tx, prev.userId);
   }
 
+  if (status === CandidatureStatus.ARCHIVED && prev.status !== CandidatureStatus.ARCHIVED) {
+    await revokeArchivedLearnerAccess(tx, prev.userId, candidatureId);
+  }
+
   await syncLeadForCandidatureStatus(tx, candidatureId, status);
 
   return updated;
@@ -115,7 +123,7 @@ export async function recordExamOutcome(
 ) {
   const participant = await tx.formationSessionParticipant.findUnique({
     where: { id: participantId },
-    select: { id: true, candidatureId: true, trainingCompletedAt: true },
+    select: { id: true, candidatureId: true, trainingCompletedAt: true, sessionId: true },
   });
   if (!participant) throw new Error('PARTICIPANT_NOT_FOUND');
 
@@ -128,6 +136,8 @@ export async function recordExamOutcome(
         outcome === FormationExamOutcome.PASSED ? new Date() : participant.trainingCompletedAt,
     },
   });
+
+  await maybeAdvanceSessionTeamToPostExam(tx, participant.sessionId);
 
   return row;
 }

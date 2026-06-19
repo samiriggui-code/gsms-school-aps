@@ -7,7 +7,12 @@ import {
 import { prisma } from '@/lib/prisma';
 import { UserStatus } from '@/app/models/user';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { uploadFile } from '@repo/storage';
+import { createFileAssetWithVersion } from '@/lib/file-asset-service';
+import {
+  ensureCandidatStoragePrefix,
+  ensureUserStoragePrefix,
+  provisionStoragePrefixSafe,
+} from '@/lib/entity-storage';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -49,31 +54,17 @@ async function storeCandidatFile(
   createdById: string,
   category: string,
 ): Promise<string> {
-  const uploaded = await uploadFile({
+  const asset = await createFileAssetWithVersion({
     file,
     module: 'crm',
     entityType: 'candidat',
     entityId: userId,
     category,
-    visibility: 'private',
+    visibility: 'PRIVATE',
+    createdById,
+    changeReason: `Upload ${category}`,
   });
-  await prisma.fileAsset.create({
-    data: {
-      module: 'crm',
-      entityType: 'candidat',
-      entityId: userId,
-      category,
-      originalName: uploaded.originalName,
-      mimeType: uploaded.mimeType,
-      size: uploaded.size,
-      storageKey: uploaded.key,
-      url: uploaded.url,
-      visibility: 'PRIVATE',
-      provider: 's3',
-      createdById,
-    },
-  });
-  return uploaded.url;
+  return asset.url;
 }
 
 function stringFieldFromPayload(value: string | File | null | undefined): string | null {
@@ -326,6 +317,13 @@ async function handler(request: NextRequest, { params }: Params) {
         },
         include: { role: true },
       });
+
+      await provisionStoragePrefixSafe('candidat-user', () =>
+        ensureUserStoragePrefix(created.id),
+      );
+      await provisionStoragePrefixSafe('candidat-dossier', () =>
+        ensureCandidatStoragePrefix(created.id),
+      );
 
       const createdById = auth.session.user.id;
       const fileUpdates: Record<string, string> = {};

@@ -9,7 +9,7 @@ const SESSION_STATUS_META: Record<
   InstructorSessionStatus,
   { name: string; color: string }
 > = {
-  upcoming: { name: 'À venir', color: '#3b82f6' },
+  upcoming: { name: 'À venir', color: '#6366f1' },
   ongoing: { name: 'En cours', color: '#10b981' },
   past: { name: 'Terminées', color: '#94a3b8' },
   unknown: { name: 'Planifiées', color: '#f59e0b' },

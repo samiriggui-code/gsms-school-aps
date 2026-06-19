@@ -6,6 +6,7 @@ import {
 } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { createWorkflowEngine } from '@repo/api-core';
+import { ensureSessionChat } from '@/lib/session-chat';
 
 async function promoteUserToEleve(userId: string) {
   const eleveRole = await prisma.userRole.findFirst({
@@ -197,6 +198,8 @@ export async function postFormationSessionParticipant(sessionId: string, request
         });
       }
     }
+
+    void ensureSessionChat(prisma, sessionId);
 
     return NextResponse.json({ data: row }, { status: 201 });
   } catch (e) {

@@ -11,7 +11,7 @@ export function SsiapCertificationInfo({ level, type }: { level: SsiapLevel; typ
     ...step,
     icon:
       index === 0 ? (
-        <ClipboardCheck className="size-5 text-blue-500" />
+        <ClipboardCheck className="size-5 text-indigo-500" />
       ) : index === 1 ? (
         <GraduationCap className="size-5 text-indigo-500" />
       ) : (

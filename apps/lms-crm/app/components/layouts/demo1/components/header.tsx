@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { sessionHasPermission } from '@/lib/auth/crm-permissions';
+import { NOTIFICATIONS_VIEW_PERMISSION } from '@/lib/notifications-scope';
+import { isCrmRole, isInstructorRole } from '@/lib/auth/app-routing';
 import { SearchDialog } from '@/partials/dialogs/search/search-dialog';
 import { ChatSheet } from '@/partials/topbar/chat-sheet';
 import { NotificationsSheet } from '@/partials/topbar/notifications-sheet';
@@ -47,6 +50,9 @@ export function Header() {
   const pathname = usePathname();
   const mobileMode = useIsMobile();
   const { data: session } = useSession();
+  const canViewNotifications = sessionHasPermission(session, NOTIFICATIONS_VIEW_PERMISSION);
+  const canUseChat =
+    isCrmRole(session?.user?.roleSlug) || isInstructorRole(session?.user?.roleSlug);
   const { changeLanguage, language } = useLanguage();
   const { theme, setTheme } = useTheme();
 
@@ -134,6 +140,7 @@ export function Header() {
                 </Button>
               }
             />
+            {canViewNotifications ? (
             <NotificationsSheet
               trigger={
                 <Button
@@ -147,6 +154,8 @@ export function Header() {
                 </Button>
               }
             />
+            ) : null}
+            {canUseChat ? (
             <ChatSheet
               userAvatar={session?.user?.avatar}
               trigger={
@@ -161,6 +170,7 @@ export function Header() {
                 </Button>
               }
             />
+            ) : null}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

@@ -1,0 +1,58 @@
+# Exclusions archive SCP → VPS (/opt/gsms-school)
+.deploy-scp.ignore
+#   tar --exclude-from=.deploy-scp.ignore -czf ...
+
+# Dépendances (réinstallées sur le VPS via pnpm install dans Docker)
+node_modules
+**/node_modules
+
+# Builds locaux (le VPS rebuild via deploy/gsms/Dockerfile.*)
+.next
+**/.next
+out
+**/out
+dist
+**/dist
+.turbo
+**/.turbo
+
+# Git & IDE
+.git
+.gitignore
+.cursor
+.vscode
+.idea
+
+# Secrets — copier deploy/gsms/.env à part (scp séparé vers /opt/gsms/.env)
+.env
+deploy/gsms/.env
+deploy/gsms/SECRETS.txt
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+
+# Archives & caches
+*.tar.gz
+*.zip
+*.tgz
+.cache
+**/.cache
+coverage
+**/coverage
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Outils locaux / scraping (inutiles en prod)
+.firecrawl
+agent-transcripts
+terminals
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Binaires / uploads dev lourds (optionnel — décommenter si trop gros)
+# apps/lms-crm/public/uploads

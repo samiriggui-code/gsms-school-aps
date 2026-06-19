@@ -586,8 +586,8 @@ const ProfilAddSheet = ({
                         {profilType === 'PRESTATAIRE' ? (
                           <div className="space-y-6">
                             <div className="flex items-center gap-2.5">
-                              <div className="size-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                                <Briefcase className="size-4 text-blue-600 dark:text-blue-400" />
+                              <div className="size-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                                <Briefcase className="size-4 text-indigo-600 dark:text-indigo-400" />
                               </div>
                               <h3 className="text-sm font-bold text-foreground uppercase tracking-widest">Domaine d'Intervention</h3>
                             </div>

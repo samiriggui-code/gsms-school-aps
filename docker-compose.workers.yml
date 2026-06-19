@@ -1,16 +1,17 @@
-# Worker async LMS (rapports PDF, stats Redis, notifications, RH)
-# Prérequis : CRM accessible à REPORT_APP_BASE_URL pour le rendu HTML des rapports.
+# Worker async LMS (rapports PDF Playwright/Chromium, stats, notifications)
+# Prod : voir deploy/gsms/Dockerfile.worker + service worker dans deploy/gsms/docker-compose.yml
 services:
   lms-workers:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile.workers
+      context: .
+      dockerfile: deploy/gsms/Dockerfile.worker
+    image: gsms-worker:latest
     env_file:
-      - ../.env
+      - .env
     environment:
       REPORT_APP_BASE_URL: ${REPORT_APP_BASE_URL:-http://host.docker.internal:3001}
       PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /ms-playwright/chromium-1169/chrome-linux/chrome
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+    shm_size: "1gb"
     restart: unless-stopped
-    depends_on: []

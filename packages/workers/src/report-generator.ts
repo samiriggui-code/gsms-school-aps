@@ -17,7 +17,9 @@ import {
 import { uploadFile } from '@repo/storage';
 import cron from 'node-cron';
 
-const POLL_CRON = '*/30 * * * * *';
+const POLL_CRON =
+  process.env.REPORT_WORKER_POLL_CRON ??
+  (process.env.NODE_ENV === 'production' ? '*/30 * * * * *' : '0 * * * * *');
 const REPORT_MODULE = 'reports';
 const REPORT_ENTITY = 'generation-job';
 

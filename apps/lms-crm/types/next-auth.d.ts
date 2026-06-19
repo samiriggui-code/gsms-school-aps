@@ -17,6 +17,7 @@ declare module 'next-auth' {
       status: string;
       /** Session JWT : compte suspendu / archivé — déconnexion côté client. */
       accessBlocked?: boolean;
+      accessBlockReason?: import('@/lib/auth/account-access').AccountBlockReason;
     };
   }
 

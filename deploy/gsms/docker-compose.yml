@@ -57,10 +57,18 @@ services:
 
   app:
     image: gsms-app:latest
+    pull_policy: never
     container_name: gsms-app
     restart: unless-stopped
     ports:
       - "3001:3001"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gsms-app.entrypoints=websecure
+      - traefik.http.routers.gsms-app.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)
+      - traefik.http.routers.gsms-app.tls.certresolver=letsencrypt
+      - traefik.http.routers.gsms-app.priority=10
+      - traefik.http.services.gsms-app.loadbalancer.server.port=3001
     env_file:
       - .env
     environment:
@@ -82,8 +90,11 @@ services:
 
   worker:
     image: gsms-worker:latest
+    pull_policy: never
     container_name: gsms-worker
     restart: unless-stopped
+    # Playwright/Chromium — rendu HTML → PDF (packages/workers → /reports/render)
+    shm_size: "1gb"
     env_file:
       - .env
     environment:
@@ -93,24 +104,37 @@ services:
       REDIS_URL: redis://redis:6379
       REPORT_APP_BASE_URL: http://gsms-app:3001
       STORAGE_ENDPOINT: http://minio:9000
+      PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /ms-playwright/chromium-1169/chrome-linux/chrome
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_started
+      minio:
+        condition: service_started
+      app:
+        condition: service_started
     networks:
       - gsms
 
   homepage:
-    image: ghcr.io/gethomepage/homepage:v0.9.12
+    image: ghcr.io/gethomepage/homepage:v1.13.2
     container_name: gsms-homepage
     restart: unless-stopped
     ports:
       - "3005:3000"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gsms-monitoring.entrypoints=websecure
+      - traefik.http.routers.gsms-monitoring.rule=Host(`${MONITORING_HOST}`)
+      - traefik.http.routers.gsms-monitoring.tls.certresolver=letsencrypt
+      - traefik.http.services.gsms-monitoring.loadbalancer.server.port=3000
     environment:
       HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
-      - ./homepage/config:/app/config:ro
+      - ./homepage/config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - gsms

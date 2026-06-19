@@ -8,7 +8,7 @@ import { CheckCircle2, LifeBuoy, Smile } from 'lucide-react';
 const cards = [
   {
     icon: LifeBuoy,
-    iconBg: 'border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400',
+    iconBg: 'border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400',
     value: 320,
     label: 'Support Tickets',
     info: (

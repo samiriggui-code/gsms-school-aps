@@ -47,7 +47,8 @@ import {
   type InAppNotificationItem,
 } from '@/lib/topbar-api';
 import type { NotificationsScope } from '@/lib/notifications-scope';
-import { scopeNotificationCategories } from '@/lib/notifications-scope';
+import { scopeNotificationChannels } from '@/lib/notifications-scope';
+import { notificationChannelLabel } from '@repo/api-core/notification-channel';
 
 const ACCOUNT_NOTIFICATIONS_PAGE_SIZE = 10;
 
@@ -81,10 +82,10 @@ function statusBadgeVariant(item: InAppNotificationItem): 'primary' | 'secondary
 export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const notificationCategories = scopeNotificationCategories(scope);
+  const notificationChannels = scopeNotificationChannels(scope);
   const [tab, setTab] = useState<'all' | 'unread' | 'archived'>('all');
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<string>('all');
+  const [channel, setChannel] = useState<string>('all');
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: ACCOUNT_NOTIFICATIONS_PAGE_SIZE,
@@ -96,7 +97,7 @@ export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
       scope,
       tab,
       query,
-      category,
+      channel,
       pagination.pageIndex,
       pagination.pageSize,
     ],
@@ -104,7 +105,7 @@ export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
       fetchNotifications({
         tab,
         query,
-        category,
+        channel,
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
         scope,
@@ -312,14 +313,14 @@ export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
     <div className="space-y-5 lg:space-y-7.5">
       <ModuleKpiStatsRow items={kpiCards} />
 
-      {stats?.byCategory ? (
+      {stats?.byChannel ? (
         <div className="flex flex-wrap gap-2">
-          {notificationCategories.map((cat) => {
-            const count = stats.byCategory[cat] ?? 0;
+          {notificationChannels.map((ch) => {
+            const count = stats.byChannel?.[ch] ?? 0;
             if (count === 0) return null;
             return (
-              <Badge key={cat} variant={categoryBadgeVariant(cat)} appearance="light">
-                {t(`topbar.notifications.categories.${cat}`, cat)} · {count}
+              <Badge key={ch} variant="secondary" appearance="light">
+                {notificationChannelLabel(ch)} · {count}
               </Badge>
             );
           })}
@@ -400,28 +401,28 @@ export function AccountNotificationsDatagrid({ scope = 'crm-user' }: Props) {
               <Button
                 type="button"
                 size="sm"
-                variant={category === 'all' ? 'secondary' : 'ghost'}
+                variant={channel === 'all' ? 'secondary' : 'ghost'}
                 className="text-xs"
                 onClick={() => {
                   setPagination((p) => ({ ...p, pageIndex: 0 }));
-                  setCategory('all');
+                  setChannel('all');
                 }}
               >
-                {t('account.notifications.page.categoryAll')}
+                {t('account.notifications.page.categoryAll', { defaultValue: 'Tous les canaux' })}
               </Button>
-              {notificationCategories.map((cat) => (
+              {notificationChannels.map((ch) => (
                 <Button
-                  key={cat}
+                  key={ch}
                   type="button"
                   size="sm"
-                  variant={category === cat ? 'secondary' : 'ghost'}
+                  variant={channel === ch ? 'secondary' : 'ghost'}
                   className="text-xs"
                   onClick={() => {
                     setPagination((p) => ({ ...p, pageIndex: 0 }));
-                    setCategory(cat);
+                    setChannel(ch);
                   }}
                 >
-                  {t(`topbar.notifications.categories.${cat}`, cat)}
+                  {notificationChannelLabel(ch)}
                 </Button>
               ))}
             </div>

@@ -16,11 +16,14 @@ COPY packages/report-engine/package.json packages/report-engine/
 COPY packages/redis/package.json packages/redis/
 COPY packages/storage/package.json packages/storage/
 COPY packages/mail/package.json packages/mail/
+COPY packages/emails/package.json packages/emails/
+COPY packages/realtime/package.json packages/realtime/
 COPY packages/workers/package.json packages/workers/
 COPY patches ./patches
 
 ENV DATABASE_URL="postgresql://lms:lms@localhost:5432/lms_app"
-RUN pnpm install --frozen-lockfile --filter @repo/workers...
+COPY packages/database packages/database
+RUN pnpm install --frozen-lockfile --filter @repo/workers... --ignore-scripts
 
 COPY packages/database packages/database
 COPY packages/api-core packages/api-core
@@ -28,6 +31,8 @@ COPY packages/report-engine packages/report-engine
 COPY packages/redis packages/redis
 COPY packages/storage packages/storage
 COPY packages/mail packages/mail
+COPY packages/emails packages/emails
+COPY packages/realtime packages/realtime
 COPY packages/workers packages/workers
 
 RUN pnpm -C packages/database db:generate

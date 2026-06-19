@@ -27,6 +27,7 @@ import { getInventaireStatusProps } from '../../inventaire/constants/status';
 import { InventaireDetailsOverview } from '../../inventaire/components/inventaire-details-overview';
 import { InventaireDetailsSettings } from '../../inventaire/components/inventaire-details-settings';
 import { InventaireDetailsMaintenance } from '../../inventaire/components/inventaire-details-maintenance';
+import { MaintenanceCompleteActions } from '../../components/maintenance-complete-actions';
 import { Settings } from 'lucide-react';
 import { EquipmentThumbnail } from '../../inventaire/components/equipment-thumbnail';
 
@@ -79,6 +80,8 @@ export function MaintenanceEquipmentSheet({
 
   const statusProps = getInventaireStatusProps(inventaire.status ?? 'AVAILABLE');
   const showSaveFooter = activeTab === 'parametres';
+  const showMaintenanceFooter = inventaire.status === 'MAINTENANCE';
+  const openMaintenanceId = (inventaire as { openMaintenanceId?: string | null }).openMaintenanceId;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -162,10 +165,30 @@ export function MaintenanceEquipmentSheet({
           </ScrollArea>
         </SheetBody>
 
-        <SheetFooter className="flex-row border-t p-5 gap-2 bg-background shrink-0">
+        <SheetFooter className="flex-row border-t p-5 gap-2 bg-background shrink-0 flex-wrap">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             Fermer
           </Button>
+          {showMaintenanceFooter && (
+            <div className="flex flex-wrap gap-2 ml-auto">
+              <MaintenanceCompleteActions
+                maintenanceId={openMaintenanceId}
+                equipmentId={inventaire.id}
+                equipmentStatus={inventaire.status}
+                layout="buttons"
+                invalidateKeys={[
+                  ['equipment-maintenance-list'],
+                  ['equipment-maintenance-stats'],
+                  ['equipment-catalog'],
+                  ['equipment-maintenance-details', inventaire.id],
+                ]}
+                onComplete={() => {
+                  void fetchEquipment(inventaire.id);
+                  onOpenChange(false);
+                }}
+              />
+            </div>
+          )}
           {showSaveFooter && (
             <Button
               className="ml-auto font-bold bg-foreground text-background hover:bg-foreground/90"

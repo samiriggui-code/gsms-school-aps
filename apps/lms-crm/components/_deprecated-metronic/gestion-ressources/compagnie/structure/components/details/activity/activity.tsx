@@ -58,7 +58,7 @@ export function ActivityPage({
     {
       show: !!updatedAt,
       icon: History,
-      className: 'text-blue-500',
+      className: 'text-indigo-500',
       title: 'Derniere mise a jour du partenaire',
       subtitle: updatedAt ? `${updatedAt}` : '',
     },
@@ -93,7 +93,7 @@ export function ActivityPage({
     {
       show: !!lastInvoiceDate,
       icon: FileText,
-      className: 'text-blue-500',
+      className: 'text-indigo-500',
       title: 'Derniere facture',
       subtitle: lastInvoiceDate || '',
     },

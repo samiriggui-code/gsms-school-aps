@@ -13,6 +13,7 @@ const formationSessionFieldsSchema = z.object({
   traineesMin: z.number().int().min(1).nullable().optional(),
   traineesMax: z.number().int().min(1).nullable().optional(),
   trainerUserId: z.string().uuid().nullable().optional(),
+  moderatorUserId: z.string().uuid().nullable().optional(),
   reservedEquipmentIds: z.array(z.string().uuid()).optional(),
   venueRoomId: z.union([z.string().uuid(), z.null()]).optional(),
   sessionKind: formationSessionKindSchema.optional(),

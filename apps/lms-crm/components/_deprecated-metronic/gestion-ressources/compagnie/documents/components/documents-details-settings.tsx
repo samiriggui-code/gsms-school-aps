@@ -437,8 +437,8 @@ export function DocumentsDetailsSettings({ documents, formRef }: DocumentsDetail
               {documentsType === 'PRESTATAIRE' ? (
                 <>
                   <div className="flex items-center gap-2.5">
-                    <div className="size-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/10">
-                      <Briefcase className="size-4 text-blue-600" />
+                    <div className="size-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/10">
+                      <Briefcase className="size-4 text-indigo-600" />
                     </div>
                     <h3 className="text-sm font-bold text-foreground uppercase tracking-widest">
                       Secteur d'activité

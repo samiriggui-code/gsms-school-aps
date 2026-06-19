@@ -10,6 +10,7 @@ import {
   RoleSchemaType,
 } from '@/app/(protected)/securite-configuration/acces/roles/forms/role-schema';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { SCHOOL_IAM_ROLE_SLUGS } from '@/lib/rh-iam-roles';
 
 // GET: Fetch all roles with permissions
 export async function GET(request: Request) {
@@ -32,14 +33,18 @@ export async function GET(request: Request) {
       );
     }
 
+    const roleWhere = {
+      isTrashed: false,
+      slug: { in: [...SCHOOL_IAM_ROLE_SLUGS] },
+      name: {
+        contains: query,
+        mode: 'insensitive' as const,
+      },
+    };
+
     // Count total records matching the filter
     const total = await prisma.userRole.count({
-      where: {
-        name: {
-          contains: query,
-          mode: 'insensitive',
-        },
-      },
+      where: roleWhere,
     });
 
     let isTableEmpty = false;
@@ -56,12 +61,7 @@ export async function GET(request: Request) {
         ? await prisma.userRole.findMany({
             skip,
             take: limit,
-            where: {
-              name: {
-                contains: query,
-                mode: 'insensitive',
-              },
-            },
+            where: roleWhere,
             orderBy: {
               [sortField]: sortDirection,
             },

@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserPresenceDot, UserPresencePicker } from '@/components/common/user-presence-picker';
 import { useTranslation } from '@/hooks/useTranslation';
+import { generalSettings } from '@/config/general.config';
 
 export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
   const { t } = useTranslation();
@@ -109,7 +110,7 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
 
         <DropdownMenuItem asChild>
           <Link
-            href="https://devs.keenthemes.com"
+            href={generalSettings.docsLink}
             className="flex items-center gap-2"
           >
             <FileText />

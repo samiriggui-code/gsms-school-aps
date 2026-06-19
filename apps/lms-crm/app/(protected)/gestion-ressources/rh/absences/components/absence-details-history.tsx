@@ -24,8 +24,8 @@ const AbsenceDetailsHistory = ({ absence }: AbsenceDetailsHistoryProps) => {
       description: `La demande d'absence pour ${absence.type} a été créée par le collaborateur.`,
       date: formatDateTime(new Date(absence.createdAt)),
       icon: Send,
-      color: 'text-blue-500',
-      bg: 'bg-blue-50',
+      color: 'text-indigo-500',
+      bg: 'bg-indigo-50',
       status: 'completed'
     },
     {

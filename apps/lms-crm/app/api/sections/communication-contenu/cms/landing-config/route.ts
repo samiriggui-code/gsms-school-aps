@@ -4,6 +4,10 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { DEFAULT_LANDING_SECTIONS, type Prisma } from '@repo/database';
+import {
+  invalidateAllActiveFormationCaches,
+  invalidateFormationCatalogCaches,
+} from '@/lib/catalog-public-cache';
 
 async function getOrCreateConfig() {
   const existing = await prisma.landingConfig.findFirst({ orderBy: { updatedAt: 'desc' } });
@@ -66,6 +70,17 @@ export async function PATCH(request: NextRequest) {
       where: { id: row.id },
       data,
     });
+
+    if (data.enabled === true) {
+      void invalidateAllActiveFormationCaches(prisma).catch((e) => {
+        console.error('[landing-config] invalidation cache catalogue', e);
+      });
+    } else if (data.enabled === false) {
+      void invalidateFormationCatalogCaches().catch((e) => {
+        console.error('[landing-config] invalidation cache liste', e);
+      });
+    }
+
     const sections = DEFAULT_LANDING_SECTIONS;
     return ok({
       id: updated.id,

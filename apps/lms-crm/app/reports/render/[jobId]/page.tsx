@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 import { ReportJobService } from '@repo/api-core';
 import { getReportTemplate } from '@repo/report-engine';
 import { ReportDocumentShell } from '@/components/reports/report-document-shell';
@@ -13,6 +14,8 @@ import {
   loadFicheCollaborateurReportData,
   loadPilotageGrIndicateursReportData,
 } from '@/lib/reports/load-report-data';
+import { loadReportDocumentBrand } from '@/lib/reports/document-brand';
+import { resolveOfficialDocumentAuthor } from '@/lib/reports/official-document-author';
 import { prisma } from '@/lib/prisma';
 
 type Props = {
@@ -24,6 +27,14 @@ function jobParam(parameters: unknown, key: string): string | undefined {
   if (!parameters || typeof parameters !== 'object') return undefined;
   const v = (parameters as Record<string, unknown>)[key];
   return typeof v === 'string' ? v : undefined;
+}
+
+async function resolveOrigin(): Promise<string | undefined> {
+  const headerList = await headers();
+  const host = headerList.get('x-forwarded-host') ?? headerList.get('host');
+  const proto = headerList.get('x-forwarded-proto') ?? 'http';
+  if (!host) return undefined;
+  return `${proto}://${host}`;
 }
 
 export default async function ReportRenderPage({ params, searchParams }: Props) {
@@ -40,10 +51,16 @@ export default async function ReportRenderPage({ params, searchParams }: Props) 
 
   const author = await prisma.user.findUnique({
     where: { id: job.requestedById },
-    select: { firstName: true, lastName: true, email: true },
+    select: { firstName: true, lastName: true, email: true, avatar: true },
   });
-  const authorName =
-    [author?.firstName, author?.lastName].filter(Boolean).join(' ').trim() || author?.email || null;
+  const authorRecord = resolveOfficialDocumentAuthor({
+    name:
+      [author?.firstName, author?.lastName].filter(Boolean).join(' ').trim() ||
+      author?.email ||
+      null,
+    email: author?.email,
+    avatar: author?.avatar,
+  });
 
   let body: React.ReactNode = (
     <p className="text-sm text-slate-600">Modèle « {template.label} » — contenu en cours de branchement.</p>
@@ -91,14 +108,20 @@ export default async function ReportRenderPage({ params, searchParams }: Props) 
       break;
   }
 
+  const origin = await resolveOrigin();
+  const brand = await loadReportDocumentBrand(origin);
+  const isLegalTemplate = job.templateKey === 'rh.contrat-travail';
+
   return (
     <ReportDocumentShell
       title={job.title}
       subtitle={template.label}
       periodLabel={job.periodLabel}
       generatedAt={job.createdAt.toISOString()}
-      authorName={authorName}
+      author={authorRecord}
       summary={job.summary}
+      brand={brand}
+      kind={isLegalTemplate ? 'legal' : 'corporate'}
     >
       {body}
     </ReportDocumentShell>

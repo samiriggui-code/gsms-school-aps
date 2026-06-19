@@ -9,7 +9,7 @@ export function ActivityPage() {
     {
       title: "Évaluation continue",
       description: "Mise en situation et exercices pratiques tout au long de la formation (PC de sécurité, rondes, interventions).",
-      icon: <ClipboardCheck className="size-5 text-blue-500" />,
+      icon: <ClipboardCheck className="size-5 text-indigo-500" />,
       badge: "Pratique"
     },
     {

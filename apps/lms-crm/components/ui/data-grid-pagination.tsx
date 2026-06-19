@@ -17,6 +17,9 @@ interface DataGridPaginationProps {
   sizesInfo?: string;
   sizesLabel?: string;
   sizesDescription?: string;
+  rowsPerPageLabel?: string;
+  prevPageLabel?: string;
+  nextPageLabel?: string;
   sizesSkeleton?: ReactNode;
   more?: boolean;
   moreLimit?: number;
@@ -32,6 +35,9 @@ function DataGridPagination(props: DataGridPaginationProps) {
     sizes: [5, 10, 25, 50, 100],
     sizesLabel: 'Show',
     sizesDescription: 'per page',
+    rowsPerPageLabel: 'Rows per page',
+    prevPageLabel: 'Go to previous page',
+    nextPageLabel: 'Go to next page',
     sizesSkeleton: <Skeleton className="h-8 w-44" />,
     moreLimit: 5,
     more: false,
@@ -143,7 +149,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
           mergedProps?.sizesSkeleton
         ) : (
           <>
-            <div className="text-sm text-muted-foreground">Rows per page</div>
+            <div className="text-sm text-muted-foreground">{mergedProps.rowsPerPageLabel}</div>
             <Select
               value={`${pageSize}`}
               indicatorPosition="right"
@@ -184,7 +190,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
                   onClick={() => table.previousPage()}
                   disabled={!table.getCanPreviousPage()}
                 >
-                  <span className="sr-only">Go to previous page</span>
+                  <span className="sr-only">{mergedProps.prevPageLabel}</span>
                   <ChevronLeftIcon className="size-4" />
                 </Button>
 
@@ -202,7 +208,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
                   onClick={() => table.nextPage()}
                   disabled={!table.getCanNextPage()}
                 >
-                  <span className="sr-only">Go to next page</span>
+                  <span className="sr-only">{mergedProps.nextPageLabel}</span>
                   <ChevronRightIcon className="size-4" />
                 </Button>
               </div>

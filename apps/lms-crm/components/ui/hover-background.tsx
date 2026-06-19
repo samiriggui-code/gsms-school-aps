@@ -33,7 +33,7 @@ function HoverBackground({
       'bg-purple-400/20',
       'bg-fuchsia-400/20',
       'bg-violet-400/20',
-      'bg-blue-400/20',
+      'bg-indigo-400/20',
       'bg-indigo-400/20',
     ],
     glow = 'shadow-cyan-400/50',

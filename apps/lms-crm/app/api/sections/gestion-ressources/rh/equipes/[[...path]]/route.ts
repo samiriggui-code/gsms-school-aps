@@ -1,11 +1,74 @@
 import { NextRequest } from 'next/server';
 import { NotificationService } from '@repo/api-core';
+import type { Prisma, RhTeamSector, RhTeamType } from '@repo/database';
+import {
+  ensureRhTeamStoragePrefix,
+  provisionStoragePrefixSafe,
+} from '@/lib/entity-storage';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { nullishId, serializeTeam, teamInclude } from '../../_lib/rh-teams-serialize';
 import { requireGestionRessourcesForMethod } from '../../../_lib/require-gestion-ressources-auth';
 
 type Params = { params: Promise<{ path?: string[] }> };
+
+const RH_TEAM_TYPE_VALUES: RhTeamType[] = [
+  'PEDAGOGICAL',
+  'TRAINER_POOL',
+  'HR_ADMIN',
+  'QUALITY',
+  'ADMIN',
+];
+
+const RH_TEAM_SECTOR_VALUES: RhTeamSector[] = ['HEADQUARTERS', 'CAMPUS', 'EXTERNAL'];
+
+const LEGACY_TEAM_TYPE_MAP: Record<string, RhTeamType> = {
+  SECURITE: 'QUALITY',
+  INCENDIE: 'QUALITY',
+  VOLANTE: 'TRAINER_POOL',
+  CYNOPHILE: 'TRAINER_POOL',
+};
+
+const LEGACY_TEAM_SECTOR_MAP: Record<string, RhTeamSector> = {
+  SIEGE: 'HEADQUARTERS',
+  SUCCURSALE: 'CAMPUS',
+  CLIENT: 'EXTERNAL',
+};
+
+function parseRhTeamType(value: unknown): RhTeamType {
+  const raw = String(value ?? 'PEDAGOGICAL').trim().toUpperCase();
+  if (LEGACY_TEAM_TYPE_MAP[raw]) return LEGACY_TEAM_TYPE_MAP[raw];
+  return RH_TEAM_TYPE_VALUES.includes(raw as RhTeamType) ? (raw as RhTeamType) : 'PEDAGOGICAL';
+}
+
+function parseRhTeamSector(value: unknown): RhTeamSector {
+  const raw = String(value ?? 'CAMPUS').trim().toUpperCase();
+  if (LEGACY_TEAM_SECTOR_MAP[raw]) return LEGACY_TEAM_SECTOR_MAP[raw];
+  return RH_TEAM_SECTOR_VALUES.includes(raw as RhTeamSector)
+    ? (raw as RhTeamSector)
+    : 'CAMPUS';
+}
+
+function teamTypesMatchingQuery(q: string): RhTeamType[] {
+  const needle = q.toLowerCase();
+  return RH_TEAM_TYPE_VALUES.filter(
+    (type) =>
+      type.toLowerCase().includes(needle) ||
+      type.replace(/_/g, ' ').toLowerCase().includes(needle),
+  );
+}
+
+function buildTeamListWhere(q: string): Prisma.RhTeamWhereInput {
+  const or: Prisma.RhTeamWhereInput[] = [
+    { name: { contains: q, mode: 'insensitive' } },
+    { description: { contains: q, mode: 'insensitive' } },
+  ];
+  const types = teamTypesMatchingQuery(q);
+  if (types.length > 0) {
+    or.push({ type: { in: types } });
+  }
+  return { OR: or };
+}
 
 async function requireSession(method: string) {
   const auth = await requireGestionRessourcesForMethod(method);
@@ -20,8 +83,8 @@ function parseTeamBody(body: Record<string, unknown>) {
   return {
     name: String(body.name ?? '').trim(),
     description: body.description ? String(body.description).trim() : null,
-    type: String(body.type ?? 'SECURITE').trim() || 'SECURITE',
-    sector: String(body.sector ?? 'CLIENT').trim() || 'CLIENT',
+    type: parseRhTeamType(body.type),
+    sector: parseRhTeamSector(body.sector),
     image: body.image ? String(body.image) : null,
     siteId: nullishId(body.siteId),
     orgUnitId: nullishId(body.orgUnitId),
@@ -79,15 +142,7 @@ export async function GET(request: NextRequest, { params }: Params) {
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get('limit') || 10)));
     const q = (url.searchParams.get('query') || url.searchParams.get('q') || '').trim();
 
-    const where = q
-      ? {
-          OR: [
-            { name: { contains: q, mode: 'insensitive' as const } },
-            { description: { contains: q, mode: 'insensitive' as const } },
-            { type: { contains: q, mode: 'insensitive' as const } },
-          ],
-        }
-      : {};
+    const where = q ? buildTeamListWhere(q) : {};
 
     const [total, rows] = await Promise.all([
       prisma.rhTeam.count({ where }),
@@ -138,6 +193,9 @@ export async function POST(request: NextRequest, { params }: Params) {
         },
         include: teamInclude,
       });
+      void provisionStoragePrefixSafe(`rh-equipe:${team.id}`, () =>
+        ensureRhTeamStoragePrefix(team.id),
+      );
       const notifier = new NotificationService(prisma);
       for (const memberId of body.memberIds) {
         await notifier.emit({

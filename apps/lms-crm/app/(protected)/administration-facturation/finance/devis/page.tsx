@@ -1,9 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { Suspense } from 'react';
-import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Suspense, useMemo } from 'react';
 import { Container } from '@/components/common/container';
 import {
   Toolbar,
@@ -13,6 +11,8 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { financeDevisExportConfig } from '@/lib/datagrid/export-presets';
 import { FinanceDevisPageActions } from './components/finance-devis-page-actions';
 import { DevisStats } from './components/devis-stats';
 import { DevisList } from './components/devis-list';
@@ -21,6 +21,7 @@ export default function Page() {
   const { t } = useTranslation();
 
   const { title, description } = usePageToolbarMeta('/administration-facturation/finance/devis');
+  const exportConfig = useMemo(() => financeDevisExportConfig(), []);
   const hubHeading = (
     <div className="space-y-1">
       <h3 className="text-base font-semibold text-foreground">Devis</h3>
@@ -37,8 +38,7 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" type="button">
-              <Download />{t('common.actions.export')}</Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <FinanceDevisPageActions />
           </ToolbarActions>
         </Toolbar>

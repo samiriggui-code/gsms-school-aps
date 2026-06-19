@@ -2,13 +2,39 @@
 
 import { Fragment } from 'react';
 import Link from 'next/link';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { toAbsoluteUrl } from '@/lib/helpers';
+import { apiFetch } from '@/lib/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Package, Wrench } from 'lucide-react';
+import { Calendar, LoaderCircle, Package, RotateCcw, Wrench } from 'lucide-react';
 
 export function EquipmentWelcomeCallout() {
+  const queryClient = useQueryClient();
+
+  const releaseSessionsMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiFetch(
+        '/api/sections/gestion-ressources/equipements/lifecycle/release-sessions',
+        { method: 'POST' },
+      );
+      if (!res.ok) {
+        const j = await res.json();
+        throw new Error(j?.error?.message || j?.message || 'Libération impossible');
+      }
+      return res.json();
+    },
+    onSuccess: (json) => {
+      const msg = json?.data?.message ?? 'Matériel des sessions terminées libéré.';
+      toast.success(msg);
+      void queryClient.invalidateQueries({ queryKey: ['equipment-dashboard-stats'] });
+      void queryClient.invalidateQueries({ queryKey: ['equipment-catalog'] });
+      void queryClient.invalidateQueries({ queryKey: ['equipment-affectations'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
   return (
     <Fragment>
       <style>
@@ -73,6 +99,21 @@ export function EquipmentWelcomeCallout() {
               <Wrench className="size-4 shrink-0" />
               Maintenance
             </Link>
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="min-w-0 shrink"
+            disabled={releaseSessionsMutation.isPending}
+            onClick={() => releaseSessionsMutation.mutate()}
+            title="Remet en stock le matériel des sessions catalogue terminées"
+          >
+            {releaseSessionsMutation.isPending ? (
+              <LoaderCircle className="size-4 shrink-0 animate-spin" />
+            ) : (
+              <RotateCcw className="size-4 shrink-0" />
+            )}
+            Libérer sessions terminées
           </Button>
         </CardFooter>
       </Card>

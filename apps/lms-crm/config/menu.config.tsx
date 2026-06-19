@@ -103,7 +103,6 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Équipes', path: '/gestion-ressources/rh/equipes' },
           { title: 'Formateurs', path: '/gestion-ressources/rh/formateurs' },
           { title: 'Absences', path: '/gestion-ressources/rh/absences' },
-          { title: 'Conformité', path: '/gestion-ressources/rh/conformite' },
         ],
       },
       {
@@ -273,8 +272,12 @@ export const MENU_SIDEBAR: MenuConfig = [
         path: '/securite-configuration/gouvernance-donnees',
         children: [
           {
-            title: 'Storage conformité',
-            path: '/securite-configuration/gouvernance-donnees/storage-conformite',
+            title: 'Conformité',
+            path: '/securite-configuration/gouvernance-donnees/conformite',
+          },
+          {
+            title: 'Storage',
+            path: '/securite-configuration/gouvernance-donnees/storage',
           },
           {
             title: 'Demandes documents',

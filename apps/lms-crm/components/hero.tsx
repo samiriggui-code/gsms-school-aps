@@ -13,7 +13,7 @@ import { Star } from '@/components/custom/star';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const ROTATING_WORD_CLASSES = [
-  'text-blue-600 dark:text-blue-400',
+  'text-indigo-600 dark:text-indigo-400',
   'text-red-600 dark:text-red-400',
   'text-emerald-600 dark:text-emerald-400',
 ] as const;
@@ -116,7 +116,7 @@ const Hero = ({
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-4 flex flex-col items-center justify-center gap-0.5 text-2xl font-bold leading-tight tracking-tight md:flex-row md:gap-1.5 md:text-4xl lg:mb-6 lg:text-5xl"
           >
-            <span className="bg-gradient-to-r from-indigo-900 via-blue-900 to-indigo-900 dark:from-gray-50 dark:via-blue-300 dark:to-indigo-900 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-900 via-indigo-900 to-indigo-900 dark:from-gray-50 dark:via-indigo-300 dark:to-indigo-900 bg-clip-text text-transparent">
               {t('landing.hero.titlePrefix')}
             </span>
             <WordRotate words={rotatingWords} className="w-[min(100%,18rem)] md:w-[22rem]" />

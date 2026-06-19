@@ -3,6 +3,7 @@ import { ChatConversationType } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { displayUserName, requireSessionUserId } from '@/app/api/_shared/topbar-auth';
+import { assertEligibleParticipants } from '@/lib/chat-eligible';
 
 export async function GET() {
   const auth = await requireSessionUserId();
@@ -71,11 +72,14 @@ export async function GET() {
       title,
       updatedAt: conversation.updatedAt.toISOString(),
       unread,
-      participants: conversation.participants.map((p) => ({
-        id: p.user.id,
-        name: displayUserName(p.user),
-        avatar: p.user.avatar,
-      })),
+      participantCount: conversation.participants.length,
+      participants: conversation.participants
+        .filter((p) => p.userId !== auth.userId)
+        .map((p) => ({
+          id: p.user.id,
+          name: displayUserName(p.user),
+          avatar: p.user.avatar,
+        })),
       lastMessage: lastMessage
         ? {
             id: lastMessage.id,
@@ -117,6 +121,10 @@ export async function POST(request: NextRequest) {
 
   if (type === ChatConversationType.DIRECT && allParticipantIds.length !== 2) {
     return fail('Une conversation directe requiert exactement deux participants.', 400);
+  }
+
+  if (!(await assertEligibleParticipants(participantIds))) {
+    return fail('Un ou plusieurs participants ne sont pas autorisés pour le chat.', 403);
   }
 
   try {

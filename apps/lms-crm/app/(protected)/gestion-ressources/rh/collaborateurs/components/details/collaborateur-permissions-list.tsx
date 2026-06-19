@@ -3,10 +3,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Info } from "lucide-react";
-import { User as Collaborateur } from "@/app/models/user";
+import { resolveRolePermissionRows } from '@/lib/iam/serialize-user-role';
+import { PERMISSION_DOMAINS } from '@/lib/auth/permission-domains';
+import { User as Collaborateur } from '@/app/models/user';
+
+function domainLabelForSlug(slug: string): string | null {
+  for (const domain of PERMISSION_DOMAINS) {
+    if (domain.permissions.some((p) => p.slug === slug)) return domain.label;
+  }
+  return null;
+}
 
 export function CollaborateurPermissionsList({ collaborateur }: { collaborateur: Collaborateur }) {
-  const permissions = collaborateur.role?.permissions || [];
+  const permissions = resolveRolePermissionRows(collaborateur.role);
 
   return (
     <Card className="bg-accent/70 rounded-md shadow-none"> 
@@ -25,9 +34,14 @@ export function CollaborateurPermissionsList({ collaborateur }: { collaborateur:
                     <span className="text-xs font-semibold text-foreground leading-none">
                       {permission.name}
                     </span>
-                    <span className="text-[10px] text-muted-foreground leading-tight line-clamp-1">
-                      {permission.description || permission.slug}
+                    <span className="text-[10px] text-muted-foreground leading-tight line-clamp-1 font-mono">
+                      {permission.slug}
                     </span>
+                    {domainLabelForSlug(permission.slug) ? (
+                      <span className="text-[10px] text-muted-foreground leading-tight">
+                        {domainLabelForSlug(permission.slug)}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
               ))}

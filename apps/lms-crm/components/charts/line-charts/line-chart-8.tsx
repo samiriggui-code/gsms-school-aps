@@ -208,7 +208,7 @@ const businessCards = [
     data: revenueData,
     change: 'Volatile',
     isPositive: false,
-    color: 'var(--color-blue-500)',
+    color: 'var(--color-indigo-500)',
   },
   {
     title: 'Conversion Change',

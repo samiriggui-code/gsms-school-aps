@@ -27,5 +27,11 @@ Console MinIO : http://localhost:9001 — `minioadmin` / `minioadmin`
 
 - `uploadFile({ file, module, entityType, ... })` — chemins structurés métier
 - `uploadFileToDirectory(file, 'company/avatars')` — compat logos CRM
+- `ensureStorageSocle()` — crée les préfixes principaux (`.keep`) sur MinIO/S3 ou local
+- `ensureEntityStoragePrefix('rh/equipes/{teamId}')` — sous-dossier à la création d'une entité
 - `getStoredFile(key)` — proxy `/api/public/storage` et `/uploads`
 - `deleteFileByKey(key)` / `resolveKeyFromUrl(url)`
+
+### Socle (préfixes principaux)
+
+Voir `STORAGE_SOCLE_PREFIXES` dans `src/storage-socle.ts` — initialisé au deploy (`deploy/gsms/scripts/init-storage-socle.sh`) et via Gouvernance → Storage conformité.

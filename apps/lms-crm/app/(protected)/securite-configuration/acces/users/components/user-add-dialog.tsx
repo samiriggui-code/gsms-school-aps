@@ -4,19 +4,20 @@ import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { LoaderCircleIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import {
   Form,
   FormControl,
@@ -34,9 +35,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { LoaderCircleIcon } from 'lucide-react';
+import { VIE_SCOLAIRE_SHEET_MEDIUM } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import { UserRole } from '@/app/models/user';
-import { useRoleSelectQuery } from '../../roles/hooks/use-role-select-query';
+import { useSchoolRoleSelectQuery } from '../../roles/hooks/use-role-select-query';
 import { UserAddSchema, UserAddSchemaType } from '../forms/user-add-schema';
 
 const UserAddDialog = ({
@@ -47,59 +48,43 @@ const UserAddDialog = ({
   closeDialog: () => void;
 }) => {
   const queryClient = useQueryClient();
-
-  // Fetch available roles
-  const { data: roleList } = useRoleSelectQuery();
+  const { data: roleList } = useSchoolRoleSelectQuery();
 
   const form = useForm<UserAddSchemaType>({
     resolver: zodResolver(UserAddSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      roleId: '',
-    },
+    defaultValues: { name: '', email: '', roleId: '' },
     mode: 'onSubmit',
   });
 
   useEffect(() => {
-    if (open) {
-      form.reset();
-    }
+    if (open) form.reset();
   }, [open, form]);
 
   const mutation = useMutation({
     mutationFn: async (values: UserAddSchemaType) => {
       const response = await apiFetch('/api/sections/securite-configuration/acces/users', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
-
       if (!response.ok) {
         const { message } = await response.json();
         throw new Error(message);
       }
-
       return response.json();
     },
     onSuccess: () => {
-      const message = 'User added successfully';
       toast.custom(
         () => (
           <Alert variant="mono" icon="success" close={false}>
             <AlertIcon>
               <RiCheckboxCircleFill />
             </AlertIcon>
-            <AlertTitle>{message}</AlertTitle>
+            <AlertTitle>Utilisateur créé</AlertTitle>
           </Alert>
         ),
-        {
-          position: 'top-center',
-        },
+        { position: 'top-center' },
       );
-
       queryClient.invalidateQueries({ queryKey: ['user-users'] });
       closeDialog();
     },
@@ -113,36 +98,33 @@ const UserAddDialog = ({
             <AlertTitle>{error.message}</AlertTitle>
           </Alert>
         ),
-        {
-          position: 'top-center',
-        },
+        { position: 'top-center' },
       );
     },
   });
 
   const isProcessing = mutation.status === 'pending';
 
-  const handleSubmit = (values: UserAddSchemaType) => {
-    mutation.mutate(values);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={closeDialog}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add User</DialogTitle>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={(v) => !v && closeDialog()}>
+      <SheetContent className={VIE_SCOLAIRE_SHEET_MEDIUM}>
+        <SheetHeader className="border-b border-border px-5 py-4">
+          <SheetTitle>Nouvel utilisateur</SheetTitle>
+        </SheetHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <DialogBody className="pt-2.5 space-y-6">
+          <form
+            onSubmit={form.handleSubmit((v) => mutation.mutate(v))}
+            className="flex min-h-0 flex-1 flex-col"
+          >
+            <SheetBody className="space-y-6 px-5 py-4">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Nom</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter name" {...field} />
+                      <Input placeholder="Nom complet" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -155,7 +137,7 @@ const UserAddDialog = ({
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter user email" {...field} />
+                      <Input placeholder="email@ecole.local" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -166,14 +148,11 @@ const UserAddDialog = ({
                 name="roleId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
+                    <FormLabel>Rôle</FormLabel>
                     <FormControl>
-                      <Select
-                        onValueChange={(value) => field.onChange(value)}
-                        defaultValue={field.value}
-                      >
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
+                          <SelectValue placeholder="Choisir un rôle" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
@@ -190,23 +169,20 @@ const UserAddDialog = ({
                   </FormItem>
                 )}
               />
-            </DialogBody>
-            <DialogFooter>
+            </SheetBody>
+            <SheetFooter className="flex-row justify-end gap-2 border-t border-border px-5 py-4">
               <Button type="button" variant="outline" onClick={closeDialog}>
-                Cancel
+                Annuler
               </Button>
-              <Button
-                type="submit"
-                disabled={!form.formState.isDirty || isProcessing}
-              >
+              <Button type="submit" disabled={!form.formState.isDirty || isProcessing}>
                 {isProcessing && <LoaderCircleIcon className="animate-spin" />}
-                Add user
+                Créer
               </Button>
-            </DialogFooter>
+            </SheetFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 };
 

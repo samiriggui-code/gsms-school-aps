@@ -60,8 +60,6 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
   'gestion-ressources.rh.absences': 'Absence requests, approvals and staff export.',
   'gestion-ressources.rh.collaborateurs':
     'List, export and HR files for group staff.',
-  'gestion-ressources.rh.conformite':
-    'Regulatory checks, expected documents and non-compliance alerts.',
   'gestion-ressources.rh.equipes': 'Manage teams and staff assignments.',
   'gestion-ressources.rh.formateurs': 'External trainers, assignments and availability.',
   'gestion-ressources.rh':
@@ -87,14 +85,18 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'Accounts, statuses and application access for staff and partners.',
   'securite-configuration.gouvernance-donnees':
     'Manage storage, document requests and content audit tracking.',
+  'securite-configuration.gouvernance-donnees.conformite':
+    'School-wide compliance — all profiles, merged email alerts for missing or expired documents.',
+  'securite-configuration.gouvernance-donnees.storage':
+    'GED explorer — FileAsset inventory, versions and archiving.',
   'securite-configuration.gouvernance-donnees.storage-conformite':
-    'Active file inventory (S3 / FileAsset).',
+    'GED explorer — FileAsset inventory, versions and archiving.',
   'securite-configuration.gouvernance-donnees.demandes-documents':
     'Candidate files awaiting documents or review.',
   'securite-configuration.gouvernance-donnees.corbeille-archivage':
     'Deleted files — restore available.',
   'securite-configuration.gouvernance-donnees.audit-documentaire':
-    'SystemLog — sign-ins and system events.',
+    'Document audit trail — compliance, file versions and GED archiving (90 days).',
   'securite-configuration':
     'Administer access, traceability and platform settings.',
   'securite-configuration.parametres':

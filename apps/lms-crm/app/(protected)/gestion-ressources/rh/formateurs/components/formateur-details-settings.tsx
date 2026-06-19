@@ -34,7 +34,7 @@ import {
 import { LoaderCircleIcon, Briefcase, Mail, User as UserIcon, ShieldCheck, Calendar, Hash, MapPin, CreditCard, FileText, Clock, Fingerprint, Shield, CloudUpload, Info } from 'lucide-react';
 import { User as Collaborateur, UserRole } from '@/app/models/user';
 import { FormateurEditSchema, FormateurEditSchemaType } from '../forms/formateur-edit-schema';
-import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
+import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { useSubcontractorSelectQuery } from '../hooks/use-subcontractor-select-query';
 import { Separator } from '@/components/ui/separator';
 import { agrementUiLabels } from '@/lib/rh-agrement';
@@ -44,6 +44,11 @@ import {
   FORMATEUR_TEACHING_SPECIALTY_PRESETS,
   SCHOOL_USER_CATEGORY_LABELS,
 } from '@/lib/rh-school-profile-fields';
+import {
+  CONTRACT_TYPE_VALUES,
+  WORK_TIME_TYPE_VALUES,
+  rhEnumFieldOrNull,
+} from '@/lib/rh-form-schema-shared';
 
 interface FormateurDetailsSettingsProps {
   collaborateur: Collaborateur;
@@ -53,7 +58,7 @@ interface FormateurDetailsSettingsProps {
 
 export function FormateurDetailsSettings({ collaborateur, formRef, onSuccess }: FormateurDetailsSettingsProps) {
   const queryClient = useQueryClient();
-  const { data: roleList } = useRoleSelectQuery();
+  const { data: roleList } = useSchoolRoleSelectQuery();
   const { data: subcontractorList } = useSubcontractorSelectQuery();
 
   const agr = useMemo(() => agrementUiLabels('formateur'), []);
@@ -68,6 +73,8 @@ export function FormateurDetailsSettings({ collaborateur, formRef, onSuccess }: 
       firstName: collaborateur.firstName || '',
       lastName: collaborateur.lastName || '',
       email: collaborateur.email || '',
+      phone: collaborateur.phone || '',
+      proEmail: collaborateur.proEmail || '',
       roleId: collaborateur.role?.id || '',
       userCategory: (collaborateur.userCategory as FormateurEditSchemaType['userCategory']) || 'INTERNAL',
       subcontractorId: collaborateur.subcontractorId || '',
@@ -82,8 +89,8 @@ export function FormateurDetailsSettings({ collaborateur, formRef, onSuccess }: 
       cniNumber: collaborateur.cniNumber || '',
       residencePermitNumber: collaborateur.residencePermitNumber || '',
       residencePermitExpiry: collaborateur.residencePermitExpiry ? new Date(collaborateur.residencePermitExpiry).toISOString().split('T')[0] : '',
-      contractType: collaborateur.contractType || '',
-      workTimeType: collaborateur.workTimeType || '',
+      contractType: rhEnumFieldOrNull(collaborateur.contractType, CONTRACT_TYPE_VALUES),
+      workTimeType: rhEnumFieldOrNull(collaborateur.workTimeType, WORK_TIME_TYPE_VALUES),
       contractStartDate: collaborateur.contractStartDate ? new Date(collaborateur.contractStartDate).toISOString().split('T')[0] : '',
       contractEndDate: collaborateur.contractEndDate ? new Date(collaborateur.contractEndDate).toISOString().split('T')[0] : '',
       address: collaborateur.address || '',
@@ -357,6 +364,37 @@ export function FormateurDetailsSettings({ collaborateur, formRef, onSuccess }: 
 
                 <FormField
                   control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-2sm font-semibold text-foreground">Téléphone</FormLabel>
+                      <FormControl>
+                        <Input {...field} value={field.value || ''} className="h-10 bg-secondary/50 border-border focus:bg-background transition-colors" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="proEmail"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-2sm font-semibold text-foreground">Email professionnel</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/50" />
+                          <Input {...field} value={field.value || ''} className="h-10 pl-10 bg-secondary/50 border-border focus:bg-background transition-colors" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="birthDate"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5">
@@ -476,7 +514,7 @@ export function FormateurDetailsSettings({ collaborateur, formRef, onSuccess }: 
                         <FormLabel className="text-2sm font-semibold text-foreground">
                           Partenaire / structure de rattachement
                         </FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select onValueChange={field.onChange} value={field.value ?? ''}>
                           <FormControl>
                             <SelectTrigger className="h-10 bg-secondary/50 border-border">
                               <SelectValue placeholder="Sélectionner l’organisme" />

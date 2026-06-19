@@ -1,0 +1,62 @@
+---
+title: E-mails automatiques
+description: Catalogue des templates React Email et événements CRM déclencheurs (ressources, salles, conformité, landing).
+---
+
+# E-mails automatiques
+
+Les e-mails transactionnels sont rendus avec **React Email** (`packages/emails`) et envoyés via `@repo/mail` (SMTP / Resend).
+
+## Canaux
+
+| Canal | Rôle |
+|-------|------|
+| **Cloche CRM** | `CrmEventOutbox` → `NotificationService` → notifications in-app |
+| **E-mail** | Templates React Email, audience staff (`crm.ressources.view` pour le module équipements) |
+
+Désactiver les e-mails ops ressources : `RESOURCE_OPS_EMAIL_DISABLED=1` dans `.env`.
+
+## Template ressources & salles
+
+Le template **`ops-resource-alert`** couvre les événements opérationnels :
+
+### Matériel (sessions)
+
+| Événement CRM | Déclencheur |
+|---------------|-------------|
+| `equipment.assigned` | Réservation matériel sur une session (création ou PATCH) |
+| `equipment.released` | Retrait matériel ou suppression session |
+| `equipment.batch_released` | Worker / bouton « Libérer sessions terminées » |
+
+### Maintenance atelier
+
+| Événement CRM | Déclencheur |
+|---------------|-------------|
+| `equipment.maintenance.started` | Ouverture intervention (`POST …/maintenance`) |
+| `equipment.maintenance.completed` | Clôture — retour stock |
+| `equipment.maintenance.out_of_service` | Clôture — HS non réparable |
+
+### Salles
+
+| Événement CRM | Déclencheur |
+|---------------|-------------|
+| `venue.room.reserved` | Session créée avec salle |
+| `venue.room.released` | Salle retirée d’une session |
+| `venue.room.reservation_updated` | Dates ou salle modifiées |
+| `venue.room.booking_created` | Réunion staff / réservation ponctuelle |
+| `venue.room.booking_cancelled` | Annulation réservation ponctuelle |
+| `venue.room.session_ended` | Worker — session terminée, salle redevenue disponible |
+| `venue.room.deactivated` / `reactivated` | Activation / désactivation salle |
+
+## API catalogue
+
+`GET /api/common/email-templates` — liste `EMAIL_TEMPLATE_CATALOG` + mapping `CRM_EVENT_EMAIL_TEMPLATE` (session requise).
+
+## Autres domaines
+
+- **Landing** : contact, devis, préinscription (accusés + notifications internes)
+- **Conformité** : demandes, rappels, validation, expiration
+- **Finance** : devis commercial (`devis-quote`)
+- **Pilotage** : rapport généré (HTML inline, hors React Email)
+
+Source de vérité code : `packages/emails/src/email-template-catalog.ts`.

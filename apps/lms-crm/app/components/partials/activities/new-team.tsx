@@ -33,7 +33,7 @@ const ActivitiesNewTeam = () => {
             <div className="flex items-center gap-4">
               <div className="relative size-[50px] shrink-0">
                 <svg
-                  className="w-full h-full stroke-blue-200 fill-blue-100 dark:stroke-blue-950 dark:fill-blue-950/30"
+                  className="w-full h-full stroke-indigo-200 fill-indigo-100 dark:stroke-indigo-950 dark:fill-indigo-950/30"
                   width="44"
                   height="48"
                   viewBox="0 0 44 48"
@@ -55,7 +55,7 @@ const ActivitiesNewTeam = () => {
                   />
                 </svg>
                 <div className="absolute leading-none start-2/4 top-2/4 -translate-y-2/4 -translate-x-2/4 rtl:translate-x-2/4">
-                  <Volleyball className="text-xl ps-px text-blue-500" />
+                  <Volleyball className="text-xl ps-px text-indigo-500" />
                 </div>
               </div>
               <div className="flex flex-col items-start gap-1.5">

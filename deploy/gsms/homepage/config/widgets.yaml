@@ -1,16 +1,39 @@
 ---
-- Ressources VPS:
-    label: Serveur 187.77.166.124
+- logo:
+    icon: https://cdn.jsdelivr.net/npm/@mdi/svg@7.4.47/svg/school.svg
+
+- resources:
+    label: VPS Hostinger
     cpu: true
     memory: true
     disk: /
     uptime: true
+    units: metric
+    refresh: 3000
     expanded: true
 
 - datetime:
     text_size: md
     locale: fr
     format:
-      dateStyle: medium
+      dateStyle: full
       timeStyle: short
       hourCycle: h23
+
+- calendar:
+    firstDayInWeek: monday
+    view: monthly
+    maxEvents: 10
+    showTime: true
+    timezone: Europe/Paris
+    integrations:
+      - type: ical
+        url: https://calendar.google.com/calendar/ical/fr.french%23holiday%40group.v.calendar.google.com/public/basic.ics
+        name: Jours fériés
+        color: zinc
+        params:
+          showName: true
+
+- search:
+    provider: google
+    target: _blank

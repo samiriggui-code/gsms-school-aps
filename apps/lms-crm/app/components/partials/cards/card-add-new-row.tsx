@@ -31,7 +31,7 @@ const CardAddNewRow = ({
                 badge={
                   <Rocket size={16} className={`${iconSize} text-primary`} />
                 }
-                stroke="stroke-blue-400"
+                stroke="stroke-indigo-400"
                 fill="fill-white"
               />
             </div>

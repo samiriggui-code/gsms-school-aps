@@ -36,15 +36,28 @@ export function buildReportFileMetadata(input: {
 }
 
 export function parseReportFileMetadata(raw: unknown): ReportFileMetadata | null {
-  if (!raw || typeof raw !== 'object') return null;
-  const m = raw as Record<string, unknown>;
+  let value = raw;
+  if (typeof value === 'string') {
+    try {
+      value = JSON.parse(value) as unknown;
+    } catch {
+      return null;
+    }
+  }
+  if (!value || typeof value !== 'object') return null;
+  const m = value as Record<string, unknown>;
   const templateId =
     typeof m.templateId === 'string'
       ? m.templateId
       : typeof m.templateKey === 'string'
         ? m.templateKey
         : null;
-  const label = typeof m.label === 'string' ? m.label : null;
+  const label =
+    typeof m.label === 'string'
+      ? m.label
+      : typeof m.title === 'string'
+        ? m.title
+        : null;
   if (!templateId || !label) return null;
   const tpl = getReportTemplate(templateId);
   const fmt = m.format;

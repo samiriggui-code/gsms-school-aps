@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/hooks/useTranslation';
 import { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -15,9 +15,7 @@ import { buildDataGridListResponse } from '@/lib/gestion-ressources/datagrid-res
 import { Equipment } from '@/app/models/equipment';
 import { formatDateTime } from '@/lib/helpers';
 import { Badge } from '@/components/ui/badge';
-import { Wrench, CheckCircle2, AlertTriangle, Clock, PackageCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { MaintenanceCompleteActions } from '../../components/maintenance-complete-actions';
 import {
   DataGrid,
   DataGridApiFetchParams,
@@ -44,7 +42,6 @@ interface InventaireDetailsMaintenanceProps {
 
 export function InventaireDetailsMaintenance({ equipment }: InventaireDetailsMaintenanceProps) {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 5,
@@ -91,26 +88,14 @@ export function InventaireDetailsMaintenance({ equipment }: InventaireDetailsMai
   const items = response?.data ?? [];
   const totalCount = response?.pagination?.total ?? 0;
 
-  const completeMutation = useMutation({
-    mutationFn: async (maintenanceId: string) => {
-      const res = await apiFetch(
-        `/api/sections/gestion-ressources/equipements/inventaire/maintenance/${maintenanceId}/complete`,
-        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' },
-      );
-      if (!res.ok) {
-        const j = await res.json();
-        throw new Error(j?.error?.message || 'Clôture impossible');
-      }
-      return res.json();
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['equipment-maintenance-details', equipment.id] });
-      void queryClient.invalidateQueries({ queryKey: ['equipment-maintenance-list'] });
-      void queryClient.invalidateQueries({ queryKey: ['equipment-catalog'] });
-      toast.success('Intervention clôturée — pièce remise en stock');
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
+  const completeInvalidateKeys = useMemo(
+    () => [
+      ['equipment-maintenance-details', equipment.id],
+      ['equipment-maintenance-list'],
+      ['equipment-catalog'],
+    ],
+    [equipment.id],
+  );
 
   const columns = useMemo<ColumnDef<MaintenanceItem>[]>(
     () => [
@@ -136,7 +121,7 @@ export function InventaireDetailsMaintenance({ equipment }: InventaireDetailsMai
           return (
             <Badge variant="outline" className={`text-[10px] font-bold ${
               status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-              status === 'IN_PROGRESS' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+              status === 'IN_PROGRESS' ? 'bg-indigo-50 text-indigo-700 border-indigo-100' :
               'bg-amber-50 text-amber-700 border-amber-100'
             }`}>
               {status === 'COMPLETED' ? 'Terminé' : status === 'IN_PROGRESS' ? 'En cours' : status === 'SCHEDULED' ? 'Planifié' : 'Attente'}
@@ -169,22 +154,18 @@ export function InventaireDetailsMaintenance({ equipment }: InventaireDetailsMai
           const done = row.original.status === 'COMPLETED';
           if (done) return null;
           return (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 gap-1 text-xs"
-              disabled={completeMutation.isPending}
-              onClick={() => completeMutation.mutate(row.original.id)}
-            >
-              <PackageCheck className="size-3.5" />
-              Retour stock
-            </Button>
+            <MaintenanceCompleteActions
+              maintenanceId={row.original.id}
+              equipmentId={equipment.id}
+              equipmentStatus={equipment.status}
+              invalidateKeys={completeInvalidateKeys}
+            />
           );
         },
         size: 130,
       },
     ],
-    [completeMutation, t]
+    [completeInvalidateKeys, equipment.id, equipment.status, t]
   );
 
   const table = useReactTable({
@@ -204,8 +185,18 @@ export function InventaireDetailsMaintenance({ equipment }: InventaireDetailsMai
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/70">Interventions techniques</h4>
+        {equipment.status === 'MAINTENANCE' && (
+          <MaintenanceCompleteActions
+            maintenanceId={items.find((i) => i.status !== 'COMPLETED')?.id}
+            equipmentId={equipment.id}
+            equipmentStatus={equipment.status}
+            invalidateKeys={completeInvalidateKeys}
+            layout="buttons"
+            size="sm"
+          />
+        )}
       </div>
       <DataGrid 
         table={table} 

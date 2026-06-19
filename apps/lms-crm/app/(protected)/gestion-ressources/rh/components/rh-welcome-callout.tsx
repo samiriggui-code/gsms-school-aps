@@ -70,7 +70,7 @@ export function RHWelcomeCallout() {
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/gestion-ressources/rh/conformite">
+            <Link href="/securite-configuration/gouvernance-donnees/conformite">
               <ShieldCheck className="size-4 mr-1" />
               Conformité
             </Link>

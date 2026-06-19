@@ -33,3 +33,16 @@ export async function setUserPresence(userId: string, status: UserPresenceStatus
   processPresence.set(userId, status);
   await setCache(presenceCacheKey(userId), status, PRESENCE_TTL_SECONDS);
 }
+
+export async function getUsersPresence(
+  userIds: string[],
+): Promise<Record<string, UserPresenceStatus>> {
+  const unique = [...new Set(userIds.filter(Boolean))].slice(0, 40);
+  const result: Record<string, UserPresenceStatus> = {};
+  await Promise.all(
+    unique.map(async (userId) => {
+      result[userId] = await getUserPresence(userId);
+    }),
+  );
+  return result;
+}

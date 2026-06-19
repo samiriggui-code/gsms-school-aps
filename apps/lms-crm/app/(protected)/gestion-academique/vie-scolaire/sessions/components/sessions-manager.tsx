@@ -25,6 +25,7 @@ import {
   MapPin,
   Pencil,
   Search,
+  RefreshCw,
   Trash2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -358,17 +359,30 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
             </p>
           </div>
 
-          <div className="relative w-full">
-            <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={t('datagrid.search.session')}
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setPagination((p) => ({ ...p, pageIndex: 0 }));
-              }}
-              className="h-10 ps-9"
-            />
+          <div className="flex items-center gap-2">
+            <div className="relative w-full">
+              <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder={t('datagrid.search.session')}
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPagination((p) => ({ ...p, pageIndex: 0 }));
+                }}
+                className="h-10 ps-9"
+              />
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="size-10 shrink-0"
+              disabled={sessionsQuery.isFetching}
+              onClick={() => void sessionsQuery.refetch()}
+              aria-label={t('crud.refresh')}
+            >
+              <RefreshCw className={cn('size-4', sessionsQuery.isFetching && 'animate-spin')} />
+            </Button>
           </div>
 
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-4">

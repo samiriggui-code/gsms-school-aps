@@ -58,7 +58,6 @@ export function Help({ audience = 'crm' }: HelpProps) {
         more={{
           title: t('help.questionsCta'),
           url: generalSettings.docsHelpCatalogLink,
-          external: true,
         }}
       />
       <Engage

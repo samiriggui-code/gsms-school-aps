@@ -3,11 +3,13 @@
 
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 
-import { Download, UserPlus } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { sessionsExportConfig } from '@/lib/datagrid/export-presets';
 
 import { Container } from '@/components/common/container';
 
@@ -51,6 +53,8 @@ export default function Page() {
   const [detailSheetOpen, setDetailSheetOpen] = useState(false);
 
   const [detailSession, setDetailSession] = useState<FormationSessionApiRow | null>(null);
+
+  const exportConfig = useMemo(() => sessionsExportConfig(), []);
 
 
 
@@ -140,9 +144,7 @@ export default function Page() {
 
           <ToolbarActions className="flex items-center gap-2">
 
-            <Button variant="outline" type="button">
-
-              <Download />{t('common.actions.export')}</Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
 
             <Button variant="primary" type="button" className="gap-2" onClick={openCreate}>
 

@@ -141,7 +141,7 @@ export const InventaireDetailsDocuments = ({ inventaire }: InventaireDetailsDocu
                           {doc.mimeType.includes('pdf') ? (
                             <FileText className="size-5 text-red-500" />
                           ) : doc.mimeType.includes('image') ? (
-                            <UploadIcon className="size-5 text-blue-500" />
+                            <UploadIcon className="size-5 text-indigo-500" />
                           ) : (
                             <FileIcon className="size-5 text-primary" />
                           )}

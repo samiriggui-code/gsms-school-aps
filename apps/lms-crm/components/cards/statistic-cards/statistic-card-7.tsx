@@ -26,15 +26,15 @@ const cards = [
     title: 'New Customers',
     subtitle: 'This quarter',
     value: '1,245',
-    valueColor: 'text-blue-600',
+    valueColor: 'text-indigo-600',
     badge: {
-      color: 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400',
+      color: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400',
       icon: UserPlus,
-      iconColor: 'text-blue-500',
+      iconColor: 'text-indigo-500',
       text: '+3.2%',
     },
     subtext: (
-      <span className="text-blue-600 font-medium">
+      <span className="text-indigo-600 font-medium">
         +39 <span className="text-muted-foreground font-normal">vs last quarter</span>
       </span>
     ),

@@ -7,6 +7,7 @@ import {
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 
+/** Vue ledger mouvements IN/OUT — distincte des compteurs par statut (`stockStats` sur inventaire). */
 export async function GET(request: NextRequest) {
   const auth = await requireGestionRessourcesView();
   if (!auth.ok) return auth.response;

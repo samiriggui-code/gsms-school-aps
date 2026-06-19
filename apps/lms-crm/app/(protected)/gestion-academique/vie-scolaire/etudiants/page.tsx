@@ -1,9 +1,11 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, UserPlus } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { candidatsHubExportConfig } from '@/lib/datagrid/export-presets';
 import { CandidatureAddSheet } from './components/candidature-add-sheet';
 import { Container } from '@/components/common/container';
 import {
@@ -32,6 +34,7 @@ export default function Page() {
   const [detailInitialCandidatureId, setDetailInitialCandidatureId] = useState<string | null>(null);
   const [detailInitialTab, setDetailInitialTab] =
     useState<CandidatureDetailSheetInitialTab>('overview');
+  const exportConfig = useMemo(() => candidatsHubExportConfig(), []);
 
   const hubHeading = (
     <div className="space-y-1">
@@ -62,8 +65,7 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" type="button">
-              <Download />{t('common.actions.export')}</Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button
               variant="primary"
               type="button"

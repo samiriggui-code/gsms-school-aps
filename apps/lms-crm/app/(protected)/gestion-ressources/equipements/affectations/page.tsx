@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Container } from '@/components/common/container';
 import {
   Toolbar,
@@ -13,7 +13,9 @@ import {
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { Button } from '@/components/ui/button';
-import { Download, CalendarPlus } from 'lucide-react';
+import { CalendarPlus } from 'lucide-react';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { affectationsExportConfig } from '@/lib/datagrid/export-presets';
 import { AffectationAddSheet } from './components/affectation-add-sheet';
 import { AffectationsStats } from './components/affectations-stats';
 import { AffectationsList } from './components/affectations-list';
@@ -23,6 +25,7 @@ export default function EquipementsAffectationsPage() {
   const { title, description } = usePageToolbarMeta('/gestion-ressources/equipements/affectations');
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const exportConfig = useMemo(() => affectationsExportConfig(searchQuery), [searchQuery]);
 
   return (
     <>
@@ -33,10 +36,7 @@ export default function EquipementsAffectationsPage() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <Button variant="outline" type="button">
-              <Download className="size-4" />
-              {t('common.actions.export')}
-            </Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button onClick={() => setIsAddSheetOpen(true)} className="gap-2">
               <CalendarPlus className="size-4" />
               Nouvelle affectation

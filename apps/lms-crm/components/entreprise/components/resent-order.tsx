@@ -25,7 +25,7 @@ export function EntrepriseRecentOrders({ type }: { type: EntrepriseType }) {
               <div className="flex items-center gap-2.5">
                 <div className="flex items-center justify-center rounded-md bg-background border border-border size-[36px] shrink-0">
                   <div className="flex items-center justify-center bg-accent/50 rounded-md size-[30px]">
-                    <Shield className="w-5 h-5 fill-blue-600 text-blue-600" />
+                    <Shield className="w-5 h-5 fill-indigo-600 text-indigo-600" />
                   </div>
                 </div>
                 <span className="text-base font-semibold text-foreground">{presentation.title}</span>

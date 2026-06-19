@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/hooks/useTranslation';
 import { useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -21,11 +21,10 @@ import { CardHeader } from '@/components/ui/card';
 import { DataGridApiFetchParams, DataGridApiResponse } from '@/components/ui/data-grid';
 import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
 import { MaintenanceEquipmentSheet } from './maintenance-equipment-sheet';
 import { EquipmentDataGridCard } from '../../components/equipment-datagrid-card';
 import { EquipmentRowActions } from '../../components/equipment-row-actions';
-import { EquipmentDeleteDialog } from '../../components/equipment-delete-dialog';
+import { MaintenanceCompleteActions } from '../../components/maintenance-complete-actions';
 import { formatEquipmentUnitLabel } from '@/lib/equipment-catalog';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import type { EquipmentSheetInput } from '@/app/models/equipment';
@@ -38,6 +37,7 @@ export interface MaintenanceUnitRow {
   type: string | null;
   assignedSite: { name: string } | null;
   updatedAt: string;
+  openMaintenanceId?: string | null;
 }
 
 export function MaintenanceList({
@@ -48,31 +48,21 @@ export function MaintenanceList({
   onSearchChange?: (val: string) => void;
 }) {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
   const [sorting, setSorting] = useState<SortingState>([{ id: 'updatedAt', desc: true }]);
   const [selected, setSelected] = useState<MaintenanceUnitRow | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [detailsDefaultTab, setDetailsDefaultTab] = useState('maintenance');
-  const [deleteTarget, setDeleteTarget] = useState<MaintenanceUnitRow | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await apiFetch(
-        `/api/sections/gestion-ressources/equipements/inventaire/${id}`,
-        { method: 'DELETE' },
-      );
-      if (!response.ok) throw new Error('delete_failed');
-    },
-    onSuccess: async () => {
-      setDeleteTarget(null);
-      await queryClient.invalidateQueries({ queryKey: ['equipment-maintenance-list'] });
-      await queryClient.invalidateQueries({ queryKey: ['equipment-maintenance-stats'] });
-      toast.success(t('equipment.deletedSuccess'));
-    },
-    onError: () => toast.error(t('equipment.deleteFailedShort')),
-  });
+  const invalidateKeys = useMemo(
+    () => [
+      ['equipment-maintenance-list'],
+      ['equipment-maintenance-stats'],
+      ['equipment-catalog'],
+    ],
+    [],
+  );
 
   const fetchRows = async ({
     pageIndex,
@@ -111,6 +101,8 @@ export function MaintenanceList({
         sorting,
         searchQuery,
       }),
+    refetchOnWindowFocus: false,
+    gcTime: 5 * 60_000,
   });
 
   const items = response?.data ?? [];
@@ -174,21 +166,34 @@ export function MaintenanceList({
         size: 180,
       },
       {
+        id: 'complete',
+        header: 'Clôture',
+        cell: ({ row }) => (
+          <MaintenanceCompleteActions
+            maintenanceId={row.original.openMaintenanceId}
+            equipmentId={row.original.id}
+            equipmentStatus={row.original.status}
+            invalidateKeys={invalidateKeys}
+          />
+        ),
+        size: 130,
+        enableSorting: false,
+      },
+      {
         id: 'actions',
         header: '',
         cell: ({ row }) => (
           <EquipmentRowActions
             onView={() => openSheet(row.original, 'maintenance')}
             onEdit={() => openSheet(row.original, 'settings')}
-            onDelete={() => setDeleteTarget(row.original)}
           />
         ),
-        size: 120,
+        size: 100,
         enableSorting: false,
         enableResizing: false,
       },
     ],
-    [openSheet],
+    [invalidateKeys, openSheet],
   );
 
   const table = useReactTable({
@@ -208,7 +213,9 @@ export function MaintenanceList({
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold">Maintenance & atelier</h3>
-          <p className="text-xs text-muted-foreground">Unités en intervention technique.</p>
+          <p className="text-xs text-muted-foreground">
+            Unités en intervention — clôturez pour remettre en stock ou classer HS.
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative w-full sm:w-80">
@@ -253,20 +260,6 @@ export function MaintenanceList({
         onOpenChange={setSheetOpen}
         inventaire={selected as EquipmentSheetInput | null}
         defaultTab={detailsDefaultTab}
-      />
-
-      <EquipmentDeleteDialog
-        open={Boolean(deleteTarget)}
-        onOpenChange={(open) => !open && setDeleteTarget(null)}
-        label={
-          deleteTarget
-            ? formatEquipmentUnitLabel(deleteTarget.label, deleteTarget.serialNumber)
-            : undefined
-        }
-        isPending={deleteMutation.isPending}
-        onConfirm={() => {
-          if (deleteTarget?.id) deleteMutation.mutate(deleteTarget.id);
-        }}
       />
     </>
   );

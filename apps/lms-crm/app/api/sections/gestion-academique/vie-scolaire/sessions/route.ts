@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@repo/database';
 import {
+  applySessionEquipmentDiff,
   buildSessionVenueNotificationContext,
   notifyVenueRoomReserved,
 } from '@repo/api-core';
@@ -19,6 +20,9 @@ import {
   assertVenueRoomIdExists,
 } from '@/app/api/sections/gestion-academique/vie-scolaire/sessions/_venue-room-assert';
 import { sessionKindDerivedFromFormationParcours } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/lib/session-parcours-exam';
+import { ensureSessionStoragePrefix, provisionStoragePrefixSafe } from '@/lib/entity-storage';
+import { ensureSessionChat } from '@/lib/session-chat';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 function parseDateInput(v: unknown): Date | null {
   if (v === undefined || v === null || v === '') return null;
@@ -104,6 +108,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const sessionAuth = await getServerSession(authOptions);
   if (!sessionAuth) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(sessionAuth, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Accès refusé — permission académique requise.', 403);
+  }
 
   let json: unknown;
   try {
@@ -170,6 +177,7 @@ export async function POST(request: NextRequest) {
           traineesMin: d.traineesMin ?? undefined,
           traineesMax: d.traineesMax ?? undefined,
           trainerUserId: d.trainerUserId ?? undefined,
+          moderatorUserId: d.moderatorUserId ?? undefined,
           venueRoomId: venueRoomId ?? null,
           reservedEquipmentIds: jsonEquip as unknown as Prisma.InputJsonValue,
           sessionKind: sessionKindStored,
@@ -194,6 +202,14 @@ export async function POST(request: NextRequest) {
       });
     });
 
+    void provisionStoragePrefixSafe(`session:${created.id}`, () =>
+      ensureSessionStoragePrefix(created.id),
+    );
+
+    void ensureSessionChat(prisma, created.id, {
+      moderatorUserId: d.moderatorUserId ?? null,
+    });
+
     const [item] = await serializeFormationSessionRows([created as SessionRowPayload]);
 
     if (venueRoomId) {
@@ -206,9 +222,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    if (equipmentIds.length > 0) {
+      await applySessionEquipmentDiff(prisma, created.id, [], equipmentIds, {
+        actorUserId: sessionAuth.user?.id ?? null,
+      });
+    }
+
     return ok({ item }, 201);
   } catch (error) {
     if (error instanceof Error && error.message.includes('Salle déjà réservée')) {
+      return fail(error.message, 422);
+    }
+    if (error instanceof Error && (error.message.includes('indisponible') || error.message.includes('déjà affecté'))) {
       return fail(error.message, 422);
     }
     return fail('Impossible de créer la session.', 500, error);

@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { User, UserStatus } from '@/app/models/user';
 import { getUserStatusProps } from '../../constants/status';
-import UserProfileEditDialog from './user-profile-edit-dialog';
+import UserProfileEditSheet from './user-profile-edit-sheet';
 
 const UserProfile = ({
   user,
@@ -158,9 +158,9 @@ const UserProfile = ({
     <>
       {isLoading || !user ? <Loading /> : <Content />}
 
-      <UserProfileEditDialog
+      <UserProfileEditSheet
         open={isEditDialogOpen}
-        closeDialog={() => setEditDialogOpen(false)}
+        onOpenChange={setEditDialogOpen}
         user={user}
         onUserUpdated={onUserUpdated}
       />

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { sessionHasPermission, CRM_PERMISSION } from '@/lib/auth/crm-permissions';
 import {
   ColumnDef,
   getCoreRowModel,
@@ -65,6 +66,7 @@ import {
 } from './pilotage-module-tabs';
 import { PilotageAlertDetailSheet } from './pilotage-alert-detail-sheet';
 import { PilotagePageIntro } from './pilotage-page-intro';
+import { PilotageAlertsPermissionMatrix } from './pilotage-alerts-permission-matrix';
 
 const PAGE_SIZE = 10;
 
@@ -87,6 +89,7 @@ export function PilotageAlertsDatagrid() {
   const { title, description } = usePageToolbarMeta('/pilotage-supervision/pilotage/alertes');
   const intro = PILOTAGE_PAGE_INTRO.alertes;
   const { data: session } = useSession();
+  const canViewPilotage = sessionHasPermission(session, CRM_PERMISSION.pilotageView);
   const queryClient = useQueryClient();
   const [moduleId, setModuleId] = useState<PilotageModuleId>('all');
   const [tab, setTab] = useState<'all' | 'unread'>('all');
@@ -120,6 +123,7 @@ export function PilotageAlertsDatagrid() {
         module: modulePrefix,
       }),
     refetchInterval: 30_000,
+    enabled: canViewPilotage,
   });
 
   usePusher(session?.user?.id, () => {
@@ -318,6 +322,12 @@ export function PilotageAlertsDatagrid() {
 
   return (
     <>
+      {!canViewPilotage ? (
+        <Container className="py-16 text-center text-sm text-muted-foreground">
+          Vous n&apos;avez pas la permission d&apos;accéder au registre des alertes pilotage.
+        </Container>
+      ) : (
+      <>
       <Container>
         <Toolbar>
           <ToolbarHeading>
@@ -339,6 +349,8 @@ export function PilotageAlertsDatagrid() {
         <PilotageModuleTabs value={moduleId} onChange={setModuleId} />
 
         <PilotagePageIntro lead={intro.lead} detail={intro.detail} />
+
+        <PilotageAlertsPermissionMatrix />
 
         <Card className="mb-5 border-border shadow-none">
           <CardHeader className="space-y-4 py-4">
@@ -444,6 +456,8 @@ export function PilotageAlertsDatagrid() {
           toast.success('Alerte marquée comme lue');
         }}
       />
+      </>
+      )}
     </>
   );
 }

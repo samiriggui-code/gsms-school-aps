@@ -4,84 +4,114 @@ import {
   ModuleLandingStatGradientCard,
   type MetricStatTone,
 } from '@/components/common/stat-card-metric-layout';
-import { Users, ShieldCheck, Calendar, AlertTriangle } from 'lucide-react';
-import { useSectionHubStats } from '@/hooks/use-section-hub-stats';
+import { Archive, FileText, FolderOpen, HardDrive, Inbox } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
-type RHStatsApi = {
-  totalCollaborators?: number;
-  activeCollaborators?: number;
-  absentCollaborators?: number;
-  complianceRate?: number;
-  complianceIssues?: number;
+type DashboardStats = {
+  filesActive: number;
+  filesArchived: number;
+  filesTrashed: number;
+  volumeMb: number;
+  entityDossiers: number;
+  openDemandes: number;
+  missingDocumentsDemandes: number;
 };
 
-interface RHStat {
-  icon: React.ComponentType<{ className?: string }>;
+type DashboardResponse = {
+  stats: DashboardStats;
+};
+
+const STAT_CONFIG: {
+  key: keyof DashboardStats;
   label: string;
-  value: string;
-  trend: 'up' | 'down' | 'neutral';
-  trendValue: string;
+  detail: string;
+  icon: React.ComponentType<{ className?: string }>;
   color: MetricStatTone;
-}
+}[] = [
+  {
+    key: 'filesActive',
+    label: 'Fichiers actifs',
+    detail: 'Coffre documentaire',
+    icon: FileText,
+    color: 'primary',
+  },
+  {
+    key: 'volumeMb',
+    label: 'Volume stocké',
+    detail: 'MinIO / S3 (Mo)',
+    icon: HardDrive,
+    color: 'info',
+  },
+  {
+    key: 'openDemandes',
+    label: 'Demandes ouvertes',
+    detail: 'Dossiers candidats',
+    icon: Inbox,
+    color: 'warning',
+  },
+  {
+    key: 'missingDocumentsDemandes',
+    label: 'Pièces manquantes',
+    detail: 'À relancer',
+    icon: FolderOpen,
+    color: 'destructive',
+  },
+];
 
-export function RHStats() {
-  const { data: statsApi = {} } = useSectionHubStats('securite', 12);
+export function GouvernanceStats() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['gouvernance-dashboard'],
+    queryFn: async () => {
+      const res = await apiFetch(
+        '/api/sections/securite-configuration/gouvernance-donnees/dashboard',
+      );
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error('Dashboard load failed');
+      return unwrapSectionApiData<DashboardResponse>(json);
+    },
+    staleTime: 60_000,
+  });
 
-  
-  const total = statsApi.totalCollaborators ?? 0;
-  const active = statsApi.activeCollaborators ?? 0;
-  const absences = statsApi.absentCollaborators ?? 0;
-  const complianceRate = statsApi.complianceRate ?? 0;
-  const alerts = statsApi.complianceIssues ?? 0;
+  if (isLoading) {
+    return (
+      <div className="grid h-full grid-cols-2 gap-5 lg:gap-8">
+        {[1, 2, 3, 4].map((i) => (
+          <Skeleton key={i} className="h-28 rounded-xl" />
+        ))}
+      </div>
+    );
+  }
 
-  const stats: RHStat[] = [
-    {
-      icon: Users,
-      label: 'Effectif Actif',
-      value: String(active),
-      trend: 'neutral',
-      trendValue: `${total}`,
-      color: 'primary',
-    },
-    {
-      icon: ShieldCheck,
-      label: 'Conformité',
-      value: `${complianceRate}%`,
-      trend: 'neutral',
-      trendValue: `${alerts}`,
-      color: 'success',
-    },
-    {
-      icon: Calendar,
-      label: 'Absences',
-      value: String(absences),
-      trend: 'neutral',
-      trendValue: `${total}`,
-      color: 'warning',
-    },
-    {
-      icon: AlertTriangle,
-      label: 'Alertes',
-      value: String(alerts),
-      trend: 'neutral',
-      trendValue: `${complianceRate}%`,
-      color: 'destructive',
-    },
-  ];
+  const stats = data?.stats;
 
   return (
-    <div className="grid grid-cols-2 gap-5 md:grid-cols-2 lg:gap-8 h-full items-stretch">
-      {stats.map((stat) => (
-        <ModuleLandingStatGradientCard
-          key={stat.label}
-          icon={stat.icon}
-          tone={stat.color}
-          label={stat.label}
-          value={stat.value}
-          detail={stat.trendValue}
-          trend={stat.trend}
-        />
-      ))}
+    <div className="grid h-full grid-cols-2 items-stretch gap-5 lg:gap-8">
+      {STAT_CONFIG.map((item) => {
+        const value =
+          item.key === 'volumeMb'
+            ? `${stats?.volumeMb ?? 0} Mo`
+            : String(stats?.[item.key] ?? 0);
+        return (
+          <ModuleLandingStatGradientCard
+            key={item.key}
+            icon={item.icon}
+            tone={item.color}
+            label={item.label}
+            value={value}
+            detail={item.detail}
+            trend="neutral"
+          />
+        );
+      })}
+      {stats && stats.filesArchived + stats.filesTrashed > 0 ? (
+        <div className="col-span-2 flex items-center gap-2 rounded-lg border border-dashed border-border/70 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
+          <Archive className="size-3.5 shrink-0" />
+          {stats.filesArchived} archivé(s) GED · {stats.filesTrashed} en corbeille ·{' '}
+          {stats.entityDossiers} dossiers entité
+        </div>
+      ) : null}
     </div>
   );
 }

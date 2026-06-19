@@ -150,6 +150,7 @@ exports.Prisma.UserScalarFieldEnum = {
   userCategory: 'userCategory',
   subcontractorId: 'subcontractorId',
   jobFunction: 'jobFunction',
+  jobPositionId: 'jobPositionId',
   qualification: 'qualification',
   birthDate: 'birthDate',
   birthPlace: 'birthPlace',
@@ -185,6 +186,10 @@ exports.Prisma.FileAssetScalarFieldEnum = {
   originalName: 'originalName',
   mimeType: 'mimeType',
   size: 'size',
+  issuedAt: 'issuedAt',
+  expiresAt: 'expiresAt',
+  issuedBy: 'issuedBy',
+  documentRef: 'documentRef',
   storageKey: 'storageKey',
   url: 'url',
   visibility: 'visibility',
@@ -192,9 +197,29 @@ exports.Prisma.FileAssetScalarFieldEnum = {
   provider: 'provider',
   metadata: 'metadata',
   createdById: 'createdById',
+  currentVersionId: 'currentVersionId',
+  archivedAt: 'archivedAt',
+  archiveReason: 'archiveReason',
+  legalHold: 'legalHold',
+  retentionUntil: 'retentionUntil',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
+};
+
+exports.Prisma.FileAssetVersionScalarFieldEnum = {
+  id: 'id',
+  fileAssetId: 'fileAssetId',
+  versionNumber: 'versionNumber',
+  storageKey: 'storageKey',
+  url: 'url',
+  mimeType: 'mimeType',
+  size: 'size',
+  checksum: 'checksum',
+  changeReason: 'changeReason',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.ReportGenerationJobScalarFieldEnum = {
@@ -473,6 +498,9 @@ exports.Prisma.RhTeamScalarFieldEnum = {
   siteId: 'siteId',
   orgUnitId: 'orgUnitId',
   leaderId: 'leaderId',
+  formationSessionId: 'formationSessionId',
+  lifecycleStatus: 'lifecycleStatus',
+  lifecycleClosedAt: 'lifecycleClosedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -625,6 +653,20 @@ exports.Prisma.FormationVenueRoomScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.VenueRoomBookingScalarFieldEnum = {
+  id: 'id',
+  venueRoomId: 'venueRoomId',
+  title: 'title',
+  kind: 'kind',
+  status: 'status',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  notes: 'notes',
+  organizerUserId: 'organizerUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.FormationSessionScalarFieldEnum = {
   id: 'id',
   formationId: 'formationId',
@@ -635,6 +677,7 @@ exports.Prisma.FormationSessionScalarFieldEnum = {
   traineesMin: 'traineesMin',
   traineesMax: 'traineesMax',
   trainerUserId: 'trainerUserId',
+  moderatorUserId: 'moderatorUserId',
   venueRoomId: 'venueRoomId',
   reservedEquipmentIds: 'reservedEquipmentIds',
   dateDisplayLabel: 'dateDisplayLabel',
@@ -678,6 +721,7 @@ exports.Prisma.CandidatureScalarFieldEnum = {
   archivedAt: 'archivedAt',
   notes: 'notes',
   metadata: 'metadata',
+  documentsCompleteAt: 'documentsCompleteAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1228,6 +1272,8 @@ exports.Prisma.CrmEventOutboxScalarFieldEnum = {
   href: 'href',
   audience: 'audience',
   userIds: 'userIds',
+  roleSlugs: 'roleSlugs',
+  permissionSlugs: 'permissionSlugs',
   payload: 'payload',
   status: 'status',
   error: 'error',
@@ -1240,6 +1286,7 @@ exports.Prisma.InAppNotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   category: 'category',
+  channel: 'channel',
   title: 'title',
   body: 'body',
   href: 'href',
@@ -1253,6 +1300,21 @@ exports.Prisma.ChatConversationScalarFieldEnum = {
   id: 'id',
   type: 'type',
   title: 'title',
+  rhTeamId: 'rhTeamId',
+  formationSessionId: 'formationSessionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatInvitationScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  inviteeUserId: 'inviteeUserId',
+  invitedById: 'invitedById',
+  status: 'status',
+  message: 'message',
+  expiresAt: 'expiresAt',
+  respondedAt: 'respondedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1261,6 +1323,7 @@ exports.Prisma.ChatParticipantScalarFieldEnum = {
   id: 'id',
   conversationId: 'conversationId',
   userId: 'userId',
+  role: 'role',
   lastReadAt: 'lastReadAt',
   joinedAt: 'joinedAt'
 };
@@ -1270,6 +1333,96 @@ exports.Prisma.ChatMessageScalarFieldEnum = {
   conversationId: 'conversationId',
   senderId: 'senderId',
   body: 'body',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DocumentRequirementTemplateScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  label: 'label',
+  description: 'description',
+  moduleKey: 'moduleKey',
+  isActive: 'isActive',
+  rules: 'rules',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DocumentRequirementTemplateItemScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  code: 'code',
+  label: 'label',
+  description: 'description',
+  required: 'required',
+  fileCategory: 'fileCategory',
+  uploadedBy: 'uploadedBy',
+  expiresField: 'expiresField',
+  sortOrder: 'sortOrder',
+  conditions: 'conditions'
+};
+
+exports.Prisma.ComplianceDossierScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  subjectType: 'subjectType',
+  subjectId: 'subjectId',
+  userId: 'userId',
+  candidatureId: 'candidatureId',
+  formationId: 'formationId',
+  sessionId: 'sessionId',
+  status: 'status',
+  completenessPct: 'completenessPct',
+  dueAt: 'dueAt',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ComplianceDossierItemScalarFieldEnum = {
+  id: 'id',
+  dossierId: 'dossierId',
+  templateItemId: 'templateItemId',
+  code: 'code',
+  label: 'label',
+  fileCategory: 'fileCategory',
+  required: 'required',
+  uploadedBy: 'uploadedBy',
+  status: 'status',
+  fileAssetId: 'fileAssetId',
+  fileAssetVersionId: 'fileAssetVersionId',
+  expiresAt: 'expiresAt',
+  validatedAt: 'validatedAt',
+  validatedById: 'validatedById',
+  rejectionReason: 'rejectionReason',
+  lastCheckedAt: 'lastCheckedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DocumentRequestScalarFieldEnum = {
+  id: 'id',
+  dossierId: 'dossierId',
+  dossierItemId: 'dossierItemId',
+  status: 'status',
+  channel: 'channel',
+  message: 'message',
+  dueAt: 'dueAt',
+  sentAt: 'sentAt',
+  fulfilledAt: 'fulfilledAt',
+  requestedById: 'requestedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ComplianceItemEventScalarFieldEnum = {
+  id: 'id',
+  dossierId: 'dossierId',
+  dossierItemId: 'dossierItemId',
+  eventType: 'eventType',
+  actorId: 'actorId',
+  fileAssetId: 'fileAssetId',
+  payload: 'payload',
   createdAt: 'createdAt'
 };
 
@@ -1341,6 +1494,13 @@ exports.FileAssetStatus = exports.$Enums.FileAssetStatus = {
   ARCHIVED: 'ARCHIVED'
 };
 
+exports.FileAssetVersionStatus = exports.$Enums.FileAssetVersionStatus = {
+  ACTIVE: 'ACTIVE',
+  SUPERSEDED: 'SUPERSEDED',
+  ARCHIVED: 'ARCHIVED',
+  LEGAL_HOLD: 'LEGAL_HOLD'
+};
+
 exports.ReportOutputFormat = exports.$Enums.ReportOutputFormat = {
   PDF: 'PDF',
   EXCEL: 'EXCEL',
@@ -1369,6 +1529,33 @@ exports.SchoolInternalService = exports.$Enums.SchoolInternalService = {
   TRAINER_POOL: 'TRAINER_POOL',
   PEDAGOGICAL: 'PEDAGOGICAL',
   HR_ADMIN: 'HR_ADMIN'
+};
+
+exports.RhOrgUnitType = exports.$Enums.RhOrgUnitType = {
+  DIRECTION: 'DIRECTION',
+  SERVICE: 'SERVICE',
+  POLE: 'POLE',
+  CAMPUS: 'CAMPUS'
+};
+
+exports.RhTeamType = exports.$Enums.RhTeamType = {
+  PEDAGOGICAL: 'PEDAGOGICAL',
+  TRAINER_POOL: 'TRAINER_POOL',
+  HR_ADMIN: 'HR_ADMIN',
+  QUALITY: 'QUALITY',
+  ADMIN: 'ADMIN'
+};
+
+exports.RhTeamSector = exports.$Enums.RhTeamSector = {
+  HEADQUARTERS: 'HEADQUARTERS',
+  CAMPUS: 'CAMPUS',
+  EXTERNAL: 'EXTERNAL'
+};
+
+exports.RhTeamLifecycleStatus = exports.$Enums.RhTeamLifecycleStatus = {
+  ACTIVE: 'ACTIVE',
+  POST_EXAM: 'POST_EXAM',
+  ARCHIVED: 'ARCHIVED'
 };
 
 exports.RhAbsenceType = exports.$Enums.RhAbsenceType = {
@@ -1431,6 +1618,17 @@ exports.FormationDeliveryMode = exports.$Enums.FormationDeliveryMode = {
   DISTANCIEL: 'DISTANCIEL',
   MIXTE: 'MIXTE',
   ENTREPRISE_SUR_SITE: 'ENTREPRISE_SUR_SITE'
+};
+
+exports.VenueRoomBookingKind = exports.$Enums.VenueRoomBookingKind = {
+  STAFF_MEETING: 'STAFF_MEETING',
+  INFO_MEETING: 'INFO_MEETING',
+  OTHER: 'OTHER'
+};
+
+exports.VenueRoomBookingStatus = exports.$Enums.VenueRoomBookingStatus = {
+  ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.FormationVitrineSessionKind = exports.$Enums.FormationVitrineSessionKind = {
@@ -1571,7 +1769,9 @@ exports.CrmEventSeverity = exports.$Enums.CrmEventSeverity = {
 
 exports.CrmEventAudience = exports.$Enums.CrmEventAudience = {
   BROADCAST_ACTIVE_USERS: 'BROADCAST_ACTIVE_USERS',
-  USER_IDS: 'USER_IDS'
+  USER_IDS: 'USER_IDS',
+  ROLE_SLUGS: 'ROLE_SLUGS',
+  PERMISSION_SLUGS: 'PERMISSION_SLUGS'
 };
 
 exports.CrmEventOutboxStatus = exports.$Enums.CrmEventOutboxStatus = {
@@ -1581,15 +1781,99 @@ exports.CrmEventOutboxStatus = exports.$Enums.CrmEventOutboxStatus = {
   FAILED: 'FAILED'
 };
 
+exports.InAppNotificationChannel = exports.$Enums.InAppNotificationChannel = {
+  DOSSIER: 'DOSSIER',
+  PEDAGOGIE: 'PEDAGOGIE',
+  ETABLISSEMENT: 'ETABLISSEMENT'
+};
+
 exports.ChatConversationType = exports.$Enums.ChatConversationType = {
   DIRECT: 'DIRECT',
   GROUP: 'GROUP'
+};
+
+exports.ChatInvitationStatus = exports.$Enums.ChatInvitationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.ChatParticipantRole = exports.$Enums.ChatParticipantRole = {
+  MEMBER: 'MEMBER',
+  TRAINER: 'TRAINER',
+  MODERATOR: 'MODERATOR',
+  OBSERVER: 'OBSERVER'
+};
+
+exports.ComplianceDossierKind = exports.$Enums.ComplianceDossierKind = {
+  CANDIDATURE_ADMISSION: 'CANDIDATURE_ADMISSION',
+  CANDIDATURE_CNAPS: 'CANDIDATURE_CNAPS',
+  STAGIAIRE_SESSION: 'STAGIAIRE_SESSION',
+  E_FORMATION_ACCESS: 'E_FORMATION_ACCESS',
+  COLLABORATEUR_ONBOARDING: 'COLLABORATEUR_ONBOARDING',
+  COLLABORATEUR_RH: 'COLLABORATEUR_RH',
+  FORMATEUR_HABILITATION: 'FORMATEUR_HABILITATION',
+  SCHOOL_QUALIOPI: 'SCHOOL_QUALIOPI',
+  SCHOOL_CNAPS_AGREMENT: 'SCHOOL_CNAPS_AGREMENT',
+  SCHOOL_NDA: 'SCHOOL_NDA'
+};
+
+exports.ComplianceUploader = exports.$Enums.ComplianceUploader = {
+  SUBJECT: 'SUBJECT',
+  SCHOOL: 'SCHOOL',
+  RH: 'RH',
+  ADMIN: 'ADMIN'
+};
+
+exports.ComplianceSubjectType = exports.$Enums.ComplianceSubjectType = {
+  USER: 'USER',
+  CANDIDATURE: 'CANDIDATURE',
+  COLLABORATEUR: 'COLLABORATEUR',
+  FORMATEUR: 'FORMATEUR',
+  STAGIAIRE: 'STAGIAIRE',
+  SCHOOL: 'SCHOOL',
+  FORMATION: 'FORMATION',
+  SESSION: 'SESSION',
+  E_FORMATION_ENROLLMENT: 'E_FORMATION_ENROLLMENT'
+};
+
+exports.ComplianceDossierStatus = exports.$Enums.ComplianceDossierStatus = {
+  INCOMPLETE: 'INCOMPLETE',
+  COMPLETE: 'COMPLETE',
+  EXPIRED: 'EXPIRED',
+  WAIVED: 'WAIVED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.ComplianceItemStatus = exports.$Enums.ComplianceItemStatus = {
+  MISSING: 'MISSING',
+  REQUESTED: 'REQUESTED',
+  RECEIVED: 'RECEIVED',
+  VALIDATED: 'VALIDATED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED',
+  WAIVED: 'WAIVED'
+};
+
+exports.DocumentRequestStatus = exports.$Enums.DocumentRequestStatus = {
+  OPEN: 'OPEN',
+  FULFILLED: 'FULFILLED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+};
+
+exports.DocumentRequestChannel = exports.$Enums.DocumentRequestChannel = {
+  IN_APP: 'IN_APP',
+  EMAIL: 'EMAIL',
+  SMS: 'SMS'
 };
 
 exports.Prisma.ModelName = {
   LandingConfig: 'LandingConfig',
   User: 'User',
   FileAsset: 'FileAsset',
+  FileAssetVersion: 'FileAssetVersion',
   ReportGenerationJob: 'ReportGenerationJob',
   ReportGenerationSchedule: 'ReportGenerationSchedule',
   UserBusinessRole: 'UserBusinessRole',
@@ -1615,6 +1899,7 @@ exports.Prisma.ModelName = {
   Formation: 'Formation',
   FormationCatalogOffer: 'FormationCatalogOffer',
   FormationVenueRoom: 'FormationVenueRoom',
+  VenueRoomBooking: 'VenueRoomBooking',
   FormationSession: 'FormationSession',
   PortalSessionAnnouncement: 'PortalSessionAnnouncement',
   Candidature: 'Candidature',
@@ -1668,8 +1953,15 @@ exports.Prisma.ModelName = {
   CrmEventOutbox: 'CrmEventOutbox',
   InAppNotification: 'InAppNotification',
   ChatConversation: 'ChatConversation',
+  ChatInvitation: 'ChatInvitation',
   ChatParticipant: 'ChatParticipant',
-  ChatMessage: 'ChatMessage'
+  ChatMessage: 'ChatMessage',
+  DocumentRequirementTemplate: 'DocumentRequirementTemplate',
+  DocumentRequirementTemplateItem: 'DocumentRequirementTemplateItem',
+  ComplianceDossier: 'ComplianceDossier',
+  ComplianceDossierItem: 'ComplianceDossierItem',
+  DocumentRequest: 'DocumentRequest',
+  ComplianceItemEvent: 'ComplianceItemEvent'
 };
 
 /**

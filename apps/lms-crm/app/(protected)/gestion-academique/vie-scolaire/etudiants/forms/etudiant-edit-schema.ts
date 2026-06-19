@@ -1,27 +1,35 @@
 import { z } from 'zod';
+import {
+  rhContactFields,
+  zContractType,
+  zUserCategory,
+  zUserStatusEdit,
+  zWorkTimeType,
+} from '@/lib/rh-form-schema-shared';
 
 export const EtudiantEditSchema = z.object({
   firstName: z
     .string()
-    .nonempty({ message: 'Le prÃ©nom est requis.' })
-    .min(2, { message: 'Le prÃ©nom doit contenir au moins 2 caractÃ¨res.' })
-    .max(50, { message: 'Le prÃ©nom ne doit pas dÃ©passer 50 caractÃ¨res.' }),
+    .nonempty({ message: 'Le prénom est requis.' })
+    .min(2, { message: 'Le prénom doit contenir au moins 2 caractères.' })
+    .max(50, { message: 'Le prénom ne doit pas dépasser 50 caractères.' }),
   lastName: z
     .string()
     .nonempty({ message: 'Le nom est requis.' })
-    .min(2, { message: 'Le nom doit contenir au moins 2 caractÃ¨res.' })
-    .max(50, { message: 'Le nom ne doit pas dÃ©passer 50 caractÃ¨res.' }),
+    .min(2, { message: 'Le nom doit contenir au moins 2 caractères.' })
+    .max(50, { message: 'Le nom ne doit pas dépasser 50 caractères.' }),
   email: z.string().email({
     message: 'Veuillez entrer une adresse email valide.',
   }),
+  ...rhContactFields,
   roleId: z.string().nonempty({
-    message: 'Le rÃ´le est requis.',
+    message: 'Le rôle est requis.',
   }),
-  userCategory: z.enum(['INTERNAL', 'CLIENT', 'SUBCONTRACTOR']),
+  userCategory: zUserCategory,
   jobFunction: z.string().optional(),
+  jobPositionId: z.string().optional().nullable(),
   qualification: z.string().optional(),
-  status: z.enum(['ACTIVE', 'INACTIVE', 'PENDING', 'BANNED', 'ABSENT']),
-  // HR Information
+  status: zUserStatusEdit,
   birthDate: z.string().optional().nullable(),
   birthPlace: z.string().optional().nullable(),
   nationality: z.string().optional().nullable(),
@@ -29,8 +37,8 @@ export const EtudiantEditSchema = z.object({
   cniNumber: z.string().optional().nullable(),
   residencePermitNumber: z.string().optional().nullable(),
   residencePermitExpiry: z.string().optional().nullable(),
-  contractType: z.string().optional().nullable(),
-  workTimeType: z.string().optional().nullable(),
+  contractType: zContractType,
+  workTimeType: zWorkTimeType,
   contractStartDate: z.string().optional().nullable(),
   contractEndDate: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
@@ -40,24 +48,22 @@ export const EtudiantEditSchema = z.object({
     .string()
     .optional()
     .nullable()
-    .refine(
-      (val) => !val || /^CAR-\d{4}-\d{2}-\d{2}-\d{4}\d{7}$/.test(val),
-      { message: 'Format attendu: CAR-YYYY-MM-DD-YYYYNNNNNNN' }
-    ),
+    .refine((val) => !val?.trim() || val.trim().length <= 160, {
+      message: 'Référence trop longue.',
+    }),
   carteProExpiry: z.string().optional().nullable(),
   isSchedulable: z.boolean(),
   avatarFile: z
     .instanceof(File)
     .nullable()
     .optional()
-    .refine(
-      (file) => !file || file.size <= 1024 * 1024,
-      { message: 'L\'image doit faire moins de 1Mo' },
-    )
+    .refine((file) => !file || file.size <= 1024 * 1024, {
+      message: "L'image doit faire moins de 1Mo",
+    })
     .refine(
       (file) =>
         !file || ['image/jpeg', 'image/png', 'image/gif'].includes(file.type),
-      { message: 'Seuls les formats JPG, PNG ou GIF sont autorisÃ©s' },
+      { message: 'Seuls les formats JPG, PNG ou GIF sont autorisés' },
     ),
   avatarAction: z.string().optional(),
   documentCni: z.any().optional(),
@@ -67,6 +73,3 @@ export const EtudiantEditSchema = z.object({
 });
 
 export type EtudiantEditSchemaType = z.infer<typeof EtudiantEditSchema>;
-
-
-

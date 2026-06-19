@@ -143,14 +143,23 @@ export async function getCache<T>(key: string): Promise<T | null> {
 }
 
 export async function setCache(key: string, value: unknown, ttlSeconds: number = 3600): Promise<void> {
+  const data = JSON.stringify(value);
   try {
-    const data = JSON.stringify(value);
     if (isRedisCacheDisabled()) {
       memorySetRaw(key, data, ttlSeconds);
       return;
     }
     await redis.set(key, data, 'EX', ttlSeconds);
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes('MISCONF') || message.includes('stop-writes-on-bgsave-error')) {
+      memorySetRaw(key, data, ttlSeconds);
+      console.warn(
+        `[Redis] Écriture impossible (persistance disque) — cache mémoire pour ${key}. ` +
+          'Corrigez Redis ou définissez REDIS_CACHE_DISABLED=1 en dev.',
+      );
+      return;
+    }
     console.error(`[Redis] Error setting cache for key ${key}:`, error);
   }
 }

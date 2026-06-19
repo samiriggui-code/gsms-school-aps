@@ -110,8 +110,8 @@ const Connections = ({ url }: IConnectionsProps) => {
         <Button
           className={`rounded-full ${
             item.connected
-              ? 'bg-blue-500 text-white'
-              : 'bg-blue-50 border border-blue-300 text-blue-600 hover:text-white hover:bg-blue-500'
+              ? 'bg-indigo-500 text-white'
+              : 'bg-indigo-50 border border-indigo-300 text-indigo-600 hover:text-white hover:bg-indigo-500'
           }`}
           size="sm"
           mode="icon"

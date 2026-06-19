@@ -11,6 +11,7 @@ import {
   requireGestionRessourcesEdit,
   requireGestionRessourcesView,
 } from '../../_lib/require-gestion-ressources-auth';
+import { POST as postCollaborateur } from '../collaborateurs/[[...path]]/route';
 
 const COMPLIANCE_STATUSES = new Set<RhComplianceStatus>([
   'COMPLIANT',
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const where: Prisma.UserWhereInput = {};
+    const where: Prisma.UserWhereInput = { isTrashed: false };
     if (query) {
       where.OR = [
         { firstName: { contains: query, mode: 'insensitive' } },
@@ -52,12 +53,10 @@ export async function GET(request: NextRequest) {
     if (roleId) where.roleId = roleId;
     if (status) where.status = status as Prisma.EnumUserStatusFilter['equals'];
     if (userCategory) where.userCategory = userCategory as Prisma.EnumUserCategoryFilter['equals'];
-    if (profileType) {
-      if (profileType === 'formateur') {
-        where.qualification = { not: 'None' };
-      } else if (profileType === 'interne') {
-        where.userCategory = 'INTERNAL';
-      }
+    if (profileType === 'formateur') {
+      where.role = { slug: 'formateur' };
+    } else if (profileType === 'interne') {
+      where.userCategory = 'INTERNAL';
     }
 
     const [total, data] = await Promise.all([
@@ -69,7 +68,6 @@ export async function GET(request: NextRequest) {
         orderBy: { [sort]: dir },
         include: {
           role: true,
-          accounts: true,
           formateurProfile: { select: { speciality: true, specialties: true } },
           collaborateurProfile: { select: { qualification: true, jobFunction: true } },
         },
@@ -107,84 +105,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
+/** Création via handler collaborateur (FormData + FileAsset + dossiers conformité). */
 export async function POST(request: NextRequest) {
   const auth = await requireGestionRessourcesEdit();
   if (!auth.ok) return auth.response;
 
+  const res = await postCollaborateur(request, { params: Promise.resolve({ path: [] }) });
+  if (!res.ok) return res;
+
   try {
-    const body = await request.json();
-
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      roleId,
-      userCategory,
-      subcontractorId,
-      jobFunction,
-      qualification,
-      birthDate,
-      birthPlace,
-      nationality,
-      socialSecurityNumber,
-      cniNumber,
-      residencePermitNumber,
-      residencePermitExpiry,
-      carteProNumber,
-      carteProExpiry,
-      isSchedulable,
-      contractType,
-      workTimeType,
-      address,
-      city,
-      postalCode,
-    } = body;
-
-    if (!firstName || !lastName || !email || !roleId || !userCategory) {
-      return fail('Champs requis manquants', 400);
+    const body = await res.clone().json();
+    const user = body?.data ?? body;
+    if (user?.id) {
+      return ok(mapRhConformiteListRow(user), 201);
     }
-
-    const existing = await prisma.user.findFirst({
-      where: { email },
-    });
-    if (existing) {
-      return fail('Cet email est déjà utilisé.', 409);
-    }
-
-    const userData: Prisma.UserUncheckedCreateInput = {
-      firstName,
-      lastName,
-      email,
-      phone,
-      roleId,
-      userCategory,
-      subcontractorId,
-      jobFunction,
-      qualification,
-      birthDate: birthDate ? new Date(birthDate) : null,
-      birthPlace,
-      nationality,
-      socialSecurityNumber,
-      cniNumber,
-      residencePermitNumber,
-      residencePermitExpiry: residencePermitExpiry ? new Date(residencePermitExpiry) : null,
-      carteProNumber,
-      carteProExpiry: carteProExpiry ? new Date(carteProExpiry) : null,
-      isSchedulable: isSchedulable ?? true,
-      contractType,
-      workTimeType,
-      address,
-      city,
-      postalCode,
-    };
-
-    const newUser = await prisma.user.create({
-      data: userData,
-      include: { role: true },
-    });
-
-    return ok(mapRhConformiteListRow(newUser), 201);
+    return res;
   } catch (error) {
     return fail('Impossible de créer la conformité.', 500, error);
   }

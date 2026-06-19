@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { agrementUiLabels } from '@/lib/rh-agrement';
+import { RhUserContactProfilSummary } from '@/components/rh/rh-user-contact-profil-summary';
 
 interface CollaborateurHRInfoProps {
   collaborateur: Collaborateur;
@@ -44,6 +45,10 @@ export function CollaborateurHRInfo({ collaborateur }: CollaborateurHRInfoProps)
         </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-8 p-6">
+        <RhUserContactProfilSummary user={collaborateur} />
+
+        <div className="pt-2 border-t border-border/60" />
+
         {/* Civil Status */}
         <div className="grid sm:grid-cols-2 gap-8">
           <div className="space-y-4">

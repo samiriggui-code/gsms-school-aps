@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getAvatarUrl, toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 
-const DEFAULT_AVATAR = '/media/avatars/blank.png';
+const DEFAULT_AVATAR = '/media/app/mini-logo-circle-primary.svg';
 
 type UserAvatarProps = {
   avatar?: string | null;

@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Container } from '@/components/common/container';
@@ -17,7 +18,9 @@ import { TeamStats } from './components/team-stats';
 import TeamList from './components/team-list';
 import { OrgUnitManager } from './components/org-unit-manager';
 import { Button } from '@/components/ui/button';
-import { Download, FolderTree, LayoutGrid, Users } from 'lucide-react';
+import { FolderTree, LayoutGrid, Users } from 'lucide-react';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { equipesExportConfig } from '@/lib/datagrid/export-presets';
 import TeamAddSheet from './components/team-add-sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -26,6 +29,7 @@ export default function Page() {
   const { t } = useTranslation();
   const { title, description } = usePageToolbarMeta('/gestion-ressources/rh/equipes');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const exportConfig = useMemo(() => equipesExportConfig(), []);
 
   return (
     <>
@@ -36,10 +40,7 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <Button variant="outline" type="button">
-              <Download className="size-4" />
-              {t('common.actions.export')}
-            </Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button onClick={() => setIsAddSheetOpen(true)} className="gap-2">
               <Users className="size-4" />
               Nouvelle équipe

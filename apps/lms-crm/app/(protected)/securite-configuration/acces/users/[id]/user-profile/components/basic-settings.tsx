@@ -40,7 +40,7 @@ const BasicSettings = ({ title }: IBasicSettingsProps) => {
               </TableCell>
               <TableCell className="py-2 max-w-16 text-end">
                 <Button variant="ghost" mode="icon">
-                  <SquarePen size={16} className="text-blue-500" />
+                  <SquarePen size={16} className="text-indigo-500" />
                 </Button>
               </TableCell>
             </TableRow>
@@ -53,7 +53,7 @@ const BasicSettings = ({ title }: IBasicSettingsProps) => {
               </TableCell>
               <TableCell className="py-2 text-end">
                 <Button variant="ghost" mode="icon">
-                  <SquarePen size={16} className="text-blue-500" />
+                  <SquarePen size={16} className="text-indigo-500" />
                 </Button>
               </TableCell>
             </TableRow>
@@ -66,7 +66,7 @@ const BasicSettings = ({ title }: IBasicSettingsProps) => {
               </TableCell>
               <TableCell className="py-3 text-end">
                 <Button variant="ghost" mode="icon">
-                  <SquarePen size={16} className="text-blue-500" />
+                  <SquarePen size={16} className="text-indigo-500" />
                 </Button>
               </TableCell>
             </TableRow>
@@ -81,7 +81,7 @@ const BasicSettings = ({ title }: IBasicSettingsProps) => {
               </TableCell>
               <TableCell className="py-2 text-end">
                 <Button variant="ghost" mode="icon">
-                  <SquarePen size={16} className="text-blue-500" />
+                  <SquarePen size={16} className="text-indigo-500" />
                 </Button>
               </TableCell>
             </TableRow>

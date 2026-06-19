@@ -1,53 +1,85 @@
 ---
-- Application:
+- Plateforme:
     - LMS CRM:
         href: https://hosting-global-it-ss.com
-        description: App unique — site, CRM, docs, portails
+        description: Site public · CRM · docs · portails candidat & formateur
         icon: mdi-school
         siteMonitor: https://hosting-global-it-ss.com/api/common/health
         statusStyle: dot
         server: local
         container: gsms-app
         showStats: true
+        widget:
+          type: docker
+          server: local
+          container: gsms-app
         target: _blank
 
-- Infrastructure:
+    - Monitoring:
+        href: https://monitoring.hosting-global-it-ss.com
+        description: Ce tableau de bord — état stack en temps réel
+        icon: mdi-monitor-dashboard
+        siteMonitor: https://monitoring.hosting-global-it-ss.com
+        statusStyle: dot
+        server: local
+        container: gsms-homepage
+        showStats: true
+        target: _self
+
+- Données:
     - PostgreSQL:
         icon: si-postgresql-#336791
-        description: Base lms_app (volume persistant)
+        description: Base lms_app · volume persistant
         server: local
         container: gsms-postgres
         showStats: true
         statusStyle: dot
+        widget:
+          type: docker
+          server: local
+          container: gsms-postgres
 
     - Redis:
         icon: si-redis-#DC382D
-        description: Cache sessions & stats
+        description: Cache sessions · stats · files d'attente
         server: local
         container: gsms-redis
         showStats: true
         statusStyle: dot
+        widget:
+          type: docker
+          server: local
+          container: gsms-redis
 
     - MinIO:
         icon: si-minio-#C72E49
-        description: Stockage S3 uploads
+        description: Stockage S3 — socle + uploads (voir Gouvernance → Storage)
+        href: https://monitoring.hosting-global-it-ss.com
         server: local
         container: gsms-minio
         showStats: true
         statusStyle: dot
+        widget:
+          type: docker
+          server: local
+          container: gsms-minio
 
     - Worker:
         icon: mdi-cog-sync
-        description: Rapports PDF, stats, sync RH
+        description: Rapports PDF · agrégations stats · sync RH
         server: local
         container: gsms-worker
         showStats: true
         statusStyle: dot
+        widget:
+          type: docker
+          server: local
+          container: gsms-worker
 
-- Externe:
+- Automatisation:
     - n8n:
         href: https://n8n-k2pw.srv1722028.hstgr.cloud
-        description: Automatisations
+        description: Workflows · webhooks · intégrations
         icon: si-n8n-#EA4B71
         siteMonitor: https://n8n-k2pw.srv1722028.hstgr.cloud
         statusStyle: dot
@@ -55,8 +87,14 @@
 
     - Traefik:
         href: https://hosting-global-it-ss.com
-        description: TLS Let's Encrypt
+        description: Reverse proxy · TLS Let's Encrypt
         icon: si-traefikproxy-#24A1C1
-        siteMonitor: https://hosting-global-it-ss.com/api/common/health
+        siteMonitor: https://hosting-global-it-ss.com
         statusStyle: dot
+        server: local
+        container: traefik-mvbo-traefik-1
+        showStats: true
+        widget:
+          type: traefik
+          url: http://host.docker.internal:8080
         target: _blank

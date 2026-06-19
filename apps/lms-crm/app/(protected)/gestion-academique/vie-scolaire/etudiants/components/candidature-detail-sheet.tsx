@@ -55,6 +55,7 @@ import { VIE_SCOLAIRE_SHEET_AUTO } from '../../constants/sheet-shell-classes';
 import { getEtudiantStatusProps } from '../constants/status';
 import { isParcoursApprenantRole } from '@/lib/rh-agrement';
 import { EtudiantFicheTemplate } from './etudiant-details-sheet';
+import { useOfficialDocumentPreview } from '@/hooks/use-official-document-preview';
 import { EtudiantDetailsOverview } from './etudiant-details-overview';
 import { EtudiantDetailsActivity } from './etudiant-details-activity';
 import { EtudiantDetailsSettings } from './etudiant-details-settings';
@@ -193,6 +194,7 @@ export function CandidatureDetailSheet({
   const [isLoadingRestore, setIsLoadingRestore] = useState(false);
   const settingsFormRef = useRef<HTMLFormElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
+  const { openPreview } = useOfficialDocumentPreview();
 
   const sheetActive = open || isPage;
   const enabled = !!hubUserId && sheetActive;
@@ -487,54 +489,24 @@ export function CandidatureDetailSheet({
   };
 
   const handlePrintEtudiantFiche = () => {
-    if (typeof window === 'undefined' || !printRef.current || !Etudiant) return;
-    const printTarget = printRef.current;
-    const headMarkup = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-      .map((node) => node.outerHTML)
-      .join('\n');
+    if (!Etudiant?.id) return;
+    const parcoursAnnex =
+      isParcoursApprenantRole(Etudiant.role?.slug)
+        ? {
+            formationVisee: enteteFormationVisée,
+            dossierCatalogueStatut: enteteDossier?.status
+              ? STATUS_LABEL[enteteDossier.status] ?? enteteDossier.status
+              : null,
+            autorisationPrefalable: enteteAutorisationPrealable,
+          }
+        : undefined;
 
-    const printFrame = document.createElement('iframe');
-    printFrame.setAttribute('aria-hidden', 'true');
-    printFrame.style.position = 'fixed';
-    printFrame.style.width = '0';
-    printFrame.style.height = '0';
-    printFrame.style.right = '0';
-    printFrame.style.bottom = '0';
-    printFrame.style.border = '0';
-    printFrame.style.opacity = '0';
-
-    const cleanup = () => window.setTimeout(() => printFrame.remove(), 150);
-
-    const printHtml = `<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="utf-8"/>
-<title>Fiche candidat - ${escapeHtml(Etudiant.name || '')}</title>
-${headMarkup}
-<style>@media print { @page { size: A4; margin: 15mm } body { -webkit-print-color-adjust: exact; print-color-adjust: exact } }</style>
-</head>
-<body>${printTarget.innerHTML}</body>
-</html>`;
-
-    printFrame.addEventListener(
-      'load',
-      () => {
-        const frameWindow = printFrame.contentWindow;
-        if (!frameWindow) {
-          cleanup();
-          return;
-        }
-        frameWindow.onafterprint = cleanup;
-        window.setTimeout(() => {
-          frameWindow.focus();
-          frameWindow.print();
-        }, 300);
-      },
-      { once: true },
-    );
-
-    document.body.appendChild(printFrame);
-    printFrame.srcdoc = printHtml;
+    void openPreview({
+      templateKey: 'academic.fiche-etudiant',
+      userId: Etudiant.id,
+      options: parcoursAnnex ? { parcoursAnnex } : undefined,
+      autoPrint: true,
+    });
   };
 
   const statusProps = Etudiant ? getEtudiantStatusProps(Etudiant.status as UserStatus) : null;
@@ -1096,7 +1068,7 @@ ${headMarkup}
                     type="button"
                     onClick={handlePrintEtudiantFiche}
                     className={cn(
-                      'shrink-0 gap-2 border-none bg-blue-600 font-bold text-white hover:bg-blue-700',
+                      'shrink-0 gap-2 border-none bg-indigo-600 font-bold text-white hover:bg-indigo-700',
                       !isPage && 'max-md:hidden',
                     )}
                   >

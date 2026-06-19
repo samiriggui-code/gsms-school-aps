@@ -1,0 +1,21 @@
+/* Hosting Global IT — monitoring */
+:root {
+  --homepage-bg: linear-gradient(160deg, #09090b 0%, #18181b 45%, #0f172a 100%);
+}
+
+body {
+  background: var(--homepage-bg) !important;
+  background-attachment: fixed !important;
+}
+
+#information-widgets {
+  backdrop-filter: blur(12px);
+}
+
+.service-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+}

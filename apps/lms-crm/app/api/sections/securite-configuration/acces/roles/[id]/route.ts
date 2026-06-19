@@ -11,6 +11,7 @@ import {
 } from '@/app/(protected)/securite-configuration/acces/roles/forms/role-schema';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserRolePermission } from '@/app/models/user';
+import { isSchoolIamRoleSlug } from '@/lib/rh-iam-roles';
 
 // GET: Fetch a specific role by ID, including permissions
 export async function GET(
@@ -102,6 +103,35 @@ export async function PUT(
 
     const { name, slug, description, permissions }: RoleSchemaType =
       parsedData.data;
+
+    const isLockedSchoolRole =
+      existingCategory.isProtected && isSchoolIamRoleSlug(existingCategory.slug);
+
+    if (isLockedSchoolRole) {
+      const updatedRole = await prisma.$transaction(
+        async (tx: Prisma.TransactionClient) => {
+          const role = await tx.userRole.update({
+            where: { id },
+            data: { description },
+          });
+
+          if (permissions !== undefined) {
+            await tx.userRolePermission.deleteMany({ where: { roleId: id } });
+            if (permissions.length > 0) {
+              await tx.userRolePermission.createMany({
+                data: permissions.map((permissionId: string) => ({
+                  roleId: id,
+                  permissionId,
+                })),
+              });
+            }
+          }
+
+          return role;
+        },
+      );
+      return NextResponse.json(updatedRole);
+    }
 
     // Check uniqueness for name and slug
     const isUniqueRole = await isUnique('userRole', { slug, name }, { id });

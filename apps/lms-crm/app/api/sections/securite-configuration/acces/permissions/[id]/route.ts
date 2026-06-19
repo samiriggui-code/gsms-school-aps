@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@repo/database';
 import { getServerSession } from 'next-auth/next';
-import { getClientIP } from '@/lib/api';
-import { isUnique } from '@/lib/db';
 import { prisma } from '@/lib/prisma';
-import { systemLog } from '@/services/system-log';
-import {
-  PermissionSchema,
-  PermissionSchemaType,
-} from '@/app/(protected)/securite-configuration/acces/permissions/forms/permission-schema';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { domainLabelForPermissionSlug } from '@/lib/auth/permission-domains';
 
 // GET: Fetch a specific permission by ID
 export async function GET(
@@ -39,7 +32,10 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(permission);
+    return NextResponse.json({
+      ...permission,
+      domain: domainLabelForPermissionSlug(permission.slug),
+    });
   } catch {
     return NextResponse.json(
       { message: 'Oops! Something went wrong. Please try again in a moment.' },
@@ -48,153 +44,40 @@ export async function GET(
   }
 }
 
-// PUT: Edit a specific permission by ID
+// PUT: catalogue seed-driven — modification désactivée
 export async function PUT(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { message: 'Unauthorized request' },
-        { status: 401 }, // Unauthorized
-      );
-    }
-
-    const { id } = await params;
-    const clientIp = getClientIP(request);
-
-    // Ensure the ID is provided
-    if (!id) {
-      return NextResponse.json({ error: 'Invalid input.' }, { status: 400 });
-    }
-
-    // Check if record exists
-    const existingPermission = await prisma.userPermission.findUnique({
-      where: { id },
-    });
-    if (!existingPermission) {
-      return NextResponse.json(
-        { message: 'Record not found. Someone might have deleted it already.' },
-        { status: 404 },
-      );
-    }
-
-    const body = await request.json();
-    const parsedData = PermissionSchema.safeParse(body);
-    if (!parsedData.success) {
-      return NextResponse.json({ error: 'Invalid input.' }, { status: 400 });
-    }
-
-    const { name, description }: PermissionSchemaType = parsedData.data;
-
-    // Check uniqueness for name only (slug is not updatable)
-    const isUniquePermission = await isUnique(
-      'userPermission',
-      { name },
-      { id },
-    );
-    if (!isUniquePermission) {
-      return NextResponse.json(
-        { message: 'Name and slug must be unique.' },
-        { status: 400 },
-      );
-    }
-
-    // Update the permission (excluding slug)
-    const updatedPermission = await prisma.userPermission.update({
-      where: { id },
-      data: { name, description },
-    });
-
-    // Log the event
-    await systemLog({
-      event: 'update',
-      userId: session.user.id,
-      entityId: id,
-      entityType: 'user.permission',
-      description: 'User permission updated.',
-      ipAddress: clientIp,
-    });
-
-    return NextResponse.json(updatedPermission);
-  } catch {
-    return NextResponse.json(
-      { message: 'Oops! Something went wrong. Please try again in a moment.' },
-      { status: 500 },
-    );
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
   }
+  await params;
+  return NextResponse.json(
+    {
+      message:
+        'Le catalogue permissions est en lecture seule. Modifiez le seed ou la matrice des rôles.',
+    },
+    { status: 403 },
+  );
 }
 
-// DELETE: Remove a specific permission by ID
+// DELETE: catalogue seed-driven — suppression désactivée
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session) {
-      return NextResponse.json(
-        { message: 'Unauthorized request' },
-        { status: 401 }, // Unauthorized
-      );
-    }
-
-    const { id } = await params;
-    const clientIp = getClientIP(request);
-
-    if (!id) {
-      return NextResponse.json(
-        { message: 'Invalid input. Please check your data and try again.' },
-        { status: 400 },
-      );
-    }
-
-    // Check if the permission exists
-    const existingPermission = await prisma.userPermission.findUnique({
-      where: { id },
-    });
-    if (!existingPermission) {
-      return NextResponse.json(
-        { message: 'Requested data not found.' },
-        { status: 404 },
-      );
-    }
-
-    // Perform deletion in a transaction to ensure atomicity
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      // Delete linked role permissions
-      await tx.userRolePermission.deleteMany({
-        where: { permissionId: id },
-      });
-
-      // Delete the permission itself
-      await tx.userPermission.delete({
-        where: { id },
-      });
-
-      // Log the event
-      await systemLog(
-        {
-          event: 'delete',
-          userId: session.user.id,
-          entityId: id,
-          entityType: 'user.permission',
-          description: 'User permission deleted.',
-          ipAddress: clientIp,
-        },
-        tx,
-      );
-    });
-
-    return NextResponse.json({ message: 'Permission deleted successfully.' });
-  } catch {
-    return NextResponse.json(
-      { message: 'Oops! Something went wrong. Please try again in a moment.' },
-      { status: 500 },
-    );
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
   }
+  await params;
+  return NextResponse.json(
+    {
+      message:
+        'Le catalogue permissions est en lecture seule. Les droits ne peuvent pas être supprimés depuis l’interface.',
+    },
+    { status: 403 },
+  );
 }

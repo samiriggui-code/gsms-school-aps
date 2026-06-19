@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { uploadFile } from '@repo/storage';
+import { createFileAssetWithVersion } from '@/lib/file-asset-service';
 
 type PrismaFileVisibility = 'PRIVATE' | 'INTERNAL' | 'PUBLIC';
 
@@ -11,12 +11,6 @@ function toVisibility(value: string | null): PrismaFileVisibility {
   if (normalized === 'PUBLIC') return 'PUBLIC';
   if (normalized === 'INTERNAL') return 'INTERNAL';
   return 'PRIVATE';
-}
-
-function visibilityToStorage(v: PrismaFileVisibility): 'private' | 'internal' | 'public' {
-  if (v === 'PUBLIC') return 'public';
-  if (v === 'INTERNAL') return 'internal';
-  return 'private';
 }
 
 export async function GET(request: NextRequest) {
@@ -31,6 +25,7 @@ export async function GET(request: NextRequest) {
   const items = await prisma.fileAsset.findMany({
     where: {
       status: 'ACTIVE',
+      deletedAt: null,
       ...(moduleName ? { module: moduleName } : {}),
       ...(entityType ? { entityType } : {}),
       ...(entityId ? { entityId } : {}),
@@ -61,30 +56,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'module and entityType are required' }, { status: 400 });
   }
 
-  const uploaded = await uploadFile({
+  const asset = await createFileAssetWithVersion({
     file,
     module: moduleName,
     entityType,
     entityId,
     category,
-    visibility: visibilityToStorage(visibility),
-  });
-
-  const asset = await prisma.fileAsset.create({
-    data: {
-      module: moduleName,
-      entityType,
-      entityId,
-      category,
-      originalName: uploaded.originalName,
-      mimeType: uploaded.mimeType,
-      size: uploaded.size,
-      storageKey: uploaded.key,
-      url: uploaded.url,
-      visibility,
-      provider: 's3',
-      createdById: session.user.id,
-    },
+    visibility,
+    createdById: session.user.id,
   });
 
   return NextResponse.json({ data: asset }, { status: 201 });

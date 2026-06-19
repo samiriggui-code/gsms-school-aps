@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { qualificationMetierLabel } from '@/lib/rh-qualification-metier';
 import { UserStatus } from '@/app/models/user';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { uploadFile } from '@repo/storage';
+import { createFileAssetWithVersion } from '@/lib/file-asset-service';
 import { mapSystemLogsToRhActivity } from '@/lib/rh-iam-activity-history';
 import {
   requireGestionRessourcesEdit,
@@ -13,6 +13,11 @@ import {
   attachActiveAbsencesToUsers,
   syncUserAbsenceStatus,
 } from '@repo/api-core';
+import {
+  ensureCollaborateurStoragePrefix,
+  ensureUserStoragePrefix,
+  provisionStoragePrefixSafe,
+} from '@/lib/entity-storage';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
@@ -66,31 +71,17 @@ async function storeCollaborateurFile(
   createdById: string,
   category: string,
 ): Promise<string> {
-  const uploaded = await uploadFile({
+  const asset = await createFileAssetWithVersion({
     file,
     module: 'crm',
     entityType: 'collaborateur',
     entityId: userId,
     category,
-    visibility: 'private',
+    visibility: 'PRIVATE',
+    createdById,
+    changeReason: `Upload ${category}`,
   });
-  await prisma.fileAsset.create({
-    data: {
-      module: 'crm',
-      entityType: 'collaborateur',
-      entityId: userId,
-      category,
-      originalName: uploaded.originalName,
-      mimeType: uploaded.mimeType,
-      size: uploaded.size,
-      storageKey: uploaded.key,
-      url: uploaded.url,
-      visibility: 'PRIVATE',
-      provider: 's3',
-      createdById,
-    },
-  });
-  return uploaded.url;
+  return asset.url;
 }
 
 function stringFieldFromPayload(value: string | File | null | undefined): string | null {
@@ -139,7 +130,15 @@ function teachingSpecialtiesFromProfile(fp: any | null | undefined): string[] {
 }
 
 const collaborateurHydrateInclude = {
-  role: true,
+  role: {
+    include: {
+      permissions: {
+        include: {
+          permission: { select: { id: true, slug: true, name: true } },
+        },
+      },
+    },
+  },
   formateurProfile: {
     select: {
       speciality: true,
@@ -235,6 +234,17 @@ function toCollaborateur(user: any) {
     qualification: qualificationMetier,
     jobFunction: user.jobFunction || null,
     teachingSpecialties,
+    role: user.role
+      ? {
+          ...user.role,
+          permissions:
+            user.role.permissions?.map((rp: { permission?: { id: string; slug: string; name: string } }) => ({
+              ...rp.permission,
+              slug: rp.permission?.slug,
+              name: rp.permission?.name,
+            })) ?? [],
+        }
+      : user.role,
   };
 }
 
@@ -341,6 +351,7 @@ async function parseBody(request: NextRequest) {
       userCategory: String(form.get('userCategory') || 'INTERNAL').trim().toUpperCase(),
       subcontractorId: String(form.get('subcontractorId') || '').trim(),
       jobFunction: String(form.get('jobFunction') || '').trim(),
+      jobPositionId: String(form.get('jobPositionId') || '').trim() || null,
       qualification: String(form.get('qualification') || '').trim(),
       specialties: formKeys.has('specialties')
         ? parseSpecialtiesPayload(form.get('specialties'))
@@ -398,6 +409,7 @@ async function parseBody(request: NextRequest) {
     userCategory: String((json as any).userCategory || 'INTERNAL').trim().toUpperCase(),
     subcontractorId: String((json as any).subcontractorId || '').trim(),
     jobFunction: String((json as any).jobFunction || '').trim(),
+    jobPositionId: String((json as any).jobPositionId || '').trim() || null,
     qualification: String((json as any).qualification || '').trim(),
     specialties:
       Object.prototype.hasOwnProperty.call(json, 'specialties')
@@ -521,6 +533,7 @@ async function handler(request: NextRequest, { params }: Params) {
           jobFunction:
             (payload.jobFunction || '').trim() ||
             (role.slug === 'formateur' ? 'Formateur' : null),
+          jobPositionId: payload.jobPositionId || null,
           qualification: payload.qualification || null,
           birthDate: payload.birthDate || null,
           birthPlace: payload.birthPlace || null,
@@ -547,6 +560,13 @@ async function handler(request: NextRequest, { params }: Params) {
         },
         include: { role: true },
       });
+
+      void provisionStoragePrefixSafe(`user:${created.id}`, () =>
+        ensureUserStoragePrefix(created.id),
+      );
+      void provisionStoragePrefixSafe(`collaborateur:${created.id}`, () =>
+        ensureCollaborateurStoragePrefix(created.id),
+      );
 
       const createdById = session.user.id;
       const fileUpdates: Record<string, string> = {};
@@ -612,6 +632,15 @@ async function handler(request: NextRequest, { params }: Params) {
         userCategory: normalizeUserCategory(payload.userCategory, 'INTERNAL'),
         specialties: specsForFormateur,
       });
+
+      if (['collaborateur', 'formateur', 'admin'].includes(role.slug)) {
+        const { provisionStaffComplianceDossiers } = await import(
+          '@/lib/gestion-ressources/rh-provision-compliance'
+        );
+        void provisionStaffComplianceDossiers(finalUser.id, role.slug).catch((err) => {
+          console.error('[compliance] provision staff dossiers failed', err);
+        });
+      }
 
       const hydrated = await prisma.user.findUnique({
         where: { id: finalUser.id },
@@ -838,6 +867,7 @@ async function handler(request: NextRequest, { params }: Params) {
     }
     if (payload.subcontractorId !== undefined) data.subcontractorId = payload.subcontractorId || null;
     if (payload.jobFunction !== undefined) data.jobFunction = payload.jobFunction || null;
+    if (payload.jobPositionId !== undefined) data.jobPositionId = payload.jobPositionId || null;
     if (payload.qualification !== undefined) data.qualification = payload.qualification || null;
     if (payload.birthDate !== undefined) data.birthDate = payload.birthDate || null;
     if (payload.birthPlace !== undefined) data.birthPlace = payload.birthPlace || null;

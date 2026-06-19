@@ -1370,8 +1370,6 @@ export class PilotageHubService {
       take: 200,
     });
 
-    const assetIds = new Set(assets.map((a) => a.id));
-
     const editorIds = new Set<string>();
     const jobIdsFromMeta = new Set<string>();
     for (const asset of assets) {
@@ -1385,6 +1383,19 @@ export class PilotageHubService {
       .map((j) => j.fileAssetId)
       .filter((id): id is string => Boolean(id));
     const lookupAssetIds = [...new Set([...allAssetIds, ...completedJobAssetIds])];
+
+    const jobLookupSelect = {
+      id: true,
+      renderToken: true,
+      format: true,
+      fileAssetId: true,
+      templateKey: true,
+      title: true,
+      summary: true,
+      period: true,
+      periodLabel: true,
+      parameters: true,
+    } as const;
 
     const [editors, jobsByAsset, jobsById] = await Promise.all([
       editorIds.size
@@ -1403,30 +1414,68 @@ export class PilotageHubService {
       lookupAssetIds.length
         ? this.prisma.reportGenerationJob.findMany({
             where: { fileAssetId: { in: lookupAssetIds } },
-            select: { id: true, renderToken: true, format: true, fileAssetId: true },
+            select: jobLookupSelect,
           })
         : Promise.resolve([]),
       jobIdsFromMeta.size
         ? this.prisma.reportGenerationJob.findMany({
             where: { id: { in: [...jobIdsFromMeta] } },
-            select: { id: true, renderToken: true, format: true, fileAssetId: true },
+            select: jobLookupSelect,
           })
         : Promise.resolve([]),
     ]);
 
     const editorById = new Map(editors.map((u) => [u.id, u]));
-    const jobByAssetId = new Map(
-      [...jobsByAsset, ...jobsById]
-        .filter((j) => j.fileAssetId)
-        .map((j) => [j.fileAssetId as string, j]),
-    );
-    const jobById = new Map([...jobsByAsset, ...jobsById].map((j) => [j.id, j]));
+    type JobLookup = (typeof jobs)[number] | (typeof jobsByAsset)[number];
+    const jobByAssetId = new Map<string, JobLookup>();
+    for (const j of [...jobsByAsset, ...jobsById]) {
+      if (j.fileAssetId) jobByAssetId.set(j.fileAssetId, j);
+    }
+    for (const j of jobs) {
+      if (j.fileAssetId) jobByAssetId.set(j.fileAssetId, j);
+    }
+    const jobById = new Map<string, JobLookup>();
+    for (const j of [...jobsByAsset, ...jobsById, ...jobs]) {
+      jobById.set(j.id, j);
+    }
 
     const assetRows = assets
       .map((asset) => {
         const meta = parseReportMeta(asset.metadata);
         const job =
           jobByAssetId.get(asset.id) ?? (meta?.jobId ? jobById.get(meta.jobId) : null) ?? null;
+        if (!meta && job) {
+          const tpl = getReportTemplate(job.templateKey);
+          const createdBy = toReportActor(asset.createdBy);
+          const fmt =
+            job.format === 'EXCEL' ? 'Excel' : job.format === 'PDF' ? 'PDF' : ('CSV' as const);
+          return {
+            id: asset.id,
+            referenceCode: pilotageReportReferenceCode(asset.id),
+            templateId: job.templateKey,
+            label: job.title,
+            moduleKey: tpl?.moduleKey ?? CRM_MODULE_KEYS.PILOTAGE,
+            format: fmt,
+            status: 'generated' as const,
+            description: job.summary ?? tpl?.description ?? '',
+            generatedAt: asset.createdAt.toISOString(),
+            period: (['day', 'week', 'month', 'year'].includes(job.period)
+              ? job.period
+              : 'month') as PilotagePeriod,
+            periodLabel: job.periodLabel,
+            generationSource: parseJobGenerationSource(job.parameters),
+            fileName: asset.originalName,
+            fileSize: asset.size,
+            createdByName: createdBy?.name ?? null,
+            createdBy,
+            editedBy: null,
+            editedAt: null,
+            htmlPreviewUrl:
+              job.format === 'PDF'
+                ? `/reports/render/${job.id}?token=${encodeURIComponent(job.renderToken)}`
+                : null,
+          };
+        }
         const editor = meta?.editedByUserId ? editorById.get(meta.editedByUserId) : null;
         return this.serializeReportAsset(asset, {
           job,
@@ -1438,9 +1487,6 @@ export class PilotageHubService {
 
     const jobRows: PilotageRapportRow[] = [];
     for (const job of jobs) {
-      if (job.status === 'COMPLETED' && job.fileAssetId && assetIds.has(job.fileAssetId)) {
-        continue;
-      }
       if (job.status === 'COMPLETED' && job.fileAssetId) {
         const linked = assetRows.find((r) => r.id === job.fileAssetId);
         if (linked) continue;

@@ -115,7 +115,7 @@ export function PilotageRapportsContent() {
   const { title, description } = usePageToolbarMeta('/pilotage-supervision/pilotage/rapports');
   const intro = PILOTAGE_PAGE_INTRO.rapports;
   const [moduleId, setModuleId] = useState<PilotageModuleId>('gestion-ressources');
-  const [periodValue, setPeriodValue] = useState<ReportPeriodValue>({ mode: 'preset', period: 'month' });
+  const [periodValue, setPeriodValue] = useState<ReportPeriodValue>({ mode: 'preset', period: 'week' });
   const [query, setQuery] = useState('');
   const [generateOpen, setGenerateOpen] = useState(false);
   const [schedulesOpen, setSchedulesOpen] = useState(false);
@@ -144,7 +144,9 @@ export function PilotageRapportsContent() {
     setRowSelection({});
   };
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const [manualRefresh, setManualRefresh] = useState(false);
+
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['pilotage-rapports', apiModule, periodQueryKey],
     queryFn: () =>
       fetchPilotageRapports(
@@ -152,10 +154,12 @@ export function PilotageRapportsContent() {
         periodApi.period === 'custom' ? 'custom' : periodApi.period,
         periodApi.customRange,
       ),
-    staleTime: 0,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+    refetchIntervalInBackground: false,
     refetchInterval: (query) => {
       const rows = query.state.data?.rows ?? [];
-      if (rows.some((r) => r.status === 'pending' || r.status === 'running')) return 15_000;
+      if (rows.some((r) => r.status === 'pending' || r.status === 'running')) return 30_000;
       return false;
     },
   });
@@ -503,8 +507,15 @@ export function PilotageRapportsContent() {
                   <CalendarClock className="size-4" />
                   Automatisations
                 </Button>
-                <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>
-                  <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
+                <Button
+                  variant="outline"
+                  disabled={manualRefresh}
+                  onClick={() => {
+                    setManualRefresh(true);
+                    void refetch().finally(() => setManualRefresh(false));
+                  }}
+                >
+                  <RefreshCw className={cn('size-4', manualRefresh && 'animate-spin')} />
                   Actualiser
                 </Button>
               </div>

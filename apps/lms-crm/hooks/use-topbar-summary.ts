@@ -12,7 +12,8 @@ export function useTopbarSummary() {
   return useQuery({
     queryKey: ['topbar-summary', scope],
     queryFn: () => fetchTopbarSummary(scope),
-    refetchInterval: 30000,
-    staleTime: 15000,
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: false,
+    staleTime: 15_000,
   });
 }

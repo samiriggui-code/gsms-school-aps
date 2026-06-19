@@ -1,10 +1,12 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Download, UserPlus } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
+import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
+import { leadsExportConfig } from '@/lib/datagrid/export-presets';
 import { LeadsAddSheet } from './components/leads-add-sheet';
 import { Container } from '@/components/common/container';
 import {
@@ -51,6 +53,7 @@ function FormulairesLeadsPageInner() {
   const [detailLeadRow, setDetailLeadRow] = useState<LeadsHubListRow | null>(null);
   const [detailInitialTab, setDetailInitialTab] =
     useState<LeadsDetailSheetInitialTab>('overview');
+  const exportConfig = useMemo(() => leadsExportConfig(), []);
 
   const openLeadSheet = useCallback(
     (row: LeadsHubListRow, tab: LeadsDetailSheetInitialTab = 'overview') => {
@@ -134,8 +137,7 @@ function FormulairesLeadsPageInner() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className="flex flex-wrap items-center gap-2">
-            <Button variant="outline" type="button">
-              <Download />{t('common.actions.export')}</Button>
+            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button
               variant="primary"
               type="button"

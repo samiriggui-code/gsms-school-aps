@@ -4,7 +4,10 @@ export const FORMSSI_EMAIL_BRAND = {
   portalName: "CRM FORM'SSI",
   supportEmail: 'contact-formssi@gmail.com',
   siteUrl: 'https://formssi.online',
-  logoPath: '/app/mini-logo-primary.svg',
+  /** Icône carrée (en-tête des e-mails). */
+  iconPath: '/media/app/formssi-icon-email.png',
+  /** Logo horizontal (bloc hero central). */
+  logoPath: '/media/app/formssi-logo-email.png',
   footer: {
     tagline:
       'École de formation en sécurité privée et sécurité incendie — agents, SSIAP, incendie et SST.',

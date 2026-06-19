@@ -59,6 +59,12 @@ const badgeVariants = cva(
           "border-transparent bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-400",
       },
       {
+        variant: "destructive",
+        appearance: "light",
+        className:
+          "border-transparent bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-400",
+      },
+      {
         variant: "warning",
         appearance: "light",
         className:

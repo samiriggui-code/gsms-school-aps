@@ -14,6 +14,36 @@ import {
   attachActiveAbsencesToUsers,
   syncUserAbsenceStatus,
 } from '@repo/api-core';
+import { serializeUserRoleForIam } from '@/lib/iam/serialize-user-role';
+
+const userDetailInclude = {
+  role: {
+    include: {
+      permissions: {
+        include: {
+          permission: {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+              description: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  _count: {
+    select: {
+      candidatures: true,
+      formationSessionParticipants: true,
+      enrollments: true,
+      submissions: true,
+      systemLog: true,
+      attendances: true,
+    },
+  },
+} as const;
 
 // GET: Fetch a specific user by ID, including role
 export async function GET(
@@ -38,19 +68,7 @@ export async function GET(
     // Fetch the user and their associated roles
     const user = await prisma.user.findUnique({
       where: { id },
-      include: {
-        role: true,
-        _count: {
-          select: {
-            candidatures: true,
-            formationSessionParticipants: true,
-            enrollments: true,
-            submissions: true,
-            systemLog: true,
-            attendances: true,
-          },
-        },
-      },
+      include: userDetailInclude,
     });
 
     if (!user) {
@@ -61,7 +79,10 @@ export async function GET(
     }
 
     const [enriched] = await attachActiveAbsencesToUsers(prisma, [user]);
-    return NextResponse.json(enriched);
+    return NextResponse.json({
+      ...enriched,
+      role: serializeUserRoleForIam(enriched.role),
+    });
   } catch {
     return NextResponse.json(
       { message: 'Oops! Something went wrong. Please try again in a moment.' },

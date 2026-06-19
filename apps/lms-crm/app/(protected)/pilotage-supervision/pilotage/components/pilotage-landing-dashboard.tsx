@@ -4,30 +4,20 @@ import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Activity,
-  Bell,
-  CalendarRange,
   CheckCircle2,
   Clock,
   RefreshCw,
-  ShieldAlert,
-  ShieldCheck,
   TrendingDown,
   TrendingUp,
-  Users,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardHeading, CardTitle, CardToolbar } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
-import { MODULE_LANDING_STATS_GRID_ROW } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { fetchPilotageLanding } from '@/lib/pilotage/api';
 import type { PilotageLandingPayload, PilotagePeriod } from '@repo/api-core';
-import { PilotagePageIntro } from './pilotage-page-intro';
-import { PilotageModuleHubGrid } from './pilotage-module-hub-grid';
-import { PILOTAGE_PAGE_INTRO } from '@/lib/pilotage/page-copy';
 import { PILOTAGE_CHART_COLORS } from '@/lib/pilotage/chart-colors';
 import {
   Area,
@@ -45,7 +35,6 @@ import {
   YAxis,
 } from 'recharts';
 
-const KPI_ICONS = [Bell, Users, CalendarRange, ShieldAlert, ShieldCheck];
 const FLUX_PERIODS = ['5D', '2W', '1M', '6M', '1Y'] as const;
 const ACTIVITY_PERIODS: { key: PilotagePeriod; label: string }[] = [
   { key: 'day', label: 'Jour' },
@@ -91,7 +80,6 @@ function VarianceCard({ card }: { card: PilotageLandingPayload['variance'][0] })
 }
 
 export function PilotageLandingDashboard() {
-  const intro = PILOTAGE_PAGE_INTRO.pilotage;
   const [fluxPeriod, setFluxPeriod] = useState<(typeof FLUX_PERIODS)[number]>('5D');
   const [activityPeriod, setActivityPeriod] = useState<PilotagePeriod>('day');
 
@@ -100,16 +88,6 @@ export function PilotageLandingDashboard() {
     queryFn: fetchPilotageLanding,
     refetchInterval: 60_000,
   });
-
-  const kpiCards = useMemo(() => {
-    if (!data?.kpis?.length) return [];
-    return data.kpis.map((kpi, i) => ({
-      label: kpi.label,
-      value: kpi.value,
-      subtitle: kpi.subtitle,
-      icon: KPI_ICONS[i % KPI_ICONS.length],
-    }));
-  }, [data?.kpis]);
 
   const fluxData = data?.flux.byPeriod[fluxPeriod] ?? [];
   const fluxTotal = fluxData.reduce((s, p) => s + p.value, 0);
@@ -132,18 +110,12 @@ export function PilotageLandingDashboard() {
   if (isLoading) {
     return (
       <div className="space-y-5 lg:space-y-8">
-        <div className={MODULE_LANDING_STATS_GRID_ROW}>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-xl" />
-          ))}
-        </div>
-        <Skeleton className="h-20 rounded-xl" />
-        <div className="grid gap-4 md:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-40 rounded-xl" />
-          ))}
-        </div>
         <Skeleton className="h-80 rounded-xl" />
+        <div className="grid gap-4 lg:grid-cols-3">
+          <Skeleton className="h-80 rounded-xl lg:col-span-2" />
+          <Skeleton className="h-80 rounded-xl" />
+        </div>
+        <Skeleton className="h-72 rounded-xl" />
       </div>
     );
   }
@@ -152,21 +124,17 @@ export function PilotageLandingDashboard() {
 
   return (
     <div className="space-y-5 pb-8 lg:space-y-8">
-      <div className="flex flex-wrap items-center justify-end gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="space-y-1">
+          <h2 className="text-base font-semibold text-foreground">Analytique transversale</h2>
+          <p className="text-sm text-muted-foreground">
+            Évolution, flux et variance consolidés sur l&apos;ensemble du CRM.
+          </p>
+        </div>
         <Button variant="outline" size="sm" disabled={isFetching} onClick={() => refetch()}>
           <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
           Actualiser
         </Button>
-      </div>
-
-      <ModuleKpiStatsRow items={kpiCards} />
-      <PilotagePageIntro lead={intro.lead} detail={intro.detail} />
-
-      <PilotageModuleHubGrid sparklines={data.sparklines} />
-
-      <div className="space-y-1">
-        <h2 className="text-base font-semibold text-foreground">Analytique transversale</h2>
-        <p className="text-sm text-muted-foreground">Évolution, flux et variance consolidés sur l&apos;ensemble du CRM.</p>
       </div>
 
       <div className="grid min-w-0 grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-8">

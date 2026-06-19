@@ -1,3 +1,4 @@
+import React from 'react';
 import type { ReactNode } from 'react';
 import {
   Body,
@@ -15,7 +16,7 @@ import {
   Text,
 } from '@react-email/components';
 import { FORMSSI_EMAIL_BRAND } from '../brand';
-import { emailLogoUrl } from '../email-assets';
+import { emailIconUrl, emailLogoUrl } from '../email-assets';
 import { BareboneFooter } from './barebone-footer';
 import { BareboneFonts } from './barebone-fonts';
 import { barebonesBoxedTailwindConfig } from './theme';
@@ -65,10 +66,10 @@ export function BareboneShell({
                     <Row>
                       <Column className="w-[40px] align-middle pr-2">
                         <Img
-                          src={emailLogoUrl()}
+                          src={emailIconUrl()}
                           alt={FORMSSI_EMAIL_BRAND.productName}
-                          width={32}
-                          height={32}
+                          width={36}
+                          height={36}
                           className="block"
                         />
                       </Column>
@@ -106,7 +107,7 @@ export function BareboneShell({
                         <Img
                           src={emailLogoUrl()}
                           alt={FORMSSI_EMAIL_BRAND.productName}
-                          width={48}
+                          width={96}
                           className="mx-auto mb-5 block"
                         />
                       </Section>

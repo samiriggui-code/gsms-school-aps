@@ -1,7 +1,7 @@
 'use client';
 
 import { Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
-const REPORT_CHART_COLORS = ['#2563eb', '#7c3aed', '#d97706', '#059669', '#dc2626'];
+const REPORT_CHART_COLORS = ['#4f46e5', '#7c3aed', '#d97706', '#059669', '#dc2626'];
 
 export type PilotageIndicateursReportData = {
   kpis: { label: string; value: string | number; subtitle: string }[];
@@ -41,7 +41,7 @@ export function PilotageGrIndicateursReport({ data }: { data: PilotageIndicateur
                 <Line
                   type="monotone"
                   dataKey="value"
-                  stroke="#2563eb"
+                  stroke="#4f46e5"
                   strokeWidth={2}
                   dot={false}
                 />

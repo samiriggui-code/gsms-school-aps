@@ -54,7 +54,7 @@ export function OrgUnitAddSheet({ open, onOpenChange, parentId: initialParentId 
     resolver: zodResolver(OrgUnitSchema),
     defaultValues: {
       name: '',
-      type: 'AGENCE',
+      type: 'SERVICE',
       parentId: initialParentId || null,
       managerId: null,
       positionId: null,
@@ -65,7 +65,7 @@ export function OrgUnitAddSheet({ open, onOpenChange, parentId: initialParentId 
     if (open) {
       form.reset({
         name: '',
-        type: 'AGENCE',
+        type: 'SERVICE',
         parentId: initialParentId || null,
         managerId: null,
         positionId: null,
@@ -164,9 +164,10 @@ export function OrgUnitAddSheet({ open, onOpenChange, parentId: initialParentId 
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="AGENCE">Agence</SelectItem>
-                      <SelectItem value="SECTEUR">Secteur</SelectItem>
-                      <SelectItem value="DEPARTEMENT">Département</SelectItem>
+                      <SelectItem value="DIRECTION">Direction</SelectItem>
+                      <SelectItem value="SERVICE">Service</SelectItem>
+                      <SelectItem value="POLE">Pôle</SelectItem>
+                      <SelectItem value="CAMPUS">Campus</SelectItem>
                       <SelectItem value="SITE">Site</SelectItem>
                       <SelectItem value="DIRECTION">Direction</SelectItem>
                     </SelectContent>

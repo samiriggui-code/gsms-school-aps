@@ -14,7 +14,7 @@ import {
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const SLICE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+const SLICE_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
 export function ProcessDistributionChart() {
   const [mounted, setMounted] = useState(false);

@@ -36,7 +36,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../../constants/sheet-shell-classes';
+import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../../constants/sheet-shell-classes';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
@@ -421,8 +421,8 @@ export function FormationProgramSheetCustomer({
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent className={VIE_SCOLAIRE_SHEET_AUTO}>
-          <SheetHeader className="border-b border-border px-5 py-3.5">
+        <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE}>
+          <SheetHeader className="shrink-0 border-b border-border px-5 py-3.5">
             {mode === 'edit' ? (
               <div className="space-y-1 pe-8">
                 <SheetTitle className="font-semibold leading-none text-foreground lg:text-[22px]">
@@ -437,9 +437,9 @@ export function FormationProgramSheetCustomer({
             )}
           </SheetHeader>
 
-          <SheetBody className="grow p-0">
+          <SheetBody className="flex min-h-0 flex-1 flex-col overflow-hidden p-0">
             {mode === 'edit' && slug && !detailQuery.isLoading && !detailQuery.error && detailRow ? (
-              <div className="border-b border-border px-5 py-3">
+              <div className="shrink-0 border-b border-border px-5 py-3">
                 <div className="flex flex-wrap items-center gap-2.5">
                   <Badge
                     size="sm"
@@ -475,7 +475,11 @@ export function FormationProgramSheetCustomer({
             ) : null}
 
             {mode === 'edit' && slug ? (
-              <div className="border-b border-border px-5 py-4 space-y-4">
+              <ScrollArea
+                className="min-h-0 flex-1"
+                viewportClassName="[&>div]:!block [&>div>div]:!block"
+              >
+                <div className="space-y-4 border-b border-border px-5 py-4">
                 <p className="text-xs text-muted-foreground">
                   Le nom, la durée, la{' '}
                   <span className="font-medium text-foreground">fourchette d&apos;effectif par session (indicatif)</span>{' '}
@@ -619,7 +623,16 @@ export function FormationProgramSheetCustomer({
                     </form>
                   </Form>
                 )}
-              </div>
+                <div className="rounded-lg border border-border/60 bg-muted/20 px-4 py-3">
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    En édition, seuls le statut catalogue, le prix, le parcours affiché et les lignes financement /
+                    prérequis sont modifiables ici. La vue détaillée vitrine (cartes, onglets Programme…) reste
+                    disponible en ouvrant la fiche en{' '}
+                    <span className="font-medium text-foreground">consultation</span> depuis la liste.
+                  </p>
+                </div>
+                </div>
+              </ScrollArea>
             ) : null}
 
             {mode !== 'edit' ? (
@@ -667,7 +680,7 @@ export function FormationProgramSheetCustomer({
 
             {mode !== 'edit' ? (
             <ScrollArea
-              className="mx-1.5 flex flex-col h-[calc(100dvh-15.8rem)] max-h-[min(560px,calc(100dvh-14rem))]"
+              className="mx-1.5 min-h-0 flex-1 flex-col"
               viewportClassName="[&>div]:h-full [&>div>div]:h-full"
             >
               <div className="flex grow flex-wrap px-3.5 lg:flex-nowrap">
@@ -740,18 +753,10 @@ export function FormationProgramSheetCustomer({
                 </div>
               </div>
             </ScrollArea>
-            ) : (
-              <div className="border-b border-border bg-muted/20 px-5 py-4">
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  En édition, seuls le statut catalogue, le prix, le parcours affiché et les lignes financement / prérequis
-                  sont modifiables ici. La vue détaillée vitrine (cartes, onglets Programme… ) reste disponible en
-                  ouvrant la fiche en <span className="font-medium text-foreground">consultation</span> depuis la liste.
-                </p>
-              </div>
-            )}
+            ) : null}
           </SheetBody>
 
-          <SheetFooter className="flex-row justify-end gap-2.5 border-t border-border p-5 pb-4 lg:gap-0">
+          <SheetFooter className="shrink-0 flex-row justify-end gap-2.5 border-t border-border p-5 pb-4 lg:gap-0">
             {mode === 'edit' ? (
               <Button
                 type="submit"

@@ -15,15 +15,13 @@ function nextAuthBasePath(): string {
 }
 
 export function AuthProvider({ children, session }: AuthProviderProps) {
-  const isDev = process.env.NODE_ENV === 'development';
-
   return (
     <SessionProvider
       session={session}
       basePath={nextAuthBasePath()}
-      // En dev Turbopack peut bloquer /api/auth/session plusieurs secondes au redémarrage.
-      refetchOnWindowFocus={!isDev}
-      refetchInterval={isDev ? 0 : 5 * 60}
+      // Rafraîchit le statut compte (~2 min) pour détecter suspension / désactivation en session.
+      refetchOnWindowFocus
+      refetchInterval={120}
     >
       {children}
     </SessionProvider>

@@ -1,13 +1,18 @@
 /**
- * Référentiel postes RH + demandes d'absence démo.
+ * Référentiel postes RH école + demandes d'absence démo.
  */
 async function seedRhAbsencesAndPositions(tx) {
   const positions = [
-    { code: 'RESP_AGENCE', label: 'Responsable d’agence', sortOrder: 10 },
-    { code: 'CHEF_EQUIPE', label: 'Chef d’équipe', sortOrder: 20 },
-    { code: 'AGENT', label: 'Agent / collaborateur terrain', sortOrder: 30 },
-    { code: 'FORMATEUR', label: 'Formateur', sortOrder: 40 },
-    { code: 'ADMIN', label: 'Assistant administratif', sortOrder: 50 },
+    { code: 'FORMATEUR', label: 'Formateur', sortOrder: 10 },
+    { code: 'DIRECTION_PEDAGOGIE', label: 'Direction & pédagogie', sortOrder: 20 },
+    { code: 'SECRETARIAT', label: 'Secrétariat & accueil', sortOrder: 30 },
+    { code: 'ADMIN_GENERALE', label: 'Administration générale', sortOrder: 40 },
+    { code: 'COMPTABILITE', label: 'Comptabilité & finance', sortOrder: 50 },
+    { code: 'RH', label: 'Ressources humaines', sortOrder: 60 },
+    { code: 'MARKETING', label: 'Marketing & communication', sortOrder: 70 },
+    { code: 'IT', label: 'IT & systèmes d\'information', sortOrder: 80 },
+    { code: 'MAINTENANCE', label: 'Maintenance & logistique', sortOrder: 90 },
+    { code: 'QUALITE', label: 'Qualité & conformité', sortOrder: 100 },
   ];
 
   for (const p of positions) {
@@ -74,7 +79,7 @@ async function seedRhAbsencesAndPositions(tx) {
     await tx.rhAbsence.create({ data: s });
   }
 
-  console.log('RH positions & absences seeded.');
+  console.log('RH positions (école) & absences seeded.');
 }
 
 module.exports = { seedRhAbsencesAndPositions };

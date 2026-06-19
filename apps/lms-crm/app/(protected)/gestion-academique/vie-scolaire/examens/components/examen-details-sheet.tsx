@@ -755,7 +755,7 @@ export function ExamenDetailsSheet({
               </Button>
             ) : (
               <>
-                <Button variant="outline" onClick={handlePrintExamenFiche} className="font-bold border-none bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                <Button variant="outline" onClick={handlePrintExamenFiche} className="font-bold border-none bg-indigo-600 hover:bg-indigo-700 text-white gap-2">
                   <Printer className="size-4" />
                   Fiche Examen
                 </Button>

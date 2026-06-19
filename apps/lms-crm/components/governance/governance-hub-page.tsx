@@ -9,7 +9,7 @@ import {
 import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, ExternalLink, RotateCcw, Search } from 'lucide-react';
+import { Download, ExternalLink, Mail, RotateCcw, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { Container } from '@/components/common/container';
 import {
@@ -22,6 +22,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
@@ -45,6 +46,12 @@ export type GovernanceHubProps = {
   statLabels: GovStat[];
   exportDataset?: string;
   linkKey?: string;
+  /** Liens d'action supplémentaires (ex. dossier GED). */
+  actionLinks?: { hrefKey: string; label: string }[];
+  /** Colonnes affichées en badge (ex. pièces manquantes). */
+  badgeKeys?: string[];
+  /** Bouton « Relancer par e-mail » pour les candidatures avec pièces manquantes (`row.id` = candidatureId). */
+  enableDocumentEmailRequest?: boolean;
   canRestore?: boolean;
 };
 
@@ -65,6 +72,9 @@ export function GovernanceHubPage({
   statLabels,
   exportDataset,
   linkKey,
+  actionLinks,
+  badgeKeys,
+  enableDocumentEmailRequest,
   canRestore,
 }: GovernanceHubProps) {
   const { t } = useTranslation();
@@ -85,6 +95,7 @@ export function GovernanceHubPage({
   const [page, setPage] = useState(1);
   const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
+  const [emailRequestId, setEmailRequestId] = useState<string | null>(null);
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: [queryKey, page, search] as const,
@@ -126,6 +137,82 @@ export function GovernanceHubPage({
     toast.success(t('governance.restoreSuccess'));
     qc.invalidateQueries({ queryKey: [queryKey] });
   }
+
+  async function requestMissingDocumentsByEmail(candidatureId: string) {
+    setEmailRequestId(candidatureId);
+    try {
+      const listRes = await apiFetch(
+        `/api/sections/securite-configuration/gouvernance-donnees/compliance/requests?candidatureId=${encodeURIComponent(candidatureId)}`,
+      );
+      const listJson = await listRes.json().catch(() => ({}));
+      if (!listRes.ok) {
+        throw new Error(
+          (listJson as { error?: { message?: string } }).error?.message ??
+            'Impossible de charger les pièces.',
+        );
+      }
+      const items =
+        unwrapSectionApiData<{ items: { id: string; label: string }[] }>(listJson)?.items ?? [];
+      if (items.length === 0) {
+        toast.info('Aucune pièce à relancer pour ce dossier.');
+        return;
+      }
+
+      let created = 0;
+      let emailsOk = 0;
+      let emailsFailed = 0;
+      for (const piece of items) {
+        const res = await apiFetch(
+          '/api/sections/securite-configuration/gouvernance-donnees/compliance/requests',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              dossierItemId: piece.id,
+              message: `Merci de nous transmettre : ${piece.label}.`,
+              sendEmail: true,
+            }),
+          },
+        );
+        const json = await res.json().catch(() => ({}));
+        if (res.ok) {
+          created += 1;
+          const data = unwrapSectionApiData<{ emailSent?: boolean }>(json);
+          if (data?.emailSent) emailsOk += 1;
+          else emailsFailed += 1;
+        }
+      }
+
+      if (created > 0) {
+        if (emailsFailed > 0 && emailsOk === 0) {
+          toast.warning(
+            `${created} demande(s) enregistrée(s) dans l’app, mais e-mail non envoyé (SMTP : configurez Mailpit 127.0.0.1:1025 ou commentez SMTP_HOST).`,
+          );
+        } else if (emailsFailed > 0) {
+          toast.warning(
+            `${created} demande(s) : ${emailsOk} e-mail(s) envoyé(s), ${emailsFailed} en échec SMTP.`,
+          );
+        } else {
+          toast.success(
+            created === 1
+              ? 'Demande envoyée (e-mail + notification).'
+              : `${created} demandes envoyées.`,
+          );
+        }
+        qc.invalidateQueries({ queryKey: [queryKey] });
+      } else {
+        toast.error('Les demandes n’ont pas pu être créées.');
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Erreur lors de la relance.');
+    } finally {
+      setEmailRequestId(null);
+    }
+  }
+
+  const hasActions = Boolean(
+    linkKey || actionLinks?.length || canRestore || enableDocumentEmailRequest,
+  );
 
   return (
     <>
@@ -190,27 +277,57 @@ export function GovernanceHubPage({
                         {workspaceColumnLabel(t, workspaceKey, c.key, c.label)}
                       </th>
                     ))}
-                    {(linkKey || canRestore) && (
+                    {(linkKey || actionLinks?.length || canRestore || enableDocumentEmailRequest) && (
                       <th className="px-4 py-3 text-right font-medium">{t('crud.actions')}</th>
                     )}
                   </tr>
                 </thead>
                 <tbody>
                   {isLoading ? (
-                    <tr><td colSpan={columns.length + 1} className="px-4 py-8 text-center text-muted-foreground">{t('crud.loading')}</td></tr>
+                    <tr><td colSpan={columns.length + (hasActions ? 1 : 0)} className="px-4 py-8 text-center text-muted-foreground">{t('crud.loading')}</td></tr>
                   ) : (data?.items.length ?? 0) === 0 ? (
-                    <tr><td colSpan={columns.length + 1} className="px-4 py-8 text-center text-muted-foreground">{t('crud.empty')}</td></tr>
+                    <tr><td colSpan={columns.length + (hasActions ? 1 : 0)} className="px-4 py-8 text-center text-muted-foreground">{t('crud.empty')}</td></tr>
                   ) : (
                     data!.items.map((row) => (
                       <tr key={String(row.id)} className="border-b hover:bg-muted/20">
                         {columns.map((c) => (
                           <td key={c.key} className={cn('px-4 py-3', c.align === 'right' ? 'text-right' : 'text-left')}>
-                            {String(row[c.key] ?? '—')}
+                            {badgeKeys?.includes(c.key) ? (
+                              <Badge
+                                variant={
+                                  Number(row.missingCount ?? 0) > 0 ? 'destructive' : 'success'
+                                }
+                                appearance="light"
+                              >
+                                {String(row[c.key] ?? '—')}
+                              </Badge>
+                            ) : (
+                              String(row[c.key] ?? '—')
+                            )}
                           </td>
                         ))}
-                        {(linkKey || canRestore) && (
+                        {(linkKey || actionLinks?.length || canRestore || enableDocumentEmailRequest) && (
                           <td className="px-4 py-3 text-right">
-                            <div className="flex justify-end gap-2">
+                            <div className="flex flex-wrap justify-end gap-2">
+                              {enableDocumentEmailRequest &&
+                                Number(row.missingCount ?? 0) > 0 && (
+                                  <Button
+                                    size="sm"
+                                    variant="secondary"
+                                    disabled={emailRequestId === String(row.id)}
+                                    onClick={() => requestMissingDocumentsByEmail(String(row.id))}
+                                  >
+                                    <Mail className="size-3.5" />
+                                    Relancer e-mail
+                                  </Button>
+                                )}
+                              {actionLinks?.map((link) =>
+                                Boolean(row[link.hrefKey]) ? (
+                                  <Button key={link.hrefKey} size="sm" variant="outline" asChild>
+                                    <Link href={String(row[link.hrefKey])}>{link.label}</Link>
+                                  </Button>
+                                ) : null,
+                              )}
                               {linkKey && Boolean(row[linkKey]) && (
                                 <Button size="sm" variant="outline" asChild>
                                   <Link href={String(row[linkKey])}>

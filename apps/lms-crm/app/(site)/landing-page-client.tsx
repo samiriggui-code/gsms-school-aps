@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { DEFAULT_LANDING_SECTIONS, type LandingSectionConfig } from '@repo/database/browser';
 import Header from '@/components/header';
 import Hero from '@/components/hero';
@@ -9,7 +10,6 @@ import HowItWorks from '@/components/how-it-works';
 import Features from '@/components/features';
 import Trainers from '@/components/trainers';
 import Testimonials from '@/components/testimonials';
-import Pricing from '@/components/pricing';
 import FAQ from '@/components/faq';
 import CallToAction from '@/components/call-to-action';
 import Contact from '@/components/contact';
@@ -17,6 +17,11 @@ import Footer from '@/components/footer';
 import { CentralPreinscriptionSheet } from '@/components/central-preinscription-sheet';
 import { MaintenanceView } from './maintenance-view';
 import type { LandingPageConfig } from '@/lib/landing-config-defaults';
+
+const Pricing = dynamic(() => import('@/components/pricing'), {
+  ssr: false,
+  loading: () => null,
+});
 
 type Props = {
   initialConfig: LandingPageConfig;

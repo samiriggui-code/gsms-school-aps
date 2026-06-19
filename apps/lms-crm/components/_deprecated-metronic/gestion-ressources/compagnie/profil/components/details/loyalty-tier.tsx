@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 const tiers = [
   { name: "Lite", color: "#e879f9", points: 0, nextGoal: 1000 },
   { name: "Plus", color: "#8b5cf6", points: 1000, nextGoal: 2500 },
-  { name: "Prime", color: "#3b82f6", points: 2500, nextGoal: 4250 },
+  { name: "Prime", color: "#6366f1", points: 2500, nextGoal: 4250 },
   { name: "Gold", color: "#f59e0b", points: 4250, nextGoal: 5000 },
   { name: "VIP", color: "#ef4444", points: 5000, nextGoal: null },
 ]
@@ -101,7 +101,7 @@ export function LoyaltyTier() {
                   className="relative w-full h-1.5 flex items-center"
                 >
                   {/* Full gradient track */}
-                  <div className="absolute w-full h-1.5 rounded-sm bg-gradient-to-r from-pink-500 via-blue-500 via-green-400 via-yellow-400 to-orange-500" />
+                  <div className="absolute w-full h-1.5 rounded-sm bg-gradient-to-r from-pink-500 via-indigo-500 via-green-400 via-yellow-400 to-orange-500" />
 
                   <SliderThumb className="bg-primary"/>
                 </Slider>

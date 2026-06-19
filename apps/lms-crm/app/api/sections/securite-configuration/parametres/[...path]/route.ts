@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { internalApiOrigin } from '@/lib/internal-api-origin';
 
 type Params = { params: Promise<{ path: string[] }> };
 
 async function forwardTo(request: NextRequest, targetPath: string) {
   const url = new URL(request.url);
-  const target = `${url.origin}${targetPath}${url.search}`;
+  const target = `${internalApiOrigin()}${targetPath}${url.search}`;
   const method = request.method.toUpperCase();
   const init: RequestInit = {
     method,

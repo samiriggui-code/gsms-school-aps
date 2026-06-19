@@ -6,6 +6,9 @@ import { Prisma } from '@repo/database';
 import {
   emitVenueRoomSessionPatchNotifications,
   notifyVenueRoomReleased,
+  applySessionEquipmentDiff,
+  parseReservedEquipmentIds,
+  releaseAllSessionEquipment,
 } from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { FormationSessionPatchSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/forms/session-crud-schema';
@@ -19,6 +22,8 @@ import {
   assertVenueRoomIdExists,
 } from '@/app/api/sections/gestion-academique/vie-scolaire/sessions/_venue-room-assert';
 import { sessionKindDerivedFromFormationParcours } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/lib/session-parcours-exam';
+import { ensureSessionChat, pruneStaleSessionChatParticipants } from '@/lib/session-chat';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 function parseDateInput(v: unknown): Date | null | undefined {
   if (v === undefined) return undefined;
@@ -86,6 +91,9 @@ export async function PATCH(
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Accès refusé — permission académique requise.', 403);
+  }
 
   const { id } = await context.params;
   if (!id?.trim()) return fail('Identifiant session manquant.', 400);
@@ -136,6 +144,7 @@ export async function PATCH(
         startDate: true,
         endDate: true,
         venueRoomId: true,
+        reservedEquipmentIds: true,
         venueRoom: { select: { id: true, name: true } },
       },
     });
@@ -164,6 +173,8 @@ export async function PATCH(
       throw e;
     }
 
+    const previousEquipmentIds = parseReservedEquipmentIds(current.reservedEquipmentIds);
+
     const updated = await prisma.$transaction(async (tx) => {
       const hasScalarPatch =
         d.dateDisplayLabel !== undefined ||
@@ -175,6 +186,7 @@ export async function PATCH(
         d.traineesMin !== undefined ||
         d.traineesMax !== undefined ||
         d.trainerUserId !== undefined ||
+        d.moderatorUserId !== undefined ||
         d.reservedEquipmentIds !== undefined ||
         d.venueRoomId !== undefined ||
         d.sessionSubtitle !== undefined ||
@@ -208,6 +220,9 @@ export async function PATCH(
           ...(normalizedTrainer !== undefined
             ? { trainerUserId: normalizedTrainer === null ? null : normalizedTrainer }
             : {}),
+          ...(d.moderatorUserId !== undefined
+            ? { moderatorUserId: d.moderatorUserId === '' ? null : d.moderatorUserId }
+            : {}),
           ...(d.reservedEquipmentIds !== undefined
             ? {
                 reservedEquipmentIds: d.reservedEquipmentIds as unknown as Prisma.InputJsonValue,
@@ -228,15 +243,23 @@ export async function PATCH(
       }
 
       if (d.participantUserIds !== undefined) {
-        await tx.formationSessionParticipant.deleteMany({
+        const nextIds = new Set(d.participantUserIds);
+        const existing = await tx.formationSessionParticipant.findMany({
           where: { sessionId: id.trim() },
+          select: { id: true, userId: true },
         });
-        if (d.participantUserIds.length > 0) {
-          await tx.formationSessionParticipant.createMany({
-            data: d.participantUserIds.map((userId) => ({
-              sessionId: id.trim(),
-              userId,
-            })),
+
+        for (const row of existing) {
+          if (!nextIds.has(row.userId)) {
+            await tx.formationSessionParticipant.delete({ where: { id: row.id } });
+          }
+        }
+
+        for (const userId of d.participantUserIds) {
+          await tx.formationSessionParticipant.upsert({
+            where: { sessionId_userId: { sessionId: id.trim(), userId } },
+            create: { sessionId: id.trim(), userId },
+            update: {},
           });
         }
       }
@@ -249,30 +272,87 @@ export async function PATCH(
 
     const item = await serializeFormationSessionRow(updated as SessionRowPayload);
 
+    const sideEffectWarnings: string[] = [];
+
+    if (d.reservedEquipmentIds !== undefined) {
+      try {
+        await applySessionEquipmentDiff(
+          prisma,
+          id.trim(),
+          previousEquipmentIds,
+          d.reservedEquipmentIds,
+          { actorUserId: session.user?.id ?? null },
+        );
+      } catch (equipmentError) {
+        console.error('[session PATCH] equipment diff failed', equipmentError);
+        const msg =
+          equipmentError instanceof Error
+            ? equipmentError.message
+            : 'Réservation matériel impossible.';
+        if (
+          equipmentError instanceof Error &&
+          (msg.includes('indisponible') ||
+            msg.includes('déjà affecté') ||
+            msg.includes('introuvable'))
+        ) {
+          return fail(msg, 422);
+        }
+        sideEffectWarnings.push(msg);
+      }
+    }
+
+    const chatOptions =
+      d.moderatorUserId !== undefined
+        ? { moderatorUserId: d.moderatorUserId === '' ? null : d.moderatorUserId }
+        : undefined;
+
+    try {
+      await ensureSessionChat(prisma, id.trim(), chatOptions);
+      if (d.participantUserIds !== undefined || d.trainerUserId !== undefined) {
+        await pruneStaleSessionChatParticipants(prisma, id.trim());
+      }
+    } catch (chatError) {
+      console.error('[session PATCH] chat/team sync failed', chatError);
+      sideEffectWarnings.push(
+        chatError instanceof Error
+          ? chatError.message
+          : 'Synchronisation chat / équipe impossible.',
+      );
+    }
+
     const venuePatchRequested =
       d.venueRoomId !== undefined || d.startDate !== undefined || d.endDate !== undefined;
 
     if (venuePatchRequested) {
-      const afterVenueRoomId =
-        nextVenueRoomId === '' || nextVenueRoomId === undefined
-          ? null
-          : nextVenueRoomId;
-      await emitVenueRoomSessionPatchNotifications(prisma, {
-        sessionId: id.trim(),
-        actorUserId: session.user?.id ?? null,
-        before: {
-          venueRoomId: current.venueRoomId,
-          startDate: current.startDate,
-          endDate: current.endDate,
-        },
-        afterVenueRoomId,
-        afterStart: nextStart,
-        afterEnd: nextEnd,
-        datesOrRoomChanged: venuePatchRequested,
-      });
+      try {
+        const afterVenueRoomId =
+          nextVenueRoomId === '' || nextVenueRoomId === undefined
+            ? null
+            : nextVenueRoomId;
+        await emitVenueRoomSessionPatchNotifications(prisma, {
+          sessionId: id.trim(),
+          actorUserId: session.user?.id ?? null,
+          before: {
+            venueRoomId: current.venueRoomId,
+            startDate: current.startDate,
+            endDate: current.endDate,
+          },
+          afterVenueRoomId,
+          afterStart: nextStart,
+          afterEnd: nextEnd,
+          datesOrRoomChanged: venuePatchRequested,
+        });
+      } catch (notifyError) {
+        console.error('[session PATCH] venue notifications failed', notifyError);
+        sideEffectWarnings.push(
+          notifyError instanceof Error
+            ? notifyError.message
+            : 'Notification salle impossible.',
+        );
+      }
     }
 
-    return ok({ item });
+    return ok(sideEffectWarnings.length > 0 ? { item, warnings: sideEffectWarnings } : { item });
   } catch (error) {
     const code =
       error && typeof error === 'object' && 'code' in error
@@ -282,7 +362,15 @@ export async function PATCH(
     if (error instanceof Error && error.message.includes('Salle déjà réservée')) {
       return fail(error.message, 422);
     }
-    return fail('Impossible de mettre à jour la session.', 500, error);
+    if (error instanceof Error && (error.message.includes('indisponible') || error.message.includes('déjà affecté') || error.message.includes('réservée pour'))) {
+      return fail(error.message, 422);
+    }
+    console.error('[session PATCH] unexpected error', error);
+    const devMessage =
+      process.env.NODE_ENV === 'development' && error instanceof Error
+        ? error.message
+        : 'Impossible de mettre à jour la session.';
+    return fail(devMessage, 500, error);
   }
 }
 
@@ -305,10 +393,15 @@ export async function DELETE(
       select: {
         id: true,
         venueRoomId: true,
+        reservedEquipmentIds: true,
         venueRoom: { select: { id: true, name: true } },
       },
     });
     if (!existing) return fail('Session introuvable ou formation hors catalogue actif.', 404);
+
+    await releaseAllSessionEquipment(prisma, id.trim(), {
+      actorUserId: session.user?.id ?? null,
+    });
 
     await prisma.formationSession.delete({ where: { id: id.trim() } });
 

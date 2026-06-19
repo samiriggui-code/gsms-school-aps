@@ -6,6 +6,7 @@ import { Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { serializeCatalogOfferMerged } from '@/app/api/sections/gestion-academique/vie-scolaire/formations/_serialize';
 import { FormationCatalogOfferPatchSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-catalog-api-schemas';
+import { invalidateFormationCatalogCaches } from '@/lib/catalog-public-cache';
 
 export async function GET(
   _request: NextRequest,
@@ -123,6 +124,10 @@ export async function PATCH(
     });
 
     if (!fullFormation || !offer) return fail('Offre catalogue introuvable.', 404);
+
+    void invalidateFormationCatalogCaches(slug.trim()).catch((e) => {
+      console.error('[formations/catalog] invalidation cache', e);
+    });
 
     return ok({
       item: serializeCatalogOfferMerged(offer, fullFormation),

@@ -1,10 +1,9 @@
-# Routage Traefik externe (host network)
-# App : hosting-global-it-ss.com → 127.0.0.1:3001
-# Homepage : monitoring.hosting-global-it-ss.com → 127.0.0.1:3005
+# Routage Traefik externe (host network) — domaines injectés par deploy.sh
+# Placeholders : __DOMAIN__ __MONITORING_HOST__
 http:
   routers:
     app:
-      rule: Host(`hosting-global-it-ss.com`) || Host(`www.hosting-global-it-ss.com`)
+      rule: Host(`__DOMAIN__`) || Host(`www.__DOMAIN__`)
       entryPoints: [websecure]
       service: app
       tls:
@@ -12,7 +11,7 @@ http:
       priority: 10
 
     monitoring:
-      rule: Host(`monitoring.hosting-global-it-ss.com`)
+      rule: Host(`__MONITORING_HOST__`)
       entryPoints: [websecure]
       service: homepage
       tls:

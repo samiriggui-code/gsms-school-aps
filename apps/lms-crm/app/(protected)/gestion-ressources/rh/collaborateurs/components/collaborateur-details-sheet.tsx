@@ -41,6 +41,7 @@ import { CollaborateurDetailsCompliance } from './collaborateur-details-complian
 import { CollaborateurDetailsDocuments } from './collaborateur-details-documents';
 import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { useMaxWidthLg } from '@/hooks/use-max-width-lg';
+import { useOfficialDocumentPreview } from '@/hooks/use-official-document-preview';
 
 interface CollaborateurDetailsSheetProps {
   open: boolean;
@@ -65,12 +66,16 @@ const escapeHtml = (value: any) => {
     .replace(/'/g, '&#39;');
 };
 
-const CollaborateurFicheTemplate = ({ 
+export const CollaborateurFicheTemplate = ({ 
   collaborateur, 
-  companyProfile 
+  companyProfile,
+  embedded = false,
+  theme = 'collaborateur',
 }: { 
   collaborateur: Collaborateur; 
   companyProfile: any;
+  embedded?: boolean;
+  theme?: 'collaborateur' | 'formateur';
 }) => {
   const companyLogo = companyProfile?.companyProfile?.logo || toAbsoluteUrl('/media/app/default-logo.svg');
   const companyName = companyProfile?.companyProfile?.companyName || companyProfile?.tenant?.name || 'LMS';
@@ -105,7 +110,16 @@ const CollaborateurFicheTemplate = ({
   };
 
   return (
-    <div className="fiche-doc fiche-print w-full bg-white p-8 text-slate-900" style={{ width: '100%', margin: 0, fontFamily: 'sans-serif' }}>
+    <div
+      className={
+        embedded
+          ? 'official-fiche-body w-full text-slate-900'
+          : 'fiche-doc fiche-print w-full bg-white p-8 text-slate-900'
+      }
+      style={embedded ? undefined : { width: '100%', margin: 0, fontFamily: 'sans-serif' }}
+    >
+      {!embedded ? (
+      <>
       {/* Header */}
       <div className="flex justify-between items-start border-b-2 border-slate-900 pb-3 mb-4">
         <div className="flex gap-4 items-center">
@@ -118,7 +132,9 @@ const CollaborateurFicheTemplate = ({
           </div>
           <div>
             <h1 className="text-xl font-black uppercase tracking-tighter leading-none text-slate-900">{companyName}</h1>
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Dossier Administratif Collaborateur</p>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">
+              {theme === 'formateur' ? 'Dossier Administratif Formateur' : 'Dossier Administratif Collaborateur'}
+            </p>
           </div>
         </div>
         <div className="text-right">
@@ -128,6 +144,8 @@ const CollaborateurFicheTemplate = ({
           <div className="text-xs font-bold text-slate-900 uppercase">{collaborateur.id.substring(0, 12)}</div>
         </div>
       </div>
+      </>
+      ) : null}
 
       {/* Main Profile Header - Optimized size and larger avatar */}
       <div className="grid grid-cols-12 gap-6 mb-6 bg-slate-50 p-3 rounded-xl border border-slate-100">
@@ -324,6 +342,7 @@ const CollaborateurFicheTemplate = ({
         </div>
       </div>
 
+      {!embedded ? (
       <div className="mt-4 pt-3 border-t-2 border-slate-900">
         <div className="flex justify-between px-8 mb-2">
           <div className="text-center">
@@ -341,6 +360,7 @@ const CollaborateurFicheTemplate = ({
           </p>
         </div>
       </div>
+      ) : null}
     </div>
   );
 };
@@ -364,7 +384,6 @@ export function CollaborateurDetailsSheet({
   const [collaborateur, setCollaborateur] = useState<Collaborateur | null>(initialCollaborateur);
   const [isLoadingEmail, setIsLoadingEmail] = useState(false);
   const [isLoadingRestore, setIsLoadingRestore] = useState(false);
-  const [isPrinting, setIsPrinting] = useState(false);
   const [activeTab, setActiveTab] = useState(initialTab);
 
   useEffect(() => {
@@ -374,7 +393,7 @@ export function CollaborateurDetailsSheet({
   const [complianceStatus, setComplianceStatus] = useState<any>(null);
   const [companyProfile, setCompanyProfile] = useState<any>(null);
   const settingsFormRef = useRef<HTMLFormElement>(null);
-  const printRef = useRef<HTMLDivElement>(null);
+  const { openPreview, isOpening: isOpeningOfficialDoc } = useOfficialDocumentPreview();
 
   useEffect(() => {
     if (initialCollaborateur) {
@@ -530,64 +549,12 @@ export function CollaborateurDetailsSheet({
   };
 
   const handlePrintCollaborateurFiche = () => {
-    if (typeof window !== 'undefined' && printRef.current) {
-      const printTarget = printRef.current;
-      const headMarkup = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-        .map((node) => node.outerHTML)
-        .join('\n');
-
-      const printFrame = document.createElement('iframe');
-      printFrame.setAttribute('aria-hidden', 'true');
-      printFrame.style.position = 'fixed';
-      printFrame.style.width = '0';
-      printFrame.style.height = '0';
-      printFrame.style.right = '0';
-      printFrame.style.bottom = '0';
-      printFrame.style.border = '0';
-      printFrame.style.opacity = '0';
-
-      const cleanup = () => {
-        window.setTimeout(() => {
-          printFrame.remove();
-        }, 150);
-      };
-
-      const printHtml = `
-        <!DOCTYPE html>
-        <html lang="fr">
-          <head>
-            <meta charset="utf-8" />
-            <title>Fiche ${escapeHtml(theme === 'formateur' ? 'Formateur' : 'Collaborateur')} - ${escapeHtml(collaborateur?.name || '')}</title>
-            ${headMarkup}
-            <style>
-              @media print {
-                @page { size: A4; margin: 15mm; }
-                body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-              }
-            </style>
-          </head>
-          <body>
-            ${printTarget.innerHTML}
-          </body>
-        </html>
-      `;
-
-      printFrame.addEventListener('load', () => {
-        const frameWindow = printFrame.contentWindow;
-        if (!frameWindow) {
-          cleanup();
-          return;
-        }
-        frameWindow.onafterprint = cleanup;
-        window.setTimeout(() => {
-          frameWindow.focus();
-          frameWindow.print();
-        }, 300);
-      }, { once: true });
-
-      document.body.appendChild(printFrame);
-      printFrame.srcdoc = printHtml;
-    }
+    if (!collaborateur?.id) return;
+    void openPreview({
+      templateKey: theme === 'formateur' ? 'rh.fiche-formateur' : 'rh.fiche-collaborateur',
+      userId: collaborateur.id,
+      autoPrint: true,
+    });
   };
 
   const pageShellClass =
@@ -842,8 +809,9 @@ export function CollaborateurDetailsSheet({
                 <Button
                   variant="outline"
                   onClick={handlePrintCollaborateurFiche}
+                  disabled={isOpeningOfficialDoc}
                   className={cn(
-                    'shrink-0 font-bold border-none bg-blue-600 hover:bg-blue-700 text-white gap-2',
+                    'shrink-0 font-bold border-none bg-indigo-600 hover:bg-indigo-700 text-white gap-2',
                     !isPage && 'max-md:hidden',
                   )}
                 >
@@ -871,11 +839,6 @@ export function CollaborateurDetailsSheet({
             )}
           </div>
         </SheetFooter>
-        <div className="hidden" aria-hidden="true" ref={printRef}>
-          {collaborateur && (
-            <CollaborateurFicheTemplate collaborateur={collaborateur} companyProfile={companyProfile} />
-          )}
-        </div>
     </>
   );
 

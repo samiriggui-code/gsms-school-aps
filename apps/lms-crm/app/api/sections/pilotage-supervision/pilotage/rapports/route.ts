@@ -12,7 +12,7 @@ function parsePeriod(raw: string | null, customRange?: { start: Date; end: Date 
   if (raw === 'custom' && customRange) return 'custom';
   if (raw && PERIODS.has(raw) && raw !== 'custom') return raw as PilotagePeriod;
   if (customRange) return 'custom';
-  return 'month';
+  return 'week';
 }
 
 function parseCustomRange(url: URL): { start: Date; end: Date } | undefined {

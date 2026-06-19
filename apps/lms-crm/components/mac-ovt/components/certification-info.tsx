@@ -10,7 +10,7 @@ export function MacOvtCertificationInfo() {
     ...step,
     icon:
       index === 0 ? (
-        <History className="size-5 text-blue-500" />
+        <History className="size-5 text-indigo-500" />
       ) : index === 1 ? (
         <ClipboardCheck className="size-5 text-orange-500" />
       ) : (

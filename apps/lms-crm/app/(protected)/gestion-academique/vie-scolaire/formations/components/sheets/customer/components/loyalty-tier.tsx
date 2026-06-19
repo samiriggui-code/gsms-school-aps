@@ -81,7 +81,7 @@ export function LoyaltyTier({ loyalty }: Props) {
                   step={1}
                   className="relative w-full h-1.5 flex items-center"
                 >
-                  <div className="absolute w-full h-1.5 rounded-sm bg-gradient-to-r from-pink-500 via-blue-500 via-green-400 via-yellow-400 to-orange-500" />
+                  <div className="absolute w-full h-1.5 rounded-sm bg-gradient-to-r from-pink-500 via-indigo-500 via-green-400 via-yellow-400 to-orange-500" />
                   <SliderThumb className="bg-primary" />
                 </Slider>
               </div>

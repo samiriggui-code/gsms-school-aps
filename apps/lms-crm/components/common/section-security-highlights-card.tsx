@@ -65,7 +65,7 @@ export function SectionSecurityHighlightsCard({
             ) : row.trend === 'down' || (!row.increase && row.trend !== 'neutral') ? (
               <TrendingDown className="text-destructive size-4" />
             ) : (
-              <span className="text-blue-500 font-bold size-4 flex items-center justify-center text-lg">•</span>
+              <span className="text-indigo-500 font-bold size-4 flex items-center justify-center text-lg">•</span>
             )}
             {row.stats}%
           </span>
@@ -114,7 +114,7 @@ export function SectionSecurityHighlightsCard({
           </div>
         </div>
         <div className="flex items-center gap-1 mb-1.5">
-          <div className="bg-blue-500 h-2 w-full max-w-[50%] rounded-xs" />
+          <div className="bg-indigo-500 h-2 w-full max-w-[50%] rounded-xs" />
           <div className="bg-green-500 h-2 w-full max-w-[30%] rounded-xs" />
           <div className="bg-orange-500 h-2 w-full max-w-[20%] rounded-xs" />
         </div>

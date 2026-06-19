@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   addWeeks,
   format,
@@ -13,7 +14,7 @@ import {
 } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Loader2, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Loader2, RotateCcw, X } from 'lucide-react';
 import {
   classifyVenueRoomUsage,
   venueUsageLabelFr,
@@ -46,6 +47,17 @@ type PlanningSession = {
   trainerName: string | null;
 };
 
+type PlanningBooking = {
+  id: string;
+  title: string;
+  kind: string;
+  startAt: string;
+  endAt: string;
+  notes: string | null;
+  organizerName: string | null;
+  source: 'booking';
+};
+
 type PlanningRoom = {
   id: string;
   name: string;
@@ -53,6 +65,7 @@ type PlanningRoom = {
   capacity: number | null;
   floorLabel: string | null;
   sessions: PlanningSession[];
+  bookings?: PlanningBooking[];
 };
 
 type PlanningPayload = {
@@ -107,7 +120,38 @@ function closedCellLabel(day: Date, hasSessions: boolean): string {
   return 'Fermé';
 }
 
-export function SallesPlanning() {
+function bookingCoversDay(booking: PlanningBooking, day: Date): boolean {
+  const start = startOfDay(new Date(booking.startAt));
+  const end = startOfDay(new Date(booking.endAt));
+  const d = startOfDay(day);
+  return d >= start && d <= end;
+}
+
+function bookingsForDay(bookings: PlanningBooking[] | undefined, day: Date): PlanningBooking[] {
+  return (bookings ?? []).filter((b) => bookingCoversDay(b, day));
+}
+
+function bookingUsageKind(kind: string): VenueRoomUsageKind {
+  if (kind === 'STAFF_MEETING') return 'reunion_personnel';
+  if (kind === 'INFO_MEETING') return 'reunion_info';
+  return 'autre';
+}
+
+function bookingKindLabel(kind: string): string {
+  if (kind === 'STAFF_MEETING') return 'Réunion personnel';
+  if (kind === 'INFO_MEETING') return 'Réunion info';
+  return 'Réservation';
+}
+
+function dayHasEvents(room: PlanningRoom, day: Date): boolean {
+  return (
+    sessionsForDay(room.sessions, day).length > 0 ||
+    bookingsForDay(room.bookings, day).length > 0
+  );
+}
+
+export function SallesPlanning({ onAddBooking }: { onAddBooking?: () => void }) {
+  const queryClient = useQueryClient();
   const [weekAnchor, setWeekAnchor] = useState(() =>
     startOfWeek(new Date(), { weekStartsOn: 1 }),
   );
@@ -118,6 +162,26 @@ export function SallesPlanning() {
   );
   const weekEnd = useMemo(() => schoolPlanningWeekEnd(weekStart), [weekStart]);
   const days = useMemo(() => getSchoolPlanningDays(weekStart), [weekStart]);
+
+  const cancelBookingMutation = useMutation({
+    mutationFn: async (bookingId: string) => {
+      const res = await apiFetch(
+        `/api/sections/gestion-ressources/equipements/salles/bookings/${bookingId}`,
+        { method: 'DELETE' },
+      );
+      if (!res.ok) {
+        const j = await res.json();
+        throw new Error(j?.error?.message || j?.message || 'Annulation impossible');
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success('Réservation annulée');
+      void queryClient.invalidateQueries({ queryKey: ['venue-rooms-planning'] });
+      void queryClient.invalidateQueries({ queryKey: ['venue-rooms-list'] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const { data, isLoading, isError, refetch, isRefetching } = useQuery({
     queryKey: ['venue-rooms-planning', format(weekStart, 'yyyy-MM-dd')],
@@ -177,6 +241,15 @@ export function SallesPlanning() {
             </Button>
             <Button
               type="button"
+              variant="secondary"
+              size="sm"
+              className="h-9 gap-1.5 text-xs font-bold"
+              onClick={onAddBooking}
+            >
+              Réunion staff
+            </Button>
+            <Button
+              type="button"
               variant="outline"
               size="sm"
               className="h-9 gap-1.5"
@@ -196,6 +269,10 @@ export function SallesPlanning() {
               {venueUsageLabelFr(kind)}
             </span>
           ))}
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-sm border bg-violet-500/60 border-violet-500/80" />
+            Réunion staff / ponctuelle
+          </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="size-2.5 rounded-sm border bg-emerald-500/20 border-emerald-500/40" />
             Libre (jour ouvré)
@@ -282,8 +359,10 @@ export function SallesPlanning() {
 
                   {days.map((day) => {
                     const daySessions = sessionsForDay(room.sessions, day);
-                    const closed = isSchoolClosedForPlanning(day, daySessions.length > 0);
-                    const isFree = daySessions.length === 0 && !closed;
+                    const dayBookings = bookingsForDay(room.bookings, day);
+                    const eventCount = daySessions.length + dayBookings.length;
+                    const closed = isSchoolClosedForPlanning(day, eventCount > 0);
+                    const isFree = eventCount === 0 && !closed;
                     const holiday = isFrenchPublicHoliday(day);
 
                     return (
@@ -293,11 +372,11 @@ export function SallesPlanning() {
                           'min-h-[88px] p-1.5 border-r border-border/30 last:border-r-0 align-top',
                           isToday(day) && !closed && 'bg-primary/[0.03]',
                           isFree && 'bg-emerald-500/[0.04]',
-                          closed && !daySessions.length && 'bg-muted/40',
-                          closed && daySessions.length > 0 && 'bg-rose-500/[0.06]',
+                          closed && !eventCount && 'bg-muted/40',
+                          closed && eventCount > 0 && 'bg-rose-500/[0.06]',
                         )}
                       >
-                        {daySessions.length === 0 ? (
+                        {eventCount === 0 ? (
                           <span
                             className={cn(
                               'block text-[10px] font-medium px-1 py-2 leading-snug',
@@ -330,7 +409,7 @@ export function SallesPlanning() {
                                   className={cn(
                                     'block rounded-md border px-2 py-1.5 text-[10px] leading-snug transition-colors',
                                     USAGE_STYLES[usage],
-                                    holiday && closed && daySessions.length > 0 &&
+                                    holiday && closed && eventCount > 0 &&
                                       'ring-1 ring-rose-400/50',
                                   )}
                                   title={[
@@ -360,6 +439,56 @@ export function SallesPlanning() {
                                     </span>
                                   ) : null}
                                 </Link>
+                              );
+                            })}
+                            {dayBookings.map((booking) => {
+                              const usage = bookingUsageKind(booking.kind);
+                              return (
+                                <div
+                                  key={`${booking.id}-${format(day, 'yyyy-MM-dd')}`}
+                                  className={cn(
+                                    'relative rounded-md border px-2 py-1.5 text-[10px] leading-snug',
+                                    USAGE_STYLES[usage],
+                                    holiday && closed && eventCount > 0 &&
+                                      'ring-1 ring-rose-400/50',
+                                  )}
+                                  title={[
+                                    booking.title,
+                                    bookingKindLabel(booking.kind),
+                                    booking.organizerName,
+                                    booking.notes,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(' — ')}
+                                >
+                                  <button
+                                    type="button"
+                                    className="absolute top-1 right-1 rounded p-0.5 opacity-60 hover:opacity-100 hover:bg-background/60"
+                                    aria-label="Annuler la réservation"
+                                    disabled={cancelBookingMutation.isPending}
+                                    onClick={() => {
+                                      if (
+                                        window.confirm(
+                                          `Annuler la réservation « ${booking.title} » ?`,
+                                        )
+                                      ) {
+                                        cancelBookingMutation.mutate(booking.id);
+                                      }
+                                    }}
+                                  >
+                                    <X className="size-3" />
+                                  </button>
+                                  <span className="font-bold block line-clamp-2 pr-4">
+                                    {booking.title}
+                                  </span>
+                                  <span className="opacity-80 block line-clamp-1">
+                                    {bookingKindLabel(booking.kind)}
+                                  </span>
+                                  <span className="opacity-70 block mt-0.5">
+                                    {format(new Date(booking.startAt), 'HH:mm')} →{' '}
+                                    {format(new Date(booking.endAt), 'HH:mm')}
+                                  </span>
+                                </div>
                               );
                             })}
                           </div>

@@ -6,6 +6,9 @@ import type {
   PrismaClient,
 } from '@repo/database';
 import { NotificationService } from './notifications';
+import {
+  defaultAudienceForEvent,
+} from './notification-audience';
 
 /** Clés de module / sous-module (widgets landing + filtre notifs). */
 export const CRM_MODULE_KEYS = {
@@ -16,6 +19,7 @@ export const CRM_MODULE_KEYS = {
   FINANCE: 'administration-facturation.finance',
   SUPPORT: 'support-qualite.support',
   PILOTAGE: 'pilotage-supervision.pilotage',
+  GOUVERNANCE: 'securite-configuration.gouvernance-donnees',
 } as const;
 
 export type CrmModuleKey = (typeof CRM_MODULE_KEYS)[keyof typeof CRM_MODULE_KEYS] | string;
@@ -73,10 +77,34 @@ export const CRM_EVENT_CATALOG: Record<
     labelFr: 'Dossier candidat',
   },
   'compliance.deadline': {
-    moduleKey: CRM_MODULE_KEYS.RH,
+    moduleKey: CRM_MODULE_KEYS.GOUVERNANCE,
     category: 'TEAM',
     severity: 'CRITICAL',
     labelFr: 'Échéance conformité',
+  },
+  'compliance.document.requested': {
+    moduleKey: CRM_MODULE_KEYS.GOUVERNANCE,
+    category: 'ACADEMIC',
+    severity: 'WARNING',
+    labelFr: 'Demande de pièce',
+  },
+  'compliance.document.missing': {
+    moduleKey: CRM_MODULE_KEYS.GOUVERNANCE,
+    category: 'ACADEMIC',
+    severity: 'WARNING',
+    labelFr: 'Pièces manquantes',
+  },
+  'compliance.dossier.complete': {
+    moduleKey: CRM_MODULE_KEYS.GOUVERNANCE,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Dossier documentaire complet',
+  },
+  'compliance.document.expiring': {
+    moduleKey: CRM_MODULE_KEYS.GOUVERNANCE,
+    category: 'ACADEMIC',
+    severity: 'WARNING',
+    labelFr: 'Document expirant',
   },
   'team.broadcast': {
     moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
@@ -138,6 +166,60 @@ export const CRM_EVENT_CATALOG: Record<
     severity: 'INFO',
     labelFr: 'Réservation salle modifiée',
   },
+  'venue.room.booking_created': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Réservation ponctuelle salle',
+  },
+  'venue.room.booking_cancelled': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Réservation salle annulée',
+  },
+  'equipment.assigned': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Matériel réservé (session)',
+  },
+  'equipment.released': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Matériel libéré',
+  },
+  'equipment.batch_released': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Sessions terminées — matériel',
+  },
+  'equipment.maintenance.started': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'WARNING',
+    labelFr: 'Départ maintenance',
+  },
+  'equipment.maintenance.completed': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Retour stock maintenance',
+  },
+  'equipment.maintenance.out_of_service': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'WARNING',
+    labelFr: 'Équipement hors service',
+  },
+  'venue.room.session_ended': {
+    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    labelFr: 'Session terminée — salle libre',
+  },
   'pilotage.report.generated': {
     moduleKey: CRM_MODULE_KEYS.PILOTAGE,
     category: 'SYSTEM',
@@ -157,6 +239,8 @@ export type EnqueueCrmEventInput = {
   severity?: CrmEventSeverity;
   audience?: CrmEventAudience;
   userIds?: string[];
+  roleSlugs?: string[];
+  permissionSlugs?: string[];
   payload?: Record<string, unknown>;
   createdById?: string | null;
   /** Évite de re-notifier (ex. même offre catalogue). */
@@ -189,6 +273,10 @@ export class CrmEventService {
     const moduleKey = input.moduleKey ?? catalog?.moduleKey ?? CRM_MODULE_KEYS.VIE_SCOLAIRE;
     const category = input.category ?? catalog?.category ?? 'SYSTEM';
     const severity = input.severity ?? catalog?.severity ?? 'INFO';
+    const audienceDefaults = defaultAudienceForEvent(moduleKey, category);
+    const audience = input.audience ?? audienceDefaults.audience;
+    const roleSlugs = input.roleSlugs ?? audienceDefaults.roleSlugs ?? [];
+    const permissionSlugs = input.permissionSlugs ?? audienceDefaults.permissionSlugs ?? [];
 
     if (input.dedupeKey) {
       const existing = await this.prisma.crmEventOutbox.findFirst({
@@ -199,10 +287,10 @@ export class CrmEventService {
         },
         select: { id: true },
       });
-      if (existing) return existing;
+      if (existing) return { id: existing.id, created: false };
     }
 
-    return this.prisma.crmEventOutbox.create({
+    const row = await this.prisma.crmEventOutbox.create({
       data: {
         eventType: input.eventType,
         moduleKey,
@@ -212,8 +300,10 @@ export class CrmEventService {
         title: input.title,
         body: input.body,
         href: input.href ?? null,
-        audience: input.audience ?? 'BROADCAST_ACTIVE_USERS',
+        audience,
         userIds: input.userIds ?? [],
+        roleSlugs,
+        permissionSlugs,
         payload: {
           ...(input.payload ?? {}),
           ...(input.dedupeKey ? { dedupeKey: input.dedupeKey } : {}),
@@ -221,21 +311,69 @@ export class CrmEventService {
         createdById: input.createdById ?? null,
       },
     });
+    return { id: row.id, created: true };
   }
 
   private async resolveAudience(
     audience: CrmEventAudience,
     userIds: string[],
+    roleSlugs: string[],
+    permissionSlugs: string[],
     excludeUserId?: string | null,
   ): Promise<string[]> {
+    const exclude = excludeUserId ?? undefined;
+    const baseWhere = { status: 'ACTIVE' as const, isTrashed: false };
+
     if (audience === 'USER_IDS') {
-      return Array.from(new Set(userIds.filter(Boolean))).filter((id) => id !== excludeUserId);
+      return Array.from(new Set(userIds.filter(Boolean))).filter((id) => id !== exclude);
     }
-    const users = await this.prisma.user.findMany({
-      where: { status: 'ACTIVE', isTrashed: false },
-      select: { id: true },
-    });
-    return users.map((u) => u.id).filter((id) => id !== excludeUserId);
+
+    if (audience === 'ROLE_SLUGS' && roleSlugs.length > 0) {
+      const users = await this.prisma.user.findMany({
+        where: {
+          ...baseWhere,
+          role: { slug: { in: roleSlugs } },
+        },
+        select: { id: true },
+      });
+      return users.map((u) => u.id).filter((id) => id !== exclude);
+    }
+
+    if (audience === 'PERMISSION_SLUGS' && permissionSlugs.length > 0) {
+      const users = await this.prisma.user.findMany({
+        where: {
+          ...baseWhere,
+          role: {
+            permissions: {
+              some: {
+                permission: { slug: { in: permissionSlugs } },
+              },
+            },
+          },
+        },
+        select: { id: true },
+      });
+      const ids = users.map((u) => u.id).filter((id) => id !== exclude);
+
+      const superadmins = await this.prisma.user.findMany({
+        where: { ...baseWhere, role: { slug: 'superadmin' } },
+        select: { id: true },
+      });
+      for (const row of superadmins) {
+        if (row.id !== exclude && !ids.includes(row.id)) ids.push(row.id);
+      }
+      return ids;
+    }
+
+    if (audience === 'BROADCAST_ACTIVE_USERS') {
+      const users = await this.prisma.user.findMany({
+        where: baseWhere,
+        select: { id: true },
+      });
+      return users.map((u) => u.id).filter((id) => id !== exclude);
+    }
+
+    return [];
   }
 
   /** Worker + rappel optionnel après enqueue HTTP. */
@@ -259,6 +397,8 @@ export class CrmEventService {
         const targets = await this.resolveAudience(
           event.audience,
           event.userIds,
+          event.roleSlugs,
+          event.permissionSlugs,
           event.createdById,
         );
 

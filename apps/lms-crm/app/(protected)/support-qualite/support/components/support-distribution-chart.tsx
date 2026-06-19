@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#8b5cf6'];
 
 interface ChartItem {
   name: string;

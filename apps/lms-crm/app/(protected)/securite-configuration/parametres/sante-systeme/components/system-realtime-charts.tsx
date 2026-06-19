@@ -105,7 +105,7 @@ export function SystemRealtimeCharts() {
       curve: 'smooth',
       width: [3, 2, 2],
     },
-    colors: ['#ef4444', '#3b82f6', '#10b981'], // Red, Blue, Green
+    colors: ['#ef4444', '#6366f1', '#10b981'], // Red, Blue, Green
     xaxis: {
       categories: history.timestamps,
       labels: {

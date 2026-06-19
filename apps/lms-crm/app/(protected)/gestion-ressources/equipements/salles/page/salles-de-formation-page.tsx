@@ -9,15 +9,17 @@ import { SallesStats } from './components/salles-stats';
 import { SallesList } from './components/salles-list';
 import { SallesPlanning } from './components/salles-planning';
 import { SalleAddSheet } from './components/salle-add-sheet';
+import { SalleBookingAddSheet } from './components/salle-booking-add-sheet';
 
 export default function SallesDeFormationPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
+  const [isBookingSheetOpen, setIsBookingSheetOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-5 lg:gap-7.5 w-full min-w-0 overflow-hidden">
       <Container>
-        <SallesPageToolbar onAdd={() => setIsAddSheetOpen(true)} />
+        <SallesPageToolbar onAdd={() => setIsAddSheetOpen(true)} searchQuery={searchQuery} />
       </Container>
 
       <Container className="space-y-5 lg:space-y-7.5">
@@ -46,12 +48,13 @@ export default function SallesDeFormationPage() {
           </TabsContent>
 
           <TabsContent value="planning" className="mt-0 focus-visible:outline-none">
-            <SallesPlanning />
+            <SallesPlanning onAddBooking={() => setIsBookingSheetOpen(true)} />
           </TabsContent>
         </Tabs>
       </Container>
 
       <SalleAddSheet open={isAddSheetOpen} onOpenChange={setIsAddSheetOpen} />
+      <SalleBookingAddSheet open={isBookingSheetOpen} onOpenChange={setIsBookingSheetOpen} />
     </div>
   );
 }

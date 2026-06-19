@@ -39,4 +39,30 @@ export {
   type PreinscriptionEmailPayload,
 } from './flows';
 
+export {
+  sendComplianceDocumentRequestEmail,
+  sendComplianceDocumentRequestReminderEmail,
+  sendComplianceDocumentReceivedEmail,
+  sendComplianceDocumentValidatedEmail,
+  sendComplianceDocumentRejectedEmail,
+  sendComplianceDocumentExpiringEmail,
+  sendComplianceDossierCompleteEmail,
+  sendComplianceDossierIncompleteAdminEmail,
+  type ComplianceMailContext,
+  type ComplianceAdminAlertPayload,
+} from './compliance-flows';
+
+import {
+  sendResourceOpsEmails,
+  type ResourceOpsEmailInput,
+} from './resource-ops-flows';
+
+export { sendResourceOpsEmails, type ResourceOpsEmailInput };
+
+export {
+  sendPilotageReportReadyEmail,
+  isPilotageReportEmailEnabled,
+  type PilotageReportEmailInput,
+} from './report-flows';
+
 export type { DevisQuoteEmailProps } from '@repo/emails';

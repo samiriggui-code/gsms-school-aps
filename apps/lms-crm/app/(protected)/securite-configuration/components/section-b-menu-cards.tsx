@@ -29,7 +29,8 @@ const items = [
     icon: Database,
     backgroundImage: 'bg-3',
     subSections: [
-      'storage-conformite',
+      'conformite',
+      'storage',
       'demandes-documents',
       'corbeille-archivage',
       'audit-documentaire',

@@ -1,5 +1,4 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import {
@@ -7,10 +6,25 @@ import {
   reviewLmsContent,
 } from '@/lib/lms/admin-content-review-data';
 import { isLmsContentReviewRequired } from '@/lib/portal/lms-content-review';
+import {
+  CRM_PERMISSION,
+  LMS_PERMISSION,
+  sessionHasAnyPermission,
+} from '@/lib/auth/crm-permissions';
+import { getServerSession } from 'next-auth';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+
+  if (
+    !sessionHasAnyPermission(session, [
+      CRM_PERMISSION.academiqueView,
+      LMS_PERMISSION.contentReview,
+    ])
+  ) {
+    return fail('Accès refusé.', 403);
+  }
 
   try {
     const items = await listPendingLmsContent();
@@ -23,6 +37,15 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+
+  if (
+    !sessionHasAnyPermission(session, [
+      LMS_PERMISSION.contentReview,
+      LMS_PERMISSION.contentPublish,
+    ])
+  ) {
+    return fail('Accès refusé — permission de validation LMS requise.', 403);
+  }
 
   let body: {
     kind?: 'chapter' | 'activity';

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -18,7 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TeamSchema, TeamSchemaType } from '../forms/team-schema';
-import { TEAM_TYPES, TEAM_SECTORS } from '../constants';
+import { TEAM_TYPES, TEAM_SECTORS, TEAM_ILLUSTRATION_OPTIONS } from '../constants';
+import { teamIllustrationSrc } from '../lib/team-display';
 import { Team } from '@/app/models/team';
 import { RefObject } from 'react';
 import { cn } from '@/lib/utils';
@@ -39,23 +40,48 @@ export function TeamDetailsSettings({ team, formRef }: TeamDetailsSettingsProps)
       if (!response.ok) throw new Error('Failed to fetch sites');
       return response.json();
     },
-    staleTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const { data: orgUnitsData } = useQuery({
+    queryKey: ['rh-org-units'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/sections/gestion-ressources/rh/org-units');
+      if (!res.ok) return { data: [] };
+      return res.json();
+    },
+    staleTime: 60_000,
+  });
+
+  const { data: staffData } = useQuery({
+    queryKey: ['rh-staff-leader-pick'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/sections/gestion-ressources/rh/collaborateurs?page=1&limit=200');
+      if (!res.ok) return [];
+      const j = await res.json();
+      return Array.isArray(j?.data) ? j.data : [];
+    },
+    staleTime: 60_000,
   });
 
   const sites = Array.isArray(sitesData) ? sitesData : [];
+  const orgUnits = (orgUnitsData?.data as any[]) ?? [];
+  const staffList = staffData ?? [];
 
-  const illustrations = Array.from({ length: 35 }, (_, i) => `${i + 1}.jpg`);
+  const illustrations = TEAM_ILLUSTRATION_OPTIONS;
 
   const form = useForm<TeamSchemaType>({
     resolver: zodResolver(TeamSchema),
     defaultValues: {
       name: team.name,
       description: team.description || '',
-      type: (team as any).type || 'SECURITE',
-      sector: (team as any).sector || 'CLIENT',
+      type: (team as any).type || 'PEDAGOGICAL',
+      sector: (team as any).sector || 'CAMPUS',
       siteId: (team as any).siteId || 'none',
+      orgUnitId: (team as any).orgUnitId || 'none',
+      leaderId: (team as any).leaderId || 'none',
       memberIds: team.members?.map(m => m.tenantUserId) || [],
-      image: (team as any).image || '1.jpg',
+      image: (team as any).image || TEAM_ILLUSTRATION_OPTIONS[0],
     },
   });
 
@@ -181,6 +207,66 @@ export function TeamDetailsSettings({ team, formRef }: TeamDetailsSettingsProps)
             )}
           />
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <FormField
+              control={form.control}
+              name="orgUnitId"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel className="text-2sm font-semibold text-foreground">Pôle / service</FormLabel>
+                  <Select
+                    onValueChange={(v) => field.onChange(v === 'none' ? null : v)}
+                    value={field.value ?? 'none'}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="h-10 bg-secondary/50 border-border focus:bg-background transition-colors">
+                        <SelectValue placeholder="Choisir un pôle" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">Non rattaché</SelectItem>
+                      {orgUnits.map((ou: { id: string; name: string }) => (
+                        <SelectItem key={ou.id} value={ou.id}>
+                          {ou.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="leaderId"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel className="text-2sm font-semibold text-foreground">Responsable d&apos;équipe</FormLabel>
+                  <Select
+                    onValueChange={(v) => field.onChange(v === 'none' ? null : v)}
+                    value={field.value ?? 'none'}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="h-10 bg-secondary/50 border-border focus:bg-background transition-colors">
+                        <SelectValue placeholder="Choisir un responsable" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">Non défini</SelectItem>
+                      {staffList.map((u: { id: string; name?: string; email?: string }) => (
+                        <SelectItem key={u.id} value={u.id}>
+                          {u.name ?? u.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="name"
@@ -214,7 +300,7 @@ export function TeamDetailsSettings({ team, formRef }: TeamDetailsSettingsProps)
                   )}
                 >
                   <img 
-                    src={`/media/images/600x600/${illus}`} 
+                    src={teamIllustrationSrc(illus)} 
                     alt={`Illustration ${illus}`}
                     className="w-full h-full object-cover"
                   />
