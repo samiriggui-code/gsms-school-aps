@@ -73,7 +73,7 @@ export default function MonProfilPage() {
       <Container className="pb-8">
         <Alert variant="destructive">
           <AlertTitle>Session requise</AlertTitle>
-          <AlertDescription>Connectez-vous pour accéder à votre profil public.</AlertDescription>
+          <AlertDescription>Connectez-vous pour accéder à votre fiche métier.</AlertDescription>
         </Alert>
       </Container>
     );
@@ -115,7 +115,9 @@ export default function MonProfilPage() {
         </ToolbarHeading>
         <ToolbarActions>
           <Button variant="outline" size="sm" asChild>
-            <Link href={`/securite-configuration/acces/users/${session.user.id}`}>Profil</Link>
+            <Link href={`/securite-configuration/acces/users/${session.user.id}`}>
+              Mon compte IAM
+            </Link>
           </Button>
         </ToolbarActions>
       </Toolbar>

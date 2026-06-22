@@ -41,6 +41,10 @@ import {
   teamVisualSrc,
   isSessionPedagogicalTeam,
   sessionTeamSubtitle,
+  resolveTeamSiteLabel,
+  resolveTeamLifecycleMeta,
+  countSessionTeamMembersByRole,
+  permanentTeamKindLabel,
 } from '../lib/team-display';
 import { TeamPhoto } from './team-photo';
 
@@ -131,7 +135,8 @@ const TeamDetailsSheet = ({
               const typeMeta = resolveTeamTypeMeta(team.type);
               const TypeIcon = typeMeta.icon;
               const sessionTeam = isSessionPedagogicalTeam(team);
-              const lifecycleLabel = String(team.lifecycleStatus || 'ACTIVE').replace(/_/g, ' ');
+              const lifecycle = resolveTeamLifecycleMeta(team.lifecycleStatus);
+              const roleCounts = countSessionTeamMembersByRole(team);
 
               return (
             <>
@@ -144,6 +149,15 @@ const TeamDetailsSheet = ({
                     <Badge variant="outline" appearance="light" size="sm" className="font-bold uppercase text-[10px] px-2">
                        {team.members?.length || 0} Membres
                     </Badge>
+                    {sessionTeam ? (
+                      <Badge variant="outline" size="sm" className={cn('font-bold uppercase text-[10px] px-2', lifecycle.className)}>
+                        {lifecycle.label}
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" size="sm" className="font-bold uppercase text-[10px] px-2 bg-indigo-500/10 text-indigo-700 border-indigo-500/20">
+                        Équipe permanente
+                      </Badge>
+                    )}
                   </div>
                   <div className="flex items-center flex-wrap gap-2 text-2sm">
                     <div className="flex items-center gap-1.5 bg-muted/30 px-2 py-0.5 rounded-md border border-border/50">
@@ -165,7 +179,7 @@ const TeamDetailsSheet = ({
                   <div className="w-full shrink-0 lg:w-[280px] py-5 lg:pe-5 space-y-4">
                     <div className="w-full h-[240px] bg-muted/5 border border-border/60 rounded-2xl flex items-center justify-center overflow-hidden relative group transition-all duration-300 hover:bg-muted/10">
                        <TeamPhoto
-                         team={{ image: team.image, leader }}
+                         team={{ image: team.image, leader, type: team.type }}
                          alt={team.name}
                          className="size-full"
                          imgClassName="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -176,24 +190,49 @@ const TeamDetailsSheet = ({
                            </div>
                          }
                        />
-                       <div className="absolute top-4 right-4">
-                        <Badge variant="outline" className="bg-background text-[10px] font-bold uppercase">
-                          {lifecycleLabel}
-                        </Badge>
+                       <div className="absolute top-4 right-4 flex flex-col gap-1 items-end">
+                        {sessionTeam ? (
+                          <>
+                            <Badge variant="outline" className={cn('text-[10px] font-bold uppercase bg-background', lifecycle.className)}>
+                              {lifecycle.shortLabel}
+                            </Badge>
+                            <Badge variant="secondary" className="text-[9px] font-bold uppercase">
+                              Équipe session
+                            </Badge>
+                          </>
+                        ) : (
+                          <Badge variant="outline" className="text-[10px] font-bold uppercase bg-indigo-500/10 text-indigo-700 border-indigo-500/20">
+                            {permanentTeamKindLabel(team.type)}
+                          </Badge>
+                        )}
                       </div>
                     </div>
 
                     <div className="space-y-3">
                       {[
-                        { label: "Nom équipe", value: team.name },
+                        { label: 'Nom équipe', value: team.name },
                         ...(sessionTeam && team.formationSession?.formation?.name
-                          ? [{ label: "Formation", value: team.formationSession.formation.name }]
+                          ? [{ label: 'Formation', value: team.formationSession.formation.name }]
                           : []),
-                        { label: "Type", value: TEAM_TYPES.find(t => t.id === team.type)?.label || "Sécurité" },
-                        { label: "Secteur", value: TEAM_SECTORS.find(s => s.id === team.sector)?.label || "Site Client" },
-                        { label: "Site", value: (team as any).Site?.name || "Non affecté" },
-                        { label: "Date création", value: formatDate(new Date(team.createdAt)) },
-                        { label: "Total membres", value: team.members?.length || 0 }
+                        ...(sessionTeam && team.formationSession?.dateDisplayLabel
+                          ? [{ label: 'Période session', value: team.formationSession.dateDisplayLabel }]
+                          : []),
+                        ...(sessionTeam
+                          ? [
+                              { label: 'Cycle', value: lifecycle.label },
+                              {
+                                label: 'Composition',
+                                value: `${roleCounts.learners} apprenant(s) · ${roleCounts.trainers} formateur · ${roleCounts.moderators} réf. pédago.`,
+                              },
+                            ]
+                          : [
+                              { label: 'Pôle', value: permanentTeamKindLabel(team.type) },
+                              { label: 'Secteur', value: TEAM_SECTORS.find((s) => s.id === team.sector)?.label || 'Siège' },
+                              { label: 'Unité org.', value: team.orgUnit?.name || '—' },
+                            ]),
+                        { label: 'Site', value: resolveTeamSiteLabel(team) },
+                        { label: 'Date création', value: formatDate(new Date(team.createdAt)) },
+                        { label: 'Total membres', value: team.members?.length || 0 },
                       ].map((item, index) => (
                         <div key={index} className="flex justify-between items-center text-2sm pb-1 border-b border-border/30 last:border-0">
                           <span className="text-muted-foreground">{item.label}</span>
@@ -208,7 +247,9 @@ const TeamDetailsSheet = ({
                           Informations
                        </div>
                        <p className="text-[11px] text-muted-foreground leading-relaxed">
-                          Cette équipe regroupe des collaborateurs pour une gestion centralisée des plannings et des interventions.
+                          {sessionTeam
+                            ? 'Espace pédagogique temporaire : chat de session, notifications et suivi jusqu’à l’examen. Gérée automatiquement à partir des inscriptions.'
+                            : 'Équipe permanente de l’établissement : pôle stable (direction, pédagogie, formateurs, RH).'}
                        </p>
                     </div>
 
@@ -223,8 +264,12 @@ const TeamDetailsSheet = ({
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto text-sm text-muted-foreground">
                       <TabsList className={GESTION_RESSOURCES_SHEET_TABS_LIST}>
                         <TabsTrigger value="overview">Membres</TabsTrigger>
-                        {!hideActivityTab ? <TabsTrigger value="activity">Activité</TabsTrigger> : null}
-                        <TabsTrigger value="settings">Paramètres</TabsTrigger>
+                        {!hideActivityTab && !sessionTeam ? (
+                          <TabsTrigger value="activity">Activité</TabsTrigger>
+                        ) : null}
+                        {!sessionTeam ? (
+                          <TabsTrigger value="settings">Paramètres</TabsTrigger>
+                        ) : null}
                       </TabsList>
                       
                       <TabsContent value="overview">
@@ -235,9 +280,11 @@ const TeamDetailsSheet = ({
                         <TeamDetailsActivity team={team} />
                       </TabsContent>
 
-                      <TabsContent value="settings">
-                        <TeamDetailsSettings team={team} formRef={settingsFormRef} />
-                      </TabsContent>
+                      {!sessionTeam ? (
+                        <TabsContent value="settings">
+                          <TeamDetailsSettings team={team} formRef={settingsFormRef} />
+                        </TabsContent>
+                      ) : null}
                     </Tabs>
                   </div>
                 </div>
@@ -251,19 +298,21 @@ const TeamDetailsSheet = ({
         <SheetFooter className="flex flex-col gap-2.5 border-t pb-4 p-5 border-border sm:flex-row sm:gap-0 bg-background shrink-0">
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Fermer</Button>
           <div className="flex flex-wrap gap-2.5 sm:ml-auto">
-            <Button 
-              variant="ghost" 
-              className="text-muted-foreground hover:text-destructive hover:bg-destructive/5"
-              onClick={() => {
-                if (confirm('Supprimer cette équipe définitivement ?')) {
-                  deleteTeamMutation.mutate();
-                }
-              }}
-            >
-              <Trash2 className="size-4 mr-2" />
-              Supprimer
-            </Button>
-            {activeTab === 'settings' ? (
+            {!team || !isSessionPedagogicalTeam(team) ? (
+              <Button
+                variant="ghost"
+                className="text-muted-foreground hover:text-destructive hover:bg-destructive/5"
+                onClick={() => {
+                  if (confirm('Supprimer cette équipe définitivement ?')) {
+                    deleteTeamMutation.mutate();
+                  }
+                }}
+              >
+                <Trash2 className="size-4 mr-2" />
+                Supprimer
+              </Button>
+            ) : null}
+            {!team || isSessionPedagogicalTeam(team) ? null : activeTab === 'settings' ? (
               <Button 
                 variant="outline" 
                 className="bg-foreground text-background hover:bg-foreground/90 font-bold border-none" 

@@ -35,6 +35,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime, getInitials } from '@/lib/helpers';
+import { userIamLoginSubtitle } from '@/lib/user-email-routing';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -212,7 +213,7 @@ const FormateurList = () => {
         header: ({ column }) => <DataGridColumnHeader title={t('datagrid.columns.trainer')} column={column} />,
         cell: ({ row }) => {
           const formateur = row.original;
-          const initials = getInitials(formateur.name || formateur.email);
+          const initials = getInitials(formateur.name || userIamLoginSubtitle(formateur));
           return (
             <div className="flex items-center gap-3">
               <Avatar className="size-9">
@@ -226,7 +227,7 @@ const FormateurList = () => {
                 <span className="font-semibold text-sm text-foreground hover:text-primary transition-colors cursor-pointer" onClick={() => handleOpenDetails(formateur)}>
                   {formateur.name}
                 </span>
-                <span className="text-muted-foreground text-xs">{formateur.email}</span>
+                <span className="text-muted-foreground text-xs">{userIamLoginSubtitle(formateur)}</span>
               </div>
             </div>
           );
@@ -430,7 +431,7 @@ const FormateurList = () => {
                              <div className="relative mb-4">
                                <Avatar className="size-20 border-2 border-background shadow-lg">
                                  {formateur.avatar && <AvatarImage src={formateur.avatar} alt={formateur.name || ''} />}
-                                 <AvatarFallback className="text-xl">{getInitials(formateur.name || formateur.email)}</AvatarFallback>
+                                 <AvatarFallback className="text-xl">{getInitials(formateur.name || userIamLoginSubtitle(formateur))}</AvatarFallback>
                                </Avatar>
                                <AvatarIndicator className="-end-1 -top-1">
                                  <AvatarStatus variant={userPresenceAvatarVariant(formateur)} className="size-3.5 border-2 border-background" />
@@ -443,7 +444,7 @@ const FormateurList = () => {
                                </h4>
                                <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                                  <Mail className="size-3" />
-                                 <span className="truncate max-w-[180px]">{formateur.email}</span>
+                                 <span className="truncate max-w-[180px]">{userIamLoginSubtitle(formateur)}</span>
                                </div>
                              </div>
 

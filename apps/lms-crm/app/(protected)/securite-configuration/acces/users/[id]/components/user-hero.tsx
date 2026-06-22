@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, UserIcon } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { getAvatarUrl, getInitials } from '@/lib/helpers';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -14,6 +14,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { User } from '@/app/models/user';
+import { userIamLoginSubtitle } from '@/lib/user-email-routing';
+import { IamUserSheetSidebar } from '@/components/users/iam-user-sheet-sidebar';
 
 interface UserHeroProps {
   user: User | undefined;
@@ -67,44 +69,18 @@ const UserHero = ({ user, isLoading, variant = 'inline' }: UserHeroProps) => {
     if (variant === 'sidebar') {
       return (
         <div className="w-full shrink-0 space-y-4 py-5 lg:pe-5">
-          <div className="relative flex h-[240px] w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-muted/10">
-            {avatarUrl ?
-              <img
-                src={avatarUrl}
-                alt={user.name || ''}
-                className="size-full object-cover"
-              />
-            : <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                <UserIcon className="size-10 opacity-60" />
-                <span className="text-xs font-medium">Pas de photo</span>
-              </div>
-            }
-          </div>
-          <div className="space-y-3 text-2sm">
-            <div className="flex justify-between gap-2">
-              <span className="text-muted-foreground">Nom</span>
-              <span className="max-w-[150px] truncate font-semibold text-foreground">{user.name}</span>
-            </div>
-            <div className="flex justify-between gap-2">
-              <span className="text-muted-foreground">E-mail</span>
-              <span className="max-w-[150px] truncate font-semibold text-foreground">{user.email}</span>
-            </div>
-            <div className="flex justify-between gap-2">
-              <span className="text-muted-foreground">Rôle</span>
-              <span className="max-w-[150px] truncate font-semibold text-foreground">{user.role?.name ?? '—'}</span>
-            </div>
-            <TooltipProvider>
-              <Tooltip delayDuration={50}>
-                <TooltipTrigger className="w-full cursor-pointer text-start" type="button" onClick={handleUserIdCopy}>
-                  <Badge variant="secondary" className="w-full justify-center gap-1.5 px-2 py-1">
-                    <span className="truncate text-[11px]">ID&nbsp;: {user.id}</span>
-                    {showCopied && <Check className="text-success size-3 shrink-0" />}
-                  </Badge>
-                </TooltipTrigger>
-                <TooltipContent className="text-xs">Copier</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
+          <IamUserSheetSidebar user={user} />
+          <TooltipProvider>
+            <Tooltip delayDuration={50}>
+              <TooltipTrigger className="w-full cursor-pointer text-start" type="button" onClick={handleUserIdCopy}>
+                <Badge variant="secondary" className="w-full justify-center gap-1.5 px-2 py-1">
+                  <span className="truncate text-[11px]">ID complet&nbsp;: {user.id}</span>
+                  {showCopied && <Check className="text-success size-3 shrink-0" />}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent className="text-xs">Copier l&apos;identifiant</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       );
     }
@@ -112,19 +88,21 @@ const UserHero = ({ user, isLoading, variant = 'inline' }: UserHeroProps) => {
     return (
       <div className="flex items-center gap-5 mb-5">
         <Avatar className="h-14 w-14">
-          {avatarUrl ?
+          {avatarUrl ? (
             <AvatarImage src={avatarUrl} alt={user.name || ''} />
-          : <AvatarFallback className="text-xl">{getInitials(user.name || user.email)}</AvatarFallback>}
+          ) : (
+            <AvatarFallback className="text-xl">{getInitials(user.name || user.email)}</AvatarFallback>
+          )}
         </Avatar>
         <div className="space-y-px">
           <div className="font-medium text-base">{user.name}</div>
-          <div className="text-muted-foreground text-sm">{user.email}</div>
+          <div className="text-muted-foreground text-sm">{userIamLoginSubtitle(user)}</div>
           <div>
             <TooltipProvider>
               <Tooltip delayDuration={50}>
                 <TooltipTrigger className="cursor-pointer">
                   <Badge variant="secondary" className="gap-1.5 px-2 py-0.5" onClick={handleUserIdCopy}>
-                    <span>User ID: {user.id}</span>
+                    <span>ID&nbsp;: {user.id.substring(0, 8)}…</span>
                     {showCopied && <Check className="text-success size-3" />}
                   </Badge>
                 </TooltipTrigger>

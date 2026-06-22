@@ -37,11 +37,12 @@ import { RiCheckboxCircleFill } from '@remixicon/react';
 import { CandidatureStatus } from '@repo/database/browser';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { formatDateTime, getInitials } from '@/lib/helpers';
+import { formatDateTime, getInitials, getAvatarUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
   AvatarIndicator,
   AvatarStatus,
 } from '@/components/ui/avatar';
@@ -95,6 +96,7 @@ export type CandidatHubListRow = {
   userId: string;
   name: string | null;
   email: string;
+  avatar: string | null;
   userStatus: string;
   roleSlug: string;
   roleName: string;
@@ -342,9 +344,11 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
         cell: ({ row }) => {
           const r = row.original;
           const initials = getInitials(r.name || r.email);
+          const avatarSrc = r.avatar ? getAvatarUrl(r.avatar) : undefined;
           return (
             <div className="flex items-center gap-3">
               <Avatar className="size-9">
+                {avatarSrc ? <AvatarImage src={avatarSrc} alt="" /> : null}
                 <AvatarFallback>{initials}</AvatarFallback>
                 <AvatarIndicator className="-end-0.5 -top-0.5">
                   <AvatarStatus
@@ -653,12 +657,14 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
                 ))
               : table.getRowModel().rows.map(({ original: EtudiantRow }) => {
                   const statusProps = getEtudiantStatusProps(EtudiantRow.userStatus as UserStatus);
+                  const avatarSrc = EtudiantRow.avatar ? getAvatarUrl(EtudiantRow.avatar) : undefined;
                   return (
                     <Card key={EtudiantRow.userId} className="overflow-hidden shadow-none transition-all duration-300 group hover:border-primary/50 border-border">
                       <CardContent className="p-6">
                         <div className="flex flex-col items-center text-center">
                           <div className="relative mb-4">
                             <Avatar className="size-20 border-2 border-background shadow-lg">
+                              {avatarSrc ? <AvatarImage src={avatarSrc} alt="" /> : null}
                               <AvatarFallback className="text-xl">
                                 {getInitials(EtudiantRow.name || EtudiantRow.email)}
                               </AvatarFallback>

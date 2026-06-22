@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 import {
   requireGestionRessourcesEdit,
   requireGestionRessourcesView,
-} from '../../../../_lib/require-gestion-ressources-auth';
+} from '../../../_lib/require-gestion-ressources-auth';
 
 const BOOKING_KINDS: VenueRoomBookingKind[] = ['STAFF_MEETING', 'INFO_MEETING', 'OTHER'];
 

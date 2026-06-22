@@ -1,10 +1,24 @@
 import type { ListExportConfig } from '@/lib/datagrid/list-export';
+import type { RhCollaborateurListSegment } from '@/lib/rh-collaborateur-list-segment';
+import type { RhSessionTeamPhase, RhTeamListScope } from '@/lib/rh-team-list-scope';
 
 function cell(value: unknown): string | number | null | undefined {
   if (value == null) return value;
   if (typeof value === 'string' || typeof value === 'number') return value;
   if (value instanceof Date) return value.toISOString();
   return String(value);
+}
+
+function nestedRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
+}
+
+function nestedCell(...values: unknown[]): string | number | null | undefined {
+  for (const value of values) {
+    const resolved = cell(value);
+    if (resolved != null && resolved !== '') return resolved;
+  }
+  return cell(null);
 }
 
 function userLabel(item: Record<string, unknown>) {
@@ -61,21 +75,45 @@ export function affectationsExportConfig(searchQuery?: string): ListExportConfig
   };
 }
 
-export function equipesExportConfig(): ListExportConfig {
+export function equipesExportConfig(
+  teamScope: RhTeamListScope = 'permanent',
+  sessionPhase: RhSessionTeamPhase = 'running',
+): ListExportConfig {
+  const isSession = teamScope === 'session';
   return {
     apiPath: '/api/sections/gestion-ressources/rh/equipes',
-    filename: 'equipes-sites',
-    title: 'Équipes & sites',
+    filename: isSession ? `equipes-session-${sessionPhase}` : 'equipes-permanentes',
+    title: isSession ? 'Équipes session (formations)' : 'Équipes permanentes (école)',
     subtitle: 'Ressources humaines',
-    headers: ['Équipe', 'Type', 'Secteur', 'Responsable', 'Membres', 'Statut'],
-    mapRow: (item) => [
-      cell(item.name ?? item.title),
-      cell(item.type),
-      cell(item.sector ?? item.sectorLabel),
-      cell(item.leaderName ?? item.managerName),
-      cell(item.memberCount ?? item.membersCount),
-      cell(item.status ?? (item.isActive === false ? 'INACTIVE' : 'ACTIVE')),
-    ],
+    searchParams: isSession ? { teamScope, sessionPhase } : { teamScope },
+    headers: isSession
+      ? ['Équipe', 'Formation', 'Cycle', 'Formateur', 'Membres', 'État']
+      : ['Équipe', 'Pôle', 'Unité org.', 'Responsable', 'Membres', 'Siège / site'],
+    mapRow: (item: Record<string, unknown>) => {
+      const formationSession = nestedRecord(item.formationSession);
+      const formation = nestedRecord(formationSession?.formation);
+      const leader = nestedRecord(item.leader);
+      const orgUnit = nestedRecord(item.orgUnit) ?? nestedRecord(item.OrgUnit);
+      const count = nestedRecord(item._count);
+
+      return isSession
+        ? [
+            cell(item.name ?? item.title),
+            nestedCell(formation?.name, item.description),
+            cell(item.lifecycleStatus),
+            nestedCell(leader?.name, item.leaderName),
+            nestedCell(count?.members, item.memberCount),
+            cell(item.lifecycleStatus),
+          ]
+        : [
+            cell(item.name ?? item.title),
+            cell(item.type),
+            nestedCell(orgUnit?.name),
+            nestedCell(leader?.name, item.leaderName),
+            nestedCell(count?.members, item.memberCount),
+            cell(item.sector),
+          ];
+    },
   };
 }
 
@@ -97,11 +135,16 @@ export function sallesExportConfig(searchQuery?: string): ListExportConfig {
   };
 }
 
-export function collaborateursExportConfig(profileSegment: 'collaborateur' | 'interne'): ListExportConfig {
+export function collaborateursExportConfig(profileSegment: RhCollaborateurListSegment): ListExportConfig {
+  const titleBySegment: Record<RhCollaborateurListSegment, string> = {
+    collaborateur: 'Collaborateurs',
+    direction: "Direction de l'école",
+    interne: 'Collaborateurs internes',
+  };
   return {
     apiPath: '/api/sections/gestion-ressources/rh/collaborateurs',
     filename: `collaborateurs-${profileSegment}`,
-    title: profileSegment === 'interne' ? 'Collaborateurs internes' : 'Collaborateurs',
+    title: titleBySegment[profileSegment],
     subtitle: 'Ressources humaines',
     headers: ['Nom', 'E-mail', 'Téléphone', 'Statut', 'Catégorie', 'Dernière connexion'],
     searchParams: { profileType: profileSegment },

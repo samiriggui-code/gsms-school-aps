@@ -40,7 +40,6 @@ import { agrementUiLabels } from '@/lib/rh-agrement';
 import {
   COLLABORATEUR_JOB_FUNCTION_OPTIONS,
   combineQualificationFromParts,
-  qualificationPresetCatalogForRole,
   SCHOOL_USER_CATEGORY_LABELS,
   splitQualificationPresetsAndExtra,
 } from '@/lib/rh-school-profile-fields';
@@ -48,12 +47,18 @@ import { RhMetierQualificationPicker } from '@/components/rh/metier-qualificatio
 import { isFormateurRole } from '@/lib/rh-agrement';
 import { cn } from '@/lib/utils';
 import { useRhPositionSelectQuery } from '../../hooks/use-rh-position-select-query';
+import { useRhQualificationSelectQuery } from '../../hooks/use-rh-qualification-select-query';
+import {
+  buildQualificationPresetCatalog,
+  resolveRhMetierServiceFilter,
+} from '@/lib/rh-metier-referential';
 import { AccountLifecycleActions } from '@/components/rh/account-lifecycle-actions';
 import {
   CONTRACT_TYPE_VALUES,
   WORK_TIME_TYPE_VALUES,
   rhEnumFieldOrNull,
 } from '@/lib/rh-form-schema-shared';
+import { LandingPresentationField } from '@/components/rh/landing-presentation-field';
 import { useSubcontractorSelectQuery } from '../../formateurs/hooks/use-subcontractor-select-query';
 import { FileAssetMetaSheet } from '@/components/governance/file-asset-meta-sheet';
 import { useFileAssetMeta } from '@/hooks/use-file-asset-meta';
@@ -72,7 +77,6 @@ interface CollaborateurDetailsSettingsProps {
 export function CollaborateurDetailsSettings({ collaborateur, formRef, onSuccess }: CollaborateurDetailsSettingsProps) {
   const queryClient = useQueryClient();
   const { data: roleList } = useSchoolRoleSelectQuery();
-  const { data: positionList } = useRhPositionSelectQuery();
   const { data: subcontractorList } = useSubcontractorSelectQuery();
   const { metaSheetProps, openMeta } = useFileAssetMeta({
     onAllSaved: () => {
@@ -121,6 +125,7 @@ export function CollaborateurDetailsSettings({ collaborateur, formRef, onSuccess
       carteProNumber: collaborateur.carteProNumber || '',
       carteProExpiry: collaborateur.carteProExpiry ? new Date(collaborateur.carteProExpiry).toISOString().split('T')[0] : '',
       isSchedulable: collaborateur.isSchedulable ?? true,
+      landingPresentation: collaborateur.landingPresentation || '',
       avatarFile: null,
       avatarAction: '',
       documentCni: null,
@@ -179,7 +184,36 @@ interface ManagerPickItem {
     );
   }, [orgRemoteSig, form]);
 
+  const watchedRoleId = form.watch('roleId');
+  const watchedJobFunction = form.watch('jobFunction');
+  const watchedSchoolService = form.watch('schoolInternalService');
   const selectedCategory = form.watch('userCategory');
+  const roleSlugForForm = useMemo(
+    () =>
+      (roleList || []).find((r: UserRole) => r.id === watchedRoleId)?.slug ??
+      collaborateur.role?.slug ??
+      undefined,
+    [roleList, watchedRoleId, collaborateur.role?.slug],
+  );
+
+  const metierServiceFilter = useMemo(
+    () => resolveRhMetierServiceFilter(watchedSchoolService, roleSlugForForm, selectedCategory),
+    [watchedSchoolService, roleSlugForForm, selectedCategory],
+  );
+
+  const { data: positionList } = useRhPositionSelectQuery(metierServiceFilter);
+  const { data: qualificationList } = useRhQualificationSelectQuery(metierServiceFilter);
+
+  const presetCatalog = useMemo(
+    () =>
+      buildQualificationPresetCatalog(
+        qualificationList?.map((q) => q.label),
+        roleSlugForForm,
+        metierServiceFilter,
+      ),
+    [qualificationList, roleSlugForForm, metierServiceFilter],
+  );
+
   const carteProNumber = form.watch('carteProNumber');
 
   // Extraction automatique de la date d'expiration
@@ -202,21 +236,6 @@ interface ManagerPickItem {
   }, [carteProNumber, form]);
   const filteredRoles = (roleList || []).filter((role: UserRole) => 
     !role.targetCategory || role.targetCategory === selectedCategory
-  );
-
-  const watchedRoleId = form.watch('roleId');
-  const watchedJobFunction = form.watch('jobFunction');
-  const roleSlugForForm = useMemo(
-    () =>
-      (roleList || []).find((r: UserRole) => r.id === watchedRoleId)?.slug ??
-      collaborateur.role?.slug ??
-      undefined,
-    [roleList, watchedRoleId, collaborateur.role?.slug],
-  );
-
-  const presetCatalog = useMemo(
-    () => qualificationPresetCatalogForRole(roleSlugForForm),
-    [roleSlugForForm],
   );
 
   const [qualPresetHits, setQualPresetHits] = useState<string[]>([]);
@@ -530,6 +549,7 @@ interface ManagerPickItem {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="__default__">Repli selon le rôle du compte</SelectItem>
+                        <SelectItem value="DIRECTION">Direction de l&apos;école</SelectItem>
                         <SelectItem value="TRAINER_POOL">Équipe formateurs</SelectItem>
                         <SelectItem value="PEDAGOGICAL">Équipe pédagogique</SelectItem>
                         <SelectItem value="HR_ADMIN">RH & administration</SelectItem>
@@ -764,14 +784,17 @@ interface ManagerPickItem {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {(positionList?.length
-                            ? positionList.map((p) => ({ value: p.label, label: p.label }))
-                            : COLLABORATEUR_JOB_FUNCTION_OPTIONS
-                          ).map((opt) => (
-                            <SelectItem key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </SelectItem>
-                          ))}
+                          {positionList?.length
+                            ? positionList.map((p) => (
+                                <SelectItem key={p.id} value={p.label}>
+                                  {p.label}
+                                </SelectItem>
+                              ))
+                            : COLLABORATEUR_JOB_FUNCTION_OPTIONS.map((opt, index) => (
+                                <SelectItem key={`job-fn-${index}`} value={opt.value}>
+                                  {opt.label}
+                                </SelectItem>
+                              ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -878,6 +901,10 @@ interface ManagerPickItem {
                     </FormItem>
                   )}
                 />
+
+                <div className="md:col-span-2">
+                  <LandingPresentationField control={form.control} name="landingPresentation" />
+                </div>
               </div>
             </section>
 

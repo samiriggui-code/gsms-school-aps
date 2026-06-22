@@ -35,7 +35,9 @@ export function RolePermissionsMatrix({
 }
 
 export function permissionSlugsFromRole(role: {
-  permissions?: PermissionRow[] | null;
+  permissions?: Array<{ slug?: string | null }> | null;
 } | null): string[] {
-  return (role?.permissions ?? []).map((p) => p.slug).filter(Boolean);
+  return (role?.permissions ?? [])
+    .map((p) => p.slug)
+    .filter((slug): slug is string => Boolean(slug));
 }

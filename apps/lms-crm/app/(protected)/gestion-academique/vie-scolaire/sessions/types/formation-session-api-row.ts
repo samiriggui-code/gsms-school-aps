@@ -78,5 +78,7 @@ export type FormationSessionApiRow = {
   formationProviderPhone: string | null;
   formationProviderAddress: string | null;
   formationNextSessionLabel: string | null;
+  /** Session passée (fin ou début avant aujourd'hui). */
+  isExpired: boolean;
 };
 

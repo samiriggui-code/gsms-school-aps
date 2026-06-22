@@ -73,19 +73,24 @@ export function SessionsByFormation({ formationSlug }: { formationSlug: string |
     return <p className="text-sm text-destructive">{(error as Error).message}</p>;
   }
 
-  if (!data?.length) {
+  const upcoming = (data ?? []).filter((row) => !row.isExpired);
+
+  if (!upcoming.length) {
     return (
       <div className="space-y-2 text-sm text-muted-foreground">
-        <p>Aucune session créée pour cette formation au catalogue.</p>
         <p>
-          Ajoute ou modifie des sessions depuis la page{' '}
+          {data?.length
+            ? 'Aucune session à venir — les sessions passées sont masquées ici (comme sur le landing).'
+            : 'Aucune session créée pour cette formation au catalogue.'}
+        </p>
+        <p>
           <Link
             href={`/gestion-academique/vie-scolaire/sessions?formationSlug=${encodeURIComponent(slug)}`}
-            className="font-medium text-primary underline-offset-4 hover:underline"
+            className="font-medium text-primary underline-offset-4 hover:underline inline-flex items-center gap-1"
           >
             Vie scolaire → Sessions
+            <ExternalLink className="size-3.5" />
           </Link>
-          .
         </p>
       </div>
     );
@@ -93,7 +98,7 @@ export function SessionsByFormation({ formationSlug }: { formationSlug: string |
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {data.map((row) => {
+      {upcoming.map((row) => {
         const kind = cardHighlightBadge(row);
         return (
           <Card

@@ -58,10 +58,10 @@ import {
 import { SessionUserAvatar } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-user-avatar';
 import { FormationLogoThumb } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-logo-thumb';
 
+export const sessionsQueryRoot = ['gestion-academique', 'vie-scolaire', 'sessions'] as const;
+
 export const sessionsListQueryKey = [
-  'gestion-academique',
-  'vie-scolaire',
-  'sessions',
+  ...sessionsQueryRoot,
   'list',
 ] as const;
 
@@ -93,6 +93,7 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [trackTab, setTrackTab] = useState<TrackTab>('all');
   const [parcoursFilter, setParcoursFilter] = useState<FormationParcoursSpecialite | 'all'>('all');
+  const [showPastSessions, setShowPastSessions] = useState(false);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: MODULE_LANDING_DATAGRID_PAGE_SIZE,
@@ -122,7 +123,7 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
   useEffect(() => {
     setPagination((p) => ({ ...p, pageIndex: 0 }));
     setRowSelection({});
-  }, [trackTab, parcoursFilter]);
+  }, [trackTab, parcoursFilter, showPastSessions]);
 
   useEffect(() => {
     const key = sessionIdParam
@@ -140,6 +141,7 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
   const filteredRows = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return rawItems.filter((row) => {
+      if (!showPastSessions && row.isExpired) return false;
       if (trackTab !== 'all' && row.formationTrack !== trackTab) return false;
       if (parcoursFilter !== 'all' && row.formationParcours !== parcoursFilter) return false;
       if (!q) return true;
@@ -147,7 +149,7 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
         `${row.id} ${row.formationName} ${row.formationSlug} ${row.dateDisplayLabel} ${row.location} ${row.formationTag} ${sessionExamenSearchBlob(row)}`.toLowerCase();
       return blob.includes(q);
     });
-  }, [rawItems, searchQuery, trackTab, parcoursFilter]);
+  }, [rawItems, searchQuery, trackTab, parcoursFilter, showPastSessions]);
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -240,9 +242,14 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
         id: 'dateDisplayLabel',
         header: ({ column }) => <DataGridColumnHeader title="Dates (vitrine)" column={column} />,
         cell: ({ row }) => (
-          <span className="inline-flex items-center gap-1 text-sm">
+          <span className="inline-flex flex-wrap items-center gap-1.5 text-sm">
             <CalendarClock className="size-3.5 shrink-0 text-muted-foreground" />
             {row.original.dateDisplayLabel}
+            {row.original.isExpired ? (
+              <Badge variant="outline" size="sm" className="text-muted-foreground">
+                Expirée
+              </Badge>
+            ) : null}
           </span>
         ),
       },
@@ -372,6 +379,18 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
                 className="h-10 ps-9"
               />
             </div>
+            <Button
+              type="button"
+              variant={showPastSessions ? 'secondary' : 'outline'}
+              size="sm"
+              className="shrink-0 text-xs"
+              onClick={() => {
+                setShowPastSessions((v) => !v);
+                setPagination((p) => ({ ...p, pageIndex: 0 }));
+              }}
+            >
+              {showPastSessions ? 'Masquer passées' : 'Afficher passées'}
+            </Button>
             <Button
               type="button"
               variant="outline"

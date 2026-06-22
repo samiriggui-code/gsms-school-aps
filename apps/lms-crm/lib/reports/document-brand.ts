@@ -38,7 +38,7 @@ export async function loadReportDocumentBrand(origin?: string): Promise<ReportDo
   const addressParts = [
     settings?.address?.trim(),
     [settings?.companyPostalCode?.trim(), settings?.companyCity?.trim()].filter(Boolean).join(' '),
-    settings?.country?.trim(),
+    settings?.companyRegion?.trim(),
   ].filter(Boolean);
 
   const legalLine = joinParts(

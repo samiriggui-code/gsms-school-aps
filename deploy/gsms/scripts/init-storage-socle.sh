@@ -32,7 +32,7 @@ SOCLE_PREFIXES=(
   ecole ecole/branding ecole/conformite
   utilisateurs
   rh rh/collaborateurs rh/equipes rh/candidats rh/formateurs rh/documents rh/absences
-  academique academique/formations academique/sessions academique/stagiaires
+  academique academique/formations academique/sessions academique/suivi-formations academique/stagiaires
   academique/certifications academique/cnaps academique/planning
   finance finance/devis finance/factures finance/exports finance/paiements
   communication communication/cms communication/marketing

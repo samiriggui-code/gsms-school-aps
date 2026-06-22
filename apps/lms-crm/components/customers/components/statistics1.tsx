@@ -118,20 +118,31 @@ function buildStaticItems(
 export function Statistics1({
   catalogSlug,
   staticPreset = 'tfp-aps',
+  preloadedStats,
 }: {
   catalogSlug?: string | null;
-  /** Jeu de KPI affichés tant que le catalogue CRM ne répond pas */
   staticPreset?: Statistics1StaticPreset;
+  preloadedStats?: CatalogFormationStats | null;
 }) {
   const { t } = useTranslation();
-  const [stats, setStats] = useState<CatalogFormationStats | null>(null);
+  const [stats, setStats] = useState<CatalogFormationStats | null>(preloadedStats ?? null);
+  const [loading, setLoading] = useState(false);
+
+  const useCatalog = Boolean(catalogSlug?.trim());
 
   useEffect(() => {
+    if (preloadedStats) {
+      setStats(preloadedStats);
+      setLoading(false);
+      return;
+    }
     setStats(null);
     if (!catalogSlug?.trim()) {
+      setLoading(false);
       return;
     }
     let cancelled = false;
+    setLoading(true);
     void (async () => {
       try {
         const res = await fetch(
@@ -146,18 +157,31 @@ export function Statistics1({
           setStats(json.stats);
         }
       } catch {
-        /* garde les valeurs statiques */
+        /* garde les valeurs neutres */
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [catalogSlug]);
+  }, [catalogSlug, preloadedStats]);
 
   const priceText = t('landing.sheets.stats.price.text');
 
   const items = useMemo(() => {
-    const base = buildStaticItems(t, staticPreset);
+    if (useCatalog && loading) {
+      return [
+        { total: '…', label: '', badgeLabel: '', badgeColor: 'success' as const, text: '', number: '', icon: <TrendingUp /> },
+        { total: '…', label: '', badgeLabel: '', badgeColor: 'success' as const, text: '', number: '', icon: <TrendingUp /> },
+        { total: '…', label: '', badgeLabel: '', badgeColor: 'warning' as const, text: '', number: '', icon: <TrendingUp /> },
+        { total: '…', label: '', badgeLabel: '', badgeColor: 'success' as const, text: '', number: '', icon: <TrendingUp /> },
+      ];
+    }
+
+    const base = useCatalog && !stats
+      ? buildStaticItems(t, staticPreset).map((i) => ({ ...i, total: '—', number: '' }))
+      : buildStaticItems(t, staticPreset);
     const row = base.map((i) => ({ ...i }));
     if (!stats) return row;
 
@@ -188,7 +212,7 @@ export function Statistics1({
       row[3] = { ...row[3], total: stats.successDisplay };
     }
     return row;
-  }, [stats, staticPreset, t, priceText]);
+  }, [stats, staticPreset, t, priceText, useCatalog, loading]);
 
   return (
     <Card className="mb-5 rounded-md bg-accent/70 p-1">

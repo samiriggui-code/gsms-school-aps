@@ -8,6 +8,7 @@ import { CrmEventService } from '@repo/api-core';
 import { mapCatalogOfferToApiRow } from '@/app/api/sections/gestion-academique/vie-scolaire/formations/_map-rows';
 import { FormationCatalogOfferCreateSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-catalog-api-schemas';
 import { invalidateFormationCatalogCaches } from '@/lib/catalog-public-cache';
+import { nextSessionLabelByFormationIds } from '@/lib/formation-session-dates';
 
 const formationSelect = {
   id: true,
@@ -76,10 +77,18 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    const formationIds = offers.map((o) => o.formation.id);
+    const nextLabels = await nextSessionLabelByFormationIds(prisma, formationIds);
+
     const items = [];
     for (const row of offers) {
       try {
-        items.push(mapCatalogOfferToApiRow(row));
+        const apiRow = mapCatalogOfferToApiRow(row);
+        const computed = nextLabels.get(row.formation.id);
+        if (computed) {
+          apiRow.nextSessionLabel = computed;
+        }
+        items.push(apiRow);
       } catch (e) {
         console.warn('[formations/catalog] offre ignorée', row.formation?.slug, e);
       }

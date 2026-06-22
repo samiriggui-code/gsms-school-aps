@@ -7,6 +7,7 @@ import { teamVisualSrc } from '../lib/team-display';
 
 type TeamLike = {
   image?: string | null;
+  type?: string | null;
   leader?: { avatar?: string | null } | null;
 };
 

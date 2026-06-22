@@ -8,11 +8,13 @@ import { useTranslation } from '@/hooks/useTranslation';
 type UploadProps = {
   logoSrc?: string;
   logoAlt?: string;
+  sessionLabel?: string;
 };
 
 export function Upload({
   logoSrc = formationLogos.default,
   logoAlt,
+  sessionLabel,
 }: UploadProps) {
   const { t } = useTranslation();
   const resolvedLogoAlt = logoAlt ?? t('landing.sheets.upload.logoAlt');
@@ -22,7 +24,10 @@ export function Upload({
     { key: 'email' as const, value: 'contact@form-ssi.fr' },
     { key: 'phone' as const, value: '01 71 11 39 63' },
     { key: 'address' as const, value: '9 AV Alexandre Maistrasse, 92500' },
-    { key: 'session' as const, value: t('landing.sheets.upload.sessionValue') },
+    {
+      key: 'session' as const,
+      value: sessionLabel?.trim() || t('landing.sheets.upload.sessionValue'),
+    },
   ];
 
   return (

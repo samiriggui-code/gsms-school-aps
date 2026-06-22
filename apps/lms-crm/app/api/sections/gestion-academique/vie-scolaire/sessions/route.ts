@@ -20,34 +20,17 @@ import {
   assertVenueRoomIdExists,
 } from '@/app/api/sections/gestion-academique/vie-scolaire/sessions/_venue-room-assert';
 import { sessionKindDerivedFromFormationParcours } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/lib/session-parcours-exam';
-import { ensureSessionStoragePrefix, provisionStoragePrefixSafe } from '@/lib/entity-storage';
+import { effectiveCatalogParcours } from '@/lib/effective-catalog-formation';
+import { invalidateCatalogSessionsCacheForFormationId } from '@/lib/catalog-public-cache';
+import { ensureSessionSuiviStoragePrefixes, provisionStoragePrefixSafe } from '@/lib/entity-storage';
 import { ensureSessionChat } from '@/lib/session-chat';
 import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+import { assertSessionParticipantUserIds } from '@/app/api/sections/gestion-academique/vie-scolaire/sessions/_eligible-session-learners';
 
 function parseDateInput(v: unknown): Date | null {
   if (v === undefined || v === null || v === '') return null;
   const d = new Date(String(v));
   return Number.isNaN(d.getTime()) ? null : d;
-}
-
-/** Élèves et candidats actifs (parcours CRM catalogue). */
-async function assertLearnerUserIds(ids: string[]): Promise<boolean> {
-  if (ids.length === 0) return true;
-  const roles = await prisma.userRole.findMany({
-    where: { slug: { in: ['eleve', 'candidat'] }, isTrashed: false },
-    select: { id: true },
-  });
-  if (!roles.length) return false;
-  const roleIds = roles.map((r) => r.id);
-  const valid = await prisma.user.count({
-    where: {
-      id: { in: ids },
-      roleId: { in: roleIds },
-      status: 'ACTIVE',
-      isTrashed: false,
-    },
-  });
-  return valid === ids.length;
 }
 
 async function assertTrainerUserId(userId: string | null | undefined): Promise<boolean> {
@@ -131,19 +114,22 @@ export async function POST(request: NextRequest) {
   try {
     const offer = await prisma.formationCatalogOffer.findUnique({
       where: { formationId: d.formationId },
-      include: { formation: { select: { parcoursSpecialite: true } } },
+      include: {
+        formation: { select: { parcoursSpecialite: true } },
+      },
     });
     if (!offer || offer.catalogStatus !== 'ACTIVE' || !offer.formation) {
       return fail('Seules les formations publiées au catalogue peuvent recevoir une session.', 400);
     }
 
-    const sessionKindStored = sessionKindDerivedFromFormationParcours(
+    const parcoursEffective = effectiveCatalogParcours(
       offer.formation.parcoursSpecialite,
+      offer.parcoursSpecialiteOverride,
     );
+    const sessionKindStored = sessionKindDerivedFromFormationParcours(parcoursEffective);
 
-    const okLearners = await assertLearnerUserIds(participantIds);
-    if (!okLearners)
-      return fail('Un ou plusieurs utilisateurs ne sont pas des apprenants actifs (élève ou candidat).', 422);
+    const okLearners = await assertSessionParticipantUserIds(d.formationId, participantIds);
+    if (!okLearners.ok) return fail(okLearners.message, 422);
 
     const okTrainer = await assertTrainerUserId(d.trainerUserId ?? undefined);
     if (!okTrainer) return fail('Formateur invalide ou compte non actif.', 422);
@@ -203,7 +189,7 @@ export async function POST(request: NextRequest) {
     });
 
     void provisionStoragePrefixSafe(`session:${created.id}`, () =>
-      ensureSessionStoragePrefix(created.id),
+      ensureSessionSuiviStoragePrefixes(created.id),
     );
 
     void ensureSessionChat(prisma, created.id, {
@@ -227,6 +213,10 @@ export async function POST(request: NextRequest) {
         actorUserId: sessionAuth.user?.id ?? null,
       });
     }
+
+    void invalidateCatalogSessionsCacheForFormationId(prisma, d.formationId).catch((e) => {
+      console.error('[sessions] cache invalidation', e);
+    });
 
     return ok({ item }, 201);
   } catch (error) {

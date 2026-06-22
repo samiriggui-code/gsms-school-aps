@@ -103,9 +103,64 @@ export function sessionTeamSubtitle(team: {
   description?: string | null;
   formationSession?: { dateDisplayLabel?: string | null; formation?: { name?: string } | null } | null;
 }): string {
+  const formation = team.formationSession?.formation?.name?.trim();
   const dateLabel = team.formationSession?.dateDisplayLabel?.trim();
+  if (formation && dateLabel) return `${formation} · ${dateLabel}`;
   if (dateLabel) return `Session ${dateLabel}`;
+  if (formation) return formation;
   return team.description?.trim() || 'Équipe pédagogique de session';
+}
+
+export type TeamLifecycleStatusKey = 'ACTIVE' | 'POST_EXAM' | 'ARCHIVED';
+
+export const TEAM_LIFECYCLE_META: Record<
+  TeamLifecycleStatusKey,
+  { label: string; shortLabel: string; className: string }
+> = {
+  ACTIVE: {
+    label: 'Session en cours',
+    shortLabel: 'En cours',
+    className:
+      'text-emerald-700 border-emerald-500/30 bg-emerald-500/10 dark:text-emerald-400',
+  },
+  POST_EXAM: {
+    label: 'Post-examen',
+    shortLabel: 'Post-examen',
+    className: 'text-amber-700 border-amber-500/30 bg-amber-500/10 dark:text-amber-400',
+  },
+  ARCHIVED: {
+    label: 'Session clôturée',
+    shortLabel: 'Clôturée',
+    className: 'text-muted-foreground border-border bg-muted/40',
+  },
+};
+
+export function resolveTeamLifecycleMeta(status?: string | null) {
+  const key = String(status || 'ACTIVE').toUpperCase() as TeamLifecycleStatusKey;
+  return TEAM_LIFECYCLE_META[key] ?? TEAM_LIFECYCLE_META.ACTIVE;
+}
+
+export function isPermanentSchoolTeam(team: {
+  isSessionTeam?: boolean;
+  formationSessionId?: string | null;
+}): boolean {
+  return !isSessionPedagogicalTeam(team);
+}
+
+export function permanentTeamKindLabel(type?: string | null): string {
+  return resolveTeamTypeMeta(type).label;
+}
+
+export function countSessionTeamMembersByRole(team: {
+  members?: Array<{ tenantUserId?: string; sessionRole?: SessionTeamMemberRole | null }>;
+}): { trainers: number; moderators: number; learners: number; total: number } {
+  const grouped = groupSessionTeamMembers(team as Parameters<typeof groupSessionTeamMembers>[0]);
+  return {
+    trainers: grouped.TRAINER?.length ?? 0,
+    moderators: grouped.MODERATOR?.length ?? 0,
+    learners: grouped.LEARNER?.length ?? 0,
+    total: team.members?.length ?? 0,
+  };
 }
 
 export function groupSessionTeamMembers(team: {
@@ -121,6 +176,29 @@ export function groupSessionTeamMembers(team: {
     empty[role].push(member);
   }
   return empty;
+}
+
+/** Chemins réservés à la marque — ne pas utiliser comme visuel d'équipe. */
+const TEAM_BRAND_IMAGE_PREFIXES = ['/brand/'];
+
+export function isTeamBrandImage(image?: string | null): boolean {
+  const raw = String(image ?? '').trim();
+  if (!raw) return false;
+  return TEAM_BRAND_IMAGE_PREFIXES.some((prefix) => raw.startsWith(prefix));
+}
+
+/** Libellé du site client lié à l'équipe (`RhTeam.siteId` → `ClientSite`). */
+export function resolveTeamSiteLabel(team: {
+  siteId?: string | null;
+  Site?: { name?: string } | null;
+  sector?: string | null;
+  type?: string | null;
+}): string {
+  if (team.Site?.name?.trim()) return team.Site.name.trim();
+  if (team.sector === 'HEADQUARTERS' || String(team.type ?? '').toUpperCase() === 'DIRECTION') {
+    return 'Siège — pas de site client';
+  }
+  return 'Non affecté';
 }
 
 /** Chemin public de la photo d'équipe. */
@@ -174,11 +252,15 @@ export function orgUnitVisualSrc(
 /** Visuel équipe : illustration choisie, sinon avatar du chef d'équipe. */
 export function teamVisualSrc(team: {
   image?: string | null;
+  type?: string | null;
   leader?: { avatar?: string | null } | null;
 }): string | undefined {
-  if (team.image) {
+  if (team.image && !isTeamBrandImage(team.image)) {
     const src = teamIllustrationSrc(team.image);
     return src || undefined;
+  }
+  if (String(team.type ?? '').toUpperCase() === 'DIRECTION') {
+    return undefined;
   }
   if (team.leader?.avatar) return getAvatarUrl(team.leader.avatar);
   return undefined;

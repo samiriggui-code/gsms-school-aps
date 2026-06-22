@@ -6,6 +6,7 @@ import { RiCheckboxCircleFill, RiErrorWarningFill, RiRefreshLine } from '@remixi
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { buildAppLoginEmail, appLoginEmailPatternLabel } from '@/lib/app-login-email';
 import { apiFetch } from '@/lib/api';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -66,14 +67,18 @@ import { Separator } from '@/components/ui/separator';
 import { Badge, BadgeDot } from '@/components/ui/badge';
 import { agrementMandatoryForCollaborator, agrementUiLabels } from '@/lib/rh-agrement';
 import {
-  COLLABORATEUR_JOB_FUNCTION_OPTIONS,
   SCHOOL_USER_CATEGORY_LABELS,
   combineQualificationFromParts,
-  qualificationPresetCatalogForRole,
 } from '@/lib/rh-school-profile-fields';
 import { RhMetierQualificationPicker } from '@/components/rh/metier-qualification-picker';
 import { isFormateurRole } from '@/lib/rh-agrement';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useRhPositionSelectQuery } from '../../hooks/use-rh-position-select-query';
+import { useRhQualificationSelectQuery } from '../../hooks/use-rh-qualification-select-query';
+import {
+  buildQualificationPresetCatalog,
+  resolveRhMetierServiceFilter,
+} from '@/lib/rh-metier-referential';
 
 const CollaborateurAddSheet = ({
   open,
@@ -101,7 +106,9 @@ const CollaborateurAddSheet = ({
       roleId: '',
       userCategory: 'INTERNAL',
       subcontractorId: '',
+      schoolInternalService: undefined,
       jobFunction: '',
+      jobPositionId: '',
       qualification: '',
       birthPlace: '',
       nationality: 'Française',
@@ -156,13 +163,26 @@ const CollaborateurAddSheet = ({
   const documentCartePro = watch('documentCartePro');
 
   const selectedCategory = watch('userCategory');
+  const schoolInternalService = watch('schoolInternalService');
   const filteredRoles = (roleList || []).filter((role: any) => 
     !role.targetCategory || role.targetCategory === selectedCategory
   );
 
+  const metierServiceFilter = useMemo(
+    () => resolveRhMetierServiceFilter(schoolInternalService, selectedRoleSlug, selectedCategory),
+    [schoolInternalService, selectedRoleSlug, selectedCategory],
+  );
+  const { data: positionList } = useRhPositionSelectQuery(metierServiceFilter);
+  const { data: qualificationList } = useRhQualificationSelectQuery(metierServiceFilter);
+
   const presetCatalog = useMemo(
-    () => qualificationPresetCatalogForRole(selectedRoleSlug),
-    [selectedRoleSlug],
+    () =>
+      buildQualificationPresetCatalog(
+        qualificationList?.map((q) => q.label),
+        selectedRoleSlug,
+        metierServiceFilter,
+      ),
+    [qualificationList, selectedRoleSlug, metierServiceFilter],
   );
   const [qualPresetHits, setQualPresetHits] = useState<string[]>([]);
 
@@ -216,8 +236,7 @@ const CollaborateurAddSheet = ({
   // Auto-generate Pro Email
   useEffect(() => {
     if (firstName && lastName) {
-      const email = `${firstName.toLowerCase().trim()}.${lastName.toLowerCase().trim()}@app.lms.local`.replace(/\s+/g, '');
-      setValue('proEmail', email);
+      setValue('proEmail', buildAppLoginEmail(firstName, lastName));
     }
   }, [firstName, lastName, setValue]);
 
@@ -576,7 +595,7 @@ const CollaborateurAddSheet = ({
                                   </div>
                                 </div>
                               </FormControl>
-                              <p className="text-[11px] text-muted-foreground font-medium font-mono">Genere: prenom.nom@app.lms.local</p>
+                              <p className="text-[11px] text-muted-foreground font-medium font-mono">Genere: {appLoginEmailPatternLabel()}</p>
                             </FormItem>
                           )} />
 
@@ -682,18 +701,51 @@ const CollaborateurAddSheet = ({
                         )}
 
                         <div className="grid grid-cols-1 gap-5">
-                          <FormField control={form.control} name="jobFunction" render={({ field }) => (
+                          <FormField control={form.control} name="schoolInternalService" render={({ field }) => (
                             <FormItem className="space-y-1.5">
-                              <FormLabel className="text-[13px] font-bold text-foreground">Poste / Fonction</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value}>
+                              <FormLabel className="text-[13px] font-bold text-foreground">Pôle interne</FormLabel>
+                              <Select
+                                onValueChange={(v) => field.onChange(v === '__default__' ? undefined : v)}
+                                value={field.value ?? '__default__'}
+                              >
                                 <FormControl>
                                   <SelectTrigger className="h-11 shadow-sm">
-                                    <SelectValue placeholder="Choisir une fonction" />
+                                    <SelectValue placeholder="Choisir un pôle" />
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {COLLABORATEUR_JOB_FUNCTION_OPTIONS.map((opt) => (
-                                    <SelectItem key={opt.value} value={opt.value}>
+                                  <SelectItem value="__default__">Repli selon le rôle</SelectItem>
+                                  <SelectItem value="DIRECTION">Direction de l&apos;école</SelectItem>
+                                  <SelectItem value="TRAINER_POOL">Équipe formateurs</SelectItem>
+                                  <SelectItem value="PEDAGOGICAL">Équipe pédagogique</SelectItem>
+                                  <SelectItem value="HR_ADMIN">RH & administration</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )} />
+
+                          <FormField control={form.control} name="jobFunction" render={({ field }) => (
+                            <FormItem className="space-y-1.5">
+                              <FormLabel className="text-[13px] font-bold text-foreground">Poste / Fonction</FormLabel>
+                              <Select
+                                onValueChange={(v) => {
+                                  field.onChange(v);
+                                  const pos = (positionList ?? []).find((p) => p.label === v);
+                                  if (pos) {
+                                    setValue('jobPositionId', pos.id, { shouldValidate: true });
+                                  }
+                                }}
+                                value={field.value || undefined}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="h-11 shadow-sm">
+                                    <SelectValue placeholder="Choisir un poste" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {(positionList ?? []).map((opt) => (
+                                    <SelectItem key={opt.id} value={opt.label}>
                                       {opt.label}
                                     </SelectItem>
                                   ))}

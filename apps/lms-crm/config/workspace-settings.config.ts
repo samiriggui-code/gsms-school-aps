@@ -60,7 +60,7 @@ export const WORKSPACE_ACCOUNT_SETTINGS: Record<
     description:
       'Session, notifications, présence et affichage — distinct de la fiche RH et des paramètres système établissement.',
     badge: 'Compte CRM',
-    profilLinkLabel: 'Voir mon profil',
+    profilLinkLabel: 'Fiche métier (RH)',
     sections: [
       section(
         'security',
@@ -89,8 +89,8 @@ export const WORKSPACE_ACCOUNT_SETTINGS: Record<
       section(
         'profile-link',
         'ws_profile',
-        'Fiche profil',
-        'Coordonnées et informations RH — selon votre rôle.',
+        'Fiche métier',
+        'Identité RH, conformité et présentation publique — distinct du compte IAM.',
       ),
     ],
   },

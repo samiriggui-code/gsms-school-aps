@@ -1,6 +1,9 @@
 import { NextRequest } from 'next/server';
 import { NotificationService } from '@repo/api-core';
-import type { Prisma, RhTeamSector, RhTeamType } from '@repo/database';
+import type { Prisma, RhTeamSector } from '@repo/database';
+import { RhTeamType } from '@repo/database';
+
+type RhTeamTypeValue = (typeof RhTeamType)[keyof typeof RhTeamType];
 import {
   ensureRhTeamStoragePrefix,
   provisionStoragePrefixSafe,
@@ -8,11 +11,13 @@ import {
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { nullishId, serializeTeam, teamInclude } from '../../_lib/rh-teams-serialize';
+import { PERMANENT_SCHOOL_TEAM_TYPES } from '@/lib/rh-team-list-scope';
 import { requireGestionRessourcesForMethod } from '../../../_lib/require-gestion-ressources-auth';
 
 type Params = { params: Promise<{ path?: string[] }> };
 
-const RH_TEAM_TYPE_VALUES: RhTeamType[] = [
+const RH_TEAM_TYPE_VALUES: RhTeamTypeValue[] = [
+  'DIRECTION',
   'PEDAGOGICAL',
   'TRAINER_POOL',
   'HR_ADMIN',
@@ -22,7 +27,7 @@ const RH_TEAM_TYPE_VALUES: RhTeamType[] = [
 
 const RH_TEAM_SECTOR_VALUES: RhTeamSector[] = ['HEADQUARTERS', 'CAMPUS', 'EXTERNAL'];
 
-const LEGACY_TEAM_TYPE_MAP: Record<string, RhTeamType> = {
+const LEGACY_TEAM_TYPE_MAP: Record<string, RhTeamTypeValue> = {
   SECURITE: 'QUALITY',
   INCENDIE: 'QUALITY',
   VOLANTE: 'TRAINER_POOL',
@@ -35,10 +40,12 @@ const LEGACY_TEAM_SECTOR_MAP: Record<string, RhTeamSector> = {
   CLIENT: 'EXTERNAL',
 };
 
-function parseRhTeamType(value: unknown): RhTeamType {
+function parseRhTeamType(value: unknown): RhTeamTypeValue {
   const raw = String(value ?? 'PEDAGOGICAL').trim().toUpperCase();
   if (LEGACY_TEAM_TYPE_MAP[raw]) return LEGACY_TEAM_TYPE_MAP[raw];
-  return RH_TEAM_TYPE_VALUES.includes(raw as RhTeamType) ? (raw as RhTeamType) : 'PEDAGOGICAL';
+  return RH_TEAM_TYPE_VALUES.includes(raw as RhTeamTypeValue)
+    ? (raw as RhTeamTypeValue)
+    : 'PEDAGOGICAL';
 }
 
 function parseRhTeamSector(value: unknown): RhTeamSector {
@@ -49,7 +56,7 @@ function parseRhTeamSector(value: unknown): RhTeamSector {
     : 'CAMPUS';
 }
 
-function teamTypesMatchingQuery(q: string): RhTeamType[] {
+function teamTypesMatchingQuery(q: string): RhTeamTypeValue[] {
   const needle = q.toLowerCase();
   return RH_TEAM_TYPE_VALUES.filter(
     (type) =>
@@ -67,7 +74,48 @@ function buildTeamListWhere(q: string): Prisma.RhTeamWhereInput {
   if (types.length > 0) {
     or.push({ type: { in: types } });
   }
+  or.push({
+    formationSession: {
+      formation: { name: { contains: q, mode: 'insensitive' } },
+    },
+  });
   return { OR: or };
+}
+
+/** permanent = structure école ; session = équipes liées à une session catalogue. */
+function buildTeamScopeWhere(
+  teamScope: string,
+  sessionPhase: string,
+): Prisma.RhTeamWhereInput {
+  if (teamScope === 'session') {
+    const base: Prisma.RhTeamWhereInput = { formationSessionId: { not: null } };
+    switch (sessionPhase) {
+      case 'active':
+        return { ...base, lifecycleStatus: 'ACTIVE' };
+      case 'post_exam':
+        return { ...base, lifecycleStatus: 'POST_EXAM' };
+      case 'archived':
+        return { ...base, lifecycleStatus: 'ARCHIVED' };
+      case 'all':
+        return base;
+      case 'running':
+      default:
+        return { ...base, lifecycleStatus: { in: ['ACTIVE', 'POST_EXAM'] } };
+    }
+  }
+  return {
+    formationSessionId: null,
+    type: { in: PERMANENT_SCHOOL_TEAM_TYPES },
+  };
+}
+
+function mergeTeamWhere(
+  ...clauses: Array<Prisma.RhTeamWhereInput | undefined>
+): Prisma.RhTeamWhereInput {
+  const parts = clauses.filter(Boolean) as Prisma.RhTeamWhereInput[];
+  if (parts.length === 0) return {};
+  if (parts.length === 1) return parts[0];
+  return { AND: parts };
 }
 
 async function requireSession(method: string) {
@@ -103,17 +151,47 @@ export async function GET(request: NextRequest, { params }: Params) {
 
   try {
     if (joined === 'statistics' || joined === 'stats') {
-      const [total, memberRows] = await Promise.all([
-        prisma.rhTeam.count(),
-        prisma.rhTeamMember.findMany({ select: { teamId: true } }),
+      const teamScope = (url.searchParams.get('teamScope') || 'permanent').trim();
+      const sessionPhase = (url.searchParams.get('sessionPhase') || 'running').trim();
+      const scopeWhere = buildTeamScopeWhere(teamScope, sessionPhase);
+
+      const sessionBaseWhere = buildTeamScopeWhere('session', 'all');
+
+      const [total, memberRows, withoutLeader, postExamCount, archivedCount] = await Promise.all([
+        prisma.rhTeam.count({ where: scopeWhere }),
+        prisma.rhTeamMember.findMany({
+          where: { team: scopeWhere },
+          select: { teamId: true },
+        }),
+        prisma.rhTeam.count({
+          where: mergeTeamWhere(scopeWhere, { leaderId: null }),
+        }),
+        prisma.rhTeam.count({
+          where: mergeTeamWhere(sessionBaseWhere, { lifecycleStatus: 'POST_EXAM' }),
+        }),
+        prisma.rhTeam.count({
+          where: mergeTeamWhere(sessionBaseWhere, { lifecycleStatus: 'ARCHIVED' }),
+        }),
       ]);
       const members = memberRows.length;
       const avgSize = total > 0 ? Math.round((members / total) * 10) / 10 : 0;
+
+      let activeCount = total;
+      if (teamScope === 'session') {
+        activeCount = await prisma.rhTeam.count({
+          where: mergeTeamWhere(scopeWhere, { lifecycleStatus: 'ACTIVE' }),
+        });
+      }
+
       return ok({
         total: { value: total },
-        active: { value: total },
+        active: { value: activeCount },
         members: { value: members },
         avgSize: { value: avgSize },
+        withoutLeader: { value: withoutLeader },
+        postExam: { value: postExamCount },
+        archived: { value: archivedCount },
+        teamScope,
       });
     }
 
@@ -141,8 +219,13 @@ export async function GET(request: NextRequest, { params }: Params) {
     const page = Math.max(1, Number(url.searchParams.get('page') || 1));
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get('limit') || 10)));
     const q = (url.searchParams.get('query') || url.searchParams.get('q') || '').trim();
+    const teamScope = (url.searchParams.get('teamScope') || 'permanent').trim();
+    const sessionPhase = (url.searchParams.get('sessionPhase') || 'running').trim();
 
-    const where = q ? buildTeamListWhere(q) : {};
+    const where = mergeTeamWhere(
+      buildTeamScopeWhere(teamScope, sessionPhase),
+      q ? buildTeamListWhere(q) : undefined,
+    );
 
     const [total, rows] = await Promise.all([
       prisma.rhTeam.count({ where }),
@@ -158,6 +241,7 @@ export async function GET(request: NextRequest, { params }: Params) {
     return ok({
       items: rows.map(serializeTeam),
       pagination: { page, limit, total },
+      teamScope,
     });
   } catch (error) {
     return fail('Impossible de charger les équipes.', 500, error);

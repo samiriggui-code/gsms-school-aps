@@ -2,9 +2,9 @@ import { effectiveTraineesBandForFormationScalars } from '@/lib/formation-traine
 
 /** Enregistrement complet renvoyé par Prisma (Decimal sur les KPI). */
 type FormationSerializeRow = {
-  priceFrom: unknown;
-  successRate: unknown;
-  clientSatisfactionRate: unknown;
+  priceFrom?: unknown;
+  successRate?: unknown;
+  clientSatisfactionRate?: unknown;
   currency?: unknown;
   parcoursSpecialite?: unknown;
   fundingBlocks?: unknown;

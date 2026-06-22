@@ -1,4 +1,5 @@
 import type { PrismaClient } from '@repo/database';
+import { userReportMailbox } from '@repo/api-core/user-email-routing';
 import { isPilotageReportEmailEnabled, sendPilotageReportReadyEmail } from '@repo/mail';
 import { CrmEventService, CRM_MODULE_KEYS } from './crm-events';
 import type { ReportGenerationSource } from './report-dedup';
@@ -91,7 +92,7 @@ export async function sendReportGeneratedEmails(
   const userIds = await resolveReportAudience(prisma, input.requestedById);
   const users = await prisma.user.findMany({
     where: { id: { in: userIds }, status: 'ACTIVE', isTrashed: false },
-    select: { email: true, firstName: true },
+    select: { email: true, proEmail: true, firstName: true },
   });
 
   const baseUrl = (process.env.NEXTAUTH_URL || 'http://localhost:3001').replace(/\/$/, '');
@@ -106,11 +107,12 @@ export async function sendReportGeneratedEmails(
   let sent = 0;
 
   for (const user of users) {
-    if (!user.email) continue;
+    const mailbox = userReportMailbox(user);
+    if (!mailbox) continue;
     const name = user.firstName?.trim() || 'collaborateur';
     try {
       await sendPilotageReportReadyEmail({
-        to: user.email,
+        to: mailbox,
         recipientName: name,
         title: input.title,
         format: input.format,
@@ -120,7 +122,7 @@ export async function sendReportGeneratedEmails(
       });
       sent += 1;
     } catch (err) {
-      console.error('[ReportNotify] email failed', user.email, err);
+      console.error('[ReportNotify] email failed', mailbox, err);
     }
   }
 

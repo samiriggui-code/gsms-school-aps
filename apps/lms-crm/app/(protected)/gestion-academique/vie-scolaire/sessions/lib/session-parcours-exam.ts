@@ -15,9 +15,11 @@ export function formationParcoursHasExamenFinal(parcours: FormationParcoursSpeci
  * - MAC, RAN, Autre → `INITIAL` (valeur historique côté enum = session hors parcours initial certifiant)
  */
 export function sessionKindDerivedFromFormationParcours(
-  parcours: FormationParcoursSpecialite,
+  parcours: FormationParcoursSpecialite | string,
 ): FormationSessionApiRow['sessionKind'] {
-  return formationParcoursHasExamenFinal(parcours) ? 'WITH_EXAM' : 'INITIAL';
+  return formationParcoursHasExamenFinal(parcours as FormationParcoursSpecialite)
+    ? 'WITH_EXAM'
+    : 'INITIAL';
 }
 
 const PARCOURS_SEARCH: Record<FormationParcoursSpecialite, string> = {

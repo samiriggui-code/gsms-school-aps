@@ -68,6 +68,7 @@ export async function GET(req: NextRequest) {
           OR: [
             { name: { contains: query, mode: 'insensitive' } },
             { email: { contains: query, mode: 'insensitive' } },
+            { proEmail: { contains: query, mode: 'insensitive' } },
           ],
         },
       ],
@@ -104,6 +105,7 @@ export async function GET(req: NextRequest) {
         avatar: true,
         name: true,
         email: true,
+        proEmail: true,
         status: true,
         createdAt: true,
         lastSignInAt: true,

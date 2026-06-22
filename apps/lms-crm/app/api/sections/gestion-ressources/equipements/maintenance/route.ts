@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
+import type { EquipmentMaintenanceStatus } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import { requireGestionRessourcesView } from '../_lib/require-gestion-ressources-auth';
+import { requireGestionRessourcesView } from '../../_lib/require-gestion-ressources-auth';
 
 /** Liste globale des interventions (records `EquipmentMaintenance`). */
 export async function GET(request: NextRequest) {
@@ -15,9 +16,8 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
     const openOnly = url.searchParams.get('open') === '1';
 
-    const where = openOnly
-      ? { status: { in: ['SCHEDULED', 'IN_PROGRESS', 'OVERDUE'] } }
-      : {};
+    const openStatuses: EquipmentMaintenanceStatus[] = ['SCHEDULED', 'IN_PROGRESS', 'OVERDUE'];
+    const where = openOnly ? { status: { in: openStatuses } } : {};
 
     const [rows, total] = await Promise.all([
       prisma.equipmentMaintenance.findMany({

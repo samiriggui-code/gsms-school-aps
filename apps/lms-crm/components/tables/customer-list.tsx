@@ -34,6 +34,7 @@ import {
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { toAbsoluteUrl } from '@/lib/helpers';
+import { userIamLoginSubtitle } from '@/lib/user-email-routing';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Badge, BadgeProps } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -70,6 +71,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { UserDetailsSheet } from '../user-details-sheet';
+import type { UserSheetSeed } from '@/app/models/user';
 import { CustomerFormSheet } from '../customer-form-sheet';
 import UserProfileEditSheet from '@/app/(protected)/securite-configuration/acces/users/[id]/components/user-profile-edit-sheet';
 import {
@@ -89,20 +91,9 @@ interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;
 }
 
-type ApiUser = {
-  id: string;
-  name?: string | null;
+type ApiUser = UserSheetSeed & {
   email: string;
-  avatar?: string | null;
   status: string;
-  roleId?: string;
-  role?: {
-    id: string;
-    name: string;
-    slug?: string;
-  } | null;
-  createdAt?: string | Date;
-  lastSignInAt?: string | Date | null;
 };
 
 const formatUserDate = (value?: string | Date | null) => {
@@ -838,8 +829,8 @@ export function CustomerListTable({
           user: `LMS-U-${user.id.replace(/-/g, '').slice(0, 6).toUpperCase() || String(index + 1).padStart(6, '0')}`,
           customerInfo: {
             image: user.avatar || '300-2.png',
-            title: user.name || user.email,
-            label: user.email,
+            title: user.name || userIamLoginSubtitle(user),
+            label: userIamLoginSubtitle(user),
             statusColor: normalized === 'ACTIVE' ? 'online' : 'offline',
             verified: Boolean(user.lastSignInAt),
           },
@@ -1463,19 +1454,19 @@ export function CustomerListTable({
   };
 
   // Handle edit click from details sheet
-  const handleEditFromDetails = (userFromSheet?: ApiUser) => {
+  const handleEditFromDetails = (userFromSheet?: UserSheetSeed) => {
     if (userFromSheet) {
       setSelectedUserDetails({
         id: userFromSheet.id,
         name: userFromSheet.name,
-        email: userFromSheet.email,
-        status: userFromSheet.status,
-        roleId: userFromSheet.role?.id ?? (userFromSheet as ApiUser).roleId,
+        email: userFromSheet.email ?? '',
+        status: userFromSheet.status ?? 'ACTIVE',
+        roleId: userFromSheet.role?.id ?? userFromSheet.roleId,
         role: userFromSheet.role ?? undefined,
         avatar: userFromSheet.avatar,
-        firstName: (userFromSheet as ApiUser & { firstName?: string }).firstName,
-        lastName: (userFromSheet as ApiUser & { lastName?: string }).lastName,
-      } as ApiUser);
+        firstName: userFromSheet.firstName,
+        lastName: userFromSheet.lastName,
+      });
     }
     setIsCustomerSheetOpen(false);
     if (allowFormSheet) {

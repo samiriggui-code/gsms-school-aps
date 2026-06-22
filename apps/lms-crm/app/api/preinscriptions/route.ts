@@ -7,6 +7,12 @@ import {
 import { sendPreinscriptionEmails } from '@repo/mail';
 import { createWorkflowEngine } from '@repo/api-core';
 import { preinscriptionLabelForSlug } from '@/lib/preinscription-formation-options';
+import {
+  assessPreinscriptionIdentity,
+  buildCnapsOnboardingMetadata,
+  composeBirthPlaceLine,
+  parseFrenchPostalCode,
+} from '@/lib/cnaps/cnaps-onboarding-fields';
 import prisma from '@/lib/prisma';
 
 type PreinscriptionPayload = {
@@ -14,13 +20,18 @@ type PreinscriptionPayload = {
   lastName?: string;
   email?: string;
   phone?: string;
+  cnapsRequestType?: 'PREALABLE' | 'PROVISOIRE';
+  civility?: 'M' | 'MME';
+  usageName?: string;
   birthDate?: string;
   birthPlace?: string;
+  birthCity?: string;
+  birthDepartment?: string;
+  birthCountry?: string;
   nationality?: string;
   address?: string;
   postalCode?: string;
   city?: string;
-  /** Slug CRM `Formation.slug` (recommandé). */
   formationSlug?: string;
   /** Libellé affiché (notes) — dérivé du slug si absent. */
   formationName?: string;
@@ -66,8 +77,28 @@ export async function POST(request: NextRequest) {
   const email = clean(body.email).toLowerCase();
   const phone = clean(body.phone);
   const birthDate = clean(body.birthDate);
-  const birthPlace = clean(body.birthPlace);
+  const cnapsRequestTypeRaw = clean(body.cnapsRequestType).toUpperCase();
+  const cnapsRequestType =
+    cnapsRequestTypeRaw === 'PROVISOIRE' ? ('PROVISOIRE' as const) : ('PREALABLE' as const);
+  const civilityRaw = clean(body.civility).toUpperCase();
+  const civility =
+    civilityRaw === 'MME' || civilityRaw === 'F' || civilityRaw === 'MADAME'
+      ? ('MME' as const)
+      : civilityRaw === 'M' || civilityRaw === 'MONSIEUR'
+        ? ('M' as const)
+        : null;
+  const birthPlaceLegacy = clean(body.birthPlace);
+  const birthCity = clean(body.birthCity) || birthPlaceLegacy;
+  const birthDepartment = clean(body.birthDepartment) || null;
+  const birthCountry = clean(body.birthCountry) || null;
   const nationality = clean(body.nationality);
+  const usageName = clean(body.usageName);
+  const birthPlace = composeBirthPlaceLine({
+    birthCity,
+    birthDepartment,
+    birthCountry,
+    nationality,
+  });
   const address = clean(body.address);
   const postalCode = clean(body.postalCode);
   const city = clean(body.city);
@@ -94,7 +125,7 @@ export async function POST(request: NextRequest) {
     !email ||
     !phone ||
     !birthDate ||
-    !birthPlace ||
+    !birthCity ||
     !nationality ||
     !address ||
     !postalCode ||
@@ -107,6 +138,47 @@ export async function POST(request: NextRequest) {
       {
         message:
           'Les informations candidat obligatoires sont manquantes (identite, adresse, formation, mode de financement, situation).',
+      },
+      { status: 400 },
+    );
+  }
+
+  if (!civility) {
+    return NextResponse.json(
+      { message: 'La civilite (M./Mme) est obligatoire pour le dossier CNAPS.' },
+      { status: 400 },
+    );
+  }
+
+  const normalizedPostalCode = parseFrenchPostalCode(postalCode);
+  if (!normalizedPostalCode) {
+    return NextResponse.json(
+      { message: 'Code postal invalide (5 chiffres attendus).' },
+      { status: 400 },
+    );
+  }
+
+  const cnapsCheck = assessPreinscriptionIdentity({
+    civility,
+    firstName,
+    lastName,
+    usageName,
+    email,
+    phone,
+    birthDate,
+    birthCity,
+    birthDepartment,
+    birthCountry,
+    nationality,
+    address,
+    postalCode: normalizedPostalCode,
+    city,
+  });
+
+  if (!cnapsCheck.complete) {
+    return NextResponse.json(
+      {
+        message: `Informations incompletes : ${cnapsCheck.missing.join(', ')}.`,
       },
       { status: 400 },
     );
@@ -198,19 +270,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const user =
-    existingUser ??
-    (await prisma.user.create({
-      data: {
-        email,
-        firstName,
-        lastName,
-        name: `${firstName} ${lastName}`.trim(),
-        phone: phone || null,
-        roleId: candidatRole.id,
-      },
-      select: { id: true },
-    }));
+  const userProfileData = {
+    firstName,
+    lastName,
+    name: `${firstName} ${lastName}`.trim(),
+    phone: phone || null,
+    birthDate: birthDate ? new Date(`${birthDate}T00:00:00.000Z`) : null,
+    birthPlace: birthPlace || null,
+    nationality: nationality || null,
+    country: 'France',
+    address: address || null,
+    postalCode: normalizedPostalCode,
+    city: city || null,
+  };
+
+  const user = existingUser
+    ? await prisma.user.update({
+        where: { id: existingUser.id },
+        data: userProfileData,
+        select: { id: true },
+      })
+    : await prisma.user.create({
+        data: {
+          email,
+          roleId: candidatRole.id,
+          ...userProfileData,
+        },
+        select: { id: true },
+      });
 
   const duplicate = await prisma.candidature.findFirst({
     where: {
@@ -244,9 +331,13 @@ export async function POST(request: NextRequest) {
     fundingMode ? `Mode de financement souhaité: ${fundingMode}` : '',
     sessionNote,
     `Date de naissance: ${birthDate}`,
+    `Ville de naissance: ${birthCity}`,
+    birthDepartment ? `Departement de naissance: ${birthDepartment}` : '',
+    birthCountry ? `Pays de naissance: ${birthCountry}` : '',
     `Lieu de naissance: ${birthPlace}`,
+    usageName ? `Nom d usage: ${usageName}` : '',
     `Nationalite: ${nationality}`,
-    `Adresse: ${address}, ${postalCode} ${city}`,
+    `Adresse: ${address}, ${normalizedPostalCode} ${city}`,
     `Situation actuelle: ${currentSituation}`,
     experience ? `Experience: ${experience}` : '',
     motivation ? `Motivation: ${motivation}` : '',
@@ -277,6 +368,23 @@ export async function POST(request: NextRequest) {
       source: CandidatureSource.LANDING_SESSION,
       status: CandidatureStatus.DRAFT,
       notes: leadNotes || null,
+      metadata: {
+        onboarding: buildCnapsOnboardingMetadata({
+          cnapsRequestType,
+          civility,
+          usageName,
+          birthDate,
+          birthCity,
+          birthDepartment,
+          birthCountry,
+          nationality,
+          address,
+          postalCode: normalizedPostalCode,
+          city,
+          formationSlug,
+          fundingMode,
+        }),
+      },
     },
     select: { id: true },
   });

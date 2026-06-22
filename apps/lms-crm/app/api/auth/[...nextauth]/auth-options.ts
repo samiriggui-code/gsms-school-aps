@@ -53,11 +53,17 @@ export function getAuthOptions(req?: NextRequest): NextAuthOptions {
             );
           }
 
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
+          const login = email.toLowerCase();
+
+          const user = await prisma.user.findFirst({
+            where: {
+              isTrashed: false,
+              proEmail: { equals: login, mode: 'insensitive' },
+            },
             select: {
               id: true,
               email: true,
+              proEmail: true,
               password: true,
               name: true,
               roleId: true,
@@ -123,7 +129,7 @@ export function getAuthOptions(req?: NextRequest): NextAuthOptions {
           return {
             id: user.id,
             status: user.status,
-            email: user.email,
+            email: user.proEmail ?? login,
             name: user.name || 'Anonymous',
             roleId: user.roleId,
             avatar: user.avatar,

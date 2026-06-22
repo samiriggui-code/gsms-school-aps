@@ -124,7 +124,7 @@ export async function releaseEquipmentFromSession(
   });
 
   const result = await releaseEquipmentStatusIfIdle(prisma, equipmentId, sessionId);
-  return { released: true, ...result };
+  return { ...result, released: true };
 }
 
 /** Affecte une pièce à une session (statut + mouvement OUT). La session JSON est gérée ailleurs. */

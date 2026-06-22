@@ -186,7 +186,9 @@ export function TeamDetailsSettings({ team, formRef }: TeamDetailsSettingsProps)
             name="siteId"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel className="text-2sm font-semibold text-foreground">Site Affecté (Optionnel)</FormLabel>
+                <FormLabel className="text-2sm font-semibold text-foreground">
+                  Site / lieu d&apos;intervention (optionnel)
+                </FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger className="h-10 bg-secondary/50 border-border focus:bg-background transition-colors">

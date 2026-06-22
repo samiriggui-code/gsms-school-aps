@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { buildAppLoginEmail } from '@/lib/app-login-email';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { RiCheckboxCircleFill, RiRefreshLine } from '@remixicon/react';
 import {
@@ -103,10 +104,8 @@ async function unwrapOkItems<T>(
 }
 
 function buildProEmailLocal(firstName: string, lastName: string) {
-  const f = firstName.toLowerCase().trim().replace(/\s+/g, '');
-  const l = lastName.toLowerCase().trim().replace(/\s+/g, '');
-  if (!f || !l) return '';
-  return `${f}.${l}@app.lms.local`;
+  if (!firstName.trim() || !lastName.trim()) return '';
+  return buildAppLoginEmail(firstName, lastName);
 }
 
 function generateInitialPassword(length = 14): string {
@@ -994,8 +993,9 @@ export function CandidatureAddSheet({
               <div className="flex items-start gap-2 text-xs text-muted-foreground italic max-w-xl min-w-0">
                 <Info className="size-3.5 shrink-0 mt-0.5" />
                 <span>
-                  E-mail personnel = identifiant de connexion principal. Un e-mail de bienvenue pourra être envoyé après
-                  création. Les identifiants générés (pro + mot de passe) figurent dans la colonne de gauche.
+                  E-mail personnel = contact pour recevoir l&apos;inscription et les identifiants (login + mot de passe).
+                  L&apos;email professionnel généré sert à la connexion au dashboard. Un e-mail pourra être envoyé après
+                  création sur l&apos;adresse personnelle.
                 </span>
               </div>
               <div className="flex gap-2.5 shrink-0 ms-auto">

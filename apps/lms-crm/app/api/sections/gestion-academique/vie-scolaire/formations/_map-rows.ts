@@ -1,6 +1,7 @@
 import type { CatalogProgramOpen } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/data/formation-vitrine-catalog';
 import type { FormationCatalogApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/types/catalog-api';
 import { effectiveTraineesBandForFormationScalars } from '@/lib/formation-trainee-band';
+import { numDecimal } from '@/lib/decimal-coerce';
 
 /** Une seule fiche CRM quel que soit l’historique DB (`catalogProgramConfig` ancien genre SSIAP / MAC…). */
 const CRM_CATALOG_PROGRAM_SHEET: CatalogProgramOpen = { sheet: 'customer' };
@@ -12,12 +13,6 @@ function resolveCatalogProgramConfig(): CatalogProgramOpen {
 function asStringArray(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((x): x is string => typeof x === 'string');
-}
-
-function numDecimal(value: unknown): number | null {
-  if (value == null || value === '') return null;
-  const n = Number(value as number | string);
-  return Number.isFinite(n) ? n : null;
 }
 
 type FormationSlice = {

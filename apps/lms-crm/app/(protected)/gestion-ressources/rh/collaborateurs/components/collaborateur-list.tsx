@@ -35,6 +35,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime, getInitials } from '@/lib/helpers';
+import { userIamLoginSubtitle } from '@/lib/user-email-routing';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -65,10 +66,15 @@ import { toast } from 'sonner';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { CollaborateurDetailsSheet } from './collaborateur-details-sheet';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
+import type { RhCollaborateurListSegment } from '@/lib/rh-collaborateur-list-segment';
+import {
+  RH_COLLABORATEUR_LIST_SEGMENT_HINTS,
+  RH_COLLABORATEUR_LIST_SEGMENT_LABELS,
+} from '@/lib/rh-collaborateur-list-segment';
 
 type CollaborateurListProps = {
-  profileSegment: 'collaborateur' | 'interne';
-  onProfileSegmentChange: (v: 'collaborateur' | 'interne') => void;
+  profileSegment: RhCollaborateurListSegment;
+  onProfileSegmentChange: (v: RhCollaborateurListSegment) => void;
 };
 
 const CollaborateurList = ({
@@ -136,7 +142,7 @@ const CollaborateurList = ({
     selectedRole: string | null;
     selectedStatus: string | null;
     selectedCategory: string | null;
-    selectedProfileType: 'collaborateur' | 'interne';
+    selectedProfileType: RhCollaborateurListSegment;
   }): Promise<DataGridApiResponse<Collaborateur>> => {
     const sortField = sorting?.[0]?.id || '';
     const sortDirection = sorting?.[0]?.desc ? 'desc' : 'asc';
@@ -215,7 +221,7 @@ const CollaborateurList = ({
         header: ({ column }) => <DataGridColumnHeader title={t('datagrid.columns.staffMember')} column={column} />,
         cell: ({ row }) => {
           const collaborateur = row.original;
-          const initials = getInitials(collaborateur.name || collaborateur.email);
+          const initials = getInitials(collaborateur.name || userIamLoginSubtitle(collaborateur));
           return (
             <div className="flex items-center gap-3">
               <Avatar className="size-9">
@@ -229,7 +235,7 @@ const CollaborateurList = ({
                 <span className="font-semibold text-sm text-foreground hover:text-primary transition-colors cursor-pointer" onClick={() => handleOpenDetails(collaborateur)}>
                   {collaborateur.name}
                 </span>
-                <span className="text-muted-foreground text-xs">{collaborateur.email}</span>
+                <span className="text-muted-foreground text-xs">{userIamLoginSubtitle(collaborateur)}</span>
               </div>
             </div>
           );
@@ -339,11 +345,16 @@ const CollaborateurList = ({
             <div>
               <h3 className="text-base font-semibold text-foreground">Liste des collaborateurs</h3>
               <p className="text-xs text-muted-foreground">
-                Comptes rôle « Collaborateur » uniquement ; les{' '}
-                <Link href="/gestion-ressources/rh/formateurs" className="text-primary underline-offset-4 hover:underline">
-                  formateurs
-                </Link>{' '}
-                sont sur la page dédiée.
+                {RH_COLLABORATEUR_LIST_SEGMENT_HINTS[selectedProfileType]}{' '}
+                {selectedProfileType === 'collaborateur' ? (
+                  <>
+                    Les{' '}
+                    <Link href="/gestion-ressources/rh/formateurs" className="text-primary underline-offset-4 hover:underline">
+                      formateurs
+                    </Link>{' '}
+                    sont sur la page dédiée.
+                  </>
+                ) : null}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -358,14 +369,19 @@ const CollaborateurList = ({
               </div>
               <Select
                 value={selectedProfileType}
-                onValueChange={(value: 'collaborateur' | 'interne') => setSelectedProfileType(value)}
+                onValueChange={(value: RhCollaborateurListSegment) => setSelectedProfileType(value)}
               >
                 <SelectTrigger className="h-10 w-full sm:w-56">
                   <SelectValue placeholder="Segment RH" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="collaborateur">Salariés (collaborateurs)</SelectItem>
-                  <SelectItem value="interne">Autres comptes siège / admin</SelectItem>
+                  {(Object.keys(RH_COLLABORATEUR_LIST_SEGMENT_LABELS) as RhCollaborateurListSegment[]).map(
+                    (key) => (
+                      <SelectItem key={key} value={key}>
+                        {RH_COLLABORATEUR_LIST_SEGMENT_LABELS[key]}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
               <Button
@@ -450,7 +466,7 @@ const CollaborateurList = ({
                              <div className="relative mb-4">
                                <Avatar className="size-20 border-2 border-background shadow-lg">
                                  {collaborateur.avatar && <AvatarImage src={collaborateur.avatar} alt={collaborateur.name || ''} />}
-                                 <AvatarFallback className="text-xl">{getInitials(collaborateur.name || collaborateur.email)}</AvatarFallback>
+                                 <AvatarFallback className="text-xl">{getInitials(collaborateur.name || userIamLoginSubtitle(collaborateur))}</AvatarFallback>
                                </Avatar>
                                <AvatarIndicator className="-end-1 -top-1">
                                  <AvatarStatus variant={userPresenceAvatarVariant(collaborateur)} className="size-3.5 border-2 border-background" />
@@ -463,7 +479,7 @@ const CollaborateurList = ({
                                </h4>
                                <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
                                  <Mail className="size-3" />
-                                 <span className="truncate max-w-[180px]">{collaborateur.email}</span>
+                                 <span className="truncate max-w-[180px]">{userIamLoginSubtitle(collaborateur)}</span>
                                </div>
                              </div>
 

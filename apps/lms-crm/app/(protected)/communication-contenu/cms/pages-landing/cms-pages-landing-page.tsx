@@ -37,10 +37,13 @@ type LandingConfigData = {
 type SectionEditGuide = {
   type: string;
   anchor?: string;
-  editPath: string;
-  editLabel: string;
+  editPath?: string;
+  editLabel?: string;
   hint: string;
 };
+
+const I18N_SECTION_HINT =
+  'Texte intégré au site (i18n) — non éditable depuis le CRM pour l’instant.';
 
 const SECTION_EDIT_GUIDE: SectionEditGuide[] = [
   {
@@ -52,37 +55,29 @@ const SECTION_EDIT_GUIDE: SectionEditGuide[] = [
   {
     type: 'trusted-brands',
     anchor: '#trusted-brands',
-    editPath: '/communication-contenu/cms/contenus',
-    editLabel: 'CMS contenus',
-    hint: 'Logos partenaires et marques de confiance.',
+    hint: I18N_SECTION_HINT,
   },
   {
     type: 'how-it-works',
     anchor: '#how-it-works',
-    editPath: '/communication-contenu/cms/contenus',
-    editLabel: 'CMS contenus',
-    hint: 'Étapes parcours et textes explicatifs.',
+    hint: I18N_SECTION_HINT,
   },
   {
     type: 'features',
     anchor: '#features',
-    editPath: '/communication-contenu/cms/contenus',
-    editLabel: 'CMS contenus',
-    hint: 'Atouts, arguments et points différenciants.',
+    hint: I18N_SECTION_HINT,
   },
   {
     type: 'trainers',
     anchor: '#trainers',
-    editPath: '/gestion-ressources/rh/formateurs',
-    editLabel: 'Formateurs RH',
-    hint: 'Profils, photos et compétences des formateurs.',
+    editPath: '/communication-contenu/cms/equipe-landing',
+    editLabel: 'Équipe landing',
+    hint: 'Formateurs, équipe pédagogique et RH publiés sur le site.',
   },
   {
     type: 'testimonials',
     anchor: '#testimonials',
-    editPath: '/communication-contenu/cms/contenus',
-    editLabel: 'CMS contenus',
-    hint: 'Témoignages et avis clients.',
+    hint: I18N_SECTION_HINT,
   },
   {
     type: 'catalogue',
@@ -94,16 +89,12 @@ const SECTION_EDIT_GUIDE: SectionEditGuide[] = [
   {
     type: 'faq',
     anchor: '#faq',
-    editPath: '/communication-contenu/cms/contenus',
-    editLabel: 'CMS contenus',
-    hint: 'Questions fréquentes et réponses.',
+    hint: I18N_SECTION_HINT,
   },
   {
     type: 'call-to-action',
     anchor: '#call-to-action',
-    editPath: '/communication-contenu/cms/contenus',
-    editLabel: 'CMS contenus',
-    hint: 'Bandeau d’appel à l’action et boutons.',
+    hint: I18N_SECTION_HINT,
   },
   {
     type: 'contact',
@@ -214,7 +205,8 @@ export default function CmsPagesLandingPage() {
             <div>
               <CardTitle className="text-base">Publication du site</CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
-                Désactive la landing publique et affiche la page maintenance. Les 10 sections restent configurées.
+                Désactive la landing publique et affiche la page maintenance. Seul interrupteur global du site
+                (Formations et Équipe landing n’agissent que sur leur contenu).
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -263,7 +255,7 @@ export default function CmsPagesLandingPage() {
                           Voir sur le site
                         </a>
                       </Button>
-                      {guide ? (
+                      {guide?.editPath ? (
                         <Button size="sm" asChild>
                           <Link href={guide.editPath}>
                             {guide.editLabel}

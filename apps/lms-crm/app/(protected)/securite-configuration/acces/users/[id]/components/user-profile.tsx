@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { User, UserStatus } from '@/app/models/user';
 import { getUserStatusProps } from '../../constants/status';
 import UserProfileEditSheet from './user-profile-edit-sheet';
+import { userIamLoginSubtitle, userPersonalMailbox } from '@/lib/user-email-routing';
 
 const UserProfile = ({
   user,
@@ -88,37 +89,43 @@ const UserProfile = ({
         <CardContent>
           <dl className="grid grid-cols-[auto_1fr] gap-3 text-sm mb-5 [&_dt]:text-muted-foreground">
             <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt className="flex md:w-64">Full name:</dt>
-              <dd>{user.name || 'Not available'}</dd>
+              <dt className="flex md:w-64">Nom complet&nbsp;:</dt>
+              <dd>{user.name || 'Non renseigné'}</dd>
             </div>
             <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Email address:</dt>
+              <dt>Email professionnel (connexion)&nbsp;:</dt>
               <dd className="flex items-center gap-2.5">
-                <span>{user.email}</span>
+                <span>{userIamLoginSubtitle(user)}</span>
+              </dd>
+            </div>
+            <div className="grid grid-cols-subgrid col-span-2 items-baseline">
+              <dt>Email personnel&nbsp;:</dt>
+              <dd className="flex items-center gap-2.5">
+                <span>{userPersonalMailbox(user) ?? '—'}</span>
                 {user.emailVerifiedAt ? (
                   <Badge variant="secondary" appearance="light">
-                    Verified
+                    Vérifié
                   </Badge>
                 ) : (
                   <Badge variant="warning" appearance="light">
-                    Not verified
+                    Non vérifié
                   </Badge>
                 )}
               </dd>
             </div>
             <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Role:</dt>
+              <dt>Rôle IAM&nbsp;:</dt>
               <dd>
                 <span className="inline-flex items-center gap-1">
                   {user.role?.name}
                   {user.role?.isProtected && (
-                    <Badge variant="outline">System</Badge>
+                    <Badge variant="outline">Système</Badge>
                   )}
                 </span>
               </dd>
             </div>
             <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Status:</dt>
+              <dt>Statut du compte&nbsp;:</dt>
               <dd>
                 <div className="inline-flex gap-2.5">
                   <Badge variant={statusVariant} appearance="ghost">
@@ -127,18 +134,18 @@ const UserProfile = ({
                   </Badge>
                   {user.isTrashed && (
                     <Badge variant="destructive" appearance="light">
-                      Trashed
+                      Corbeille
                     </Badge>
                   )}
                 </div>
               </dd>
             </div>
             <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Last Sign In:</dt>
+              <dt>Dernière connexion&nbsp;:</dt>
               <dd>
                 {user.lastSignInAt
                   ? formatDateTime(new Date(user.lastSignInAt))
-                  : 'Never'}
+                  : 'Jamais'}
               </dd>
             </div>
           </dl>
@@ -147,7 +154,7 @@ const UserProfile = ({
             disabled={user.role?.isProtected}
             onClick={() => setEditDialogOpen(true)}
           >
-            Edit user details
+            Modifier le compte
           </Button>
         </CardContent>
       </Card>

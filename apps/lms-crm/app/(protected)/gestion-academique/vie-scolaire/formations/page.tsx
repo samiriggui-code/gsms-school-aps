@@ -17,7 +17,6 @@ import {
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
-import { LandingCatalogPublishButton } from '@/components/landing-catalog-publish-button';
 import { formationsExportConfig } from '@/lib/datagrid/export-presets';
 
 export default function Page() {
@@ -36,7 +35,6 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className="flex flex-wrap items-center gap-2">
-            <LandingCatalogPublishButton />
             <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
             <Button onClick={() => setIsAddCatalogOpen(true)} className="gap-2" variant="primary">
               <UserPlus className="size-4" />

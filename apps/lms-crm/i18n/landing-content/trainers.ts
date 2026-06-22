@@ -7,6 +7,7 @@ export const trainersMessages = {
         subtitle:
           "Des professionnels de terrain qui transmettent leur savoir-faire avec passion. Découvrez aussi les équipes qui pilotent la pédagogie et l'accompagnement RH.",
         tabs: {
+          direction: 'Direction',
           formateur: 'Formateur',
           pedagogique: 'Équipe pédagogique',
           rh: 'Équipe RH',
@@ -15,6 +16,21 @@ export const trainersMessages = {
         ratingLabel: 'note',
         linkedinAria: 'LinkedIn de {name}',
         websiteAria: 'Site web de {name}',
+        dynamic: {
+          empty: 'Équipe en cours de publication.',
+          labelA: {
+            direction: 'années',
+            formateur: 'formations',
+            pedagogique: 'programmes',
+            rh: 'dossiers',
+          },
+          labelB: {
+            direction: 'projets',
+            formateur: 'formés',
+            pedagogique: 'sessions',
+            rh: 'collaborateurs',
+          },
+        },
         cards: {
           'laurent-dubois': {
             name: 'Laurent Dubois',
@@ -124,6 +140,7 @@ export const trainersMessages = {
         subtitle:
           'Field professionals who share their expertise with passion. Meet the teams who oversee pedagogy and HR support.',
         tabs: {
+          direction: 'Leadership',
           formateur: 'Trainers',
           pedagogique: 'Pedagogical team',
           rh: 'HR team',
@@ -132,6 +149,21 @@ export const trainersMessages = {
         ratingLabel: 'rating',
         linkedinAria: '{name} on LinkedIn',
         websiteAria: '{name} website',
+        dynamic: {
+          empty: 'Team profiles coming soon.',
+          labelA: {
+            direction: 'years',
+            formateur: 'courses',
+            pedagogique: 'programmes',
+            rh: 'files',
+          },
+          labelB: {
+            direction: 'projects',
+            formateur: 'trainees',
+            pedagogique: 'sessions',
+            rh: 'staff',
+          },
+        },
         cards: {
           'laurent-dubois': {
             name: 'Laurent Dubois',

@@ -10,7 +10,8 @@
     "./notification-channel": "./src/notification-channel.ts",
     "./notification-avatar-enrich": "./src/notification-avatar-enrich.ts",
     "./venue-room-usage": "./src/venue-room-usage.ts",
-    "./compliance-service": "./src/compliance-service.ts"
+    "./compliance-service": "./src/compliance-service.ts",
+    "./user-email-routing": "./src/user-email-routing.ts"
   },
   "dependencies": {
     "@repo/database": "workspace:*",

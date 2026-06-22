@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import prisma from '@/lib/prisma';
 import { sendEmail } from '@/services/send-email';
+import { userTransactionalMailbox } from '@/lib/user-email-routing';
 import {
   ChangePasswordApiSchemaType,
   getChangePasswordApiSchema,
@@ -58,14 +59,17 @@ export async function POST(req: NextRequest) {
     });
 
     // Send the email notification
-    await sendEmail({
-      to: user.email, // Use the resolved email address
+    const notifyTo = userTransactionalMailbox(user);
+    if (notifyTo) {
+      await sendEmail({
+        to: notifyTo,
       subject: 'Password Reset Successful',
       content: {
         title: `Hello, ${user.name}`,
         subtitle: 'Your password has been successfully updated.',
       },
-    });
+      });
+    }
 
     return NextResponse.json(
       { message: 'Password reset successful.' },

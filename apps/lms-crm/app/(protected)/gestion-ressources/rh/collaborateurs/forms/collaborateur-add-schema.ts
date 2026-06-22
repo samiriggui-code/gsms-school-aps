@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { zSchoolInternalService } from '@/lib/rh-form-schema-shared';
 
 export const CollaborateurAddSchema = z.object({
   // Identité
@@ -23,7 +24,9 @@ export const CollaborateurAddSchema = z.object({
   roleId: z.string().min(1, { message: 'Le rôle est requis.' }),
   userCategory: z.enum(['INTERNAL', 'CLIENT', 'SUBCONTRACTOR']),
   subcontractorId: z.string().optional(), // Entreprise sous-traitante affiliée
+  schoolInternalService: zSchoolInternalService,
   jobFunction: z.string().optional(),
+  jobPositionId: z.string().optional(),
   qualification: z.string().optional(),
   
   // État Civil & Conformité Security

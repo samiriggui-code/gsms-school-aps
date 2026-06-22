@@ -1,10 +1,11 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
-import { PrismaClient } from '../generated/client';
+import { PrismaClient, RhTeamType, SchoolInternalService } from '../generated/client';
 
 type PrismaGlobal = typeof globalThis & {
   __lmsPrismaClients?: Record<string, PrismaClient>;
   __lmsPgPools?: Record<string, Pool>;
+  __lmsPrismaFingerprints?: Record<string, string>;
 };
 
 const POOL_OPTIONS = {
@@ -15,7 +16,24 @@ const POOL_OPTIONS = {
 } as const;
 
 /** Délégués requis — si absents, le singleton dev est recréé (après `pnpm db:generate`). */
-const REQUIRED_DELEGATES = ['quizAttempt'] as const;
+const REQUIRED_DELEGATES = [
+  'quizAttempt',
+  'rhQualification',
+  'formationSessionDay',
+  'formationSessionEmargement',
+] as const;
+
+/** Bump quand le client généré change (modèles / champs métier RH). */
+const CLIENT_SCHEMA_REVISION = 'suivi-formations-phase3-v1';
+
+/** Marqueurs d'enum + révision — invalide le singleton dev si le client généré a changé. */
+function prismaSchemaFingerprint(): string {
+  return [
+    CLIENT_SCHEMA_REVISION,
+    Object.values(RhTeamType).sort().join(','),
+    Object.values(SchoolInternalService).sort().join(','),
+  ].join('::');
+}
 
 function isStalePrismaClient(client: PrismaClient): boolean {
   return REQUIRED_DELEGATES.some((key) => !(key in client));
@@ -30,12 +48,18 @@ export function createPrismaClient(scope: string): PrismaClient {
   const globalRef = globalThis as PrismaGlobal;
   const clients = globalRef.__lmsPrismaClients ?? {};
   const pools = globalRef.__lmsPgPools ?? {};
+  const fingerprints = globalRef.__lmsPrismaFingerprints ?? {};
+  const fingerprint = prismaSchemaFingerprint();
 
-  if (clients[scope] && isStalePrismaClient(clients[scope])) {
+  if (
+    clients[scope] &&
+    (isStalePrismaClient(clients[scope]) || fingerprints[scope] !== fingerprint)
+  ) {
     const staleClient = clients[scope];
     const stalePool = pools[scope];
     delete clients[scope];
     delete pools[scope];
+    delete fingerprints[scope];
     void disposePrismaClient(staleClient, stalePool);
   }
 
@@ -52,11 +76,13 @@ export function createPrismaClient(scope: string): PrismaClient {
       log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
     });
     pools[scope] = pool;
+    fingerprints[scope] = fingerprint;
   }
 
   if (process.env.NODE_ENV !== 'production') {
     globalRef.__lmsPrismaClients = clients;
     globalRef.__lmsPgPools = pools;
+    globalRef.__lmsPrismaFingerprints = fingerprints;
   }
 
   return clients[scope];

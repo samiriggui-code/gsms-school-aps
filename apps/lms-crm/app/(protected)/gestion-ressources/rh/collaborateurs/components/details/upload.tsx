@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { apiFetch } from "@/lib/api";
 
 import { User as Collaborateur } from "@/app/models/user";
+import { buildRhStaffSidebarRows } from '@/components/rh/rh-staff-sheet-sidebar-fields';
+import { userIamLoginSubtitle } from '@/lib/user-email-routing';
 
 export function Upload({ collaborateur }: { collaborateur: Collaborateur }) {
   const [selectedImage, setSelectedImage] = useState<string | null>(collaborateur.avatar || null);
@@ -102,19 +104,13 @@ export function Upload({ collaborateur }: { collaborateur: Collaborateur }) {
 
       {/* Info Sections */}
       <div className="">
-        {[
-          { label: "Nom complet", value: collaborateur.name },
-          { label: "Email", value: collaborateur.email },
-          { label: "Catégorie", value: collaborateur.userCategory },
-          { label: "Fonction", value: collaborateur.jobFunction || '-' },
-          { label: "ID Collaborateur", value: collaborateur.id.substring(0, 8) }
-        ].map((item, index) => (
-          <div key={index}>
+        {buildRhStaffSidebarRows(collaborateur, 'collaborateur').map((item, index, rows) => (
+          <div key={item.label}>
             <div className="flex justify-between items-center">
               <span className="text-xs font-normal text-secondary-foreground/80">{item.label}</span>
-              {item.label === "Email" ? (
+              {item.label === 'Email professionnel' ? (
                 <Link
-                  href={`mailto:${item.value}`}
+                  href={`mailto:${userIamLoginSubtitle(collaborateur)}`}
                   className="text-2sm font-semibold text-foreground hover:text-primary transition-colors truncate max-w-[150px]"
                 >
                   {item.value || ''}
@@ -123,7 +119,7 @@ export function Upload({ collaborateur }: { collaborateur: Collaborateur }) {
                 <span className="text-2sm font-semibold text-foreground">{item.value}</span>
               )}
             </div>
-            {index < 4 && <Separator className="my-2.5 opacity-50" />}
+            {index < rows.length - 1 && <Separator className="my-2.5 opacity-50" />}
           </div>
         ))}
       </div>

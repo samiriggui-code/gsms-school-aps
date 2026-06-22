@@ -1,70 +1,83 @@
-import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import prisma from '@/lib/prisma';
 import { sendEmail } from '@/services/send-email';
+import { userTransactionalMailbox } from '@/lib/user-email-routing';
 
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
+    const query = String(email || '').trim();
+    if (!query) {
+      return NextResponse.json({ message: 'Email requis.' }, { status: 400 });
+    }
 
-    // Check if the user exists
-    const user = await prisma.user.findUnique({
-      where: { email },
+    const user = await prisma.user.findFirst({
+      where: {
+        isTrashed: false,
+        OR: [
+          { email: { equals: query, mode: 'insensitive' } },
+          { proEmail: { equals: query, mode: 'insensitive' } },
+        ],
+      },
     });
 
     if (!user) {
-      // Don't reveal that the email doesn't exist
       return NextResponse.json(
         {
           message:
-            'If an account with that email exists, a password reset link has been sent.',
+            'Si un compte existe avec cette adresse, un lien de réinitialisation a été envoyé.',
         },
         { status: 200 },
       );
     }
 
-    // Generate a secure reset token
+    const notifyTo = userTransactionalMailbox(user);
+    if (!notifyTo) {
+      return NextResponse.json(
+        {
+          message:
+            'Si un compte existe avec cette adresse, un lien de réinitialisation a été envoyé.',
+        },
+        { status: 200 },
+      );
+    }
+
     const token = crypto.randomBytes(32).toString('hex');
 
-    // Store the token in the database with an expiry of 1 hour
     await prisma.verificationToken.create({
       data: {
         identifier: user.id,
         token,
-        expires: new Date(Date.now() + 1 * 60 * 60 * 1000), // 1 hour expiry
+        expires: new Date(Date.now() + 1 * 60 * 60 * 1000),
       },
     });
 
-    // Create reset URL
     const resetUrl = `${process.env.NEXTAUTH_URL}/change-password?token=${token}`;
 
-    // Send password reset email
     await sendEmail({
-      to: email,
-      subject: 'Password Reset Request',
+      to: notifyTo,
+      subject: 'Réinitialisation de mot de passe',
       content: {
-        title: `Hello, ${user.name}`,
+        title: `Bonjour ${user.name ?? ''}`.trim(),
         subtitle:
-          'You requested a password reset. Click the below link to reset your password',
-        buttonLabel: 'Reset password',
+          'Vous avez demandé une réinitialisation de mot de passe. Cliquez sur le lien ci-dessous.',
+        buttonLabel: 'Réinitialiser le mot de passe',
         buttonUrl: resetUrl,
         description:
-          'This link is valid for 1 hour. If you did not request this email you can safely ignore it.',
+          'Ce lien est valable 1 heure. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.',
       },
     });
 
     return NextResponse.json(
       {
         message:
-          'If an account with that email exists, a password reset link has been sent.',
+          'Si un compte existe avec cette adresse, un lien de réinitialisation a été envoyé.',
       },
       { status: 200 },
     );
   } catch (err: unknown) {
     console.error('Password reset error:', err);
-    return NextResponse.json(
-      { message: 'Failed to process request.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: 'Échec du traitement.' }, { status: 500 });
   }
 }

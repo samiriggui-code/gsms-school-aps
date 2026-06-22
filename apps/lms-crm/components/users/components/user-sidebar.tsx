@@ -7,6 +7,11 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { getAvatarUrl } from '@/lib/helpers';
 import { showsCollaboratorAgrementSchedulingSection } from '@/lib/rh-agrement';
+import {
+  userIamLoginSubtitle,
+  userPersonalMailbox,
+  userTransactionalMailbox,
+} from '@/lib/user-email-routing';
 
 export function UserSidebar({ user }: { user: any }) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -27,13 +32,28 @@ export function UserSidebar({ user }: { user: any }) {
   const displayAvatar = selectedImage || getAvatarUrl(user?.avatar);
 
   /** `User` Prisma n’a pas `company`; l’organisation éventuelle est sur `CollaborateurProfile`/`FormateurProfile` (autres écrans). */
+  const personalEmail = userPersonalMailbox(user) ?? 'N/A';
+  const loginEmail = userIamLoginSubtitle(user);
+  const contactMailto = userTransactionalMailbox(user);
+
   const infoItems: Array<{
     label: string;
     value: string;
     isLink?: boolean;
     href?: string;
   }> = [
-    { label: 'Email', value: user?.email || 'N/A', isLink: true, href: user?.email ? `mailto:${user.email}` : '#' },
+    {
+      label: 'Email pro. (connexion)',
+      value: loginEmail,
+      isLink: true,
+      href: loginEmail !== '—' ? `mailto:${loginEmail}` : '#',
+    },
+    {
+      label: 'Email personnel',
+      value: personalEmail,
+      isLink: true,
+      href: contactMailto ? `mailto:${contactMailto}` : '#',
+    },
     { label: 'Téléphone', value: user?.phone || 'N/A' },
     { label: 'Rôle', value: user?.role?.name || 'Standard' },
     ...(showCarteAgrementRef ?

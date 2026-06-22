@@ -6,6 +6,10 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { createFileAssetWithVersion } from '@/lib/file-asset-service';
 import { mapSystemLogsToRhActivity } from '@/lib/rh-iam-activity-history';
 import {
+  assertUserMailboxesAvailable,
+  resolveCreateUserEmails,
+} from '@/lib/user-email-routing';
+import {
   requireGestionRessourcesEdit,
   requireGestionRessourcesView,
 } from '../../../_lib/require-gestion-ressources-auth';
@@ -13,6 +17,7 @@ import {
   attachActiveAbsencesToUsers,
   syncUserAbsenceStatus,
 } from '@repo/api-core';
+import { invalidateCatalogTeamListCache } from '@/lib/catalog-public-cache';
 import {
   ensureCollaborateurStoragePrefix,
   ensureUserStoragePrefix,
@@ -258,7 +263,7 @@ function listFallback(req: NextRequest) {
   });
 }
 
-const SCHOOL_INTERNAL_SERVICE_VALUES = ['TRAINER_POOL', 'PEDAGOGICAL', 'HR_ADMIN'] as const;
+const SCHOOL_INTERNAL_SERVICE_VALUES = ['TRAINER_POOL', 'PEDAGOGICAL', 'HR_ADMIN', 'DIRECTION'] as const;
 type SchoolInternalServiceValue = (typeof SCHOOL_INTERNAL_SERVICE_VALUES)[number];
 
 function parseSchoolInternalService(
@@ -384,6 +389,9 @@ async function parseBody(request: NextRequest) {
       schoolInternalService: formKeys.has('schoolInternalService')
         ? String(form.get('schoolInternalService') || '').trim() || null
         : undefined,
+      landingPresentation: formKeys.has('landingPresentation')
+        ? String(form.get('landingPresentation') || '').trim() || null
+        : undefined,
     };
   }
 
@@ -443,6 +451,9 @@ async function parseBody(request: NextRequest) {
     schoolInternalService: Object.prototype.hasOwnProperty.call(json, 'schoolInternalService')
       ? String((json as any).schoolInternalService ?? '').trim() || null
       : undefined,
+    landingPresentation: Object.prototype.hasOwnProperty.call(json, 'landingPresentation')
+      ? String((json as any).landingPresentation ?? '').trim() || null
+      : undefined,
   };
 }
 
@@ -465,6 +476,9 @@ async function handler(request: NextRequest, { params }: Params) {
       const andClauses: any[] = [{ NOT: [{ role: { slug: { in: ['candidat', 'eleve'] } } }] }];
       if (profileType === 'interne') {
         andClauses.push({ NOT: [{ role: { slug: { in: ['collaborateur', 'formateur'] } } }] });
+        andClauses.push({
+          NOT: [{ collaborateurProfile: { schoolInternalService: 'DIRECTION' } }],
+        });
       }
       const where: any = {
         isTrashed: false,
@@ -481,8 +495,11 @@ async function handler(request: NextRequest, { params }: Params) {
 
       if (profileType === 'collaborateur') {
         where.role = { slug: 'collaborateur' };
+        where.collaborateurProfile = { schoolInternalService: { not: 'DIRECTION' } };
       } else if (profileType === 'formateur') {
         where.role = { slug: 'formateur' };
+      } else if (profileType === 'direction') {
+        where.collaborateurProfile = { schoolInternalService: 'DIRECTION' };
       }
 
       const [total, users] = await Promise.all([
@@ -508,21 +525,32 @@ async function handler(request: NextRequest, { params }: Params) {
         return fail('email et roleId sont requis.', 400);
       }
 
-      const [existing, role] = await Promise.all([
-        prisma.user.findUnique({ where: { email: payload.email } }),
-        prisma.userRole.findUnique({ where: { id: payload.roleId } }),
-      ]);
-      if (existing) return fail('Email already registered.', 409);
+      let mailboxes: { email: string; proEmail: string };
+      try {
+        mailboxes = resolveCreateUserEmails({
+          email: payload.email,
+          proEmail: payload.proEmail,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+        });
+      } catch (e) {
+        return fail(e instanceof Error ? e.message : 'Emails invalides.', 400);
+      }
+
+      const availability = await assertUserMailboxesAvailable(prisma, mailboxes);
+      if (!availability.ok) return fail(availability.message, 409);
+
+      const role = await prisma.userRole.findUnique({ where: { id: payload.roleId } });
       if (!role) return fail('Role not found.', 404);
 
       const created = await prisma.user.create({
         data: {
-          email: payload.email,
+          email: mailboxes.email,
           firstName: payload.firstName || null,
           lastName: payload.lastName || null,
-          name: payload.name || payload.email.split('@')[0],
+          name: payload.name || mailboxes.email.split('@')[0],
           phone: payload.phone || null,
-          proEmail: payload.proEmail || null,
+          proEmail: mailboxes.proEmail,
           roleId: payload.roleId,
           status:
             payload.status && payload.status in UserStatus
@@ -552,6 +580,7 @@ async function handler(request: NextRequest, { params }: Params) {
           carteProNumber: payload.carteProNumber || null,
           carteProExpiry: payload.carteProExpiry || null,
           isSchedulable: payload.isSchedulable,
+          landingPresentation: payload.landingPresentation?.trim() || null,
           documentCni: stringFieldFromPayload(payload.documentCni),
           documentAssurance: stringFieldFromPayload(payload.documentAssurance),
           documentResidencePermit: stringFieldFromPayload(payload.documentResidencePermit),
@@ -701,6 +730,9 @@ async function handler(request: NextRequest, { params }: Params) {
     const andClauses: any[] = [{ NOT: [{ role: { slug: { in: ['candidat', 'eleve'] } } }] }];
     if (profileType === 'interne') {
       andClauses.push({ NOT: [{ role: { slug: { in: ['collaborateur', 'formateur'] } } }] });
+      andClauses.push({
+        NOT: [{ collaborateurProfile: { schoolInternalService: 'DIRECTION' } }],
+      });
     }
     const where: any = {
       isTrashed: false,
@@ -708,8 +740,11 @@ async function handler(request: NextRequest, { params }: Params) {
     };
     if (profileType === 'collaborateur') {
       where.role = { slug: 'collaborateur' };
+      where.collaborateurProfile = { schoolInternalService: { not: 'DIRECTION' } };
     } else if (profileType === 'formateur') {
       where.role = { slug: 'formateur' };
+    } else if (profileType === 'direction') {
+      where.collaborateurProfile = { schoolInternalService: 'DIRECTION' };
     }
 
     const now = new Date();
@@ -886,6 +921,9 @@ async function handler(request: NextRequest, { params }: Params) {
     if (payload.carteProNumber !== undefined) data.carteProNumber = payload.carteProNumber || null;
     if (payload.carteProExpiry !== undefined) data.carteProExpiry = payload.carteProExpiry || null;
     if (payload.isSchedulable !== undefined) data.isSchedulable = payload.isSchedulable;
+    if (payload.landingPresentation !== undefined) {
+      data.landingPresentation = payload.landingPresentation || null;
+    }
     const docCni = await resolveCollaborateurFilePatch(payload.documentCni, {
       userId: id,
       createdById,
@@ -941,6 +979,12 @@ async function handler(request: NextRequest, { params }: Params) {
       where: { id },
       include: collaborateurHydrateInclude,
     });
+
+    if (payload.landingPresentation !== undefined) {
+      void invalidateCatalogTeamListCache().catch((e) => {
+        console.error('[collaborateurs] landing team cache invalidation', e);
+      });
+    }
 
     return NextResponse.json(toCollaborateur(hydrated));
   }

@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
+import type { RhCollaborateurListSegment } from '@/lib/rh-collaborateur-list-segment';
 
 interface CollaborateurStat {
   icon: React.ComponentType<{ className?: string }>;
@@ -22,7 +23,7 @@ interface CollaborateurStat {
 interface CollaborateurStatsProps {
   variant?: 'grid' | 'row';
   /** Aligné avec le segment de liste RH (sans mélanger formateurs). */
-  profileSegment?: 'collaborateur' | 'interne';
+  profileSegment?: RhCollaborateurListSegment;
 }
 
 const DEFAULT_STATS = {

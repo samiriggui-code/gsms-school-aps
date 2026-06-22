@@ -169,6 +169,7 @@ exports.Prisma.UserScalarFieldEnum = {
   carteProNumber: 'carteProNumber',
   carteProExpiry: 'carteProExpiry',
   isSchedulable: 'isSchedulable',
+  landingPresentation: 'landingPresentation',
   documentCni: 'documentCni',
   documentAssurance: 'documentAssurance',
   documentResidencePermit: 'documentResidencePermit',
@@ -529,6 +530,17 @@ exports.Prisma.RhPositionScalarFieldEnum = {
   id: 'id',
   label: 'label',
   code: 'code',
+  schoolInternalService: 'schoolInternalService',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RhQualificationScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  code: 'code',
+  schoolInternalService: 'schoolInternalService',
   sortOrder: 'sortOrder',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -640,6 +652,24 @@ exports.Prisma.FormationCatalogOfferScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.LandingTeamOfferScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  volet: 'volet',
+  catalogStatus: 'catalogStatus',
+  sortOrder: 'sortOrder',
+  titleOverride: 'titleOverride',
+  certificationsLabelOverride: 'certificationsLabelOverride',
+  bioOverride: 'bioOverride',
+  statAOverride: 'statAOverride',
+  statBOverride: 'statBOverride',
+  ratingOverride: 'ratingOverride',
+  linkedinUrl: 'linkedinUrl',
+  websiteUrl: 'websiteUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.FormationVenueRoomScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -736,6 +766,32 @@ exports.Prisma.FormationSessionParticipantScalarFieldEnum = {
   examDate: 'examDate',
   certifiedAt: 'certifiedAt',
   trainingCompletedAt: 'trainingCompletedAt',
+  fundingMode: 'fundingMode',
+  fundingReference: 'fundingReference',
+  fundingNotes: 'fundingNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FormationSessionDayScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  dayDate: 'dayDate',
+  journalNotesMorning: 'journalNotesMorning',
+  journalNotesEvening: 'journalNotesEvening',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FormationSessionEmargementScalarFieldEnum = {
+  id: 'id',
+  dayId: 'dayId',
+  participantId: 'participantId',
+  slot: 'slot',
+  status: 'status',
+  markedAt: 'markedAt',
+  markedByUserId: 'markedByUserId',
+  notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1528,7 +1584,8 @@ exports.UserBusinessLabel = exports.$Enums.UserBusinessLabel = {
 exports.SchoolInternalService = exports.$Enums.SchoolInternalService = {
   TRAINER_POOL: 'TRAINER_POOL',
   PEDAGOGICAL: 'PEDAGOGICAL',
-  HR_ADMIN: 'HR_ADMIN'
+  HR_ADMIN: 'HR_ADMIN',
+  DIRECTION: 'DIRECTION'
 };
 
 exports.RhOrgUnitType = exports.$Enums.RhOrgUnitType = {
@@ -1542,6 +1599,7 @@ exports.RhTeamType = exports.$Enums.RhTeamType = {
   PEDAGOGICAL: 'PEDAGOGICAL',
   TRAINER_POOL: 'TRAINER_POOL',
   HR_ADMIN: 'HR_ADMIN',
+  DIRECTION: 'DIRECTION',
   QUALITY: 'QUALITY',
   ADMIN: 'ADMIN'
 };
@@ -1620,6 +1678,13 @@ exports.FormationDeliveryMode = exports.$Enums.FormationDeliveryMode = {
   ENTREPRISE_SUR_SITE: 'ENTREPRISE_SUR_SITE'
 };
 
+exports.LandingTeamVolet = exports.$Enums.LandingTeamVolet = {
+  direction: 'direction',
+  formateur: 'formateur',
+  pedagogique: 'pedagogique',
+  rh: 'rh'
+};
+
 exports.VenueRoomBookingKind = exports.$Enums.VenueRoomBookingKind = {
   STAFF_MEETING: 'STAFF_MEETING',
   INFO_MEETING: 'INFO_MEETING',
@@ -1668,6 +1733,18 @@ exports.FormationExamOutcome = exports.$Enums.FormationExamOutcome = {
   PASSED: 'PASSED',
   FAILED: 'FAILED',
   ABSENT: 'ABSENT'
+};
+
+exports.FormationSessionDaySlot = exports.$Enums.FormationSessionDaySlot = {
+  MORNING: 'MORNING',
+  EVENING: 'EVENING'
+};
+
+exports.FormationSessionEmargementStatus = exports.$Enums.FormationSessionEmargementStatus = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  EXCUSED: 'EXCUSED'
 };
 
 exports.LmsContentReviewStatus = exports.$Enums.LmsContentReviewStatus = {
@@ -1893,17 +1970,21 @@ exports.Prisma.ModelName = {
   RhTeamMember: 'RhTeamMember',
   RhAbsence: 'RhAbsence',
   RhPosition: 'RhPosition',
+  RhQualification: 'RhQualification',
   Equipment: 'Equipment',
   EquipmentMaintenance: 'EquipmentMaintenance',
   StockMovement: 'StockMovement',
   Formation: 'Formation',
   FormationCatalogOffer: 'FormationCatalogOffer',
+  LandingTeamOffer: 'LandingTeamOffer',
   FormationVenueRoom: 'FormationVenueRoom',
   VenueRoomBooking: 'VenueRoomBooking',
   FormationSession: 'FormationSession',
   PortalSessionAnnouncement: 'PortalSessionAnnouncement',
   Candidature: 'Candidature',
   FormationSessionParticipant: 'FormationSessionParticipant',
+  FormationSessionDay: 'FormationSessionDay',
+  FormationSessionEmargement: 'FormationSessionEmargement',
   FormationAttestation: 'FormationAttestation',
   Course: 'Course',
   Category: 'Category',

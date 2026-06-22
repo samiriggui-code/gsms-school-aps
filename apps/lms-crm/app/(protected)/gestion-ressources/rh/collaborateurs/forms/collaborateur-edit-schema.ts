@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   rhContactFields,
   zContractType,
+  zLandingPresentation,
   zSchoolInternalService,
   zUserCategory,
   zUserStatusEdit,
@@ -74,6 +75,7 @@ export const CollaborateurEditSchema = z.object({
   documentCartePro: z.any().optional(),
   managerUserId: z.string().optional(),
   schoolInternalService: zSchoolInternalService.optional(),
+  landingPresentation: zLandingPresentation,
 });
 
 export type CollaborateurEditSchemaType = z.infer<typeof CollaborateurEditSchema>;

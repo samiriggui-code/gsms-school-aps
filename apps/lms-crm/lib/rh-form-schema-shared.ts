@@ -15,6 +15,7 @@ export const SCHOOL_INTERNAL_SERVICE_VALUES = [
   'TRAINER_POOL',
   'PEDAGOGICAL',
   'HR_ADMIN',
+  'DIRECTION',
 ] as const;
 
 export const USER_STATUS_EDIT_VALUES = [
@@ -36,6 +37,13 @@ export const rhContactFields = {
   proEmail: z.string().optional().nullable(),
   subcontractorId: z.string().optional().nullable(),
 };
+
+/** Texte vitrine landing (#trainers) — expérience, parcours, spécialités. */
+export const zLandingPresentation = z
+  .string()
+  .max(2000, { message: 'La présentation ne doit pas dépasser 2000 caractères.' })
+  .optional()
+  .nullable();
 
 /** Normalise une valeur enum Prisma pour les defaultValues de formulaire. */
 export function rhEnumFieldOrNull<T extends readonly string[]>(

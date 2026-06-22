@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import { requireGestionRessourcesEdit } from '../../_lib/require-gestion-ressources-auth';
+import { requireGestionRessourcesEdit } from '../../../_lib/require-gestion-ressources-auth';
 import { deleteCatalogByLabel } from '../_lib/equipment-delete';
 
 /** Supprime toutes les unités d’une catégorie catalogue (même `label`). */

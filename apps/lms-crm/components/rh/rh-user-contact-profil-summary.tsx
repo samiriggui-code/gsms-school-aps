@@ -19,6 +19,7 @@ const SERVICE_LABELS: Record<string, string> = {
   TRAINER_POOL: 'Pool formateurs',
   PEDAGOGICAL: 'Pôle pédagogique',
   HR_ADMIN: 'RH & administration',
+  DIRECTION: "Direction de l'école",
 };
 
 function displayName(

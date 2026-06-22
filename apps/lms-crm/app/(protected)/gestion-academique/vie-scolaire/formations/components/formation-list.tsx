@@ -55,6 +55,7 @@ import {
   useFormationsCatalogQuery,
 } from '../hooks/use-formations-catalog-query';
 import { formationsStatsQueryKey } from '../hooks/use-formations-stats-query';
+import { sessionsQueryRoot } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/sessions-manager';
 import { apiFetch } from '@/lib/api';
 import {
   toastFormationActivateCancelled,
@@ -135,6 +136,7 @@ const FormationList = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...formationsCatalogQueryRoot] });
       queryClient.invalidateQueries({ queryKey: formationsStatsQueryKey });
+      queryClient.invalidateQueries({ queryKey: [...sessionsQueryRoot] });
     },
   });
 
@@ -277,6 +279,38 @@ const FormationList = () => {
           <span className="text-sm font-medium">{row.original.duration}</span>
         ),
         size: 140,
+      },
+      {
+        id: 'priceFrom',
+        accessorFn: (row) => row.priceFrom,
+        header: ({ column }) => (
+          <DataGridColumnHeader title="Prix catalogue" column={column} />
+        ),
+        cell: ({ row }) => {
+          const p = row.original.priceFrom;
+          const cur = row.original.currency?.trim() || 'EUR';
+          if (p == null || !Number.isFinite(Number(p))) {
+            return <span className="text-sm text-muted-foreground">Sur devis</span>;
+          }
+          try {
+            return (
+              <span className="text-sm font-medium tabular-nums">
+                {new Intl.NumberFormat('fr-FR', {
+                  style: 'currency',
+                  currency: cur,
+                  maximumFractionDigits: 0,
+                }).format(Number(p))}
+              </span>
+            );
+          } catch {
+            return (
+              <span className="text-sm font-medium tabular-nums">
+                {Math.round(Number(p))} {cur}
+              </span>
+            );
+          }
+        },
+        size: 120,
       },
       {
         id: 'actions',

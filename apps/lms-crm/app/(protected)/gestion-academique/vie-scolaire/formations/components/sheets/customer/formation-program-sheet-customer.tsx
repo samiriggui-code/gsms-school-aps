@@ -58,6 +58,7 @@ import {
 import type { FormationCatalogApiRow } from '../../../types/catalog-api';
 import { formationsCatalogQueryRoot } from '../../../hooks/use-formations-catalog-query';
 import { formationsStatsQueryKey } from '../../../hooks/use-formations-stats-query';
+import { sessionsQueryRoot } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/sessions-manager';
 import {
   formationDetailQueryKey,
   type FormationCatalogDetailTemplates,
@@ -283,6 +284,7 @@ export function FormationProgramSheetCustomer({
     onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: [...formationsCatalogQueryRoot] });
       queryClient.invalidateQueries({ queryKey: formationsStatsQueryKey });
+      queryClient.invalidateQueries({ queryKey: [...sessionsQueryRoot] });
       if (slug) queryClient.invalidateQueries({ queryKey: formationDetailQueryKey(slug) });
       toastFormationUpdateSuccess(
         typeof updated?.name === 'string' ? updated.name : formation?.name,

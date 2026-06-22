@@ -537,8 +537,8 @@
   },
   "userMenu": {
     "active": "Active",
-    "publicProfile": "Public profile",
-    "profile": "Profile",
+    "publicProfile": "Staff profile",
+    "profile": "IAM account",
     "lockScreen": "Lock screen",
     "supportForum": "Support forum",
     "signOut": "Sign out"
@@ -556,7 +556,7 @@
   },
   "auth": {
     "signInTitle": "CRM sign in",
-    "email": "Email",
+    "email": "Professional email",
     "password": "Password",
     "rememberMe": "Remember me",
     "signIn": "Sign in",
@@ -567,7 +567,7 @@
     "devAlert": "Dev environment: use the test accounts below.",
     "devAccountsTitle": "Development accounts",
     "devAccountsHint": "Click a profile to pre-fill the form.",
-    "emailPlaceholder": "Your email",
+    "emailPlaceholder": "firstname.lastname@ecole.local",
     "passwordPlaceholder": "Your password",
     "forgotPassword": "Forgot password?",
     "hidePassword": "Hide password",

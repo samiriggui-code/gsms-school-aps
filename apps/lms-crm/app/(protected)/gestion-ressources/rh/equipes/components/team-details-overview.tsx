@@ -43,6 +43,10 @@ import {
   groupSessionTeamMembers,
   isSessionPedagogicalTeam,
   sessionTeamSubtitle,
+  resolveTeamSiteLabel,
+  resolveTeamLifecycleMeta,
+  countSessionTeamMembersByRole,
+  permanentTeamKindLabel,
 } from '../lib/team-display';
 
 interface TeamDetailsOverviewProps {
@@ -59,6 +63,8 @@ export function TeamDetailsOverview({ team }: TeamDetailsOverviewProps) {
   const teamSector = TEAM_SECTORS.find(s => s.id === (team as any).sector) || TEAM_SECTORS[2]; // Default to CLIENT
   const sessionTeam = isSessionPedagogicalTeam(team);
   const groupedMembers = useMemo(() => groupSessionTeamMembers(team), [team]);
+  const lifecycle = resolveTeamLifecycleMeta(team.lifecycleStatus);
+  const roleCounts = countSessionTeamMembersByRole(team);
 
   const { data: collaborators } = useQuery({
     queryKey: ['rh-collaborators-select'],
@@ -192,17 +198,22 @@ export function TeamDetailsOverview({ team }: TeamDetailsOverviewProps) {
       {sessionTeam ? (
         <Card className="shadow-none border border-primary/20 bg-primary/5">
           <CardContent className="p-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-primary">
-              <GraduationCap className="size-3.5" />
-              Équipe pédagogique · Session de formation
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-primary">
+                <GraduationCap className="size-3.5" />
+                Équipe session · formation catalogue
+              </div>
+              <Badge variant="outline" size="sm" className={cn('text-[10px] font-bold uppercase', lifecycle.className)}>
+                {lifecycle.label}
+              </Badge>
             </div>
             <p className="text-base font-bold text-foreground">
               {team.formationSession?.formation?.name || team.name}
             </p>
             <p className="text-sm text-muted-foreground">{sessionTeamSubtitle(team)}</p>
-            <p className="text-xs text-muted-foreground italic">
-              Composition synchronisée automatiquement : formateur assigné, référent pédagogique et
-              apprenants inscrits à la session.
+            <p className="text-xs text-muted-foreground">
+              {roleCounts.learners} apprenant(s) · {roleCounts.trainers} formateur · {roleCounts.moderators} réf. pédagogique
+              — synchronisé depuis les inscriptions session.
             </p>
           </CardContent>
         </Card>
@@ -264,46 +275,80 @@ export function TeamDetailsOverview({ team }: TeamDetailsOverviewProps) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <LayoutGrid className="size-3.5" />
-            Type d'équipe
-          </div>
-          <div className="flex items-center gap-2.5">
-            <div className={cn("size-8 rounded-lg flex items-center justify-center bg-background border border-border")}>
-              <teamType.icon className={cn("size-4 text-foreground/70")} />
+        {sessionTeam ? (
+          <>
+            <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <GraduationCap className="size-3.5" />
+                Formation
+              </div>
+              <span className="text-sm font-bold text-foreground line-clamp-2">
+                {team.formationSession?.formation?.name || 'Catalogue'}
+              </span>
             </div>
-            <span className="text-sm font-bold text-foreground">{teamType.label}</span>
-          </div>
-        </div>
+            <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <History className="size-3.5" />
+                Cycle session
+              </div>
+              <Badge variant="outline" className={cn('w-fit text-[10px] font-bold uppercase', lifecycle.className)}>
+                {lifecycle.label}
+              </Badge>
+            </div>
+            <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <MapPin className="size-3.5" />
+                Site / lieu
+              </div>
+              <span className="text-sm font-bold text-foreground truncate">
+                {resolveTeamSiteLabel(team)}
+              </span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <LayoutGrid className="size-3.5" />
+                Pôle
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className={cn("size-8 rounded-lg flex items-center justify-center bg-background border border-border")}>
+                  <teamType.icon className={cn("size-4 text-foreground/70")} />
+                </div>
+                <span className="text-sm font-bold text-foreground">{permanentTeamKindLabel(team.type)}</span>
+              </div>
+            </div>
 
-        <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <Info className="size-3.5" />
-            Secteur
-          </div>
-          <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-background border border-border flex items-center justify-center">
-              <teamSector.icon className="size-4 text-foreground/70" />
+            <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <Info className="size-3.5" />
+                Secteur
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-lg bg-background border border-border flex items-center justify-center">
+                  <teamSector.icon className="size-4 text-foreground/70" />
+                </div>
+                <span className="text-sm font-bold text-foreground">{teamSector.label}</span>
+              </div>
             </div>
-            <span className="text-sm font-bold text-foreground">{teamSector.label}</span>
-          </div>
-        </div>
 
-        <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <MapPin className="size-3.5" />
-            Site Affecté
-          </div>
-          <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-background border border-border flex items-center justify-center">
-              <MapPin className="size-4 text-foreground/70" />
+            <div className="p-4 rounded-2xl border border-border bg-background flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <MapPin className="size-3.5" />
+                Site affecté
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="size-8 rounded-lg bg-background border border-border flex items-center justify-center">
+                  <MapPin className="size-4 text-foreground/70" />
+                </div>
+                <span className="text-sm font-bold text-foreground truncate">
+                  {resolveTeamSiteLabel(team)}
+                </span>
+              </div>
             </div>
-            <span className="text-sm font-bold text-foreground truncate">
-              {(team as any).Site?.name || "Non affecté"}
-            </span>
-          </div>
-        </div>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border">
@@ -356,7 +401,7 @@ export function TeamDetailsOverview({ team }: TeamDetailsOverviewProps) {
       {sessionTeam ? (
         <div className="space-y-6">
           {(['TRAINER', 'MODERATOR', 'LEARNER'] as const).map((role) => {
-            const roleMembers = groupedMembers[role].filter((m: any) => {
+            const roleMembers = (groupedMembers[role] ?? []).filter((m: any) => {
               if (!memberSearch.trim()) return true;
               const search = memberSearch.toLowerCase();
               const firstName = m.TenantUser?.firstName?.toLowerCase() || '';

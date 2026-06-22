@@ -75,7 +75,7 @@ export default function UserLayout({
               <Button asChild variant="outline" size="sm">
                 <Link href="/mon-profil">
                   <ExternalLink className="size-4" />
-                  Profil public
+                  Fiche métier
                 </Link>
               </Button>
             : null}

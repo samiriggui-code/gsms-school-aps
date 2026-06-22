@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { ShieldAlert, UserRound } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -49,7 +49,8 @@ export function RoleDetailsSheet({ open, onOpenChange, role: initialRole, onEdit
         `/api/sections/securite-configuration/acces/roles/${initialRole?.id}`,
       );
       if (!res.ok) throw new Error('Impossible de charger le rôle');
-      return res.json() as UserRole;
+      const json = await res.json();
+      return unwrapSectionApiData<UserRole>(json) ?? null;
     },
     enabled: !!initialRole?.id && open,
   });

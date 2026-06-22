@@ -13,9 +13,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { servicePoleShortLabel, type OrgChartUser } from './structure-organigramme';
 import { StructureEquipeEditor } from './structure-equipe-editor';
 
-type ProfileTab = 'formateur' | 'collaborateur' | 'interne';
+type ProfileTab = 'direction' | 'formateur' | 'collaborateur' | 'interne';
 
-type SchoolService = 'TRAINER_POOL' | 'PEDAGOGICAL' | 'HR_ADMIN';
+type SchoolService = 'TRAINER_POOL' | 'PEDAGOGICAL' | 'HR_ADMIN' | 'DIRECTION';
 
 type StaffRow = {
   id: string;
@@ -26,6 +26,7 @@ type StaffRow = {
   avatar?: string | null;
   jobFunction?: string | null;
   qualification?: string | null;
+  landingPresentation?: string | null;
   role?: { slug?: string | null; name?: string | null } | null;
   formateurProfile?: {
     speciality?: string | null;
@@ -75,10 +76,13 @@ function specialtyLine(u: StaffRow, tab: ProfileTab): string {
     ? 'Formateur certifié'
     : tab === 'collaborateur'
       ? 'Équipe pédagogique'
-      : 'Équipe administrative';
+      : tab === 'direction'
+        ? "Direction de l'école"
+        : 'Équipe administrative';
 }
 
 function bioLine(u: StaffRow): string {
+  if (u.landingPresentation?.trim()) return u.landingPresentation.trim();
   const q = u.qualification || u.collaborateurProfile?.qualification;
   if (q?.trim()) return q.trim();
   return 'Professionnel(le) de terrain, engagé(e) dans la qualité des parcours et la conformité réglementaire.';
@@ -224,8 +228,14 @@ export function StructureAnnuaireMetiersVolet({ onRequestAdd }: { onRequestAdd?:
         </p>
       </div>
 
-      <Tabs defaultValue="formateur" className="w-full">
+      <Tabs defaultValue="direction" className="w-full">
         <TabsList className="inline-flex h-auto flex-wrap gap-1 rounded-full border border-border/80 bg-muted/40 p-1">
+          <TabsTrigger
+            value="direction"
+            className="rounded-full px-4 py-2 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            Direction
+          </TabsTrigger>
           <TabsTrigger
             value="formateur"
             className="rounded-full px-4 py-2 text-xs font-semibold data-[state=active]:bg-background data-[state=active]:shadow-sm"
@@ -245,6 +255,10 @@ export function StructureAnnuaireMetiersVolet({ onRequestAdd }: { onRequestAdd?:
             Équipe RH & admin
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="direction" className="mt-6">
+          <TeamGrid profileType="direction" onRequestAdd={onRequestAdd} />
+        </TabsContent>
 
         <TabsContent value="formateur" className="mt-6">
           <TeamGrid profileType="formateur" onRequestAdd={onRequestAdd} />

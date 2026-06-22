@@ -6,6 +6,7 @@ import { RiCheckboxCircleFill, RiErrorWarningFill, RiRefreshLine } from '@remixi
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { buildAppLoginEmail, appLoginEmailPatternLabel } from '@/lib/app-login-email';
 import { apiFetch } from '@/lib/api';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -155,8 +156,7 @@ const ConformiteAddSheet = ({
   // Auto-generate Pro Email
   useEffect(() => {
     if (firstName && lastName) {
-      const email = `${firstName.toLowerCase().trim()}.${lastName.toLowerCase().trim()}@app.lms.local`.replace(/\s+/g, '');
-      setValue('proEmail', email);
+      setValue('proEmail', buildAppLoginEmail(firstName, lastName));
     }
   }, [firstName, lastName, setValue]);
 
@@ -501,7 +501,7 @@ const ConformiteAddSheet = ({
                                   </div>
                                 </div>
                               </FormControl>
-                              <p className="text-[11px] text-muted-foreground font-medium font-mono">Genere: prenom.nom@app.lms.local</p>
+                              <p className="text-[11px] text-muted-foreground font-medium font-mono">Genere: {appLoginEmailPatternLabel()}</p>
                             </FormItem>
                           )} />
 

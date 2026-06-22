@@ -46,6 +46,11 @@
     "db:generate": "pnpm -C packages/database db:generate",
 
     "db:seed": "node packages/database/prisma/seed.js",
+    "db:audit-cnaps": "node packages/database/prisma/scripts/audit-cnaps-candidats.js",
+    "db:seed-cnaps-profiles": "node packages/database/prisma/scripts/run-cnaps-candidat-profile-seed.js",
+    "db:fix-user-emails": "node packages/database/prisma/scripts/run-user-email-split-seed.js",
+    "db:fix-director": "node packages/database/prisma/scripts/run-fix-director-account.js",
+    "db:dedupe-rh-positions": "node packages/database/prisma/scripts/run-dedupe-rh-positions.js",
 
     "db:studio": "pnpm -C packages/database db:studio",
 

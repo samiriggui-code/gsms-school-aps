@@ -149,6 +149,10 @@ export const MENU_SIDEBAR: MenuConfig = [
             path: '/gestion-academique/vie-scolaire/sessions',
           },
           {
+            title: 'Suivi formations',
+            path: '/gestion-academique/vie-scolaire/suivi-formations',
+          },
+          {
             title: 'Étudiants',
             path: '/gestion-academique/vie-scolaire/etudiants',
           },
@@ -200,7 +204,8 @@ export const MENU_SIDEBAR: MenuConfig = [
         path: '/communication-contenu/cms',
         children: [
           { title: 'Pages landing', path: '/communication-contenu/cms/pages-landing' },
-          { title: 'Contenus', path: '/communication-contenu/cms/contenus' },
+          { title: 'Équipe landing', path: '/communication-contenu/cms/equipe-landing' },
+          { title: 'Catalogue vitrine', path: '/communication-contenu/cms/contenus' },
         ],
       },
       {

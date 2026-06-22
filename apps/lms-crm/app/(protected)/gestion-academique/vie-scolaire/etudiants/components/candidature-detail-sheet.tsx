@@ -1023,6 +1023,7 @@ export function CandidatureDetailSheet({
                       <TabsContent value="documents">
                         <CandidatDocumentsCnapsTab
                           Etudiant={Etudiant}
+                          candidatureId={selectedCandidature?.id ?? null}
                           formationLabel={formationLabelPourCnaps}
                           companyProfile={companyProfile ?? null}
                         />

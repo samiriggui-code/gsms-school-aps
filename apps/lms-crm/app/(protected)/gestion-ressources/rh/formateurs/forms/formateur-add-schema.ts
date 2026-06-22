@@ -21,6 +21,7 @@ export const FormateurAddSchema = z
     subcontractorId: z.string().optional(),
     specialties: z.array(z.string()).default([]),
     jobFunction: z.string().optional(),
+    jobPositionId: z.string().optional(),
     qualification: z.string().optional(),
     birthDate: z.string().optional(),
     birthPlace: z.string().optional(),

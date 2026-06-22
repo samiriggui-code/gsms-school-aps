@@ -2,29 +2,45 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, LayoutGrid, Activity, UserPlus } from 'lucide-react';
+import {
+  MODULE_LANDING_STATS_GRID_ROW,
+  SECTION_KPI_CARD_ACCENTS,
+} from '@/components/common/stat-card-metric-layout';
+import { Users, LayoutGrid, Activity, UserPlus, UserMinus, GraduationCap } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  ModuleLandingStatGradientCard,
-  StatCardMetricLayout,
-  type MetricStatTone,
-} from '@/components/common/stat-card-metric-layout';
+import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
+import type { RhSessionTeamPhase, RhTeamListScope } from '@/lib/rh-team-list-scope';
 
-interface TeamStat {
+interface TeamStatCard {
   icon: React.ComponentType<{ className?: string }>;
-  label: string;
+  title: string;
   value: string | number;
-  trendValue: string;
-  tone: MetricStatTone;
+  subtitle: string;
 }
 
 interface TeamStatsProps {
   variant?: 'grid' | 'row';
+  teamScope?: RhTeamListScope;
+  sessionPhase?: RhSessionTeamPhase;
 }
 
-export function TeamStats({ variant = 'grid' }: TeamStatsProps) {
+const DEFAULT_STATS = {
+  total: { value: 0 },
+  active: { value: 0 },
+  members: { value: 0 },
+  avgSize: { value: 0 },
+  withoutLeader: { value: 0 },
+  postExam: { value: 0 },
+  archived: { value: 0 },
+};
+
+export function TeamStats({
+  variant = 'grid',
+  teamScope = 'permanent',
+  sessionPhase = 'running',
+}: TeamStatsProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -32,11 +48,15 @@ export function TeamStats({ variant = 'grid' }: TeamStatsProps) {
   }, []);
 
   const { data: statsResponse, isLoading, error } = useQuery({
-    queryKey: ['rh-teams-stats'],
+    queryKey: ['rh-teams-stats', teamScope, sessionPhase],
     queryFn: async () => {
-      const response = await apiFetch('/api/sections/gestion-ressources/rh/equipes/statistics');
+      const params = new URLSearchParams({ teamScope });
+      if (teamScope === 'session') params.set('sessionPhase', sessionPhase);
+      const response = await apiFetch(
+        `/api/sections/gestion-ressources/rh/equipes/statistics?${params.toString()}`,
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch team stats');
+        return { success: true, data: DEFAULT_STATS };
       }
       return response.json();
     },
@@ -45,20 +65,18 @@ export function TeamStats({ variant = 'grid' }: TeamStatsProps) {
 
   const gridClasses =
     variant === 'row'
-      ? 'grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-8 w-full'
-      : 'grid grid-cols-2 md:grid-cols-2 gap-5 lg:gap-8 h-full items-stretch';
+      ? MODULE_LANDING_STATS_GRID_ROW
+      : 'grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 h-full items-stretch';
 
   if (!mounted || isLoading) {
     return (
       <div className={gridClasses}>
-        {[1, 2, 3, 4].map((index) => (
-          <Card key={index} className="border-border shadow-none">
-            <CardContent className="p-0">
-              <StatCardMetricLayout iconSlot={<Skeleton className="size-12 shrink-0 rounded-lg" />}>
-                <Skeleton className="h-8 w-16" />
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-3 w-20" />
-              </StatCardMetricLayout>
+        {[1, 2, 3, 4, 5].map((index) => (
+          <Card key={index} className="border border-border/70 shadow-none">
+            <CardContent className="p-4">
+              <Skeleton className="mb-3 h-8 w-8 rounded-lg" />
+              <Skeleton className="mb-2 h-7 w-16" />
+              <Skeleton className="h-3 w-28" />
             </CardContent>
           </Card>
         ))}
@@ -68,13 +86,14 @@ export function TeamStats({ variant = 'grid' }: TeamStatsProps) {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center border border-border rounded-xl bg-background shadow-none">
-        <p className="text-sm font-bold text-foreground uppercase tracking-widest mb-2">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-background p-8 text-center shadow-none">
+        <p className="mb-2 text-sm font-bold uppercase tracking-widest text-foreground">
           Échec du chargement des statistiques
         </p>
         <button
+          type="button"
           onClick={() => window.location.reload()}
-          className="mt-4 inline-flex items-center justify-center rounded-md text-[10px] font-bold uppercase ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-border hover:bg-muted h-9 px-4"
+          className="mt-4 inline-flex h-9 items-center justify-center rounded-md border border-border px-4 text-[10px] font-bold uppercase ring-offset-background transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
         >
           Réessayer
         </button>
@@ -82,52 +101,106 @@ export function TeamStats({ variant = 'grid' }: TeamStatsProps) {
     );
   }
 
-  const statsData = statsResponse?.data;
+  const statsData = statsResponse?.data ?? DEFAULT_STATS;
+  const isSession = teamScope === 'session';
+  const postExam = statsData?.postExam?.value ?? 0;
+  const archived = statsData?.archived?.value ?? 0;
 
-  const stats: TeamStat[] = [
-    {
-      icon: LayoutGrid,
-      label: 'Équipes Totales',
-      value: statsData?.total?.value ?? 0,
-      trendValue: 'Structure Globale',
-      tone: 'primary',
-    },
-    {
-      icon: Activity,
-      label: 'Équipes Actives',
-      value: statsData?.active?.value ?? 0,
-      trendValue: 'Opérationnelles',
-      tone: 'success',
-    },
-    {
-      icon: Users,
-      label: 'Membres Totaux',
-      value: statsData?.members?.value ?? 0,
-      trendValue: 'Effectif RH',
-      tone: 'info',
-    },
-    {
-      icon: UserPlus,
-      label: 'Taille Moyenne',
-      value: statsData?.avgSize?.value ?? 0,
-      trendValue: 'Effectif Moyen',
-      tone: 'warning',
-    },
-  ];
+  const stats: TeamStatCard[] = isSession
+    ? [
+        {
+          icon: LayoutGrid,
+          title: 'Équipes session',
+          value: statsData?.total?.value ?? 0,
+          subtitle: 'Filtre cycle actif',
+        },
+        {
+          icon: Activity,
+          title: 'En cours',
+          value: statsData?.active?.value ?? 0,
+          subtitle: 'Cycle ACTIVE',
+        },
+        {
+          icon: Users,
+          title: 'Participants',
+          value: statsData?.members?.value ?? 0,
+          subtitle: 'Membres des équipes',
+        },
+        {
+          icon: UserPlus,
+          title: 'Taille moyenne',
+          value: statsData?.avgSize?.value ?? 0,
+          subtitle: 'Par équipe session',
+        },
+        {
+          icon: GraduationCap,
+          title: 'Post-examen',
+          value: postExam,
+          subtitle: archived > 0 ? `${archived} clôturée(s)` : 'Sessions terminées',
+        },
+      ]
+    : [
+        {
+          icon: LayoutGrid,
+          title: 'Équipes permanentes',
+          value: statsData?.total?.value ?? 0,
+          subtitle: 'Direction · Pédagogie · Formateurs · RH',
+        },
+        {
+          icon: Activity,
+          title: 'Actives',
+          value: statsData?.active?.value ?? 0,
+          subtitle: 'Structure école',
+        },
+        {
+          icon: Users,
+          title: 'Membres',
+          value: statsData?.members?.value ?? 0,
+          subtitle: 'Effectif total',
+        },
+        {
+          icon: UserPlus,
+          title: 'Taille moyenne',
+          value: statsData?.avgSize?.value ?? 0,
+          subtitle: 'Par équipe permanente',
+        },
+        {
+          icon: UserMinus,
+          title: 'Sans chef',
+          value: statsData?.withoutLeader?.value ?? 0,
+          subtitle: 'Responsable à assigner',
+        },
+      ];
 
   return (
     <div className={gridClasses}>
-      {stats.map((stat) => (
-        <ModuleLandingStatGradientCard
-          key={stat.label}
-          icon={stat.icon}
-          tone={stat.tone}
-          label={stat.label}
-          value={stat.value}
-          detail={stat.trendValue}
-          trend="neutral"
-        />
-      ))}
+      {stats.map((stat, index) => {
+        const Icon = stat.icon;
+        const accent = SECTION_KPI_CARD_ACCENTS[index % SECTION_KPI_CARD_ACCENTS.length];
+        return (
+          <div
+            key={stat.title}
+            className="relative overflow-hidden rounded-xl border border-border/70 bg-gradient-to-br from-background via-background to-muted/30 px-4 py-4"
+          >
+            <div className={cn('absolute -end-8 -top-8 size-24 rounded-full', accent.orb)} aria-hidden />
+            <div className="relative flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate text-xs uppercase tracking-wide text-muted-foreground">{stat.title}</p>
+                <p className="mt-1 text-2xl font-semibold text-foreground">{stat.value}</p>
+                <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{stat.subtitle}</p>
+              </div>
+              <div
+                className={cn(
+                  'flex size-10 shrink-0 items-center justify-center rounded-lg border',
+                  accent.box,
+                )}
+              >
+                <Icon className={cn('size-5', accent.icon)} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

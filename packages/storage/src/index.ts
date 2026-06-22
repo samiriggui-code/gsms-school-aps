@@ -460,10 +460,12 @@ export {
   ENTITY_UPLOAD_ROUTES,
   STORAGE_SOCLE_MARKER,
   STORAGE_SOCLE_PREFIXES,
+  SESSION_DOCUMENT_STORAGE_CATEGORIES,
   buildEntityStoragePrefix,
+  buildSessionDocumentStoragePrefix,
   resolveEntityUploadDir,
 } from './storage-constants';
-export type { StorageSoclePrefix } from './storage-constants';
+export type { StorageSoclePrefix, SessionDocumentStorageCategory } from './storage-constants';
 export {
   ensureEntityStoragePrefix,
   ensureStorageSocle,

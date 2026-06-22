@@ -2,7 +2,6 @@
 
 import { type ComponentProps, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Badge, BadgeDot } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -33,8 +32,12 @@ import {
   preinscriptionLabelForSlug,
 } from '@/lib/preinscription-formation-options';
 import { cn } from '@/lib/utils';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/providers/i18n-provider';
 import { preinscriptionMessages } from '@/i18n/landing-content/preinscription';
+import {
+  assessPreinscriptionIdentity,
+  isFrenchBirthContext,
+} from '@/lib/cnaps/cnaps-onboarding-fields';
 
 /** Dans le sheet, Radix retournait le menu vers le haut sur desktop — liste tronquée en haut. */
 const SHEET_SELECT_CONTENT_PROPS: ComponentProps<typeof SelectContent> = {
@@ -57,12 +60,16 @@ type CentralPreinscriptionSheetProps = {
 };
 
 type FormState = {
+  civility: 'M' | 'MME' | '';
   firstName: string;
   lastName: string;
+  usageName: string;
   email: string;
   phone: string;
   birthDate: string;
-  birthPlace: string;
+  birthCity: string;
+  birthDepartment: string;
+  birthCountry: string;
   nationality: string;
   address: string;
   postalCode: string;
@@ -86,12 +93,16 @@ type ComplianceState = {
 };
 
 const EMPTY_FORM: FormState = {
+  civility: '',
   firstName: '',
   lastName: '',
+  usageName: '',
   email: '',
   phone: '',
   birthDate: '',
-  birthPlace: '',
+  birthCity: '',
+  birthDepartment: '',
+  birthCountry: 'France',
   nationality: '',
   address: '',
   postalCode: '',
@@ -133,15 +144,18 @@ const FUNDING_OPTION_KEYS = [
 
 type FundingKey = (typeof FUNDING_OPTION_KEYS)[number];
 
-function fundingLabelForCrm(key: FundingKey): string {
-  return preinscriptionMessages.fr.landing.preinscription.funding[key];
+function fundingLabelForKey(key: FundingKey, funding: Record<FundingKey, string>): string {
+  return funding[key];
 }
 
 export function CentralPreinscriptionSheet({
   open,
   onOpenChange,
 }: CentralPreinscriptionSheetProps) {
-  const { t } = useTranslation();
+  const { languageCode } = useLanguage();
+  const locale = languageCode === 'en' ? 'en' : 'fr';
+  const p = preinscriptionMessages[locale].landing.preinscription;
+  const f = p.fields;
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [compliance, setCompliance] = useState<ComplianceState>(EMPTY_COMPLIANCE);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -188,28 +202,46 @@ export function CentralPreinscriptionSheet({
     };
   }, [form.formationSlug]);
 
-  const canSubmit = useMemo(() => {
-    const requiredIdentity =
-      form.firstName.trim() &&
-      form.lastName.trim() &&
-      form.email.trim() &&
-      form.phone.trim() &&
-      form.birthDate.trim() &&
-      form.birthPlace.trim() &&
-      form.nationality.trim();
+  const bornInFrance = useMemo(
+    () =>
+      isFrenchBirthContext({
+        birthCountry: form.birthCountry,
+        nationality: form.nationality,
+      }),
+    [form.birthCountry, form.nationality],
+  );
 
+  const identityCheck = useMemo(
+    () =>
+      assessPreinscriptionIdentity({
+        civility: form.civility || null,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        usageName: form.usageName,
+        email: form.email,
+        phone: form.phone,
+        birthDate: form.birthDate,
+        birthCity: form.birthCity,
+        birthDepartment: form.birthDepartment || null,
+        birthCountry: form.birthCountry || null,
+        nationality: form.nationality,
+        address: form.address,
+        postalCode: form.postalCode,
+        city: form.city,
+      }),
+    [form],
+  );
+
+  const canSubmit = useMemo(() => {
     const requiredDossier =
-      form.address.trim() &&
-      form.postalCode.trim() &&
-      form.city.trim() &&
       form.formationSlug.trim() &&
       form.fundingMode.trim() &&
       form.currentSituation.trim();
 
     const allComplianceChecked = Object.values(compliance).every(Boolean);
 
-    return Boolean(requiredIdentity && requiredDossier && allComplianceChecked);
-  }, [form, compliance]);
+    return Boolean(identityCheck.complete && requiredDossier && allComplianceChecked);
+  }, [form, compliance, identityCheck.complete]);
 
   const updateField = (key: keyof FormState, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -238,12 +270,16 @@ export function CentralPreinscriptionSheet({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          civility: form.civility,
           firstName: form.firstName,
           lastName: form.lastName,
+          usageName: form.usageName || undefined,
           email: form.email,
           phone: form.phone,
           birthDate: form.birthDate,
-          birthPlace: form.birthPlace,
+          birthCity: form.birthCity,
+          birthDepartment: bornInFrance ? form.birthDepartment : undefined,
+          birthCountry: bornInFrance ? 'France' : form.birthCountry,
           nationality: form.nationality,
           address: form.address,
           postalCode: form.postalCode,
@@ -263,15 +299,13 @@ export function CentralPreinscriptionSheet({
 
       const json = (await res.json().catch(() => ({}))) as { message?: string };
       if (!res.ok) {
-        throw new Error(json.message ?? t('landing.preinscription.toasts.saveFailed'));
+        throw new Error(json.message ?? p.toasts.saveFailed);
       }
 
-      toast.success(t('landing.preinscription.toasts.success'));
+      toast.success(p.toasts.success);
       onOpenChange(false);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : t('landing.preinscription.toasts.errorGeneric'),
-      );
+      toast.error(error instanceof Error ? error.message : p.toasts.errorGeneric);
     } finally {
       setIsSubmitting(false);
     }
@@ -281,85 +315,89 @@ export function CentralPreinscriptionSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="gap-0 w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-2rem)] lg:w-[1160px] inset-2 sm:inset-5 border start-auto h-[calc(100dvh-1rem)] sm:h-auto max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] rounded-lg p-0 [&_[data-slot=sheet-close]]:top-3 sm:[&_[data-slot=sheet-close]]:top-4.5 [&_[data-slot=sheet-close]]:end-3 sm:[&_[data-slot=sheet-close]]:end-5">
         <SheetHeader className="border-b border-border px-5 py-3.5">
-          <SheetTitle className="font-medium">{t('landing.preinscription.sheetTitle')}</SheetTitle>
-          <SheetDescription className="sr-only">{t('landing.preinscription.sheetDescription')}</SheetDescription>
+          <SheetTitle className="font-medium">{p.sheetTitle}</SheetTitle>
+          <SheetDescription>{p.sheetDescription}</SheetDescription>
         </SheetHeader>
 
         <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
           <SheetBody className="grow p-0">
-            <div className="flex flex-wrap justify-between gap-2 border-b border-border px-5 py-4">
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-[22px] font-semibold leading-none text-foreground lg:text-[22px]">
-                    {t('landing.preinscription.formTitle')}
-                  </span>
-                  <Badge size="sm" variant="warning" appearance="light">
-                    {t('landing.preinscription.verificationBadge')}
-                  </Badge>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 text-2sm">
-                  <span className="font-normal text-muted-foreground">{t('landing.preinscription.pathwayLabel')}</span>
-                  <span className="font-medium text-foreground">{t('landing.preinscription.pathwayValue')}</span>
-                  <BadgeDot className="size-1 bg-muted-foreground" />
-                  <span className="font-normal text-muted-foreground">{t('landing.preinscription.channelLabel')}</span>
-                  <span className="font-medium text-foreground">{t('landing.preinscription.channelValue')}</span>
-                </div>
-              </div>
-            </div>
-
             <ScrollArea
-              className="flex h-[calc(100dvh-13.8rem)] flex-col sm:h-[calc(100dvh-15.8rem)] mx-1.5"
+              className="flex h-[calc(100dvh-10.5rem)] flex-col sm:h-[calc(100dvh-11.5rem)] mx-1.5"
               viewportClassName="[&>div]:h-full [&>div>div]:h-full"
             >
               <div className="px-3.5 py-5">
                 <Tabs defaultValue="profile" className="w-auto text-sm text-muted-foreground">
-                  <TabsList className="mb-2.5 inline-flex h-auto w-auto max-w-full grow-0 flex-wrap gap-y-1">
-                    <TabsTrigger value="profile">{t('landing.preinscription.tabs.profile')}</TabsTrigger>
-                    <TabsTrigger value="compliance">{t('landing.preinscription.tabs.compliance')}</TabsTrigger>
-                    <TabsTrigger value="project">{t('landing.preinscription.tabs.project')}</TabsTrigger>
+                  <TabsList className="mb-4 inline-flex h-auto w-auto max-w-full grow-0 flex-wrap gap-y-1">
+                    <TabsTrigger value="profile">{p.tabs.profile}</TabsTrigger>
+                    <TabsTrigger value="compliance">{p.tabs.compliance}</TabsTrigger>
+                    <TabsTrigger value="project">{p.tabs.project}</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="profile">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="space-y-2 sm:col-span-2">
+                        <Label>{f.civility.label}</Label>
+                        <Select
+                          value={form.civility || undefined}
+                          onValueChange={(v) => updateField('civility', v as 'M' | 'MME')}
+                          required
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={f.civility.placeholder} />
+                          </SelectTrigger>
+                          <SelectContent {...SHEET_SELECT_CONTENT_PROPS} className={SHEET_SELECT_CONTENT_CLASS}>
+                            <SelectItem value="M">{f.civility.monsieur}</SelectItem>
+                            <SelectItem value="MME">{f.civility.madame}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.firstName.label')}</Label>
+                        <Label>{f.firstName.label}</Label>
                         <Input
                           value={form.firstName}
                           onChange={(e) => updateField('firstName', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.firstName.placeholder')}
+                          placeholder={f.firstName.placeholder}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.lastName.label')}</Label>
+                        <Label>{f.lastName.label}</Label>
                         <Input
                           value={form.lastName}
                           onChange={(e) => updateField('lastName', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.lastName.placeholder')}
+                          placeholder={f.lastName.placeholder}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.email.label')}</Label>
+                        <Label>{f.usageName.label}</Label>
+                        <Input
+                          value={form.usageName}
+                          onChange={(e) => updateField('usageName', e.target.value)}
+                          placeholder={f.usageName.placeholder}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>{f.email.label}</Label>
                         <Input
                           type="email"
                           value={form.email}
                           onChange={(e) => updateField('email', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.email.placeholder')}
+                          placeholder={f.email.placeholder}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.phone.label')}</Label>
+                        <Label>{f.phone.label}</Label>
                         <Input
                           value={form.phone}
                           onChange={(e) => updateField('phone', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.phone.placeholder')}
+                          placeholder={f.phone.placeholder}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.birthDate.label')}</Label>
+                        <Label>{f.birthDate.label}</Label>
                         <Input
                           type="date"
                           value={form.birthDate}
@@ -368,56 +406,81 @@ export function CentralPreinscriptionSheet({
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.birthPlace.label')}</Label>
+                        <Label>{f.birthCity.label}</Label>
                         <Input
-                          value={form.birthPlace}
-                          onChange={(e) => updateField('birthPlace', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.birthPlace.placeholder')}
+                          value={form.birthCity}
+                          onChange={(e) => updateField('birthCity', e.target.value)}
+                          placeholder={f.birthCity.placeholder}
                           required
                         />
                       </div>
+                      {bornInFrance ? (
+                        <div className="space-y-2">
+                          <Label>{f.birthDepartment.label}</Label>
+                          <Input
+                            value={form.birthDepartment}
+                            onChange={(e) => updateField('birthDepartment', e.target.value.toUpperCase())}
+                            placeholder={f.birthDepartment.placeholder}
+                            required
+                          />
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Label>{f.birthCountry.label}</Label>
+                          <Input
+                            value={form.birthCountry}
+                            onChange={(e) => updateField('birthCountry', e.target.value)}
+                            placeholder={f.birthCountry.placeholder}
+                            required
+                          />
+                        </div>
+                      )}
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.nationality.label')}</Label>
+                        <Label>{f.nationality.label}</Label>
                         <Input
                           value={form.nationality}
-                          onChange={(e) => updateField('nationality', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.nationality.placeholder')}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.currentSituation.label')}</Label>
-                        <Input
-                          value={form.currentSituation}
-                          onChange={(e) => updateField('currentSituation', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.currentSituation.placeholder')}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setForm((prev) => ({
+                              ...prev,
+                              nationality: value,
+                              birthCountry:
+                                isFrenchBirthContext({
+                                  birthCountry: prev.birthCountry,
+                                  nationality: value,
+                                }) && !prev.birthCountry.trim()
+                                  ? 'France'
+                                  : prev.birthCountry,
+                            }));
+                          }}
+                          placeholder={f.nationality.placeholder}
                           required
                         />
                       </div>
                       <div className="space-y-2 md:col-span-2">
-                        <Label>{t('landing.preinscription.fields.address.label')}</Label>
+                        <Label>{f.address.label}</Label>
                         <Input
                           value={form.address}
                           onChange={(e) => updateField('address', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.address.placeholder')}
+                          placeholder={f.address.placeholder}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.postalCode.label')}</Label>
+                        <Label>{f.postalCode.label}</Label>
                         <Input
                           value={form.postalCode}
                           onChange={(e) => updateField('postalCode', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.postalCode.placeholder')}
+                          placeholder={f.postalCode.placeholder}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>{t('landing.preinscription.fields.city.label')}</Label>
+                        <Label>{f.city.label}</Label>
                         <Input
                           value={form.city}
                           onChange={(e) => updateField('city', e.target.value)}
-                          placeholder={t('landing.preinscription.fields.city.placeholder')}
+                          placeholder={f.city.placeholder}
                           required
                         />
                       </div>
@@ -425,81 +488,78 @@ export function CentralPreinscriptionSheet({
                   </TabsContent>
 
                   <TabsContent value="compliance">
-                    <div className="space-y-4 rounded-md border border-border bg-accent/20 p-4">
-                      <p className="text-sm text-muted-foreground">{t('landing.preinscription.compliance.intro')}</p>
-                      <div className="space-y-3">
-                        <div className="flex items-start gap-3">
-                          <Checkbox
-                            id="compliance-id"
-                            checked={compliance.hasValidIdentityDocument}
-                            onCheckedChange={(value) =>
-                              updateCompliance('hasValidIdentityDocument', value === true)
-                            }
-                          />
-                          <Label htmlFor="compliance-id" className="leading-relaxed">
-                            {t('landing.preinscription.compliance.hasValidIdentityDocument')}
-                          </Label>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <Checkbox
-                            id="compliance-record"
-                            checked={compliance.hasNoIncompatibleConviction}
-                            onCheckedChange={(value) =>
-                              updateCompliance('hasNoIncompatibleConviction', value === true)
-                            }
-                          />
-                          <Label htmlFor="compliance-record" className="leading-relaxed">
-                            {t('landing.preinscription.compliance.hasNoIncompatibleConviction')}
-                          </Label>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <Checkbox
-                            id="compliance-prereq"
-                            checked={compliance.meetsFormationPrerequisites}
-                            onCheckedChange={(value) =>
-                              updateCompliance('meetsFormationPrerequisites', value === true)
-                            }
-                          />
-                          <Label htmlFor="compliance-prereq" className="leading-relaxed">
-                            {t('landing.preinscription.compliance.meetsFormationPrerequisites')}
-                          </Label>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <Checkbox
-                            id="compliance-rules"
-                            checked={compliance.acceptsInternalRules}
-                            onCheckedChange={(value) =>
-                              updateCompliance('acceptsInternalRules', value === true)
-                            }
-                          />
-                          <Label htmlFor="compliance-rules" className="leading-relaxed">
-                            {t('landing.preinscription.compliance.acceptsInternalRules')}
-                          </Label>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <Checkbox
-                            id="compliance-cnaps"
-                            checked={compliance.acknowledgesCnapsHandledBySchool}
-                            onCheckedChange={(value) =>
-                              updateCompliance('acknowledgesCnapsHandledBySchool', value === true)
-                            }
-                          />
-                          <Label htmlFor="compliance-cnaps" className="leading-relaxed">
-                            {t('landing.preinscription.compliance.acknowledgesCnapsHandledBySchool')}
-                          </Label>
-                        </div>
-                        <div className="flex items-start gap-3">
-                          <Checkbox
-                            id="compliance-accuracy"
-                            checked={compliance.certifiesInformationAccuracy}
-                            onCheckedChange={(value) =>
-                              updateCompliance('certifiesInformationAccuracy', value === true)
-                            }
-                          />
-                          <Label htmlFor="compliance-accuracy" className="leading-relaxed">
-                            {t('landing.preinscription.compliance.certifiesInformationAccuracy')}
-                          </Label>
-                        </div>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="compliance-id"
+                          checked={compliance.hasValidIdentityDocument}
+                          onCheckedChange={(value) =>
+                            updateCompliance('hasValidIdentityDocument', value === true)
+                          }
+                        />
+                        <Label htmlFor="compliance-id" className="leading-relaxed">
+                          {p.compliance.hasValidIdentityDocument}
+                        </Label>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="compliance-record"
+                          checked={compliance.hasNoIncompatibleConviction}
+                          onCheckedChange={(value) =>
+                            updateCompliance('hasNoIncompatibleConviction', value === true)
+                          }
+                        />
+                        <Label htmlFor="compliance-record" className="leading-relaxed">
+                          {p.compliance.hasNoIncompatibleConviction}
+                        </Label>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="compliance-prereq"
+                          checked={compliance.meetsFormationPrerequisites}
+                          onCheckedChange={(value) =>
+                            updateCompliance('meetsFormationPrerequisites', value === true)
+                          }
+                        />
+                        <Label htmlFor="compliance-prereq" className="leading-relaxed">
+                          {p.compliance.meetsFormationPrerequisites}
+                        </Label>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="compliance-rules"
+                          checked={compliance.acceptsInternalRules}
+                          onCheckedChange={(value) =>
+                            updateCompliance('acceptsInternalRules', value === true)
+                          }
+                        />
+                        <Label htmlFor="compliance-rules" className="leading-relaxed">
+                          {p.compliance.acceptsInternalRules}
+                        </Label>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="compliance-cnaps"
+                          checked={compliance.acknowledgesCnapsHandledBySchool}
+                          onCheckedChange={(value) =>
+                            updateCompliance('acknowledgesCnapsHandledBySchool', value === true)
+                          }
+                        />
+                        <Label htmlFor="compliance-cnaps" className="leading-relaxed">
+                          {p.compliance.acknowledgesCnapsHandledBySchool}
+                        </Label>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="compliance-accuracy"
+                          checked={compliance.certifiesInformationAccuracy}
+                          onCheckedChange={(value) =>
+                            updateCompliance('certifiesInformationAccuracy', value === true)
+                          }
+                        />
+                        <Label htmlFor="compliance-accuracy" className="leading-relaxed">
+                          {p.compliance.certifiesInformationAccuracy}
+                        </Label>
                       </div>
                     </div>
                   </TabsContent>
@@ -507,7 +567,7 @@ export function CentralPreinscriptionSheet({
                   <TabsContent value="project">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>{t('landing.preinscription.fields.formation.label')}</Label>
+                        <Label>{f.formation.label}</Label>
                         <Select
                           value={form.formationSlug}
                           onValueChange={(value) =>
@@ -520,7 +580,7 @@ export function CentralPreinscriptionSheet({
                           }
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder={t('landing.preinscription.fields.formation.placeholder')} />
+                            <SelectValue placeholder={f.formation.placeholder} />
                           </SelectTrigger>
                           <SelectContent
                             {...SHEET_SELECT_CONTENT_PROPS}
@@ -528,39 +588,45 @@ export function CentralPreinscriptionSheet({
                           >
                             {PREINSCRIPTION_FORMATION_OPTIONS.map((option) => (
                               <SelectItem key={option.slug} value={option.slug}>
-                                {t(`landing.pricing.formations.${option.slug}.name`, { defaultValue: option.label })}
+                                {preinscriptionLabelForSlug(option.slug) || option.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2 md:col-span-2">
-                        <Label>{t('landing.preinscription.fields.funding.label')}</Label>
+                        <Label>{f.funding.label}</Label>
                         <Select
                           value={form.fundingMode}
                           onValueChange={(value) => updateField('fundingMode', value)}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder={t('landing.preinscription.fields.funding.placeholder')} />
+                            <SelectValue placeholder={f.funding.placeholder} />
                           </SelectTrigger>
                           <SelectContent
                             {...SHEET_SELECT_CONTENT_PROPS}
                             className={SHEET_SELECT_CONTENT_CLASS}
                           >
                             {FUNDING_OPTION_KEYS.map((key) => (
-                              <SelectItem key={key} value={fundingLabelForCrm(key)}>
-                                {t(`landing.preinscription.funding.${key}`)}
+                              <SelectItem key={key} value={fundingLabelForKey(key, p.funding)}>
+                                {p.funding[key]}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
-                        <p className="text-xs text-muted-foreground">
-                          {t('landing.preinscription.fields.funding.hint')}
-                        </p>
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>{f.currentSituation.label}</Label>
+                        <Input
+                          value={form.currentSituation}
+                          onChange={(e) => updateField('currentSituation', e.target.value)}
+                          placeholder={f.currentSituation.placeholder}
+                          required
+                        />
                       </div>
                       {form.formationSlug ? (
                         <div className="space-y-2 md:col-span-2">
-                          <Label>{t('landing.preinscription.fields.session.label')}</Label>
+                          <Label>{f.session.label}</Label>
                           <Select
                             value={form.sessionChoice}
                             onValueChange={(value) =>
@@ -577,8 +643,8 @@ export function CentralPreinscriptionSheet({
                               <SelectValue
                                 placeholder={
                                   sessionsLoading
-                                    ? t('landing.preinscription.fields.session.loadingPlaceholder')
-                                    : t('landing.preinscription.fields.session.placeholder')
+                                    ? f.session.loadingPlaceholder
+                                    : f.session.placeholder
                                 }
                               />
                             </SelectTrigger>
@@ -587,7 +653,7 @@ export function CentralPreinscriptionSheet({
                               className={SHEET_SELECT_CONTENT_CLASS}
                             >
                               <SelectItem value={PREINSCRIPTION_SESSION_FLEXIBLE}>
-                                {t('landing.preinscription.fields.session.flexibleOption')}
+                                {f.session.flexibleOption}
                               </SelectItem>
                               {catalogSessions.map((session) => (
                                 <SelectItem
@@ -596,10 +662,8 @@ export function CentralPreinscriptionSheet({
                                   disabled={session.isFull || session.registrationClosed}
                                 >
                                   {formatCatalogSessionLabel(session)}
-                                  {session.isFull ? t('landing.preinscription.fields.session.fullSuffix') : ''}
-                                  {session.registrationClosed
-                                    ? t('landing.preinscription.fields.session.closedSuffix')
-                                    : ''}
+                                  {session.isFull ? f.session.fullSuffix : ''}
+                                  {session.registrationClosed ? f.session.closedSuffix : ''}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -608,32 +672,27 @@ export function CentralPreinscriptionSheet({
                             <Input
                               value={form.sessionLabel}
                               onChange={(e) => updateField('sessionLabel', e.target.value)}
-                              placeholder={t('landing.preinscription.fields.session.flexiblePlaceholder')}
+                              placeholder={f.session.flexiblePlaceholder}
                             />
-                          ) : null}
-                          {!sessionsLoading && catalogSessions.length === 0 ? (
-                            <p className="text-xs text-muted-foreground">
-                              {t('landing.preinscription.fields.session.noSessionsHint')}
-                            </p>
                           ) : null}
                         </div>
                       ) : null}
                       <div className="space-y-2 md:col-span-2">
-                        <Label>{t('landing.preinscription.fields.experience.label')}</Label>
+                        <Label>{f.experience.label}</Label>
                         <Textarea
                           value={form.experience}
                           onChange={(e) => updateField('experience', e.target.value)}
-                          rows={4}
-                          placeholder={t('landing.preinscription.fields.experience.placeholder')}
+                          rows={3}
+                          placeholder={f.experience.placeholder}
                         />
                       </div>
                       <div className="space-y-2 md:col-span-2">
-                        <Label>{t('landing.preinscription.fields.motivation.label')}</Label>
+                        <Label>{f.motivation.label}</Label>
                         <Textarea
                           value={form.motivation}
                           onChange={(e) => updateField('motivation', e.target.value)}
-                          rows={4}
-                          placeholder={t('landing.preinscription.fields.motivation.placeholder')}
+                          rows={3}
+                          placeholder={f.motivation.placeholder}
                         />
                       </div>
                     </div>
@@ -645,10 +704,10 @@ export function CentralPreinscriptionSheet({
 
           <SheetFooter className="flex-row flex-wrap justify-end gap-2.5 border-t border-border p-4 pb-4 sm:p-5">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              {t('landing.preinscription.actions.cancel')}
+              {p.actions.cancel}
             </Button>
             <Button type="submit" variant="primary" disabled={!canSubmit || isSubmitting}>
-              {isSubmitting ? t('landing.preinscription.actions.submitting') : t('landing.preinscription.actions.submit')}
+              {isSubmitting ? p.actions.submitting : p.actions.submit}
             </Button>
           </SheetFooter>
         </form>

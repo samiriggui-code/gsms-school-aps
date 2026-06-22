@@ -1,5 +1,5 @@
 import { parseReservedEquipmentIds } from '@repo/api-core';
-import type { PrismaClient } from '@repo/database';
+import { Prisma, type PrismaClient } from '@repo/database';
 
 function startOfTodayUtc(): Date {
   const d = new Date();
@@ -35,7 +35,7 @@ async function scrubEquipmentFromSessions(
 ): Promise<void> {
   const idSet = new Set(equipmentIds);
   const sessions = await prisma.formationSession.findMany({
-    where: { reservedEquipmentIds: { not: null } },
+    where: { reservedEquipmentIds: { not: Prisma.DbNull } },
     select: { id: true, reservedEquipmentIds: true },
   });
 

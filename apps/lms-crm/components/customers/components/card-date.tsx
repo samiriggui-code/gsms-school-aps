@@ -1,17 +1,26 @@
 'use client';
 
 import { CatalogSessionsPanel } from '@/components/catalog/catalog-sessions-panel';
-import { CATALOG_SLUG } from '@/lib/catalog-formation-slugs';
-import { useSheetContent } from '@/hooks/useSheetContent';
 
-export function CardDate() {
-  const content = useSheetContent('landing.sheetContent.tfp');
-  const presentation = content.presentation;
+type Props = {
+  formationSlug?: string | null;
+  formationSubtitle?: string | null;
+};
+
+export function CardDate({ formationSlug, formationSubtitle }: Props) {
+  if (!formationSlug?.trim()) {
+    return (
+      <p className="text-sm text-muted-foreground py-6 text-center">
+        Sélectionnez une formation pour afficher les sessions.
+      </p>
+    );
+  }
+
   return (
     <CatalogSessionsPanel
-      formationSlug={CATALOG_SLUG.TFP_APS}
+      formationSlug={formationSlug.trim()}
       layout="compact"
-      formationSubtitle={presentation?.title}
+      formationSubtitle={formationSubtitle ?? undefined}
     />
   );
 }

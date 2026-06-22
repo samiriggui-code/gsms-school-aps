@@ -20,6 +20,7 @@ export const STORAGE_SOCLE_PREFIXES = [
   'academique',
   'academique/formations',
   'academique/sessions',
+  'academique/suivi-formations',
   'academique/stagiaires',
   'academique/certifications',
   'academique/cnaps',
@@ -83,6 +84,28 @@ export function buildEntityStoragePrefix(
   const base = [domain, entityType].map((s) => s.replace(/^\/+|\/+$/g, '')).filter(Boolean).join('/');
   const id = entityId?.trim();
   return id ? `${base}/${id}` : base;
+}
+
+/**
+ * Sous-dossiers permanents créés pour chaque `FormationSession` (MinIO/S3 ou local).
+ * PDF émargement, synthèses quotidiennes, exports financeurs, copies archivées.
+ */
+export const SESSION_DOCUMENT_STORAGE_CATEGORIES = [
+  'general',
+  'emargement',
+  'suivi-quotidien',
+  'conformite',
+  'archives',
+] as const;
+
+export type SessionDocumentStorageCategory = (typeof SESSION_DOCUMENT_STORAGE_CATEGORIES)[number];
+
+/** Préfixe complet pour un document PDF de session (`academique/sessions/{id}/emargement/`). */
+export function buildSessionDocumentStoragePrefix(
+  sessionId: string,
+  category: SessionDocumentStorageCategory,
+): string {
+  return `${buildEntityStoragePrefix('academique', 'sessions', sessionId)}/${category}`;
 }
 
 /** Répertoire cible (sans nom de fichier) pour un upload métier. */

@@ -60,11 +60,12 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
                   <Link
                     href={mailto}
                     className="truncate text-xs text-muted-foreground hover:text-primary"
+                    title="Identifiant de connexion"
                   >
                     {session?.user.email || ''}
                   </Link>
                 ) : (
-                  <span className="truncate text-xs text-muted-foreground">
+                  <span className="truncate text-xs text-muted-foreground" title="Identifiant de connexion">
                     {session?.user.email || ''}
                   </span>
                 )}

@@ -39,6 +39,7 @@ import { ConformiteDetailsSettings } from './conformite-details-settings';
 import { ConformiteDetailsAbsences } from './conformite-details-absences';
 import { ConformiteDetailsCompliance } from './conformite-details-compliance';
 import { ConformiteDetailsDocuments } from './conformite-details-documents';
+import { RhStaffSheetSidebarSummary } from '@/components/rh/rh-staff-sheet-sidebar-summary';
 
 interface ConformiteDetailsSheetProps {
   open: boolean;
@@ -674,20 +675,7 @@ export function ConformiteDetailsSheet({
                   )}
                 </div>
 
-                <div className="space-y-3">
-                  {[
-                    { label: "Nom complet", value: conformite.name },
-                    { label: "Email", value: conformite.email },
-                    { label: "Catégorie", value: conformite.userCategory },
-                    { label: "Fonction", value: conformite.jobFunction || '-' },
-                    { label: "ID Conformite", value: conformite.id.substring(0, 8) }
-                  ].map((item, index) => (
-                    <div key={index} className="flex justify-between items-center text-2sm">
-                      <span className="text-muted-foreground">{item.label}</span>
-                      <span className="font-semibold text-foreground truncate max-w-[150px]">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
+                <RhStaffSheetSidebarSummary user={conformite} idLabel="ID Conformité" />
                 
                 <div className="bg-muted/10 border border-border/50 rounded-md p-4 space-y-3">
                     <div className="flex items-center justify-between text-2sm">

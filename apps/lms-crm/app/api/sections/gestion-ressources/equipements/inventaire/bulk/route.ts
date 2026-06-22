@@ -3,7 +3,7 @@ import type { EquipmentStatus } from '@repo/database';
 import { ensureOpenMaintenanceRecord } from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import { requireGestionRessourcesEdit } from '../../_lib/require-gestion-ressources-auth';
+import { requireGestionRessourcesEdit } from '../../../_lib/require-gestion-ressources-auth';
 import { deleteCatalogByLabel } from '../_lib/equipment-delete';
 
 const BULK_STATUSES: EquipmentStatus[] = [

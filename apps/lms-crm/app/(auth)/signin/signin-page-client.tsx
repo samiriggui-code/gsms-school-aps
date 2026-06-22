@@ -29,6 +29,7 @@ import type { AccountBlockReason } from '@/lib/auth/account-access';
 
 const DEV_ACCOUNTS = [
   { label: 'Super Admin (Samir)', email: 'samir.iggui@ecole.local', password: 'demo1234' },
+  { label: "Directeur (Yassine HIDJEB)", email: 'yassine.hidjeb@ecole.local', password: 'demo1234' },
   { label: 'Admin', email: 'john.doe@ecole.local', password: 'demo1234' },
   { label: 'Collaborateur', email: 'michael.brown@ecole.local', password: 'demo1234' },
   { label: 'Formateur', email: 'david.miller@ecole.local', password: 'demo1234' },
@@ -180,6 +181,9 @@ export default function SigninPageClient() {
             ))}
           </div>
           <p className="text-xs text-muted-foreground">
+            Connexion : e-mail professionnel <span className="font-mono text-foreground">prenom.nom@ecole.local</span> — pas l&apos;e-mail personnel (Gmail, etc.).
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
             Même page de connexion : le rôle en base décide de la destination — candidat →{' '}
             <span className="font-medium text-foreground">/mon-dossier</span>, équipe →{' '}
             <span className="font-medium text-foreground">/accueil</span> (CRM).

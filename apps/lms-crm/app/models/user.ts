@@ -54,6 +54,7 @@ export interface User {
   carteProNumber?: string | null;
   carteProExpiry?: Date | null;
   isSchedulable?: boolean;
+  landingPresentation?: string | null;
   documentCni?: string | null;
   documentAssurance?: string | null;
   documentResidencePermit?: string | null;
@@ -84,6 +85,22 @@ export interface User {
   } | null;
   hasActiveAbsence?: boolean;
 }
+
+/** Données minimales pour ouvrir une fiche IAM (liste → sheet → fetch complet). */
+export type UserSheetSeed = {
+  id: string;
+  avatar?: string | null;
+  email?: string;
+  proEmail?: string | null;
+  name?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  status?: UserStatus | string;
+  roleId?: string;
+  role?: { id: string; name: string; slug?: string } | null;
+  createdAt?: Date | string;
+  lastSignInAt?: Date | string | null;
+};
 
 export interface UserRole {
   id: string;

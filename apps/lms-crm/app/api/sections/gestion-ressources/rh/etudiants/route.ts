@@ -11,6 +11,10 @@ import {
 } from '@repo/database';
 import bcrypt from 'bcrypt';
 import { prisma } from '@/lib/prisma';
+import {
+  assertUserMailboxesAvailable,
+  resolveCreateUserEmails,
+} from '@/lib/user-email-routing';
 import { qualificationMetierLabel } from '@/lib/rh-qualification-metier';
 import { UserStatus } from '@/app/models/user';
 import { fail } from '@/app/api/_shared/http/response';
@@ -133,23 +137,38 @@ export async function POST(request: NextRequest) {
 
   const firstName = getStr('firstName');
   const lastName = getStr('lastName');
-  const email = getStr('email').toLowerCase();
+  const personalEmail = getStr('email').toLowerCase();
   const password = String(fd.get('password') ?? '');
 
-  if (!email || !password || password.length < 8) {
+  if (!personalEmail || !password || password.length < 8) {
     return NextResponse.json(
-      { message: 'Email et mot de passe (8 caractères minimum) requis.' },
+      { message: 'E-mail personnel et mot de passe (8 caractères minimum) requis.' },
       { status: 400 },
     );
   }
 
-  const dup = await prisma.user.findUnique({ where: { email } });
-  if (dup) {
-    return NextResponse.json({ message: 'Cet email est déjà enregistré.' }, { status: 409 });
+  let mailboxes: { email: string; proEmail: string };
+  try {
+    mailboxes = resolveCreateUserEmails({
+      email: personalEmail,
+      proEmail: getStr('proEmail') || null,
+      firstName,
+      lastName,
+    });
+  } catch (e) {
+    return NextResponse.json(
+      { message: e instanceof Error ? e.message : 'Emails invalides.' },
+      { status: 400 },
+    );
+  }
+
+  const availability = await assertUserMailboxesAvailable(prisma, mailboxes);
+  if (!availability.ok) {
+    return NextResponse.json({ message: availability.message }, { status: 409 });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const name = [firstName, lastName].filter(Boolean).join(' ') || email;
+  const name = [firstName, lastName].filter(Boolean).join(' ') || mailboxes.email;
   const userCategory = mapFormEtudiantUserCategory(getStr('userCategory') || 'INTERNAL');
   const subcontractorId =
     userCategory === 'SUBCONTRACTOR' ? getStr('subcontractorId') || null : null;
@@ -177,13 +196,13 @@ export async function POST(request: NextRequest) {
   const user = await prisma.$transaction(async (tx) => {
     const u = await tx.user.create({
       data: {
-        email,
+        email: mailboxes.email,
         password: hashedPassword,
         name,
         firstName: firstName || null,
         lastName: lastName || null,
         phone: getStr('phone') || null,
-        proEmail: getStr('proEmail') || null,
+        proEmail: mailboxes.proEmail,
         status: UserStatus.ACTIVE,
         roleId: learnerRole.id,
         userCategory,

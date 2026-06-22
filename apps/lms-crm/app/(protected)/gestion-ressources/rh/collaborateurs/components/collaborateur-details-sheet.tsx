@@ -30,6 +30,8 @@ import { agrementBadgeSuffix, agrementUiLabels } from '@/lib/rh-agrement';
 import { formatDateTime, getAvatarUrl, getInitials, toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { isUserCurrentlyAbsent } from '@/lib/rh/user-absence-ui';
+import { RhStaffSheetSidebarSummary } from '@/components/rh/rh-staff-sheet-sidebar-summary';
+import { userIamLoginSubtitle } from '@/lib/user-email-routing';
 
 // Imports des composants modernisés
 import { CollaborateurDetailsOverview } from './collaborateur-details-overview'; 
@@ -239,6 +241,10 @@ export const CollaborateurFicheTemplate = ({
             <div className="flex justify-between py-1">
               <span className="text-[10px] font-bold text-slate-400 uppercase">Nationalité</span>
               <span className="text-[10px] font-bold text-slate-900 uppercase">{collaborateur.nationality || '-'}</span>
+            </div>
+            <div className="flex justify-between py-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Email professionnel</span>
+              <span className="text-[10px] font-bold text-slate-900">{userIamLoginSubtitle(collaborateur)}</span>
             </div>
             <div className="flex justify-between py-1">
               <span className="text-[10px] font-bold text-slate-400 uppercase">Email Personnel</span>
@@ -678,23 +684,10 @@ export function CollaborateurDetailsSheet({
                   )}
                 </div>
 
-                <div className="space-y-3">
-                  {[
-                    { label: 'Nom complet', value: collaborateur.name },
-                    { label: 'Email', value: collaborateur.email },
-                    { label: 'Catégorie', value: collaborateur.userCategory },
-                    { label: 'Fonction', value: collaborateur.jobFunction || '-' },
-                    {
-                      label: theme === 'formateur' ? 'ID formateur' : 'ID Collaborateur',
-                      value: collaborateur.id.substring(0, 8),
-                    },
-                  ].map((item, index) => (
-                    <div key={index} className="flex justify-between items-center text-2sm">
-                      <span className="text-muted-foreground">{item.label}</span>
-                      <span className="font-semibold text-foreground truncate max-w-[150px]">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
+                <RhStaffSheetSidebarSummary
+                  user={collaborateur}
+                  idLabel={theme === 'formateur' ? 'ID formateur' : 'ID Collaborateur'}
+                />
                 
                 <div className="bg-muted/10 border border-border/50 rounded-md p-4 space-y-3">
                     <div className="flex items-center justify-between text-2sm">

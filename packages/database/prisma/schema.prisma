@@ -120,6 +120,19 @@ enum FormationSessionEnrollmentStatus {
   CANCELLED
 }
 
+/// Créneau journalier suivi formation (émargement matin / soir).
+enum FormationSessionDaySlot {
+  MORNING
+  EVENING
+}
+
+enum FormationSessionEmargementStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -139,6 +152,8 @@ enum SchoolInternalService {
   PEDAGOGICAL
   /// RH, administration, support.
   HR_ADMIN
+  /// Direction de l'établissement (gérant, directeur, équipe de pilotage).
+  DIRECTION
 }
 
 enum EquipmentStatus {
@@ -213,6 +228,8 @@ model User {
   carteProNumber        String?
   carteProExpiry        DateTime?
   isSchedulable         Boolean   @default(true)
+  /// Présentation courte affichée sur le landing (#trainers) et fiches publiques équipe.
+  landingPresentation   String?   @db.Text
   documentCni           String?
   documentAssurance     String?
   documentResidencePermit String?
@@ -244,6 +261,7 @@ model User {
   quizAttempts       QuizAttempt[]
 
   formationSessionParticipants FormationSessionParticipant[]
+  formationSessionEmargementsMarked FormationSessionEmargement[] @relation("FormationSessionEmargementMarkedBy")
   formationAttestations        FormationAttestation[]
   candidatures                   Candidature[]
   complianceDossiers             ComplianceDossier[]       @relation("ComplianceDossierUser")
@@ -268,6 +286,7 @@ model User {
   businessRoles         UserBusinessRole[]
   collaborateurProfile  CollaborateurProfile?
   formateurProfile      FormateurProfile?
+  landingTeamOffer      LandingTeamOffer?
   managedCollaborateurs CollaborateurProfile[] @relation("CollaborateurManager")
   createdFileAssets     FileAsset[]            @relation("FileAssetCreatedBy")
   createdFileAssetVersions FileAssetVersion[] @relation("FileAssetVersionCreatedBy")
@@ -698,6 +717,7 @@ enum RhTeamType {
   PEDAGOGICAL
   TRAINER_POOL
   HR_ADMIN
+  DIRECTION
   QUALITY
   ADMIN
 }
@@ -818,17 +838,32 @@ model RhAbsence {
 
 /// Référentiel postes / fonctions métier école
 model RhPosition {
-  id        String   @id @default(uuid())
-  label     String
-  code      String?  @unique
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                    String                 @id @default(uuid())
+  label                 String
+  code                  String?                @unique
+  schoolInternalService SchoolInternalService?
+  sortOrder             Int                    @default(0)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
   users    User[]
   orgUnits RhOrgUnit[]
 
   @@index([sortOrder])
+  @@index([schoolInternalService, sortOrder])
+}
+
+/// Référentiel qualifications par pôle interne (CFA).
+model RhQualification {
+  id                    String                @id @default(uuid())
+  label                 String
+  code                  String                @unique
+  schoolInternalService SchoolInternalService
+  sortOrder             Int                   @default(0)
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+
+  @@index([schoolInternalService, sortOrder])
 }
 
 model Equipment {
@@ -1053,6 +1088,41 @@ model FormationCatalogOffer {
   @@index([catalogStatus])
 }
 
+/// Volet affiché sur la section #trainers du landing.
+enum LandingTeamVolet {
+  direction
+  formateur
+  pedagogique
+  rh
+}
+
+/// Membre de l'équipe publiée sur le landing (#trainers) — lié à un compte RH / formateur.
+model LandingTeamOffer {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  volet LandingTeamVolet
+
+  catalogStatus FormationLifecycleStatus @default(ACTIVE)
+
+  sortOrder Int @default(0)
+
+  titleOverride               String?
+  certificationsLabelOverride String? @db.Text
+  bioOverride                 String? @db.Text
+  statAOverride               Int?
+  statBOverride               Int?
+  ratingOverride              Float?
+  linkedinUrl                 String?
+  websiteUrl                  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([catalogStatus, volet, sortOrder])
+}
+
 /// Salle ou espace pédagogique réservable pour les sessions catalogue CRM (libellés métier : « Salle Aurore », etc.).
 model FormationVenueRoom {
   id         String   @id @default(uuid())
@@ -1154,6 +1224,7 @@ model FormationSession {
   bookingUrl     String? @db.Text
 
   participants FormationSessionParticipant[]
+  suiviDays    FormationSessionDay[]
   attestations FormationAttestation[]
   portalAnnouncements PortalSessionAnnouncement[]
   rhTeam               RhTeam?
@@ -1254,6 +1325,13 @@ model FormationSessionParticipant {
   certifiedAt         DateTime?
   trainingCompletedAt DateTime?
 
+  /// Financeur / modalité de prise en charge (CPF, France Travail, OPCO…).
+  fundingMode      String?
+  fundingReference String?
+  fundingNotes     String? @db.Text
+
+  emargements FormationSessionEmargement[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1261,6 +1339,50 @@ model FormationSessionParticipant {
   @@index([userId])
   @@index([candidatureId])
   @@index([examOutcome])
+}
+
+/// Jour de formation dans le suivi quotidien CRM (dates dérivées de la session ou ajout manuel).
+model FormationSessionDay {
+  id        String           @id @default(uuid())
+  sessionId String
+  session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  dayDate DateTime @db.Date
+
+  journalNotesMorning String? @db.Text
+  journalNotesEvening String? @db.Text
+
+  attendances FormationSessionEmargement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sessionId, dayDate])
+  @@index([sessionId])
+}
+
+/// Émargement nominatif par stagiaire et créneau (matin / soir).
+model FormationSessionEmargement {
+  id            String @id @default(uuid())
+  dayId         String
+  day           FormationSessionDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  participantId String
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  slot   FormationSessionDaySlot
+  status FormationSessionEmargementStatus @default(PRESENT)
+
+  markedAt       DateTime?
+  markedByUserId String?
+  markedBy       User?   @relation("FormationSessionEmargementMarkedBy", fields: [markedByUserId], references: [id], onDelete: SetNull)
+  notes          String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([dayId, participantId, slot])
+  @@index([participantId])
+  @@index([dayId])
 }
 
 /// Attestation / certification délivrée après parcours catalogue CRM (distinct du LMS `UserCertificate`).

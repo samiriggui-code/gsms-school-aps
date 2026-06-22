@@ -7,9 +7,10 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "administration-facturation.finance.paiements": "Encaissements liés aux devis et relances.",
   "administration-facturation.finance.rapports": "Synthèse mensuelle devis, leads et chiffre d'affaires.",
   "administration-facturation": "Centralisez la facturation, les encaissements et les relances.",
-  "communication-contenu.cms.contenus": "Fiches formations éditables dans le module académique — hub de publication landing.",
+  "communication-contenu.cms.contenus": "Suivi des fiches formation publiées sur le landing (#pricing) — édition dans le module Formations.",
   "communication-contenu.cms": "Gestion des pages landing et des contenus.",
   "communication-contenu.cms.pages-landing": "Ordre, visibilité et publication du site vitrine one-page.",
+  "communication-contenu.cms.equipe-landing": "Catalogue équipe publié sur la section #trainers du landing (direction, formateurs, pédagogie, RH).",
   "communication-contenu.marketing.formulaires-leads": "Leads issus des landings (devis, préinscription) : qualification, pipeline et fiches détail.",
   "communication-contenu.marketing": "Gestion des formulaires leads et campagnes.",
   "communication-contenu.marketing.campagnes":
@@ -26,6 +27,8 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "gestion-academique.vie-scolaire": "Suivi pédagogique des formations et sessions. Les alertes ci-dessous peuvent aussi refléter la conformité de l&apos;équipe (RH).",
   "gestion-academique.vie-scolaire.planning": "Planning hebdomadaire des sessions catalogue : formations, formateurs, salles et effectifs inscrits (calendrier scolaire lun.–sam.).",
   "gestion-academique.vie-scolaire.sessions": "Planning des sessions, inscriptions et suivi pédagogique par formation.",
+  "gestion-academique.vie-scolaire.suivi-formations":
+    "Suivi quotidien par session : stagiaires inscrits, progression e-learning, quiz et préparation émargement / conformité.",
   "gestion-ressources.compagnie": "Gérez le profil de la compagnie, sa structure et ses documents administratifs.",
   "gestion-ressources.compagnie.profil": "Identité légale, coordonnées et référents administratifs de l&apos;établissement.",
   "gestion-ressources.equipements.affectations": "Réservations et mobilisation du matériel par session (formateur ou collaborateur).",
@@ -38,7 +41,7 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "gestion-ressources.rh.equipes": "Gérez vos équipes et l&apos;affectation de vos collaborateurs.",
   "gestion-ressources.rh.formateurs": "Ressources pédagogiques externes, missions et disponibilités.",
   "gestion-ressources.rh": "Gérez vos collaborateurs, suivi des absences et suivi administratif RH en temps réel.",
-  "mon-profil": "Vue consolidée de votre fiche : identité, rôle et accès rapides.",
+  "mon-profil": "Fiche métier : identité RH, conformité, contrat et présentation publique (landing).",
   "account.notifications":
     "Historique des alertes CRM : tickets, finance, formation et équipe — marquage lu et archivage.",
   "pilotage-supervision": "Tableaux de bord, indicateurs clés, performance et veille opérationnelle en temps réel.",

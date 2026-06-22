@@ -5,6 +5,7 @@ import type {
   Prisma,
   PrismaClient,
 } from '@repo/database';
+export type { CrmEventSeverity };
 import { NotificationService } from './notifications';
 import {
   defaultAudienceForEvent,

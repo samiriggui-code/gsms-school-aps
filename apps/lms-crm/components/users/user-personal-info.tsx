@@ -6,6 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import {
+  userIamLoginSubtitle,
+  userPersonalMailbox,
+  userTransactionalMailbox,
+} from '@/lib/user-email-routing';
 
 export function UserPersonalInfo({ user }: { user: any }) {
   return (
@@ -44,14 +49,23 @@ export function UserPersonalInfo({ user }: { user: any }) {
             </TableRow>
             <TableRow>
               <TableCell className="py-2 text-secondary-foreground font-normal">
-                Email
+                Email professionnel
               </TableCell>
               <TableCell className="py-2 text-foreground font-normal">
-                {user?.email || 'N/A'}
+                {userIamLoginSubtitle(user)}
+              </TableCell>
+              <TableCell className="py-2 text-center" />
+            </TableRow>
+            <TableRow>
+              <TableCell className="py-2 text-secondary-foreground font-normal">
+                Email personnel
+              </TableCell>
+              <TableCell className="py-2 text-foreground font-normal">
+                {userPersonalMailbox(user) ?? 'N/A'}
               </TableCell>
               <TableCell className="py-2 text-center">
                 <Button variant="outline" size="sm" asChild>
-                  <a href={`mailto:${user?.email || '#'}`}>Message</a>
+                  <a href={`mailto:${userTransactionalMailbox(user) || '#'}`}>Message</a>
                 </Button>
               </TableCell>
             </TableRow>

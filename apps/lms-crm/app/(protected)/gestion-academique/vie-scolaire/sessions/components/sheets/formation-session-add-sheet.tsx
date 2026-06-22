@@ -7,9 +7,8 @@ import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useForm } from 'react-hook-form';
 import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { LoaderCircleIcon, TrendingUp, UserPlus } from 'lucide-react';
+import { LoaderCircleIcon, UserPlus } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import {
@@ -56,11 +55,12 @@ import { Upload } from '@/app/(protected)/gestion-academique/vie-scolaire/format
 import { buildFormationSheetViewModel } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/utils/formation-catalog-sheet-view-model';
 import type { FormationSessionApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 import { FormationSessionEquipmentPickGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-equipment-pick-grid';
+import { FormationSessionParticipantPickGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-participant-pick-grid';
+import { FormationSessionOverviewMetrics } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-overview-metrics';
 import { sessionsListQueryKey } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/sessions-manager';
 import { indexVenueRoomConflictsForRange } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/lib/session-room-availability';
 import { sessionKindDerivedFromFormationParcours } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/lib/session-parcours-exam';
 
-const elevesQueryKey = ['gestion-academique', 'vie-scolaire', 'sessions', 'eleves'] as const;
 const formateursQueryKey = ['gestion-academique', 'vie-scolaire', 'sessions', 'formateurs'] as const;
 const equipmentPickQueryKey = ['gestion-academique', 'vie-scolaire', 'sessions', 'equipment-pick'] as const;
 const venueRoomsQueryKey = ['gestion-academique', 'vie-scolaire', 'sessions', 'venue-rooms'] as const;
@@ -76,117 +76,6 @@ type EquipmentPickInventoryRow = { id: string; label: string; serialNumber: stri
 const EMPTY_EQUIPMENT_INVENTORY: EquipmentPickInventoryRow[] = [];
 
 const EMPTY_VENUE_ROOM_PICK_META = new Map<string, { occupied: boolean; conflictLabel: string | null }>();
-
-/** Même grille que `AddCatalogMetricsStrip` — 4ᵉ carte : libellés courts en « titre », détail en pied comme le catalogue. */
-function SessionFormationMetricsStrip({
-  durationLabel,
-  effectifLabel,
-  catalogueLabel,
-  sessionOverviewComplete,
-  sessionOverviewDetail,
-}: {
-  durationLabel: string;
-  effectifLabel: string;
-  catalogueLabel: string;
-  sessionOverviewComplete: boolean;
-  sessionOverviewDetail: string;
-}) {
-  const fourth = sessionOverviewComplete
-    ? {
-        total: sessionOverviewDetail || '—',
-        totalClamp: true,
-        label: 'Synthèse session',
-        badgeLabel: 'Synthèse',
-        badgeColor: 'success' as const,
-        text: 'effectif · planning · moyens',
-      }
-    : {
-        total: '—',
-        totalClamp: false,
-        label: 'Synthèse session',
-        badgeLabel: '—',
-        badgeColor: 'secondary' as const,
-        text: sessionOverviewDetail,
-      };
-
-  const items = [
-    {
-      total: durationLabel,
-      label: 'Durée indicative',
-      badgeLabel: 'Réf.',
-      badgeColor: 'success' as const,
-      text: 'fiche métier',
-      number: '',
-      totalClamp: false as const,
-    },
-    {
-      total: effectifLabel,
-      label: 'Effectif catalogue',
-      badgeLabel: 'Réf.',
-      badgeColor: 'success' as const,
-      text: 'indicatif offre',
-      number: '',
-      totalClamp: false as const,
-    },
-    {
-      total: catalogueLabel,
-      label: 'Offre catalogue',
-      badgeLabel: 'Statut',
-      badgeColor: 'warning' as const,
-      text: 'formation liée',
-      number: '',
-      totalClamp: false as const,
-    },
-    {
-      total: fourth.total,
-      totalClamp: fourth.totalClamp,
-      label: fourth.label,
-      badgeLabel: fourth.badgeLabel,
-      badgeColor: fourth.badgeColor,
-      text: fourth.text,
-      number: '',
-    },
-  ];
-
-  return (
-    <Card className="mb-5 rounded-md bg-accent/70 p-1">
-      <CardContent className="rounded-md border border-border bg-background p-0">
-        <div className="grid md:grid-cols-4 lg:gap-5">
-          {items.map((item, index) => (
-            <div
-              key={item.label}
-              className={`flex flex-col justify-between gap-5 p-4.5 pb-3.5 ${index > 0 ? 'border-border md:border-s' : ''}`}
-            >
-              <div className="flex min-h-0 flex-col gap-0.5">
-                <span
-                  className={`inline-flex flex-wrap items-baseline gap-x-0 font-semibold text-foreground ${
-                    item.totalClamp
-                      ? 'line-clamp-2 text-lg leading-snug lg:text-xl'
-                      : 'text-xl lg:text-2xl'
-                  }`}
-                >
-                  <span className="min-w-0">{item.total}</span>
-                  {item.number ? (
-                    <span className="text-xl font-semibold text-secondary-foreground/30 lg:text-2xl">
-                      {item.number}
-                    </span>
-                  ) : null}
-                </span>
-                <span className="text-xs font-normal text-secondary-foreground/70">{item.label}</span>
-              </div>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <Badge variant={item.badgeColor} size="sm" appearance="light" className="w-fit">
-                  <TrendingUp className="size-3" /> {item.badgeLabel}
-                </Badge>
-                <span className="text-xs font-normal text-secondary-foreground">{item.text}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 const formSchema = z
   .object({
@@ -341,17 +230,35 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
     enabled: open,
   });
 
+  const elevesIncludeUserIds = useMemo(
+    () => (draft?.participants ?? []).map((p) => p.userId).filter(Boolean),
+    [draft?.id, draft?.participants],
+  );
+
   const elevesQuery = useQuery({
-    queryKey: elevesQueryKey,
+    queryKey: [
+      'gestion-academique',
+      'vie-scolaire',
+      'sessions',
+      'eleves',
+      formationId,
+      elevesIncludeUserIds.join(','),
+    ],
     queryFn: async () => {
-      const res = await apiFetch('/api/sections/gestion-academique/vie-scolaire/sessions/eleves');
+      const qs = new URLSearchParams({ formationId: formationId.trim() });
+      if (elevesIncludeUserIds.length > 0) {
+        qs.set('includeUserIds', elevesIncludeUserIds.join(','));
+      }
+      const res = await apiFetch(
+        `/api/sections/gestion-academique/vie-scolaire/sessions/eleves?${qs.toString()}`,
+      );
       if (!res.ok) throw new Error('Élèves indisponibles.');
       const j = await res.json();
       if (!j?.success || !Array.isArray(j?.data?.items)) throw new Error('Réponse élèves invalide.');
-      return j.data.items as { id: string; name: string | null; email: string }[];
+      return j.data.items as { id: string; name: string | null; email: string; avatar?: string | null }[];
     },
     staleTime: 120_000,
-    enabled: open,
+    enabled: open && Boolean(formationId?.trim()),
   });
 
   const formateursQuery = useQuery({
@@ -361,7 +268,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       if (!res.ok) throw new Error('Formateurs indisponibles.');
       const j = await res.json();
       if (!j?.success || !Array.isArray(j?.data?.items)) throw new Error('Réponse formateurs invalide.');
-      return j.data.items as { id: string; name: string | null; email: string }[];
+      return j.data.items as { id: string; name: string | null; email: string; avatar?: string | null }[];
     },
     staleTime: 120_000,
     enabled: open,
@@ -374,8 +281,9 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       const res = await apiFetch(`/api/sections/gestion-ressources/equipements/inventaire?${qs}`);
       if (!res.ok) throw new Error('Équipements indisponibles.');
       const j = await res.json();
-      if (!j?.success || !Array.isArray(j?.data?.items)) throw new Error('Réponse inventaire invalide.');
-      return j.data.items;
+      const items = j?.data?.data;
+      if (!j?.success || !Array.isArray(items)) throw new Error('Réponse inventaire invalide.');
+      return items;
     },
     staleTime: 60_000,
     enabled: open,
@@ -470,6 +378,15 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
     form.setValue('formationId', catalogActive[0].formationId);
   }, [open, editingId, formationId, catalogActive, form]);
 
+  useEffect(() => {
+    if (!open || !formationId?.trim() || !elevesQuery.data) return;
+    const allowed = new Set(elevesQuery.data.map((l) => l.id));
+    setParticipantIds((prev) => {
+      const next = new Set([...prev].filter((id) => allowed.has(id)));
+      return next.size === prev.size ? prev : next;
+    });
+  }, [open, formationId, elevesQuery.data]);
+
   const invalidateAll = () => {
     queryClient.invalidateQueries({ queryKey: ['gestion-academique', 'vie-scolaire', 'sessions'] });
     queryClient.invalidateQueries({ queryKey: [...formationsCatalogQueryRoot] });
@@ -546,36 +463,6 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       return next;
     });
   }, []);
-
-  const sessionOverviewStrip = useMemo(() => {
-    const bits: string[] = [];
-    if (participantIds.size > 0) bits.push(`${participantIds.size} inscrit(s)`);
-    const tmn = traineesMinWatch.trim();
-    const tmx = traineesMaxWatch.trim();
-    if (tmn || tmx) bits.push(`eff. session ${tmn || '?'}–${tmx || '?'}`);
-    if (trainerWatch.trim()) bits.push('formateur');
-    const roomId = venueRoomWatch.trim();
-    if (roomId) {
-      const name = venueRoomsQuery.data?.find((r) => r.id === roomId)?.name;
-      bits.push(name ? `salle : ${name}` : 'salle réservée');
-    }
-    if (equipmentIds.size > 0) bits.push(`${equipmentIds.size} équip.`);
-    if (!bits.length) {
-      return {
-        complete: false,
-        detail: 'À compléter via les onglets Session et Moyens.',
-      };
-    }
-    return { complete: true, detail: bits.join(' · ') };
-  }, [
-    participantIds.size,
-    traineesMinWatch,
-    traineesMaxWatch,
-    trainerWatch,
-    venueRoomWatch,
-    venueRoomsQuery.data,
-    equipmentIds.size,
-  ]);
 
   const createMutation = useMutation({
     mutationFn: async (values: FormationSessionAddSheetValues) => {
@@ -697,6 +584,46 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
   const voletLabel = selectedFormation ? FORMATION_TRACK_LABELS[selectedFormation.track] : '—';
   const typeLabel = selectedFormation?.tag ?? '—';
   const durationLabel = selectedFormation?.duration ?? draft?.formationDuration ?? '—';
+
+  const sessionOverviewMetrics = useMemo(() => {
+    const trainerId = trainerWatch.trim();
+    const trainerRow = trainerId
+      ? formateursQuery.data?.find((f) => f.id === trainerId)
+      : null;
+    const roomId = venueRoomWatch.trim();
+    const roomName = roomId
+      ? venueRoomsQuery.data?.find((r) => r.id === roomId)?.name ?? null
+      : null;
+    const tmn = traineesMinWatch.trim();
+    const tmx = traineesMaxWatch.trim();
+    let capacityHint: string | null = null;
+    if (tmn || tmx) {
+      capacityHint = `Capacité session ${tmn || '?'}–${tmx || '?'}`;
+    } else {
+      const ref = formatEffectifFourchette(selectedFormation);
+      if (ref !== '—') capacityHint = `Réf. catalogue ${ref}`;
+    }
+    return {
+      durationDisplay: durationLabel,
+      enrolledCount: participantIds.size,
+      capacityHint,
+      roomName,
+      trainer: trainerRow
+        ? { name: trainerRow.name, email: trainerRow.email, avatar: trainerRow.avatar }
+        : null,
+    };
+  }, [
+    trainerWatch,
+    formateursQuery.data,
+    venueRoomWatch,
+    venueRoomsQuery.data,
+    traineesMinWatch,
+    traineesMaxWatch,
+    selectedFormation,
+    durationLabel,
+    participantIds.size,
+  ]);
+
   const parcoursPedago =
     selectedFormation?.parcoursSpecialite != null
       ? FORMATION_PARCOURS_LABELS[selectedFormation.parcoursSpecialite]
@@ -875,7 +802,9 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
                         <TabsTrigger value="moyens" disabled={!formationId?.trim() && !editingId}>
                           Moyens
                         </TabsTrigger>
-                        <TabsTrigger value="eleves">Stagiaires</TabsTrigger>
+                        <TabsTrigger value="eleves" disabled={!formationId?.trim() && !editingId}>
+                          Stagiaires
+                        </TabsTrigger>
                       </TabsList>
 
                       <TabsContent value="overview" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
@@ -886,21 +815,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
                           </p>
                         ) : (
                           <div className="space-y-5">
-                            <SessionFormationMetricsStrip
-                              durationLabel={durationLabel}
-                              effectifLabel={formatEffectifFourchette(selectedFormation)}
-                              catalogueLabel={
-                                selectedFormation?.status === 'ACTIVE'
-                                  ? 'Publiée'
-                                  : selectedFormation?.status === 'DRAFT'
-                                    ? 'Brouillon'
-                                    : selectedFormation
-                                      ? catalogueStatusLabel
-                                      : '—'
-                              }
-                              sessionOverviewComplete={sessionOverviewStrip.complete}
-                              sessionOverviewDetail={sessionOverviewStrip.detail}
-                            />
+                            <FormationSessionOverviewMetrics {...sessionOverviewMetrics} />
                             <div className="grid items-stretch gap-5 lg:grid-cols-2">
                               <RecentOrders presentation={sessionAddOverviewModel.presentation} />
                               <LoyaltyTier loyalty={sessionAddOverviewModel.loyalty} />
@@ -1144,46 +1059,29 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
                       <TabsContent value="eleves" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
                         <div className="mb-4 space-y-2 rounded-lg border border-dashed border-border bg-muted/25 p-3 text-xs leading-relaxed text-muted-foreground">
                           <p>
-                            Ces cases ajoutent immédiatement l&apos;élève comme participant CRM à cette session (
-                            <span className="font-medium text-foreground">sans contrôle dossier automatique</span>).
+                            Seuls les apprenants dont le{' '}
+                            <span className="font-medium text-foreground">dossier est validé par l&apos;administration</span>{' '}
+                            (statut « Dossier validé ») pour{' '}
+                            <span className="font-medium text-foreground">cette formation</span> apparaissent ici.
                           </p>
                           <p>
-                            Si vos règles imposent un{' '}
-                            <span className="font-medium text-foreground">
-                              dossier complet / conformité avant admission
-                            </span>
-                            , validez d&apos;abord en dehors de cet écran (ou via un flux candidature à créer),
-                            puis cochez ici uniquement les parcours déjà admis.
+                            Validez le dossier depuis la fiche candidat (conformité + pièces CNAPS), puis revenez
+                            inscrire le stagiaire sur la session.
                           </p>
                         </div>
-                        <p className="mb-4 text-xs text-muted-foreground">
-                          Liste limitée aux comptes actifs au rôle « élève ».
-                        </p>
-                        <div className="max-h-[min(320px,50vh)] space-y-2 overflow-auto rounded-lg border border-border p-3">
-                          {elevesQuery.isLoading ? (
-                            <p className="text-sm text-muted-foreground">Chargement des élèves…</p>
-                          ) : (elevesQuery.data ?? []).length === 0 ? (
-                            <p className="text-sm text-muted-foreground">Aucun élève éligible.</p>
-                          ) : (
-                            (elevesQuery.data ?? []).map((u) => (
-                              <label
-                                key={u.id}
-                                className="flex cursor-pointer items-start gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50"
-                              >
-                                <input
-                                  type="checkbox"
-                                  className="mt-1 accent-primary"
-                                  checked={participantIds.has(u.id)}
-                                  onChange={(e) => onParticipantToggle(u.id, e.target.checked)}
-                                />
-                                <span>
-                                  <span className="block text-sm font-medium">{u.name ?? u.email}</span>
-                                  <span className="text-xs text-muted-foreground">{u.email}</span>
-                                </span>
-                              </label>
-                            ))
-                          )}
-                        </div>
+                        {!formationId?.trim() ? (
+                          <p className="text-sm text-muted-foreground">
+                            Choisissez d&apos;abord une formation catalogue.
+                          </p>
+                        ) : (
+                          <FormationSessionParticipantPickGrid
+                            learners={elevesQuery.data ?? []}
+                            selectedIds={participantIds}
+                            onToggle={onParticipantToggle}
+                            isLoading={elevesQuery.isLoading}
+                            emptyMessage="Aucun dossier validé pour cette formation. Validez un dossier candidat avant inscription."
+                          />
+                        )}
                       </TabsContent>
                     </Tabs>
                   </div>

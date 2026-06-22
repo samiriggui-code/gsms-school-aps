@@ -9,6 +9,10 @@ import { UserStatus } from '@/app/models/user';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { createFileAssetWithVersion } from '@/lib/file-asset-service';
 import {
+  assertUserMailboxesAvailable,
+  resolveCreateUserEmails,
+} from '@/lib/user-email-routing';
+import {
   ensureCandidatStoragePrefix,
   ensureUserStoragePrefix,
   provisionStoragePrefixSafe,
@@ -263,11 +267,22 @@ async function handler(request: NextRequest, { params }: Params) {
         return fail('email et roleId sont requis.', 400);
       }
 
-      const [existing, role] = await Promise.all([
-        prisma.user.findUnique({ where: { email: payload.email } }),
-        prisma.userRole.findUnique({ where: { id: payload.roleId } }),
-      ]);
-      if (existing) return fail('Email already registered.', 409);
+      let mailboxes: { email: string; proEmail: string };
+      try {
+        mailboxes = resolveCreateUserEmails({
+          email: payload.email,
+          proEmail: payload.proEmail,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+        });
+      } catch (e) {
+        return fail(e instanceof Error ? e.message : 'Emails invalides.', 400);
+      }
+
+      const availability = await assertUserMailboxesAvailable(prisma, mailboxes);
+      if (!availability.ok) return fail(availability.message, 409);
+
+      const role = await prisma.userRole.findUnique({ where: { id: payload.roleId } });
       if (!role) return fail('Role not found.', 404);
 
       const allowedUserCategories = ['INTERNAL', 'CLIENT', 'SUBCONTRACTOR'] as const;
@@ -280,12 +295,12 @@ async function handler(request: NextRequest, { params }: Params) {
 
       const created = await prisma.user.create({
         data: {
-          email: payload.email,
+          email: mailboxes.email,
           firstName: payload.firstName || null,
           lastName: payload.lastName || null,
-          name: payload.name || payload.email.split('@')[0],
+          name: payload.name || mailboxes.email.split('@')[0],
           phone: payload.phone || null,
-          proEmail: payload.proEmail || null,
+          proEmail: mailboxes.proEmail,
           roleId: payload.roleId,
           status: payload.status && payload.status in UserStatus ? (payload.status as any) : UserStatus.ACTIVE,
           userCategory: normalizedUserCategory,

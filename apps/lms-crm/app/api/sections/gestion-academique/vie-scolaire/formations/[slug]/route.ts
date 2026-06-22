@@ -7,6 +7,7 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { serializeCatalogOfferMerged } from '@/app/api/sections/gestion-academique/vie-scolaire/formations/_serialize';
 import { FormationCatalogOfferPatchSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-catalog-api-schemas';
 import { invalidateFormationCatalogCaches } from '@/lib/catalog-public-cache';
+import { nextSessionLabelForFormation } from '@/lib/formation-session-dates';
 
 export async function GET(
   _request: NextRequest,
@@ -29,8 +30,14 @@ export async function GET(
     });
     if (!offer) return fail('Formation non incluse dans le catalogue.', 404);
 
+    const merged = serializeCatalogOfferMerged(offer, formation);
+    const computedNext = await nextSessionLabelForFormation(prisma, formation.id);
+
     return ok({
-      item: serializeCatalogOfferMerged(offer, formation),
+      item: {
+        ...merged,
+        nextSessionLabel: computedNext ?? null,
+      },
       templates: {
         fundingBlocks: formation.fundingBlocks ?? [],
         prerequisitesTable: formation.prerequisitesTable ?? [],

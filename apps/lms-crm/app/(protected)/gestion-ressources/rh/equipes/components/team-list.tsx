@@ -65,14 +65,22 @@ import {
   resolveTeamLeader,
   resolveTeamSectorMeta,
   resolveTeamTypeMeta,
+  resolveTeamSiteLabel,
   teamLeaderLabel,
   isSessionPedagogicalTeam,
   sessionTeamSubtitle,
+  resolveTeamLifecycleMeta,
+  countSessionTeamMembersByRole,
+  permanentTeamKindLabel,
 } from '../lib/team-display';
+import type { RhSessionTeamPhase, RhTeamListScope } from '@/lib/rh-team-list-scope';
+import { RH_TEAM_LIST_SCOPE_HINTS } from '@/lib/rh-team-list-scope';
 import { TeamPhoto } from './team-photo';
 
 interface TeamListProps {
-  /** @deprecated CTA création — utiliser la toolbar page (⓪). */
+  teamScope: RhTeamListScope;
+  sessionPhase?: RhSessionTeamPhase;
+  /** @deprecated CTA création — utiliser la toolbar page. */
   onAddClick?: () => void;
 }
 
@@ -117,7 +125,8 @@ function normalizeTeamsResponse(payload: unknown, pageSize: number, pageIndex: n
   };
 }
 
-const TeamList = ({ onAddClick }: TeamListProps) => {
+const TeamList = ({ teamScope, sessionPhase = 'running', onAddClick }: TeamListProps) => {
+  const isSessionScope = teamScope === 'session';
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [view, setView] = useState<'table' | 'grid'>('table');
@@ -135,7 +144,7 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
 
   const { isSyncing, sync: handleSync } = useDatagridSync({
     preset: 'rhTeams',
-    queryKeys: [['rh-teams']],
+    queryKeys: [['rh-teams', teamScope, sessionPhase]],
   });
 
   const deleteMutation = useMutation({
@@ -163,6 +172,8 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
     const params = new URLSearchParams({
       page: String(pageIndex + 1),
       limit: String(pageSize),
+      teamScope,
+      ...(teamScope === 'session' ? { sessionPhase } : {}),
       ...(searchQuery ? { query: searchQuery } : {}),
     });
 
@@ -173,8 +184,14 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ['rh-teams', pagination, sorting, searchQuery],
-    queryFn: () => fetchTeams({ pageIndex: pagination.pageIndex, pageSize: pagination.pageSize, sorting, searchQuery }),
+    queryKey: ['rh-teams', teamScope, sessionPhase, pagination, sorting, searchQuery],
+    queryFn: () =>
+      fetchTeams({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize,
+        sorting,
+        searchQuery,
+      }),
     staleTime: 1000 * 60 * 5,
   });
 
@@ -184,6 +201,10 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
   };
 
   const handleDeleteTeam = (team: Team) => {
+    if (isSessionPedagogicalTeam(team)) {
+      toast.error('Les équipes session sont gérées automatiquement et ne peuvent pas être supprimées ici.');
+      return;
+    }
     if (confirm(t('crud.deleteTeamConfirm', { name: team.name ?? '' }))) {
       toast.promise(deleteMutation.mutateAsync(team.id), {
         loading: t('crud.loading'),
@@ -212,40 +233,73 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
           const TypeIcon = typeMeta.icon;
           const leader = resolveTeamLeader(row.original);
           const sessionTeam = isSessionPedagogicalTeam(row.original);
-          const subtitle = sessionTeam
-            ? sessionTeamSubtitle(row.original)
-            : row.original.description || 'Pas de description';
-          
+          const subtitle = sessionTeamSubtitle(row.original);
+          const lifecycle = resolveTeamLifecycleMeta(row.original.lifecycleStatus);
+
           return (
             <div className="flex items-center gap-3">
               <TeamPhoto
-                team={{ image: row.original.image, leader }}
-                className={cn("size-10 rounded-xl border shrink-0", typeMeta.bg, "border-current/10")}
+                team={{ image: row.original.image, leader, type: row.original.type }}
+                className={cn('size-10 rounded-xl border shrink-0', typeMeta.bg, 'border-current/10')}
                 imgClassName="object-cover"
                 fallback={
-                  <div className={cn("size-10 rounded-xl flex items-center justify-center border shrink-0", typeMeta.bg, "border-current/10")}>
-                    <TypeIcon className={cn("size-5", typeMeta.color)} />
+                  <div
+                    className={cn(
+                      'size-10 rounded-xl flex items-center justify-center border shrink-0',
+                      typeMeta.bg,
+                      'border-current/10',
+                    )}
+                  >
+                    <TypeIcon className={cn('size-5', typeMeta.color)} />
                   </div>
                 }
               />
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span 
-                    className="font-bold text-sm text-foreground hover:text-primary transition-colors cursor-pointer" 
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span
+                    className="font-bold text-sm text-foreground hover:text-primary transition-colors cursor-pointer"
                     onClick={() => handleOpenDetails(row.original.id)}
                   >
                     {row.original.name}
                   </span>
-                  <Badge 
-                    variant="outline" 
-                    appearance="light"
-                    size="sm" 
-                    className={cn("text-[9px] font-bold uppercase tracking-wider h-4 bg-transparent", typeMeta.color, "border-current/20")}
-                  >
-                    {sessionTeam ? 'Session formation' : typeMeta.label}
-                  </Badge>
+                  {isSessionScope || sessionTeam ? (
+                    <Badge
+                      variant="outline"
+                      appearance="light"
+                      size="sm"
+                      className={cn(
+                        'text-[9px] font-bold uppercase tracking-wider h-4 bg-transparent',
+                        lifecycle.className,
+                      )}
+                    >
+                      {lifecycle.shortLabel}
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="outline"
+                      appearance="light"
+                      size="sm"
+                      className="text-[9px] font-bold uppercase tracking-wider h-4 bg-indigo-500/10 text-indigo-700 border-indigo-500/20"
+                    >
+                      Équipe permanente
+                    </Badge>
+                  )}
+                  {!isSessionScope && !sessionTeam ? (
+                    <Badge
+                      variant="outline"
+                      appearance="light"
+                      size="sm"
+                      className={cn(
+                        'text-[9px] font-bold uppercase tracking-wider h-4 bg-transparent',
+                        typeMeta.color,
+                        'border-current/20',
+                      )}
+                    >
+                      {permanentTeamKindLabel(row.original.type)}
+                    </Badge>
+                  ) : null}
                 </div>
-                <span className="text-muted-foreground text-xs line-clamp-1 italic">{subtitle}</span>
+                <span className="text-muted-foreground text-xs line-clamp-1">{subtitle}</span>
               </div>
             </div>
           );
@@ -254,14 +308,33 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
       },
       {
         id: 'sector',
-        header: ({ column }) => <DataGridColumnHeader title="Structure / Secteur" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader
+            title={isSessionScope ? 'Formation / cycle' : 'Structure / pôle'}
+            column={column}
+          />
+        ),
         cell: ({ row }) => {
+          if (isSessionScope || isSessionPedagogicalTeam(row.original)) {
+            const lifecycle = resolveTeamLifecycleMeta(row.original.lifecycleStatus);
+            return (
+              <div className="flex flex-col gap-0.5">
+                <span className="text-2sm font-bold text-foreground line-clamp-1">
+                  {row.original.formationSession?.formation?.name ?? 'Formation catalogue'}
+                </span>
+                <span className={cn('text-xs font-medium', lifecycle.className.split(' ')[0])}>
+                  {lifecycle.label}
+                </span>
+              </div>
+            );
+          }
+
           const sectorMeta = resolveTeamSectorMeta(row.original.sector);
           const SectorIcon = sectorMeta.icon;
           const orgUnitName =
             row.original.orgUnit?.name ||
             (row.original as { OrgUnit?: { name?: string } }).OrgUnit?.name;
-          
+
           return (
             <div className="flex flex-col gap-0.5">
               {orgUnitName ? (
@@ -270,25 +343,33 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
               <div className="flex items-center gap-2">
                 <SectorIcon className="size-3.5 text-muted-foreground" />
                 <span className="text-xs font-medium text-muted-foreground">
-                  {sectorMeta.label}
+                  {permanentTeamKindLabel(row.original.type)} · {sectorMeta.label}
                 </span>
               </div>
             </div>
           );
         },
-        size: 180,
+        size: 200,
       },
       {
         id: 'membersCount',
         header: ({ column }) => <DataGridColumnHeader title="Membres" column={column} />,
-        cell: ({ row }) => (
-          <div className="flex flex-col gap-1">
-            <Badge variant="default" appearance="light" className="font-bold text-[11px] px-2.5 w-fit">
-              {row.original._count?.members || 0}{' '}
-              {isSessionPedagogicalTeam(row.original) ? 'membres' : 'collaborateurs'}
-            </Badge>
-          </div>
-        ),
+        cell: ({ row }) => {
+          const counts = countSessionTeamMembersByRole(row.original);
+          const total = row.original._count?.members || 0;
+          return (
+            <div className="flex flex-col gap-1">
+              <Badge variant="default" appearance="light" className="font-bold text-[11px] px-2.5 w-fit">
+                {total} {isSessionScope ? 'participant(s)' : 'collaborateur(s)'}
+              </Badge>
+              {isSessionScope && total > 0 ? (
+                <span className="text-[10px] text-muted-foreground">
+                  {counts.learners} apprenant(s) · {counts.trainers + counts.moderators} encadrement
+                </span>
+              ) : null}
+            </div>
+          );
+        },
         size: 150,
       },
       {
@@ -338,7 +419,7 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
               <MapPin className="size-3.5 text-muted-foreground" />
             </div>
             <span className="text-2sm font-semibold text-foreground truncate max-w-[150px]">
-              {row.original.Site?.name || 'Non affecté'}
+              {resolveTeamSiteLabel(row.original)}
             </span>
           </div>
         ),
@@ -374,12 +455,16 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                 <DropdownMenuItem onClick={() => handleOpenDetails(row.original.id)}>
                   <Eye className="size-4 mr-2" /> Voir détails
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleOpenDetails(row.original.id)}>
+                <DropdownMenuItem
+                  onClick={() => handleOpenDetails(row.original.id)}
+                  disabled={isSessionScope || isSessionPedagogicalTeam(row.original)}
+                >
                   <SquarePen className="size-4 mr-2" /> Modifier
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   className="text-destructive focus:text-destructive" 
                   onClick={() => handleDeleteTeam(row.original)}
+                  disabled={isSessionScope || isSessionPedagogicalTeam(row.original)}
                 >
                   <Trash className="size-4 mr-2" /> Supprimer
                 </DropdownMenuItem>
@@ -389,7 +474,7 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
         ),
       },
     ],
-    [],
+    [isSessionScope, t],
   );
 
   const table = useReactTable({
@@ -414,10 +499,10 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
         <CardHeader className="py-3">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 w-full">
             <div>
-              <h3 className="text-base font-semibold text-foreground">Liste des équipes</h3>
-              <p className="text-xs text-muted-foreground">
-                Équipes opérationnelles ; gérez les membres, secteurs et types d'intervention.
-              </p>
+              <h3 className="text-base font-semibold text-foreground">
+                {isSessionScope ? 'Équipes session (formations)' : 'Équipes permanentes de l’école'}
+              </h3>
+              <p className="text-xs text-muted-foreground">{RH_TEAM_LIST_SCOPE_HINTS[teamScope]}</p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
               <div className="relative w-full sm:w-80">
@@ -507,11 +592,14 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {data?.data.map((team: Team, index: number) => {
+                    const sessionTeam = isSessionPedagogicalTeam(team);
                     const typeMeta = resolveTeamTypeMeta(team.type);
                     const TypeIcon = typeMeta.icon;
                     const sectorMeta = resolveTeamSectorMeta(team.sector);
                     const SectorIcon = sectorMeta.icon;
                     const leader = resolveTeamLeader(team);
+                    const lifecycle = resolveTeamLifecycleMeta(team.lifecycleStatus);
+                    const roleCounts = countSessionTeamMembersByRole(team);
 
                     return (
                       <motion.div
@@ -551,14 +639,16 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                                 >
                                   <SquarePen className="size-4" />
                                 </Button>
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm" 
-                                  className="size-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/5" 
-                                  onClick={() => handleDeleteTeam(team)}
-                                >
-                                  <Trash className="size-4" />
-                                </Button>
+                                {!sessionTeam && !isSessionScope ? (
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="size-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/5" 
+                                    onClick={() => handleDeleteTeam(team)}
+                                  >
+                                    <Trash className="size-4" />
+                                  </Button>
+                                ) : null}
                               </div>
                             </div>
                             
@@ -571,21 +661,39 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                                   {team.name}
                                 </h4>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-wider py-0 px-2 h-5 border-none">
-                                  {typeMeta.label}
-                                </Badge>
-                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/50 border border-border/50">
-                                   <SectorIcon className="size-2.5 text-muted-foreground" />
-                                   <span className="text-[9px] font-bold text-muted-foreground uppercase">{sectorMeta.label}</span>
-                                </div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                {sessionTeam || isSessionScope ? (
+                                  <>
+                                    <Badge
+                                      variant="outline"
+                                      className={cn('text-[9px] font-bold uppercase tracking-wider py-0 px-2 h-5', lifecycle.className)}
+                                    >
+                                      {lifecycle.shortLabel}
+                                    </Badge>
+                                    <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-wider py-0 px-2 h-5 border-none">
+                                      Équipe session
+                                    </Badge>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-wider py-0 px-2 h-5 border-none bg-indigo-500/10 text-indigo-700">
+                                      Équipe permanente
+                                    </Badge>
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary/50 border border-border/50">
+                                      <SectorIcon className="size-2.5 text-muted-foreground" />
+                                      <span className="text-[9px] font-bold text-muted-foreground uppercase">
+                                        {permanentTeamKindLabel(team.type)}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
                               </div>
                             </div>
 
                             <p className="text-sm text-muted-foreground line-clamp-2 mb-6 h-10 italic">
-                              {isSessionPedagogicalTeam(team)
+                              {sessionTeam
                                 ? sessionTeamSubtitle(team)
-                                : team.description || 'Équipe opérationnelle de sécurité.'}
+                                : team.description || 'Équipe permanente de l’établissement.'}
                             </p>
                             
                             <div className="flex items-center justify-between pt-5 border-t border-dashed border-border/60">
@@ -593,7 +701,7 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                                  <div className="flex items-center gap-1.5">
                                    <MapPin className="size-3 text-primary/60" />
                                    <span className="text-[11px] font-bold text-foreground/80 truncate max-w-[120px]">
-                                     {team.Site?.name || 'Non affecté'}
+                                     {resolveTeamSiteLabel(team)}
                                    </span>
                                  </div>
                                <div className="flex items-center gap-2">
@@ -627,8 +735,14 @@ const TeamList = ({ onAddClick }: TeamListProps) => {
                                      )}
                                   </div>
                                   <span className="text-xs font-bold text-foreground/70">
-                                    {team._count?.members || 0} membres
+                                    {team._count?.members || 0}{' '}
+                                    {sessionTeam ? 'participant(s)' : 'membres'}
                                   </span>
+                                  {sessionTeam && (team._count?.members || 0) > 0 ? (
+                                    <span className="text-[10px] text-muted-foreground">
+                                      · {roleCounts.learners} apprenant(s)
+                                    </span>
+                                  ) : null}
                                </div>
                             </div>
                             <div className="flex flex-col items-end gap-1">

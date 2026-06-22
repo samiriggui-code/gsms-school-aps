@@ -24,29 +24,14 @@ import {
 import { sessionKindDerivedFromFormationParcours } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/lib/session-parcours-exam';
 import { ensureSessionChat, pruneStaleSessionChatParticipants } from '@/lib/session-chat';
 import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+import { invalidateCatalogSessionsCacheForFormationId } from '@/lib/catalog-public-cache';
+import { assertSessionParticipantUserIds } from '@/app/api/sections/gestion-academique/vie-scolaire/sessions/_eligible-session-learners';
 
 function parseDateInput(v: unknown): Date | null | undefined {
   if (v === undefined) return undefined;
   if (v === null || v === '') return null;
   const d = new Date(String(v));
   return Number.isNaN(d.getTime()) ? null : d;
-}
-
-async function assertEleveUserIds(ids: string[]): Promise<boolean> {
-  if (ids.length === 0) return true;
-  const role = await prisma.userRole.findFirst({
-    where: { slug: 'eleve', isTrashed: false },
-  });
-  if (!role) return false;
-  const valid = await prisma.user.count({
-    where: {
-      id: { in: ids },
-      roleId: role.id,
-      status: 'ACTIVE',
-      isTrashed: false,
-    },
-  });
-  return valid === ids.length;
 }
 
 async function assertTrainerUserId(userId: string | null | undefined): Promise<boolean> {
@@ -117,8 +102,20 @@ export async function PATCH(
     if (!exists) return fail('Session introuvable ou formation hors catalogue actif.', 404);
 
     if (d.participantUserIds !== undefined) {
-      const okEleves = await assertEleveUserIds(d.participantUserIds);
-      if (!okEleves) return fail('Un ou plusieurs utilisateurs ne sont pas des élèves actifs.', 422);
+      const current = await prisma.formationSession.findUnique({
+        where: { id: id.trim() },
+        select: { formationId: true },
+      });
+      if (!current) return fail('Session introuvable.', 404);
+
+      const okLearners = await assertSessionParticipantUserIds(
+        current.formationId,
+        d.participantUserIds,
+        { sessionId: id.trim() },
+      );
+      if (!okLearners.ok) {
+        return fail(okLearners.message, 422);
+      }
     }
 
     const normalizedTrainer =
@@ -141,6 +138,7 @@ export async function PATCH(
     const current = await prisma.formationSession.findUnique({
       where: { id: id.trim() },
       select: {
+        formationId: true,
         startDate: true,
         endDate: true,
         venueRoomId: true,
@@ -352,6 +350,10 @@ export async function PATCH(
       }
     }
 
+    void invalidateCatalogSessionsCacheForFormationId(prisma, current.formationId).catch((e) => {
+      console.error('[session PATCH] cache invalidation', e);
+    });
+
     return ok(sideEffectWarnings.length > 0 ? { item, warnings: sideEffectWarnings } : { item });
   } catch (error) {
     const code =
@@ -392,6 +394,7 @@ export async function DELETE(
       },
       select: {
         id: true,
+        formationId: true,
         venueRoomId: true,
         reservedEquipmentIds: true,
         venueRoom: { select: { id: true, name: true } },
@@ -404,6 +407,10 @@ export async function DELETE(
     });
 
     await prisma.formationSession.delete({ where: { id: id.trim() } });
+
+    void invalidateCatalogSessionsCacheForFormationId(prisma, existing.formationId).catch((e) => {
+      console.error('[session DELETE] cache invalidation', e);
+    });
 
     if (existing.venueRoomId && existing.venueRoom) {
       await notifyVenueRoomReleased(prisma, {

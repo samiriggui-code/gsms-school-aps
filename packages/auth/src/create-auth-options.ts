@@ -6,7 +6,9 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 type PrismaLike = {
   user: {
-    findUnique: (args: { where: { email: string } }) => Promise<any>;
+    findFirst: (args: {
+      where: { isTrashed: boolean; proEmail: { equals: string; mode: 'insensitive' } };
+    }) => Promise<any>;
     update: (args: { where: { id: string }; data: { lastSignInAt: Date } }) => Promise<any>;
   };
   userRole: {
@@ -35,8 +37,12 @@ export function createAuthOptions(prisma: PrismaLike): NextAuthOptions {
             );
           }
 
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
+          const login = credentials.email.trim().toLowerCase();
+          const user = await prisma.user.findFirst({
+            where: {
+              isTrashed: false,
+              proEmail: { equals: login, mode: 'insensitive' },
+            },
           });
 
           if (!user) {
@@ -79,7 +85,7 @@ export function createAuthOptions(prisma: PrismaLike): NextAuthOptions {
           return {
             id: user.id,
             status: user.status,
-            email: user.email,
+            email: user.proEmail,
             name: user.name || 'Anonymous',
             roleId: user.roleId,
             avatar: user.avatar,

@@ -21,10 +21,14 @@ import { RhUserContactProfilSummary } from '@/components/rh/rh-user-contact-prof
 
 interface CollaborateurHRInfoProps {
   collaborateur: Collaborateur;
+  variant?: 'collaborateur' | 'formateur';
 }
 
-export function CollaborateurHRInfo({ collaborateur }: CollaborateurHRInfoProps) {
-  const agr = agrementUiLabels(collaborateur.role?.slug);
+export function CollaborateurHRInfo({
+  collaborateur,
+  variant = 'collaborateur',
+}: CollaborateurHRInfoProps) {
+  const agr = agrementUiLabels(variant === 'formateur' ? 'formateur' : collaborateur.role?.slug);
   const formatDate = (date: Date | string | null | undefined) => {
     if (!date) return "Non renseigné";
     try {
@@ -48,6 +52,30 @@ export function CollaborateurHRInfo({ collaborateur }: CollaborateurHRInfoProps)
         <RhUserContactProfilSummary user={collaborateur} />
 
         <div className="pt-2 border-t border-border/60" />
+
+        {(variant === 'formateur' || collaborateur.role?.slug === 'formateur') &&
+          (collaborateur.teachingSpecialties?.length ?? 0) > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-foreground/30" />
+              <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+                Domaines dispensés
+              </h4>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {collaborateur.teachingSpecialties!.map((s) => (
+                <Badge key={s} variant="outline" size="sm" className="font-semibold">
+                  {s}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {(variant === 'formateur' || collaborateur.role?.slug === 'formateur') &&
+          (collaborateur.teachingSpecialties?.length ?? 0) > 0 && (
+          <div className="pt-2 border-t border-border/60" />
+        )}
 
         {/* Civil Status */}
         <div className="grid sm:grid-cols-2 gap-8">

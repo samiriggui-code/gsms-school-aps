@@ -40,6 +40,7 @@ import {
   showsCollaboratorAgrementSchedulingSection,
   showsUserStaffEmployerFields,
 } from '@/lib/rh-agrement';
+import { userIamLoginSubtitle } from '@/lib/user-email-routing';
 import {
   CONTRACT_TYPE_VALUES,
   WORK_TIME_TYPE_VALUES,
@@ -66,6 +67,8 @@ export function UserDetailsForm({ user, formRef, onSuccess }: UserDetailsFormPro
       firstName: user.firstName || '',
       lastName: user.lastName || '',
       email: user.email || '',
+      proEmail: user.proEmail || '',
+      phone: user.phone || '',
       roleId: user.role?.id || '',
       userCategory: (user.userCategory as CollaborateurEditSchemaType['userCategory']) || 'INTERNAL',
       jobFunction: user.jobFunction || '',
@@ -213,7 +216,13 @@ export function UserDetailsForm({ user, formRef, onSuccess }: UserDetailsFormPro
                   {form.watch('firstName')} {form.watch('lastName')}
                 </h3>
                 <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1.5"><Mail className="h-3.5 w-3.5" /> {form.watch('email')}</span>
+                  <span className="flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5" />{' '}
+                    {userIamLoginSubtitle({
+                      email: form.watch('email'),
+                      proEmail: form.watch('proEmail'),
+                    })}
+                  </span>
                   <span className="flex items-center gap-1.5"><Shield className="h-3.5 w-3.5" /> {roleList?.find((r: { id: string; name?: string | null }) => r.id === form.watch('roleId'))?.name || 'Aucun rôle'}</span>
                 </div>
                 <div className="flex gap-2 pt-1">
@@ -265,7 +274,24 @@ export function UserDetailsForm({ user, formRef, onSuccess }: UserDetailsFormPro
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email Professionnel</FormLabel>
+                  <FormLabel>Email personnel</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input {...field} value={field.value ?? ''} className="pl-10" />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="proEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email professionnel (connexion)</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

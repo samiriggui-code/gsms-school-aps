@@ -235,7 +235,19 @@ export const sectionsMessages = {
         badge: 'Site temporairement indisponible',
         title: "FORM'SSI revient bientôt",
         description:
-          "La page d'accueil est désactivée depuis le CRM. Contactez-nous par e-mail ou téléphone pour vos demandes de formation.",
+          "La page d'accueil est en cours de mise à jour. Nous republions le catalogue très prochainement — merci de votre patience.",
+        retry: 'Réessayer',
+        retrying: 'Vérification…',
+        imageAlt: 'Illustration maintenance',
+        contactSectionLabel: 'Nous contacter pendant la maintenance',
+        emailTitle: 'Nous écrire',
+        emailDescription:
+          'Une question sur une formation, un devis ou une inscription ? Envoyez-nous un e-mail, notre équipe vous répond rapidement.',
+        emailCta: 'Envoyer un e-mail',
+        phoneTitle: 'Nous appeler',
+        phoneDescription:
+          'Besoin d\'une réponse immédiate ? Contactez-nous par téléphone aux heures d\'ouverture de l\'école.',
+        phoneCta: 'Appeler le {{phone}}',
       },
       testimonials: {
         badge: 'Avis',
@@ -534,7 +546,19 @@ export const sectionsMessages = {
         badge: 'Site temporarily unavailable',
         title: "FORM'SSI will be back soon",
         description:
-          'The homepage is disabled from the CRM. Contact us by email or phone for training enquiries.',
+          'The homepage is being updated. We are republishing the catalogue shortly — thank you for your patience.',
+        retry: 'Try again',
+        retrying: 'Checking…',
+        imageAlt: 'Maintenance illustration',
+        contactSectionLabel: 'Contact us during maintenance',
+        emailTitle: 'Email us',
+        emailDescription:
+          'A question about a course, quote or registration? Send us an email and our team will get back to you quickly.',
+        emailCta: 'Send an email',
+        phoneTitle: 'Call us',
+        phoneDescription:
+          'Need an immediate answer? Call us during school opening hours.',
+        phoneCta: 'Call {{phone}}',
       },
       testimonials: {
         badge: 'Reviews',

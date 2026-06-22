@@ -14,10 +14,12 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'Monthly summary of quotes, leads and revenue.',
   'administration-facturation': 'Centralize billing, collections and follow-ups.',
   'communication-contenu.cms.contenus':
-    'Training records editable in the academic module — landing publication hub.',
+    'Track training records published on the landing (#pricing) — edit in the Formations module.',
   'communication-contenu.cms': 'Landing pages and content management.',
   'communication-contenu.cms.pages-landing':
     'Order, visibility and publication of the one-page public site.',
+  'communication-contenu.cms.equipe-landing':
+    'Team catalogue published on the landing #trainers section (direction, trainers, pedagogy, HR).',
   'communication-contenu.marketing.formulaires-leads':
     'Leads from landings (quotes, pre-registration): qualification, pipeline and detail views.',
   'communication-contenu.marketing': 'Lead forms and campaign management.',
@@ -44,6 +46,8 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'CRM catalog sessions and enrolled headcount (linked to candidate journey).',
   'gestion-academique.vie-scolaire.sessions':
     'Session planning, enrollments and training follow-up.',
+  'gestion-academique.vie-scolaire.suivi-formations':
+    'Daily session tracking: enrolled trainees, e-learning progress, quizzes and attendance / compliance preparation.',
   'gestion-ressources.compagnie':
     'Manage company profile, structure and administrative documents.',
   'gestion-ressources.compagnie.profil':
@@ -64,7 +68,7 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
   'gestion-ressources.rh.formateurs': 'External trainers, assignments and availability.',
   'gestion-ressources.rh':
     'Manage staff, absence tracking and HR administration in real time.',
-  'mon-profil': 'Consolidated view of your profile: identity, role and quick access.',
+  'mon-profil': 'Staff profile: HR identity, compliance, contract and public landing presentation.',
   'account.notifications':
     'CRM alert history: tickets, finance, training and team — mark read and archive.',
   'pilotage-supervision':

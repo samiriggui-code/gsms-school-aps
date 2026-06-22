@@ -10,7 +10,7 @@ export function formationDetailQueryKey(slug: string) {
 
 /** Détail fusionné référence + offre catalogue (GET slug). */
 export type FormationCatalogMergedDetail = Record<string, unknown> & {
-  slug: string;
+  slug?: string;
   name?: string;
   status?: string;
   priceFrom?: number | null;

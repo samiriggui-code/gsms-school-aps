@@ -1,6 +1,8 @@
 import {
   buildEntityStoragePrefix,
+  buildSessionDocumentStoragePrefix,
   ensureEntityStoragePrefix,
+  SESSION_DOCUMENT_STORAGE_CATEGORIES,
 } from '@repo/storage';
 
 /** Provisionne un préfixe sans faire échouer la route métier. */
@@ -25,11 +27,21 @@ export async function ensureRhTeamStoragePrefix(teamId: string) {
   return ensureEntityStoragePrefix(buildEntityStoragePrefix('rh', 'equipes', teamId));
 }
 
+/** Crée le préfixe S3/MinIO pour une session formation + sous-dossiers suivi (PDF émargement, conformité…). */
+export async function ensureSessionSuiviStoragePrefixes(sessionId: string) {
+  let created = false;
+  const root = buildEntityStoragePrefix('academique', 'sessions', sessionId);
+  if ((await ensureEntityStoragePrefix(root)) === 'created') created = true;
+  for (const category of SESSION_DOCUMENT_STORAGE_CATEGORIES) {
+    const prefix = buildSessionDocumentStoragePrefix(sessionId, category);
+    if ((await ensureEntityStoragePrefix(prefix)) === 'created') created = true;
+  }
+  return created ? ('created' as const) : ('existing' as const);
+}
+
 /** Crée le préfixe S3/MinIO pour une session formation (`academique/sessions/{sessionId}/`). */
 export async function ensureSessionStoragePrefix(sessionId: string) {
-  return ensureEntityStoragePrefix(
-    buildEntityStoragePrefix('academique', 'sessions', sessionId),
-  );
+  return ensureSessionSuiviStoragePrefixes(sessionId);
 }
 
 /** Crée le préfixe S3/MinIO pour un collaborateur RH (`rh/collaborateurs/{id}/`). */

@@ -129,6 +129,11 @@ export type RhAbsence = $Result.DefaultSelection<Prisma.$RhAbsencePayload>
  */
 export type RhPosition = $Result.DefaultSelection<Prisma.$RhPositionPayload>
 /**
+ * Model RhQualification
+ * Référentiel qualifications par pôle interne (CFA).
+ */
+export type RhQualification = $Result.DefaultSelection<Prisma.$RhQualificationPayload>
+/**
  * Model Equipment
  * 
  */
@@ -153,6 +158,11 @@ export type Formation = $Result.DefaultSelection<Prisma.$FormationPayload>
  * Inclusion d'une fiche référence dans le catalogue école — pas de duplication métier, surcharges optionnelles.
  */
 export type FormationCatalogOffer = $Result.DefaultSelection<Prisma.$FormationCatalogOfferPayload>
+/**
+ * Model LandingTeamOffer
+ * Membre de l'équipe publiée sur le landing (#trainers) — lié à un compte RH / formateur.
+ */
+export type LandingTeamOffer = $Result.DefaultSelection<Prisma.$LandingTeamOfferPayload>
 /**
  * Model FormationVenueRoom
  * Salle ou espace pédagogique réservable pour les sessions catalogue CRM (libellés métier : « Salle Aurore », etc.).
@@ -183,6 +193,16 @@ export type Candidature = $Result.DefaultSelection<Prisma.$CandidaturePayload>
  * Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.
  */
 export type FormationSessionParticipant = $Result.DefaultSelection<Prisma.$FormationSessionParticipantPayload>
+/**
+ * Model FormationSessionDay
+ * Jour de formation dans le suivi quotidien CRM (dates dérivées de la session ou ajout manuel).
+ */
+export type FormationSessionDay = $Result.DefaultSelection<Prisma.$FormationSessionDayPayload>
+/**
+ * Model FormationSessionEmargement
+ * Émargement nominatif par stagiaire et créneau (matin / soir).
+ */
+export type FormationSessionEmargement = $Result.DefaultSelection<Prisma.$FormationSessionEmargementPayload>
 /**
  * Model FormationAttestation
  * Attestation / certification délivrée après parcours catalogue CRM (distinct du LMS `UserCertificate`).
@@ -629,6 +649,24 @@ export const FormationSessionEnrollmentStatus: {
 export type FormationSessionEnrollmentStatus = (typeof FormationSessionEnrollmentStatus)[keyof typeof FormationSessionEnrollmentStatus]
 
 
+export const FormationSessionDaySlot: {
+  MORNING: 'MORNING',
+  EVENING: 'EVENING'
+};
+
+export type FormationSessionDaySlot = (typeof FormationSessionDaySlot)[keyof typeof FormationSessionDaySlot]
+
+
+export const FormationSessionEmargementStatus: {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  EXCUSED: 'EXCUSED'
+};
+
+export type FormationSessionEmargementStatus = (typeof FormationSessionEmargementStatus)[keyof typeof FormationSessionEmargementStatus]
+
+
 export const AttendanceStatus: {
   PRESENT: 'PRESENT',
   ABSENT: 'ABSENT',
@@ -649,7 +687,8 @@ export type UserBusinessLabel = (typeof UserBusinessLabel)[keyof typeof UserBusi
 export const SchoolInternalService: {
   TRAINER_POOL: 'TRAINER_POOL',
   PEDAGOGICAL: 'PEDAGOGICAL',
-  HR_ADMIN: 'HR_ADMIN'
+  HR_ADMIN: 'HR_ADMIN',
+  DIRECTION: 'DIRECTION'
 };
 
 export type SchoolInternalService = (typeof SchoolInternalService)[keyof typeof SchoolInternalService]
@@ -698,6 +737,7 @@ export const RhTeamType: {
   PEDAGOGICAL: 'PEDAGOGICAL',
   TRAINER_POOL: 'TRAINER_POOL',
   HR_ADMIN: 'HR_ADMIN',
+  DIRECTION: 'DIRECTION',
   QUALITY: 'QUALITY',
   ADMIN: 'ADMIN'
 };
@@ -790,6 +830,16 @@ export const FormationVitrineSessionKind: {
 };
 
 export type FormationVitrineSessionKind = (typeof FormationVitrineSessionKind)[keyof typeof FormationVitrineSessionKind]
+
+
+export const LandingTeamVolet: {
+  direction: 'direction',
+  formateur: 'formateur',
+  pedagogique: 'pedagogique',
+  rh: 'rh'
+};
+
+export type LandingTeamVolet = (typeof LandingTeamVolet)[keyof typeof LandingTeamVolet]
 
 
 export const VenueRoomBookingKind: {
@@ -1127,6 +1177,14 @@ export type FormationSessionEnrollmentStatus = $Enums.FormationSessionEnrollment
 
 export const FormationSessionEnrollmentStatus: typeof $Enums.FormationSessionEnrollmentStatus
 
+export type FormationSessionDaySlot = $Enums.FormationSessionDaySlot
+
+export const FormationSessionDaySlot: typeof $Enums.FormationSessionDaySlot
+
+export type FormationSessionEmargementStatus = $Enums.FormationSessionEmargementStatus
+
+export const FormationSessionEmargementStatus: typeof $Enums.FormationSessionEmargementStatus
+
 export type AttendanceStatus = $Enums.AttendanceStatus
 
 export const AttendanceStatus: typeof $Enums.AttendanceStatus
@@ -1194,6 +1252,10 @@ export const FormationDeliveryMode: typeof $Enums.FormationDeliveryMode
 export type FormationVitrineSessionKind = $Enums.FormationVitrineSessionKind
 
 export const FormationVitrineSessionKind: typeof $Enums.FormationVitrineSessionKind
+
+export type LandingTeamVolet = $Enums.LandingTeamVolet
+
+export const LandingTeamVolet: typeof $Enums.LandingTeamVolet
 
 export type VenueRoomBookingKind = $Enums.VenueRoomBookingKind
 
@@ -1651,6 +1713,16 @@ export class PrismaClient<
   get rhPosition(): Prisma.RhPositionDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.rhQualification`: Exposes CRUD operations for the **RhQualification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RhQualifications
+    * const rhQualifications = await prisma.rhQualification.findMany()
+    * ```
+    */
+  get rhQualification(): Prisma.RhQualificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.equipment`: Exposes CRUD operations for the **Equipment** model.
     * Example usage:
     * ```ts
@@ -1699,6 +1771,16 @@ export class PrismaClient<
     * ```
     */
   get formationCatalogOffer(): Prisma.FormationCatalogOfferDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.landingTeamOffer`: Exposes CRUD operations for the **LandingTeamOffer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LandingTeamOffers
+    * const landingTeamOffers = await prisma.landingTeamOffer.findMany()
+    * ```
+    */
+  get landingTeamOffer(): Prisma.LandingTeamOfferDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.formationVenueRoom`: Exposes CRUD operations for the **FormationVenueRoom** model.
@@ -1759,6 +1841,26 @@ export class PrismaClient<
     * ```
     */
   get formationSessionParticipant(): Prisma.FormationSessionParticipantDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.formationSessionDay`: Exposes CRUD operations for the **FormationSessionDay** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FormationSessionDays
+    * const formationSessionDays = await prisma.formationSessionDay.findMany()
+    * ```
+    */
+  get formationSessionDay(): Prisma.FormationSessionDayDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.formationSessionEmargement`: Exposes CRUD operations for the **FormationSessionEmargement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FormationSessionEmargements
+    * const formationSessionEmargements = await prisma.formationSessionEmargement.findMany()
+    * ```
+    */
+  get formationSessionEmargement(): Prisma.FormationSessionEmargementDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.formationAttestation`: Exposes CRUD operations for the **FormationAttestation** model.
@@ -2796,17 +2898,21 @@ export namespace Prisma {
     RhTeamMember: 'RhTeamMember',
     RhAbsence: 'RhAbsence',
     RhPosition: 'RhPosition',
+    RhQualification: 'RhQualification',
     Equipment: 'Equipment',
     EquipmentMaintenance: 'EquipmentMaintenance',
     StockMovement: 'StockMovement',
     Formation: 'Formation',
     FormationCatalogOffer: 'FormationCatalogOffer',
+    LandingTeamOffer: 'LandingTeamOffer',
     FormationVenueRoom: 'FormationVenueRoom',
     VenueRoomBooking: 'VenueRoomBooking',
     FormationSession: 'FormationSession',
     PortalSessionAnnouncement: 'PortalSessionAnnouncement',
     Candidature: 'Candidature',
     FormationSessionParticipant: 'FormationSessionParticipant',
+    FormationSessionDay: 'FormationSessionDay',
+    FormationSessionEmargement: 'FormationSessionEmargement',
     FormationAttestation: 'FormationAttestation',
     Course: 'Course',
     Category: 'Category',
@@ -2880,7 +2986,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "formationVenueRoom" | "venueRoomBooking" | "formationSession" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomBooking" | "formationSession" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4586,6 +4692,80 @@ export namespace Prisma {
           }
         }
       }
+      RhQualification: {
+        payload: Prisma.$RhQualificationPayload<ExtArgs>
+        fields: Prisma.RhQualificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RhQualificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RhQualificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>
+          }
+          findFirst: {
+            args: Prisma.RhQualificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RhQualificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>
+          }
+          findMany: {
+            args: Prisma.RhQualificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>[]
+          }
+          create: {
+            args: Prisma.RhQualificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>
+          }
+          createMany: {
+            args: Prisma.RhQualificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RhQualificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>[]
+          }
+          delete: {
+            args: Prisma.RhQualificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>
+          }
+          update: {
+            args: Prisma.RhQualificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.RhQualificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RhQualificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RhQualificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.RhQualificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RhQualificationPayload>
+          }
+          aggregate: {
+            args: Prisma.RhQualificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRhQualification>
+          }
+          groupBy: {
+            args: Prisma.RhQualificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RhQualificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RhQualificationCountArgs<ExtArgs>
+            result: $Utils.Optional<RhQualificationCountAggregateOutputType> | number
+          }
+        }
+      }
       Equipment: {
         payload: Prisma.$EquipmentPayload<ExtArgs>
         fields: Prisma.EquipmentFieldRefs
@@ -4953,6 +5133,80 @@ export namespace Prisma {
           count: {
             args: Prisma.FormationCatalogOfferCountArgs<ExtArgs>
             result: $Utils.Optional<FormationCatalogOfferCountAggregateOutputType> | number
+          }
+        }
+      }
+      LandingTeamOffer: {
+        payload: Prisma.$LandingTeamOfferPayload<ExtArgs>
+        fields: Prisma.LandingTeamOfferFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LandingTeamOfferFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LandingTeamOfferFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>
+          }
+          findFirst: {
+            args: Prisma.LandingTeamOfferFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LandingTeamOfferFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>
+          }
+          findMany: {
+            args: Prisma.LandingTeamOfferFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>[]
+          }
+          create: {
+            args: Prisma.LandingTeamOfferCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>
+          }
+          createMany: {
+            args: Prisma.LandingTeamOfferCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LandingTeamOfferCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>[]
+          }
+          delete: {
+            args: Prisma.LandingTeamOfferDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>
+          }
+          update: {
+            args: Prisma.LandingTeamOfferUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>
+          }
+          deleteMany: {
+            args: Prisma.LandingTeamOfferDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LandingTeamOfferUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LandingTeamOfferUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>[]
+          }
+          upsert: {
+            args: Prisma.LandingTeamOfferUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LandingTeamOfferPayload>
+          }
+          aggregate: {
+            args: Prisma.LandingTeamOfferAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLandingTeamOffer>
+          }
+          groupBy: {
+            args: Prisma.LandingTeamOfferGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LandingTeamOfferGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LandingTeamOfferCountArgs<ExtArgs>
+            result: $Utils.Optional<LandingTeamOfferCountAggregateOutputType> | number
           }
         }
       }
@@ -5397,6 +5651,154 @@ export namespace Prisma {
           count: {
             args: Prisma.FormationSessionParticipantCountArgs<ExtArgs>
             result: $Utils.Optional<FormationSessionParticipantCountAggregateOutputType> | number
+          }
+        }
+      }
+      FormationSessionDay: {
+        payload: Prisma.$FormationSessionDayPayload<ExtArgs>
+        fields: Prisma.FormationSessionDayFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FormationSessionDayFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FormationSessionDayFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>
+          }
+          findFirst: {
+            args: Prisma.FormationSessionDayFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FormationSessionDayFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>
+          }
+          findMany: {
+            args: Prisma.FormationSessionDayFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>[]
+          }
+          create: {
+            args: Prisma.FormationSessionDayCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>
+          }
+          createMany: {
+            args: Prisma.FormationSessionDayCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FormationSessionDayCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>[]
+          }
+          delete: {
+            args: Prisma.FormationSessionDayDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>
+          }
+          update: {
+            args: Prisma.FormationSessionDayUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>
+          }
+          deleteMany: {
+            args: Prisma.FormationSessionDayDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FormationSessionDayUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FormationSessionDayUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>[]
+          }
+          upsert: {
+            args: Prisma.FormationSessionDayUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionDayPayload>
+          }
+          aggregate: {
+            args: Prisma.FormationSessionDayAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFormationSessionDay>
+          }
+          groupBy: {
+            args: Prisma.FormationSessionDayGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FormationSessionDayGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FormationSessionDayCountArgs<ExtArgs>
+            result: $Utils.Optional<FormationSessionDayCountAggregateOutputType> | number
+          }
+        }
+      }
+      FormationSessionEmargement: {
+        payload: Prisma.$FormationSessionEmargementPayload<ExtArgs>
+        fields: Prisma.FormationSessionEmargementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FormationSessionEmargementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FormationSessionEmargementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>
+          }
+          findFirst: {
+            args: Prisma.FormationSessionEmargementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FormationSessionEmargementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>
+          }
+          findMany: {
+            args: Prisma.FormationSessionEmargementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>[]
+          }
+          create: {
+            args: Prisma.FormationSessionEmargementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>
+          }
+          createMany: {
+            args: Prisma.FormationSessionEmargementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FormationSessionEmargementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>[]
+          }
+          delete: {
+            args: Prisma.FormationSessionEmargementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>
+          }
+          update: {
+            args: Prisma.FormationSessionEmargementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>
+          }
+          deleteMany: {
+            args: Prisma.FormationSessionEmargementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FormationSessionEmargementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FormationSessionEmargementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>[]
+          }
+          upsert: {
+            args: Prisma.FormationSessionEmargementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionEmargementPayload>
+          }
+          aggregate: {
+            args: Prisma.FormationSessionEmargementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFormationSessionEmargement>
+          }
+          groupBy: {
+            args: Prisma.FormationSessionEmargementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FormationSessionEmargementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FormationSessionEmargementCountArgs<ExtArgs>
+            result: $Utils.Optional<FormationSessionEmargementCountAggregateOutputType> | number
           }
         }
       }
@@ -9823,17 +10225,21 @@ export namespace Prisma {
     rhTeamMember?: RhTeamMemberOmit
     rhAbsence?: RhAbsenceOmit
     rhPosition?: RhPositionOmit
+    rhQualification?: RhQualificationOmit
     equipment?: EquipmentOmit
     equipmentMaintenance?: EquipmentMaintenanceOmit
     stockMovement?: StockMovementOmit
     formation?: FormationOmit
     formationCatalogOffer?: FormationCatalogOfferOmit
+    landingTeamOffer?: LandingTeamOfferOmit
     formationVenueRoom?: FormationVenueRoomOmit
     venueRoomBooking?: VenueRoomBookingOmit
     formationSession?: FormationSessionOmit
     portalSessionAnnouncement?: PortalSessionAnnouncementOmit
     candidature?: CandidatureOmit
     formationSessionParticipant?: FormationSessionParticipantOmit
+    formationSessionDay?: FormationSessionDayOmit
+    formationSessionEmargement?: FormationSessionEmargementOmit
     formationAttestation?: FormationAttestationOmit
     course?: CourseOmit
     category?: CategoryOmit
@@ -9989,6 +10395,7 @@ export namespace Prisma {
     submissions: number
     quizAttempts: number
     formationSessionParticipants: number
+    formationSessionEmargementsMarked: number
     formationAttestations: number
     candidatures: number
     complianceDossiers: number
@@ -10044,6 +10451,7 @@ export namespace Prisma {
     submissions?: boolean | UserCountOutputTypeCountSubmissionsArgs
     quizAttempts?: boolean | UserCountOutputTypeCountQuizAttemptsArgs
     formationSessionParticipants?: boolean | UserCountOutputTypeCountFormationSessionParticipantsArgs
+    formationSessionEmargementsMarked?: boolean | UserCountOutputTypeCountFormationSessionEmargementsMarkedArgs
     formationAttestations?: boolean | UserCountOutputTypeCountFormationAttestationsArgs
     candidatures?: boolean | UserCountOutputTypeCountCandidaturesArgs
     complianceDossiers?: boolean | UserCountOutputTypeCountComplianceDossiersArgs
@@ -10209,6 +10617,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountFormationSessionParticipantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FormationSessionParticipantWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFormationSessionEmargementsMarkedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionEmargementWhereInput
   }
 
   /**
@@ -10926,6 +11341,7 @@ export namespace Prisma {
 
   export type FormationSessionCountOutputType = {
     participants: number
+    suiviDays: number
     attestations: number
     portalAnnouncements: number
     candidaturesInterested: number
@@ -10934,6 +11350,7 @@ export namespace Prisma {
 
   export type FormationSessionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     participants?: boolean | FormationSessionCountOutputTypeCountParticipantsArgs
+    suiviDays?: boolean | FormationSessionCountOutputTypeCountSuiviDaysArgs
     attestations?: boolean | FormationSessionCountOutputTypeCountAttestationsArgs
     portalAnnouncements?: boolean | FormationSessionCountOutputTypeCountPortalAnnouncementsArgs
     candidaturesInterested?: boolean | FormationSessionCountOutputTypeCountCandidaturesInterestedArgs
@@ -10956,6 +11373,13 @@ export namespace Prisma {
    */
   export type FormationSessionCountOutputTypeCountParticipantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FormationSessionParticipantWhereInput
+  }
+
+  /**
+   * FormationSessionCountOutputType without action
+   */
+  export type FormationSessionCountOutputTypeCountSuiviDaysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionDayWhereInput
   }
 
   /**
@@ -11042,6 +11466,68 @@ export namespace Prisma {
    */
   export type CandidatureCountOutputTypeCountFinanceDevisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FinanceDevisWhereInput
+  }
+
+
+  /**
+   * Count Type FormationSessionParticipantCountOutputType
+   */
+
+  export type FormationSessionParticipantCountOutputType = {
+    emargements: number
+  }
+
+  export type FormationSessionParticipantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    emargements?: boolean | FormationSessionParticipantCountOutputTypeCountEmargementsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FormationSessionParticipantCountOutputType without action
+   */
+  export type FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionParticipantCountOutputType
+     */
+    select?: FormationSessionParticipantCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionParticipantCountOutputType without action
+   */
+  export type FormationSessionParticipantCountOutputTypeCountEmargementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionEmargementWhereInput
+  }
+
+
+  /**
+   * Count Type FormationSessionDayCountOutputType
+   */
+
+  export type FormationSessionDayCountOutputType = {
+    attendances: number
+  }
+
+  export type FormationSessionDayCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attendances?: boolean | FormationSessionDayCountOutputTypeCountAttendancesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FormationSessionDayCountOutputType without action
+   */
+  export type FormationSessionDayCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDayCountOutputType
+     */
+    select?: FormationSessionDayCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionDayCountOutputType without action
+   */
+  export type FormationSessionDayCountOutputTypeCountAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionEmargementWhereInput
   }
 
 
@@ -12972,6 +13458,7 @@ export namespace Prisma {
     carteProNumber: string | null
     carteProExpiry: Date | null
     isSchedulable: boolean | null
+    landingPresentation: string | null
     documentCni: string | null
     documentAssurance: string | null
     documentResidencePermit: string | null
@@ -13021,6 +13508,7 @@ export namespace Prisma {
     carteProNumber: string | null
     carteProExpiry: Date | null
     isSchedulable: boolean | null
+    landingPresentation: string | null
     documentCni: string | null
     documentAssurance: string | null
     documentResidencePermit: string | null
@@ -13070,6 +13558,7 @@ export namespace Prisma {
     carteProNumber: number
     carteProExpiry: number
     isSchedulable: number
+    landingPresentation: number
     documentCni: number
     documentAssurance: number
     documentResidencePermit: number
@@ -13121,6 +13610,7 @@ export namespace Prisma {
     carteProNumber?: true
     carteProExpiry?: true
     isSchedulable?: true
+    landingPresentation?: true
     documentCni?: true
     documentAssurance?: true
     documentResidencePermit?: true
@@ -13170,6 +13660,7 @@ export namespace Prisma {
     carteProNumber?: true
     carteProExpiry?: true
     isSchedulable?: true
+    landingPresentation?: true
     documentCni?: true
     documentAssurance?: true
     documentResidencePermit?: true
@@ -13219,6 +13710,7 @@ export namespace Prisma {
     carteProNumber?: true
     carteProExpiry?: true
     isSchedulable?: true
+    landingPresentation?: true
     documentCni?: true
     documentAssurance?: true
     documentResidencePermit?: true
@@ -13341,6 +13833,7 @@ export namespace Prisma {
     carteProNumber: string | null
     carteProExpiry: Date | null
     isSchedulable: boolean
+    landingPresentation: string | null
     documentCni: string | null
     documentAssurance: string | null
     documentResidencePermit: string | null
@@ -13407,6 +13900,7 @@ export namespace Prisma {
     carteProNumber?: boolean
     carteProExpiry?: boolean
     isSchedulable?: boolean
+    landingPresentation?: boolean
     documentCni?: boolean
     documentAssurance?: boolean
     documentResidencePermit?: boolean
@@ -13433,6 +13927,7 @@ export namespace Prisma {
     submissions?: boolean | User$submissionsArgs<ExtArgs>
     quizAttempts?: boolean | User$quizAttemptsArgs<ExtArgs>
     formationSessionParticipants?: boolean | User$formationSessionParticipantsArgs<ExtArgs>
+    formationSessionEmargementsMarked?: boolean | User$formationSessionEmargementsMarkedArgs<ExtArgs>
     formationAttestations?: boolean | User$formationAttestationsArgs<ExtArgs>
     candidatures?: boolean | User$candidaturesArgs<ExtArgs>
     complianceDossiers?: boolean | User$complianceDossiersArgs<ExtArgs>
@@ -13453,6 +13948,7 @@ export namespace Prisma {
     businessRoles?: boolean | User$businessRolesArgs<ExtArgs>
     collaborateurProfile?: boolean | User$collaborateurProfileArgs<ExtArgs>
     formateurProfile?: boolean | User$formateurProfileArgs<ExtArgs>
+    landingTeamOffer?: boolean | User$landingTeamOfferArgs<ExtArgs>
     managedCollaborateurs?: boolean | User$managedCollaborateursArgs<ExtArgs>
     createdFileAssets?: boolean | User$createdFileAssetsArgs<ExtArgs>
     createdFileAssetVersions?: boolean | User$createdFileAssetVersionsArgs<ExtArgs>
@@ -13514,6 +14010,7 @@ export namespace Prisma {
     carteProNumber?: boolean
     carteProExpiry?: boolean
     isSchedulable?: boolean
+    landingPresentation?: boolean
     documentCni?: boolean
     documentAssurance?: boolean
     documentResidencePermit?: boolean
@@ -13565,6 +14062,7 @@ export namespace Prisma {
     carteProNumber?: boolean
     carteProExpiry?: boolean
     isSchedulable?: boolean
+    landingPresentation?: boolean
     documentCni?: boolean
     documentAssurance?: boolean
     documentResidencePermit?: boolean
@@ -13616,6 +14114,7 @@ export namespace Prisma {
     carteProNumber?: boolean
     carteProExpiry?: boolean
     isSchedulable?: boolean
+    landingPresentation?: boolean
     documentCni?: boolean
     documentAssurance?: boolean
     documentResidencePermit?: boolean
@@ -13624,7 +14123,7 @@ export namespace Prisma {
     isProtected?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "country" | "timezone" | "name" | "roleId" | "status" | "createdAt" | "updatedAt" | "lastSignInAt" | "emailVerifiedAt" | "isTrashed" | "avatar" | "firstName" | "lastName" | "phone" | "proEmail" | "userCategory" | "subcontractorId" | "jobFunction" | "jobPositionId" | "qualification" | "birthDate" | "birthPlace" | "nationality" | "socialSecurityNumber" | "cniNumber" | "residencePermitNumber" | "residencePermitExpiry" | "contractType" | "workTimeType" | "contractStartDate" | "contractEndDate" | "address" | "city" | "postalCode" | "carteProNumber" | "carteProExpiry" | "isSchedulable" | "documentCni" | "documentAssurance" | "documentResidencePermit" | "documentCartePro" | "invitedByUserId" | "isProtected", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "country" | "timezone" | "name" | "roleId" | "status" | "createdAt" | "updatedAt" | "lastSignInAt" | "emailVerifiedAt" | "isTrashed" | "avatar" | "firstName" | "lastName" | "phone" | "proEmail" | "userCategory" | "subcontractorId" | "jobFunction" | "jobPositionId" | "qualification" | "birthDate" | "birthPlace" | "nationality" | "socialSecurityNumber" | "cniNumber" | "residencePermitNumber" | "residencePermitExpiry" | "contractType" | "workTimeType" | "contractStartDate" | "contractEndDate" | "address" | "city" | "postalCode" | "carteProNumber" | "carteProExpiry" | "isSchedulable" | "landingPresentation" | "documentCni" | "documentAssurance" | "documentResidencePermit" | "documentCartePro" | "invitedByUserId" | "isProtected", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     role?: boolean | UserRoleDefaultArgs<ExtArgs>
     jobPosition?: boolean | User$jobPositionArgs<ExtArgs>
@@ -13646,6 +14145,7 @@ export namespace Prisma {
     submissions?: boolean | User$submissionsArgs<ExtArgs>
     quizAttempts?: boolean | User$quizAttemptsArgs<ExtArgs>
     formationSessionParticipants?: boolean | User$formationSessionParticipantsArgs<ExtArgs>
+    formationSessionEmargementsMarked?: boolean | User$formationSessionEmargementsMarkedArgs<ExtArgs>
     formationAttestations?: boolean | User$formationAttestationsArgs<ExtArgs>
     candidatures?: boolean | User$candidaturesArgs<ExtArgs>
     complianceDossiers?: boolean | User$complianceDossiersArgs<ExtArgs>
@@ -13666,6 +14166,7 @@ export namespace Prisma {
     businessRoles?: boolean | User$businessRolesArgs<ExtArgs>
     collaborateurProfile?: boolean | User$collaborateurProfileArgs<ExtArgs>
     formateurProfile?: boolean | User$formateurProfileArgs<ExtArgs>
+    landingTeamOffer?: boolean | User$landingTeamOfferArgs<ExtArgs>
     managedCollaborateurs?: boolean | User$managedCollaborateursArgs<ExtArgs>
     createdFileAssets?: boolean | User$createdFileAssetsArgs<ExtArgs>
     createdFileAssetVersions?: boolean | User$createdFileAssetVersionsArgs<ExtArgs>
@@ -13717,6 +14218,7 @@ export namespace Prisma {
       submissions: Prisma.$AssignmentSubmissionPayload<ExtArgs>[]
       quizAttempts: Prisma.$QuizAttemptPayload<ExtArgs>[]
       formationSessionParticipants: Prisma.$FormationSessionParticipantPayload<ExtArgs>[]
+      formationSessionEmargementsMarked: Prisma.$FormationSessionEmargementPayload<ExtArgs>[]
       formationAttestations: Prisma.$FormationAttestationPayload<ExtArgs>[]
       candidatures: Prisma.$CandidaturePayload<ExtArgs>[]
       complianceDossiers: Prisma.$ComplianceDossierPayload<ExtArgs>[]
@@ -13743,6 +14245,7 @@ export namespace Prisma {
       businessRoles: Prisma.$UserBusinessRolePayload<ExtArgs>[]
       collaborateurProfile: Prisma.$CollaborateurProfilePayload<ExtArgs> | null
       formateurProfile: Prisma.$FormateurProfilePayload<ExtArgs> | null
+      landingTeamOffer: Prisma.$LandingTeamOfferPayload<ExtArgs> | null
       managedCollaborateurs: Prisma.$CollaborateurProfilePayload<ExtArgs>[]
       createdFileAssets: Prisma.$FileAssetPayload<ExtArgs>[]
       createdFileAssetVersions: Prisma.$FileAssetVersionPayload<ExtArgs>[]
@@ -13802,6 +14305,10 @@ export namespace Prisma {
       carteProNumber: string | null
       carteProExpiry: Date | null
       isSchedulable: boolean
+      /**
+       * Présentation courte affichée sur le landing (#trainers) et fiches publiques équipe.
+       */
+      landingPresentation: string | null
       documentCni: string | null
       documentAssurance: string | null
       documentResidencePermit: string | null
@@ -14222,6 +14729,7 @@ export namespace Prisma {
     submissions<T extends User$submissionsArgs<ExtArgs> = {}>(args?: Subset<T, User$submissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AssignmentSubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     quizAttempts<T extends User$quizAttemptsArgs<ExtArgs> = {}>(args?: Subset<T, User$quizAttemptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuizAttemptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     formationSessionParticipants<T extends User$formationSessionParticipantsArgs<ExtArgs> = {}>(args?: Subset<T, User$formationSessionParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    formationSessionEmargementsMarked<T extends User$formationSessionEmargementsMarkedArgs<ExtArgs> = {}>(args?: Subset<T, User$formationSessionEmargementsMarkedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     formationAttestations<T extends User$formationAttestationsArgs<ExtArgs> = {}>(args?: Subset<T, User$formationAttestationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationAttestationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     candidatures<T extends User$candidaturesArgs<ExtArgs> = {}>(args?: Subset<T, User$candidaturesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     complianceDossiers<T extends User$complianceDossiersArgs<ExtArgs> = {}>(args?: Subset<T, User$complianceDossiersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComplianceDossierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14242,6 +14750,7 @@ export namespace Prisma {
     businessRoles<T extends User$businessRolesArgs<ExtArgs> = {}>(args?: Subset<T, User$businessRolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserBusinessRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     collaborateurProfile<T extends User$collaborateurProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$collaborateurProfileArgs<ExtArgs>>): Prisma__CollaborateurProfileClient<$Result.GetResult<Prisma.$CollaborateurProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     formateurProfile<T extends User$formateurProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$formateurProfileArgs<ExtArgs>>): Prisma__FormateurProfileClient<$Result.GetResult<Prisma.$FormateurProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    landingTeamOffer<T extends User$landingTeamOfferArgs<ExtArgs> = {}>(args?: Subset<T, User$landingTeamOfferArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     managedCollaborateurs<T extends User$managedCollaborateursArgs<ExtArgs> = {}>(args?: Subset<T, User$managedCollaborateursArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CollaborateurProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdFileAssets<T extends User$createdFileAssetsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdFileAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdFileAssetVersions<T extends User$createdFileAssetVersionsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdFileAssetVersionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileAssetVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14328,6 +14837,7 @@ export namespace Prisma {
     readonly carteProNumber: FieldRef<"User", 'String'>
     readonly carteProExpiry: FieldRef<"User", 'DateTime'>
     readonly isSchedulable: FieldRef<"User", 'Boolean'>
+    readonly landingPresentation: FieldRef<"User", 'String'>
     readonly documentCni: FieldRef<"User", 'String'>
     readonly documentAssurance: FieldRef<"User", 'String'>
     readonly documentResidencePermit: FieldRef<"User", 'String'>
@@ -15181,6 +15691,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.formationSessionEmargementsMarked
+   */
+  export type User$formationSessionEmargementsMarkedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    where?: FormationSessionEmargementWhereInput
+    orderBy?: FormationSessionEmargementOrderByWithRelationInput | FormationSessionEmargementOrderByWithRelationInput[]
+    cursor?: FormationSessionEmargementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
    * User.formationAttestations
    */
   export type User$formationAttestationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15648,6 +16182,25 @@ export namespace Prisma {
      */
     include?: FormateurProfileInclude<ExtArgs> | null
     where?: FormateurProfileWhereInput
+  }
+
+  /**
+   * User.landingTeamOffer
+   */
+  export type User$landingTeamOfferArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    where?: LandingTeamOfferWhereInput
   }
 
   /**
@@ -40499,6 +41052,7 @@ export namespace Prisma {
     id: string | null
     label: string | null
     code: string | null
+    schoolInternalService: $Enums.SchoolInternalService | null
     sortOrder: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -40508,6 +41062,7 @@ export namespace Prisma {
     id: string | null
     label: string | null
     code: string | null
+    schoolInternalService: $Enums.SchoolInternalService | null
     sortOrder: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -40517,6 +41072,7 @@ export namespace Prisma {
     id: number
     label: number
     code: number
+    schoolInternalService: number
     sortOrder: number
     createdAt: number
     updatedAt: number
@@ -40536,6 +41092,7 @@ export namespace Prisma {
     id?: true
     label?: true
     code?: true
+    schoolInternalService?: true
     sortOrder?: true
     createdAt?: true
     updatedAt?: true
@@ -40545,6 +41102,7 @@ export namespace Prisma {
     id?: true
     label?: true
     code?: true
+    schoolInternalService?: true
     sortOrder?: true
     createdAt?: true
     updatedAt?: true
@@ -40554,6 +41112,7 @@ export namespace Prisma {
     id?: true
     label?: true
     code?: true
+    schoolInternalService?: true
     sortOrder?: true
     createdAt?: true
     updatedAt?: true
@@ -40650,6 +41209,7 @@ export namespace Prisma {
     id: string
     label: string
     code: string | null
+    schoolInternalService: $Enums.SchoolInternalService | null
     sortOrder: number
     createdAt: Date
     updatedAt: Date
@@ -40678,6 +41238,7 @@ export namespace Prisma {
     id?: boolean
     label?: boolean
     code?: boolean
+    schoolInternalService?: boolean
     sortOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -40690,6 +41251,7 @@ export namespace Prisma {
     id?: boolean
     label?: boolean
     code?: boolean
+    schoolInternalService?: boolean
     sortOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -40699,6 +41261,7 @@ export namespace Prisma {
     id?: boolean
     label?: boolean
     code?: boolean
+    schoolInternalService?: boolean
     sortOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -40708,12 +41271,13 @@ export namespace Prisma {
     id?: boolean
     label?: boolean
     code?: boolean
+    schoolInternalService?: boolean
     sortOrder?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type RhPositionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "label" | "code" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["rhPosition"]>
+  export type RhPositionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "label" | "code" | "schoolInternalService" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["rhPosition"]>
   export type RhPositionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | RhPosition$usersArgs<ExtArgs>
     orgUnits?: boolean | RhPosition$orgUnitsArgs<ExtArgs>
@@ -40732,6 +41296,7 @@ export namespace Prisma {
       id: string
       label: string
       code: string | null
+      schoolInternalService: $Enums.SchoolInternalService | null
       sortOrder: number
       createdAt: Date
       updatedAt: Date
@@ -41163,6 +41728,7 @@ export namespace Prisma {
     readonly id: FieldRef<"RhPosition", 'String'>
     readonly label: FieldRef<"RhPosition", 'String'>
     readonly code: FieldRef<"RhPosition", 'String'>
+    readonly schoolInternalService: FieldRef<"RhPosition", 'SchoolInternalService'>
     readonly sortOrder: FieldRef<"RhPosition", 'Int'>
     readonly createdAt: FieldRef<"RhPosition", 'DateTime'>
     readonly updatedAt: FieldRef<"RhPosition", 'DateTime'>
@@ -41622,6 +42188,1066 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: RhPositionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RhQualification
+   */
+
+  export type AggregateRhQualification = {
+    _count: RhQualificationCountAggregateOutputType | null
+    _avg: RhQualificationAvgAggregateOutputType | null
+    _sum: RhQualificationSumAggregateOutputType | null
+    _min: RhQualificationMinAggregateOutputType | null
+    _max: RhQualificationMaxAggregateOutputType | null
+  }
+
+  export type RhQualificationAvgAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type RhQualificationSumAggregateOutputType = {
+    sortOrder: number | null
+  }
+
+  export type RhQualificationMinAggregateOutputType = {
+    id: string | null
+    label: string | null
+    code: string | null
+    schoolInternalService: $Enums.SchoolInternalService | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RhQualificationMaxAggregateOutputType = {
+    id: string | null
+    label: string | null
+    code: string | null
+    schoolInternalService: $Enums.SchoolInternalService | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RhQualificationCountAggregateOutputType = {
+    id: number
+    label: number
+    code: number
+    schoolInternalService: number
+    sortOrder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RhQualificationAvgAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type RhQualificationSumAggregateInputType = {
+    sortOrder?: true
+  }
+
+  export type RhQualificationMinAggregateInputType = {
+    id?: true
+    label?: true
+    code?: true
+    schoolInternalService?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RhQualificationMaxAggregateInputType = {
+    id?: true
+    label?: true
+    code?: true
+    schoolInternalService?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RhQualificationCountAggregateInputType = {
+    id?: true
+    label?: true
+    code?: true
+    schoolInternalService?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RhQualificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RhQualification to aggregate.
+     */
+    where?: RhQualificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RhQualifications to fetch.
+     */
+    orderBy?: RhQualificationOrderByWithRelationInput | RhQualificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RhQualificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RhQualifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RhQualifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RhQualifications
+    **/
+    _count?: true | RhQualificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RhQualificationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RhQualificationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RhQualificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RhQualificationMaxAggregateInputType
+  }
+
+  export type GetRhQualificationAggregateType<T extends RhQualificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateRhQualification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRhQualification[P]>
+      : GetScalarType<T[P], AggregateRhQualification[P]>
+  }
+
+
+
+
+  export type RhQualificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RhQualificationWhereInput
+    orderBy?: RhQualificationOrderByWithAggregationInput | RhQualificationOrderByWithAggregationInput[]
+    by: RhQualificationScalarFieldEnum[] | RhQualificationScalarFieldEnum
+    having?: RhQualificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RhQualificationCountAggregateInputType | true
+    _avg?: RhQualificationAvgAggregateInputType
+    _sum?: RhQualificationSumAggregateInputType
+    _min?: RhQualificationMinAggregateInputType
+    _max?: RhQualificationMaxAggregateInputType
+  }
+
+  export type RhQualificationGroupByOutputType = {
+    id: string
+    label: string
+    code: string
+    schoolInternalService: $Enums.SchoolInternalService
+    sortOrder: number
+    createdAt: Date
+    updatedAt: Date
+    _count: RhQualificationCountAggregateOutputType | null
+    _avg: RhQualificationAvgAggregateOutputType | null
+    _sum: RhQualificationSumAggregateOutputType | null
+    _min: RhQualificationMinAggregateOutputType | null
+    _max: RhQualificationMaxAggregateOutputType | null
+  }
+
+  type GetRhQualificationGroupByPayload<T extends RhQualificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RhQualificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RhQualificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RhQualificationGroupByOutputType[P]>
+            : GetScalarType<T[P], RhQualificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RhQualificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    code?: boolean
+    schoolInternalService?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rhQualification"]>
+
+  export type RhQualificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    code?: boolean
+    schoolInternalService?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rhQualification"]>
+
+  export type RhQualificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    label?: boolean
+    code?: boolean
+    schoolInternalService?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rhQualification"]>
+
+  export type RhQualificationSelectScalar = {
+    id?: boolean
+    label?: boolean
+    code?: boolean
+    schoolInternalService?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RhQualificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "label" | "code" | "schoolInternalService" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["rhQualification"]>
+
+  export type $RhQualificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RhQualification"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      label: string
+      code: string
+      schoolInternalService: $Enums.SchoolInternalService
+      sortOrder: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["rhQualification"]>
+    composites: {}
+  }
+
+  type RhQualificationGetPayload<S extends boolean | null | undefined | RhQualificationDefaultArgs> = $Result.GetResult<Prisma.$RhQualificationPayload, S>
+
+  type RhQualificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RhQualificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RhQualificationCountAggregateInputType | true
+    }
+
+  export interface RhQualificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RhQualification'], meta: { name: 'RhQualification' } }
+    /**
+     * Find zero or one RhQualification that matches the filter.
+     * @param {RhQualificationFindUniqueArgs} args - Arguments to find a RhQualification
+     * @example
+     * // Get one RhQualification
+     * const rhQualification = await prisma.rhQualification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RhQualificationFindUniqueArgs>(args: SelectSubset<T, RhQualificationFindUniqueArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RhQualification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RhQualificationFindUniqueOrThrowArgs} args - Arguments to find a RhQualification
+     * @example
+     * // Get one RhQualification
+     * const rhQualification = await prisma.rhQualification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RhQualificationFindUniqueOrThrowArgs>(args: SelectSubset<T, RhQualificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RhQualification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RhQualificationFindFirstArgs} args - Arguments to find a RhQualification
+     * @example
+     * // Get one RhQualification
+     * const rhQualification = await prisma.rhQualification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RhQualificationFindFirstArgs>(args?: SelectSubset<T, RhQualificationFindFirstArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RhQualification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RhQualificationFindFirstOrThrowArgs} args - Arguments to find a RhQualification
+     * @example
+     * // Get one RhQualification
+     * const rhQualification = await prisma.rhQualification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RhQualificationFindFirstOrThrowArgs>(args?: SelectSubset<T, RhQualificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RhQualifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RhQualificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RhQualifications
+     * const rhQualifications = await prisma.rhQualification.findMany()
+     * 
+     * // Get first 10 RhQualifications
+     * const rhQualifications = await prisma.rhQualification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rhQualificationWithIdOnly = await prisma.rhQualification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RhQualificationFindManyArgs>(args?: SelectSubset<T, RhQualificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RhQualification.
+     * @param {RhQualificationCreateArgs} args - Arguments to create a RhQualification.
+     * @example
+     * // Create one RhQualification
+     * const RhQualification = await prisma.rhQualification.create({
+     *   data: {
+     *     // ... data to create a RhQualification
+     *   }
+     * })
+     * 
+     */
+    create<T extends RhQualificationCreateArgs>(args: SelectSubset<T, RhQualificationCreateArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RhQualifications.
+     * @param {RhQualificationCreateManyArgs} args - Arguments to create many RhQualifications.
+     * @example
+     * // Create many RhQualifications
+     * const rhQualification = await prisma.rhQualification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RhQualificationCreateManyArgs>(args?: SelectSubset<T, RhQualificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RhQualifications and returns the data saved in the database.
+     * @param {RhQualificationCreateManyAndReturnArgs} args - Arguments to create many RhQualifications.
+     * @example
+     * // Create many RhQualifications
+     * const rhQualification = await prisma.rhQualification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RhQualifications and only return the `id`
+     * const rhQualificationWithIdOnly = await prisma.rhQualification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RhQualificationCreateManyAndReturnArgs>(args?: SelectSubset<T, RhQualificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RhQualification.
+     * @param {RhQualificationDeleteArgs} args - Arguments to delete one RhQualification.
+     * @example
+     * // Delete one RhQualification
+     * const RhQualification = await prisma.rhQualification.delete({
+     *   where: {
+     *     // ... filter to delete one RhQualification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RhQualificationDeleteArgs>(args: SelectSubset<T, RhQualificationDeleteArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RhQualification.
+     * @param {RhQualificationUpdateArgs} args - Arguments to update one RhQualification.
+     * @example
+     * // Update one RhQualification
+     * const rhQualification = await prisma.rhQualification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RhQualificationUpdateArgs>(args: SelectSubset<T, RhQualificationUpdateArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RhQualifications.
+     * @param {RhQualificationDeleteManyArgs} args - Arguments to filter RhQualifications to delete.
+     * @example
+     * // Delete a few RhQualifications
+     * const { count } = await prisma.rhQualification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RhQualificationDeleteManyArgs>(args?: SelectSubset<T, RhQualificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RhQualifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RhQualificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RhQualifications
+     * const rhQualification = await prisma.rhQualification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RhQualificationUpdateManyArgs>(args: SelectSubset<T, RhQualificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RhQualifications and returns the data updated in the database.
+     * @param {RhQualificationUpdateManyAndReturnArgs} args - Arguments to update many RhQualifications.
+     * @example
+     * // Update many RhQualifications
+     * const rhQualification = await prisma.rhQualification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RhQualifications and only return the `id`
+     * const rhQualificationWithIdOnly = await prisma.rhQualification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RhQualificationUpdateManyAndReturnArgs>(args: SelectSubset<T, RhQualificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RhQualification.
+     * @param {RhQualificationUpsertArgs} args - Arguments to update or create a RhQualification.
+     * @example
+     * // Update or create a RhQualification
+     * const rhQualification = await prisma.rhQualification.upsert({
+     *   create: {
+     *     // ... data to create a RhQualification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RhQualification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RhQualificationUpsertArgs>(args: SelectSubset<T, RhQualificationUpsertArgs<ExtArgs>>): Prisma__RhQualificationClient<$Result.GetResult<Prisma.$RhQualificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RhQualifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RhQualificationCountArgs} args - Arguments to filter RhQualifications to count.
+     * @example
+     * // Count the number of RhQualifications
+     * const count = await prisma.rhQualification.count({
+     *   where: {
+     *     // ... the filter for the RhQualifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends RhQualificationCountArgs>(
+      args?: Subset<T, RhQualificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RhQualificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RhQualification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RhQualificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RhQualificationAggregateArgs>(args: Subset<T, RhQualificationAggregateArgs>): Prisma.PrismaPromise<GetRhQualificationAggregateType<T>>
+
+    /**
+     * Group by RhQualification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RhQualificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RhQualificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RhQualificationGroupByArgs['orderBy'] }
+        : { orderBy?: RhQualificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RhQualificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRhQualificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RhQualification model
+   */
+  readonly fields: RhQualificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RhQualification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RhQualificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RhQualification model
+   */
+  interface RhQualificationFieldRefs {
+    readonly id: FieldRef<"RhQualification", 'String'>
+    readonly label: FieldRef<"RhQualification", 'String'>
+    readonly code: FieldRef<"RhQualification", 'String'>
+    readonly schoolInternalService: FieldRef<"RhQualification", 'SchoolInternalService'>
+    readonly sortOrder: FieldRef<"RhQualification", 'Int'>
+    readonly createdAt: FieldRef<"RhQualification", 'DateTime'>
+    readonly updatedAt: FieldRef<"RhQualification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RhQualification findUnique
+   */
+  export type RhQualificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * Filter, which RhQualification to fetch.
+     */
+    where: RhQualificationWhereUniqueInput
+  }
+
+  /**
+   * RhQualification findUniqueOrThrow
+   */
+  export type RhQualificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * Filter, which RhQualification to fetch.
+     */
+    where: RhQualificationWhereUniqueInput
+  }
+
+  /**
+   * RhQualification findFirst
+   */
+  export type RhQualificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * Filter, which RhQualification to fetch.
+     */
+    where?: RhQualificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RhQualifications to fetch.
+     */
+    orderBy?: RhQualificationOrderByWithRelationInput | RhQualificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RhQualifications.
+     */
+    cursor?: RhQualificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RhQualifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RhQualifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RhQualifications.
+     */
+    distinct?: RhQualificationScalarFieldEnum | RhQualificationScalarFieldEnum[]
+  }
+
+  /**
+   * RhQualification findFirstOrThrow
+   */
+  export type RhQualificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * Filter, which RhQualification to fetch.
+     */
+    where?: RhQualificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RhQualifications to fetch.
+     */
+    orderBy?: RhQualificationOrderByWithRelationInput | RhQualificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RhQualifications.
+     */
+    cursor?: RhQualificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RhQualifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RhQualifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RhQualifications.
+     */
+    distinct?: RhQualificationScalarFieldEnum | RhQualificationScalarFieldEnum[]
+  }
+
+  /**
+   * RhQualification findMany
+   */
+  export type RhQualificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * Filter, which RhQualifications to fetch.
+     */
+    where?: RhQualificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RhQualifications to fetch.
+     */
+    orderBy?: RhQualificationOrderByWithRelationInput | RhQualificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RhQualifications.
+     */
+    cursor?: RhQualificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RhQualifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RhQualifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RhQualifications.
+     */
+    distinct?: RhQualificationScalarFieldEnum | RhQualificationScalarFieldEnum[]
+  }
+
+  /**
+   * RhQualification create
+   */
+  export type RhQualificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RhQualification.
+     */
+    data: XOR<RhQualificationCreateInput, RhQualificationUncheckedCreateInput>
+  }
+
+  /**
+   * RhQualification createMany
+   */
+  export type RhQualificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RhQualifications.
+     */
+    data: RhQualificationCreateManyInput | RhQualificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RhQualification createManyAndReturn
+   */
+  export type RhQualificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many RhQualifications.
+     */
+    data: RhQualificationCreateManyInput | RhQualificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RhQualification update
+   */
+  export type RhQualificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RhQualification.
+     */
+    data: XOR<RhQualificationUpdateInput, RhQualificationUncheckedUpdateInput>
+    /**
+     * Choose, which RhQualification to update.
+     */
+    where: RhQualificationWhereUniqueInput
+  }
+
+  /**
+   * RhQualification updateMany
+   */
+  export type RhQualificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RhQualifications.
+     */
+    data: XOR<RhQualificationUpdateManyMutationInput, RhQualificationUncheckedUpdateManyInput>
+    /**
+     * Filter which RhQualifications to update
+     */
+    where?: RhQualificationWhereInput
+    /**
+     * Limit how many RhQualifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RhQualification updateManyAndReturn
+   */
+  export type RhQualificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * The data used to update RhQualifications.
+     */
+    data: XOR<RhQualificationUpdateManyMutationInput, RhQualificationUncheckedUpdateManyInput>
+    /**
+     * Filter which RhQualifications to update
+     */
+    where?: RhQualificationWhereInput
+    /**
+     * Limit how many RhQualifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RhQualification upsert
+   */
+  export type RhQualificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RhQualification to update in case it exists.
+     */
+    where: RhQualificationWhereUniqueInput
+    /**
+     * In case the RhQualification found by the `where` argument doesn't exist, create a new RhQualification with this data.
+     */
+    create: XOR<RhQualificationCreateInput, RhQualificationUncheckedCreateInput>
+    /**
+     * In case the RhQualification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RhQualificationUpdateInput, RhQualificationUncheckedUpdateInput>
+  }
+
+  /**
+   * RhQualification delete
+   */
+  export type RhQualificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
+    /**
+     * Filter which RhQualification to delete.
+     */
+    where: RhQualificationWhereUniqueInput
+  }
+
+  /**
+   * RhQualification deleteMany
+   */
+  export type RhQualificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RhQualifications to delete
+     */
+    where?: RhQualificationWhereInput
+    /**
+     * Limit how many RhQualifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RhQualification without action
+   */
+  export type RhQualificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RhQualification
+     */
+    select?: RhQualificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RhQualification
+     */
+    omit?: RhQualificationOmit<ExtArgs> | null
   }
 
 
@@ -48293,6 +49919,1245 @@ export namespace Prisma {
 
 
   /**
+   * Model LandingTeamOffer
+   */
+
+  export type AggregateLandingTeamOffer = {
+    _count: LandingTeamOfferCountAggregateOutputType | null
+    _avg: LandingTeamOfferAvgAggregateOutputType | null
+    _sum: LandingTeamOfferSumAggregateOutputType | null
+    _min: LandingTeamOfferMinAggregateOutputType | null
+    _max: LandingTeamOfferMaxAggregateOutputType | null
+  }
+
+  export type LandingTeamOfferAvgAggregateOutputType = {
+    sortOrder: number | null
+    statAOverride: number | null
+    statBOverride: number | null
+    ratingOverride: number | null
+  }
+
+  export type LandingTeamOfferSumAggregateOutputType = {
+    sortOrder: number | null
+    statAOverride: number | null
+    statBOverride: number | null
+    ratingOverride: number | null
+  }
+
+  export type LandingTeamOfferMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    volet: $Enums.LandingTeamVolet | null
+    catalogStatus: $Enums.FormationLifecycleStatus | null
+    sortOrder: number | null
+    titleOverride: string | null
+    certificationsLabelOverride: string | null
+    bioOverride: string | null
+    statAOverride: number | null
+    statBOverride: number | null
+    ratingOverride: number | null
+    linkedinUrl: string | null
+    websiteUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LandingTeamOfferMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    volet: $Enums.LandingTeamVolet | null
+    catalogStatus: $Enums.FormationLifecycleStatus | null
+    sortOrder: number | null
+    titleOverride: string | null
+    certificationsLabelOverride: string | null
+    bioOverride: string | null
+    statAOverride: number | null
+    statBOverride: number | null
+    ratingOverride: number | null
+    linkedinUrl: string | null
+    websiteUrl: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LandingTeamOfferCountAggregateOutputType = {
+    id: number
+    userId: number
+    volet: number
+    catalogStatus: number
+    sortOrder: number
+    titleOverride: number
+    certificationsLabelOverride: number
+    bioOverride: number
+    statAOverride: number
+    statBOverride: number
+    ratingOverride: number
+    linkedinUrl: number
+    websiteUrl: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type LandingTeamOfferAvgAggregateInputType = {
+    sortOrder?: true
+    statAOverride?: true
+    statBOverride?: true
+    ratingOverride?: true
+  }
+
+  export type LandingTeamOfferSumAggregateInputType = {
+    sortOrder?: true
+    statAOverride?: true
+    statBOverride?: true
+    ratingOverride?: true
+  }
+
+  export type LandingTeamOfferMinAggregateInputType = {
+    id?: true
+    userId?: true
+    volet?: true
+    catalogStatus?: true
+    sortOrder?: true
+    titleOverride?: true
+    certificationsLabelOverride?: true
+    bioOverride?: true
+    statAOverride?: true
+    statBOverride?: true
+    ratingOverride?: true
+    linkedinUrl?: true
+    websiteUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LandingTeamOfferMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    volet?: true
+    catalogStatus?: true
+    sortOrder?: true
+    titleOverride?: true
+    certificationsLabelOverride?: true
+    bioOverride?: true
+    statAOverride?: true
+    statBOverride?: true
+    ratingOverride?: true
+    linkedinUrl?: true
+    websiteUrl?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LandingTeamOfferCountAggregateInputType = {
+    id?: true
+    userId?: true
+    volet?: true
+    catalogStatus?: true
+    sortOrder?: true
+    titleOverride?: true
+    certificationsLabelOverride?: true
+    bioOverride?: true
+    statAOverride?: true
+    statBOverride?: true
+    ratingOverride?: true
+    linkedinUrl?: true
+    websiteUrl?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type LandingTeamOfferAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LandingTeamOffer to aggregate.
+     */
+    where?: LandingTeamOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LandingTeamOffers to fetch.
+     */
+    orderBy?: LandingTeamOfferOrderByWithRelationInput | LandingTeamOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LandingTeamOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LandingTeamOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LandingTeamOffers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LandingTeamOffers
+    **/
+    _count?: true | LandingTeamOfferCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LandingTeamOfferAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LandingTeamOfferSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LandingTeamOfferMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LandingTeamOfferMaxAggregateInputType
+  }
+
+  export type GetLandingTeamOfferAggregateType<T extends LandingTeamOfferAggregateArgs> = {
+        [P in keyof T & keyof AggregateLandingTeamOffer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLandingTeamOffer[P]>
+      : GetScalarType<T[P], AggregateLandingTeamOffer[P]>
+  }
+
+
+
+
+  export type LandingTeamOfferGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LandingTeamOfferWhereInput
+    orderBy?: LandingTeamOfferOrderByWithAggregationInput | LandingTeamOfferOrderByWithAggregationInput[]
+    by: LandingTeamOfferScalarFieldEnum[] | LandingTeamOfferScalarFieldEnum
+    having?: LandingTeamOfferScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LandingTeamOfferCountAggregateInputType | true
+    _avg?: LandingTeamOfferAvgAggregateInputType
+    _sum?: LandingTeamOfferSumAggregateInputType
+    _min?: LandingTeamOfferMinAggregateInputType
+    _max?: LandingTeamOfferMaxAggregateInputType
+  }
+
+  export type LandingTeamOfferGroupByOutputType = {
+    id: string
+    userId: string
+    volet: $Enums.LandingTeamVolet
+    catalogStatus: $Enums.FormationLifecycleStatus
+    sortOrder: number
+    titleOverride: string | null
+    certificationsLabelOverride: string | null
+    bioOverride: string | null
+    statAOverride: number | null
+    statBOverride: number | null
+    ratingOverride: number | null
+    linkedinUrl: string | null
+    websiteUrl: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: LandingTeamOfferCountAggregateOutputType | null
+    _avg: LandingTeamOfferAvgAggregateOutputType | null
+    _sum: LandingTeamOfferSumAggregateOutputType | null
+    _min: LandingTeamOfferMinAggregateOutputType | null
+    _max: LandingTeamOfferMaxAggregateOutputType | null
+  }
+
+  type GetLandingTeamOfferGroupByPayload<T extends LandingTeamOfferGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LandingTeamOfferGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LandingTeamOfferGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LandingTeamOfferGroupByOutputType[P]>
+            : GetScalarType<T[P], LandingTeamOfferGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LandingTeamOfferSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    volet?: boolean
+    catalogStatus?: boolean
+    sortOrder?: boolean
+    titleOverride?: boolean
+    certificationsLabelOverride?: boolean
+    bioOverride?: boolean
+    statAOverride?: boolean
+    statBOverride?: boolean
+    ratingOverride?: boolean
+    linkedinUrl?: boolean
+    websiteUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["landingTeamOffer"]>
+
+  export type LandingTeamOfferSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    volet?: boolean
+    catalogStatus?: boolean
+    sortOrder?: boolean
+    titleOverride?: boolean
+    certificationsLabelOverride?: boolean
+    bioOverride?: boolean
+    statAOverride?: boolean
+    statBOverride?: boolean
+    ratingOverride?: boolean
+    linkedinUrl?: boolean
+    websiteUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["landingTeamOffer"]>
+
+  export type LandingTeamOfferSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    volet?: boolean
+    catalogStatus?: boolean
+    sortOrder?: boolean
+    titleOverride?: boolean
+    certificationsLabelOverride?: boolean
+    bioOverride?: boolean
+    statAOverride?: boolean
+    statBOverride?: boolean
+    ratingOverride?: boolean
+    linkedinUrl?: boolean
+    websiteUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["landingTeamOffer"]>
+
+  export type LandingTeamOfferSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    volet?: boolean
+    catalogStatus?: boolean
+    sortOrder?: boolean
+    titleOverride?: boolean
+    certificationsLabelOverride?: boolean
+    bioOverride?: boolean
+    statAOverride?: boolean
+    statBOverride?: boolean
+    ratingOverride?: boolean
+    linkedinUrl?: boolean
+    websiteUrl?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type LandingTeamOfferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "volet" | "catalogStatus" | "sortOrder" | "titleOverride" | "certificationsLabelOverride" | "bioOverride" | "statAOverride" | "statBOverride" | "ratingOverride" | "linkedinUrl" | "websiteUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["landingTeamOffer"]>
+  export type LandingTeamOfferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type LandingTeamOfferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type LandingTeamOfferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $LandingTeamOfferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LandingTeamOffer"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      volet: $Enums.LandingTeamVolet
+      catalogStatus: $Enums.FormationLifecycleStatus
+      sortOrder: number
+      titleOverride: string | null
+      certificationsLabelOverride: string | null
+      bioOverride: string | null
+      statAOverride: number | null
+      statBOverride: number | null
+      ratingOverride: number | null
+      linkedinUrl: string | null
+      websiteUrl: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["landingTeamOffer"]>
+    composites: {}
+  }
+
+  type LandingTeamOfferGetPayload<S extends boolean | null | undefined | LandingTeamOfferDefaultArgs> = $Result.GetResult<Prisma.$LandingTeamOfferPayload, S>
+
+  type LandingTeamOfferCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LandingTeamOfferFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LandingTeamOfferCountAggregateInputType | true
+    }
+
+  export interface LandingTeamOfferDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LandingTeamOffer'], meta: { name: 'LandingTeamOffer' } }
+    /**
+     * Find zero or one LandingTeamOffer that matches the filter.
+     * @param {LandingTeamOfferFindUniqueArgs} args - Arguments to find a LandingTeamOffer
+     * @example
+     * // Get one LandingTeamOffer
+     * const landingTeamOffer = await prisma.landingTeamOffer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LandingTeamOfferFindUniqueArgs>(args: SelectSubset<T, LandingTeamOfferFindUniqueArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LandingTeamOffer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LandingTeamOfferFindUniqueOrThrowArgs} args - Arguments to find a LandingTeamOffer
+     * @example
+     * // Get one LandingTeamOffer
+     * const landingTeamOffer = await prisma.landingTeamOffer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LandingTeamOfferFindUniqueOrThrowArgs>(args: SelectSubset<T, LandingTeamOfferFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LandingTeamOffer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LandingTeamOfferFindFirstArgs} args - Arguments to find a LandingTeamOffer
+     * @example
+     * // Get one LandingTeamOffer
+     * const landingTeamOffer = await prisma.landingTeamOffer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LandingTeamOfferFindFirstArgs>(args?: SelectSubset<T, LandingTeamOfferFindFirstArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LandingTeamOffer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LandingTeamOfferFindFirstOrThrowArgs} args - Arguments to find a LandingTeamOffer
+     * @example
+     * // Get one LandingTeamOffer
+     * const landingTeamOffer = await prisma.landingTeamOffer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LandingTeamOfferFindFirstOrThrowArgs>(args?: SelectSubset<T, LandingTeamOfferFindFirstOrThrowArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LandingTeamOffers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LandingTeamOfferFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LandingTeamOffers
+     * const landingTeamOffers = await prisma.landingTeamOffer.findMany()
+     * 
+     * // Get first 10 LandingTeamOffers
+     * const landingTeamOffers = await prisma.landingTeamOffer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const landingTeamOfferWithIdOnly = await prisma.landingTeamOffer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LandingTeamOfferFindManyArgs>(args?: SelectSubset<T, LandingTeamOfferFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LandingTeamOffer.
+     * @param {LandingTeamOfferCreateArgs} args - Arguments to create a LandingTeamOffer.
+     * @example
+     * // Create one LandingTeamOffer
+     * const LandingTeamOffer = await prisma.landingTeamOffer.create({
+     *   data: {
+     *     // ... data to create a LandingTeamOffer
+     *   }
+     * })
+     * 
+     */
+    create<T extends LandingTeamOfferCreateArgs>(args: SelectSubset<T, LandingTeamOfferCreateArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LandingTeamOffers.
+     * @param {LandingTeamOfferCreateManyArgs} args - Arguments to create many LandingTeamOffers.
+     * @example
+     * // Create many LandingTeamOffers
+     * const landingTeamOffer = await prisma.landingTeamOffer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LandingTeamOfferCreateManyArgs>(args?: SelectSubset<T, LandingTeamOfferCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LandingTeamOffers and returns the data saved in the database.
+     * @param {LandingTeamOfferCreateManyAndReturnArgs} args - Arguments to create many LandingTeamOffers.
+     * @example
+     * // Create many LandingTeamOffers
+     * const landingTeamOffer = await prisma.landingTeamOffer.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LandingTeamOffers and only return the `id`
+     * const landingTeamOfferWithIdOnly = await prisma.landingTeamOffer.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LandingTeamOfferCreateManyAndReturnArgs>(args?: SelectSubset<T, LandingTeamOfferCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LandingTeamOffer.
+     * @param {LandingTeamOfferDeleteArgs} args - Arguments to delete one LandingTeamOffer.
+     * @example
+     * // Delete one LandingTeamOffer
+     * const LandingTeamOffer = await prisma.landingTeamOffer.delete({
+     *   where: {
+     *     // ... filter to delete one LandingTeamOffer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LandingTeamOfferDeleteArgs>(args: SelectSubset<T, LandingTeamOfferDeleteArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LandingTeamOffer.
+     * @param {LandingTeamOfferUpdateArgs} args - Arguments to update one LandingTeamOffer.
+     * @example
+     * // Update one LandingTeamOffer
+     * const landingTeamOffer = await prisma.landingTeamOffer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LandingTeamOfferUpdateArgs>(args: SelectSubset<T, LandingTeamOfferUpdateArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LandingTeamOffers.
+     * @param {LandingTeamOfferDeleteManyArgs} args - Arguments to filter LandingTeamOffers to delete.
+     * @example
+     * // Delete a few LandingTeamOffers
+     * const { count } = await prisma.landingTeamOffer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LandingTeamOfferDeleteManyArgs>(args?: SelectSubset<T, LandingTeamOfferDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LandingTeamOffers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LandingTeamOfferUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LandingTeamOffers
+     * const landingTeamOffer = await prisma.landingTeamOffer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LandingTeamOfferUpdateManyArgs>(args: SelectSubset<T, LandingTeamOfferUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LandingTeamOffers and returns the data updated in the database.
+     * @param {LandingTeamOfferUpdateManyAndReturnArgs} args - Arguments to update many LandingTeamOffers.
+     * @example
+     * // Update many LandingTeamOffers
+     * const landingTeamOffer = await prisma.landingTeamOffer.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LandingTeamOffers and only return the `id`
+     * const landingTeamOfferWithIdOnly = await prisma.landingTeamOffer.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LandingTeamOfferUpdateManyAndReturnArgs>(args: SelectSubset<T, LandingTeamOfferUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LandingTeamOffer.
+     * @param {LandingTeamOfferUpsertArgs} args - Arguments to update or create a LandingTeamOffer.
+     * @example
+     * // Update or create a LandingTeamOffer
+     * const landingTeamOffer = await prisma.landingTeamOffer.upsert({
+     *   create: {
+     *     // ... data to create a LandingTeamOffer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LandingTeamOffer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LandingTeamOfferUpsertArgs>(args: SelectSubset<T, LandingTeamOfferUpsertArgs<ExtArgs>>): Prisma__LandingTeamOfferClient<$Result.GetResult<Prisma.$LandingTeamOfferPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LandingTeamOffers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LandingTeamOfferCountArgs} args - Arguments to filter LandingTeamOffers to count.
+     * @example
+     * // Count the number of LandingTeamOffers
+     * const count = await prisma.landingTeamOffer.count({
+     *   where: {
+     *     // ... the filter for the LandingTeamOffers we want to count
+     *   }
+     * })
+    **/
+    count<T extends LandingTeamOfferCountArgs>(
+      args?: Subset<T, LandingTeamOfferCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LandingTeamOfferCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LandingTeamOffer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LandingTeamOfferAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LandingTeamOfferAggregateArgs>(args: Subset<T, LandingTeamOfferAggregateArgs>): Prisma.PrismaPromise<GetLandingTeamOfferAggregateType<T>>
+
+    /**
+     * Group by LandingTeamOffer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LandingTeamOfferGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LandingTeamOfferGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LandingTeamOfferGroupByArgs['orderBy'] }
+        : { orderBy?: LandingTeamOfferGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LandingTeamOfferGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLandingTeamOfferGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LandingTeamOffer model
+   */
+  readonly fields: LandingTeamOfferFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LandingTeamOffer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LandingTeamOfferClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LandingTeamOffer model
+   */
+  interface LandingTeamOfferFieldRefs {
+    readonly id: FieldRef<"LandingTeamOffer", 'String'>
+    readonly userId: FieldRef<"LandingTeamOffer", 'String'>
+    readonly volet: FieldRef<"LandingTeamOffer", 'LandingTeamVolet'>
+    readonly catalogStatus: FieldRef<"LandingTeamOffer", 'FormationLifecycleStatus'>
+    readonly sortOrder: FieldRef<"LandingTeamOffer", 'Int'>
+    readonly titleOverride: FieldRef<"LandingTeamOffer", 'String'>
+    readonly certificationsLabelOverride: FieldRef<"LandingTeamOffer", 'String'>
+    readonly bioOverride: FieldRef<"LandingTeamOffer", 'String'>
+    readonly statAOverride: FieldRef<"LandingTeamOffer", 'Int'>
+    readonly statBOverride: FieldRef<"LandingTeamOffer", 'Int'>
+    readonly ratingOverride: FieldRef<"LandingTeamOffer", 'Float'>
+    readonly linkedinUrl: FieldRef<"LandingTeamOffer", 'String'>
+    readonly websiteUrl: FieldRef<"LandingTeamOffer", 'String'>
+    readonly createdAt: FieldRef<"LandingTeamOffer", 'DateTime'>
+    readonly updatedAt: FieldRef<"LandingTeamOffer", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LandingTeamOffer findUnique
+   */
+  export type LandingTeamOfferFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which LandingTeamOffer to fetch.
+     */
+    where: LandingTeamOfferWhereUniqueInput
+  }
+
+  /**
+   * LandingTeamOffer findUniqueOrThrow
+   */
+  export type LandingTeamOfferFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which LandingTeamOffer to fetch.
+     */
+    where: LandingTeamOfferWhereUniqueInput
+  }
+
+  /**
+   * LandingTeamOffer findFirst
+   */
+  export type LandingTeamOfferFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which LandingTeamOffer to fetch.
+     */
+    where?: LandingTeamOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LandingTeamOffers to fetch.
+     */
+    orderBy?: LandingTeamOfferOrderByWithRelationInput | LandingTeamOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LandingTeamOffers.
+     */
+    cursor?: LandingTeamOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LandingTeamOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LandingTeamOffers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LandingTeamOffers.
+     */
+    distinct?: LandingTeamOfferScalarFieldEnum | LandingTeamOfferScalarFieldEnum[]
+  }
+
+  /**
+   * LandingTeamOffer findFirstOrThrow
+   */
+  export type LandingTeamOfferFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which LandingTeamOffer to fetch.
+     */
+    where?: LandingTeamOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LandingTeamOffers to fetch.
+     */
+    orderBy?: LandingTeamOfferOrderByWithRelationInput | LandingTeamOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LandingTeamOffers.
+     */
+    cursor?: LandingTeamOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LandingTeamOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LandingTeamOffers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LandingTeamOffers.
+     */
+    distinct?: LandingTeamOfferScalarFieldEnum | LandingTeamOfferScalarFieldEnum[]
+  }
+
+  /**
+   * LandingTeamOffer findMany
+   */
+  export type LandingTeamOfferFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * Filter, which LandingTeamOffers to fetch.
+     */
+    where?: LandingTeamOfferWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LandingTeamOffers to fetch.
+     */
+    orderBy?: LandingTeamOfferOrderByWithRelationInput | LandingTeamOfferOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LandingTeamOffers.
+     */
+    cursor?: LandingTeamOfferWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LandingTeamOffers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LandingTeamOffers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LandingTeamOffers.
+     */
+    distinct?: LandingTeamOfferScalarFieldEnum | LandingTeamOfferScalarFieldEnum[]
+  }
+
+  /**
+   * LandingTeamOffer create
+   */
+  export type LandingTeamOfferCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LandingTeamOffer.
+     */
+    data: XOR<LandingTeamOfferCreateInput, LandingTeamOfferUncheckedCreateInput>
+  }
+
+  /**
+   * LandingTeamOffer createMany
+   */
+  export type LandingTeamOfferCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LandingTeamOffers.
+     */
+    data: LandingTeamOfferCreateManyInput | LandingTeamOfferCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LandingTeamOffer createManyAndReturn
+   */
+  export type LandingTeamOfferCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * The data used to create many LandingTeamOffers.
+     */
+    data: LandingTeamOfferCreateManyInput | LandingTeamOfferCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LandingTeamOffer update
+   */
+  export type LandingTeamOfferUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LandingTeamOffer.
+     */
+    data: XOR<LandingTeamOfferUpdateInput, LandingTeamOfferUncheckedUpdateInput>
+    /**
+     * Choose, which LandingTeamOffer to update.
+     */
+    where: LandingTeamOfferWhereUniqueInput
+  }
+
+  /**
+   * LandingTeamOffer updateMany
+   */
+  export type LandingTeamOfferUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LandingTeamOffers.
+     */
+    data: XOR<LandingTeamOfferUpdateManyMutationInput, LandingTeamOfferUncheckedUpdateManyInput>
+    /**
+     * Filter which LandingTeamOffers to update
+     */
+    where?: LandingTeamOfferWhereInput
+    /**
+     * Limit how many LandingTeamOffers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LandingTeamOffer updateManyAndReturn
+   */
+  export type LandingTeamOfferUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * The data used to update LandingTeamOffers.
+     */
+    data: XOR<LandingTeamOfferUpdateManyMutationInput, LandingTeamOfferUncheckedUpdateManyInput>
+    /**
+     * Filter which LandingTeamOffers to update
+     */
+    where?: LandingTeamOfferWhereInput
+    /**
+     * Limit how many LandingTeamOffers to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LandingTeamOffer upsert
+   */
+  export type LandingTeamOfferUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LandingTeamOffer to update in case it exists.
+     */
+    where: LandingTeamOfferWhereUniqueInput
+    /**
+     * In case the LandingTeamOffer found by the `where` argument doesn't exist, create a new LandingTeamOffer with this data.
+     */
+    create: XOR<LandingTeamOfferCreateInput, LandingTeamOfferUncheckedCreateInput>
+    /**
+     * In case the LandingTeamOffer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LandingTeamOfferUpdateInput, LandingTeamOfferUncheckedUpdateInput>
+  }
+
+  /**
+   * LandingTeamOffer delete
+   */
+  export type LandingTeamOfferDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+    /**
+     * Filter which LandingTeamOffer to delete.
+     */
+    where: LandingTeamOfferWhereUniqueInput
+  }
+
+  /**
+   * LandingTeamOffer deleteMany
+   */
+  export type LandingTeamOfferDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LandingTeamOffers to delete
+     */
+    where?: LandingTeamOfferWhereInput
+    /**
+     * Limit how many LandingTeamOffers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LandingTeamOffer without action
+   */
+  export type LandingTeamOfferDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LandingTeamOffer
+     */
+    select?: LandingTeamOfferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LandingTeamOffer
+     */
+    omit?: LandingTeamOfferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LandingTeamOfferInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model FormationVenueRoom
    */
 
@@ -51013,6 +53878,7 @@ export namespace Prisma {
     chatConversation?: boolean | FormationSession$chatConversationArgs<ExtArgs>
     venueRoom?: boolean | FormationSession$venueRoomArgs<ExtArgs>
     participants?: boolean | FormationSession$participantsArgs<ExtArgs>
+    suiviDays?: boolean | FormationSession$suiviDaysArgs<ExtArgs>
     attestations?: boolean | FormationSession$attestationsArgs<ExtArgs>
     portalAnnouncements?: boolean | FormationSession$portalAnnouncementsArgs<ExtArgs>
     rhTeam?: boolean | FormationSession$rhTeamArgs<ExtArgs>
@@ -51112,6 +53978,7 @@ export namespace Prisma {
     chatConversation?: boolean | FormationSession$chatConversationArgs<ExtArgs>
     venueRoom?: boolean | FormationSession$venueRoomArgs<ExtArgs>
     participants?: boolean | FormationSession$participantsArgs<ExtArgs>
+    suiviDays?: boolean | FormationSession$suiviDaysArgs<ExtArgs>
     attestations?: boolean | FormationSession$attestationsArgs<ExtArgs>
     portalAnnouncements?: boolean | FormationSession$portalAnnouncementsArgs<ExtArgs>
     rhTeam?: boolean | FormationSession$rhTeamArgs<ExtArgs>
@@ -51144,6 +54011,7 @@ export namespace Prisma {
       chatConversation: Prisma.$ChatConversationPayload<ExtArgs> | null
       venueRoom: Prisma.$FormationVenueRoomPayload<ExtArgs> | null
       participants: Prisma.$FormationSessionParticipantPayload<ExtArgs>[]
+      suiviDays: Prisma.$FormationSessionDayPayload<ExtArgs>[]
       attestations: Prisma.$FormationAttestationPayload<ExtArgs>[]
       portalAnnouncements: Prisma.$PortalSessionAnnouncementPayload<ExtArgs>[]
       rhTeam: Prisma.$RhTeamPayload<ExtArgs> | null
@@ -51597,6 +54465,7 @@ export namespace Prisma {
     chatConversation<T extends FormationSession$chatConversationArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$chatConversationArgs<ExtArgs>>): Prisma__ChatConversationClient<$Result.GetResult<Prisma.$ChatConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     venueRoom<T extends FormationSession$venueRoomArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$venueRoomArgs<ExtArgs>>): Prisma__FormationVenueRoomClient<$Result.GetResult<Prisma.$FormationVenueRoomPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     participants<T extends FormationSession$participantsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    suiviDays<T extends FormationSession$suiviDaysArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$suiviDaysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     attestations<T extends FormationSession$attestationsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$attestationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationAttestationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     portalAnnouncements<T extends FormationSession$portalAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$portalAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PortalSessionAnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rhTeam<T extends FormationSession$rhTeamArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$rhTeamArgs<ExtArgs>>): Prisma__RhTeamClient<$Result.GetResult<Prisma.$RhTeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -52151,6 +55020,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FormationSessionParticipantScalarFieldEnum | FormationSessionParticipantScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSession.suiviDays
+   */
+  export type FormationSession$suiviDaysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    where?: FormationSessionDayWhereInput
+    orderBy?: FormationSessionDayOrderByWithRelationInput | FormationSessionDayOrderByWithRelationInput[]
+    cursor?: FormationSessionDayWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormationSessionDayScalarFieldEnum | FormationSessionDayScalarFieldEnum[]
   }
 
   /**
@@ -54891,6 +57784,9 @@ export namespace Prisma {
     examDate: Date | null
     certifiedAt: Date | null
     trainingCompletedAt: Date | null
+    fundingMode: string | null
+    fundingReference: string | null
+    fundingNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -54905,6 +57801,9 @@ export namespace Prisma {
     examDate: Date | null
     certifiedAt: Date | null
     trainingCompletedAt: Date | null
+    fundingMode: string | null
+    fundingReference: string | null
+    fundingNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -54919,6 +57818,9 @@ export namespace Prisma {
     examDate: number
     certifiedAt: number
     trainingCompletedAt: number
+    fundingMode: number
+    fundingReference: number
+    fundingNotes: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -54935,6 +57837,9 @@ export namespace Prisma {
     examDate?: true
     certifiedAt?: true
     trainingCompletedAt?: true
+    fundingMode?: true
+    fundingReference?: true
+    fundingNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -54949,6 +57854,9 @@ export namespace Prisma {
     examDate?: true
     certifiedAt?: true
     trainingCompletedAt?: true
+    fundingMode?: true
+    fundingReference?: true
+    fundingNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -54963,6 +57871,9 @@ export namespace Prisma {
     examDate?: true
     certifiedAt?: true
     trainingCompletedAt?: true
+    fundingMode?: true
+    fundingReference?: true
+    fundingNotes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -55050,6 +57961,9 @@ export namespace Prisma {
     examDate: Date | null
     certifiedAt: Date | null
     trainingCompletedAt: Date | null
+    fundingMode: string | null
+    fundingReference: string | null
+    fundingNotes: string | null
     createdAt: Date
     updatedAt: Date
     _count: FormationSessionParticipantCountAggregateOutputType | null
@@ -55081,11 +57995,16 @@ export namespace Prisma {
     examDate?: boolean
     certifiedAt?: boolean
     trainingCompletedAt?: boolean
+    fundingMode?: boolean
+    fundingReference?: boolean
+    fundingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     candidature?: boolean | FormationSessionParticipant$candidatureArgs<ExtArgs>
+    emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
+    _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["formationSessionParticipant"]>
 
   export type FormationSessionParticipantSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -55098,6 +58017,9 @@ export namespace Prisma {
     examDate?: boolean
     certifiedAt?: boolean
     trainingCompletedAt?: boolean
+    fundingMode?: boolean
+    fundingReference?: boolean
+    fundingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -55115,6 +58037,9 @@ export namespace Prisma {
     examDate?: boolean
     certifiedAt?: boolean
     trainingCompletedAt?: boolean
+    fundingMode?: boolean
+    fundingReference?: boolean
+    fundingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -55132,15 +58057,20 @@ export namespace Prisma {
     examDate?: boolean
     certifiedAt?: boolean
     trainingCompletedAt?: boolean
+    fundingMode?: boolean
+    fundingReference?: boolean
+    fundingNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
+  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "fundingMode" | "fundingReference" | "fundingNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
   export type FormationSessionParticipantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     candidature?: boolean | FormationSessionParticipant$candidatureArgs<ExtArgs>
+    emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
+    _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FormationSessionParticipantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -55159,6 +58089,7 @@ export namespace Prisma {
       session: Prisma.$FormationSessionPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
       candidature: Prisma.$CandidaturePayload<ExtArgs> | null
+      emargements: Prisma.$FormationSessionEmargementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -55170,6 +58101,12 @@ export namespace Prisma {
       examDate: Date | null
       certifiedAt: Date | null
       trainingCompletedAt: Date | null
+      /**
+       * Financeur / modalité de prise en charge (CPF, France Travail, OPCO…).
+       */
+      fundingMode: string | null
+      fundingReference: string | null
+      fundingNotes: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["formationSessionParticipant"]>
@@ -55569,6 +58506,7 @@ export namespace Prisma {
     session<T extends FormationSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDefaultArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     candidature<T extends FormationSessionParticipant$candidatureArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$candidatureArgs<ExtArgs>>): Prisma__CandidatureClient<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    emargements<T extends FormationSessionParticipant$emargementsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$emargementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -55607,6 +58545,9 @@ export namespace Prisma {
     readonly examDate: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly certifiedAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly trainingCompletedAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
+    readonly fundingMode: FieldRef<"FormationSessionParticipant", 'String'>
+    readonly fundingReference: FieldRef<"FormationSessionParticipant", 'String'>
+    readonly fundingNotes: FieldRef<"FormationSessionParticipant", 'String'>
     readonly createdAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly updatedAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
   }
@@ -56029,6 +58970,30 @@ export namespace Prisma {
   }
 
   /**
+   * FormationSessionParticipant.emargements
+   */
+  export type FormationSessionParticipant$emargementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    where?: FormationSessionEmargementWhereInput
+    orderBy?: FormationSessionEmargementOrderByWithRelationInput | FormationSessionEmargementOrderByWithRelationInput[]
+    cursor?: FormationSessionEmargementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
    * FormationSessionParticipant without action
    */
   export type FormationSessionParticipantDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -56044,6 +59009,2288 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FormationSessionParticipantInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FormationSessionDay
+   */
+
+  export type AggregateFormationSessionDay = {
+    _count: FormationSessionDayCountAggregateOutputType | null
+    _min: FormationSessionDayMinAggregateOutputType | null
+    _max: FormationSessionDayMaxAggregateOutputType | null
+  }
+
+  export type FormationSessionDayMinAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    dayDate: Date | null
+    journalNotesMorning: string | null
+    journalNotesEvening: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormationSessionDayMaxAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    dayDate: Date | null
+    journalNotesMorning: string | null
+    journalNotesEvening: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormationSessionDayCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    dayDate: number
+    journalNotesMorning: number
+    journalNotesEvening: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FormationSessionDayMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    dayDate?: true
+    journalNotesMorning?: true
+    journalNotesEvening?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormationSessionDayMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    dayDate?: true
+    journalNotesMorning?: true
+    journalNotesEvening?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormationSessionDayCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    dayDate?: true
+    journalNotesMorning?: true
+    journalNotesEvening?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FormationSessionDayAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormationSessionDay to aggregate.
+     */
+    where?: FormationSessionDayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionDays to fetch.
+     */
+    orderBy?: FormationSessionDayOrderByWithRelationInput | FormationSessionDayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FormationSessionDayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionDays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionDays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FormationSessionDays
+    **/
+    _count?: true | FormationSessionDayCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FormationSessionDayMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FormationSessionDayMaxAggregateInputType
+  }
+
+  export type GetFormationSessionDayAggregateType<T extends FormationSessionDayAggregateArgs> = {
+        [P in keyof T & keyof AggregateFormationSessionDay]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFormationSessionDay[P]>
+      : GetScalarType<T[P], AggregateFormationSessionDay[P]>
+  }
+
+
+
+
+  export type FormationSessionDayGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionDayWhereInput
+    orderBy?: FormationSessionDayOrderByWithAggregationInput | FormationSessionDayOrderByWithAggregationInput[]
+    by: FormationSessionDayScalarFieldEnum[] | FormationSessionDayScalarFieldEnum
+    having?: FormationSessionDayScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FormationSessionDayCountAggregateInputType | true
+    _min?: FormationSessionDayMinAggregateInputType
+    _max?: FormationSessionDayMaxAggregateInputType
+  }
+
+  export type FormationSessionDayGroupByOutputType = {
+    id: string
+    sessionId: string
+    dayDate: Date
+    journalNotesMorning: string | null
+    journalNotesEvening: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FormationSessionDayCountAggregateOutputType | null
+    _min: FormationSessionDayMinAggregateOutputType | null
+    _max: FormationSessionDayMaxAggregateOutputType | null
+  }
+
+  type GetFormationSessionDayGroupByPayload<T extends FormationSessionDayGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FormationSessionDayGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FormationSessionDayGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FormationSessionDayGroupByOutputType[P]>
+            : GetScalarType<T[P], FormationSessionDayGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FormationSessionDaySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    dayDate?: boolean
+    journalNotesMorning?: boolean
+    journalNotesEvening?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    attendances?: boolean | FormationSessionDay$attendancesArgs<ExtArgs>
+    _count?: boolean | FormationSessionDayCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionDay"]>
+
+  export type FormationSessionDaySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    dayDate?: boolean
+    journalNotesMorning?: boolean
+    journalNotesEvening?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionDay"]>
+
+  export type FormationSessionDaySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    dayDate?: boolean
+    journalNotesMorning?: boolean
+    journalNotesEvening?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionDay"]>
+
+  export type FormationSessionDaySelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    dayDate?: boolean
+    journalNotesMorning?: boolean
+    journalNotesEvening?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FormationSessionDayOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "dayDate" | "journalNotesMorning" | "journalNotesEvening" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionDay"]>
+  export type FormationSessionDayInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    attendances?: boolean | FormationSessionDay$attendancesArgs<ExtArgs>
+    _count?: boolean | FormationSessionDayCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FormationSessionDayIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+  }
+  export type FormationSessionDayIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+  }
+
+  export type $FormationSessionDayPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FormationSessionDay"
+    objects: {
+      session: Prisma.$FormationSessionPayload<ExtArgs>
+      attendances: Prisma.$FormationSessionEmargementPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sessionId: string
+      dayDate: Date
+      journalNotesMorning: string | null
+      journalNotesEvening: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["formationSessionDay"]>
+    composites: {}
+  }
+
+  type FormationSessionDayGetPayload<S extends boolean | null | undefined | FormationSessionDayDefaultArgs> = $Result.GetResult<Prisma.$FormationSessionDayPayload, S>
+
+  type FormationSessionDayCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FormationSessionDayFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FormationSessionDayCountAggregateInputType | true
+    }
+
+  export interface FormationSessionDayDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FormationSessionDay'], meta: { name: 'FormationSessionDay' } }
+    /**
+     * Find zero or one FormationSessionDay that matches the filter.
+     * @param {FormationSessionDayFindUniqueArgs} args - Arguments to find a FormationSessionDay
+     * @example
+     * // Get one FormationSessionDay
+     * const formationSessionDay = await prisma.formationSessionDay.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FormationSessionDayFindUniqueArgs>(args: SelectSubset<T, FormationSessionDayFindUniqueArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FormationSessionDay that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FormationSessionDayFindUniqueOrThrowArgs} args - Arguments to find a FormationSessionDay
+     * @example
+     * // Get one FormationSessionDay
+     * const formationSessionDay = await prisma.formationSessionDay.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FormationSessionDayFindUniqueOrThrowArgs>(args: SelectSubset<T, FormationSessionDayFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormationSessionDay that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionDayFindFirstArgs} args - Arguments to find a FormationSessionDay
+     * @example
+     * // Get one FormationSessionDay
+     * const formationSessionDay = await prisma.formationSessionDay.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FormationSessionDayFindFirstArgs>(args?: SelectSubset<T, FormationSessionDayFindFirstArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormationSessionDay that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionDayFindFirstOrThrowArgs} args - Arguments to find a FormationSessionDay
+     * @example
+     * // Get one FormationSessionDay
+     * const formationSessionDay = await prisma.formationSessionDay.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FormationSessionDayFindFirstOrThrowArgs>(args?: SelectSubset<T, FormationSessionDayFindFirstOrThrowArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FormationSessionDays that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionDayFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FormationSessionDays
+     * const formationSessionDays = await prisma.formationSessionDay.findMany()
+     * 
+     * // Get first 10 FormationSessionDays
+     * const formationSessionDays = await prisma.formationSessionDay.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const formationSessionDayWithIdOnly = await prisma.formationSessionDay.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FormationSessionDayFindManyArgs>(args?: SelectSubset<T, FormationSessionDayFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FormationSessionDay.
+     * @param {FormationSessionDayCreateArgs} args - Arguments to create a FormationSessionDay.
+     * @example
+     * // Create one FormationSessionDay
+     * const FormationSessionDay = await prisma.formationSessionDay.create({
+     *   data: {
+     *     // ... data to create a FormationSessionDay
+     *   }
+     * })
+     * 
+     */
+    create<T extends FormationSessionDayCreateArgs>(args: SelectSubset<T, FormationSessionDayCreateArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FormationSessionDays.
+     * @param {FormationSessionDayCreateManyArgs} args - Arguments to create many FormationSessionDays.
+     * @example
+     * // Create many FormationSessionDays
+     * const formationSessionDay = await prisma.formationSessionDay.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FormationSessionDayCreateManyArgs>(args?: SelectSubset<T, FormationSessionDayCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FormationSessionDays and returns the data saved in the database.
+     * @param {FormationSessionDayCreateManyAndReturnArgs} args - Arguments to create many FormationSessionDays.
+     * @example
+     * // Create many FormationSessionDays
+     * const formationSessionDay = await prisma.formationSessionDay.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FormationSessionDays and only return the `id`
+     * const formationSessionDayWithIdOnly = await prisma.formationSessionDay.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FormationSessionDayCreateManyAndReturnArgs>(args?: SelectSubset<T, FormationSessionDayCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FormationSessionDay.
+     * @param {FormationSessionDayDeleteArgs} args - Arguments to delete one FormationSessionDay.
+     * @example
+     * // Delete one FormationSessionDay
+     * const FormationSessionDay = await prisma.formationSessionDay.delete({
+     *   where: {
+     *     // ... filter to delete one FormationSessionDay
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FormationSessionDayDeleteArgs>(args: SelectSubset<T, FormationSessionDayDeleteArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FormationSessionDay.
+     * @param {FormationSessionDayUpdateArgs} args - Arguments to update one FormationSessionDay.
+     * @example
+     * // Update one FormationSessionDay
+     * const formationSessionDay = await prisma.formationSessionDay.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FormationSessionDayUpdateArgs>(args: SelectSubset<T, FormationSessionDayUpdateArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FormationSessionDays.
+     * @param {FormationSessionDayDeleteManyArgs} args - Arguments to filter FormationSessionDays to delete.
+     * @example
+     * // Delete a few FormationSessionDays
+     * const { count } = await prisma.formationSessionDay.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FormationSessionDayDeleteManyArgs>(args?: SelectSubset<T, FormationSessionDayDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormationSessionDays.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionDayUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FormationSessionDays
+     * const formationSessionDay = await prisma.formationSessionDay.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FormationSessionDayUpdateManyArgs>(args: SelectSubset<T, FormationSessionDayUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormationSessionDays and returns the data updated in the database.
+     * @param {FormationSessionDayUpdateManyAndReturnArgs} args - Arguments to update many FormationSessionDays.
+     * @example
+     * // Update many FormationSessionDays
+     * const formationSessionDay = await prisma.formationSessionDay.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FormationSessionDays and only return the `id`
+     * const formationSessionDayWithIdOnly = await prisma.formationSessionDay.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FormationSessionDayUpdateManyAndReturnArgs>(args: SelectSubset<T, FormationSessionDayUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FormationSessionDay.
+     * @param {FormationSessionDayUpsertArgs} args - Arguments to update or create a FormationSessionDay.
+     * @example
+     * // Update or create a FormationSessionDay
+     * const formationSessionDay = await prisma.formationSessionDay.upsert({
+     *   create: {
+     *     // ... data to create a FormationSessionDay
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FormationSessionDay we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FormationSessionDayUpsertArgs>(args: SelectSubset<T, FormationSessionDayUpsertArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FormationSessionDays.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionDayCountArgs} args - Arguments to filter FormationSessionDays to count.
+     * @example
+     * // Count the number of FormationSessionDays
+     * const count = await prisma.formationSessionDay.count({
+     *   where: {
+     *     // ... the filter for the FormationSessionDays we want to count
+     *   }
+     * })
+    **/
+    count<T extends FormationSessionDayCountArgs>(
+      args?: Subset<T, FormationSessionDayCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FormationSessionDayCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FormationSessionDay.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionDayAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FormationSessionDayAggregateArgs>(args: Subset<T, FormationSessionDayAggregateArgs>): Prisma.PrismaPromise<GetFormationSessionDayAggregateType<T>>
+
+    /**
+     * Group by FormationSessionDay.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionDayGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FormationSessionDayGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FormationSessionDayGroupByArgs['orderBy'] }
+        : { orderBy?: FormationSessionDayGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FormationSessionDayGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFormationSessionDayGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FormationSessionDay model
+   */
+  readonly fields: FormationSessionDayFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FormationSessionDay.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FormationSessionDayClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    session<T extends FormationSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDefaultArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    attendances<T extends FormationSessionDay$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDay$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FormationSessionDay model
+   */
+  interface FormationSessionDayFieldRefs {
+    readonly id: FieldRef<"FormationSessionDay", 'String'>
+    readonly sessionId: FieldRef<"FormationSessionDay", 'String'>
+    readonly dayDate: FieldRef<"FormationSessionDay", 'DateTime'>
+    readonly journalNotesMorning: FieldRef<"FormationSessionDay", 'String'>
+    readonly journalNotesEvening: FieldRef<"FormationSessionDay", 'String'>
+    readonly createdAt: FieldRef<"FormationSessionDay", 'DateTime'>
+    readonly updatedAt: FieldRef<"FormationSessionDay", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FormationSessionDay findUnique
+   */
+  export type FormationSessionDayFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionDay to fetch.
+     */
+    where: FormationSessionDayWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionDay findUniqueOrThrow
+   */
+  export type FormationSessionDayFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionDay to fetch.
+     */
+    where: FormationSessionDayWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionDay findFirst
+   */
+  export type FormationSessionDayFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionDay to fetch.
+     */
+    where?: FormationSessionDayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionDays to fetch.
+     */
+    orderBy?: FormationSessionDayOrderByWithRelationInput | FormationSessionDayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormationSessionDays.
+     */
+    cursor?: FormationSessionDayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionDays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionDays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionDays.
+     */
+    distinct?: FormationSessionDayScalarFieldEnum | FormationSessionDayScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionDay findFirstOrThrow
+   */
+  export type FormationSessionDayFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionDay to fetch.
+     */
+    where?: FormationSessionDayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionDays to fetch.
+     */
+    orderBy?: FormationSessionDayOrderByWithRelationInput | FormationSessionDayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormationSessionDays.
+     */
+    cursor?: FormationSessionDayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionDays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionDays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionDays.
+     */
+    distinct?: FormationSessionDayScalarFieldEnum | FormationSessionDayScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionDay findMany
+   */
+  export type FormationSessionDayFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionDays to fetch.
+     */
+    where?: FormationSessionDayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionDays to fetch.
+     */
+    orderBy?: FormationSessionDayOrderByWithRelationInput | FormationSessionDayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FormationSessionDays.
+     */
+    cursor?: FormationSessionDayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionDays from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionDays.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionDays.
+     */
+    distinct?: FormationSessionDayScalarFieldEnum | FormationSessionDayScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionDay create
+   */
+  export type FormationSessionDayCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FormationSessionDay.
+     */
+    data: XOR<FormationSessionDayCreateInput, FormationSessionDayUncheckedCreateInput>
+  }
+
+  /**
+   * FormationSessionDay createMany
+   */
+  export type FormationSessionDayCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FormationSessionDays.
+     */
+    data: FormationSessionDayCreateManyInput | FormationSessionDayCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FormationSessionDay createManyAndReturn
+   */
+  export type FormationSessionDayCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * The data used to create many FormationSessionDays.
+     */
+    data: FormationSessionDayCreateManyInput | FormationSessionDayCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionDay update
+   */
+  export type FormationSessionDayUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FormationSessionDay.
+     */
+    data: XOR<FormationSessionDayUpdateInput, FormationSessionDayUncheckedUpdateInput>
+    /**
+     * Choose, which FormationSessionDay to update.
+     */
+    where: FormationSessionDayWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionDay updateMany
+   */
+  export type FormationSessionDayUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FormationSessionDays.
+     */
+    data: XOR<FormationSessionDayUpdateManyMutationInput, FormationSessionDayUncheckedUpdateManyInput>
+    /**
+     * Filter which FormationSessionDays to update
+     */
+    where?: FormationSessionDayWhereInput
+    /**
+     * Limit how many FormationSessionDays to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormationSessionDay updateManyAndReturn
+   */
+  export type FormationSessionDayUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * The data used to update FormationSessionDays.
+     */
+    data: XOR<FormationSessionDayUpdateManyMutationInput, FormationSessionDayUncheckedUpdateManyInput>
+    /**
+     * Filter which FormationSessionDays to update
+     */
+    where?: FormationSessionDayWhereInput
+    /**
+     * Limit how many FormationSessionDays to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionDay upsert
+   */
+  export type FormationSessionDayUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FormationSessionDay to update in case it exists.
+     */
+    where: FormationSessionDayWhereUniqueInput
+    /**
+     * In case the FormationSessionDay found by the `where` argument doesn't exist, create a new FormationSessionDay with this data.
+     */
+    create: XOR<FormationSessionDayCreateInput, FormationSessionDayUncheckedCreateInput>
+    /**
+     * In case the FormationSessionDay was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FormationSessionDayUpdateInput, FormationSessionDayUncheckedUpdateInput>
+  }
+
+  /**
+   * FormationSessionDay delete
+   */
+  export type FormationSessionDayDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    /**
+     * Filter which FormationSessionDay to delete.
+     */
+    where: FormationSessionDayWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionDay deleteMany
+   */
+  export type FormationSessionDayDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormationSessionDays to delete
+     */
+    where?: FormationSessionDayWhereInput
+    /**
+     * Limit how many FormationSessionDays to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormationSessionDay.attendances
+   */
+  export type FormationSessionDay$attendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    where?: FormationSessionEmargementWhereInput
+    orderBy?: FormationSessionEmargementOrderByWithRelationInput | FormationSessionEmargementOrderByWithRelationInput[]
+    cursor?: FormationSessionEmargementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionDay without action
+   */
+  export type FormationSessionDayDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FormationSessionEmargement
+   */
+
+  export type AggregateFormationSessionEmargement = {
+    _count: FormationSessionEmargementCountAggregateOutputType | null
+    _min: FormationSessionEmargementMinAggregateOutputType | null
+    _max: FormationSessionEmargementMaxAggregateOutputType | null
+  }
+
+  export type FormationSessionEmargementMinAggregateOutputType = {
+    id: string | null
+    dayId: string | null
+    participantId: string | null
+    slot: $Enums.FormationSessionDaySlot | null
+    status: $Enums.FormationSessionEmargementStatus | null
+    markedAt: Date | null
+    markedByUserId: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormationSessionEmargementMaxAggregateOutputType = {
+    id: string | null
+    dayId: string | null
+    participantId: string | null
+    slot: $Enums.FormationSessionDaySlot | null
+    status: $Enums.FormationSessionEmargementStatus | null
+    markedAt: Date | null
+    markedByUserId: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormationSessionEmargementCountAggregateOutputType = {
+    id: number
+    dayId: number
+    participantId: number
+    slot: number
+    status: number
+    markedAt: number
+    markedByUserId: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FormationSessionEmargementMinAggregateInputType = {
+    id?: true
+    dayId?: true
+    participantId?: true
+    slot?: true
+    status?: true
+    markedAt?: true
+    markedByUserId?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormationSessionEmargementMaxAggregateInputType = {
+    id?: true
+    dayId?: true
+    participantId?: true
+    slot?: true
+    status?: true
+    markedAt?: true
+    markedByUserId?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormationSessionEmargementCountAggregateInputType = {
+    id?: true
+    dayId?: true
+    participantId?: true
+    slot?: true
+    status?: true
+    markedAt?: true
+    markedByUserId?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FormationSessionEmargementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormationSessionEmargement to aggregate.
+     */
+    where?: FormationSessionEmargementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionEmargements to fetch.
+     */
+    orderBy?: FormationSessionEmargementOrderByWithRelationInput | FormationSessionEmargementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FormationSessionEmargementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionEmargements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionEmargements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FormationSessionEmargements
+    **/
+    _count?: true | FormationSessionEmargementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FormationSessionEmargementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FormationSessionEmargementMaxAggregateInputType
+  }
+
+  export type GetFormationSessionEmargementAggregateType<T extends FormationSessionEmargementAggregateArgs> = {
+        [P in keyof T & keyof AggregateFormationSessionEmargement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFormationSessionEmargement[P]>
+      : GetScalarType<T[P], AggregateFormationSessionEmargement[P]>
+  }
+
+
+
+
+  export type FormationSessionEmargementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionEmargementWhereInput
+    orderBy?: FormationSessionEmargementOrderByWithAggregationInput | FormationSessionEmargementOrderByWithAggregationInput[]
+    by: FormationSessionEmargementScalarFieldEnum[] | FormationSessionEmargementScalarFieldEnum
+    having?: FormationSessionEmargementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FormationSessionEmargementCountAggregateInputType | true
+    _min?: FormationSessionEmargementMinAggregateInputType
+    _max?: FormationSessionEmargementMaxAggregateInputType
+  }
+
+  export type FormationSessionEmargementGroupByOutputType = {
+    id: string
+    dayId: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+    status: $Enums.FormationSessionEmargementStatus
+    markedAt: Date | null
+    markedByUserId: string | null
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FormationSessionEmargementCountAggregateOutputType | null
+    _min: FormationSessionEmargementMinAggregateOutputType | null
+    _max: FormationSessionEmargementMaxAggregateOutputType | null
+  }
+
+  type GetFormationSessionEmargementGroupByPayload<T extends FormationSessionEmargementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FormationSessionEmargementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FormationSessionEmargementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FormationSessionEmargementGroupByOutputType[P]>
+            : GetScalarType<T[P], FormationSessionEmargementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FormationSessionEmargementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dayId?: boolean
+    participantId?: boolean
+    slot?: boolean
+    status?: boolean
+    markedAt?: boolean
+    markedByUserId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    markedBy?: boolean | FormationSessionEmargement$markedByArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionEmargement"]>
+
+  export type FormationSessionEmargementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dayId?: boolean
+    participantId?: boolean
+    slot?: boolean
+    status?: boolean
+    markedAt?: boolean
+    markedByUserId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    markedBy?: boolean | FormationSessionEmargement$markedByArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionEmargement"]>
+
+  export type FormationSessionEmargementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dayId?: boolean
+    participantId?: boolean
+    slot?: boolean
+    status?: boolean
+    markedAt?: boolean
+    markedByUserId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    markedBy?: boolean | FormationSessionEmargement$markedByArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionEmargement"]>
+
+  export type FormationSessionEmargementSelectScalar = {
+    id?: boolean
+    dayId?: boolean
+    participantId?: boolean
+    slot?: boolean
+    status?: boolean
+    markedAt?: boolean
+    markedByUserId?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FormationSessionEmargementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dayId" | "participantId" | "slot" | "status" | "markedAt" | "markedByUserId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionEmargement"]>
+  export type FormationSessionEmargementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    markedBy?: boolean | FormationSessionEmargement$markedByArgs<ExtArgs>
+  }
+  export type FormationSessionEmargementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    markedBy?: boolean | FormationSessionEmargement$markedByArgs<ExtArgs>
+  }
+  export type FormationSessionEmargementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    markedBy?: boolean | FormationSessionEmargement$markedByArgs<ExtArgs>
+  }
+
+  export type $FormationSessionEmargementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FormationSessionEmargement"
+    objects: {
+      day: Prisma.$FormationSessionDayPayload<ExtArgs>
+      participant: Prisma.$FormationSessionParticipantPayload<ExtArgs>
+      markedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      dayId: string
+      participantId: string
+      slot: $Enums.FormationSessionDaySlot
+      status: $Enums.FormationSessionEmargementStatus
+      markedAt: Date | null
+      markedByUserId: string | null
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["formationSessionEmargement"]>
+    composites: {}
+  }
+
+  type FormationSessionEmargementGetPayload<S extends boolean | null | undefined | FormationSessionEmargementDefaultArgs> = $Result.GetResult<Prisma.$FormationSessionEmargementPayload, S>
+
+  type FormationSessionEmargementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FormationSessionEmargementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FormationSessionEmargementCountAggregateInputType | true
+    }
+
+  export interface FormationSessionEmargementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FormationSessionEmargement'], meta: { name: 'FormationSessionEmargement' } }
+    /**
+     * Find zero or one FormationSessionEmargement that matches the filter.
+     * @param {FormationSessionEmargementFindUniqueArgs} args - Arguments to find a FormationSessionEmargement
+     * @example
+     * // Get one FormationSessionEmargement
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FormationSessionEmargementFindUniqueArgs>(args: SelectSubset<T, FormationSessionEmargementFindUniqueArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FormationSessionEmargement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FormationSessionEmargementFindUniqueOrThrowArgs} args - Arguments to find a FormationSessionEmargement
+     * @example
+     * // Get one FormationSessionEmargement
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FormationSessionEmargementFindUniqueOrThrowArgs>(args: SelectSubset<T, FormationSessionEmargementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormationSessionEmargement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionEmargementFindFirstArgs} args - Arguments to find a FormationSessionEmargement
+     * @example
+     * // Get one FormationSessionEmargement
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FormationSessionEmargementFindFirstArgs>(args?: SelectSubset<T, FormationSessionEmargementFindFirstArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormationSessionEmargement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionEmargementFindFirstOrThrowArgs} args - Arguments to find a FormationSessionEmargement
+     * @example
+     * // Get one FormationSessionEmargement
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FormationSessionEmargementFindFirstOrThrowArgs>(args?: SelectSubset<T, FormationSessionEmargementFindFirstOrThrowArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FormationSessionEmargements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionEmargementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FormationSessionEmargements
+     * const formationSessionEmargements = await prisma.formationSessionEmargement.findMany()
+     * 
+     * // Get first 10 FormationSessionEmargements
+     * const formationSessionEmargements = await prisma.formationSessionEmargement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const formationSessionEmargementWithIdOnly = await prisma.formationSessionEmargement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FormationSessionEmargementFindManyArgs>(args?: SelectSubset<T, FormationSessionEmargementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FormationSessionEmargement.
+     * @param {FormationSessionEmargementCreateArgs} args - Arguments to create a FormationSessionEmargement.
+     * @example
+     * // Create one FormationSessionEmargement
+     * const FormationSessionEmargement = await prisma.formationSessionEmargement.create({
+     *   data: {
+     *     // ... data to create a FormationSessionEmargement
+     *   }
+     * })
+     * 
+     */
+    create<T extends FormationSessionEmargementCreateArgs>(args: SelectSubset<T, FormationSessionEmargementCreateArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FormationSessionEmargements.
+     * @param {FormationSessionEmargementCreateManyArgs} args - Arguments to create many FormationSessionEmargements.
+     * @example
+     * // Create many FormationSessionEmargements
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FormationSessionEmargementCreateManyArgs>(args?: SelectSubset<T, FormationSessionEmargementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FormationSessionEmargements and returns the data saved in the database.
+     * @param {FormationSessionEmargementCreateManyAndReturnArgs} args - Arguments to create many FormationSessionEmargements.
+     * @example
+     * // Create many FormationSessionEmargements
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FormationSessionEmargements and only return the `id`
+     * const formationSessionEmargementWithIdOnly = await prisma.formationSessionEmargement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FormationSessionEmargementCreateManyAndReturnArgs>(args?: SelectSubset<T, FormationSessionEmargementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FormationSessionEmargement.
+     * @param {FormationSessionEmargementDeleteArgs} args - Arguments to delete one FormationSessionEmargement.
+     * @example
+     * // Delete one FormationSessionEmargement
+     * const FormationSessionEmargement = await prisma.formationSessionEmargement.delete({
+     *   where: {
+     *     // ... filter to delete one FormationSessionEmargement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FormationSessionEmargementDeleteArgs>(args: SelectSubset<T, FormationSessionEmargementDeleteArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FormationSessionEmargement.
+     * @param {FormationSessionEmargementUpdateArgs} args - Arguments to update one FormationSessionEmargement.
+     * @example
+     * // Update one FormationSessionEmargement
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FormationSessionEmargementUpdateArgs>(args: SelectSubset<T, FormationSessionEmargementUpdateArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FormationSessionEmargements.
+     * @param {FormationSessionEmargementDeleteManyArgs} args - Arguments to filter FormationSessionEmargements to delete.
+     * @example
+     * // Delete a few FormationSessionEmargements
+     * const { count } = await prisma.formationSessionEmargement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FormationSessionEmargementDeleteManyArgs>(args?: SelectSubset<T, FormationSessionEmargementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormationSessionEmargements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionEmargementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FormationSessionEmargements
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FormationSessionEmargementUpdateManyArgs>(args: SelectSubset<T, FormationSessionEmargementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormationSessionEmargements and returns the data updated in the database.
+     * @param {FormationSessionEmargementUpdateManyAndReturnArgs} args - Arguments to update many FormationSessionEmargements.
+     * @example
+     * // Update many FormationSessionEmargements
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FormationSessionEmargements and only return the `id`
+     * const formationSessionEmargementWithIdOnly = await prisma.formationSessionEmargement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FormationSessionEmargementUpdateManyAndReturnArgs>(args: SelectSubset<T, FormationSessionEmargementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FormationSessionEmargement.
+     * @param {FormationSessionEmargementUpsertArgs} args - Arguments to update or create a FormationSessionEmargement.
+     * @example
+     * // Update or create a FormationSessionEmargement
+     * const formationSessionEmargement = await prisma.formationSessionEmargement.upsert({
+     *   create: {
+     *     // ... data to create a FormationSessionEmargement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FormationSessionEmargement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FormationSessionEmargementUpsertArgs>(args: SelectSubset<T, FormationSessionEmargementUpsertArgs<ExtArgs>>): Prisma__FormationSessionEmargementClient<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FormationSessionEmargements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionEmargementCountArgs} args - Arguments to filter FormationSessionEmargements to count.
+     * @example
+     * // Count the number of FormationSessionEmargements
+     * const count = await prisma.formationSessionEmargement.count({
+     *   where: {
+     *     // ... the filter for the FormationSessionEmargements we want to count
+     *   }
+     * })
+    **/
+    count<T extends FormationSessionEmargementCountArgs>(
+      args?: Subset<T, FormationSessionEmargementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FormationSessionEmargementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FormationSessionEmargement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionEmargementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FormationSessionEmargementAggregateArgs>(args: Subset<T, FormationSessionEmargementAggregateArgs>): Prisma.PrismaPromise<GetFormationSessionEmargementAggregateType<T>>
+
+    /**
+     * Group by FormationSessionEmargement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionEmargementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FormationSessionEmargementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FormationSessionEmargementGroupByArgs['orderBy'] }
+        : { orderBy?: FormationSessionEmargementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FormationSessionEmargementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFormationSessionEmargementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FormationSessionEmargement model
+   */
+  readonly fields: FormationSessionEmargementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FormationSessionEmargement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FormationSessionEmargementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    day<T extends FormationSessionDayDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDayDefaultArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    participant<T extends FormationSessionParticipantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipantDefaultArgs<ExtArgs>>): Prisma__FormationSessionParticipantClient<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    markedBy<T extends FormationSessionEmargement$markedByArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionEmargement$markedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FormationSessionEmargement model
+   */
+  interface FormationSessionEmargementFieldRefs {
+    readonly id: FieldRef<"FormationSessionEmargement", 'String'>
+    readonly dayId: FieldRef<"FormationSessionEmargement", 'String'>
+    readonly participantId: FieldRef<"FormationSessionEmargement", 'String'>
+    readonly slot: FieldRef<"FormationSessionEmargement", 'FormationSessionDaySlot'>
+    readonly status: FieldRef<"FormationSessionEmargement", 'FormationSessionEmargementStatus'>
+    readonly markedAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
+    readonly markedByUserId: FieldRef<"FormationSessionEmargement", 'String'>
+    readonly notes: FieldRef<"FormationSessionEmargement", 'String'>
+    readonly createdAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
+    readonly updatedAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FormationSessionEmargement findUnique
+   */
+  export type FormationSessionEmargementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionEmargement to fetch.
+     */
+    where: FormationSessionEmargementWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionEmargement findUniqueOrThrow
+   */
+  export type FormationSessionEmargementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionEmargement to fetch.
+     */
+    where: FormationSessionEmargementWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionEmargement findFirst
+   */
+  export type FormationSessionEmargementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionEmargement to fetch.
+     */
+    where?: FormationSessionEmargementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionEmargements to fetch.
+     */
+    orderBy?: FormationSessionEmargementOrderByWithRelationInput | FormationSessionEmargementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormationSessionEmargements.
+     */
+    cursor?: FormationSessionEmargementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionEmargements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionEmargements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionEmargements.
+     */
+    distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionEmargement findFirstOrThrow
+   */
+  export type FormationSessionEmargementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionEmargement to fetch.
+     */
+    where?: FormationSessionEmargementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionEmargements to fetch.
+     */
+    orderBy?: FormationSessionEmargementOrderByWithRelationInput | FormationSessionEmargementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormationSessionEmargements.
+     */
+    cursor?: FormationSessionEmargementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionEmargements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionEmargements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionEmargements.
+     */
+    distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionEmargement findMany
+   */
+  export type FormationSessionEmargementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionEmargements to fetch.
+     */
+    where?: FormationSessionEmargementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionEmargements to fetch.
+     */
+    orderBy?: FormationSessionEmargementOrderByWithRelationInput | FormationSessionEmargementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FormationSessionEmargements.
+     */
+    cursor?: FormationSessionEmargementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionEmargements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionEmargements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionEmargements.
+     */
+    distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionEmargement create
+   */
+  export type FormationSessionEmargementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FormationSessionEmargement.
+     */
+    data: XOR<FormationSessionEmargementCreateInput, FormationSessionEmargementUncheckedCreateInput>
+  }
+
+  /**
+   * FormationSessionEmargement createMany
+   */
+  export type FormationSessionEmargementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FormationSessionEmargements.
+     */
+    data: FormationSessionEmargementCreateManyInput | FormationSessionEmargementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FormationSessionEmargement createManyAndReturn
+   */
+  export type FormationSessionEmargementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * The data used to create many FormationSessionEmargements.
+     */
+    data: FormationSessionEmargementCreateManyInput | FormationSessionEmargementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionEmargement update
+   */
+  export type FormationSessionEmargementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FormationSessionEmargement.
+     */
+    data: XOR<FormationSessionEmargementUpdateInput, FormationSessionEmargementUncheckedUpdateInput>
+    /**
+     * Choose, which FormationSessionEmargement to update.
+     */
+    where: FormationSessionEmargementWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionEmargement updateMany
+   */
+  export type FormationSessionEmargementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FormationSessionEmargements.
+     */
+    data: XOR<FormationSessionEmargementUpdateManyMutationInput, FormationSessionEmargementUncheckedUpdateManyInput>
+    /**
+     * Filter which FormationSessionEmargements to update
+     */
+    where?: FormationSessionEmargementWhereInput
+    /**
+     * Limit how many FormationSessionEmargements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormationSessionEmargement updateManyAndReturn
+   */
+  export type FormationSessionEmargementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * The data used to update FormationSessionEmargements.
+     */
+    data: XOR<FormationSessionEmargementUpdateManyMutationInput, FormationSessionEmargementUncheckedUpdateManyInput>
+    /**
+     * Filter which FormationSessionEmargements to update
+     */
+    where?: FormationSessionEmargementWhereInput
+    /**
+     * Limit how many FormationSessionEmargements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionEmargement upsert
+   */
+  export type FormationSessionEmargementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FormationSessionEmargement to update in case it exists.
+     */
+    where: FormationSessionEmargementWhereUniqueInput
+    /**
+     * In case the FormationSessionEmargement found by the `where` argument doesn't exist, create a new FormationSessionEmargement with this data.
+     */
+    create: XOR<FormationSessionEmargementCreateInput, FormationSessionEmargementUncheckedCreateInput>
+    /**
+     * In case the FormationSessionEmargement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FormationSessionEmargementUpdateInput, FormationSessionEmargementUncheckedUpdateInput>
+  }
+
+  /**
+   * FormationSessionEmargement delete
+   */
+  export type FormationSessionEmargementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
+    /**
+     * Filter which FormationSessionEmargement to delete.
+     */
+    where: FormationSessionEmargementWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionEmargement deleteMany
+   */
+  export type FormationSessionEmargementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormationSessionEmargements to delete
+     */
+    where?: FormationSessionEmargementWhereInput
+    /**
+     * Limit how many FormationSessionEmargements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormationSessionEmargement.markedBy
+   */
+  export type FormationSessionEmargement$markedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * FormationSessionEmargement without action
+   */
+  export type FormationSessionEmargementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionEmargement
+     */
+    select?: FormationSessionEmargementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionEmargement
+     */
+    omit?: FormationSessionEmargementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionEmargementInclude<ExtArgs> | null
   }
 
 
@@ -123337,6 +128584,7 @@ export namespace Prisma {
     carteProNumber: 'carteProNumber',
     carteProExpiry: 'carteProExpiry',
     isSchedulable: 'isSchedulable',
+    landingPresentation: 'landingPresentation',
     documentCni: 'documentCni',
     documentAssurance: 'documentAssurance',
     documentResidencePermit: 'documentResidencePermit',
@@ -123760,12 +129008,26 @@ export namespace Prisma {
     id: 'id',
     label: 'label',
     code: 'code',
+    schoolInternalService: 'schoolInternalService',
     sortOrder: 'sortOrder',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type RhPositionScalarFieldEnum = (typeof RhPositionScalarFieldEnum)[keyof typeof RhPositionScalarFieldEnum]
+
+
+  export const RhQualificationScalarFieldEnum: {
+    id: 'id',
+    label: 'label',
+    code: 'code',
+    schoolInternalService: 'schoolInternalService',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RhQualificationScalarFieldEnum = (typeof RhQualificationScalarFieldEnum)[keyof typeof RhQualificationScalarFieldEnum]
 
 
   export const EquipmentScalarFieldEnum: {
@@ -123889,6 +129151,27 @@ export namespace Prisma {
   export type FormationCatalogOfferScalarFieldEnum = (typeof FormationCatalogOfferScalarFieldEnum)[keyof typeof FormationCatalogOfferScalarFieldEnum]
 
 
+  export const LandingTeamOfferScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    volet: 'volet',
+    catalogStatus: 'catalogStatus',
+    sortOrder: 'sortOrder',
+    titleOverride: 'titleOverride',
+    certificationsLabelOverride: 'certificationsLabelOverride',
+    bioOverride: 'bioOverride',
+    statAOverride: 'statAOverride',
+    statBOverride: 'statBOverride',
+    ratingOverride: 'ratingOverride',
+    linkedinUrl: 'linkedinUrl',
+    websiteUrl: 'websiteUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type LandingTeamOfferScalarFieldEnum = (typeof LandingTeamOfferScalarFieldEnum)[keyof typeof LandingTeamOfferScalarFieldEnum]
+
+
   export const FormationVenueRoomScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -124000,11 +129283,43 @@ export namespace Prisma {
     examDate: 'examDate',
     certifiedAt: 'certifiedAt',
     trainingCompletedAt: 'trainingCompletedAt',
+    fundingMode: 'fundingMode',
+    fundingReference: 'fundingReference',
+    fundingNotes: 'fundingNotes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type FormationSessionParticipantScalarFieldEnum = (typeof FormationSessionParticipantScalarFieldEnum)[keyof typeof FormationSessionParticipantScalarFieldEnum]
+
+
+  export const FormationSessionDayScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    dayDate: 'dayDate',
+    journalNotesMorning: 'journalNotesMorning',
+    journalNotesEvening: 'journalNotesEvening',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FormationSessionDayScalarFieldEnum = (typeof FormationSessionDayScalarFieldEnum)[keyof typeof FormationSessionDayScalarFieldEnum]
+
+
+  export const FormationSessionEmargementScalarFieldEnum: {
+    id: 'id',
+    dayId: 'dayId',
+    participantId: 'participantId',
+    slot: 'slot',
+    status: 'status',
+    markedAt: 'markedAt',
+    markedByUserId: 'markedByUserId',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FormationSessionEmargementScalarFieldEnum = (typeof FormationSessionEmargementScalarFieldEnum)[keyof typeof FormationSessionEmargementScalarFieldEnum]
 
 
   export const FormationAttestationScalarFieldEnum: {
@@ -125362,6 +130677,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'LandingTeamVolet'
+   */
+  export type EnumLandingTeamVoletFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LandingTeamVolet'>
+    
+
+
+  /**
+   * Reference to a field of type 'LandingTeamVolet[]'
+   */
+  export type ListEnumLandingTeamVoletFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LandingTeamVolet[]'>
+    
+
+
+  /**
    * Reference to a field of type 'VenueRoomBookingKind'
    */
   export type EnumVenueRoomBookingKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VenueRoomBookingKind'>
@@ -125456,6 +130785,34 @@ export namespace Prisma {
    * Reference to a field of type 'FormationExamOutcome[]'
    */
   export type ListEnumFormationExamOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormationExamOutcome[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FormationSessionDaySlot'
+   */
+  export type EnumFormationSessionDaySlotFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormationSessionDaySlot'>
+    
+
+
+  /**
+   * Reference to a field of type 'FormationSessionDaySlot[]'
+   */
+  export type ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormationSessionDaySlot[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FormationSessionEmargementStatus'
+   */
+  export type EnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormationSessionEmargementStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'FormationSessionEmargementStatus[]'
+   */
+  export type ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormationSessionEmargementStatus[]'>
     
 
 
@@ -125936,6 +131293,7 @@ export namespace Prisma {
     carteProNumber?: StringNullableFilter<"User"> | string | null
     carteProExpiry?: DateTimeNullableFilter<"User"> | Date | string | null
     isSchedulable?: BoolFilter<"User"> | boolean
+    landingPresentation?: StringNullableFilter<"User"> | string | null
     documentCni?: StringNullableFilter<"User"> | string | null
     documentAssurance?: StringNullableFilter<"User"> | string | null
     documentResidencePermit?: StringNullableFilter<"User"> | string | null
@@ -125962,6 +131320,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionListRelationFilter
     quizAttempts?: QuizAttemptListRelationFilter
     formationSessionParticipants?: FormationSessionParticipantListRelationFilter
+    formationSessionEmargementsMarked?: FormationSessionEmargementListRelationFilter
     formationAttestations?: FormationAttestationListRelationFilter
     candidatures?: CandidatureListRelationFilter
     complianceDossiers?: ComplianceDossierListRelationFilter
@@ -125982,6 +131341,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleListRelationFilter
     collaborateurProfile?: XOR<CollaborateurProfileNullableScalarRelationFilter, CollaborateurProfileWhereInput> | null
     formateurProfile?: XOR<FormateurProfileNullableScalarRelationFilter, FormateurProfileWhereInput> | null
+    landingTeamOffer?: XOR<LandingTeamOfferNullableScalarRelationFilter, LandingTeamOfferWhereInput> | null
     managedCollaborateurs?: CollaborateurProfileListRelationFilter
     createdFileAssets?: FileAssetListRelationFilter
     createdFileAssetVersions?: FileAssetVersionListRelationFilter
@@ -126042,6 +131402,7 @@ export namespace Prisma {
     carteProNumber?: SortOrderInput | SortOrder
     carteProExpiry?: SortOrderInput | SortOrder
     isSchedulable?: SortOrder
+    landingPresentation?: SortOrderInput | SortOrder
     documentCni?: SortOrderInput | SortOrder
     documentAssurance?: SortOrderInput | SortOrder
     documentResidencePermit?: SortOrderInput | SortOrder
@@ -126068,6 +131429,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionOrderByRelationAggregateInput
     quizAttempts?: QuizAttemptOrderByRelationAggregateInput
     formationSessionParticipants?: FormationSessionParticipantOrderByRelationAggregateInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementOrderByRelationAggregateInput
     formationAttestations?: FormationAttestationOrderByRelationAggregateInput
     candidatures?: CandidatureOrderByRelationAggregateInput
     complianceDossiers?: ComplianceDossierOrderByRelationAggregateInput
@@ -126088,6 +131450,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleOrderByRelationAggregateInput
     collaborateurProfile?: CollaborateurProfileOrderByWithRelationInput
     formateurProfile?: FormateurProfileOrderByWithRelationInput
+    landingTeamOffer?: LandingTeamOfferOrderByWithRelationInput
     managedCollaborateurs?: CollaborateurProfileOrderByRelationAggregateInput
     createdFileAssets?: FileAssetOrderByRelationAggregateInput
     createdFileAssetVersions?: FileAssetVersionOrderByRelationAggregateInput
@@ -126151,6 +131514,7 @@ export namespace Prisma {
     carteProNumber?: StringNullableFilter<"User"> | string | null
     carteProExpiry?: DateTimeNullableFilter<"User"> | Date | string | null
     isSchedulable?: BoolFilter<"User"> | boolean
+    landingPresentation?: StringNullableFilter<"User"> | string | null
     documentCni?: StringNullableFilter<"User"> | string | null
     documentAssurance?: StringNullableFilter<"User"> | string | null
     documentResidencePermit?: StringNullableFilter<"User"> | string | null
@@ -126177,6 +131541,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionListRelationFilter
     quizAttempts?: QuizAttemptListRelationFilter
     formationSessionParticipants?: FormationSessionParticipantListRelationFilter
+    formationSessionEmargementsMarked?: FormationSessionEmargementListRelationFilter
     formationAttestations?: FormationAttestationListRelationFilter
     candidatures?: CandidatureListRelationFilter
     complianceDossiers?: ComplianceDossierListRelationFilter
@@ -126197,6 +131562,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleListRelationFilter
     collaborateurProfile?: XOR<CollaborateurProfileNullableScalarRelationFilter, CollaborateurProfileWhereInput> | null
     formateurProfile?: XOR<FormateurProfileNullableScalarRelationFilter, FormateurProfileWhereInput> | null
+    landingTeamOffer?: XOR<LandingTeamOfferNullableScalarRelationFilter, LandingTeamOfferWhereInput> | null
     managedCollaborateurs?: CollaborateurProfileListRelationFilter
     createdFileAssets?: FileAssetListRelationFilter
     createdFileAssetVersions?: FileAssetVersionListRelationFilter
@@ -126257,6 +131623,7 @@ export namespace Prisma {
     carteProNumber?: SortOrderInput | SortOrder
     carteProExpiry?: SortOrderInput | SortOrder
     isSchedulable?: SortOrder
+    landingPresentation?: SortOrderInput | SortOrder
     documentCni?: SortOrderInput | SortOrder
     documentAssurance?: SortOrderInput | SortOrder
     documentResidencePermit?: SortOrderInput | SortOrder
@@ -126312,6 +131679,7 @@ export namespace Prisma {
     carteProNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     carteProExpiry?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     isSchedulable?: BoolWithAggregatesFilter<"User"> | boolean
+    landingPresentation?: StringNullableWithAggregatesFilter<"User"> | string | null
     documentCni?: StringNullableWithAggregatesFilter<"User"> | string | null
     documentAssurance?: StringNullableWithAggregatesFilter<"User"> | string | null
     documentResidencePermit?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -128445,6 +133813,7 @@ export namespace Prisma {
     id?: StringFilter<"RhPosition"> | string
     label?: StringFilter<"RhPosition"> | string
     code?: StringNullableFilter<"RhPosition"> | string | null
+    schoolInternalService?: EnumSchoolInternalServiceNullableFilter<"RhPosition"> | $Enums.SchoolInternalService | null
     sortOrder?: IntFilter<"RhPosition"> | number
     createdAt?: DateTimeFilter<"RhPosition"> | Date | string
     updatedAt?: DateTimeFilter<"RhPosition"> | Date | string
@@ -128456,6 +133825,7 @@ export namespace Prisma {
     id?: SortOrder
     label?: SortOrder
     code?: SortOrderInput | SortOrder
+    schoolInternalService?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -128470,6 +133840,7 @@ export namespace Prisma {
     OR?: RhPositionWhereInput[]
     NOT?: RhPositionWhereInput | RhPositionWhereInput[]
     label?: StringFilter<"RhPosition"> | string
+    schoolInternalService?: EnumSchoolInternalServiceNullableFilter<"RhPosition"> | $Enums.SchoolInternalService | null
     sortOrder?: IntFilter<"RhPosition"> | number
     createdAt?: DateTimeFilter<"RhPosition"> | Date | string
     updatedAt?: DateTimeFilter<"RhPosition"> | Date | string
@@ -128481,6 +133852,7 @@ export namespace Prisma {
     id?: SortOrder
     label?: SortOrder
     code?: SortOrderInput | SortOrder
+    schoolInternalService?: SortOrderInput | SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -128498,9 +133870,74 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"RhPosition"> | string
     label?: StringWithAggregatesFilter<"RhPosition"> | string
     code?: StringNullableWithAggregatesFilter<"RhPosition"> | string | null
+    schoolInternalService?: EnumSchoolInternalServiceNullableWithAggregatesFilter<"RhPosition"> | $Enums.SchoolInternalService | null
     sortOrder?: IntWithAggregatesFilter<"RhPosition"> | number
     createdAt?: DateTimeWithAggregatesFilter<"RhPosition"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"RhPosition"> | Date | string
+  }
+
+  export type RhQualificationWhereInput = {
+    AND?: RhQualificationWhereInput | RhQualificationWhereInput[]
+    OR?: RhQualificationWhereInput[]
+    NOT?: RhQualificationWhereInput | RhQualificationWhereInput[]
+    id?: StringFilter<"RhQualification"> | string
+    label?: StringFilter<"RhQualification"> | string
+    code?: StringFilter<"RhQualification"> | string
+    schoolInternalService?: EnumSchoolInternalServiceFilter<"RhQualification"> | $Enums.SchoolInternalService
+    sortOrder?: IntFilter<"RhQualification"> | number
+    createdAt?: DateTimeFilter<"RhQualification"> | Date | string
+    updatedAt?: DateTimeFilter<"RhQualification"> | Date | string
+  }
+
+  export type RhQualificationOrderByWithRelationInput = {
+    id?: SortOrder
+    label?: SortOrder
+    code?: SortOrder
+    schoolInternalService?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RhQualificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: RhQualificationWhereInput | RhQualificationWhereInput[]
+    OR?: RhQualificationWhereInput[]
+    NOT?: RhQualificationWhereInput | RhQualificationWhereInput[]
+    label?: StringFilter<"RhQualification"> | string
+    schoolInternalService?: EnumSchoolInternalServiceFilter<"RhQualification"> | $Enums.SchoolInternalService
+    sortOrder?: IntFilter<"RhQualification"> | number
+    createdAt?: DateTimeFilter<"RhQualification"> | Date | string
+    updatedAt?: DateTimeFilter<"RhQualification"> | Date | string
+  }, "id" | "code">
+
+  export type RhQualificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    label?: SortOrder
+    code?: SortOrder
+    schoolInternalService?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RhQualificationCountOrderByAggregateInput
+    _avg?: RhQualificationAvgOrderByAggregateInput
+    _max?: RhQualificationMaxOrderByAggregateInput
+    _min?: RhQualificationMinOrderByAggregateInput
+    _sum?: RhQualificationSumOrderByAggregateInput
+  }
+
+  export type RhQualificationScalarWhereWithAggregatesInput = {
+    AND?: RhQualificationScalarWhereWithAggregatesInput | RhQualificationScalarWhereWithAggregatesInput[]
+    OR?: RhQualificationScalarWhereWithAggregatesInput[]
+    NOT?: RhQualificationScalarWhereWithAggregatesInput | RhQualificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RhQualification"> | string
+    label?: StringWithAggregatesFilter<"RhQualification"> | string
+    code?: StringWithAggregatesFilter<"RhQualification"> | string
+    schoolInternalService?: EnumSchoolInternalServiceWithAggregatesFilter<"RhQualification"> | $Enums.SchoolInternalService
+    sortOrder?: IntWithAggregatesFilter<"RhQualification"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"RhQualification"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RhQualification"> | Date | string
   }
 
   export type EquipmentWhereInput = {
@@ -129150,6 +134587,113 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"FormationCatalogOffer"> | Date | string
   }
 
+  export type LandingTeamOfferWhereInput = {
+    AND?: LandingTeamOfferWhereInput | LandingTeamOfferWhereInput[]
+    OR?: LandingTeamOfferWhereInput[]
+    NOT?: LandingTeamOfferWhereInput | LandingTeamOfferWhereInput[]
+    id?: StringFilter<"LandingTeamOffer"> | string
+    userId?: StringFilter<"LandingTeamOffer"> | string
+    volet?: EnumLandingTeamVoletFilter<"LandingTeamOffer"> | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFilter<"LandingTeamOffer"> | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFilter<"LandingTeamOffer"> | number
+    titleOverride?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    certificationsLabelOverride?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    bioOverride?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    statAOverride?: IntNullableFilter<"LandingTeamOffer"> | number | null
+    statBOverride?: IntNullableFilter<"LandingTeamOffer"> | number | null
+    ratingOverride?: FloatNullableFilter<"LandingTeamOffer"> | number | null
+    linkedinUrl?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    websiteUrl?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    createdAt?: DateTimeFilter<"LandingTeamOffer"> | Date | string
+    updatedAt?: DateTimeFilter<"LandingTeamOffer"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type LandingTeamOfferOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    volet?: SortOrder
+    catalogStatus?: SortOrder
+    sortOrder?: SortOrder
+    titleOverride?: SortOrderInput | SortOrder
+    certificationsLabelOverride?: SortOrderInput | SortOrder
+    bioOverride?: SortOrderInput | SortOrder
+    statAOverride?: SortOrderInput | SortOrder
+    statBOverride?: SortOrderInput | SortOrder
+    ratingOverride?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type LandingTeamOfferWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: LandingTeamOfferWhereInput | LandingTeamOfferWhereInput[]
+    OR?: LandingTeamOfferWhereInput[]
+    NOT?: LandingTeamOfferWhereInput | LandingTeamOfferWhereInput[]
+    volet?: EnumLandingTeamVoletFilter<"LandingTeamOffer"> | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFilter<"LandingTeamOffer"> | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFilter<"LandingTeamOffer"> | number
+    titleOverride?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    certificationsLabelOverride?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    bioOverride?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    statAOverride?: IntNullableFilter<"LandingTeamOffer"> | number | null
+    statBOverride?: IntNullableFilter<"LandingTeamOffer"> | number | null
+    ratingOverride?: FloatNullableFilter<"LandingTeamOffer"> | number | null
+    linkedinUrl?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    websiteUrl?: StringNullableFilter<"LandingTeamOffer"> | string | null
+    createdAt?: DateTimeFilter<"LandingTeamOffer"> | Date | string
+    updatedAt?: DateTimeFilter<"LandingTeamOffer"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type LandingTeamOfferOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    volet?: SortOrder
+    catalogStatus?: SortOrder
+    sortOrder?: SortOrder
+    titleOverride?: SortOrderInput | SortOrder
+    certificationsLabelOverride?: SortOrderInput | SortOrder
+    bioOverride?: SortOrderInput | SortOrder
+    statAOverride?: SortOrderInput | SortOrder
+    statBOverride?: SortOrderInput | SortOrder
+    ratingOverride?: SortOrderInput | SortOrder
+    linkedinUrl?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: LandingTeamOfferCountOrderByAggregateInput
+    _avg?: LandingTeamOfferAvgOrderByAggregateInput
+    _max?: LandingTeamOfferMaxOrderByAggregateInput
+    _min?: LandingTeamOfferMinOrderByAggregateInput
+    _sum?: LandingTeamOfferSumOrderByAggregateInput
+  }
+
+  export type LandingTeamOfferScalarWhereWithAggregatesInput = {
+    AND?: LandingTeamOfferScalarWhereWithAggregatesInput | LandingTeamOfferScalarWhereWithAggregatesInput[]
+    OR?: LandingTeamOfferScalarWhereWithAggregatesInput[]
+    NOT?: LandingTeamOfferScalarWhereWithAggregatesInput | LandingTeamOfferScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"LandingTeamOffer"> | string
+    userId?: StringWithAggregatesFilter<"LandingTeamOffer"> | string
+    volet?: EnumLandingTeamVoletWithAggregatesFilter<"LandingTeamOffer"> | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusWithAggregatesFilter<"LandingTeamOffer"> | $Enums.FormationLifecycleStatus
+    sortOrder?: IntWithAggregatesFilter<"LandingTeamOffer"> | number
+    titleOverride?: StringNullableWithAggregatesFilter<"LandingTeamOffer"> | string | null
+    certificationsLabelOverride?: StringNullableWithAggregatesFilter<"LandingTeamOffer"> | string | null
+    bioOverride?: StringNullableWithAggregatesFilter<"LandingTeamOffer"> | string | null
+    statAOverride?: IntNullableWithAggregatesFilter<"LandingTeamOffer"> | number | null
+    statBOverride?: IntNullableWithAggregatesFilter<"LandingTeamOffer"> | number | null
+    ratingOverride?: FloatNullableWithAggregatesFilter<"LandingTeamOffer"> | number | null
+    linkedinUrl?: StringNullableWithAggregatesFilter<"LandingTeamOffer"> | string | null
+    websiteUrl?: StringNullableWithAggregatesFilter<"LandingTeamOffer"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"LandingTeamOffer"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"LandingTeamOffer"> | Date | string
+  }
+
   export type FormationVenueRoomWhereInput = {
     AND?: FormationVenueRoomWhereInput | FormationVenueRoomWhereInput[]
     OR?: FormationVenueRoomWhereInput[]
@@ -129355,6 +134899,7 @@ export namespace Prisma {
     chatConversation?: XOR<ChatConversationNullableScalarRelationFilter, ChatConversationWhereInput> | null
     venueRoom?: XOR<FormationVenueRoomNullableScalarRelationFilter, FormationVenueRoomWhereInput> | null
     participants?: FormationSessionParticipantListRelationFilter
+    suiviDays?: FormationSessionDayListRelationFilter
     attestations?: FormationAttestationListRelationFilter
     portalAnnouncements?: PortalSessionAnnouncementListRelationFilter
     rhTeam?: XOR<RhTeamNullableScalarRelationFilter, RhTeamWhereInput> | null
@@ -129391,6 +134936,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationOrderByWithRelationInput
     venueRoom?: FormationVenueRoomOrderByWithRelationInput
     participants?: FormationSessionParticipantOrderByRelationAggregateInput
+    suiviDays?: FormationSessionDayOrderByRelationAggregateInput
     attestations?: FormationAttestationOrderByRelationAggregateInput
     portalAnnouncements?: PortalSessionAnnouncementOrderByRelationAggregateInput
     rhTeam?: RhTeamOrderByWithRelationInput
@@ -129430,6 +134976,7 @@ export namespace Prisma {
     chatConversation?: XOR<ChatConversationNullableScalarRelationFilter, ChatConversationWhereInput> | null
     venueRoom?: XOR<FormationVenueRoomNullableScalarRelationFilter, FormationVenueRoomWhereInput> | null
     participants?: FormationSessionParticipantListRelationFilter
+    suiviDays?: FormationSessionDayListRelationFilter
     attestations?: FormationAttestationListRelationFilter
     portalAnnouncements?: PortalSessionAnnouncementListRelationFilter
     rhTeam?: XOR<RhTeamNullableScalarRelationFilter, RhTeamWhereInput> | null
@@ -129732,11 +135279,15 @@ export namespace Prisma {
     examDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     certifiedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     trainingCompletedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    fundingMode?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     candidature?: XOR<CandidatureNullableScalarRelationFilter, CandidatureWhereInput> | null
+    emargements?: FormationSessionEmargementListRelationFilter
   }
 
   export type FormationSessionParticipantOrderByWithRelationInput = {
@@ -129749,11 +135300,15 @@ export namespace Prisma {
     examDate?: SortOrderInput | SortOrder
     certifiedAt?: SortOrderInput | SortOrder
     trainingCompletedAt?: SortOrderInput | SortOrder
+    fundingMode?: SortOrderInput | SortOrder
+    fundingReference?: SortOrderInput | SortOrder
+    fundingNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     session?: FormationSessionOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     candidature?: CandidatureOrderByWithRelationInput
+    emargements?: FormationSessionEmargementOrderByRelationAggregateInput
   }
 
   export type FormationSessionParticipantWhereUniqueInput = Prisma.AtLeast<{
@@ -129770,11 +135325,15 @@ export namespace Prisma {
     examDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     certifiedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     trainingCompletedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    fundingMode?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     candidature?: XOR<CandidatureNullableScalarRelationFilter, CandidatureWhereInput> | null
+    emargements?: FormationSessionEmargementListRelationFilter
   }, "id" | "sessionId_userId">
 
   export type FormationSessionParticipantOrderByWithAggregationInput = {
@@ -129787,6 +135346,9 @@ export namespace Prisma {
     examDate?: SortOrderInput | SortOrder
     certifiedAt?: SortOrderInput | SortOrder
     trainingCompletedAt?: SortOrderInput | SortOrder
+    fundingMode?: SortOrderInput | SortOrder
+    fundingReference?: SortOrderInput | SortOrder
+    fundingNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FormationSessionParticipantCountOrderByAggregateInput
@@ -129807,8 +135369,167 @@ export namespace Prisma {
     examDate?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
     certifiedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
     trainingCompletedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
+    fundingMode?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
+    fundingReference?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
+    fundingNotes?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
+  }
+
+  export type FormationSessionDayWhereInput = {
+    AND?: FormationSessionDayWhereInput | FormationSessionDayWhereInput[]
+    OR?: FormationSessionDayWhereInput[]
+    NOT?: FormationSessionDayWhereInput | FormationSessionDayWhereInput[]
+    id?: StringFilter<"FormationSessionDay"> | string
+    sessionId?: StringFilter<"FormationSessionDay"> | string
+    dayDate?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    journalNotesMorning?: StringNullableFilter<"FormationSessionDay"> | string | null
+    journalNotesEvening?: StringNullableFilter<"FormationSessionDay"> | string | null
+    createdAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
+    attendances?: FormationSessionEmargementListRelationFilter
+  }
+
+  export type FormationSessionDayOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    dayDate?: SortOrder
+    journalNotesMorning?: SortOrderInput | SortOrder
+    journalNotesEvening?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    session?: FormationSessionOrderByWithRelationInput
+    attendances?: FormationSessionEmargementOrderByRelationAggregateInput
+  }
+
+  export type FormationSessionDayWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    sessionId_dayDate?: FormationSessionDaySessionIdDayDateCompoundUniqueInput
+    AND?: FormationSessionDayWhereInput | FormationSessionDayWhereInput[]
+    OR?: FormationSessionDayWhereInput[]
+    NOT?: FormationSessionDayWhereInput | FormationSessionDayWhereInput[]
+    sessionId?: StringFilter<"FormationSessionDay"> | string
+    dayDate?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    journalNotesMorning?: StringNullableFilter<"FormationSessionDay"> | string | null
+    journalNotesEvening?: StringNullableFilter<"FormationSessionDay"> | string | null
+    createdAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
+    attendances?: FormationSessionEmargementListRelationFilter
+  }, "id" | "sessionId_dayDate">
+
+  export type FormationSessionDayOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    dayDate?: SortOrder
+    journalNotesMorning?: SortOrderInput | SortOrder
+    journalNotesEvening?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FormationSessionDayCountOrderByAggregateInput
+    _max?: FormationSessionDayMaxOrderByAggregateInput
+    _min?: FormationSessionDayMinOrderByAggregateInput
+  }
+
+  export type FormationSessionDayScalarWhereWithAggregatesInput = {
+    AND?: FormationSessionDayScalarWhereWithAggregatesInput | FormationSessionDayScalarWhereWithAggregatesInput[]
+    OR?: FormationSessionDayScalarWhereWithAggregatesInput[]
+    NOT?: FormationSessionDayScalarWhereWithAggregatesInput | FormationSessionDayScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FormationSessionDay"> | string
+    sessionId?: StringWithAggregatesFilter<"FormationSessionDay"> | string
+    dayDate?: DateTimeWithAggregatesFilter<"FormationSessionDay"> | Date | string
+    journalNotesMorning?: StringNullableWithAggregatesFilter<"FormationSessionDay"> | string | null
+    journalNotesEvening?: StringNullableWithAggregatesFilter<"FormationSessionDay"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FormationSessionDay"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionDay"> | Date | string
+  }
+
+  export type FormationSessionEmargementWhereInput = {
+    AND?: FormationSessionEmargementWhereInput | FormationSessionEmargementWhereInput[]
+    OR?: FormationSessionEmargementWhereInput[]
+    NOT?: FormationSessionEmargementWhereInput | FormationSessionEmargementWhereInput[]
+    id?: StringFilter<"FormationSessionEmargement"> | string
+    dayId?: StringFilter<"FormationSessionEmargement"> | string
+    participantId?: StringFilter<"FormationSessionEmargement"> | string
+    slot?: EnumFormationSessionDaySlotFilter<"FormationSessionEmargement"> | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFilter<"FormationSessionEmargement"> | $Enums.FormationSessionEmargementStatus
+    markedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
+    markedByUserId?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    notes?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    createdAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
+    day?: XOR<FormationSessionDayScalarRelationFilter, FormationSessionDayWhereInput>
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+    markedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type FormationSessionEmargementOrderByWithRelationInput = {
+    id?: SortOrder
+    dayId?: SortOrder
+    participantId?: SortOrder
+    slot?: SortOrder
+    status?: SortOrder
+    markedAt?: SortOrderInput | SortOrder
+    markedByUserId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    day?: FormationSessionDayOrderByWithRelationInput
+    participant?: FormationSessionParticipantOrderByWithRelationInput
+    markedBy?: UserOrderByWithRelationInput
+  }
+
+  export type FormationSessionEmargementWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    dayId_participantId_slot?: FormationSessionEmargementDayIdParticipantIdSlotCompoundUniqueInput
+    AND?: FormationSessionEmargementWhereInput | FormationSessionEmargementWhereInput[]
+    OR?: FormationSessionEmargementWhereInput[]
+    NOT?: FormationSessionEmargementWhereInput | FormationSessionEmargementWhereInput[]
+    dayId?: StringFilter<"FormationSessionEmargement"> | string
+    participantId?: StringFilter<"FormationSessionEmargement"> | string
+    slot?: EnumFormationSessionDaySlotFilter<"FormationSessionEmargement"> | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFilter<"FormationSessionEmargement"> | $Enums.FormationSessionEmargementStatus
+    markedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
+    markedByUserId?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    notes?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    createdAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
+    day?: XOR<FormationSessionDayScalarRelationFilter, FormationSessionDayWhereInput>
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+    markedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "dayId_participantId_slot">
+
+  export type FormationSessionEmargementOrderByWithAggregationInput = {
+    id?: SortOrder
+    dayId?: SortOrder
+    participantId?: SortOrder
+    slot?: SortOrder
+    status?: SortOrder
+    markedAt?: SortOrderInput | SortOrder
+    markedByUserId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FormationSessionEmargementCountOrderByAggregateInput
+    _max?: FormationSessionEmargementMaxOrderByAggregateInput
+    _min?: FormationSessionEmargementMinOrderByAggregateInput
+  }
+
+  export type FormationSessionEmargementScalarWhereWithAggregatesInput = {
+    AND?: FormationSessionEmargementScalarWhereWithAggregatesInput | FormationSessionEmargementScalarWhereWithAggregatesInput[]
+    OR?: FormationSessionEmargementScalarWhereWithAggregatesInput[]
+    NOT?: FormationSessionEmargementScalarWhereWithAggregatesInput | FormationSessionEmargementScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FormationSessionEmargement"> | string
+    dayId?: StringWithAggregatesFilter<"FormationSessionEmargement"> | string
+    participantId?: StringWithAggregatesFilter<"FormationSessionEmargement"> | string
+    slot?: EnumFormationSessionDaySlotWithAggregatesFilter<"FormationSessionEmargement"> | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusWithAggregatesFilter<"FormationSessionEmargement"> | $Enums.FormationSessionEmargementStatus
+    markedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionEmargement"> | Date | string | null
+    markedByUserId?: StringNullableWithAggregatesFilter<"FormationSessionEmargement"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"FormationSessionEmargement"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FormationSessionEmargement"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionEmargement"> | Date | string
   }
 
   export type FormationAttestationWhereInput = {
@@ -134525,6 +140246,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -134551,6 +140273,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -134571,6 +140294,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -134631,6 +140355,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -134655,6 +140380,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -134675,6 +140401,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -134733,6 +140460,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134759,6 +140487,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -134779,6 +140508,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -134839,6 +140569,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134863,6 +140594,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -134883,6 +140615,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -134943,6 +140676,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -134990,6 +140724,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -135039,6 +140774,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -137517,6 +143253,7 @@ export namespace Prisma {
     id?: string
     label: string
     code?: string | null
+    schoolInternalService?: $Enums.SchoolInternalService | null
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -137528,6 +143265,7 @@ export namespace Prisma {
     id?: string
     label: string
     code?: string | null
+    schoolInternalService?: $Enums.SchoolInternalService | null
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -137539,6 +143277,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -137550,6 +143289,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -137561,6 +143301,7 @@ export namespace Prisma {
     id?: string
     label: string
     code?: string | null
+    schoolInternalService?: $Enums.SchoolInternalService | null
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -137570,6 +143311,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -137579,6 +143321,77 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RhQualificationCreateInput = {
+    id?: string
+    label: string
+    code: string
+    schoolInternalService: $Enums.SchoolInternalService
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RhQualificationUncheckedCreateInput = {
+    id?: string
+    label: string
+    code: string
+    schoolInternalService: $Enums.SchoolInternalService
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RhQualificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    schoolInternalService?: EnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RhQualificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    schoolInternalService?: EnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RhQualificationCreateManyInput = {
+    id?: string
+    label: string
+    code: string
+    schoolInternalService: $Enums.SchoolInternalService
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RhQualificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    schoolInternalService?: EnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RhQualificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    schoolInternalService?: EnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -138369,6 +144182,131 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type LandingTeamOfferCreateInput = {
+    id?: string
+    volet: $Enums.LandingTeamVolet
+    catalogStatus?: $Enums.FormationLifecycleStatus
+    sortOrder?: number
+    titleOverride?: string | null
+    certificationsLabelOverride?: string | null
+    bioOverride?: string | null
+    statAOverride?: number | null
+    statBOverride?: number | null
+    ratingOverride?: number | null
+    linkedinUrl?: string | null
+    websiteUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutLandingTeamOfferInput
+  }
+
+  export type LandingTeamOfferUncheckedCreateInput = {
+    id?: string
+    userId: string
+    volet: $Enums.LandingTeamVolet
+    catalogStatus?: $Enums.FormationLifecycleStatus
+    sortOrder?: number
+    titleOverride?: string | null
+    certificationsLabelOverride?: string | null
+    bioOverride?: string | null
+    statAOverride?: number | null
+    statBOverride?: number | null
+    ratingOverride?: number | null
+    linkedinUrl?: string | null
+    websiteUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LandingTeamOfferUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    volet?: EnumLandingTeamVoletFieldUpdateOperationsInput | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFieldUpdateOperationsInput | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    titleOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    certificationsLabelOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    bioOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    statAOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    statBOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingOverride?: NullableFloatFieldUpdateOperationsInput | number | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutLandingTeamOfferNestedInput
+  }
+
+  export type LandingTeamOfferUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    volet?: EnumLandingTeamVoletFieldUpdateOperationsInput | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFieldUpdateOperationsInput | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    titleOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    certificationsLabelOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    bioOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    statAOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    statBOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingOverride?: NullableFloatFieldUpdateOperationsInput | number | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LandingTeamOfferCreateManyInput = {
+    id?: string
+    userId: string
+    volet: $Enums.LandingTeamVolet
+    catalogStatus?: $Enums.FormationLifecycleStatus
+    sortOrder?: number
+    titleOverride?: string | null
+    certificationsLabelOverride?: string | null
+    bioOverride?: string | null
+    statAOverride?: number | null
+    statBOverride?: number | null
+    ratingOverride?: number | null
+    linkedinUrl?: string | null
+    websiteUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LandingTeamOfferUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    volet?: EnumLandingTeamVoletFieldUpdateOperationsInput | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFieldUpdateOperationsInput | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    titleOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    certificationsLabelOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    bioOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    statAOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    statBOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingOverride?: NullableFloatFieldUpdateOperationsInput | number | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LandingTeamOfferUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    volet?: EnumLandingTeamVoletFieldUpdateOperationsInput | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFieldUpdateOperationsInput | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    titleOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    certificationsLabelOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    bioOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    statAOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    statBOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingOverride?: NullableFloatFieldUpdateOperationsInput | number | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FormationVenueRoomCreateInput = {
     id?: string
     name: string
@@ -138589,6 +144527,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -138621,6 +144560,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -138653,6 +144593,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -138685,6 +144626,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -139018,11 +144960,15 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateInput = {
@@ -139035,8 +144981,12 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUpdateInput = {
@@ -139046,11 +144996,15 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateInput = {
@@ -139063,8 +145017,12 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantCreateManyInput = {
@@ -139077,6 +145035,9 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -139088,6 +145049,9 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -139102,6 +145066,170 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionDayCreateInput = {
+    id?: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutSuiviDaysInput
+    attendances?: FormationSessionEmargementCreateNestedManyWithoutDayInput
+  }
+
+  export type FormationSessionDayUncheckedCreateInput = {
+    id?: string
+    sessionId: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendances?: FormationSessionEmargementUncheckedCreateNestedManyWithoutDayInput
+  }
+
+  export type FormationSessionDayUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutSuiviDaysNestedInput
+    attendances?: FormationSessionEmargementUpdateManyWithoutDayNestedInput
+  }
+
+  export type FormationSessionDayUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendances?: FormationSessionEmargementUncheckedUpdateManyWithoutDayNestedInput
+  }
+
+  export type FormationSessionDayCreateManyInput = {
+    id?: string
+    sessionId: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionDayUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionDayUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementCreateInput = {
+    id?: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    day: FormationSessionDayCreateNestedOneWithoutAttendancesInput
+    participant: FormationSessionParticipantCreateNestedOneWithoutEmargementsInput
+    markedBy?: UserCreateNestedOneWithoutFormationSessionEmargementsMarkedInput
+  }
+
+  export type FormationSessionEmargementUncheckedCreateInput = {
+    id?: string
+    dayId: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    markedByUserId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    day?: FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutEmargementsNestedInput
+    markedBy?: UserUpdateOneWithoutFormationSessionEmargementsMarkedNestedInput
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementCreateManyInput = {
+    id?: string
+    dayId: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    markedByUserId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -144324,6 +150452,12 @@ export namespace Prisma {
     none?: FormationSessionParticipantWhereInput
   }
 
+  export type FormationSessionEmargementListRelationFilter = {
+    every?: FormationSessionEmargementWhereInput
+    some?: FormationSessionEmargementWhereInput
+    none?: FormationSessionEmargementWhereInput
+  }
+
   export type FormationAttestationListRelationFilter = {
     every?: FormationAttestationWhereInput
     some?: FormationAttestationWhereInput
@@ -144434,6 +150568,11 @@ export namespace Prisma {
   export type FormateurProfileNullableScalarRelationFilter = {
     is?: FormateurProfileWhereInput | null
     isNot?: FormateurProfileWhereInput | null
+  }
+
+  export type LandingTeamOfferNullableScalarRelationFilter = {
+    is?: LandingTeamOfferWhereInput | null
+    isNot?: LandingTeamOfferWhereInput | null
   }
 
   export type CollaborateurProfileListRelationFilter = {
@@ -144586,6 +150725,10 @@ export namespace Prisma {
   }
 
   export type FormationSessionParticipantOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FormationSessionEmargementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -144754,6 +150897,7 @@ export namespace Prisma {
     carteProNumber?: SortOrder
     carteProExpiry?: SortOrder
     isSchedulable?: SortOrder
+    landingPresentation?: SortOrder
     documentCni?: SortOrder
     documentAssurance?: SortOrder
     documentResidencePermit?: SortOrder
@@ -144803,6 +150947,7 @@ export namespace Prisma {
     carteProNumber?: SortOrder
     carteProExpiry?: SortOrder
     isSchedulable?: SortOrder
+    landingPresentation?: SortOrder
     documentCni?: SortOrder
     documentAssurance?: SortOrder
     documentResidencePermit?: SortOrder
@@ -144852,6 +150997,7 @@ export namespace Prisma {
     carteProNumber?: SortOrder
     carteProExpiry?: SortOrder
     isSchedulable?: SortOrder
+    landingPresentation?: SortOrder
     documentCni?: SortOrder
     documentAssurance?: SortOrder
     documentResidencePermit?: SortOrder
@@ -146500,6 +152646,7 @@ export namespace Prisma {
     id?: SortOrder
     label?: SortOrder
     code?: SortOrder
+    schoolInternalService?: SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -146513,6 +152660,7 @@ export namespace Prisma {
     id?: SortOrder
     label?: SortOrder
     code?: SortOrder
+    schoolInternalService?: SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -146522,6 +152670,7 @@ export namespace Prisma {
     id?: SortOrder
     label?: SortOrder
     code?: SortOrder
+    schoolInternalService?: SortOrder
     sortOrder?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -146529,6 +152678,61 @@ export namespace Prisma {
 
   export type RhPositionSumOrderByAggregateInput = {
     sortOrder?: SortOrder
+  }
+
+  export type EnumSchoolInternalServiceFilter<$PrismaModel = never> = {
+    equals?: $Enums.SchoolInternalService | EnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    in?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSchoolInternalServiceFilter<$PrismaModel> | $Enums.SchoolInternalService
+  }
+
+  export type RhQualificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    code?: SortOrder
+    schoolInternalService?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RhQualificationAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type RhQualificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    code?: SortOrder
+    schoolInternalService?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RhQualificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    label?: SortOrder
+    code?: SortOrder
+    schoolInternalService?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RhQualificationSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+  }
+
+  export type EnumSchoolInternalServiceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SchoolInternalService | EnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    in?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSchoolInternalServiceWithAggregatesFilter<$PrismaModel> | $Enums.SchoolInternalService
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSchoolInternalServiceFilter<$PrismaModel>
+    _max?: NestedEnumSchoolInternalServiceFilter<$PrismaModel>
   }
 
   export type EnumEquipmentStatusFilter<$PrismaModel = never> = {
@@ -147099,6 +153303,91 @@ export namespace Prisma {
     _max?: NestedEnumFormationParcoursSpecialiteNullableFilter<$PrismaModel>
   }
 
+  export type EnumLandingTeamVoletFilter<$PrismaModel = never> = {
+    equals?: $Enums.LandingTeamVolet | EnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    in?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    not?: NestedEnumLandingTeamVoletFilter<$PrismaModel> | $Enums.LandingTeamVolet
+  }
+
+  export type LandingTeamOfferCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    volet?: SortOrder
+    catalogStatus?: SortOrder
+    sortOrder?: SortOrder
+    titleOverride?: SortOrder
+    certificationsLabelOverride?: SortOrder
+    bioOverride?: SortOrder
+    statAOverride?: SortOrder
+    statBOverride?: SortOrder
+    ratingOverride?: SortOrder
+    linkedinUrl?: SortOrder
+    websiteUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LandingTeamOfferAvgOrderByAggregateInput = {
+    sortOrder?: SortOrder
+    statAOverride?: SortOrder
+    statBOverride?: SortOrder
+    ratingOverride?: SortOrder
+  }
+
+  export type LandingTeamOfferMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    volet?: SortOrder
+    catalogStatus?: SortOrder
+    sortOrder?: SortOrder
+    titleOverride?: SortOrder
+    certificationsLabelOverride?: SortOrder
+    bioOverride?: SortOrder
+    statAOverride?: SortOrder
+    statBOverride?: SortOrder
+    ratingOverride?: SortOrder
+    linkedinUrl?: SortOrder
+    websiteUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LandingTeamOfferMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    volet?: SortOrder
+    catalogStatus?: SortOrder
+    sortOrder?: SortOrder
+    titleOverride?: SortOrder
+    certificationsLabelOverride?: SortOrder
+    bioOverride?: SortOrder
+    statAOverride?: SortOrder
+    statBOverride?: SortOrder
+    ratingOverride?: SortOrder
+    linkedinUrl?: SortOrder
+    websiteUrl?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LandingTeamOfferSumOrderByAggregateInput = {
+    sortOrder?: SortOrder
+    statAOverride?: SortOrder
+    statBOverride?: SortOrder
+    ratingOverride?: SortOrder
+  }
+
+  export type EnumLandingTeamVoletWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LandingTeamVolet | EnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    in?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    not?: NestedEnumLandingTeamVoletWithAggregatesFilter<$PrismaModel> | $Enums.LandingTeamVolet
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLandingTeamVoletFilter<$PrismaModel>
+    _max?: NestedEnumLandingTeamVoletFilter<$PrismaModel>
+  }
+
   export type FormationVenueRoomCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -147246,9 +153535,19 @@ export namespace Prisma {
     isNot?: FormationVenueRoomWhereInput | null
   }
 
+  export type FormationSessionDayListRelationFilter = {
+    every?: FormationSessionDayWhereInput
+    some?: FormationSessionDayWhereInput
+    none?: FormationSessionDayWhereInput
+  }
+
   export type RhTeamNullableScalarRelationFilter = {
     is?: RhTeamWhereInput | null
     isNot?: RhTeamWhereInput | null
+  }
+
+  export type FormationSessionDayOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type FormationSessionCountOrderByAggregateInput = {
@@ -147542,6 +153841,9 @@ export namespace Prisma {
     examDate?: SortOrder
     certifiedAt?: SortOrder
     trainingCompletedAt?: SortOrder
+    fundingMode?: SortOrder
+    fundingReference?: SortOrder
+    fundingNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -147556,6 +153858,9 @@ export namespace Prisma {
     examDate?: SortOrder
     certifiedAt?: SortOrder
     trainingCompletedAt?: SortOrder
+    fundingMode?: SortOrder
+    fundingReference?: SortOrder
+    fundingNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -147570,6 +153875,9 @@ export namespace Prisma {
     examDate?: SortOrder
     certifiedAt?: SortOrder
     trainingCompletedAt?: SortOrder
+    fundingMode?: SortOrder
+    fundingReference?: SortOrder
+    fundingNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -147592,6 +153900,130 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
     _max?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
+  }
+
+  export type FormationSessionDaySessionIdDayDateCompoundUniqueInput = {
+    sessionId: string
+    dayDate: Date | string
+  }
+
+  export type FormationSessionDayCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    dayDate?: SortOrder
+    journalNotesMorning?: SortOrder
+    journalNotesEvening?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormationSessionDayMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    dayDate?: SortOrder
+    journalNotesMorning?: SortOrder
+    journalNotesEvening?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormationSessionDayMinOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    dayDate?: SortOrder
+    journalNotesMorning?: SortOrder
+    journalNotesEvening?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumFormationSessionDaySlotFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionDaySlot | EnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionDaySlotFilter<$PrismaModel> | $Enums.FormationSessionDaySlot
+  }
+
+  export type EnumFormationSessionEmargementStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionEmargementStatus | EnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel> | $Enums.FormationSessionEmargementStatus
+  }
+
+  export type FormationSessionDayScalarRelationFilter = {
+    is?: FormationSessionDayWhereInput
+    isNot?: FormationSessionDayWhereInput
+  }
+
+  export type FormationSessionParticipantScalarRelationFilter = {
+    is?: FormationSessionParticipantWhereInput
+    isNot?: FormationSessionParticipantWhereInput
+  }
+
+  export type FormationSessionEmargementDayIdParticipantIdSlotCompoundUniqueInput = {
+    dayId: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+  }
+
+  export type FormationSessionEmargementCountOrderByAggregateInput = {
+    id?: SortOrder
+    dayId?: SortOrder
+    participantId?: SortOrder
+    slot?: SortOrder
+    status?: SortOrder
+    markedAt?: SortOrder
+    markedByUserId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormationSessionEmargementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    dayId?: SortOrder
+    participantId?: SortOrder
+    slot?: SortOrder
+    status?: SortOrder
+    markedAt?: SortOrder
+    markedByUserId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormationSessionEmargementMinOrderByAggregateInput = {
+    id?: SortOrder
+    dayId?: SortOrder
+    participantId?: SortOrder
+    slot?: SortOrder
+    status?: SortOrder
+    markedAt?: SortOrder
+    markedByUserId?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumFormationSessionDaySlotWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionDaySlot | EnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionDaySlotWithAggregatesFilter<$PrismaModel> | $Enums.FormationSessionDaySlot
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFormationSessionDaySlotFilter<$PrismaModel>
+    _max?: NestedEnumFormationSessionDaySlotFilter<$PrismaModel>
+  }
+
+  export type EnumFormationSessionEmargementStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionEmargementStatus | EnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionEmargementStatusWithAggregatesFilter<$PrismaModel> | $Enums.FormationSessionEmargementStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
+    _max?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
   }
 
   export type FormationAttestationCountOrderByAggregateInput = {
@@ -150761,6 +157193,13 @@ export namespace Prisma {
     connect?: FormationSessionParticipantWhereUniqueInput | FormationSessionParticipantWhereUniqueInput[]
   }
 
+  export type FormationSessionEmargementCreateNestedManyWithoutMarkedByInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutMarkedByInput, FormationSessionEmargementUncheckedCreateWithoutMarkedByInput> | FormationSessionEmargementCreateWithoutMarkedByInput[] | FormationSessionEmargementUncheckedCreateWithoutMarkedByInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutMarkedByInput | FormationSessionEmargementCreateOrConnectWithoutMarkedByInput[]
+    createMany?: FormationSessionEmargementCreateManyMarkedByInputEnvelope
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
   export type FormationAttestationCreateNestedManyWithoutUserInput = {
     create?: XOR<FormationAttestationCreateWithoutUserInput, FormationAttestationUncheckedCreateWithoutUserInput> | FormationAttestationCreateWithoutUserInput[] | FormationAttestationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: FormationAttestationCreateOrConnectWithoutUserInput | FormationAttestationCreateOrConnectWithoutUserInput[]
@@ -150897,6 +157336,12 @@ export namespace Prisma {
     create?: XOR<FormateurProfileCreateWithoutUserInput, FormateurProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: FormateurProfileCreateOrConnectWithoutUserInput
     connect?: FormateurProfileWhereUniqueInput
+  }
+
+  export type LandingTeamOfferCreateNestedOneWithoutUserInput = {
+    create?: XOR<LandingTeamOfferCreateWithoutUserInput, LandingTeamOfferUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LandingTeamOfferCreateOrConnectWithoutUserInput
+    connect?: LandingTeamOfferWhereUniqueInput
   }
 
   export type CollaborateurProfileCreateNestedManyWithoutManagerInput = {
@@ -151143,6 +157588,13 @@ export namespace Prisma {
     connect?: FormationSessionParticipantWhereUniqueInput | FormationSessionParticipantWhereUniqueInput[]
   }
 
+  export type FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutMarkedByInput, FormationSessionEmargementUncheckedCreateWithoutMarkedByInput> | FormationSessionEmargementCreateWithoutMarkedByInput[] | FormationSessionEmargementUncheckedCreateWithoutMarkedByInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutMarkedByInput | FormationSessionEmargementCreateOrConnectWithoutMarkedByInput[]
+    createMany?: FormationSessionEmargementCreateManyMarkedByInputEnvelope
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
   export type FormationAttestationUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<FormationAttestationCreateWithoutUserInput, FormationAttestationUncheckedCreateWithoutUserInput> | FormationAttestationCreateWithoutUserInput[] | FormationAttestationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: FormationAttestationCreateOrConnectWithoutUserInput | FormationAttestationCreateOrConnectWithoutUserInput[]
@@ -151279,6 +157731,12 @@ export namespace Prisma {
     create?: XOR<FormateurProfileCreateWithoutUserInput, FormateurProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: FormateurProfileCreateOrConnectWithoutUserInput
     connect?: FormateurProfileWhereUniqueInput
+  }
+
+  export type LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<LandingTeamOfferCreateWithoutUserInput, LandingTeamOfferUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LandingTeamOfferCreateOrConnectWithoutUserInput
+    connect?: LandingTeamOfferWhereUniqueInput
   }
 
   export type CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput = {
@@ -151690,6 +158148,20 @@ export namespace Prisma {
     deleteMany?: FormationSessionParticipantScalarWhereInput | FormationSessionParticipantScalarWhereInput[]
   }
 
+  export type FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutMarkedByInput, FormationSessionEmargementUncheckedCreateWithoutMarkedByInput> | FormationSessionEmargementCreateWithoutMarkedByInput[] | FormationSessionEmargementUncheckedCreateWithoutMarkedByInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutMarkedByInput | FormationSessionEmargementCreateOrConnectWithoutMarkedByInput[]
+    upsert?: FormationSessionEmargementUpsertWithWhereUniqueWithoutMarkedByInput | FormationSessionEmargementUpsertWithWhereUniqueWithoutMarkedByInput[]
+    createMany?: FormationSessionEmargementCreateManyMarkedByInputEnvelope
+    set?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    disconnect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    delete?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutMarkedByInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutMarkedByInput[]
+    updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutMarkedByInput | FormationSessionEmargementUpdateManyWithWhereWithoutMarkedByInput[]
+    deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
   export type FormationAttestationUpdateManyWithoutUserNestedInput = {
     create?: XOR<FormationAttestationCreateWithoutUserInput, FormationAttestationUncheckedCreateWithoutUserInput> | FormationAttestationCreateWithoutUserInput[] | FormationAttestationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: FormationAttestationCreateOrConnectWithoutUserInput | FormationAttestationCreateOrConnectWithoutUserInput[]
@@ -151960,6 +158432,16 @@ export namespace Prisma {
     delete?: FormateurProfileWhereInput | boolean
     connect?: FormateurProfileWhereUniqueInput
     update?: XOR<XOR<FormateurProfileUpdateToOneWithWhereWithoutUserInput, FormateurProfileUpdateWithoutUserInput>, FormateurProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type LandingTeamOfferUpdateOneWithoutUserNestedInput = {
+    create?: XOR<LandingTeamOfferCreateWithoutUserInput, LandingTeamOfferUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LandingTeamOfferCreateOrConnectWithoutUserInput
+    upsert?: LandingTeamOfferUpsertWithoutUserInput
+    disconnect?: LandingTeamOfferWhereInput | boolean
+    delete?: LandingTeamOfferWhereInput | boolean
+    connect?: LandingTeamOfferWhereUniqueInput
+    update?: XOR<XOR<LandingTeamOfferUpdateToOneWithWhereWithoutUserInput, LandingTeamOfferUpdateWithoutUserInput>, LandingTeamOfferUncheckedUpdateWithoutUserInput>
   }
 
   export type CollaborateurProfileUpdateManyWithoutManagerNestedInput = {
@@ -152448,6 +158930,20 @@ export namespace Prisma {
     deleteMany?: FormationSessionParticipantScalarWhereInput | FormationSessionParticipantScalarWhereInput[]
   }
 
+  export type FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutMarkedByInput, FormationSessionEmargementUncheckedCreateWithoutMarkedByInput> | FormationSessionEmargementCreateWithoutMarkedByInput[] | FormationSessionEmargementUncheckedCreateWithoutMarkedByInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutMarkedByInput | FormationSessionEmargementCreateOrConnectWithoutMarkedByInput[]
+    upsert?: FormationSessionEmargementUpsertWithWhereUniqueWithoutMarkedByInput | FormationSessionEmargementUpsertWithWhereUniqueWithoutMarkedByInput[]
+    createMany?: FormationSessionEmargementCreateManyMarkedByInputEnvelope
+    set?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    disconnect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    delete?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutMarkedByInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutMarkedByInput[]
+    updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutMarkedByInput | FormationSessionEmargementUpdateManyWithWhereWithoutMarkedByInput[]
+    deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
   export type FormationAttestationUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<FormationAttestationCreateWithoutUserInput, FormationAttestationUncheckedCreateWithoutUserInput> | FormationAttestationCreateWithoutUserInput[] | FormationAttestationUncheckedCreateWithoutUserInput[]
     connectOrCreate?: FormationAttestationCreateOrConnectWithoutUserInput | FormationAttestationCreateOrConnectWithoutUserInput[]
@@ -152718,6 +159214,16 @@ export namespace Prisma {
     delete?: FormateurProfileWhereInput | boolean
     connect?: FormateurProfileWhereUniqueInput
     update?: XOR<XOR<FormateurProfileUpdateToOneWithWhereWithoutUserInput, FormateurProfileUpdateWithoutUserInput>, FormateurProfileUncheckedUpdateWithoutUserInput>
+  }
+
+  export type LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<LandingTeamOfferCreateWithoutUserInput, LandingTeamOfferUncheckedCreateWithoutUserInput>
+    connectOrCreate?: LandingTeamOfferCreateOrConnectWithoutUserInput
+    upsert?: LandingTeamOfferUpsertWithoutUserInput
+    disconnect?: LandingTeamOfferWhereInput | boolean
+    delete?: LandingTeamOfferWhereInput | boolean
+    connect?: LandingTeamOfferWhereUniqueInput
+    update?: XOR<XOR<LandingTeamOfferUpdateToOneWithWhereWithoutUserInput, LandingTeamOfferUpdateWithoutUserInput>, LandingTeamOfferUncheckedUpdateWithoutUserInput>
   }
 
   export type CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput = {
@@ -154135,6 +160641,10 @@ export namespace Prisma {
     deleteMany?: RhOrgUnitScalarWhereInput | RhOrgUnitScalarWhereInput[]
   }
 
+  export type EnumSchoolInternalServiceFieldUpdateOperationsInput = {
+    set?: $Enums.SchoolInternalService
+  }
+
   export type ClientSiteCreateNestedOneWithoutEquipmentsInput = {
     create?: XOR<ClientSiteCreateWithoutEquipmentsInput, ClientSiteUncheckedCreateWithoutEquipmentsInput>
     connectOrCreate?: ClientSiteCreateOrConnectWithoutEquipmentsInput
@@ -154729,6 +161239,24 @@ export namespace Prisma {
     update?: XOR<XOR<FormationUpdateToOneWithWhereWithoutCatalogOfferInput, FormationUpdateWithoutCatalogOfferInput>, FormationUncheckedUpdateWithoutCatalogOfferInput>
   }
 
+  export type UserCreateNestedOneWithoutLandingTeamOfferInput = {
+    create?: XOR<UserCreateWithoutLandingTeamOfferInput, UserUncheckedCreateWithoutLandingTeamOfferInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLandingTeamOfferInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumLandingTeamVoletFieldUpdateOperationsInput = {
+    set?: $Enums.LandingTeamVolet
+  }
+
+  export type UserUpdateOneRequiredWithoutLandingTeamOfferNestedInput = {
+    create?: XOR<UserCreateWithoutLandingTeamOfferInput, UserUncheckedCreateWithoutLandingTeamOfferInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLandingTeamOfferInput
+    upsert?: UserUpsertWithoutLandingTeamOfferInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutLandingTeamOfferInput, UserUpdateWithoutLandingTeamOfferInput>, UserUncheckedUpdateWithoutLandingTeamOfferInput>
+  }
+
   export type FormationSessionCreateNestedManyWithoutVenueRoomInput = {
     create?: XOR<FormationSessionCreateWithoutVenueRoomInput, FormationSessionUncheckedCreateWithoutVenueRoomInput> | FormationSessionCreateWithoutVenueRoomInput[] | FormationSessionUncheckedCreateWithoutVenueRoomInput[]
     connectOrCreate?: FormationSessionCreateOrConnectWithoutVenueRoomInput | FormationSessionCreateOrConnectWithoutVenueRoomInput[]
@@ -154888,6 +161416,13 @@ export namespace Prisma {
     connect?: FormationSessionParticipantWhereUniqueInput | FormationSessionParticipantWhereUniqueInput[]
   }
 
+  export type FormationSessionDayCreateNestedManyWithoutSessionInput = {
+    create?: XOR<FormationSessionDayCreateWithoutSessionInput, FormationSessionDayUncheckedCreateWithoutSessionInput> | FormationSessionDayCreateWithoutSessionInput[] | FormationSessionDayUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutSessionInput | FormationSessionDayCreateOrConnectWithoutSessionInput[]
+    createMany?: FormationSessionDayCreateManySessionInputEnvelope
+    connect?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+  }
+
   export type FormationAttestationCreateNestedManyWithoutSessionInput = {
     create?: XOR<FormationAttestationCreateWithoutSessionInput, FormationAttestationUncheckedCreateWithoutSessionInput> | FormationAttestationCreateWithoutSessionInput[] | FormationAttestationUncheckedCreateWithoutSessionInput[]
     connectOrCreate?: FormationAttestationCreateOrConnectWithoutSessionInput | FormationAttestationCreateOrConnectWithoutSessionInput[]
@@ -154933,6 +161468,13 @@ export namespace Prisma {
     connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutSessionInput | FormationSessionParticipantCreateOrConnectWithoutSessionInput[]
     createMany?: FormationSessionParticipantCreateManySessionInputEnvelope
     connect?: FormationSessionParticipantWhereUniqueInput | FormationSessionParticipantWhereUniqueInput[]
+  }
+
+  export type FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<FormationSessionDayCreateWithoutSessionInput, FormationSessionDayUncheckedCreateWithoutSessionInput> | FormationSessionDayCreateWithoutSessionInput[] | FormationSessionDayUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutSessionInput | FormationSessionDayCreateOrConnectWithoutSessionInput[]
+    createMany?: FormationSessionDayCreateManySessionInputEnvelope
+    connect?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
   }
 
   export type FormationAttestationUncheckedCreateNestedManyWithoutSessionInput = {
@@ -155035,6 +161577,20 @@ export namespace Prisma {
     deleteMany?: FormationSessionParticipantScalarWhereInput | FormationSessionParticipantScalarWhereInput[]
   }
 
+  export type FormationSessionDayUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<FormationSessionDayCreateWithoutSessionInput, FormationSessionDayUncheckedCreateWithoutSessionInput> | FormationSessionDayCreateWithoutSessionInput[] | FormationSessionDayUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutSessionInput | FormationSessionDayCreateOrConnectWithoutSessionInput[]
+    upsert?: FormationSessionDayUpsertWithWhereUniqueWithoutSessionInput | FormationSessionDayUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: FormationSessionDayCreateManySessionInputEnvelope
+    set?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    disconnect?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    delete?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    connect?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    update?: FormationSessionDayUpdateWithWhereUniqueWithoutSessionInput | FormationSessionDayUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: FormationSessionDayUpdateManyWithWhereWithoutSessionInput | FormationSessionDayUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: FormationSessionDayScalarWhereInput | FormationSessionDayScalarWhereInput[]
+  }
+
   export type FormationAttestationUpdateManyWithoutSessionNestedInput = {
     create?: XOR<FormationAttestationCreateWithoutSessionInput, FormationAttestationUncheckedCreateWithoutSessionInput> | FormationAttestationCreateWithoutSessionInput[] | FormationAttestationUncheckedCreateWithoutSessionInput[]
     connectOrCreate?: FormationAttestationCreateOrConnectWithoutSessionInput | FormationAttestationCreateOrConnectWithoutSessionInput[]
@@ -155123,6 +161679,20 @@ export namespace Prisma {
     update?: FormationSessionParticipantUpdateWithWhereUniqueWithoutSessionInput | FormationSessionParticipantUpdateWithWhereUniqueWithoutSessionInput[]
     updateMany?: FormationSessionParticipantUpdateManyWithWhereWithoutSessionInput | FormationSessionParticipantUpdateManyWithWhereWithoutSessionInput[]
     deleteMany?: FormationSessionParticipantScalarWhereInput | FormationSessionParticipantScalarWhereInput[]
+  }
+
+  export type FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<FormationSessionDayCreateWithoutSessionInput, FormationSessionDayUncheckedCreateWithoutSessionInput> | FormationSessionDayCreateWithoutSessionInput[] | FormationSessionDayUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutSessionInput | FormationSessionDayCreateOrConnectWithoutSessionInput[]
+    upsert?: FormationSessionDayUpsertWithWhereUniqueWithoutSessionInput | FormationSessionDayUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: FormationSessionDayCreateManySessionInputEnvelope
+    set?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    disconnect?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    delete?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    connect?: FormationSessionDayWhereUniqueInput | FormationSessionDayWhereUniqueInput[]
+    update?: FormationSessionDayUpdateWithWhereUniqueWithoutSessionInput | FormationSessionDayUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: FormationSessionDayUpdateManyWithWhereWithoutSessionInput | FormationSessionDayUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: FormationSessionDayScalarWhereInput | FormationSessionDayScalarWhereInput[]
   }
 
   export type FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput = {
@@ -155481,6 +162051,20 @@ export namespace Prisma {
     connect?: CandidatureWhereUniqueInput
   }
 
+  export type FormationSessionEmargementCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
+    createMany?: FormationSessionEmargementCreateManyParticipantInputEnvelope
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
+  export type FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
+    createMany?: FormationSessionEmargementCreateManyParticipantInputEnvelope
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
   export type EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput = {
     set?: $Enums.FormationSessionEnrollmentStatus
   }
@@ -155513,6 +162097,142 @@ export namespace Prisma {
     delete?: CandidatureWhereInput | boolean
     connect?: CandidatureWhereUniqueInput
     update?: XOR<XOR<CandidatureUpdateToOneWithWhereWithoutSessionEnrollmentsInput, CandidatureUpdateWithoutSessionEnrollmentsInput>, CandidatureUncheckedUpdateWithoutSessionEnrollmentsInput>
+  }
+
+  export type FormationSessionEmargementUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
+    upsert?: FormationSessionEmargementUpsertWithWhereUniqueWithoutParticipantInput | FormationSessionEmargementUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FormationSessionEmargementCreateManyParticipantInputEnvelope
+    set?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    disconnect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    delete?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutParticipantInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutParticipantInput | FormationSessionEmargementUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
+    upsert?: FormationSessionEmargementUpsertWithWhereUniqueWithoutParticipantInput | FormationSessionEmargementUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FormationSessionEmargementCreateManyParticipantInputEnvelope
+    set?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    disconnect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    delete?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutParticipantInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutParticipantInput | FormationSessionEmargementUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
+  export type FormationSessionCreateNestedOneWithoutSuiviDaysInput = {
+    create?: XOR<FormationSessionCreateWithoutSuiviDaysInput, FormationSessionUncheckedCreateWithoutSuiviDaysInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutSuiviDaysInput
+    connect?: FormationSessionWhereUniqueInput
+  }
+
+  export type FormationSessionEmargementCreateNestedManyWithoutDayInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput> | FormationSessionEmargementCreateWithoutDayInput[] | FormationSessionEmargementUncheckedCreateWithoutDayInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutDayInput | FormationSessionEmargementCreateOrConnectWithoutDayInput[]
+    createMany?: FormationSessionEmargementCreateManyDayInputEnvelope
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
+  export type FormationSessionEmargementUncheckedCreateNestedManyWithoutDayInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput> | FormationSessionEmargementCreateWithoutDayInput[] | FormationSessionEmargementUncheckedCreateWithoutDayInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutDayInput | FormationSessionEmargementCreateOrConnectWithoutDayInput[]
+    createMany?: FormationSessionEmargementCreateManyDayInputEnvelope
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
+  export type FormationSessionUpdateOneRequiredWithoutSuiviDaysNestedInput = {
+    create?: XOR<FormationSessionCreateWithoutSuiviDaysInput, FormationSessionUncheckedCreateWithoutSuiviDaysInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutSuiviDaysInput
+    upsert?: FormationSessionUpsertWithoutSuiviDaysInput
+    connect?: FormationSessionWhereUniqueInput
+    update?: XOR<XOR<FormationSessionUpdateToOneWithWhereWithoutSuiviDaysInput, FormationSessionUpdateWithoutSuiviDaysInput>, FormationSessionUncheckedUpdateWithoutSuiviDaysInput>
+  }
+
+  export type FormationSessionEmargementUpdateManyWithoutDayNestedInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput> | FormationSessionEmargementCreateWithoutDayInput[] | FormationSessionEmargementUncheckedCreateWithoutDayInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutDayInput | FormationSessionEmargementCreateOrConnectWithoutDayInput[]
+    upsert?: FormationSessionEmargementUpsertWithWhereUniqueWithoutDayInput | FormationSessionEmargementUpsertWithWhereUniqueWithoutDayInput[]
+    createMany?: FormationSessionEmargementCreateManyDayInputEnvelope
+    set?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    disconnect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    delete?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutDayInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutDayInput[]
+    updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutDayInput | FormationSessionEmargementUpdateManyWithWhereWithoutDayInput[]
+    deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateManyWithoutDayNestedInput = {
+    create?: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput> | FormationSessionEmargementCreateWithoutDayInput[] | FormationSessionEmargementUncheckedCreateWithoutDayInput[]
+    connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutDayInput | FormationSessionEmargementCreateOrConnectWithoutDayInput[]
+    upsert?: FormationSessionEmargementUpsertWithWhereUniqueWithoutDayInput | FormationSessionEmargementUpsertWithWhereUniqueWithoutDayInput[]
+    createMany?: FormationSessionEmargementCreateManyDayInputEnvelope
+    set?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    disconnect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    delete?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+    update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutDayInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutDayInput[]
+    updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutDayInput | FormationSessionEmargementUpdateManyWithWhereWithoutDayInput[]
+    deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
+  export type FormationSessionDayCreateNestedOneWithoutAttendancesInput = {
+    create?: XOR<FormationSessionDayCreateWithoutAttendancesInput, FormationSessionDayUncheckedCreateWithoutAttendancesInput>
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutAttendancesInput
+    connect?: FormationSessionDayWhereUniqueInput
+  }
+
+  export type FormationSessionParticipantCreateNestedOneWithoutEmargementsInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutEmargementsInput, FormationSessionParticipantUncheckedCreateWithoutEmargementsInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutEmargementsInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutFormationSessionEmargementsMarkedInput = {
+    create?: XOR<UserCreateWithoutFormationSessionEmargementsMarkedInput, UserUncheckedCreateWithoutFormationSessionEmargementsMarkedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFormationSessionEmargementsMarkedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumFormationSessionDaySlotFieldUpdateOperationsInput = {
+    set?: $Enums.FormationSessionDaySlot
+  }
+
+  export type EnumFormationSessionEmargementStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FormationSessionEmargementStatus
+  }
+
+  export type FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput = {
+    create?: XOR<FormationSessionDayCreateWithoutAttendancesInput, FormationSessionDayUncheckedCreateWithoutAttendancesInput>
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutAttendancesInput
+    upsert?: FormationSessionDayUpsertWithoutAttendancesInput
+    connect?: FormationSessionDayWhereUniqueInput
+    update?: XOR<XOR<FormationSessionDayUpdateToOneWithWhereWithoutAttendancesInput, FormationSessionDayUpdateWithoutAttendancesInput>, FormationSessionDayUncheckedUpdateWithoutAttendancesInput>
+  }
+
+  export type FormationSessionParticipantUpdateOneRequiredWithoutEmargementsNestedInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutEmargementsInput, FormationSessionParticipantUncheckedCreateWithoutEmargementsInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutEmargementsInput
+    upsert?: FormationSessionParticipantUpsertWithoutEmargementsInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+    update?: XOR<XOR<FormationSessionParticipantUpdateToOneWithWhereWithoutEmargementsInput, FormationSessionParticipantUpdateWithoutEmargementsInput>, FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput>
+  }
+
+  export type UserUpdateOneWithoutFormationSessionEmargementsMarkedNestedInput = {
+    create?: XOR<UserCreateWithoutFormationSessionEmargementsMarkedInput, UserUncheckedCreateWithoutFormationSessionEmargementsMarkedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFormationSessionEmargementsMarkedInput
+    upsert?: UserUpsertWithoutFormationSessionEmargementsMarkedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFormationSessionEmargementsMarkedInput, UserUpdateWithoutFormationSessionEmargementsMarkedInput>, UserUncheckedUpdateWithoutFormationSessionEmargementsMarkedInput>
   }
 
   export type UserCreateNestedOneWithoutFormationAttestationsInput = {
@@ -159724,6 +166444,23 @@ export namespace Prisma {
     _max?: NestedEnumRhAbsenceStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumSchoolInternalServiceFilter<$PrismaModel = never> = {
+    equals?: $Enums.SchoolInternalService | EnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    in?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSchoolInternalServiceFilter<$PrismaModel> | $Enums.SchoolInternalService
+  }
+
+  export type NestedEnumSchoolInternalServiceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SchoolInternalService | EnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    in?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SchoolInternalService[] | ListEnumSchoolInternalServiceFieldRefInput<$PrismaModel>
+    not?: NestedEnumSchoolInternalServiceWithAggregatesFilter<$PrismaModel> | $Enums.SchoolInternalService
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSchoolInternalServiceFilter<$PrismaModel>
+    _max?: NestedEnumSchoolInternalServiceFilter<$PrismaModel>
+  }
+
   export type NestedEnumEquipmentStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.EquipmentStatus | EnumEquipmentStatusFieldRefInput<$PrismaModel>
     in?: $Enums.EquipmentStatus[] | ListEnumEquipmentStatusFieldRefInput<$PrismaModel>
@@ -159887,6 +166624,23 @@ export namespace Prisma {
     _max?: NestedEnumFormationParcoursSpecialiteNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumLandingTeamVoletFilter<$PrismaModel = never> = {
+    equals?: $Enums.LandingTeamVolet | EnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    in?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    not?: NestedEnumLandingTeamVoletFilter<$PrismaModel> | $Enums.LandingTeamVolet
+  }
+
+  export type NestedEnumLandingTeamVoletWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.LandingTeamVolet | EnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    in?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    notIn?: $Enums.LandingTeamVolet[] | ListEnumLandingTeamVoletFieldRefInput<$PrismaModel>
+    not?: NestedEnumLandingTeamVoletWithAggregatesFilter<$PrismaModel> | $Enums.LandingTeamVolet
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLandingTeamVoletFilter<$PrismaModel>
+    _max?: NestedEnumLandingTeamVoletFilter<$PrismaModel>
+  }
+
   export type NestedEnumVenueRoomBookingKindFilter<$PrismaModel = never> = {
     equals?: $Enums.VenueRoomBookingKind | EnumVenueRoomBookingKindFieldRefInput<$PrismaModel>
     in?: $Enums.VenueRoomBookingKind[] | ListEnumVenueRoomBookingKindFieldRefInput<$PrismaModel>
@@ -160017,6 +166771,40 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
     _max?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFormationSessionDaySlotFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionDaySlot | EnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionDaySlotFilter<$PrismaModel> | $Enums.FormationSessionDaySlot
+  }
+
+  export type NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionEmargementStatus | EnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel> | $Enums.FormationSessionEmargementStatus
+  }
+
+  export type NestedEnumFormationSessionDaySlotWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionDaySlot | EnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionDaySlotWithAggregatesFilter<$PrismaModel> | $Enums.FormationSessionDaySlot
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFormationSessionDaySlotFilter<$PrismaModel>
+    _max?: NestedEnumFormationSessionDaySlotFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFormationSessionEmargementStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FormationSessionEmargementStatus | EnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FormationSessionEmargementStatus[] | ListEnumFormationSessionEmargementStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFormationSessionEmargementStatusWithAggregatesFilter<$PrismaModel> | $Enums.FormationSessionEmargementStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
+    _max?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumLmsContentReviewStatusFilter<$PrismaModel = never> = {
@@ -160556,6 +167344,7 @@ export namespace Prisma {
     id?: string
     label: string
     code?: string | null
+    schoolInternalService?: $Enums.SchoolInternalService | null
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -160566,6 +167355,7 @@ export namespace Prisma {
     id?: string
     label: string
     code?: string | null
+    schoolInternalService?: $Enums.SchoolInternalService | null
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -161187,10 +167977,14 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutUserInput = {
@@ -161202,8 +167996,12 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutUserInput = {
@@ -161213,6 +168011,40 @@ export namespace Prisma {
 
   export type FormationSessionParticipantCreateManyUserInputEnvelope = {
     data: FormationSessionParticipantCreateManyUserInput | FormationSessionParticipantCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FormationSessionEmargementCreateWithoutMarkedByInput = {
+    id?: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    day: FormationSessionDayCreateNestedOneWithoutAttendancesInput
+    participant: FormationSessionParticipantCreateNestedOneWithoutEmargementsInput
+  }
+
+  export type FormationSessionEmargementUncheckedCreateWithoutMarkedByInput = {
+    id?: string
+    dayId: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementCreateOrConnectWithoutMarkedByInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    create: XOR<FormationSessionEmargementCreateWithoutMarkedByInput, FormationSessionEmargementUncheckedCreateWithoutMarkedByInput>
+  }
+
+  export type FormationSessionEmargementCreateManyMarkedByInputEnvelope = {
+    data: FormationSessionEmargementCreateManyMarkedByInput | FormationSessionEmargementCreateManyMarkedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -161508,6 +168340,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -161539,6 +168372,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -161580,6 +168414,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -161611,6 +168446,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -162026,6 +168862,45 @@ export namespace Prisma {
   export type FormateurProfileCreateOrConnectWithoutUserInput = {
     where: FormateurProfileWhereUniqueInput
     create: XOR<FormateurProfileCreateWithoutUserInput, FormateurProfileUncheckedCreateWithoutUserInput>
+  }
+
+  export type LandingTeamOfferCreateWithoutUserInput = {
+    id?: string
+    volet: $Enums.LandingTeamVolet
+    catalogStatus?: $Enums.FormationLifecycleStatus
+    sortOrder?: number
+    titleOverride?: string | null
+    certificationsLabelOverride?: string | null
+    bioOverride?: string | null
+    statAOverride?: number | null
+    statBOverride?: number | null
+    ratingOverride?: number | null
+    linkedinUrl?: string | null
+    websiteUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LandingTeamOfferUncheckedCreateWithoutUserInput = {
+    id?: string
+    volet: $Enums.LandingTeamVolet
+    catalogStatus?: $Enums.FormationLifecycleStatus
+    sortOrder?: number
+    titleOverride?: string | null
+    certificationsLabelOverride?: string | null
+    bioOverride?: string | null
+    statAOverride?: number | null
+    statBOverride?: number | null
+    ratingOverride?: number | null
+    linkedinUrl?: string | null
+    websiteUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LandingTeamOfferCreateOrConnectWithoutUserInput = {
+    where: LandingTeamOfferWhereUniqueInput
+    create: XOR<LandingTeamOfferCreateWithoutUserInput, LandingTeamOfferUncheckedCreateWithoutUserInput>
   }
 
   export type CollaborateurProfileCreateWithoutManagerInput = {
@@ -162764,6 +169639,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -162774,6 +169650,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -163316,8 +170193,43 @@ export namespace Prisma {
     examDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     certifiedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     trainingCompletedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    fundingMode?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
+  }
+
+  export type FormationSessionEmargementUpsertWithWhereUniqueWithoutMarkedByInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    update: XOR<FormationSessionEmargementUpdateWithoutMarkedByInput, FormationSessionEmargementUncheckedUpdateWithoutMarkedByInput>
+    create: XOR<FormationSessionEmargementCreateWithoutMarkedByInput, FormationSessionEmargementUncheckedCreateWithoutMarkedByInput>
+  }
+
+  export type FormationSessionEmargementUpdateWithWhereUniqueWithoutMarkedByInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    data: XOR<FormationSessionEmargementUpdateWithoutMarkedByInput, FormationSessionEmargementUncheckedUpdateWithoutMarkedByInput>
+  }
+
+  export type FormationSessionEmargementUpdateManyWithWhereWithoutMarkedByInput = {
+    where: FormationSessionEmargementScalarWhereInput
+    data: XOR<FormationSessionEmargementUpdateManyMutationInput, FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByInput>
+  }
+
+  export type FormationSessionEmargementScalarWhereInput = {
+    AND?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+    OR?: FormationSessionEmargementScalarWhereInput[]
+    NOT?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+    id?: StringFilter<"FormationSessionEmargement"> | string
+    dayId?: StringFilter<"FormationSessionEmargement"> | string
+    participantId?: StringFilter<"FormationSessionEmargement"> | string
+    slot?: EnumFormationSessionDaySlotFilter<"FormationSessionEmargement"> | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFilter<"FormationSessionEmargement"> | $Enums.FormationSessionEmargementStatus
+    markedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
+    markedByUserId?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    notes?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    createdAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
   }
 
   export type FormationAttestationUpsertWithWhereUniqueWithoutUserInput = {
@@ -164004,6 +170916,51 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type LandingTeamOfferUpsertWithoutUserInput = {
+    update: XOR<LandingTeamOfferUpdateWithoutUserInput, LandingTeamOfferUncheckedUpdateWithoutUserInput>
+    create: XOR<LandingTeamOfferCreateWithoutUserInput, LandingTeamOfferUncheckedCreateWithoutUserInput>
+    where?: LandingTeamOfferWhereInput
+  }
+
+  export type LandingTeamOfferUpdateToOneWithWhereWithoutUserInput = {
+    where?: LandingTeamOfferWhereInput
+    data: XOR<LandingTeamOfferUpdateWithoutUserInput, LandingTeamOfferUncheckedUpdateWithoutUserInput>
+  }
+
+  export type LandingTeamOfferUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    volet?: EnumLandingTeamVoletFieldUpdateOperationsInput | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFieldUpdateOperationsInput | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    titleOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    certificationsLabelOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    bioOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    statAOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    statBOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingOverride?: NullableFloatFieldUpdateOperationsInput | number | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LandingTeamOfferUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    volet?: EnumLandingTeamVoletFieldUpdateOperationsInput | $Enums.LandingTeamVolet
+    catalogStatus?: EnumFormationLifecycleStatusFieldUpdateOperationsInput | $Enums.FormationLifecycleStatus
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    titleOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    certificationsLabelOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    bioOverride?: NullableStringFieldUpdateOperationsInput | string | null
+    statAOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    statBOverride?: NullableIntFieldUpdateOperationsInput | number | null
+    ratingOverride?: NullableFloatFieldUpdateOperationsInput | number | null
+    linkedinUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CollaborateurProfileUpsertWithWhereUniqueWithoutManagerInput = {
     where: CollaborateurProfileWhereUniqueInput
     update: XOR<CollaborateurProfileUpdateWithoutManagerInput, CollaborateurProfileUncheckedUpdateWithoutManagerInput>
@@ -164579,6 +171536,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -164605,6 +171563,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -164625,6 +171584,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
@@ -164684,6 +171644,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -164708,6 +171669,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -164728,6 +171690,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
@@ -165012,6 +171975,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -165038,6 +172002,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -165058,6 +172023,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
@@ -165117,6 +172083,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -165141,6 +172108,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -165161,6 +172129,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -165465,6 +172434,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -165491,6 +172461,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -165511,6 +172482,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
@@ -165570,6 +172542,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -165594,6 +172567,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -165614,6 +172588,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
@@ -165841,6 +172816,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -165867,6 +172843,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -165887,6 +172864,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
@@ -165946,6 +172924,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -165970,6 +172949,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -165990,6 +172970,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -166047,6 +173028,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -166073,6 +173055,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -166093,6 +173076,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -166152,6 +173136,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -166176,6 +173161,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -166196,6 +173182,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -166340,6 +173327,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166366,6 +173354,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -166386,6 +173375,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -166445,6 +173435,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166469,6 +173460,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -166489,6 +173481,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -166623,6 +173616,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -166649,6 +173643,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -166668,6 +173663,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -166728,6 +173724,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -166752,6 +173749,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -166771,6 +173769,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -166845,6 +173844,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166871,6 +173871,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -166890,6 +173891,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -166950,6 +173952,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166974,6 +173977,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -166993,6 +173997,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -167051,6 +174056,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -167077,6 +174083,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -167096,6 +174103,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -167156,6 +174164,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -167180,6 +174189,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -167199,6 +174209,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -167262,6 +174273,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -167288,6 +174300,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -167308,6 +174321,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
@@ -167367,6 +174381,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -167391,6 +174406,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -167411,6 +174427,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
@@ -167484,6 +174501,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167510,6 +174528,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -167529,6 +174548,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -167589,6 +174609,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167613,6 +174634,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -167632,6 +174654,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -167701,6 +174724,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167727,6 +174751,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -167747,6 +174772,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
@@ -167806,6 +174832,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -167830,6 +174857,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -167850,6 +174878,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -167907,6 +174936,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -167933,6 +174963,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -167952,6 +174983,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -168012,6 +175044,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -168036,6 +175069,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -168055,6 +175089,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -168129,6 +175164,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -168155,6 +175191,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -168174,6 +175211,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -168234,6 +175272,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -168258,6 +175297,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -168277,6 +175317,7 @@ export namespace Prisma {
     webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -168335,6 +175376,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -168360,6 +175402,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -168380,6 +175423,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -168439,6 +175483,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -168463,6 +175508,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -168483,6 +175529,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -168594,6 +175641,7 @@ export namespace Prisma {
     carteProNumber?: StringNullableFilter<"User"> | string | null
     carteProExpiry?: DateTimeNullableFilter<"User"> | Date | string | null
     isSchedulable?: BoolFilter<"User"> | boolean
+    landingPresentation?: StringNullableFilter<"User"> | string | null
     documentCni?: StringNullableFilter<"User"> | string | null
     documentAssurance?: StringNullableFilter<"User"> | string | null
     documentResidencePermit?: StringNullableFilter<"User"> | string | null
@@ -168825,6 +175873,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -168850,6 +175899,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -168870,6 +175920,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -168930,6 +175981,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -168953,6 +176005,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -168973,6 +176026,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -169047,6 +176101,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169072,6 +176127,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -169092,6 +176148,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -169152,6 +176209,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169175,6 +176233,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -169195,6 +176254,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -169253,6 +176313,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -169278,6 +176339,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -169298,6 +176360,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -169358,6 +176421,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -169381,6 +176445,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -169401,6 +176466,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -169475,6 +176541,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169500,6 +176567,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -169520,6 +176588,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -169580,6 +176649,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169603,6 +176673,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -169623,6 +176694,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -169681,6 +176753,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -169706,6 +176779,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -169726,6 +176800,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -169786,6 +176861,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -169809,6 +176885,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -169829,6 +176906,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -169903,6 +176981,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -169928,6 +177007,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -169948,6 +177028,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -170008,6 +177089,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170031,6 +177113,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -170051,6 +177134,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -170306,6 +177390,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -170332,6 +177417,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -170352,6 +177438,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -170411,6 +177498,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -170435,6 +177523,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -170455,6 +177544,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -170482,6 +177572,7 @@ export namespace Prisma {
     id?: string
     label: string
     code?: string | null
+    schoolInternalService?: $Enums.SchoolInternalService | null
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -170492,6 +177583,7 @@ export namespace Prisma {
     id?: string
     label: string
     code?: string | null
+    schoolInternalService?: $Enums.SchoolInternalService | null
     sortOrder?: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -170650,6 +177742,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170676,6 +177769,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -170696,6 +177790,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -170755,6 +177850,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -170779,6 +177875,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -170799,6 +177896,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -170832,6 +177930,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -170842,6 +177941,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     code?: NullableStringFieldUpdateOperationsInput | string | null
+    schoolInternalService?: NullableEnumSchoolInternalServiceFieldUpdateOperationsInput | $Enums.SchoolInternalService | null
     sortOrder?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -170963,6 +178063,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -170989,6 +178090,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -171009,6 +178111,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -171068,6 +178171,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -171092,6 +178196,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -171112,6 +178217,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -171160,6 +178266,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
@@ -171191,6 +178298,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
@@ -171380,6 +178488,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -171406,6 +178515,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -171426,6 +178536,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -171485,6 +178596,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -171509,6 +178621,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -171529,6 +178642,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -171583,6 +178697,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
@@ -171614,6 +178729,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
@@ -171745,6 +178861,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -171771,6 +178888,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -171791,6 +178909,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -171850,6 +178969,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -171874,6 +178994,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -171894,6 +179015,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -172014,6 +179136,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172040,6 +179163,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -172060,6 +179184,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -172119,6 +179244,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172143,6 +179269,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -172163,6 +179290,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -172220,6 +179348,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -172246,6 +179375,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -172266,6 +179396,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -172325,6 +179456,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -172349,6 +179481,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -172369,6 +179502,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -172431,6 +179565,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -172457,6 +179592,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -172477,6 +179613,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -172536,6 +179673,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -172560,6 +179698,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -172580,6 +179719,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -172653,6 +179793,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172679,6 +179820,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -172699,6 +179841,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -172758,6 +179901,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172782,6 +179926,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -172802,6 +179947,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -172870,6 +180016,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172896,6 +180043,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -172916,6 +180064,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -172975,6 +180124,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -172999,6 +180149,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -173019,6 +180170,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -173076,6 +180228,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -173101,6 +180254,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -173121,6 +180275,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -173180,6 +180335,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -173204,6 +180360,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -173224,6 +180381,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -173794,6 +180952,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -173825,6 +180984,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -174747,6 +181907,446 @@ export namespace Prisma {
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutFormationNestedInput
   }
 
+  export type UserCreateWithoutLandingTeamOfferInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    jobPosition?: RhPositionCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserUncheckedCreateWithoutLandingTeamOfferInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    jobPositionId?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationUncheckedCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserCreateOrConnectWithoutLandingTeamOfferInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutLandingTeamOfferInput, UserUncheckedCreateWithoutLandingTeamOfferInput>
+  }
+
+  export type UserUpsertWithoutLandingTeamOfferInput = {
+    update: XOR<UserUpdateWithoutLandingTeamOfferInput, UserUncheckedUpdateWithoutLandingTeamOfferInput>
+    create: XOR<UserCreateWithoutLandingTeamOfferInput, UserUncheckedCreateWithoutLandingTeamOfferInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutLandingTeamOfferInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutLandingTeamOfferInput, UserUncheckedUpdateWithoutLandingTeamOfferInput>
+  }
+
+  export type UserUpdateWithoutLandingTeamOfferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    jobPosition?: RhPositionUpdateOneWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutLandingTeamOfferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    jobPositionId?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
+  }
+
   export type FormationSessionCreateWithoutVenueRoomInput = {
     id?: string
     startDate?: Date | string | null
@@ -174771,6 +182371,7 @@ export namespace Prisma {
     moderator?: UserCreateNestedOneWithoutFormationSessionsModeratedInput
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -174802,6 +182403,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -174959,6 +182561,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -174985,6 +182588,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -175005,6 +182609,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -175064,6 +182669,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -175088,6 +182694,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -175108,6 +182715,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -175220,6 +182828,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175246,6 +182855,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -175266,6 +182876,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -175325,6 +182936,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -175349,6 +182961,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -175369,6 +182982,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -175559,6 +183173,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -175585,6 +183200,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -175604,6 +183220,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -175664,6 +183281,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -175688,6 +183306,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -175707,6 +183326,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -175770,6 +183390,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -175796,6 +183417,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -175815,6 +183437,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -175875,6 +183498,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -175899,6 +183523,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -175918,6 +183543,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -176011,10 +183637,14 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSessionInput = {
@@ -176026,8 +183656,12 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSessionInput = {
@@ -176037,6 +183671,36 @@ export namespace Prisma {
 
   export type FormationSessionParticipantCreateManySessionInputEnvelope = {
     data: FormationSessionParticipantCreateManySessionInput | FormationSessionParticipantCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FormationSessionDayCreateWithoutSessionInput = {
+    id?: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendances?: FormationSessionEmargementCreateNestedManyWithoutDayInput
+  }
+
+  export type FormationSessionDayUncheckedCreateWithoutSessionInput = {
+    id?: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendances?: FormationSessionEmargementUncheckedCreateNestedManyWithoutDayInput
+  }
+
+  export type FormationSessionDayCreateOrConnectWithoutSessionInput = {
+    where: FormationSessionDayWhereUniqueInput
+    create: XOR<FormationSessionDayCreateWithoutSessionInput, FormationSessionDayUncheckedCreateWithoutSessionInput>
+  }
+
+  export type FormationSessionDayCreateManySessionInputEnvelope = {
+    data: FormationSessionDayCreateManySessionInput | FormationSessionDayCreateManySessionInput[]
     skipDuplicates?: boolean
   }
 
@@ -176456,6 +184120,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176482,6 +184147,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -176501,6 +184167,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -176561,6 +184228,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176585,6 +184253,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -176604,6 +184273,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -176673,6 +184343,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176699,6 +184370,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -176718,6 +184390,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -176778,6 +184451,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -176802,6 +184476,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -176821,6 +184496,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -176928,6 +184604,35 @@ export namespace Prisma {
   export type FormationSessionParticipantUpdateManyWithWhereWithoutSessionInput = {
     where: FormationSessionParticipantScalarWhereInput
     data: XOR<FormationSessionParticipantUpdateManyMutationInput, FormationSessionParticipantUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type FormationSessionDayUpsertWithWhereUniqueWithoutSessionInput = {
+    where: FormationSessionDayWhereUniqueInput
+    update: XOR<FormationSessionDayUpdateWithoutSessionInput, FormationSessionDayUncheckedUpdateWithoutSessionInput>
+    create: XOR<FormationSessionDayCreateWithoutSessionInput, FormationSessionDayUncheckedCreateWithoutSessionInput>
+  }
+
+  export type FormationSessionDayUpdateWithWhereUniqueWithoutSessionInput = {
+    where: FormationSessionDayWhereUniqueInput
+    data: XOR<FormationSessionDayUpdateWithoutSessionInput, FormationSessionDayUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type FormationSessionDayUpdateManyWithWhereWithoutSessionInput = {
+    where: FormationSessionDayScalarWhereInput
+    data: XOR<FormationSessionDayUpdateManyMutationInput, FormationSessionDayUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type FormationSessionDayScalarWhereInput = {
+    AND?: FormationSessionDayScalarWhereInput | FormationSessionDayScalarWhereInput[]
+    OR?: FormationSessionDayScalarWhereInput[]
+    NOT?: FormationSessionDayScalarWhereInput | FormationSessionDayScalarWhereInput[]
+    id?: StringFilter<"FormationSessionDay"> | string
+    sessionId?: StringFilter<"FormationSessionDay"> | string
+    dayDate?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    journalNotesMorning?: StringNullableFilter<"FormationSessionDay"> | string | null
+    journalNotesEvening?: StringNullableFilter<"FormationSessionDay"> | string | null
+    createdAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
   }
 
   export type FormationAttestationUpsertWithWhereUniqueWithoutSessionInput = {
@@ -177199,6 +184904,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
@@ -177230,6 +184936,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
@@ -177416,6 +185123,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
@@ -177447,6 +185155,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
@@ -177492,6 +185201,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -177518,6 +185228,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
@@ -177537,6 +185248,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -177597,6 +185309,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -177621,6 +185334,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
@@ -177640,6 +185354,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -177822,6 +185537,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -177853,6 +185569,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -177958,10 +185675,14 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutCandidatureInput = {
@@ -177973,8 +185694,12 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutCandidatureInput = {
@@ -178131,6 +185856,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178157,6 +185883,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
@@ -178176,6 +185903,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -178236,6 +185964,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178260,6 +185989,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
@@ -178279,6 +186009,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -178473,6 +186204,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -178504,6 +186236,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -178643,6 +186376,7 @@ export namespace Prisma {
     moderator?: UserCreateNestedOneWithoutFormationSessionsModeratedInput
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -178674,6 +186408,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -178725,6 +186460,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -178750,6 +186486,7 @@ export namespace Prisma {
     grades?: GradeCreateNestedManyWithoutUserInput
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -178770,6 +186507,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -178830,6 +186568,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -178853,6 +186592,7 @@ export namespace Prisma {
     grades?: GradeUncheckedCreateNestedManyWithoutUserInput
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -178873,6 +186613,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -178952,6 +186693,40 @@ export namespace Prisma {
     create: XOR<CandidatureCreateWithoutSessionEnrollmentsInput, CandidatureUncheckedCreateWithoutSessionEnrollmentsInput>
   }
 
+  export type FormationSessionEmargementCreateWithoutParticipantInput = {
+    id?: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    day: FormationSessionDayCreateNestedOneWithoutAttendancesInput
+    markedBy?: UserCreateNestedOneWithoutFormationSessionEmargementsMarkedInput
+  }
+
+  export type FormationSessionEmargementUncheckedCreateWithoutParticipantInput = {
+    id?: string
+    dayId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    markedByUserId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementCreateOrConnectWithoutParticipantInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    create: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FormationSessionEmargementCreateManyParticipantInputEnvelope = {
+    data: FormationSessionEmargementCreateManyParticipantInput | FormationSessionEmargementCreateManyParticipantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FormationSessionUpsertWithoutParticipantsInput = {
     update: XOR<FormationSessionUpdateWithoutParticipantsInput, FormationSessionUncheckedUpdateWithoutParticipantsInput>
     create: XOR<FormationSessionCreateWithoutParticipantsInput, FormationSessionUncheckedCreateWithoutParticipantsInput>
@@ -178987,6 +186762,7 @@ export namespace Prisma {
     moderator?: UserUpdateOneWithoutFormationSessionsModeratedNestedInput
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -179018,6 +186794,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -179075,6 +186852,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -179100,6 +186878,7 @@ export namespace Prisma {
     grades?: GradeUpdateManyWithoutUserNestedInput
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -179120,6 +186899,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -179180,6 +186960,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -179203,6 +186984,7 @@ export namespace Prisma {
     grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -179223,6 +187005,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -179303,6 +187086,796 @@ export namespace Prisma {
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
+  export type FormationSessionEmargementUpsertWithWhereUniqueWithoutParticipantInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    update: XOR<FormationSessionEmargementUpdateWithoutParticipantInput, FormationSessionEmargementUncheckedUpdateWithoutParticipantInput>
+    create: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FormationSessionEmargementUpdateWithWhereUniqueWithoutParticipantInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    data: XOR<FormationSessionEmargementUpdateWithoutParticipantInput, FormationSessionEmargementUncheckedUpdateWithoutParticipantInput>
+  }
+
+  export type FormationSessionEmargementUpdateManyWithWhereWithoutParticipantInput = {
+    where: FormationSessionEmargementScalarWhereInput
+    data: XOR<FormationSessionEmargementUpdateManyMutationInput, FormationSessionEmargementUncheckedUpdateManyWithoutParticipantInput>
+  }
+
+  export type FormationSessionCreateWithoutSuiviDaysInput = {
+    id?: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    traineesMin?: number | null
+    traineesMax?: number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    formation: FormationCreateNestedOneWithoutSessionsInput
+    trainer?: UserCreateNestedOneWithoutFormationSessionsTrainedInput
+    moderator?: UserCreateNestedOneWithoutFormationSessionsModeratedInput
+    chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
+    venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
+    participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
+  }
+
+  export type FormationSessionUncheckedCreateWithoutSuiviDaysInput = {
+    id?: string
+    formationId: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    traineesMin?: number | null
+    traineesMax?: number | null
+    trainerUserId?: string | null
+    moderatorUserId?: string | null
+    venueRoomId?: string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
+    participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
+  }
+
+  export type FormationSessionCreateOrConnectWithoutSuiviDaysInput = {
+    where: FormationSessionWhereUniqueInput
+    create: XOR<FormationSessionCreateWithoutSuiviDaysInput, FormationSessionUncheckedCreateWithoutSuiviDaysInput>
+  }
+
+  export type FormationSessionEmargementCreateWithoutDayInput = {
+    id?: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participant: FormationSessionParticipantCreateNestedOneWithoutEmargementsInput
+    markedBy?: UserCreateNestedOneWithoutFormationSessionEmargementsMarkedInput
+  }
+
+  export type FormationSessionEmargementUncheckedCreateWithoutDayInput = {
+    id?: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    markedByUserId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementCreateOrConnectWithoutDayInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    create: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput>
+  }
+
+  export type FormationSessionEmargementCreateManyDayInputEnvelope = {
+    data: FormationSessionEmargementCreateManyDayInput | FormationSessionEmargementCreateManyDayInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FormationSessionUpsertWithoutSuiviDaysInput = {
+    update: XOR<FormationSessionUpdateWithoutSuiviDaysInput, FormationSessionUncheckedUpdateWithoutSuiviDaysInput>
+    create: XOR<FormationSessionCreateWithoutSuiviDaysInput, FormationSessionUncheckedCreateWithoutSuiviDaysInput>
+    where?: FormationSessionWhereInput
+  }
+
+  export type FormationSessionUpdateToOneWithWhereWithoutSuiviDaysInput = {
+    where?: FormationSessionWhereInput
+    data: XOR<FormationSessionUpdateWithoutSuiviDaysInput, FormationSessionUncheckedUpdateWithoutSuiviDaysInput>
+  }
+
+  export type FormationSessionUpdateWithoutSuiviDaysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    formation?: FormationUpdateOneRequiredWithoutSessionsNestedInput
+    trainer?: UserUpdateOneWithoutFormationSessionsTrainedNestedInput
+    moderator?: UserUpdateOneWithoutFormationSessionsModeratedNestedInput
+    chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
+    venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
+    participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
+  }
+
+  export type FormationSessionUncheckedUpdateWithoutSuiviDaysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formationId?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
+    participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
+  }
+
+  export type FormationSessionEmargementUpsertWithWhereUniqueWithoutDayInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    update: XOR<FormationSessionEmargementUpdateWithoutDayInput, FormationSessionEmargementUncheckedUpdateWithoutDayInput>
+    create: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput>
+  }
+
+  export type FormationSessionEmargementUpdateWithWhereUniqueWithoutDayInput = {
+    where: FormationSessionEmargementWhereUniqueInput
+    data: XOR<FormationSessionEmargementUpdateWithoutDayInput, FormationSessionEmargementUncheckedUpdateWithoutDayInput>
+  }
+
+  export type FormationSessionEmargementUpdateManyWithWhereWithoutDayInput = {
+    where: FormationSessionEmargementScalarWhereInput
+    data: XOR<FormationSessionEmargementUpdateManyMutationInput, FormationSessionEmargementUncheckedUpdateManyWithoutDayInput>
+  }
+
+  export type FormationSessionDayCreateWithoutAttendancesInput = {
+    id?: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutSuiviDaysInput
+  }
+
+  export type FormationSessionDayUncheckedCreateWithoutAttendancesInput = {
+    id?: string
+    sessionId: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionDayCreateOrConnectWithoutAttendancesInput = {
+    where: FormationSessionDayWhereUniqueInput
+    create: XOR<FormationSessionDayCreateWithoutAttendancesInput, FormationSessionDayUncheckedCreateWithoutAttendancesInput>
+  }
+
+  export type FormationSessionParticipantCreateWithoutEmargementsInput = {
+    id?: string
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutParticipantsInput
+    user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
+    candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+  }
+
+  export type FormationSessionParticipantUncheckedCreateWithoutEmargementsInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    candidatureId?: string | null
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionParticipantCreateOrConnectWithoutEmargementsInput = {
+    where: FormationSessionParticipantWhereUniqueInput
+    create: XOR<FormationSessionParticipantCreateWithoutEmargementsInput, FormationSessionParticipantUncheckedCreateWithoutEmargementsInput>
+  }
+
+  export type UserCreateWithoutFormationSessionEmargementsMarkedInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    jobPosition?: RhPositionCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserUncheckedCreateWithoutFormationSessionEmargementsMarkedInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    jobPositionId?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationUncheckedCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserCreateOrConnectWithoutFormationSessionEmargementsMarkedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFormationSessionEmargementsMarkedInput, UserUncheckedCreateWithoutFormationSessionEmargementsMarkedInput>
+  }
+
+  export type FormationSessionDayUpsertWithoutAttendancesInput = {
+    update: XOR<FormationSessionDayUpdateWithoutAttendancesInput, FormationSessionDayUncheckedUpdateWithoutAttendancesInput>
+    create: XOR<FormationSessionDayCreateWithoutAttendancesInput, FormationSessionDayUncheckedCreateWithoutAttendancesInput>
+    where?: FormationSessionDayWhereInput
+  }
+
+  export type FormationSessionDayUpdateToOneWithWhereWithoutAttendancesInput = {
+    where?: FormationSessionDayWhereInput
+    data: XOR<FormationSessionDayUpdateWithoutAttendancesInput, FormationSessionDayUncheckedUpdateWithoutAttendancesInput>
+  }
+
+  export type FormationSessionDayUpdateWithoutAttendancesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutSuiviDaysNestedInput
+  }
+
+  export type FormationSessionDayUncheckedUpdateWithoutAttendancesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionParticipantUpsertWithoutEmargementsInput = {
+    update: XOR<FormationSessionParticipantUpdateWithoutEmargementsInput, FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput>
+    create: XOR<FormationSessionParticipantCreateWithoutEmargementsInput, FormationSessionParticipantUncheckedCreateWithoutEmargementsInput>
+    where?: FormationSessionParticipantWhereInput
+  }
+
+  export type FormationSessionParticipantUpdateToOneWithWhereWithoutEmargementsInput = {
+    where?: FormationSessionParticipantWhereInput
+    data: XOR<FormationSessionParticipantUpdateWithoutEmargementsInput, FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput>
+  }
+
+  export type FormationSessionParticipantUpdateWithoutEmargementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
+    user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
+    candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+  }
+
+  export type FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    candidatureId?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutFormationSessionEmargementsMarkedInput = {
+    update: XOR<UserUpdateWithoutFormationSessionEmargementsMarkedInput, UserUncheckedUpdateWithoutFormationSessionEmargementsMarkedInput>
+    create: XOR<UserCreateWithoutFormationSessionEmargementsMarkedInput, UserUncheckedCreateWithoutFormationSessionEmargementsMarkedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFormationSessionEmargementsMarkedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFormationSessionEmargementsMarkedInput, UserUncheckedUpdateWithoutFormationSessionEmargementsMarkedInput>
+  }
+
+  export type UserUpdateWithoutFormationSessionEmargementsMarkedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    jobPosition?: RhPositionUpdateOneWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFormationSessionEmargementsMarkedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    jobPositionId?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
+  }
+
   export type UserCreateWithoutFormationAttestationsInput = {
     id?: string
     email: string
@@ -179342,6 +187915,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -179368,6 +187942,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
@@ -179387,6 +187962,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -179447,6 +188023,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -179471,6 +188048,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
@@ -179490,6 +188068,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -179727,6 +188306,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
@@ -179758,6 +188338,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
@@ -179819,6 +188400,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -179845,6 +188427,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
@@ -179864,6 +188447,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -179924,6 +188508,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -179948,6 +188533,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
@@ -179967,6 +188553,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -180222,6 +188809,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
@@ -180253,6 +188841,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
@@ -180413,6 +189002,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -180438,6 +189028,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -180458,6 +189049,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -180518,6 +189110,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -180541,6 +189134,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -180561,6 +189155,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -181149,6 +189744,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -181174,6 +189770,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -181194,6 +189791,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -181254,6 +189852,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -181277,6 +189876,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -181297,6 +189897,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -181911,6 +190512,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -181936,6 +190538,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -181956,6 +190559,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -182016,6 +190620,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -182039,6 +190644,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -182059,6 +190665,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -182287,6 +190894,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -182312,6 +190920,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -182332,6 +190941,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -182392,6 +191002,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -182415,6 +191026,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -182435,6 +191047,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -182611,6 +191224,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -182636,6 +191250,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -182656,6 +191271,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -182716,6 +191332,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -182739,6 +191356,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -182759,6 +191377,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -182950,6 +191569,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -182975,6 +191595,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -182995,6 +191616,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -183055,6 +191677,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -183078,6 +191701,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -183098,6 +191722,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -183172,6 +191797,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183197,6 +191823,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -183217,6 +191844,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -183277,6 +191905,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183300,6 +191929,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -183320,6 +191950,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -183505,6 +192136,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183530,6 +192162,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -183550,6 +192183,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -183610,6 +192244,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183633,6 +192268,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -183653,6 +192289,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -183997,6 +192634,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -184022,6 +192660,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -184042,6 +192681,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -184102,6 +192742,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -184125,6 +192766,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -184145,6 +192787,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -184453,6 +193096,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184478,6 +193122,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -184498,6 +193143,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -184558,6 +193204,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -184581,6 +193228,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -184601,6 +193249,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -184791,6 +193440,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -184816,6 +193466,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -184836,6 +193487,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -184896,6 +193548,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -184919,6 +193572,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -184939,6 +193593,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -185064,6 +193719,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185089,6 +193745,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -185109,6 +193766,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -185169,6 +193827,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185192,6 +193851,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -185212,6 +193872,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -185270,6 +193931,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -185295,6 +193957,7 @@ export namespace Prisma {
     grades?: GradeCreateNestedManyWithoutUserInput
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -185315,6 +193978,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -185375,6 +194039,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -185398,6 +194063,7 @@ export namespace Prisma {
     grades?: GradeUncheckedCreateNestedManyWithoutUserInput
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -185418,6 +194084,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -185541,6 +194208,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185566,6 +194234,7 @@ export namespace Prisma {
     grades?: GradeUpdateManyWithoutUserNestedInput
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -185586,6 +194255,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -185646,6 +194316,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185669,6 +194340,7 @@ export namespace Prisma {
     grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -185689,6 +194361,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -185859,6 +194532,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -185884,6 +194558,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -185904,6 +194579,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -185964,6 +194640,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -185987,6 +194664,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -186007,6 +194685,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -186144,6 +194823,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186169,6 +194849,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -186189,6 +194870,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -186249,6 +194931,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186272,6 +194955,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -186292,6 +194976,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -186350,6 +195035,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -186375,6 +195061,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -186395,6 +195082,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -186455,6 +195143,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -186478,6 +195167,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -186498,6 +195188,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -186572,6 +195263,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186597,6 +195289,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -186617,6 +195310,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -186677,6 +195371,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -186700,6 +195395,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -186720,6 +195416,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -186778,6 +195475,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -186803,6 +195501,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -186823,6 +195522,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -186883,6 +195583,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -186906,6 +195607,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -186926,6 +195628,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -187152,6 +195855,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -187177,6 +195881,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -187197,6 +195902,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -187257,6 +195963,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -187280,6 +195987,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -187300,6 +196008,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -187469,6 +196178,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -187494,6 +196204,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -187514,6 +196225,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -187574,6 +196286,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -187597,6 +196310,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -187617,6 +196331,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -187783,6 +196498,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -187808,6 +196524,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -187828,6 +196545,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -187888,6 +196606,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -187911,6 +196630,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -187931,6 +196651,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -188093,6 +196814,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -188118,6 +196840,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -188138,6 +196861,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -188198,6 +196922,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -188221,6 +196946,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -188241,6 +196967,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -188350,6 +197077,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188375,6 +197103,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -188395,6 +197124,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -188455,6 +197185,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188478,6 +197209,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -188498,6 +197230,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -188597,6 +197330,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -188622,6 +197356,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -188642,6 +197377,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -188702,6 +197438,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -188725,6 +197462,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -188745,6 +197483,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -188876,6 +197615,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -188901,6 +197641,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -188921,6 +197662,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -188981,6 +197723,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -189004,6 +197747,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -189024,6 +197768,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -189996,6 +198741,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -190027,6 +198773,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -190381,6 +199128,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -190412,6 +199160,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -191064,6 +199813,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -191090,6 +199840,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -191109,6 +199860,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -191169,6 +199921,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -191193,6 +199946,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -191212,6 +199966,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -191307,6 +200062,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191333,6 +200089,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -191352,6 +200109,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -191412,6 +200170,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -191436,6 +200195,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -191455,6 +200215,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -191716,6 +200477,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -191742,6 +200504,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -191761,6 +200524,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -191821,6 +200585,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -191845,6 +200610,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -191864,6 +200630,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -192015,6 +200782,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192041,6 +200809,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -192060,6 +200829,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -192120,6 +200890,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192144,6 +200915,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -192163,6 +200935,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -192317,6 +201090,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -192343,6 +201117,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -192362,6 +201137,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -192422,6 +201198,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -192446,6 +201223,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -192465,6 +201243,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -192661,6 +201440,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192687,6 +201467,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -192706,6 +201487,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -192766,6 +201548,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -192790,6 +201573,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -192809,6 +201593,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -192967,6 +201752,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -192993,6 +201779,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -193012,6 +201799,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -193072,6 +201860,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -193096,6 +201885,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -193115,6 +201905,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -193230,6 +202021,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193256,6 +202048,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -193275,6 +202068,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -193335,6 +202129,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193359,6 +202154,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -193378,6 +202174,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -193463,6 +202260,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -193489,6 +202287,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -193508,6 +202307,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -193568,6 +202368,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -193592,6 +202393,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -193611,6 +202413,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -193718,6 +202521,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193744,6 +202548,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -193763,6 +202568,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -193823,6 +202629,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -193847,6 +202654,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -193866,6 +202674,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -194103,6 +202912,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -194128,6 +202938,7 @@ export namespace Prisma {
     grades?: GradeCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -194148,6 +202959,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -194208,6 +203020,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -194231,6 +203044,7 @@ export namespace Prisma {
     grades?: GradeUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -194251,6 +203065,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -194358,6 +203173,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194383,6 +203199,7 @@ export namespace Prisma {
     grades?: GradeUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -194403,6 +203220,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -194463,6 +203281,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194486,6 +203305,7 @@ export namespace Prisma {
     grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -194506,6 +203326,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -194564,6 +203385,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -194590,6 +203412,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -194609,6 +203432,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -194669,6 +203493,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -194693,6 +203518,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -194712,6 +203538,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -194834,6 +203661,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194860,6 +203688,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -194879,6 +203708,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -194939,6 +203769,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -194963,6 +203794,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -194982,6 +203814,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -195273,6 +204106,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -195299,6 +204133,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -195318,6 +204153,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -195378,6 +204214,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -195402,6 +204239,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -195421,6 +204259,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -195526,6 +204365,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -195552,6 +204392,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -195571,6 +204412,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -195631,6 +204473,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -195655,6 +204498,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -195674,6 +204518,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -195805,6 +204650,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -195831,6 +204677,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -195850,6 +204697,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -195910,6 +204758,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -195934,6 +204783,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -195953,6 +204803,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -196027,6 +204878,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -196053,6 +204905,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -196072,6 +204925,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -196132,6 +204986,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -196156,6 +205011,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -196175,6 +205031,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -196233,6 +205090,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -196259,6 +205117,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -196278,6 +205137,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -196338,6 +205198,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -196362,6 +205223,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -196381,6 +205243,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -196487,6 +205350,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -196513,6 +205377,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -196532,6 +205397,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -196592,6 +205458,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -196616,6 +205483,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -196635,6 +205503,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -197051,6 +205920,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -197077,6 +205947,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -197097,6 +205968,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -197156,6 +206028,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -197180,6 +206053,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -197200,6 +206074,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -197262,6 +206137,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -197288,6 +206164,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -197308,6 +206185,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -197367,6 +206245,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -197391,6 +206270,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -197411,6 +206291,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -197529,6 +206410,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -197555,6 +206437,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -197575,6 +206458,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -197634,6 +206518,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -197658,6 +206543,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -197678,6 +206564,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -197746,6 +206633,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -197772,6 +206660,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -197792,6 +206681,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -197851,6 +206741,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -197875,6 +206766,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -197895,6 +206787,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -198060,6 +206953,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -198086,6 +206980,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -198106,6 +207001,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -198165,6 +207061,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -198189,6 +207086,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -198209,6 +207107,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -198282,6 +207181,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -198308,6 +207208,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -198328,6 +207229,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -198387,6 +207289,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -198411,6 +207314,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -198431,6 +207335,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -198514,6 +207419,7 @@ export namespace Prisma {
     moderator?: UserCreateNestedOneWithoutFormationSessionsModeratedInput
     venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
     participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
@@ -198545,6 +207451,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
@@ -198723,6 +207630,7 @@ export namespace Prisma {
     moderator?: UserUpdateOneWithoutFormationSessionsModeratedNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -198754,6 +207662,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -198877,6 +207786,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -198903,6 +207813,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -198923,6 +207834,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -198982,6 +207894,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -199006,6 +207919,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -199026,6 +207940,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -199088,6 +208003,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -199114,6 +208030,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -199134,6 +208051,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -199193,6 +208111,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -199217,6 +208136,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -199237,6 +208157,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -199345,6 +208266,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -199371,6 +208293,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -199391,6 +208314,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -199450,6 +208374,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -199474,6 +208399,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -199494,6 +208420,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -199562,6 +208489,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -199588,6 +208516,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -199608,6 +208537,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -199667,6 +208597,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -199691,6 +208622,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -199711,6 +208643,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -199797,6 +208730,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -199823,6 +208757,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -199843,6 +208778,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -199902,6 +208838,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -199926,6 +208863,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -199946,6 +208884,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -200054,6 +208993,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -200080,6 +209020,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -200100,6 +209041,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -200159,6 +209101,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -200183,6 +209126,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -200203,6 +209147,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -200289,6 +209234,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -200315,6 +209261,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -200335,6 +209282,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -200394,6 +209342,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -200418,6 +209367,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -200438,6 +209388,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -200546,6 +209497,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -200572,6 +209524,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -200592,6 +209545,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -200651,6 +209605,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -200675,6 +209630,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -200695,6 +209651,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -200957,6 +209914,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -200983,6 +209941,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
@@ -201002,6 +209961,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -201062,6 +210022,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -201086,6 +210047,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
@@ -201105,6 +210067,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -201356,6 +210319,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -201382,6 +210346,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
@@ -201401,6 +210366,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -201461,6 +210427,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -201485,6 +210452,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
@@ -201504,6 +210472,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -201818,6 +210787,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -201844,6 +210814,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -201863,6 +210834,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -201923,6 +210895,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -201947,6 +210920,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -201966,6 +210940,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -202273,6 +211248,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -202299,6 +211275,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -202318,6 +211295,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -202378,6 +211356,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -202402,6 +211381,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -202421,6 +211401,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -202603,6 +211584,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -202629,6 +211611,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -202648,6 +211631,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -202708,6 +211692,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -202732,6 +211717,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -202751,6 +211737,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -202929,6 +211916,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -202955,6 +211943,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -202974,6 +211963,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -203034,6 +212024,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -203058,6 +212049,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -203077,6 +212069,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -203227,6 +212220,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -203253,6 +212247,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
@@ -203272,6 +212267,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
@@ -203332,6 +212328,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -203356,6 +212353,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
     quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
@@ -203375,6 +212373,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
     collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
     formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
@@ -203624,6 +212623,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -203650,6 +212650,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -203669,6 +212670,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -203729,6 +212731,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -203753,6 +212756,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -203772,6 +212776,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -204062,6 +213067,21 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementCreateManyMarkedByInput = {
+    id?: string
+    dayId: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -205162,10 +214182,14 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutUserInput = {
@@ -205177,8 +214201,12 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutUserInput = {
@@ -205190,6 +214218,45 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementUpdateWithoutMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    day?: FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutEmargementsNestedInput
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateWithoutMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -205521,6 +214588,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -205552,6 +214620,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -205607,6 +214676,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -205638,6 +214708,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -207018,6 +216089,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -207071,6 +216143,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -207096,6 +216169,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -207116,6 +216190,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -207175,6 +216250,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -207199,6 +216275,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -207219,6 +216296,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -207278,6 +216356,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -207668,6 +216747,7 @@ export namespace Prisma {
     carteProNumber?: string | null
     carteProExpiry?: Date | string | null
     isSchedulable?: boolean
+    landingPresentation?: string | null
     documentCni?: string | null
     documentAssurance?: string | null
     documentResidencePermit?: string | null
@@ -207725,6 +216805,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -207750,6 +216831,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
@@ -207770,6 +216852,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
@@ -207829,6 +216912,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -207853,6 +216937,7 @@ export namespace Prisma {
     submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
     quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
     formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
@@ -207873,6 +216958,7 @@ export namespace Prisma {
     businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
     collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
     formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -207932,6 +217018,7 @@ export namespace Prisma {
     carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
     carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
     documentCni?: NullableStringFieldUpdateOperationsInput | string | null
     documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
     documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
@@ -208239,6 +217326,7 @@ export namespace Prisma {
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -208270,6 +217358,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -208652,6 +217741,7 @@ export namespace Prisma {
     moderator?: UserUpdateOneWithoutFormationSessionsModeratedNestedInput
     chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
@@ -208683,6 +217773,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
     participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
@@ -208762,6 +217853,18 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionDayCreateManySessionInput = {
+    id?: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -208840,10 +217943,14 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSessionInput = {
@@ -208855,8 +217962,12 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutSessionInput = {
@@ -208868,6 +217979,38 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionDayUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendances?: FormationSessionEmargementUpdateManyWithoutDayNestedInput
+  }
+
+  export type FormationSessionDayUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendances?: FormationSessionEmargementUncheckedUpdateManyWithoutDayNestedInput
+  }
+
+  export type FormationSessionDayUncheckedUpdateManyWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -209110,6 +218253,9 @@ export namespace Prisma {
     examDate?: Date | string | null
     certifiedAt?: Date | string | null
     trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -209210,10 +218356,14 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutCandidatureInput = {
@@ -209225,8 +218375,12 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureInput = {
@@ -209238,6 +218392,9 @@ export namespace Prisma {
     examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -209347,6 +218504,102 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementCreateManyParticipantInput = {
+    id?: string
+    dayId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    markedByUserId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    day?: FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput
+    markedBy?: UserUpdateOneWithoutFormationSessionEmargementsMarkedNestedInput
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateManyWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementCreateManyDayInput = {
+    id?: string
+    participantId: string
+    slot: $Enums.FormationSessionDaySlot
+    status?: $Enums.FormationSessionEmargementStatus
+    markedAt?: Date | string | null
+    markedByUserId?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionEmargementUpdateWithoutDayInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutEmargementsNestedInput
+    markedBy?: UserUpdateOneWithoutFormationSessionEmargementsMarkedNestedInput
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateWithoutDayInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionEmargementUncheckedUpdateManyWithoutDayInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
+    status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
+    markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

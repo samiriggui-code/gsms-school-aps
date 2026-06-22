@@ -111,6 +111,10 @@ const orgUnitInclude = {
     },
   },
   teams: {
+    where: {
+      formationSessionId: null,
+      type: { in: ['DIRECTION', 'PEDAGOGICAL', 'TRAINER_POOL', 'HR_ADMIN'] },
+    },
     select: {
       id: true,
       name: true,
@@ -130,7 +134,12 @@ const orgUnitInclude = {
     },
     orderBy: { name: 'asc' as const },
   },
-  _count: { select: { children: true, teams: true } },
+  _count: {
+    select: {
+      children: true,
+      teams: { where: { formationSessionId: null, type: { in: ['DIRECTION', 'PEDAGOGICAL', 'TRAINER_POOL', 'HR_ADMIN'] } } },
+    },
+  },
 } satisfies Prisma.RhOrgUnitInclude;
 
 export async function GET(_request: NextRequest, { params }: Params) {

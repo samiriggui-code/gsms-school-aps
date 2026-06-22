@@ -1,113 +1,146 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState } from 'react';
 import { User as Etudiant } from '@/app/models/user';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ExternalLink, Printer } from 'lucide-react';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { ExternalLink, FileDown, Info, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { apiFetch } from '@/lib/api';
+import { CNAPS_DOSSIER_SLOTS } from '../lib/cnaps-dossier-documents';
 
 const CNAPS_FORMULAIRE_URL =
   'https://www.cnaps.interieur.gouv.fr/contenu/telechargement/5034/42210/file/20260210%20Formulaire%20d%27autorisation%20pr%C3%A9alable%20ou%20provisoire%20d%27entr%C3%A9e%20en%20formation.pdf';
 
-type CompanyProfile = Record<string, unknown> | null;
-
 export function CandidatDocumentsCnapsTab({
   Etudiant,
-  formationLabel,
-  companyProfile,
+  candidatureId,
 }: {
   Etudiant: Etudiant;
-  formationLabel: string | null;
-  companyProfile: CompanyProfile;
+  candidatureId: string | null;
+  formationLabel?: string | null;
+  companyProfile?: Record<string, unknown> | null;
 }) {
-  const printRef = useRef<HTMLDivElement>(null);
-  const orgName =
-    (companyProfile as { companyProfile?: { companyName?: string } } | null)?.companyProfile?.companyName ||
-    (companyProfile as { tenant?: { name?: string } } | null)?.tenant?.name ||
-    'Organisme de formation';
-  const today = format(new Date(), "d MMMM yyyy", { locale: fr });
-  const formation = formationLabel?.trim() || '— (sélectionner une formation catalogue dans le dossier actif)';
-  const fullName =
-    [Etudiant.firstName, Etudiant.lastName].filter(Boolean).join(' ').trim() || Etudiant.name || '—';
+  const [loading, setLoading] = useState(false);
 
-  const handlePrint = () => {
-    const el = printRef.current;
-    if (!el || typeof window === 'undefined') return;
-    const w = window.open('', '_blank');
-    if (!w) return;
-    w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"/><title>Synthèse autorisation préalable</title>
-      <style>
-        body { font-family: system-ui, sans-serif; padding: 24px; color: #111; }
-        h1 { font-size: 16px; text-transform: uppercase; letter-spacing: .05em; }
-        table { width:100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
-        td { border: 1px solid #ccc; padding: 8px; vertical-align: top; }
-        td:first-child { width: 36%; font-weight: 600; background: #fafafa; }
-      </style></head><body>${el.innerHTML}</body></html>`);
-    w.document.close();
-    w.focus();
-    w.print();
-    w.close();
+  const handleGeneratePrefilled = async () => {
+    if (!Etudiant?.id) return;
+    setLoading(true);
+    try {
+      const qs = candidatureId ? `?candidatureId=${encodeURIComponent(candidatureId)}` : '';
+      const res = await apiFetch(
+        `/api/sections/gestion-academique/vie-scolaire/etudiants/cnaps-prefilled-form/${Etudiant.id}${qs}`,
+      );
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        throw new Error(
+          (j?.error?.message as string | undefined) ?? j?.error ?? 'Génération impossible.',
+        );
+      }
+      const missing = res.headers.get('X-Cnaps-Missing-Fields');
+      const blob = await res.blob();
+      const cd = res.headers.get('Content-Disposition');
+      const filenameMatch = cd?.match(/filename=\"([^\"]+)\"/i);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download =
+        filenameMatch?.[1] ??
+        `cnaps-prefill_${Etudiant.lastName || 'candidat'}_${new Date().toISOString().slice(0, 10)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      if (missing) {
+        toast.warning(`PDF généré — champs à compléter : ${missing.replace(/\|/g, ', ')}`);
+      } else {
+        toast.success('Formulaire CNAPS prérempli téléchargé.');
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Erreur génération PDF.');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const formSlot = CNAPS_DOSSIER_SLOTS.find((s) => s.category === 'CNAPS_FORM_OF');
 
   return (
     <div className="space-y-5">
+      <Alert variant="secondary" appearance="outline" className="border-border/70">
+        <AlertIcon>
+          <Info className="size-4" />
+        </AlertIcon>
+        <div>
+          <AlertTitle className="text-sm">Circuit dossier CNAPS</AlertTitle>
+          <AlertDescription className="text-xs leading-relaxed">
+            1) Générer le PDF prérempli depuis les données onboarding · 2) Imprimer, faire signer le
+            candidat, apposer le tampon école · 3) Rescanner et déposer dans le dossier · 4) Le
+            candidat envoie lui-même depuis sa boîte mail au CNAPS (hors CRM) · 5) En attente :
+            accès e-formation limité (modules préparatoires).
+          </AlertDescription>
+        </div>
+      </Alert>
+
       <Card className="shadow-none border-border/60">
-        <CardHeader>
-          <CardTitle className="text-sm font-bold uppercase tracking-wider">Autorisation préalable CNAPS — cadre envoi</CardTitle>
-          <CardDescription className="text-xs">
-            Récap à joindre à la préparation du dossier : le candidat transmet officiellement depuis son mail personnel selon les consignes du téléservice CNAPS ; l’école garantit une
-            pré‑inscription / formation attestée figurant ci‑dessous.
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-bold uppercase tracking-wider">
+            Formulaire officiel CNAPS — préremplissage
+          </CardTitle>
+          <CardDescription className="text-xs leading-relaxed">
+            Pre-remplissage sur le PDF officiel CNAPS (fev. 2026) : nom, adresse, centre de formation,
+            activites, type de formation, CNI. Prenom, naissance, tel et mail ne sont pas sur ce modele
+            &mdash; ils restent dans la fiche candidat CRM. Nom d&apos;usage et signature : manuels.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
+            className="gap-2"
+            disabled={loading || !Etudiant?.id}
+            onClick={() => void handleGeneratePrefilled()}
+          >
+            {loading ? <Loader2 className="size-4 animate-spin" /> : <FileDown className="size-4" />}
+            Télécharger le formulaire prérempli
+          </Button>
           <Button variant="outline" size="sm" className="gap-2" asChild>
             <a href={CNAPS_FORMULAIRE_URL} target="_blank" rel="noopener noreferrer">
               <ExternalLink className="size-4" />
-              Ouvrir le formulaire officiel CNAPS (PDF)
+              Modèle vierge CNAPS
             </a>
-          </Button>
-          <Button type="button" variant="secondary" size="sm" className="gap-2" onClick={handlePrint}>
-            <Printer className="size-4" />
-            Imprimer la synthèse
           </Button>
         </CardContent>
       </Card>
 
-      <div ref={printRef} className="rounded-lg border border-border bg-card p-5 text-sm leading-relaxed">
-        <h1 className="text-sm font-bold uppercase tracking-wide text-foreground mb-4">
-          Synthèse — désignation formation en vue d&apos;une autorisation préalable
-        </h1>
-        <p className="text-xs text-muted-foreground mb-4">Document interne préparatoire — {today}</p>
-        <table>
-          <tbody>
-            <tr>
-              <td>Organisme attestant la formation projetée</td>
-              <td>{orgName}</td>
-            </tr>
-            <tr>
-              <td>Candidat</td>
-              <td>{fullName}</td>
-            </tr>
-            <tr>
-              <td>Email de contact dossier</td>
-              <td>{Etudiant.email || '—'}</td>
-            </tr>
-            <tr>
-              <td>Formation visée (intitulé catalogue)</td>
-              <td>{formation}</td>
-            </tr>
-            <tr>
-              <td>Rappel</td>
-              <td>
-                L’accord CNAPS prend la forme d’une autorisation préalable ou provisoire ; il autorise à suivre la formation
-                et ne vaut pas à lui seul exercice en tant qu’agent de sécurité privée.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <Card className="shadow-none border-border/60">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold">Pièces attendues dans le dossier</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {CNAPS_DOSSIER_SLOTS.map((slot) => (
+            <div
+              key={slot.category}
+              className="flex flex-wrap items-start justify-between gap-2 rounded-md border border-border/60 px-3 py-2"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium">{slot.title}</p>
+                <p className="text-xs text-muted-foreground">{slot.description}</p>
+              </div>
+              <Badge variant="secondary" appearance="outline" className="shrink-0 text-[10px]">
+                {slot.uploadBy === 'school' ? 'École' : 'Candidat'}
+              </Badge>
+            </div>
+          ))}
+          {formSlot ? (
+            <p className="text-xs text-muted-foreground pt-1">
+              Après tampon : uploader le scan dans la conformité dossier ({formSlot.title}).
+            </p>
+          ) : null}
+        </CardContent>
+      </Card>
     </div>
   );
 }

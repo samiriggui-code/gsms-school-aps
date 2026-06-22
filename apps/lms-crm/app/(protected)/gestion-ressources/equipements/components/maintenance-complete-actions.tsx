@@ -18,7 +18,7 @@ type MaintenanceCompleteActionsProps = {
   equipmentStatus?: string | null;
   disabled?: boolean;
   invalidateKeys?: string[][];
-  size?: 'sm' | 'default';
+  size?: 'sm' | 'md';
   layout?: 'buttons' | 'dropdown';
   onComplete?: () => void;
 };

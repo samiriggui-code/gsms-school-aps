@@ -34,4 +34,19 @@ Console MinIO : http://localhost:9001 — `minioadmin` / `minioadmin`
 
 ### Socle (préfixes principaux)
 
-Voir `STORAGE_SOCLE_PREFIXES` dans `src/storage-socle.ts` — initialisé au deploy (`deploy/gsms/scripts/init-storage-socle.sh`) et via Gouvernance → Storage conformité.
+Voir `STORAGE_SOCLE_PREFIXES` dans `src/storage-constants.ts` — initialisé au deploy (`deploy/gsms/scripts/init-storage-socle.sh`) et via Gouvernance → Storage conformité.
+
+### Session formation — PDF suivi / émargement
+
+À la création d’une `FormationSession`, le CRM provisionne :
+
+```
+academique/sessions/{sessionId}/
+  general/
+  emargement/          ← feuilles d’émargement quotidiennes (PDF)
+  suivi-quotidien/     ← synthèses journalières matin / soir
+  conformite/          ← exports organismes payeurs (CPF, France Travail…)
+  archives/            ← copies figées (conservation)
+```
+
+Helpers : `ensureSessionSuiviStoragePrefixes`, `buildSessionDocumentStoragePrefix` — voir `apps/lms-crm/lib/formation-session-document-storage.ts`.

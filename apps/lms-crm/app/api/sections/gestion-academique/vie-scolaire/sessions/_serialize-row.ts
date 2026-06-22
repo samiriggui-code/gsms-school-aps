@@ -1,3 +1,6 @@
+import { numDecimal } from '@/lib/decimal-coerce';
+import { effectiveCatalogParcours } from '@/lib/effective-catalog-formation';
+import { isSessionExpired } from '@/lib/formation-session-dates';
 import type { FormationSession, Formation, User } from '@repo/database';
 import type { FormationSessionVitrineOverview } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 import { sessionKindDerivedFromFormationParcours } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/lib/session-parcours-exam';
@@ -35,6 +38,7 @@ type FormationSliceForSession = Pick<
   catalogOffer: {
     priceFromOverride: unknown;
     currencyOverride: string | null;
+    parcoursSpecialiteOverride: string | null;
   } | null;
 };
 
@@ -138,12 +142,6 @@ function vitrineOverviewFromFormation(f: FormationSliceForSession): FormationSes
   };
 }
 
-function numDecimal(value: unknown): number | null {
-  if (value == null || value === '') return null;
-  const n = Number(value as number | string);
-  return Number.isFinite(n) ? n : null;
-}
-
 /** Même logique que `mapCatalogOfferToApiRow` : override offre sinon fiche référence. */
 function effectiveCatalogPriceAndCurrency(f: FormationSliceForSession): {
   priceFrom: number | null;
@@ -163,6 +161,13 @@ function effectiveCatalogPriceAndCurrency(f: FormationSliceForSession): {
 
 function formationSuccessRateDisplay(f: FormationSliceForSession): number | null {
   return numDecimal(f.successRate);
+}
+
+function effectiveParcoursForSessionFormation(f: FormationSliceForSession): string {
+  return effectiveCatalogParcours(
+    f.parcoursSpecialite,
+    f.catalogOffer?.parcoursSpecialiteOverride ?? null,
+  );
 }
 
 export type SessionRowPayload = FormationSession & {
@@ -254,11 +259,12 @@ export async function serializeFormationSessionRow(
     row.formation,
   );
   const formationSuccessRate = formationSuccessRateDisplay(row.formation);
+  const formationParcoursEffective = effectiveParcoursForSessionFormation(row.formation);
 
   const sessionKindResolved =
     row.sessionKind === 'OTHER'
       ? ('OTHER' as const)
-      : sessionKindDerivedFromFormationParcours(row.formation.parcoursSpecialite);
+      : sessionKindDerivedFromFormationParcours(formationParcoursEffective);
 
   return {
     id: row.id,
@@ -266,7 +272,7 @@ export async function serializeFormationSessionRow(
     formationSlug: row.formation.slug,
     formationName: row.formation.name,
     formationTrack: row.formation.track,
-    formationParcours: row.formation.parcoursSpecialite,
+    formationParcours: formationParcoursEffective,
     formationTag: row.formation.tag,
     formationDuration: row.formation.duration,
     startDate: row.startDate?.toISOString() ?? null,
@@ -314,5 +320,6 @@ export async function serializeFormationSessionRow(
     formationProviderPhone: nonEmptyStr(row.formation.providerPhone),
     formationProviderAddress: nonEmptyStr(row.formation.providerAddress),
     formationNextSessionLabel: nonEmptyStr(row.formation.nextSessionLabel),
+    isExpired: isSessionExpired(row.endDate, row.startDate),
   };
 }

@@ -10,7 +10,7 @@ const items = [
     descriptionKey: 'sections.communicationContenu.cards.cms',
     icon: LayoutTemplate,
     backgroundImage: 'bg-3',
-    subSections: ['pages-landing', 'contenus'],
+    subSections: ['pages-landing', 'equipe-landing', 'contenus'],
     tone: 'violet' as const,
   },
   {

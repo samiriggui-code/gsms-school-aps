@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   rhContactFields,
   zContractType,
+  zLandingPresentation,
   zUserCategory,
   zUserStatusEdit,
   zWorkTimeType,
@@ -72,6 +73,7 @@ export const FormateurEditSchema = z
     documentAssurance: z.any().optional(),
     documentResidencePermit: z.any().optional(),
     documentCartePro: z.any().optional(),
+    landingPresentation: zLandingPresentation,
   })
   .refine(
     (data) =>

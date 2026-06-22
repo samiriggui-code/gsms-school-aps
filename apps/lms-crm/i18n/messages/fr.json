@@ -537,8 +537,8 @@
   },
   "userMenu": {
     "active": "Actif",
-    "publicProfile": "Profil public",
-    "profile": "Profil",
+    "publicProfile": "Fiche métier",
+    "profile": "Mon compte IAM",
     "lockScreen": "Verrouiller l'écran",
     "supportForum": "Forum support",
     "signOut": "Déconnexion"
@@ -1016,7 +1016,7 @@
   },
   "auth": {
     "signInTitle": "Connexion CRM",
-    "email": "E-mail",
+    "email": "E-mail professionnel",
     "password": "Mot de passe",
     "rememberMe": "Se souvenir de moi",
     "signIn": "Se connecter",
@@ -1027,7 +1027,7 @@
     "devAlert": "Environnement dev : utilisez les comptes de test ci-dessous.",
     "devAccountsTitle": "Comptes de développement",
     "devAccountsHint": "Cliquez sur un profil pour pré-remplir le formulaire.",
-    "emailPlaceholder": "Votre e-mail",
+    "emailPlaceholder": "prenom.nom@ecole.local",
     "passwordPlaceholder": "Votre mot de passe",
     "forgotPassword": "Mot de passe oublié ?",
     "hidePassword": "Masquer le mot de passe",

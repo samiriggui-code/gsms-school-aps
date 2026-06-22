@@ -6,6 +6,7 @@ import { RiCheckboxCircleFill, RiErrorWarningFill, RiRefreshLine } from '@remixi
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { buildAppLoginEmail, appLoginEmailPatternLabel } from '@/lib/app-login-email';
 import { apiFetch } from '@/lib/api';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -71,10 +72,10 @@ import { cn } from '@/lib/utils';
 import { getInitials } from '@/lib/helpers';
 import { agrementUiLabels } from '@/lib/rh-agrement';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import {
-  FORMATEUR_TEACHING_SPECIALTY_PRESETS,
-  SCHOOL_USER_CATEGORY_LABELS,
-} from '@/lib/rh-school-profile-fields';
+import { SCHOOL_USER_CATEGORY_LABELS } from '@/lib/rh-school-profile-fields';
+import { useRhPositionSelectQuery } from '../../hooks/use-rh-position-select-query';
+import { useRhQualificationSelectQuery } from '../../hooks/use-rh-qualification-select-query';
+import { buildQualificationPresetCatalog } from '@/lib/rh-metier-referential';
 
 const FormateurAddSheet = ({
   open,
@@ -103,7 +104,8 @@ const FormateurAddSheet = ({
       userCategory: 'INTERNAL',
       subcontractorId: '',
       specialties: [],
-      jobFunction: 'Formateur',
+      jobFunction: '',
+      jobPositionId: '',
       qualification: '',
       birthPlace: '',
       nationality: 'Française',
@@ -141,6 +143,12 @@ const FormateurAddSheet = ({
   const qualification = watch('qualification');
   const specialtiesW = watch('specialties');
   const selectedCategory = watch('userCategory');
+  const { data: positionList } = useRhPositionSelectQuery('TRAINER_POOL');
+  const { data: qualificationList } = useRhQualificationSelectQuery('TRAINER_POOL');
+  const specialtyPresets = useMemo(
+    () => buildQualificationPresetCatalog(qualificationList?.map((q) => q.label), 'formateur', 'TRAINER_POOL'),
+    [qualificationList],
+  );
   const contractType = watch('contractType');
   const cniNumber = watch('cniNumber');
   const socialSecurityNumber = watch('socialSecurityNumber');
@@ -174,8 +182,7 @@ const FormateurAddSheet = ({
   // Auto-generate Pro Email
   useEffect(() => {
     if (firstName && lastName) {
-      const email = `${firstName.toLowerCase().trim()}.${lastName.toLowerCase().trim()}@app.lms.local`.replace(/\s+/g, '');
-      setValue('proEmail', email);
+      setValue('proEmail', buildAppLoginEmail(firstName, lastName));
     }
   }, [firstName, lastName, setValue]);
 
@@ -542,7 +549,7 @@ const FormateurAddSheet = ({
                                   </div>
                                 </div>
                               </FormControl>
-                              <p className="text-[11px] text-muted-foreground font-medium font-mono">Genere: prenom.nom@app.lms.local</p>
+                              <p className="text-[11px] text-muted-foreground font-medium font-mono">Genere: {appLoginEmailPatternLabel()}</p>
                             </FormItem>
                           )} />
 
@@ -661,7 +668,7 @@ const FormateurAddSheet = ({
                                 Domaines dispensés (plusieurs choix possibles)
                               </FormLabel>
                               <div className="grid grid-cols-2 gap-2 sm:grid-cols-2">
-                                {FORMATEUR_TEACHING_SPECIALTY_PRESETS.map((preset) => {
+                                {specialtyPresets.map((preset) => {
                                   const selected = (field.value ?? []).includes(preset);
                                   return (
                                     <label
@@ -690,19 +697,33 @@ const FormateurAddSheet = ({
                           )}
                         />
 
-                        <div className="grid grid-cols-2 gap-5">
+                        <div className="grid grid-cols-1 gap-5">
                           <FormField control={form.control} name="jobFunction" render={({ field }) => (
                             <FormItem className="space-y-1.5">
-                              <FormLabel className="text-[13px] font-bold text-foreground">Qualité générale affichée</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder="Formateur"
-                                  readOnly
-                                  className="h-11 shadow-sm bg-muted/40"
-                                  title="Pour un centre de formation, le métier système affiché est « formateur » ; les domaines sont dans la liste ci-dessus."
-                                />
-                              </FormControl>
+                              <FormLabel className="text-[13px] font-bold text-foreground">Poste / fonction</FormLabel>
+                              <Select
+                                onValueChange={(v) => {
+                                  field.onChange(v);
+                                  const pos = (positionList ?? []).find((p) => p.label === v);
+                                  if (pos) {
+                                    setValue('jobPositionId', pos.id, { shouldValidate: true });
+                                  }
+                                }}
+                                value={field.value || undefined}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="h-11 shadow-sm">
+                                    <SelectValue placeholder="Choisir un poste formateur" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {(positionList ?? []).map((opt) => (
+                                    <SelectItem key={opt.id} value={opt.label}>
+                                      {opt.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                               <FormMessage />
                             </FormItem>
                           )} />

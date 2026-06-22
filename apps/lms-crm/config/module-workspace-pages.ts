@@ -23,8 +23,8 @@ export const MODULE_WORKSPACE_PAGE_META: Record<ModuleWorkspaceViewKey, ModuleWo
     description: 'Sections et blocs du site public (LandingConfig).',
   },
   'comm-cms-contenus': {
-    title: 'Contenus',
-    description: 'Catalogue formations et statut de publication landing.',
+    title: 'Catalogue vitrine',
+    description: 'Suivi des fiches formation visibles sur le landing public.',
   },
   'comm-campagnes': {
     title: 'Campagnes',

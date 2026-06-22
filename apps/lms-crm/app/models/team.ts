@@ -47,6 +47,8 @@ export interface Team {
   isSessionTeam?: boolean;
   formationSession?: TeamFormationSession | null;
   Site?: TeamSite | null;
+  orgUnit?: { id?: string; name?: string } | null;
+  OrgUnit?: { id?: string; name?: string } | null;
   image?: string | null;
   createdAt: Date | string;
   updatedAt?: Date | string | null;

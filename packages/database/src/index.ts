@@ -46,6 +46,7 @@ export {
   RhAbsenceStatus,
   RhTeamLifecycleStatus,
 } from '../generated/client';
+export { LandingTeamVolet, RhTeamType } from './prisma-enums';
 /** Types Prisma (modèles, inputs, enums) — sans ré-export runtime `export *`. */
 export type * from '../generated/client';
 export {

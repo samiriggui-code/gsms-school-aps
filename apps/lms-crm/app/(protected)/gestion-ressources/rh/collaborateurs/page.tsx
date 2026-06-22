@@ -19,13 +19,14 @@ import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configurati
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
 import { collaborateursExportConfig } from '@/lib/datagrid/export-presets';
+import type { RhCollaborateurListSegment } from '@/lib/rh-collaborateur-list-segment';
 
 export default function Page() {
   const { t } = useTranslation();
 
   const { title, description } = usePageToolbarMeta('/gestion-ressources/rh/collaborateurs');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
-  const [listeSegment, setListeSegment] = useState<'collaborateur' | 'interne'>('collaborateur');
+  const [listeSegment, setListeSegment] = useState<RhCollaborateurListSegment>('collaborateur');
   const exportConfig = useMemo(
     () => collaborateursExportConfig(listeSegment),
     [listeSegment],

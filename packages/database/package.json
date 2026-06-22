@@ -8,6 +8,7 @@
     ".": "./src/index.ts",
     "./browser": "./src/browser.ts",
     "./landing-sections": "./src/landing-sections.ts",
+    "./enums": "./src/prisma-enums.ts",
     "./generated/client": "./generated/client"
   },
   "dependencies": {

@@ -32,6 +32,7 @@ export const formationSessionRelationInclude = {
         select: {
           priceFromOverride: true,
           currencyOverride: true,
+          parcoursSpecialiteOverride: true,
         },
       },
     },

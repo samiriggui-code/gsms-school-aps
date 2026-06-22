@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import {
   Linkedin,
@@ -17,56 +17,23 @@ import {
   UserCog,
   Handshake,
   Building2,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
+import type { PublicCatalogTeamMember } from '@/lib/catalog-public-types';
 
-const avatar = (n: number) => `/media/avatars/300-${n}.png`;
 const AVATAR_FALLBACK = '/media/avatars/blank.png';
 
-type TrainerId =
-  | 'laurent-dubois'
-  | 'sandrine-moreau'
-  | 'marc-perrin'
-  | 'nadia-khelifi'
-  | 'jean-claude-renard'
-  | 'olivier-gauthier'
-  | 'claire-fontaine'
-  | 'thomas-leroy'
-  | 'emilie-bernard'
-  | 'karim-benali'
-  | 'julie-marchand'
-  | 'philippe-garnier';
+const VOLET_IDS = ['direction', 'formateur', 'pedagogique', 'rh'] as const;
+type VoletId = (typeof VOLET_IDS)[number];
 
-type TrainerMeta = {
-  image: string;
-  statA: number;
-  statB: number;
-  rating: number;
-  badge: React.ElementType;
-  socials: { linkedin: string; website: string };
+const VOLET_BADGE_ICONS: Record<VoletId, React.ElementType[]> = {
+  direction: [Award, Users, Shield],
+  formateur: [Shield, Flame, HeartPulse],
+  pedagogique: [GraduationCap, Library, ClipboardList],
+  rh: [UserCog, Handshake, Building2],
 };
-
-const TRAINER_META: Record<TrainerId, TrainerMeta> = {
-  'laurent-dubois': { image: avatar(1), statA: 12, statB: 1800, rating: 4.9, badge: Shield, socials: { linkedin: '#', website: '#' } },
-  'sandrine-moreau': { image: avatar(2), statA: 10, statB: 2200, rating: 4.9, badge: Flame, socials: { linkedin: '#', website: '#' } },
-  'marc-perrin': { image: avatar(3), statA: 14, statB: 3100, rating: 4.8, badge: HeartPulse, socials: { linkedin: '#', website: '#' } },
-  'nadia-khelifi': { image: avatar(4), statA: 8, statB: 950, rating: 4.8, badge: HeartPulse, socials: { linkedin: '#', website: '#' } },
-  'jean-claude-renard': { image: avatar(5), statA: 11, statB: 1650, rating: 4.7, badge: Flame, socials: { linkedin: '#', website: '#' } },
-  'olivier-gauthier': { image: avatar(6), statA: 9, statB: 1200, rating: 4.9, badge: Shield, socials: { linkedin: '#', website: '#' } },
-  'claire-fontaine': { image: avatar(7), statA: 28, statB: 420, rating: 4.9, badge: GraduationCap, socials: { linkedin: '#', website: '#' } },
-  'thomas-leroy': { image: avatar(8), statA: 140, statB: 85, rating: 4.8, badge: Library, socials: { linkedin: '#', website: '#' } },
-  'emilie-bernard': { image: avatar(9), statA: 24, statB: 96, rating: 4.9, badge: ClipboardList, socials: { linkedin: '#', website: '#' } },
-  'karim-benali': { image: avatar(10), statA: 45, statB: 320, rating: 4.8, badge: UserCog, socials: { linkedin: '#', website: '#' } },
-  'julie-marchand': { image: avatar(11), statA: 180, statB: 98, rating: 4.9, badge: Handshake, socials: { linkedin: '#', website: '#' } },
-  'philippe-garnier': { image: avatar(12), statA: 85, statB: 4.7, rating: 4.7, badge: Building2, socials: { linkedin: '#', website: '#' } },
-};
-
-const VOLETS = [
-  { id: 'formateur' as const, trainerIds: ['laurent-dubois', 'sandrine-moreau', 'marc-perrin', 'nadia-khelifi', 'jean-claude-renard', 'olivier-gauthier'] as TrainerId[] },
-  { id: 'pedagogique' as const, trainerIds: ['claire-fontaine', 'thomas-leroy', 'emilie-bernard'] as TrainerId[] },
-  { id: 'rh' as const, trainerIds: ['karim-benali', 'julie-marchand', 'philippe-garnier'] as TrainerId[] },
-];
 
 function StatBadge({ icon: Icon, value, label }: { icon: React.ElementType; value: number | string; label: string }) {
   return (
@@ -80,12 +47,18 @@ function StatBadge({ icon: Icon, value, label }: { icon: React.ElementType; valu
   );
 }
 
-function TrainerCard({ trainerId }: { trainerId: TrainerId }) {
+function TrainerCardDynamic({
+  member,
+  badgeIcon: BadgeIcon,
+}: {
+  member: PublicCatalogTeamMember;
+  badgeIcon: React.ElementType;
+}) {
   const { t } = useTranslation();
-  const meta = TRAINER_META[trainerId];
-  const BadgeIcon = meta.badge;
-  const [imageSrc, setImageSrc] = useState(meta.image);
-  const name = t(`landing.trainers.cards.${trainerId}.name`);
+  const [imageSrc, setImageSrc] = useState(member.avatarUrl || AVATAR_FALLBACK);
+
+  const linkedin = member.linkedinUrl?.trim() || '#';
+  const website = member.websiteUrl?.trim() || '#';
 
   return (
     <div className="group relative bg-background border border-border rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-200 dark:hover:border-indigo-800 hover:-translate-y-1">
@@ -94,7 +67,7 @@ function TrainerCard({ trainerId }: { trainerId: TrainerId }) {
           <div className="size-14 rounded-lg overflow-hidden ring-2 ring-indigo-100 dark:ring-indigo-900 group-hover:ring-indigo-300 dark:group-hover:ring-indigo-700 transition-all">
             <Image
               src={imageSrc}
-              alt={name}
+              alt={member.name}
               width={56}
               height={56}
               className="h-full w-full object-cover"
@@ -106,35 +79,43 @@ function TrainerCard({ trainerId }: { trainerId: TrainerId }) {
           </div>
         </div>
         <div className="min-w-0">
-          <h3 className="text-lg font-bold text-foreground truncate">{name}</h3>
-          <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-            {t(`landing.trainers.cards.${trainerId}.title`)}
-          </p>
+          <h3 className="text-lg font-bold text-foreground truncate">{member.name}</h3>
+          <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{member.title}</p>
         </div>
       </div>
       <p className="text-xs font-medium text-indigo-500/80 dark:text-indigo-400/80 bg-indigo-50 dark:bg-indigo-950/40 rounded-md px-2.5 py-1 mb-3 inline-block">
-        {t(`landing.trainers.cards.${trainerId}.certifications`)}
+        {member.certifications}
       </p>
-      <p className="text-sm text-muted-foreground leading-relaxed mb-5">
-        {t(`landing.trainers.cards.${trainerId}.bio`)}
-      </p>
+      <p className="text-sm text-muted-foreground leading-relaxed mb-5">{member.bio}</p>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-5 pb-5 border-b border-border">
-        <StatBadge icon={BookOpen} value={meta.statA} label={t(`landing.trainers.cards.${trainerId}.labelA`)} />
-        <StatBadge icon={Users} value={meta.statB} label={t(`landing.trainers.cards.${trainerId}.labelB`)} />
-        <StatBadge icon={Award} value={meta.rating} label={t('landing.trainers.ratingLabel')} />
+        <StatBadge
+          icon={BookOpen}
+          value={member.statA}
+          label={t(`landing.trainers.dynamic.labelA.${member.volet}`)}
+        />
+        <StatBadge
+          icon={Users}
+          value={member.statB}
+          label={t(`landing.trainers.dynamic.labelB.${member.volet}`)}
+        />
+        <StatBadge icon={Award} value={member.rating} label={t('landing.trainers.ratingLabel')} />
       </div>
       <div className="flex items-center gap-2">
         <a
-          href={meta.socials.linkedin}
+          href={linkedin}
           className="inline-flex items-center justify-center size-8 rounded-lg bg-muted/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-          aria-label={t('landing.trainers.linkedinAria', { name })}
+          aria-label={t('landing.trainers.linkedinAria', { name: member.name })}
+          target={linkedin !== '#' ? '_blank' : undefined}
+          rel={linkedin !== '#' ? 'noopener noreferrer' : undefined}
         >
           <Linkedin className="size-4" />
         </a>
         <a
-          href={meta.socials.website}
+          href={website}
           className="inline-flex items-center justify-center size-8 rounded-lg bg-muted/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-          aria-label={t('landing.trainers.websiteAria', { name })}
+          aria-label={t('landing.trainers.websiteAria', { name: member.name })}
+          target={website !== '#' ? '_blank' : undefined}
+          rel={website !== '#' ? 'noopener noreferrer' : undefined}
         >
           <Globe className="size-4" />
         </a>
@@ -143,8 +124,9 @@ function TrainerCard({ trainerId }: { trainerId: TrainerId }) {
   );
 }
 
-const VOLET_FROM_HASH: Record<string, (typeof VOLETS)[number]['id']> = {
-  '#trainers': 'formateur',
+const VOLET_FROM_HASH: Record<string, VoletId> = {
+  '#trainers': 'direction',
+  '#trainers-direction': 'direction',
   '#trainers-formateur': 'formateur',
   '#trainers-pedagogique': 'pedagogique',
   '#trainers-rh': 'rh',
@@ -152,7 +134,28 @@ const VOLET_FROM_HASH: Record<string, (typeof VOLETS)[number]['id']> = {
 
 export default function Trainers() {
   const { t } = useTranslation();
-  const [volet, setVolet] = useState<(typeof VOLETS)[number]['id']>('formateur');
+  const [volet, setVolet] = useState<VoletId>('direction');
+  const [members, setMembers] = useState<PublicCatalogTeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    void fetch('/api/catalog/team', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('fetch failed'))))
+      .then((data: { items?: PublicCatalogTeamMember[] }) => {
+        if (!cancelled) setMembers(Array.isArray(data.items) ? data.items : []);
+      })
+      .catch(() => {
+        if (!cancelled) setMembers([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const syncVoletFromHash = () => {
@@ -164,7 +167,13 @@ export default function Trainers() {
     return () => window.removeEventListener('hashchange', syncVoletFromHash);
   }, []);
 
-  const active = VOLETS.find((v) => v.id === volet) ?? VOLETS[0];
+  const activeMembers = useMemo(
+    () =>
+      members
+        .filter((m) => m.volet === volet)
+        .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name)),
+    [members, volet],
+  );
 
   return (
     <section id="trainers" className="py-20 lg:py-28 scroll-mt-24">
@@ -183,31 +192,47 @@ export default function Trainers() {
             role="tablist"
             aria-label={t('landing.trainers.tabsAriaLabel')}
           >
-            {VOLETS.map((tab) => (
+            {VOLET_IDS.map((tabId) => (
               <button
-                key={tab.id}
+                key={tabId}
                 type="button"
                 role="tab"
-                aria-selected={volet === tab.id}
-                onClick={() => setVolet(tab.id)}
+                aria-selected={volet === tabId}
+                onClick={() => setVolet(tabId)}
                 className={cn(
                   'relative flex-1 min-w-0 rounded-full px-3 py-2.5 text-center text-sm font-medium transition-all duration-200',
-                  volet === tab.id
+                  volet === tabId
                     ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-950 dark:text-zinc-50'
                     : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100',
                 )}
               >
-                <span className="block truncate">{t(`landing.trainers.tabs.${tab.id}`)}</span>
+                <span className="block truncate">{t(`landing.trainers.tabs.${tabId}`)}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {active.trainerIds.map((trainerId) => (
-            <TrainerCard key={`${active.id}-${trainerId}`} trainerId={trainerId} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center py-16 text-muted-foreground">
+            <Loader2 className="size-8 animate-spin text-indigo-500" />
+          </div>
+        ) : activeMembers.length === 0 ? (
+          <p className="text-center text-muted-foreground py-12">{t('landing.trainers.dynamic.empty')}</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {activeMembers.map((member, index) => {
+              const icons = VOLET_BADGE_ICONS[member.volet];
+              const BadgeIcon = icons[index % icons.length] ?? Shield;
+              return (
+                <TrainerCardDynamic
+                  key={member.id}
+                  member={member}
+                  badgeIcon={BadgeIcon}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

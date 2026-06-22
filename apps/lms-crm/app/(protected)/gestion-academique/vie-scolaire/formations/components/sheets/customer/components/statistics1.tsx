@@ -60,9 +60,19 @@ export function Statistics1({ metrics }: Statistics1Props = {}) {
   let priceSuffix: string;
   if (useLive) {
     const p = metrics?.priceAmount;
+    const currency = metrics?.priceCurrency?.trim() || 'EUR';
     if (p != null && Number.isFinite(Number(p))) {
-      priceTotal = formatPriceAmount(Number(p));
-      priceSuffix = '€';
+      try {
+        priceTotal = new Intl.NumberFormat('fr-FR', {
+          style: 'currency',
+          currency,
+          maximumFractionDigits: Number.isInteger(Number(p)) ? 0 : 2,
+        }).format(Number(p));
+        priceSuffix = '';
+      } catch {
+        priceTotal = formatPriceAmount(Number(p));
+        priceSuffix = ' €';
+      }
     } else {
       priceTotal = '—';
       priceSuffix = '';

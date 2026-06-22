@@ -10,6 +10,7 @@ import {
 
 /** Types d'équipe — contexte école / CFA (remplace legacy sécurité privée). */
 export const TEAM_TYPES = [
+  { id: 'DIRECTION', label: 'Direction', icon: Briefcase, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10' },
   { id: 'PEDAGOGICAL', label: 'Pôle pédagogique', icon: GraduationCap, color: 'text-primary', bg: 'bg-primary/10' },
   { id: 'TRAINER_POOL', label: 'Équipe formateurs', icon: Users, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10' },
   { id: 'HR_ADMIN', label: 'RH & administration', icon: Briefcase, color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-500/10' },

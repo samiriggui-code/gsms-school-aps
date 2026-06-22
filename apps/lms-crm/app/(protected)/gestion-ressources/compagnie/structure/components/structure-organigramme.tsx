@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-type SchoolService = 'TRAINER_POOL' | 'PEDAGOGICAL' | 'HR_ADMIN';
+type SchoolService = 'TRAINER_POOL' | 'PEDAGOGICAL' | 'HR_ADMIN' | 'DIRECTION';
 
 export type OrgChartUser = {
   id: string;
@@ -46,6 +46,12 @@ const SERVICE_META: Record<
   SchoolService,
   { label: string; short: string; description: string; ring: string }
 > = {
+  DIRECTION: {
+    label: 'Direction',
+    short: 'Direction',
+    description: "Pilotage stratégique, gouvernance et équipe de direction.",
+    ring: 'ring-amber-500/25',
+  },
   TRAINER_POOL: {
     label: 'Équipe formateurs',
     short: 'Formateurs',
@@ -77,6 +83,8 @@ export function effectiveSchoolService(u: OrgChartUser): SchoolService {
   const slug = u.role?.slug || '';
   const fp = u.formateurProfile;
   const cp = u.collaborateurProfile;
+  const svc = fp?.schoolInternalService ?? cp?.schoolInternalService;
+  if (svc === 'DIRECTION') return 'DIRECTION';
   if (slug === 'formateur') {
     return fp?.schoolInternalService || 'TRAINER_POOL';
   }
@@ -120,6 +128,7 @@ function computeHierarchy(users: OrgChartUser[]) {
 
 function groupByService(users: OrgChartUser[]) {
   const buckets: Record<SchoolService, OrgChartUser[]> = {
+    DIRECTION: [],
     TRAINER_POOL: [],
     PEDAGOGICAL: [],
     HR_ADMIN: [],
@@ -285,8 +294,8 @@ export function StructurePolesEcole({ onAddMember }: StructurePolesEcoleProps = 
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        {(['TRAINER_POOL', 'PEDAGOGICAL', 'HR_ADMIN'] as const).map((key) => {
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {(['DIRECTION', 'TRAINER_POOL', 'PEDAGOGICAL', 'HR_ADMIN'] as const).map((key) => {
           const meta = SERVICE_META[key];
           const members = byService[key];
           return (
@@ -294,6 +303,7 @@ export function StructurePolesEcole({ onAddMember }: StructurePolesEcoleProps = 
               key={key}
               className={cn(
                 'border shadow-none transition-shadow hover:shadow-sm',
+                key === 'DIRECTION' && 'border-amber-500/25 bg-amber-500/[0.03]',
                 key === 'TRAINER_POOL' && 'border-violet-500/25 bg-violet-500/[0.03]',
                 key === 'PEDAGOGICAL' && 'border-sky-500/25 bg-sky-500/[0.03]',
                 key === 'HR_ADMIN' && 'border-emerald-500/25 bg-emerald-500/[0.03]',

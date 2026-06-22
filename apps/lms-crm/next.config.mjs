@@ -61,6 +61,9 @@ const nextConfig = {
   },
   outputFileTracingIncludes: {
     '/*': ['./content/docs/**/*'],
+    '/api/sections/gestion-academique/vie-scolaire/etudiants/cnaps-prefilled-form/[userId]/route': [
+      './apps/lms-crm/lib/cnaps/assets/**/*',
+    ],
   },
   allowedDevOrigins: getAllowedDevOrigins({ ports: [3000, 3001] }),
   experimental: {
@@ -74,7 +77,7 @@ const nextConfig = {
      */
     turbopackFileSystemCacheForDev: process.env.TURBOPACK_DEV_CACHE !== 'false',
   },
-  serverExternalPackages: ['pdfkit'],
+  serverExternalPackages: ['pdfkit', 'pdf-lib'],
   /**
    * Utilisé par `next build` et par `next dev --webpack` (pas par Turbopack en dev).
    * Dev Turbopack : garder allowedDevOrigins + pas d’assetPrefix localhost pour le LAN.

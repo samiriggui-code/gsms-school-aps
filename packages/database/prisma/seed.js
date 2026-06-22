@@ -54,6 +54,13 @@ const {
   seedComplianceDossiersForStaff,
 } = require('./data/compliance-templates-seed');
 const { seedRhStructureTeams } = require('./data/rh-structure-teams-seed');
+const { seedRhMetierReferential } = require('./data/rh-metier-referential-seed');
+const { seedCnapsCandidatProfiles } = require('./data/cnaps-candidat-profile-seed');
+const {
+  resolveEmailPair,
+  ensureUserEmailSplit,
+  findUserByAppLogin,
+} = require('./data/user-email-fields');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
@@ -170,10 +177,7 @@ async function seedDemoPortalCandidatures(tx) {
     select: { id: true, dateDisplayLabel: true },
   });
 
-  const demoTrainer = await tx.user.findUnique({
-    where: { email: 'formateur.dev.1@ecole.local' },
-    select: { id: true },
-  });
+  const demoTrainer = await findUserByAppLogin(tx, 'formateur.dev.1@ecole.local');
 
   if (demoTrainer && session?.id) {
     await tx.formationSession.update({
@@ -192,7 +196,8 @@ async function seedDemoPortalCandidatures(tx) {
         qualification:
           "Ancien gendarme reconverti, 18 ans d'expérience en sécurité privée. Formateur TFP APS et BP ARS, il prépare les futurs agents aux réalités du terrain avec rigueur et professionnalisme.",
         phone: '+33 6 12 34 56 78',
-        proEmail: 'laurent.dubois@form-ssi.fr',
+        email: 'laurent.dubois@form-ssi.fr',
+        proEmail: 'formateur.dev.1@ecole.local',
       },
     });
 
@@ -724,72 +729,65 @@ async function main() {
         if (!role) continue;
         const { firstName, lastName } = splitFullName(user.name);
         const avatar = resolveSeedAvatar(user, i);
-        await tx.user.upsert({
-          where: { email: user.email },
-          update: {
-            name: user.name,
-            firstName,
-            lastName,
-            password: hashedPassword,
-            avatar,
-            roleId: role.id,
-            emailVerifiedAt: new Date(),
-            status: 'ACTIVE',
-            isProtected: !!user.isProtected,
-            isTrashed: false,
-          },
-          create: {
-            email: user.email,
-            name: user.name,
-            firstName,
-            lastName,
-            password: hashedPassword,
-            avatar,
-            roleId: role.id,
-            emailVerifiedAt: new Date(),
-            status: 'ACTIVE',
-            createdAt: new Date(),
-            isProtected: !!user.isProtected,
-          },
-        });
+        const loginEmail = user.email;
+        const emailPair = resolveEmailPair(
+          { firstName, lastName, name: user.name, email: loginEmail, proEmail: null },
+          i,
+        );
+        const existing = await findUserByAppLogin(tx, loginEmail);
+        const userData = {
+          name: user.name,
+          firstName,
+          lastName,
+          email: emailPair.email,
+          proEmail: emailPair.proEmail,
+          password: hashedPassword,
+          avatar,
+          roleId: role.id,
+          emailVerifiedAt: new Date(),
+          status: 'ACTIVE',
+          isProtected: !!user.isProtected,
+          isTrashed: false,
+        };
+        if (existing) {
+          await tx.user.update({ where: { id: existing.id }, data: userData });
+        } else {
+          await tx.user.create({
+            data: { ...userData, createdAt: new Date() },
+          });
+        }
       }
 
-      // Supprime legacy demo/kt + comptes hors @ecole.local
+      await ensureUserEmailSplit(tx);
+
+      // Supprime legacy demo/kt uniquement
       await tx.account.deleteMany({
         where: {
-          user: {
-            OR: [{ email: { contains: '@kt.com' } }, { email: { not: { endsWith: '@ecole.local' } } }],
-          },
+          user: { email: { contains: '@kt.com' } },
         },
       });
       await tx.session.deleteMany({
         where: {
-          user: {
-            OR: [{ email: { contains: '@kt.com' } }, { email: { not: { endsWith: '@ecole.local' } } }],
-          },
+          user: { email: { contains: '@kt.com' } },
         },
       });
       await tx.systemLog.deleteMany({
         where: {
-          user: {
-            OR: [{ email: { contains: '@kt.com' } }, { email: { not: { endsWith: '@ecole.local' } } }],
-          },
+          user: { email: { contains: '@kt.com' } },
         },
       });
       await tx.user.deleteMany({
-        where: {
-          OR: [{ email: { contains: '@kt.com' } }, { email: { not: { endsWith: '@ecole.local' } } }],
-        },
+        where: { email: { contains: '@kt.com' } },
       });
 
-      // Supprime aussi tous les users @ecole.local hors de la liste attendue
-      const allowedEmails = new Set(seededUsers.map((u) => u.email));
-      const existingEcoleUsers = await tx.user.findMany({
-        where: { email: { endsWith: '@ecole.local' } },
-        select: { id: true, email: true },
+      // Comptes app @ecole.local orphelins (login proEmail hors liste seed)
+      const allowedLoginEmails = new Set(seededUsers.map((u) => u.email));
+      const existingAppUsers = await tx.user.findMany({
+        where: { proEmail: { endsWith: '@ecole.local' } },
+        select: { id: true, proEmail: true },
       });
-      const staleIds = existingEcoleUsers
-        .filter((u) => !allowedEmails.has(u.email))
+      const staleIds = existingAppUsers
+        .filter((u) => u.proEmail && !allowedLoginEmails.has(u.proEmail))
         .map((u) => u.id);
       if (staleIds.length > 0) {
         await tx.account.deleteMany({ where: { userId: { in: staleIds } } });
@@ -974,6 +972,7 @@ async function main() {
       await seedPortalLmsContent(tx);
       await migrateLegacyCnapsStorageKeys(tx);
       await seedDemoPortalCandidatures(tx);
+      await seedCnapsCandidatProfiles(tx);
       await seedPortalLmsEnrollments(tx);
       await seedPortalAnnouncements(tx);
       await seedLandingLeadsAndDevis(tx);
@@ -983,7 +982,7 @@ async function main() {
       await seedComplianceDossiersForStaff(tx);
 
       // Create a Course and a TrainingSession for testing assignments using raw SQL to bypass stale client
-      const superadminRows = await tx.$queryRaw`SELECT "id" FROM "User" WHERE "email" = 'samir.iggui@ecole.local' LIMIT 1`;
+      const superadminRows = await tx.$queryRaw`SELECT "id" FROM "User" WHERE "proEmail" = 'samir.iggui@ecole.local' OR "email" = 'samir.iggui@ecole.local' LIMIT 1`;
       const superadminId = superadminRows[0]?.id;
       
       if (superadminId) {
@@ -1107,6 +1106,7 @@ async function main() {
       console.log('Settings seeded.');
 
       await seedRhStructureTeams(tx);
+      await seedRhMetierReferential(tx);
       await seedTopbarDemo(tx);
       await seedGsmsOpsChat(tx);
       await seedRhAbsencesAndPositions(tx);

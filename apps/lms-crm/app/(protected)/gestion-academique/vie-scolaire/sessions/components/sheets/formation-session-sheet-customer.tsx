@@ -21,7 +21,7 @@ import {
   FORMATION_TRACK_LABELS,
 } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/data/formation-vitrine-catalog';
 import { Upload } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/upload';
-import { CustomerDetailsOverviews } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/customer-details-overviews';
+import { FormationSessionOverviewMetrics } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-overview-metrics';
 import { FormationSessionVitrineOverviewCards } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-vitrine-overview-cards';
 import {
   EXAMEN_FINAL_BADGE_LABEL,
@@ -68,29 +68,22 @@ export function FormationSessionSheetCustomer({
   const overviewMetrics = row
     ? {
         durationDisplay: durationLabel,
-        traineeCapacityDisplay:
+        enrolledCount: row.participants.length,
+        capacityHint:
           row.traineesMin != null && row.traineesMax != null
-            ? `${row.traineesMin}–${row.traineesMax}`
-            : `${row.participants.length} inscrit(s)`,
-        priceAmount: row.catalogPriceFrom,
-        priceCurrency: row.catalogPriceCurrency,
-        /** Affiché en 4ᵉ carte seulement s’il n’y a pas de formateur référent (voir `Statistics1`). */
-        successRateDisplay:
-          row.trainerName || row.trainerEmail
-            ? undefined
-            : row.formationSuccessRate != null && Number.isFinite(row.formationSuccessRate)
-              ? `${Math.round(row.formationSuccessRate)}%`
-              : undefined,
-        sessionTrainer:
+            ? `Capacité session ${row.traineesMin}–${row.traineesMax}`
+            : null,
+        roomName: row.venueRoom?.name ?? null,
+        trainer:
           row.trainerName || row.trainerEmail
             ? {
                 name: row.trainerName,
                 email: row.trainerEmail ?? '',
                 avatar: row.trainerAvatar,
               }
-            : undefined,
+            : null,
       }
-    : undefined;
+    : null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -194,12 +187,12 @@ export function FormationSessionSheetCustomer({
                       </TabsList>
 
                       <TabsContent value="overview" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-                        <CustomerDetailsOverviews
-                          formationOverviewMetrics={overviewMetrics}
-                          vitrineCards={
-                            <FormationSessionVitrineOverviewCards overview={row.formationVitrineOverview} />
-                          }
-                        />
+                        <div className="space-y-5">
+                          {overviewMetrics ? (
+                            <FormationSessionOverviewMetrics {...overviewMetrics} />
+                          ) : null}
+                          <FormationSessionVitrineOverviewCards overview={row.formationVitrineOverview} />
+                        </div>
                       </TabsContent>
 
                       <TabsContent value="planning" className="mt-0 focus-visible:outline-none focus-visible:ring-0">

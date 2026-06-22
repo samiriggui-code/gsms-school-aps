@@ -14,8 +14,8 @@ export function RolePermissionsCell({ role }: Props) {
     <IamCompactBadges
       items={permissions.map((p) => ({
         id: p.id,
-        label: p.name ?? p.slug,
-        title: p.slug,
+        label: p.name ?? p.slug ?? '—',
+        title: p.slug ?? undefined,
       }))}
       maxVisible={3}
     />

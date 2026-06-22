@@ -14,7 +14,7 @@ export async function GET(_request: NextRequest) {
       where: { slug: 'formateur', isTrashed: false },
     });
     if (!role) {
-      return ok({ items: [] as { id: string; name: string | null; email: string }[] });
+      return ok({ items: [] as { id: string; name: string | null; email: string; avatar: string | null }[] });
     }
 
     const users = await prisma.user.findMany({
@@ -23,7 +23,7 @@ export async function GET(_request: NextRequest) {
         status: 'ACTIVE',
         isTrashed: false,
       },
-      select: { id: true, name: true, email: true },
+      select: { id: true, name: true, email: true, avatar: true },
       orderBy: [{ name: 'asc' }, { email: 'asc' }],
       take: 500,
     });

@@ -1,5 +1,7 @@
 /** Contenu LMS portail candidat — 1 Course par Formation, 1 chapitre (UV) + quiz par module programme. */
 
+const { findUserByAppLogin } = require('./user-email-fields');
+
 const PRE_CNAPS_FREE_CHAPTER_COUNT = 2;
 
 function asRecord(v) {
@@ -255,14 +257,13 @@ async function seedPortalLmsEnrollments(tx) {
 }
 
 async function seedPortalLmsContent(tx) {
-  const admin = await tx.user.findFirst({
-    where: { email: 'samir.iggui@ecole.local' },
-    select: { id: true },
-  });
-  if (!admin) {
+  const admin = await findUserByAppLogin(tx, 'samir.iggui@ecole.local');
+  if (!admin?.id) {
     console.warn('[seed] portal-lms: superadmin introuvable — ignoré.');
     return;
   }
+
+  const adminId = admin.id;
 
   const formations = await tx.formation.findMany({
     select: {

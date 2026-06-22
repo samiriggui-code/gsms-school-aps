@@ -30,7 +30,6 @@ export function AccountAccessBlockedDialog({ open, reason, onConfirm }: Props) {
       <AlertDialogContent
         className="max-w-md"
         onEscapeKeyDown={(e) => e.preventDefault()}
-        onPointerDownOutside={(e) => e.preventDefault()}
       >
         <AlertDialogHeader className="items-center text-center">
           <img

@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { SquarePen } from 'lucide-react';
+import {
+  userIamLoginSubtitle,
+  userPersonalMailbox,
+} from '@/lib/user-email-routing';
 
 interface IBasicSettingsProps {
   title: string;
@@ -31,11 +35,32 @@ const BasicSettings = ({ title }: IBasicSettingsProps) => {
           <TableBody>
             <TableRow>
               <TableCell className="py-2 min-w-36 text-secondary-foreground font-normal">
-                Email
+                Email professionnel
               </TableCell>
               <TableCell className="py-2 min-w-60">
-                <a href={`mailto:${user?.email || '#'}`} className="text-foreground font-normal text-sm hover:text-primary-active">
-                  {user?.email || 'N/A'}
+                <a
+                  href={`mailto:${userIamLoginSubtitle(user)}`}
+                  className="text-foreground font-normal text-sm hover:text-primary-active"
+                >
+                  {userIamLoginSubtitle(user)}
+                </a>
+              </TableCell>
+              <TableCell className="py-2 max-w-16 text-end">
+                <Button variant="ghost" mode="icon">
+                  <SquarePen size={16} className="text-indigo-500" />
+                </Button>
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="py-2 min-w-36 text-secondary-foreground font-normal">
+                Email personnel
+              </TableCell>
+              <TableCell className="py-2 min-w-60">
+                <a
+                  href={`mailto:${userPersonalMailbox(user) || '#'}`}
+                  className="text-foreground font-normal text-sm hover:text-primary-active"
+                >
+                  {userPersonalMailbox(user) ?? 'N/A'}
                 </a>
               </TableCell>
               <TableCell className="py-2 max-w-16 text-end">

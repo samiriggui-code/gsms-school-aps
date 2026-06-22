@@ -10,6 +10,7 @@ export {
   LeadStatus,
   ComplianceItemStatus,
 } from '../generated/client';
+export { LandingTeamVolet, RhTeamType } from './prisma-enums';
 export {
   LANDING_LEAD_SOURCES,
   LANDING_PREINSCRIPTION_LEAD_SOURCE,

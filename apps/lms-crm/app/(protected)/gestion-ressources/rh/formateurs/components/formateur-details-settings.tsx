@@ -49,6 +49,7 @@ import {
   WORK_TIME_TYPE_VALUES,
   rhEnumFieldOrNull,
 } from '@/lib/rh-form-schema-shared';
+import { LandingPresentationField } from '@/components/rh/landing-presentation-field';
 
 interface FormateurDetailsSettingsProps {
   collaborateur: Collaborateur;
@@ -99,6 +100,7 @@ export function FormateurDetailsSettings({ collaborateur, formRef, onSuccess }: 
       carteProNumber: collaborateur.carteProNumber || '',
       carteProExpiry: collaborateur.carteProExpiry ? new Date(collaborateur.carteProExpiry).toISOString().split('T')[0] : '',
       isSchedulable: collaborateur.isSchedulable ?? true,
+      landingPresentation: collaborateur.landingPresentation || '',
       avatarFile: null,
       avatarAction: '',
       documentCni: null,
@@ -623,6 +625,10 @@ export function FormateurDetailsSettings({ collaborateur, formRef, onSuccess }: 
                   )}
                 />
                 
+                <div className="md:col-span-2">
+                  <LandingPresentationField control={form.control} name="landingPresentation" />
+                </div>
+
                 <FormField
                   control={form.control}
                   name="status"

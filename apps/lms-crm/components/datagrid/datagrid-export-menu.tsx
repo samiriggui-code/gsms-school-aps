@@ -1,5 +1,6 @@
 'use client';
 
+import { type ComponentProps } from 'react';
 import { ChevronDown, Download, FileSpreadsheet, FileText, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,15 +17,15 @@ type Props = {
   config: ListExportConfig;
   label?: string;
   className?: string;
-  size?: 'default' | 'sm' | 'lg' | 'icon';
-  variant?: 'outline' | 'default' | 'ghost' | 'secondary';
+  size?: ComponentProps<typeof Button>['size'];
+  variant?: ComponentProps<typeof Button>['variant'];
 };
 
 export function DataGridExportMenu({
   config,
   label = 'Exporter',
   className,
-  size = 'default',
+  size = 'md',
   variant = 'outline',
 }: Props) {
   const { exportAs, isExporting, exportingFormat } = useDatagridExport(config);

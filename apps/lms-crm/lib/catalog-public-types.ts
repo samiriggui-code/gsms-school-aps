@@ -12,3 +12,22 @@ export type PublicCatalogFormationItem = {
   priceFrom: number | null;
   currency: string;
 };
+
+/** Membre équipe affiché sur la section #trainers du landing. */
+export type PublicCatalogTeamMember = {
+  id: string;
+  userId: string;
+  volet: 'direction' | 'formateur' | 'pedagogique' | 'rh';
+  catalogStatus: string;
+  sortOrder: number;
+  name: string;
+  title: string;
+  certifications: string;
+  bio: string;
+  avatarUrl: string | null;
+  statA: number;
+  statB: number;
+  rating: number;
+  linkedinUrl: string | null;
+  websiteUrl: string | null;
+};
