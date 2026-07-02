@@ -71,7 +71,7 @@ export function PilotageRapportsSchedulesSheet({ open, onOpenChange }: Props) {
             Rapports automatiques
           </SheetTitle>
           <SheetDescription className="text-start text-xs leading-relaxed">
-            Le toggle active la génération récurrente (jour / mois / trimestre). Un rapport identique non
+            Le toggle active la génération récurrente (jour / semaine / mois / trimestre). Un rapport identique non
             modifié n&apos;est pas recréé pour la même fenêtre — garde-fou anti-saturation. « Lancer
             maintenant » force une tentative immédiate (sous réserve du garde-fou).
           </SheetDescription>

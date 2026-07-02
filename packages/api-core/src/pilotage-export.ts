@@ -7,6 +7,12 @@ export const PILOTAGE_EXPORT_DATASETS = [
   { id: 'candidatures', label: 'Candidatures', description: 'Parcours candidats et statuts' },
   { id: 'audit', label: 'Journal audit', description: 'SystemLog (90 derniers jours)' },
   { id: 'payments', label: 'Paiements', description: 'Encaissements FinancePayment' },
+  { id: 'rh-compliance', label: 'Conformité RH', description: 'Cartes pro, titres de séjour et pièces dossier' },
+  {
+    id: 'equipment-inventory',
+    label: 'Inventaire équipements',
+    description: 'Parc matériel, statuts et maintenances',
+  },
 ] as const;
 
 export type PilotageExportDataset = (typeof PILOTAGE_EXPORT_DATASETS)[number]['id'];
@@ -46,6 +52,10 @@ export class PilotageExportService {
         return this.exportAudit();
       case 'payments':
         return this.exportPayments();
+      case 'rh-compliance':
+        return this.exportRhCompliance();
+      case 'equipment-inventory':
+        return this.exportEquipmentInventory();
       default:
         throw new Error(`Export inconnu : ${dataset}`);
     }
@@ -214,6 +224,165 @@ export class PilotageExportService {
       ]),
     );
     return { filename: `export-paiements-${today()}.csv`, csv };
+  }
+
+  private async exportRhCompliance() {
+    const horizon = new Date(Date.now() + 90 * 86400000);
+    const [users, dossierItems] = await Promise.all([
+      this.prisma.user.findMany({
+        where: {
+          isTrashed: false,
+          OR: [
+            { carteProExpiry: { not: null } },
+            { residencePermitExpiry: { not: null } },
+            { carteProNumber: { not: null } },
+            { residencePermitNumber: { not: null } },
+          ],
+        },
+        orderBy: { lastName: 'asc' },
+        take: 5000,
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          jobFunction: true,
+          carteProNumber: true,
+          carteProExpiry: true,
+          residencePermitNumber: true,
+          residencePermitExpiry: true,
+        },
+      }),
+      this.prisma.complianceDossierItem.findMany({
+        where: {
+          required: true,
+          OR: [
+            { status: { in: ['MISSING', 'REJECTED', 'EXPIRED'] } },
+            { expiresAt: { lte: horizon } },
+          ],
+        },
+        orderBy: { expiresAt: 'asc' },
+        take: 5000,
+        select: {
+          code: true,
+          label: true,
+          status: true,
+          expiresAt: true,
+          dossier: {
+            select: {
+              kind: true,
+              user: { select: { firstName: true, lastName: true, email: true } },
+              candidature: {
+                select: { user: { select: { firstName: true, lastName: true, email: true } } },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    const userRows = users.map((u) => [
+      'Collaborateur',
+      `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() || u.email,
+      u.email,
+      u.jobFunction ?? '',
+      u.carteProNumber ?? '',
+      u.carteProExpiry?.toISOString().slice(0, 10) ?? '',
+      u.residencePermitNumber ?? '',
+      u.residencePermitExpiry?.toISOString().slice(0, 10) ?? '',
+      '',
+      '',
+    ]);
+
+    const itemRows = dossierItems.map((item) => {
+      const subject =
+        item.dossier.user != null
+          ? `${item.dossier.user.firstName ?? ''} ${item.dossier.user.lastName ?? ''}`.trim() ||
+            item.dossier.user.email
+          : item.dossier.candidature?.user != null
+            ? `${item.dossier.candidature.user.firstName ?? ''} ${item.dossier.candidature.user.lastName ?? ''}`.trim() ||
+              item.dossier.candidature.user.email
+            : item.dossier.kind;
+      const email =
+        item.dossier.user?.email ?? item.dossier.candidature?.user.email ?? '';
+      return [
+        'Piece dossier',
+        subject,
+        email,
+        item.dossier.kind,
+        item.code,
+        item.label,
+        '',
+        '',
+        item.status,
+        item.expiresAt?.toISOString().slice(0, 10) ?? '',
+      ];
+    });
+
+    const csv = toCsv(
+      [
+        'Type',
+        'Sujet',
+        'Email',
+        'Fonction / Dossier',
+        'Ref carte / Code',
+        'Libelle',
+        'Expiration carte pro',
+        'Expiration titre sejour',
+        'Statut piece',
+        'Echeance piece',
+      ],
+      [...userRows, ...itemRows],
+    );
+    return { filename: `export-rh-conformite-${today()}.csv`, csv };
+  }
+
+  private async exportEquipmentInventory() {
+    const rows = await this.prisma.equipment.findMany({
+      orderBy: { updatedAt: 'desc' },
+      take: 5000,
+      include: {
+        assignedSite: { select: { name: true } },
+        maintenanceItems: {
+          orderBy: { scheduledDate: 'desc' },
+          take: 1,
+          select: {
+            status: true,
+            title: true,
+            scheduledDate: true,
+            completedDate: true,
+          },
+        },
+      },
+    });
+
+    const csv = toCsv(
+      [
+        'Numero serie',
+        'Libelle',
+        'Type',
+        'Statut',
+        'Site',
+        'Derniere maintenance',
+        'Statut maintenance',
+        'MAJ',
+      ],
+      rows.map((r) => {
+        const maint = r.maintenanceItems[0];
+        return [
+          r.serialNumber,
+          r.label,
+          r.type ?? '',
+          r.status,
+          r.assignedSite?.name ?? '',
+          maint?.scheduledDate?.toISOString().slice(0, 10) ??
+            maint?.completedDate?.toISOString().slice(0, 10) ??
+            '',
+          maint?.status ?? '',
+          r.updatedAt.toISOString().slice(0, 10),
+        ];
+      }),
+    );
+    return { filename: `export-equipements-${today()}.csv`, csv };
   }
 }
 

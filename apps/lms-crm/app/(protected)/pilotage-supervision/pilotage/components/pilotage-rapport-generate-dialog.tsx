@@ -45,15 +45,11 @@ type Props = {
   onGenerated?: () => void;
 };
 
-const LEGACY_CSV_MAP: Record<string, string> = {
-  'pilotage.gr-conformite': 'gr-rh-conformite',
-  'pilotage.gr-indicateurs': 'gr-equipements-inventaire',
-};
 
 export function PilotageRapportGenerateDialog({
   open,
   onOpenChange,
-  legacyCsvTemplates = [],
+  legacyCsvTemplates: _legacyCsvTemplates = [],
   defaultPeriodValue,
   onGenerated,
 }: Props) {
@@ -118,11 +114,9 @@ export function PilotageRapportGenerateDialog({
       const summary = customDescription.trim() || selected.description;
 
       if (format === 'CSV') {
-        const legacyId = LEGACY_CSV_MAP[selected.key];
-        const legacy = legacyCsvTemplates.find((t) => t.id === legacyId);
-        if (!legacy?.exportDataset) throw new Error('Export CSV non disponible pour ce modèle');
+        if (!selected.exportDataset) throw new Error('Export CSV non disponible pour ce modèle');
         const period = periodValue.mode === 'preset' ? periodValue.period : ('month' as const);
-        return generatePilotageReport(legacy.id, period, { label: title, description: summary });
+        return generatePilotageReport(selected.key, period, { label: title, description: summary });
       }
 
       const { job } = await createReportJob({
@@ -179,7 +173,7 @@ export function PilotageRapportGenerateDialog({
 
         <DialogBody className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-4 py-4 sm:space-y-5 sm:px-5">
           <p className="text-xs text-muted-foreground sm:text-sm">
-            Export manuel ponctuel. Les rapports récurrents (quotidien / mensuel / trimestriel) se configurent
+            Export manuel ponctuel. Les rapports récurrents (quotidien / hebdo / mensuel / trimestriel) se configurent
             dans la section workflows ci-dessous.
           </p>
 

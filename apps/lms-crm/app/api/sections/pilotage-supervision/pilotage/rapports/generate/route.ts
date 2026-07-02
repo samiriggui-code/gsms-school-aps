@@ -12,6 +12,7 @@ import {
   pilotagePeriodRange,
   type PilotagePeriod,
 } from '@repo/api-core';
+import { getReportTemplate } from '@repo/report-engine';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
@@ -41,14 +42,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const service = new PilotageHubService(prisma);
-    const template = service.getReportTemplate(templateId);
-    if (!template) return fail('Modèle de rapport introuvable.', 404);
-
-    if (template.format !== 'CSV' || !template.exportDataset) {
-      return fail(
-        `Le format ${template.format} nécessite un moteur document (PDF/Excel) — disponible prochainement. Utilisez un modèle CSV.`,
-        422,
-      );
+    const registryTpl = getReportTemplate(templateId);
+    const legacyTpl = service.getLegacyReportTemplate(templateId);
+    if (!registryTpl?.exportDataset && !legacyTpl?.exportDataset) {
+      return fail('Modèle de rapport introuvable ou sans export CSV.', 404);
     }
 
     const prepared = await service.prepareReportCsv(templateId, period);
@@ -65,7 +62,7 @@ export async function POST(request: NextRequest) {
     const meta = {
       ...prepared.meta,
       dedupeBucketKey: buildReportDedupeBucketKey(templateId, 'CSV', bucketKey),
-      generationSource: 'manual',
+      generationSource: 'manual' as const,
       ...(body.label?.trim() ? { label: body.label.trim() } : {}),
       ...(body.description !== undefined ? { description: body.description.trim() } : {}),
     };
@@ -117,7 +114,7 @@ export async function POST(request: NextRequest) {
         entityType: PILOTAGE_REPORT_ENTITY,
         event: 'pilotage.report.generated',
         description: `Rapport généré : ${meta.label}`,
-        meta: JSON.stringify({ templateId, period, format: template.format }),
+        meta: JSON.stringify({ templateId, period, format: 'CSV' }),
       },
     });
 

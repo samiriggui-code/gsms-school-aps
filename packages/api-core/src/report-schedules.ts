@@ -65,13 +65,10 @@ export type RunScheduleResult = {
 
 
 const FREQUENCY_LABELS: Record<ReportScheduleFrequency, string> = {
-
   DAILY: 'Quotidien',
-
+  WEEKLY: 'Hebdomadaire',
   MONTHLY: 'Mensuel',
-
   QUARTERLY: 'Trimestriel',
-
 };
 
 
@@ -124,6 +121,42 @@ const DEFAULT_SCHEDULES: Array<{
 
   },
 
+  {
+
+    templateKey: 'pilotage.ops-weekly',
+
+    frequency: 'WEEKLY',
+
+    title: 'Synthèse ops — hebdomadaire',
+
+    summary: 'Sessions, candidatures et alertes pédagogiques de la semaine.',
+
+  },
+
+  {
+
+    templateKey: 'finance.monthly-summary',
+
+    frequency: 'MONTHLY',
+
+    title: 'Synthèse finance — mensuelle',
+
+    summary: 'CA encaissé, impayés et pipeline commercial du mois.',
+
+  },
+
+  {
+
+    templateKey: 'qualiopi.checklist',
+
+    frequency: 'QUARTERLY',
+
+    title: 'Checklist Qualiopi — trimestriel',
+
+    summary: 'Indicateurs qualité et conformité pour revue Qualiopi.',
+
+  },
+
 ];
 
 
@@ -140,7 +173,15 @@ export function computeNextScheduleRun(frequency: ReportScheduleFrequency, from 
 
   if (frequency === 'DAILY') return next;
 
-
+  if (frequency === 'WEEKLY') {
+    const run = new Date(from);
+    const day = run.getDay();
+    const daysUntilMonday = day === 0 ? 1 : day === 1 ? 7 : 8 - day;
+    run.setDate(run.getDate() + daysUntilMonday);
+    run.setHours(6, 0, 0, 0);
+    if (run <= from) run.setDate(run.getDate() + 7);
+    return run;
+  }
 
   if (frequency === 'MONTHLY') {
 
@@ -196,7 +237,7 @@ export class ReportScheduleService {
 
         summary: s.summary,
 
-        enabled: s.frequency === 'MONTHLY',
+        enabled: s.frequency === 'MONTHLY' || s.templateKey === 'pilotage.ops-weekly',
 
         nextRunAt: computeNextScheduleRun(s.frequency, now),
 

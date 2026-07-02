@@ -1,6 +1,14 @@
 import { CandidatureStatus, FinanceDevisStatus, type PrismaClient } from '@repo/database';
 import { CRM_MODULE_KEYS } from './crm-events';
+import { StatService } from './services';
+import { fetchOverdueInvoices } from './workflows/n8n-automation-data';
+import { fetchPedagogyDailyAlerts } from './workflows/n8n-session-data';
 import { PilotageExportService, isPilotageExportDataset, type PilotageExportDataset } from './pilotage-export';
+import {
+  GESTION_RESSOURCES_REPORT_TEMPLATES,
+  moduleMatchesTemplateModule,
+  templatesForPilotageModule,
+} from './pilotage-report-catalog';
 import {
   resolveReportPeriod,
   parseReportFileMetadata,
@@ -257,59 +265,6 @@ function monthBuckets(count: number): { key: string; label: string; start: Date 
   return buckets;
 }
 
-export const GESTION_RESSOURCES_REPORT_TEMPLATES: PilotageRapportTemplate[] = [
-  {
-    id: 'gr-rh-conformite',
-    label: 'État conformité RH',
-    moduleKey: CRM_MODULE_KEYS.RH,
-    format: 'CSV',
-    status: 'available',
-    description: 'Cartes pro, titres de séjour et certifications à échéance',
-    exportDataset: 'audit',
-    href: '/gestion-ressources/rh/conformite',
-  },
-  {
-    id: 'gr-equipements-inventaire',
-    label: 'Inventaire équipements',
-    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
-    format: 'CSV',
-    status: 'available',
-    description: 'Statuts parc, maintenance et affectations',
-    exportDataset: 'audit',
-    href: '/gestion-ressources/equipements/inventaire',
-  },
-  {
-    id: 'gr-salles-planning',
-    label: 'Planning salles',
-    moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
-    format: 'PDF',
-    status: 'scheduled',
-    description: 'Occupation et réservations sur la période',
-    exportDataset: null,
-    href: '/gestion-ressources/equipements/salles',
-  },
-  {
-    id: 'gr-absences',
-    label: 'Synthèse absences',
-    moduleKey: CRM_MODULE_KEYS.RH,
-    format: 'Excel',
-    status: 'available',
-    description: 'Absences actives et historique récent',
-    exportDataset: null,
-    href: '/gestion-ressources/rh/absences',
-  },
-  {
-    id: 'gr-compagnie-docs',
-    label: 'Documents compagnie',
-    moduleKey: 'gestion-ressources.compagnie',
-    format: 'PDF',
-    status: 'available',
-    description: 'Dossier administratif et pièces légales',
-    exportDataset: null,
-    href: '/gestion-ressources/compagnie',
-  },
-];
-
 function parseReportMeta(raw: unknown): PilotageReportAssetMeta | null {
   const parsed = parseReportFileMetadata(raw);
   if (!parsed) return null;
@@ -361,26 +316,69 @@ function resolveListRange(
   return { ...pilotagePeriodRange(period as PilotagePeriod), period };
 }
 
+function moduleLabelFromModuleId(moduleId: string): string {
+  if (moduleId === 'gestion-ressources') return 'Gestion ressources';
+  if (moduleId === 'gestion-academique') return 'Gestion académique';
+  if (moduleId === 'administration-facturation') return 'Admin facturation';
+  if (moduleId === 'support-qualite') return 'Support qualité';
+  if (moduleId === 'communication-contenu') return 'Communication & contenu';
+  if (moduleId === 'securite-configuration') return 'Sécurité & configuration';
+  if (moduleId === 'all') return 'Tous modules';
+  return moduleId;
+}
+
 export class PilotageHubService {
   constructor(private readonly prisma: PrismaClient) {}
 
   async getIndicateurs(moduleId: string, period: PilotagePeriod): Promise<PilotageIndicateursPayload | null> {
-    if (moduleId !== 'all' && moduleId !== 'gestion-ressources') return null;
-    return this.gestionRessourcesIndicateurs(period);
+    switch (moduleId) {
+      case 'all':
+        return this.transversalIndicateurs(period);
+      case 'gestion-ressources':
+        return this.gestionRessourcesIndicateurs(period);
+      case 'gestion-academique':
+        return this.gestionAcademiqueIndicateurs(period);
+      case 'administration-facturation':
+        return this.administrationFacturationIndicateurs(period);
+      case 'support-qualite':
+        return this.supportQualiteIndicateurs(period);
+      case 'communication-contenu':
+        return this.communicationContenuIndicateurs(period);
+      case 'securite-configuration':
+        return this.securiteConfigurationIndicateurs(period);
+      default:
+        return null;
+    }
   }
 
   async getRisques(moduleId: string): Promise<PilotageRisquesPayload | null> {
-    if (moduleId !== 'all' && moduleId !== 'gestion-ressources') return null;
-    return this.gestionRessourcesRisques();
+    switch (moduleId) {
+      case 'all':
+        return this.transversalRisques();
+      case 'gestion-ressources':
+        return this.gestionRessourcesRisques();
+      case 'gestion-academique':
+        return this.gestionAcademiqueRisques();
+      case 'administration-facturation':
+        return this.administrationFacturationRisques();
+      case 'support-qualite':
+        return this.supportQualiteRisques();
+      case 'communication-contenu':
+        return this.communicationContenuRisques();
+      case 'securite-configuration':
+        return this.securiteConfigurationRisques();
+      default:
+        return null;
+    }
   }
 
   async getRapports(
     moduleId: string,
     period: PilotagePeriod | 'custom',
     customRange?: { start: Date; end: Date },
-  ): Promise<PilotageRapportsPayload | null> {
-    if (moduleId !== 'all' && moduleId !== 'gestion-ressources') return null;
-    return this.gestionRessourcesRapports(period, customRange);
+  ): Promise<PilotageRapportsPayload> {
+    const templates = templatesForPilotageModule(moduleId);
+    return this.buildModuleRapportsPayload(moduleId, templates, period, customRange);
   }
 
   /** Landing pilotage — agrégation transversale tous modules CRM. */
@@ -647,7 +645,8 @@ export class PilotageHubService {
           href: '/communication-contenu',
           sparkline: sparkLeads,
           pilotageLinks: [
-            { label: 'Alertes', href: '/pilotage-supervision/pilotage/alertes', variant: 'pilotage' },
+            { label: 'Indicateurs', href: '/pilotage-supervision/pilotage/indicateurs', variant: 'pilotage' },
+            { label: 'Risques', href: '/pilotage-supervision/pilotage/risques', variant: 'pilotage' },
           ],
         },
         {
@@ -673,7 +672,8 @@ export class PilotageHubService {
           href: '/securite-configuration',
           sparkline: sparkSecurite,
           pilotageLinks: [
-            { label: 'Alertes', href: '/pilotage-supervision/pilotage/alertes', variant: 'pilotage' },
+            { label: 'Indicateurs', href: '/pilotage-supervision/pilotage/indicateurs', variant: 'pilotage' },
+            { label: 'Risques', href: '/pilotage-supervision/pilotage/risques', variant: 'pilotage' },
           ],
         },
       ],
@@ -1230,8 +1230,731 @@ export class PilotageHubService {
     };
   }
 
-  getReportTemplate(templateId: string): PilotageRapportTemplate | null {
+  private async transversalIndicateurs(period: PilotagePeriod): Promise<PilotageIndicateursPayload> {
+    const range = pilotagePeriodRange(period);
+    const statService = new StatService(this.prisma);
+    const [vieScolaire, finance, support, pedagogy, notificationsAll, collaborators] =
+      await Promise.all([
+        statService.getVieScolaireStats(3),
+        statService.getFinanceStats(3),
+        statService.getSupportQualiteStats(),
+        fetchPedagogyDailyAlerts(this.prisma),
+        this.prisma.inAppNotification.count({
+          where: { createdAt: { gte: range.start, lte: range.end } },
+        }),
+        this.prisma.user.count({ where: { isTrashed: false, status: 'ACTIVE' } }),
+      ]);
+
+    const kpis = [
+      { key: 'alerts', label: 'Alertes période', value: notificationsAll, subtitle: range.label },
+      {
+        key: 'collaborators',
+        label: 'Collaborateurs actifs',
+        value: collaborators,
+        subtitle: 'Effectif',
+      },
+      {
+        key: 'sessions',
+        label: 'Sessions',
+        value: vieScolaire.kpis[1]?.value ?? 0,
+        subtitle: 'Vie scolaire',
+      },
+      {
+        key: 'devis',
+        label: 'Devis émis',
+        value: finance.kpis[0]?.value ?? 0,
+        subtitle: 'Finance',
+      },
+      {
+        key: 'pedagogy',
+        label: 'Émargements non signés',
+        value: pedagogy.totalUnsigned,
+        subtitle: "Aujourd'hui",
+      },
+    ];
+
+    const distribution = [
+      { name: 'Candidatures', value: Number(vieScolaire.kpis[3]?.value ?? 0) },
+      { name: 'Devis', value: Number(finance.kpis[0]?.value ?? 0) },
+      { name: 'Tickets ouverts', value: Number(support.kpis[0]?.value ?? 0) },
+      { name: 'Collaborateurs', value: collaborators },
+    ];
+
+    const evolution =
+      vieScolaire.monthlyEvolution?.map((m) => ({ label: m.date, value: m.count })) ?? [];
+
+    return {
+      moduleId: 'all',
+      period,
+      kpis,
+      charts: {
+        distributionTitle: 'Exposition transversale',
+        evolutionTitle: 'Activité candidatures (3 mois)',
+        evolutionSeriesName: 'Dossiers',
+        distribution,
+        distributionTotal: distribution.reduce((n, s) => n + s.value, 0),
+        evolution,
+      },
+      sections: [
+        { title: 'Alertes', description: 'Registre transversal', href: '/pilotage-supervision/pilotage/alertes' },
+        { title: 'Vie scolaire', description: 'Sessions et candidatures', href: '/gestion-academique/vie-scolaire' },
+        { title: 'Finance', description: 'Devis et encaissements', href: '/administration-facturation/finance' },
+        { title: 'Support', description: 'Tickets et qualité', href: '/support-qualite/support/tickets' },
+      ],
+    };
+  }
+
+  private async gestionAcademiqueIndicateurs(period: PilotagePeriod): Promise<PilotageIndicateursPayload> {
+    const range = pilotagePeriodRange(period);
+    const statService = new StatService(this.prisma);
+    const [stats, pedagogy, notificationsGa] = await Promise.all([
+      statService.getVieScolaireStats(12),
+      fetchPedagogyDailyAlerts(this.prisma),
+      this.prisma.inAppNotification.count({
+        where: {
+          createdAt: { gte: range.start, lte: range.end },
+          metadata: { path: ['moduleKey'], string_starts_with: 'gestion-academique' },
+        },
+      }),
+    ]);
+
+    const kpisFromStats = stats.kpis ?? [];
+    const kpis = kpisFromStats.slice(0, 4).map((k, i) => ({
+      key: `vs-${i}`,
+      label: k.label,
+      value: k.value,
+      subtitle: k.trendValue ?? 'Vie scolaire',
+    }));
+    if (kpis.length < 4) {
+      kpis.push({
+        key: 'events',
+        label: 'Événements période',
+        value: notificationsGa,
+        subtitle: range.label,
+      });
+    }
+
+    const distribution =
+      stats.categoryDistribution?.map((c) => ({ name: c.name, value: c.count })) ?? [
+        { name: 'Catalogue', value: Number(kpisFromStats[0]?.value ?? 0) },
+        { name: 'Sessions', value: Number(kpisFromStats[1]?.value ?? 0) },
+      ];
+
+    const evolution =
+      stats.monthlyEvolution?.map((m) => ({ label: m.date, value: m.count })) ?? [];
+
+    return {
+      moduleId: 'gestion-academique',
+      period,
+      kpis,
+      charts: {
+        distributionTitle: 'Répartition candidatures',
+        evolutionTitle: 'Activité (12 mois)',
+        evolutionSeriesName: 'Inscriptions',
+        distribution,
+        distributionTotal: distribution.reduce((n, s) => n + s.value, 0),
+        evolution,
+        secondaryDistributionTitle: 'Pédagogie du jour',
+        secondaryDistribution: [
+          { name: 'Émargements non signés', value: pedagogy.totalUnsigned },
+          { name: 'Absences non justifiées', value: pedagogy.totalUnjustifiedAbsences },
+        ],
+      },
+      sections: [
+        { title: 'Formations', description: 'Catalogue et parcours', href: '/gestion-academique/vie-scolaire/formations' },
+        { title: 'Sessions', description: 'Planning et inscriptions', href: '/gestion-academique/vie-scolaire/sessions' },
+        { title: 'Suivi formations', description: 'Présence, examens, attestations', href: '/gestion-academique/vie-scolaire/suivi-formations' },
+        { title: 'Étudiants', description: 'Dossiers candidats', href: '/gestion-academique/vie-scolaire/etudiants' },
+      ],
+    };
+  }
+
+  private async administrationFacturationIndicateurs(
+    period: PilotagePeriod,
+  ): Promise<PilotageIndicateursPayload> {
+    const range = pilotagePeriodRange(period);
+    const statService = new StatService(this.prisma);
+    const [stats, overdue, notificationsFin] = await Promise.all([
+      statService.getFinanceStats(12),
+      fetchOverdueInvoices(this.prisma),
+      this.prisma.inAppNotification.count({
+        where: {
+          createdAt: { gte: range.start, lte: range.end },
+          metadata: { path: ['moduleKey'], string_starts_with: 'administration-facturation' },
+        },
+      }),
+    ]);
+
+    const kpisFromStats = stats.kpis ?? [];
+    const kpis = kpisFromStats.slice(0, 4).map((k, i) => ({
+      key: `fin-${i}`,
+      label: k.label,
+      value: k.value,
+      subtitle: k.trendValue ?? 'Finance',
+    }));
+    kpis.push({
+      key: 'overdue',
+      label: 'Impayés suivis',
+      value: overdue.count,
+      subtitle: 'Devis avec solde dû',
+    });
+
+    const evolution =
+      stats.monthlyEvolution?.map((m) => ({ label: m.date, value: m.count })) ?? [];
+
+    return {
+      moduleId: 'administration-facturation',
+      period,
+      kpis: kpis.slice(0, 5),
+      charts: {
+        distributionTitle: 'Pipeline devis',
+        evolutionTitle: 'CA devis (12 mois)',
+        evolutionSeriesName: 'Montant TTC',
+        distribution: [
+          { name: 'Devis émis', value: Number(kpisFromStats[0]?.value ?? 0) },
+          { name: 'Acceptés', value: Number(kpisFromStats[1]?.value ?? 0) },
+          { name: 'Impayés', value: overdue.count },
+          { name: 'Alertes période', value: notificationsFin },
+        ],
+        distributionTotal: Number(kpisFromStats[0]?.value ?? 0),
+        evolution,
+      },
+      sections: [
+        { title: 'Devis', description: 'Propositions commerciales', href: '/administration-facturation/finance/devis' },
+        { title: 'Paiements', description: 'Encaissements', href: '/administration-facturation/finance/paiements' },
+        { title: 'Rapports', description: 'Synthèses finance', href: '/administration-facturation/finance/rapports' },
+        { title: 'Budget', description: 'Suivi budgétaire', href: '/administration-facturation/finance/budget' },
+      ],
+    };
+  }
+
+  private async supportQualiteIndicateurs(period: PilotagePeriod): Promise<PilotageIndicateursPayload> {
+    const range = pilotagePeriodRange(period);
+    const statService = new StatService(this.prisma);
+    const [stats, notificationsSq] = await Promise.all([
+      statService.getSupportQualiteStats(),
+      this.prisma.inAppNotification.count({
+        where: {
+          createdAt: { gte: range.start, lte: range.end },
+          metadata: { path: ['moduleKey'], string_starts_with: 'support-qualite' },
+        },
+      }),
+    ]);
+
+    const kpisFromStats = stats.kpis ?? [];
+    const kpis = kpisFromStats.slice(0, 4).map((k, i) => ({
+      key: `sq-${i}`,
+      label: k.label,
+      value: k.value,
+      subtitle: k.trendValue ?? 'Support',
+    }));
+    kpis.push({
+      key: 'events',
+      label: 'Événements période',
+      value: notificationsSq,
+      subtitle: range.label,
+    });
+
+    const open = Number(kpisFromStats[0]?.value ?? 0);
+    const urgent = Number(kpisFromStats[3]?.value ?? 0);
+    const resolved = Number(kpisFromStats[1]?.value ?? 0);
+
+    return {
+      moduleId: 'support-qualite',
+      period,
+      kpis: kpis.slice(0, 5),
+      charts: {
+        distributionTitle: 'Tickets',
+        evolutionTitle: 'Charge support',
+        evolutionSeriesName: 'Volume',
+        distribution: [
+          { name: 'Ouverts', value: open },
+          { name: 'Résolus', value: resolved },
+          { name: 'Urgents', value: urgent },
+        ],
+        distributionTotal: open + resolved + urgent,
+        evolution: monthBuckets(6).map((b) => ({ label: b.label, value: 0 })),
+      },
+      sections: [
+        { title: 'Tickets', description: 'Demandes support', href: '/support-qualite/support/tickets' },
+        { title: 'Qualité', description: 'Incidents et indicateurs', href: '/support-qualite/qualite/incidents' },
+        { title: 'Base aide', description: 'Documentation self-service', href: '/support-qualite/support/base-aide' },
+      ],
+    };
+  }
+
+  private async communicationContenuIndicateurs(period: PilotagePeriod): Promise<PilotageIndicateursPayload> {
+    const range = pilotagePeriodRange(period);
+    const staleCutoff = new Date(Date.now() - 7 * 86400000);
+
+    const [
+      leadsTotal,
+      leadsNew,
+      leadsStale,
+      campaignsActive,
+      campaignsDraft,
+      formationsActive,
+      notificationsCc,
+    ] = await Promise.all([
+      this.prisma.lead.count(),
+      this.prisma.lead.count({ where: { status: 'NEW' } }),
+      this.prisma.lead.count({
+        where: { status: 'NEW', updatedAt: { lt: staleCutoff } },
+      }),
+      this.prisma.marketingCampaign.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.marketingCampaign.count({ where: { status: 'DRAFT' } }),
+      this.prisma.formation.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.inAppNotification.count({
+        where: {
+          createdAt: { gte: range.start, lte: range.end },
+          metadata: { path: ['moduleKey'], string_starts_with: 'communication-contenu' },
+        },
+      }),
+    ]);
+
+    return {
+      moduleId: 'communication-contenu',
+      period,
+      kpis: [
+        { key: 'leads', label: 'Leads', value: leadsTotal, subtitle: `${leadsNew} nouveau(x)` },
+        { key: 'stale', label: 'Leads à qualifier', value: leadsStale, subtitle: 'Sans action >7 j' },
+        { key: 'campaigns', label: 'Campagnes actives', value: campaignsActive, subtitle: `${campaignsDraft} brouillon(s)` },
+        { key: 'formations', label: 'Formations actives', value: formationsActive, subtitle: 'Catalogue vitrine' },
+        { key: 'events', label: 'Événements période', value: notificationsCc, subtitle: range.label },
+      ],
+      charts: {
+        distributionTitle: 'Pipeline leads',
+        evolutionTitle: 'Charge communication',
+        evolutionSeriesName: 'Volume',
+        distribution: [
+          { name: 'Nouveaux', value: leadsNew },
+          { name: 'À relancer', value: leadsStale },
+          { name: 'Autres', value: Math.max(0, leadsTotal - leadsNew) },
+        ],
+        distributionTotal: leadsTotal,
+        evolution: monthBuckets(6).map((b) => ({ label: b.label, value: 0 })),
+        secondaryDistributionTitle: 'Campagnes',
+        secondaryDistribution: [
+          { name: 'Actives', value: campaignsActive },
+          { name: 'Brouillons', value: campaignsDraft },
+        ],
+      },
+      sections: [
+        { title: 'Leads landing', description: 'Devis et préinscriptions', href: '/communication-contenu/marketing/formulaires-leads' },
+        { title: 'Campagnes', description: 'UTM et canaux acquisition', href: '/communication-contenu/marketing/campagnes' },
+        { title: 'CMS & contenus', description: 'Pages et fiches formations', href: '/communication-contenu/cms/contenus' },
+        { title: 'SEO', description: 'Meta et redirections', href: '/communication-contenu/seo/meta-indexation' },
+      ],
+    };
+  }
+
+  private async securiteConfigurationIndicateurs(period: PilotagePeriod): Promise<PilotageIndicateursPayload> {
+    const range = pilotagePeriodRange(period);
+    const horizon = new Date();
+    horizon.setDate(horizon.getDate() + 30);
+
+    const [
+      usersActive,
+      rolesCount,
+      dossiersIncomplete,
+      docsExpiring,
+      notificationsSec,
+    ] = await Promise.all([
+      this.prisma.user.count({ where: { isTrashed: false, status: 'ACTIVE' } }),
+      this.prisma.userRole.count(),
+      this.prisma.complianceDossier.count({ where: { completenessPct: { lt: 100 } } }),
+      this.prisma.complianceDossierItem.count({
+        where: {
+          status: { in: ['VALIDATED', 'RECEIVED'] },
+          expiresAt: { gte: new Date(), lte: horizon },
+        },
+      }),
+      this.prisma.inAppNotification.count({
+        where: {
+          createdAt: { gte: range.start, lte: range.end },
+          metadata: { path: ['moduleKey'], string_starts_with: 'securite-configuration' },
+        },
+      }),
+    ]);
+
+    const conformiteRate =
+      usersActive > 0
+        ? Math.max(0, Math.round(((usersActive - dossiersIncomplete) / usersActive) * 100))
+        : 100;
+
+    return {
+      moduleId: 'securite-configuration',
+      period,
+      kpis: [
+        { key: 'users', label: 'Utilisateurs actifs', value: usersActive, subtitle: 'Comptes CRM' },
+        { key: 'roles', label: 'Rôles IAM', value: rolesCount, subtitle: 'Profils d\'accès' },
+        { key: 'dossiers', label: 'Dossiers incomplets', value: dossiersIncomplete, subtitle: 'Conformité documentaire' },
+        { key: 'expiring', label: 'Docs expirant 30 j', value: docsExpiring, subtitle: 'Renouvellement' },
+        { key: 'events', label: 'Événements période', value: notificationsSec, subtitle: range.label },
+      ],
+      charts: {
+        distributionTitle: 'Conformité',
+        evolutionTitle: 'Gouvernance',
+        evolutionSeriesName: 'Alertes',
+        distribution: [
+          { name: 'Dossiers OK', value: Math.max(0, usersActive - dossiersIncomplete) },
+          { name: 'Incomplets', value: dossiersIncomplete },
+          { name: 'Expirations 30 j', value: docsExpiring },
+        ],
+        distributionTotal: usersActive + docsExpiring,
+        evolution: monthBuckets(6).map((b) => ({ label: b.label, value: 0 })),
+        secondaryDistributionTitle: 'Synthèse',
+        secondaryDistribution: [{ name: 'Taux conformité', value: conformiteRate }],
+      },
+      sections: [
+        { title: 'Accès & IAM', description: 'Utilisateurs, rôles, permissions', href: '/securite-configuration/acces/users' },
+        { title: 'Conformité', description: 'Dossiers et pièces', href: '/securite-configuration/gouvernance-donnees/conformite' },
+        { title: 'Demandes documents', description: 'Relances et validations', href: '/securite-configuration/gouvernance-donnees/demandes-documents' },
+        { title: 'Paramètres', description: 'Configuration école', href: '/securite-configuration/parametres/settings' },
+      ],
+    };
+  }
+
+  private async communicationContenuRisques(): Promise<PilotageRisquesPayload> {
+    const staleCutoff = new Date(Date.now() - 7 * 86400000);
+    const [leadsStale, campaignsDraft, leadsNew, formationsInactive] = await Promise.all([
+      this.prisma.lead.count({
+        where: { status: 'NEW', updatedAt: { lt: staleCutoff } },
+      }),
+      this.prisma.marketingCampaign.count({ where: { status: 'DRAFT' } }),
+      this.prisma.lead.count({ where: { status: 'NEW' } }),
+      this.prisma.formation.count({ where: { status: { not: 'ACTIVE' } } }),
+    ]);
+
+    const rows: PilotageRisqueRow[] = [
+      {
+        id: 'cc-leads-stale',
+        risque: 'Leads non traités (>7 j)',
+        gravite: leadsStale > 10 ? 'Élevée' : leadsStale > 0 ? 'Moyenne' : 'Faible',
+        exposition: leadsStale,
+        mesure: 'Qualification commerciale',
+        moduleKey: 'communication-contenu.marketing',
+        href: '/communication-contenu/marketing/formulaires-leads',
+        recommendation: 'Convertir ou archiver les leads landing — relance via circuit acquisition n8n.',
+      },
+      {
+        id: 'cc-campaigns-draft',
+        risque: 'Campagnes en brouillon',
+        gravite: campaignsDraft > 5 ? 'Moyenne' : campaignsDraft > 0 ? 'Faible' : 'Faible',
+        exposition: campaignsDraft,
+        mesure: 'Activer ou clôturer',
+        moduleKey: 'communication-contenu.marketing',
+        href: '/communication-contenu/marketing/campagnes',
+        recommendation: 'Finaliser UTM et dates avant lancement des campagnes acquisition.',
+      },
+      {
+        id: 'cc-leads-backlog',
+        risque: 'File leads nouveaux',
+        gravite: leadsNew > 20 ? 'Élevée' : leadsNew > 5 ? 'Moyenne' : 'Faible',
+        exposition: leadsNew,
+        mesure: 'Traitement pipeline',
+        moduleKey: 'communication-contenu.marketing',
+        href: '/communication-contenu/marketing/formulaires-leads',
+        recommendation: 'Prioriser les leads devis et préinscriptions vers dossiers candidats.',
+      },
+      {
+        id: 'cc-catalogue',
+        risque: 'Formations hors catalogue actif',
+        gravite: formationsInactive > 3 ? 'Moyenne' : 'Faible',
+        exposition: formationsInactive,
+        mesure: 'Revue CMS',
+        moduleKey: 'communication-contenu.cms',
+        href: '/communication-contenu/cms/contenus',
+        recommendation: 'Aligner fiches CMS et statut formations pour éviter les incohérences landing.',
+      },
+    ];
+
+    return this.buildRisquesPayload('communication-contenu', rows, 'communication-contenu');
+  }
+
+  private async securiteConfigurationRisques(): Promise<PilotageRisquesPayload> {
+    const horizon7 = new Date(Date.now() + 7 * 86400000);
+    const [dossiersIncomplete, docsExpiring7, usersTrashed, inactiveUsers] = await Promise.all([
+      this.prisma.complianceDossier.count({ where: { completenessPct: { lt: 100 } } }),
+      this.prisma.complianceDossierItem.count({
+        where: {
+          status: { in: ['VALIDATED', 'RECEIVED'] },
+          expiresAt: { gte: new Date(), lte: horizon7 },
+        },
+      }),
+      this.prisma.user.count({ where: { isTrashed: true } }),
+      this.prisma.user.count({ where: { isTrashed: false, status: { not: 'ACTIVE' } } }),
+    ]);
+
+    const rows: PilotageRisqueRow[] = [
+      {
+        id: 'sec-dossiers',
+        risque: 'Dossiers conformité incomplets',
+        gravite: dossiersIncomplete > 15 ? 'Élevée' : dossiersIncomplete > 5 ? 'Moyenne' : 'Faible',
+        exposition: dossiersIncomplete,
+        mesure: 'Relances documentaires',
+        moduleKey: CRM_MODULE_KEYS.GOUVERNANCE,
+        href: '/securite-configuration/gouvernance-donnees/conformite',
+        recommendation: 'Utiliser les demandes de pièces et le circuit n8n conformité documents.',
+      },
+      {
+        id: 'sec-expiring',
+        risque: 'Documents expirant sous 7 j',
+        gravite: docsExpiring7 > 5 ? 'Élevée' : docsExpiring7 > 0 ? 'Moyenne' : 'Faible',
+        exposition: docsExpiring7,
+        mesure: 'Renouvellement anticipé',
+        moduleKey: CRM_MODULE_KEYS.GOUVERNANCE,
+        href: '/securite-configuration/gouvernance-donnees/demandes-documents',
+        recommendation: 'Bloquer les accès sensibles si pièces critiques expirées.',
+      },
+      {
+        id: 'sec-accounts',
+        risque: 'Comptes inactifs ou corbeille',
+        gravite: inactiveUsers + usersTrashed > 10 ? 'Moyenne' : 'Faible',
+        exposition: inactiveUsers + usersTrashed,
+        mesure: 'Revue IAM',
+        moduleKey: 'securite-configuration.acces',
+        href: '/securite-configuration/acces/users',
+        recommendation: 'Désactiver les comptes obsolètes et documenter les changements de rôles.',
+      },
+    ];
+
+    return this.buildRisquesPayload('securite-configuration', rows, 'securite-configuration');
+  }
+
+  private async transversalRisques(): Promise<PilotageRisquesPayload> {
+    const [gr, ga, fin, sq, cc, sec] = await Promise.all([
+      this.gestionRessourcesRisques(),
+      this.gestionAcademiqueRisques(),
+      this.administrationFacturationRisques(),
+      this.supportQualiteRisques(),
+      this.communicationContenuRisques(),
+      this.securiteConfigurationRisques(),
+    ]);
+    const rows = [...gr.rows, ...ga.rows, ...fin.rows, ...sq.rows, ...cc.rows, ...sec.rows];
+    const eleve = rows.filter((r) => r.gravite === 'Élevée').length;
+    const moyenne = rows.filter((r) => r.gravite === 'Moyenne').length;
+    const faible = rows.filter((r) => r.gravite === 'Faible').length;
+    const buckets = monthBuckets(12);
+    return {
+      moduleId: 'all',
+      kpis: [
+        { key: 'risks', label: 'Risques suivis', value: rows.length, subtitle: 'Tous modules' },
+        { key: 'eleve', label: 'Gravité élevée', value: eleve, subtitle: 'Action immédiate' },
+        { key: 'moyenne', label: 'Gravité moyenne', value: moyenne, subtitle: 'À planifier' },
+        { key: 'faible', label: 'Gravité faible', value: faible, subtitle: 'Veille' },
+      ],
+      rows,
+      charts: {
+        distributionTitle: 'Répartition gravité',
+        evolutionTitle: 'Risques par module',
+        evolutionSeriesName: 'Exposition',
+        distribution: [
+          { name: 'Élevée', value: eleve },
+          { name: 'Moyenne', value: moyenne },
+          { name: 'Faible', value: faible },
+        ],
+        distributionTotal: eleve + moyenne + faible,
+        evolution: buckets.map((b) => ({ label: b.label, value: 0 })),
+      },
+    };
+  }
+
+  private async gestionAcademiqueRisques(): Promise<PilotageRisquesPayload> {
+    const [pedagogy, incompleteDossiers, pendingCandidatures, failedExams] = await Promise.all([
+      fetchPedagogyDailyAlerts(this.prisma),
+      this.prisma.candidature.count({
+        where: {
+          archivedAt: null,
+          status: { in: ['DRAFT', 'SUBMITTED', 'MISSING_DOCUMENTS', 'VALIDATION_PENDING', 'PENDING_CNAPS'] },
+          complianceDossiers: { some: { status: 'INCOMPLETE' } },
+        },
+      }),
+      this.prisma.candidature.count({
+        where: {
+          archivedAt: null,
+          status: { in: [CandidatureStatus.SUBMITTED, CandidatureStatus.VALIDATION_PENDING] },
+        },
+      }),
+      this.prisma.formationSessionParticipant.count({ where: { examOutcome: 'FAILED' } }),
+    ]);
+
+    const rows: PilotageRisqueRow[] = [
+      {
+        id: 'ga-emargement',
+        risque: 'Émargements non signés (jour)',
+        gravite: pedagogy.totalUnsigned > 5 ? 'Élevée' : pedagogy.totalUnsigned > 0 ? 'Moyenne' : 'Faible',
+        exposition: pedagogy.totalUnsigned,
+        mesure: 'Relance formateur / stagiaires',
+        moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+        href: '/gestion-academique/vie-scolaire/suivi-formations',
+        recommendation: 'Compléter les feuilles d\'émargement avant clôture journalière — circuit Qualiopi.',
+      },
+      {
+        id: 'ga-dossiers',
+        risque: 'Dossiers candidats incomplets',
+        gravite: incompleteDossiers > 10 ? 'Élevée' : incompleteDossiers > 0 ? 'Moyenne' : 'Faible',
+        exposition: incompleteDossiers,
+        mesure: 'Relance pièces manquantes',
+        moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+        href: '/gestion-academique/vie-scolaire/etudiants',
+        recommendation: 'Prioriser les dossiers bloquants avant convocation session.',
+      },
+      {
+        id: 'ga-pending',
+        risque: 'Candidatures en instruction',
+        gravite: pendingCandidatures > 15 ? 'Moyenne' : 'Faible',
+        exposition: pendingCandidatures,
+        mesure: 'Valider ou demander pièces',
+        moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+        href: '/gestion-academique/vie-scolaire/etudiants',
+        recommendation: 'Réduire le délai de traitement pour sécuriser les inscriptions session.',
+      },
+      {
+        id: 'ga-exams',
+        risque: 'Examens ajournés',
+        gravite: failedExams > 0 ? 'Moyenne' : 'Faible',
+        exposition: failedExams,
+        mesure: 'Replanifier session examen',
+        moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+        href: '/gestion-academique/vie-scolaire/suivi-formations',
+        recommendation: 'Déclencher le circuit post-examen et informer les candidats.',
+      },
+    ];
+
+    return this.buildRisquesPayload('gestion-academique', rows, 'gestion-academique');
+  }
+
+  private async administrationFacturationRisques(): Promise<PilotageRisquesPayload> {
+    const [overdue, expiredDevis] = await Promise.all([
+      fetchOverdueInvoices(this.prisma),
+      this.prisma.financeDevis.count({ where: { status: FinanceDevisStatus.EXPIRED } }),
+    ]);
+    const criticalOverdue = overdue.items.filter((i) => i.daysOverdue >= 15).length;
+
+    const rows: PilotageRisqueRow[] = [
+      {
+        id: 'fin-overdue',
+        risque: 'Impayés (> 15 jours)',
+        gravite: criticalOverdue > 0 ? 'Élevée' : overdue.count > 0 ? 'Moyenne' : 'Faible',
+        exposition: criticalOverdue || overdue.count,
+        mesure: 'Relance finance / n8n',
+        moduleKey: CRM_MODULE_KEYS.FINANCE,
+        href: '/administration-facturation/finance/devis',
+        recommendation: 'Le cron n8n relance impayés chaque matin — vérifier les devis acceptés non soldés.',
+      },
+      {
+        id: 'fin-expired',
+        risque: 'Devis expirés',
+        gravite: expiredDevis > 3 ? 'Moyenne' : expiredDevis > 0 ? 'Faible' : 'Faible',
+        exposition: expiredDevis,
+        mesure: 'Renouveler ou archiver',
+        moduleKey: CRM_MODULE_KEYS.FINANCE,
+        href: '/administration-facturation/finance/devis',
+        recommendation: 'Recontacter les prospects ou clôturer les propositions obsolètes.',
+      },
+    ];
+
+    return this.buildRisquesPayload('administration-facturation', rows, 'administration-facturation');
+  }
+
+  private async supportQualiteRisques(): Promise<PilotageRisquesPayload> {
+    const [urgent, open, equipmentHs] = await Promise.all([
+      this.prisma.supportTicket.count({
+        where: { priority: { in: ['HIGH', 'URGENT'] }, status: { notIn: ['RESOLVED', 'CLOSED'] } },
+      }),
+      this.prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS', 'WAITING_CLIENT'] } } }),
+      this.prisma.equipment.count({ where: { status: 'OUT_OF_SERVICE' } }),
+    ]);
+
+    const rows: PilotageRisqueRow[] = [
+      {
+        id: 'sq-urgent',
+        risque: 'Tickets urgents non résolus',
+        gravite: urgent > 0 ? 'Élevée' : 'Faible',
+        exposition: urgent,
+        mesure: 'Affecter et répondre',
+        moduleKey: CRM_MODULE_KEYS.SUPPORT,
+        href: '/support-qualite/support/tickets',
+        recommendation: 'Traiter en priorité les tickets HIGH/URGENT — SLA 1re réponse.',
+      },
+      {
+        id: 'sq-backlog',
+        risque: 'Backlog tickets ouvert',
+        gravite: open > 20 ? 'Moyenne' : open > 5 ? 'Faible' : 'Faible',
+        exposition: open,
+        mesure: 'Planifier traitement',
+        moduleKey: CRM_MODULE_KEYS.SUPPORT,
+        href: '/support-qualite/support/tickets',
+        recommendation: 'Répartir la charge support et documenter les réponses récurrentes en base aide.',
+      },
+      {
+        id: 'sq-equipment',
+        risque: 'Incidents matériel (lien qualité)',
+        gravite: equipmentHs > 2 ? 'Moyenne' : equipmentHs > 0 ? 'Faible' : 'Faible',
+        exposition: equipmentHs,
+        mesure: 'Suivi maintenance',
+        moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
+        href: '/support-qualite/qualite/incidents',
+        recommendation: 'Corréler tickets support et fiches maintenance équipements.',
+      },
+    ];
+
+    return this.buildRisquesPayload('support-qualite', rows, 'support-qualite');
+  }
+
+  private async buildRisquesPayload(
+    moduleId: string,
+    rows: PilotageRisqueRow[],
+    moduleKeyPrefix: string,
+  ): Promise<PilotageRisquesPayload> {
+    const eleve = rows.filter((r) => r.gravite === 'Élevée').length;
+    const moyenne = rows.filter((r) => r.gravite === 'Moyenne').length;
+    const faible = rows.filter((r) => r.gravite === 'Faible').length;
+    const buckets = monthBuckets(12);
+    const notifRows = await this.prisma.inAppNotification.findMany({
+      where: {
+        createdAt: { gte: buckets[0].start },
+        metadata: { path: ['moduleKey'], string_starts_with: moduleKeyPrefix },
+      },
+      select: { createdAt: true },
+    });
+    const notifMap = new Map(buckets.map((b) => [b.key, 0]));
+    for (const row of notifRows) {
+      const d = row.createdAt;
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      if (notifMap.has(key)) notifMap.set(key, (notifMap.get(key) ?? 0) + 1);
+    }
+    return {
+      moduleId,
+      kpis: [
+        { key: 'risks', label: 'Risques suivis', value: rows.length, subtitle: moduleLabelFromModuleId(moduleId) },
+        { key: 'eleve', label: 'Gravité élevée', value: eleve, subtitle: 'Action immédiate' },
+        { key: 'exposition', label: 'Exposition totale', value: rows.reduce((n, r) => n + r.exposition, 0), subtitle: 'Unités' },
+      ],
+      rows,
+      charts: {
+        distributionTitle: 'Répartition gravité',
+        evolutionTitle: 'Alertes module (12 mois)',
+        evolutionSeriesName: 'Notifications',
+        distribution: [
+          { name: 'Élevée', value: eleve },
+          { name: 'Moyenne', value: moyenne },
+          { name: 'Faible', value: faible },
+        ],
+        distributionTotal: eleve + moyenne + faible,
+        evolution: buckets.map((b) => ({ label: b.label, value: notifMap.get(b.key) ?? 0 })),
+      },
+    };
+  }
+
+  getLegacyReportTemplate(templateId: string): PilotageRapportTemplate | null {
     return GESTION_RESSOURCES_REPORT_TEMPLATES.find((t) => t.id === templateId) ?? null;
+  }
+
+  /** @deprecated Utiliser getLegacyReportTemplate ou le registre report-engine */
+  getReportTemplate(templateId: string): PilotageRapportTemplate | null {
+    return this.getLegacyReportTemplate(templateId);
   }
 
   serializeReportAsset(
@@ -1297,12 +2020,12 @@ export class PilotageHubService {
   async listGeneratedReports(
     period: PilotagePeriod | 'custom',
     customRange?: { start: Date; end: Date },
+    moduleId = 'all',
   ): Promise<PilotageRapportRow[]> {
     const range = resolveListRange(period, customRange);
 
     const jobs = await this.prisma.reportGenerationJob.findMany({
       where: {
-        templateKey: { startsWith: 'pilotage.' },
         AND: [
           {
             OR: [
@@ -1533,7 +2256,9 @@ export class PilotageHubService {
       });
     }
 
-    return [...jobRows, ...assetRows].sort(
+    return [...jobRows, ...assetRows]
+      .filter((row) => moduleMatchesTemplateModule(moduleId, row.moduleKey))
+      .sort(
       (a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime(),
     );
   }
@@ -1547,26 +2272,49 @@ export class PilotageHubService {
     content: string;
     meta: PilotageReportAssetMeta;
   } | null> {
-    const template = this.getReportTemplate(templateId);
-    if (!template) return null;
-    if (template.format !== 'CSV' || !template.exportDataset || !isPilotageExportDataset(template.exportDataset)) {
-      return null;
+    const registryTpl = getReportTemplate(templateId);
+    const legacyTpl = this.getLegacyReportTemplate(templateId);
+
+    let exportDataset: PilotageExportDataset | null = null;
+    let metaTemplate: PilotageRapportTemplate | null = null;
+
+    if (registryTpl?.exportDataset && isPilotageExportDataset(registryTpl.exportDataset)) {
+      exportDataset = registryTpl.exportDataset;
+      metaTemplate = {
+        id: registryTpl.key,
+        label: registryTpl.label,
+        moduleKey: registryTpl.moduleKey,
+        format: 'CSV',
+        status: 'available',
+        description: registryTpl.description,
+        exportDataset,
+        href: null,
+      };
+    } else if (
+      legacyTpl?.exportDataset &&
+      isPilotageExportDataset(legacyTpl.exportDataset)
+    ) {
+      exportDataset = legacyTpl.exportDataset;
+      metaTemplate = legacyTpl;
     }
+
+    if (!exportDataset || !metaTemplate) return null;
+
     const range = pilotagePeriodRange(period);
     const exporter = new PilotageExportService(this.prisma);
-    const { filename, csv } = await exporter.exportCsv(template.exportDataset as PilotageExportDataset);
+    const { filename, csv } = await exporter.exportCsv(exportDataset);
     return {
-      template,
-      filename: filename.replace(/\.csv$/i, '') + `-${template.id}-${period}.csv`,
+      template: metaTemplate,
+      filename: filename.replace(/\.csv$/i, '') + `-${metaTemplate.id}-${period}.csv`,
       content: csv,
       meta: {
-        templateId: template.id,
-        label: template.label,
-        moduleKey: template.moduleKey,
-        format: template.format,
+        templateId: metaTemplate.id,
+        label: metaTemplate.label,
+        moduleKey: metaTemplate.moduleKey,
+        format: 'CSV',
         period,
         periodLabel: range.label,
-        description: template.description,
+        description: metaTemplate.description,
       },
     };
   }
@@ -1665,27 +2413,29 @@ export class PilotageHubService {
     });
   }
 
-  private async gestionRessourcesRapports(
+  private async buildModuleRapportsPayload(
+    moduleId: string,
+    templates: PilotageRapportTemplate[],
     period: PilotagePeriod | 'custom',
     customRange?: { start: Date; end: Date },
   ): Promise<PilotageRapportsPayload> {
     const range = resolveListRange(period, customRange);
-    const templates = GESTION_RESSOURCES_REPORT_TEMPLATES;
-    const rows = await this.listGeneratedReports(period, customRange);
+    const rows = await this.listGeneratedReports(period, customRange, moduleId);
 
-    const available = templates.filter((t) => t.status === 'available' && t.format === 'CSV' && t.exportDataset).length;
-    const scheduled = templates.filter((t) => t.status === 'scheduled' || (t.format !== 'CSV')).length;
+    const available = templates.filter((t) => t.status === 'available' && t.exportDataset).length;
+    const scheduled = templates.filter((t) => t.status === 'scheduled' || t.format !== 'CSV').length;
     const inProgress = rows.filter((r) => r.status === 'pending' || r.status === 'running').length;
+    const moduleLabel = moduleLabelFromModuleId(moduleId);
 
     return {
-      moduleId: 'gestion-ressources',
+      moduleId,
       period,
       periodLabel: range.label,
       kpis: [
-        { key: 'templates', label: 'Modèles disponibles', value: templates.length, subtitle: 'Gestion ressources' },
+        { key: 'templates', label: 'Modèles disponibles', value: templates.length, subtitle: moduleLabel },
         { key: 'generated', label: 'Rapports générés', value: rows.filter((r) => r.status === 'generated').length, subtitle: range.label },
         { key: 'in_progress', label: 'En cours', value: inProgress, subtitle: 'File worker' },
-        { key: 'available', label: 'CSV prêts', value: available, subtitle: 'Génération immédiate' },
+        { key: 'available', label: 'Exports CSV', value: available, subtitle: 'Génération immédiate' },
         { key: 'scheduled', label: 'PDF / Excel', value: scheduled + rows.filter((r) => r.format !== 'CSV').length, subtitle: 'Automatisations' },
       ],
       rows,

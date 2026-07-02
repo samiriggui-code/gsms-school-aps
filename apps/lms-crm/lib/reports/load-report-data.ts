@@ -22,3 +22,19 @@ export async function loadContratTravailReportData(userId: string) {
 export async function loadFicheCollaborateurReportData(userId: string) {
   return dataService.loadFicheCollaborateur(userId);
 }
+
+export async function loadGrConformiteReportData() {
+  return dataService.loadGrConformite();
+}
+
+export async function loadOpsWeeklyReportData() {
+  return dataService.loadOpsWeekly();
+}
+
+export async function loadFinanceMonthlyReportData() {
+  return dataService.loadFinanceMonthly();
+}
+
+export async function loadQualiopiChecklistReportData() {
+  return dataService.loadQualiopiChecklist();
+}

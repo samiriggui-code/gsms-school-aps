@@ -55,6 +55,25 @@ export function resolveSchedulePeriod(
     };
   }
 
+  if (frequency === 'WEEKLY') {
+    const start = new Date(ref);
+    const day = start.getDay();
+    const diff = day === 0 ? 6 : day - 1;
+    start.setDate(start.getDate() - diff);
+    start.setHours(0, 0, 0, 0);
+    const weekEnd = new Date(start);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    weekEnd.setHours(23, 59, 59, 999);
+    const weekKey = start.toISOString().slice(0, 10);
+    return {
+      period: 'week',
+      start,
+      end: weekEnd,
+      label: `Semaine du ${start.toLocaleDateString('fr-FR')}`,
+      bucketKey: `week:${weekKey}`,
+    };
+  }
+
   if (frequency === 'MONTHLY') {
     const start = new Date(ref.getFullYear(), ref.getMonth(), 1, 0, 0, 0, 0);
     const month = `${ref.getFullYear()}-${String(ref.getMonth() + 1).padStart(2, '0')}`;

@@ -37,15 +37,6 @@ export async function GET(request: NextRequest) {
   try {
     const service = new PilotageHubService(prisma);
     const data = await service.getRapports(moduleId, period, customRange);
-    if (!data) {
-      return ok({
-        moduleId,
-        period,
-        periodLabel: '—',
-        available: false,
-        message: 'Module en cours de déploiement — données gestion ressources actives.',
-      });
-    }
     return ok({ ...data, available: true });
   } catch (error) {
     console.error('[pilotage-rapports]', error);

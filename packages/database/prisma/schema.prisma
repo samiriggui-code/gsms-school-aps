@@ -69,6 +69,7 @@ enum ReportOutputFormat {
 
 enum ReportScheduleFrequency {
   DAILY
+  WEEKLY
   MONTHLY
   QUARTERLY
 }
@@ -106,6 +107,13 @@ enum FormationExamOutcome {
   PASSED
   FAILED
   ABSENT
+}
+
+enum FormationExamStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
 
 enum CandidatureSource {
@@ -881,6 +889,7 @@ model Equipment {
   maintenanceItems EquipmentMaintenance[]
   stockMovements   StockMovement[]
   sessions         TrainingSession[]
+  roomFixedAssignment VenueRoomFixedEquipment?
 
   @@index([status])
   @@index([type])
@@ -895,6 +904,8 @@ model EquipmentMaintenance {
   notes           String?
   scheduledDate   DateTime?
   completedDate   DateTime?
+  /// Coût intervention / pièces (€) — charge budget EQUIPEMENT.
+  costAmount      Decimal?                   @db.Decimal(12, 2)
   createdAt       DateTime                   @default(now())
   updatedAt       DateTime                   @updatedAt
   equipment       Equipment                  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
@@ -1135,12 +1146,32 @@ model FormationVenueRoom {
   isActive   Boolean  @default(true)
   sortOrder  Int      @default(0)
   sessions   FormationSession[]
+  examSessions FormationSession[] @relation("FormationSessionExamRoom")
+  formationExams FormationExam[] @relation("FormationExamVenueRoom")
   bookings   VenueRoomBooking[]
+  fixedEquipment VenueRoomFixedEquipment[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   @@index([isActive])
   @@index([sortOrder])
+}
+
+/// Mobilier / matériel permanent installé dans une salle (chaises, vidéoprojecteur…).
+/// Distinct des `FormationSession.reservedEquipmentIds` (réservation ponctuelle session).
+model VenueRoomFixedEquipment {
+  id          String   @id @default(uuid())
+  venueRoomId String
+  venueRoom   FormationVenueRoom @relation(fields: [venueRoomId], references: [id], onDelete: Cascade)
+  equipmentId String   @unique
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  quantity    Int      @default(1)
+  installedAt DateTime?
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([venueRoomId])
 }
 
 enum VenueRoomBookingKind {
@@ -1188,6 +1219,11 @@ model FormationSession {
   registrationClosesAt DateTime?
   /// Date / heure d’examen prévue (optionnel).
   examDate             DateTime?
+  /// Salle d’examen (PCS, plateau incendie…) si différente de la salle de cours.
+  examVenueRoomId      String?
+  examVenueRoom        FormationVenueRoom? @relation("FormationSessionExamRoom", fields: [examVenueRoomId], references: [id], onDelete: SetNull)
+  /// Matériel mobile réservé pour le jour d’examen (magnétomètre, fumigènes…).
+  examReservedEquipmentIds Json @default("[]")
 
   /// Effectif cible pour cette session (distinct de la fourchette « fiche formation »).
   traineesMin Int?
@@ -1226,11 +1262,13 @@ model FormationSession {
   participants FormationSessionParticipant[]
   suiviDays    FormationSessionDay[]
   attestations FormationAttestation[]
+  formationExam FormationExam?
   portalAnnouncements PortalSessionAnnouncement[]
   rhTeam               RhTeam?
 
   candidaturesInterested Candidature[] @relation("CandidatureInterestedSession")
   financeDevisSessionLinks FinanceDevis[] @relation("FinanceDevisLinkedSession")
+  automationRuns           SessionAutomationRun[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1238,6 +1276,38 @@ model FormationSession {
   @@index([formationId])
   @@index([startDate])
   @@index([venueRoomId])
+  @@index([examVenueRoomId])
+}
+
+enum SessionAutomationStatus {
+  RUNNING
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+/// Exécution circuit n8n (jalons J-15 → J+45) — suivi / annulation si session reportée.
+model SessionAutomationRun {
+  id              String                  @id @default(uuid())
+  sessionId       String
+  session         FormationSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participantId   String?
+  candidatureId   String?
+  circuitKey      String                  @default("default")
+  n8nExecutionId  String?
+  status          SessionAutomationStatus @default(RUNNING)
+  milestones      Json                    @default("[]")
+  metadata        Json                    @default("{}")
+  startedAt       DateTime                @default(now())
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([status])
+  @@index([n8nExecutionId])
 }
 
 /// Annonce portail candidat — cible une session ou toute la formation (sessionId null).
@@ -1385,6 +1455,32 @@ model FormationSessionEmargement {
   @@index([dayId])
 }
 
+/// Examen catalogue lié à une session `WITH_EXAM` (1:1).
+model FormationExam {
+  id        String           @id @default(uuid())
+  sessionId String           @unique
+  session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  scheduledAt DateTime?
+  venueRoomId String?
+  venueRoom   FormationVenueRoom? @relation("FormationExamVenueRoom", fields: [venueRoomId], references: [id], onDelete: SetNull)
+
+  status FormationExamStatus @default(PLANNED)
+
+  juryPresidentName String?
+  examinerName      String?
+  /// Membres du jury (JSON string[]).
+  juryMemberNames   Json   @default("[]")
+  notes             String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([scheduledAt])
+  @@index([status])
+  @@index([venueRoomId])
+}
+
 /// Attestation / certification délivrée après parcours catalogue CRM (distinct du LMS `UserCertificate`).
 model FormationAttestation {
   id String @id @default(uuid())
@@ -1495,6 +1591,7 @@ model Chapter {
   courseId     String
   userProgress UserProgress[]
   activities   Activity[]
+  quizBankItems QuizQuestionBankItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1601,11 +1698,15 @@ model QuizQuestionBankItem {
   choices      Json             @default("[]")
   correctIndex Int              @default(0)
   tags         String[]         @default([])
+  /// UV LMS (chapitre) — banque QCM par unité de valeur.
+  chapterId    String?
+  chapter      Chapter?         @relation(fields: [chapterId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([bankId])
+  @@index([chapterId])
 }
 
 model UserProgress {
