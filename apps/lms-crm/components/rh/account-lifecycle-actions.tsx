@@ -41,7 +41,7 @@ const COPY: Record<
   archive: {
     title: 'Archiver le compte ?',
     description:
-      'Pour un collaborateur ou formateur qui ne travaille plus à l’école. Accès coupé, fiche hors listes actives.',
+      'Pour un départ définitif (collaborateur, formateur ou élève). Accès coupé, fiche hors listes actives. Restauration possible.',
     label: 'Archiver',
     variant: 'destructive',
   },
@@ -122,7 +122,7 @@ export function AccountLifecycleActions({ user, onSuccess, queryKeys = [] }: Pro
           </div>
           <p className="text-xs text-muted-foreground">
             Suspendre coupe l’accès immédiatement. Archiver pour un départ définitif (restauration
-            possible). Distinct de la fiche RH éditée dans les onglets ci-dessus.
+            possible). Distinct de la fiche métier éditée dans les onglets ci-dessus.
           </p>
           <div className="flex flex-wrap gap-2">
             {isArchived || isSuspended ? (

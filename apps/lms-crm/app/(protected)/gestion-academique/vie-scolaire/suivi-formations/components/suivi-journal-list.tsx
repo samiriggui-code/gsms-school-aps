@@ -30,9 +30,10 @@ import { MODULE_LANDING_DATAGRID_PAGE_SIZE } from '@/app/(protected)/securite-co
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import type { SuiviJournalDayRow } from '../types/suivi-formations-api';
+import type { SuiviJournalDayRow, SuiviSessionOption } from '../types/suivi-formations-api';
 import { SuiviJournalDaySheet } from './suivi-journal-day-sheet';
-import { suiviFormationsStatsQueryKey } from './suivi-formations-stats';
+import { SuiviSlotDocumentsBadges } from './suivi-slot-documents-badges';
+import { suiviFormationsStatsSessionQueryKey } from './suivi-formations-stats';
 
 function formatDayLabel(iso: string) {
   try {
@@ -42,7 +43,13 @@ function formatDayLabel(iso: string) {
   }
 }
 
-export function SuiviJournalList({ sessionId }: { sessionId: string | null }) {
+export function SuiviJournalList({
+  sessionId,
+  sessionSummary,
+}: {
+  sessionId: string | null;
+  sessionSummary?: SuiviSessionOption | null;
+}) {
   const queryClient = useQueryClient();
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -111,7 +118,7 @@ export function SuiviJournalList({ sessionId }: { sessionId: string | null }) {
       );
       queryClient.invalidateQueries({ queryKey });
       if (sessionId) {
-        queryClient.invalidateQueries({ queryKey: suiviFormationsStatsQueryKey(sessionId) });
+        queryClient.invalidateQueries({ queryKey: suiviFormationsStatsSessionQueryKey(sessionId) });
       }
     },
     onError: (e: Error) => toast.error(e.message),
@@ -151,18 +158,22 @@ export function SuiviJournalList({ sessionId }: { sessionId: string | null }) {
                   Incomplet
                 </Badge>
               )}
-              {item.morningPdfAssetId ? (
-                <Badge variant="secondary" appearance="light">
-                  PDF
-                </Badge>
-              ) : null}
+              <SuiviSlotDocumentsBadges
+                variant="compact"
+                data={{
+                  hasTemplate: Boolean(item.morningPdfAssetId),
+                  templatePdf: null,
+                  signedScanCount: item.morningScanCount ?? 0,
+                  archivedTemplateCount: item.morningArchivedTemplates ?? 0,
+                }}
+              />
             </div>
           );
         },
       },
       {
         id: 'evening',
-        header: 'Soir',
+        header: 'Après-midi',
         cell: ({ row }) => {
           const item = row.original;
           return (
@@ -179,11 +190,15 @@ export function SuiviJournalList({ sessionId }: { sessionId: string | null }) {
                   Incomplet
                 </Badge>
               )}
-              {item.eveningPdfAssetId ? (
-                <Badge variant="secondary" appearance="light">
-                  PDF
-                </Badge>
-              ) : null}
+              <SuiviSlotDocumentsBadges
+                variant="compact"
+                data={{
+                  hasTemplate: Boolean(item.eveningPdfAssetId),
+                  templatePdf: null,
+                  signedScanCount: item.eveningScanCount ?? 0,
+                  archivedTemplateCount: item.eveningArchivedTemplates ?? 0,
+                }}
+              />
             </div>
           );
         },
@@ -281,6 +296,7 @@ export function SuiviJournalList({ sessionId }: { sessionId: string | null }) {
         onOpenChange={setSheetOpen}
         sessionId={sessionId}
         dayId={selectedDayId}
+        sessionSummary={sessionSummary}
       />
     </>
   );

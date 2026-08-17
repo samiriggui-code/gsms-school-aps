@@ -1,11 +1,2 @@
-import type { CompanyProfileSchemaType } from '../forms/company-profile-schema';
-
-/** Données affichées (GET `/tenant/profile` → `data.companyProfile`). */
-export type CompanyProfileView = Partial<
-  Omit<
-    CompanyProfileSchemaType,
-    'logoFile' | 'logoAction' | 'directorAvatarFile' | 'directorAvatarAction' | 'adminAvatarFile' | 'adminAvatarAction'
-  >
-> & {
-  logo?: string | null;
-};
+/** @deprecated Import from `@/lib/company-profile` */
+export type { CompanyProfileView } from '@/lib/company-profile/company-profile-view';

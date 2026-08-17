@@ -87,12 +87,16 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
   const lastAppliedDeeplinkRef = useRef('');
   const sessionIdParam = searchParams.get('sessionId')?.trim() ?? '';
   const formationSlugParam = searchParams.get('formationSlug')?.trim() ?? '';
+  const kindParam = searchParams.get('kind')?.trim() ?? '';
 
   const queryClient = useQueryClient();
   const [listView, setListView] = useState<'table' | 'grid'>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [trackTab, setTrackTab] = useState<TrackTab>('all');
   const [parcoursFilter, setParcoursFilter] = useState<FormationParcoursSpecialite | 'all'>('all');
+  const [sessionKindFilter, setSessionKindFilter] = useState<
+    'all' | FormationSessionApiRow['sessionKind']
+  >('all');
   const [showPastSessions, setShowPastSessions] = useState(false);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -123,7 +127,14 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
   useEffect(() => {
     setPagination((p) => ({ ...p, pageIndex: 0 }));
     setRowSelection({});
-  }, [trackTab, parcoursFilter, showPastSessions]);
+  }, [trackTab, parcoursFilter, showPastSessions, sessionKindFilter]);
+
+  useEffect(() => {
+    if (kindParam === 'WITH_EXAM' || kindParam === 'INITIAL' || kindParam === 'OTHER') {
+      setSessionKindFilter(kindParam);
+      setPagination((p) => ({ ...p, pageIndex: 0 }));
+    }
+  }, [kindParam]);
 
   useEffect(() => {
     const key = sessionIdParam
@@ -144,12 +155,13 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
       if (!showPastSessions && row.isExpired) return false;
       if (trackTab !== 'all' && row.formationTrack !== trackTab) return false;
       if (parcoursFilter !== 'all' && row.formationParcours !== parcoursFilter) return false;
+      if (sessionKindFilter !== 'all' && row.sessionKind !== sessionKindFilter) return false;
       if (!q) return true;
       const blob =
         `${row.id} ${row.formationName} ${row.formationSlug} ${row.dateDisplayLabel} ${row.location} ${row.formationTag} ${sessionExamenSearchBlob(row)}`.toLowerCase();
       return blob.includes(q);
     });
-  }, [rawItems, searchQuery, trackTab, parcoursFilter, showPastSessions]);
+  }, [rawItems, searchQuery, trackTab, parcoursFilter, showPastSessions, sessionKindFilter]);
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -444,6 +456,23 @@ export function SessionsManager({ onEditSession, onViewSession }: Props) {
             </div>
 
             <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end lg:shrink-0">
+              <Select
+                value={sessionKindFilter}
+                onValueChange={(v) => {
+                  setSessionKindFilter(v as typeof sessionKindFilter);
+                  setPagination((p) => ({ ...p, pageIndex: 0 }));
+                }}
+              >
+                <SelectTrigger className="h-10 w-full sm:w-[200px]">
+                  <SelectValue placeholder={t('vieScolaire.sessions.sessionKindFilter')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('vieScolaire.sessions.sessionKindAll')}</SelectItem>
+                  <SelectItem value="WITH_EXAM">{t('vieScolaire.sessions.sessionKindWithExam')}</SelectItem>
+                  <SelectItem value="INITIAL">{t('vieScolaire.sessions.sessionKindInitial')}</SelectItem>
+                  <SelectItem value="OTHER">{t('vieScolaire.sessions.sessionKindOther')}</SelectItem>
+                </SelectContent>
+              </Select>
               <Select
                 value={parcoursFilter}
                 onValueChange={(v) => {

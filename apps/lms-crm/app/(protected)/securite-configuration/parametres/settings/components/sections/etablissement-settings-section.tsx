@@ -19,8 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useCompanyProfileSettings } from '../company-profile-context';
 import { SettingsFormFooter } from '../settings-form-footer';
-import { buildCompanyProfileDefaults } from '../../lib/company-profile-form-utils';
-import type { CompanyProfileSchemaType } from '@/app/(protected)/gestion-ressources/compagnie/profil/forms/company-profile-schema';
+import { buildCompanyProfileDefaults, type CompanyProfileSchemaType } from '@/lib/company-profile';
 
 type FormValues = {
   companyName: string;

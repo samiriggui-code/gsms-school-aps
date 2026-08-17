@@ -95,6 +95,7 @@ export const SESSION_DOCUMENT_STORAGE_CATEGORIES = [
   'emargement',
   'suivi-quotidien',
   'conformite',
+  'examen',
   'archives',
 ] as const;
 

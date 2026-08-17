@@ -25,8 +25,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getInitials } from '@/lib/helpers';
-import type { CompanyProfileView } from '../types/company-profile-view';
-import type { PrimaryAdminContactPayload } from '../types/school-stats';
+import type { CompanyProfileView, PrimaryAdminContactPayload } from '@/lib/company-profile';
 import { cn } from '@/lib/utils';
 import {
   DEFAULT_ADMIN_AVATAR,

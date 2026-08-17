@@ -10,7 +10,9 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import {
   MODULE_LANDING_STATS_GRID_ROW,
+  MODULE_PAGE_KPI_COUNT,
   SECTION_KPI_CARD_ACCENTS,
+  kpiStatsGridClass,
 } from '@/components/common/stat-card-metric-layout';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -43,14 +45,12 @@ export function FormationStats({ variant = 'grid' }: FormationStatsProps) {
   const { data: statsResponse, isLoading, error, refetch } = useFormationsStatsQuery();
 
   const gridClasses =
-    variant === 'row'
-      ? MODULE_LANDING_STATS_GRID_ROW
-      : 'grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 h-full items-stretch';
+    variant === 'row' ? MODULE_LANDING_STATS_GRID_ROW : kpiStatsGridClass(MODULE_PAGE_KPI_COUNT);
 
   if (isLoading) {
     return (
       <div className={gridClasses}>
-        {[1, 2, 3, 4, 5].map((index) => (
+        {Array.from({ length: MODULE_PAGE_KPI_COUNT }, (_, i) => i + 1).map((index) => (
           <Card key={index} className="border border-border/70 shadow-none">
             <CardContent className="p-4">
               <Skeleton className="mb-3 h-8 w-8 rounded-lg" />

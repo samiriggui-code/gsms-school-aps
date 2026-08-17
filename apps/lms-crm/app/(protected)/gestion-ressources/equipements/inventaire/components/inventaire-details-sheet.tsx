@@ -10,7 +10,7 @@ import { apiFetch } from '@/lib/api';
 import {
   getInventaireActivityChannel,
 } from '@/lib/inventaire-activity';
-import { Loader2, AlertCircle, Calendar, Printer, Package, Wrench, History, Settings, FileText, Info, ShieldCheck } from 'lucide-react';
+import { Loader2, AlertCircle, Calendar, Printer, Package, Wrench, History, Settings, FileText, Info, ShieldCheck, Wallet } from 'lucide-react';
 import {
   Sheet,
   SheetBody,
@@ -37,6 +37,7 @@ import { InventaireDetailsCompliance } from './inventaire-details-compliance';
 import { InventaireDetailsDocuments } from './inventaire-details-documents';
 import { InventaireDetailsMovements } from './inventaire-details-movements';
 import { InventaireDetailsMaintenance } from './inventaire-details-maintenance';
+import { InventaireDetailsFinance } from './details/inventaire-details-finance';
 import { MaintenanceCompleteActions } from '../../components/maintenance-complete-actions';
 import { InventaireDetailsAffectations } from './inventaire-details-affectations';
 import {
@@ -258,12 +259,14 @@ export function InventaireDetailsSheet({
     (initialInventaire as { isCatalogEntry?: boolean })?.isCatalogEntry ||
       (inventaire as { isCatalogEntry?: boolean })?.isCatalogEntry,
   );
-  const catalogLabel =
+  const catalogKey =
     (initialInventaire as { catalogKey?: string })?.catalogKey ||
-    initialInventaire?.label ||
     (inventaire as { catalogKey?: string })?.catalogKey ||
-    inventaire?.label ||
     '';
+  const catalogLabel =
+    initialInventaire?.label ||
+    inventaire?.label ||
+    catalogKey;
 
   const fetchInventaire = async (labelOverride?: string) => {
     const source = initialInventaire;
@@ -703,6 +706,10 @@ export function InventaireDetailsSheet({
                     {!isCatalogMode && (
                       <>
                     <TabsTrigger value="affectations">Affectations</TabsTrigger>
+                    <TabsTrigger value="finance" className="gap-1.5">
+                      <Wallet className="size-3.5" />
+                      Finance
+                    </TabsTrigger>
                     <TabsTrigger value="maintenance">Maintenances</TabsTrigger>
                       </>
                     )}
@@ -727,6 +734,7 @@ export function InventaireDetailsSheet({
                     <TabsContent value="inventaire">
                       <InventaireCatalogUnitsTable
                         catalogLabel={catalogLabel}
+                        catalogKey={catalogKey || undefined}
                         emptyMessage="Aucune unité enregistrée pour cette catégorie."
                         onOpenUnit={(unit) => handleOpenUnitSheet(unit, 'overview')}
                         onEditUnit={(unit) => handleOpenUnitSheet(unit, 'settings')}
@@ -765,9 +773,18 @@ export function InventaireDetailsSheet({
                   </TabsContent>
                   )}
                   {!isCatalogMode && (
+                  <>
+                  <TabsContent value="finance">
+                    <InventaireDetailsFinance
+                      equipment={inventaire}
+                      maintenanceItems={(inventaire as { maintenanceItems?: Array<{ status: string; costAmount?: number | null }> }).maintenanceItems}
+                      onTabChange={setActiveTab}
+                    />
+                  </TabsContent>
                   <TabsContent value="maintenance">
                       <InventaireDetailsMaintenance equipment={inventaire} />
                   </TabsContent>
+                  </>
                   )}
                   {!isCatalogMode && (
                   <>

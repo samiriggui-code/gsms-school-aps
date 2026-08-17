@@ -108,7 +108,7 @@ export function InventaireTechnicalInfo({
                     <MapPin className="size-3.5" />
                     <span className="font-medium">Site affecté</span>
                 </div>
-                <span className="font-semibold text-foreground">{equipment.assignedSite?.name || "Campus Principal Paris"}</span>
+                <span className="font-semibold text-foreground">{equipment.assignedSite?.name || 'Campus Principal Reuil'}</span>
               </div>
               {meta.storageRoom && (
                 <div className="flex items-center justify-between text-2sm pb-2 border-b border-dashed border-border/60">
@@ -153,6 +153,14 @@ export function InventaireTechnicalInfo({
                 </div>
                 <span className="font-semibold text-foreground">{formatDate(meta.purchaseDate || equipment.createdAt)}</span>
               </div>
+              {meta.acquisitionCost != null && Number(meta.acquisitionCost) > 0 ? (
+                <div className="flex items-center justify-between text-2sm pb-2 border-b border-dashed border-border/60">
+                  <span className="text-muted-foreground font-medium">Coût acquisition</span>
+                  <span className="font-semibold text-foreground">
+                    {Number(meta.acquisitionCost).toLocaleString('fr-FR')} €
+                  </span>
+                </div>
+              ) : null}
               {meta.nextControlDate && (
                 <div className="flex items-center justify-between text-2sm">
                   <div className="flex items-center gap-2.5 text-muted-foreground">

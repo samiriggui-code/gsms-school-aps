@@ -37,8 +37,8 @@ export function VieScolaireStats() {
   const kpis = statsResponse.kpis || [];
 
   return (
-    <div className="grid grid-cols-2 gap-5 lg:gap-8 h-full items-stretch">
-      {kpis.map((kpi, idx) => {
+    <div className="grid grid-cols-2 gap-5 md:grid-cols-2 lg:gap-8 h-full items-stretch">
+      {kpis.slice(0, 4).map((kpi, idx) => {
         const IconComponent = ({
           BookOpen,
           Calendar,

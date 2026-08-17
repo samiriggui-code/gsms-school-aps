@@ -7,7 +7,7 @@ import { useSettings } from '@/providers/settings-provider';
 import { PortalAnnouncementBanner } from './portal-announcement-banner';
 import { PortalHeader } from './portal-header';
 import { PortalSidebar } from './portal-sidebar';
-import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/user-management-support-section';
 
 /** Calqué sur `demo1/layout.tsx` — mêmes classes body + structure wrapper. */
 export function PortalLayout({ children }: { children: ReactNode }) {

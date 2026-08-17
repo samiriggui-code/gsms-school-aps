@@ -9,7 +9,10 @@ import { isFormateurRole } from '@/lib/rh-agrement';
 import {
   fetchStructureStaff,
   STRUCTURE_STAFF_QUERY_KEY,
+  automaticPoleLabelForUser,
+  schoolServiceLabel,
   type OrgChartUser,
+  type SchoolService,
 } from './structure-organigramme';
 import { getInitials, getAvatarUrl } from '@/lib/helpers';
 import {
@@ -30,11 +33,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
+import { structureLoginEmail, structurePersonName } from './structure-display';
 
 function rowName(u: OrgChartUser): string {
-  const parts = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
-  if (parts) return parts;
-  return (u.name || '').trim() || u.email || '—';
+  return structurePersonName(u);
 }
 
 type SaveVars = {
@@ -187,8 +189,10 @@ export function StructureEquipeEditor() {
                             <span className="truncate font-semibold text-sm text-foreground">
                               {rowName(row)}
                             </span>
-                            {row.email ? (
-                              <span className="truncate text-xs text-muted-foreground">{row.email}</span>
+                            {structureLoginEmail(row) ? (
+                              <span className="truncate text-xs text-muted-foreground">
+                                {structureLoginEmail(row)}
+                              </span>
                             ) : null}
                           </div>
                         </div>
@@ -210,10 +214,17 @@ export function StructureEquipeEditor() {
                           }}
                         >
                           <SelectTrigger className="h-9 w-full min-w-[180px] max-w-[260px]">
-                            <SelectValue />
+                            <SelectValue>
+                              {poleValue === '__default__'
+                                ? automaticPoleLabelForUser(row)
+                                : schoolServiceLabel(poleExplicit as SchoolService)}
+                            </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="__default__">Repli (selon rôle)</SelectItem>
+                            <SelectItem value="__default__">
+                              Automatique (déduit du rôle IAM)
+                            </SelectItem>
+                            <SelectItem value="DIRECTION">Direction de l&apos;école</SelectItem>
                             <SelectItem value="TRAINER_POOL">Équipe formateurs</SelectItem>
                             <SelectItem value="PEDAGOGICAL">Équipe pédagogique</SelectItem>
                             <SelectItem value="HR_ADMIN">RH & administration</SelectItem>

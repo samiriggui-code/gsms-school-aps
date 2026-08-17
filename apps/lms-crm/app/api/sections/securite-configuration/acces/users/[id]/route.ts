@@ -13,6 +13,7 @@ import { UserStatus } from '@/app/models/user';
 import {
   attachActiveAbsencesToUsers,
   syncUserAbsenceStatus,
+  createWorkflowEngine,
 } from '@repo/api-core';
 import { serializeUserRoleForIam } from '@/lib/iam/serialize-user-role';
 
@@ -130,6 +131,14 @@ export async function PUT(
 
     const { name, status, roleId }: UserProfileSchemaType = parsedData.data;
 
+    const previous = await prisma.user.findUnique({
+      where: { id },
+      select: { name: true, status: true, roleId: true, email: true },
+    });
+    if (!previous) {
+      return NextResponse.json({ message: 'Record not found.' }, { status: 404 });
+    }
+
     // Check if the role exists
     const roleExists = await prisma.userRole.findUnique({
       where: { id: roleId },
@@ -163,6 +172,31 @@ export async function PUT(
 
       return user;
     });
+
+    const changes: string[] = [];
+    if (previous.roleId !== roleId) changes.push('rôle');
+    if (previous.status !== status) changes.push('statut');
+    if (previous.name !== name) changes.push('nom');
+
+    if (changes.length > 0) {
+      try {
+        const workflows = createWorkflowEngine(prisma);
+        await workflows.emit(
+          'crm.security.user.updated',
+          {
+            userId: id,
+            name,
+            email: previous.email,
+            changesSummary: changes.join(', '),
+            roleId,
+            status,
+          },
+          { dedupeKey: `iam-user:${id}:${changes.join('-')}:${roleId}:${status}` },
+        );
+      } catch (e) {
+        console.error('[acces/users] workflow update', e);
+      }
+    }
 
     return NextResponse.json(
       { message: 'User profile successfully updated.' },
@@ -232,6 +266,23 @@ export async function DELETE(
 
       return user;
     });
+
+    if (userToDelete) {
+      try {
+        const workflows = createWorkflowEngine(prisma);
+        await workflows.emit(
+          'crm.security.user.deactivated',
+          {
+            userId: userToDelete.id,
+            name: userToDelete.name,
+            email: userToDelete.email,
+          },
+          { dedupeKey: `iam-user:${userToDelete.id}:deactivated` },
+        );
+      } catch (e) {
+        console.error('[acces/users] workflow deactivate', e);
+      }
+    }
 
     return NextResponse.json(
       { message: 'User successfully deleted.' },

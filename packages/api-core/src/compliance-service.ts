@@ -21,6 +21,7 @@ import {
   isEmailConfigured,
 } from '@repo/mail';
 import { CrmEventService } from './crm-events';
+import { emitWorkflowBridge } from './workflows/workflow-bridge';
 import {
   complianceCandidatureCrmUrl,
   complianceDemandesUrl,
@@ -543,6 +544,12 @@ export class ComplianceService {
       createdById: input.requestedById ?? undefined,
       dedupeKey: `doc-req-${request.id}`,
     });
+    void emitWorkflowBridge(
+      this.prisma,
+      'compliance.document.requested',
+      { summary: `${recipient} : pièce « ${item.label} » demandée.` },
+      { dedupeKey: `doc-req-${request.id}` },
+    );
 
     return { ...request, emailSent, emailError };
   }
@@ -684,6 +691,12 @@ export class ComplianceService {
       createdById: input.requestedById ?? undefined,
       dedupeKey: `dossier-notify-${dossier.id}-${requestIds[0]}`,
     });
+    void emitWorkflowBridge(
+      this.prisma,
+      'compliance.document.requested',
+      { summary: `${recipientName} : ${pieceLabels.join(', ')}` },
+      { dedupeKey: `dossier-notify-${dossier.id}-${requestIds[0]}` },
+    );
 
     return {
       requestIds,
@@ -1000,6 +1013,15 @@ export class ComplianceService {
             permissionSlugs: ['crm.securite.view'],
             dedupeKey: `expiring-${item.id}-${item.expiresAt}`,
           });
+          void emitWorkflowBridge(
+            this.prisma,
+            'compliance.document.expiring',
+            {
+              summary: `${this.displayName(dossier.user)} : ${item.label}`,
+              documentLabel: item.label,
+            },
+            { dedupeKey: `expiring-${item.id}-${item.expiresAt}` },
+          );
         }
       }
 
@@ -1014,6 +1036,15 @@ export class ComplianceService {
           permissionSlugs: ['crm.securite.view'],
           dedupeKey: `missing-${dossier.id}-${summary.completenessPct}`,
         });
+        void emitWorkflowBridge(
+          this.prisma,
+          'compliance.document.missing',
+          {
+            summary: summary.missingRequired.slice(0, 3).join(', '),
+            candidatureId: dossier.candidatureId,
+          },
+          { dedupeKey: `missing-${dossier.id}-${summary.completenessPct}` },
+        );
 
         if (options?.sendAdminDigest && isEmailConfigured()) {
           await sendComplianceDossierIncompleteAdminEmail({

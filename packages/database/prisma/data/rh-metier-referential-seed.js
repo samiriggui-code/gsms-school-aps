@@ -11,9 +11,12 @@ const {
   HR_ADMIN_STAFF_ASSIGNMENTS,
   DIRECTOR_LOGIN_EMAIL,
   SUPERADMIN_LOGIN_EMAIL,
+  SUPERADMIN_DEFAULT_AVATAR,
+  landingBioForPosition,
 } = require('./rh-metier-catalog');
 const { dedupeRhPositionsInTx } = require('./dedupe-rh-positions');
 const { findUserByAppLogin } = require('./user-email-fields');
+const { DIRECTION_TEAM_ID } = require('./direction-team-seed');
 
 function joinQualLabels(codes, qualByCode) {
   return codes
@@ -26,13 +29,22 @@ function pickAssignment(list, index) {
   return list[index % list.length];
 }
 
-async function applyCollaborateurMetier(tx, userId, pos, qualification, service) {
+async function applyCollaborateurMetier(
+  tx,
+  userId,
+  pos,
+  qualification,
+  service,
+  positionCode,
+) {
+  const landingPresentation = landingBioForPosition(positionCode, pos.label, qualification);
   await tx.user.update({
     where: { id: userId },
     data: {
       jobFunction: pos.label,
       jobPositionId: pos.id,
       qualification,
+      landingPresentation,
     },
   });
   await tx.collaborateurProfile.upsert({
@@ -51,13 +63,42 @@ async function applyCollaborateurMetier(tx, userId, pos, qualification, service)
   });
 }
 
-async function applyFormateurMetier(tx, userId, pos, qualification, specialties) {
+function formateurCertifications(specialties) {
+  const certs = [];
+  for (const s of specialties) {
+    if (/SSIAP/i.test(s)) certs.push(s.replace(/\s*&\s*évacuation/i, '').trim());
+    else if (/SST/i.test(s)) certs.push('SST');
+    else if (/TFPAPS/i.test(s)) certs.push('TFPAPS');
+    else if (/électri/i.test(s)) certs.push('Habilitations électriques');
+    else if (/hauteur/i.test(s)) certs.push('Travail en hauteur');
+    else if (s.length <= 40) certs.push(s);
+  }
+  return [...new Set(certs)].slice(0, 4);
+}
+
+async function applyFormateurMetier(
+  tx,
+  userId,
+  pos,
+  qualification,
+  specialties,
+  positionCode,
+  yearsOfExperience,
+) {
+  const landingPresentation = landingBioForPosition(
+    positionCode,
+    pos.label,
+    qualification,
+    specialties,
+  );
+  const certifications = formateurCertifications(specialties);
   await tx.user.update({
     where: { id: userId },
     data: {
       jobFunction: pos.label,
       jobPositionId: pos.id,
       qualification,
+      landingPresentation,
     },
   });
   await tx.formateurProfile.upsert({
@@ -68,42 +109,52 @@ async function applyFormateurMetier(tx, userId, pos, qualification, specialties)
       schoolInternalService: 'TRAINER_POOL',
       specialties,
       speciality: specialties[0] ?? null,
+      certifications,
+      yearsOfExperience,
     },
     update: {
       schoolInternalService: 'TRAINER_POOL',
       specialties,
       speciality: specialties[0] ?? null,
+      certifications,
+      yearsOfExperience,
     },
   });
 }
 
 async function backfillDirectionTeam(tx, posByCode, qualByCode) {
-  const directionUsers = await tx.user.findMany({
-    where: {
-      isTrashed: false,
-      status: 'ACTIVE',
-      collaborateurProfile: { schoolInternalService: 'DIRECTION' },
+  const directorRow = await findUserByAppLogin(tx, DIRECTOR_LOGIN_EMAIL);
+  const teamMembers = await tx.rhTeamMember.findMany({
+    where: { teamId: DIRECTION_TEAM_ID },
+    include: {
+      user: {
+        select: { id: true, email: true, proEmail: true, createdAt: true },
+      },
     },
-    select: { id: true, email: true, proEmail: true, createdAt: true },
   });
 
-  const directorRow = await findUserByAppLogin(tx, DIRECTOR_LOGIN_EMAIL);
-  const director = directorRow
-    ? directionUsers.find((u) => u.id === directorRow.id)
-    : directionUsers.find((u) => u.proEmail === DIRECTOR_LOGIN_EMAIL);
-  const others = directionUsers
-    .filter((u) => u.id !== director?.id)
-    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-  const ordered = director ? [director, ...others] : [...directionUsers].sort(
-    (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
-  );
+  const ordered = teamMembers
+    .map((m) => m.user)
+    .filter(Boolean)
+    .sort((a, b) => {
+      if (directorRow?.id && a.id === directorRow.id) return -1;
+      if (directorRow?.id && b.id === directorRow.id) return 1;
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
 
   for (let i = 0; i < ordered.length; i += 1) {
     const assignment = pickAssignment(DIRECTION_TEAM_ASSIGNMENTS, i);
     const pos = posByCode.get(assignment.positionCode);
     if (!pos) continue;
     const qualification = joinQualLabels(assignment.qualificationCodes, qualByCode);
-    await applyCollaborateurMetier(tx, ordered[i].id, pos, qualification, 'DIRECTION');
+    await applyCollaborateurMetier(
+      tx,
+      ordered[i].id,
+      pos,
+      qualification,
+      'DIRECTION',
+      assignment.positionCode,
+    );
   }
 
   return ordered.length;
@@ -130,7 +181,15 @@ async function backfillFormateurs(tx, posByCode, qualByCode) {
     if (!pos) continue;
     const qualification = joinQualLabels(assignment.qualificationCodes, qualByCode);
     const specialties = assignment.specialties ?? [];
-    await applyFormateurMetier(tx, f.id, pos, qualification, specialties);
+    await applyFormateurMetier(
+      tx,
+      f.id,
+      pos,
+      qualification,
+      specialties,
+      assignment.positionCode,
+      6 + (i % 14),
+    );
   }
 
   return formateurs.length;
@@ -160,7 +219,14 @@ async function backfillPoleStaff(tx, posByCode, qualByCode, service, assignments
     const pos = posByCode.get(assignment.positionCode);
     if (!pos) continue;
     const qualification = joinQualLabels(assignment.qualificationCodes, qualByCode);
-    await applyCollaborateurMetier(tx, users[i].id, pos, qualification, service);
+    await applyCollaborateurMetier(
+      tx,
+      users[i].id,
+      pos,
+      qualification,
+      service,
+      assignment.positionCode,
+    );
   }
 
   return users.length;
@@ -173,12 +239,17 @@ async function backfillSuperadmin(tx, posByCode, qualByCode) {
   const pos = posByCode.get('ADM_IT');
   if (!pos) return 0;
   const qualification = joinQualLabels(['ADM_IT', 'ADM_SCOLARITE'], qualByCode);
+  const landingPresentation = landingBioForPosition('ADM_IT', pos.label, qualification);
+  const avatar =
+    samir.avatar?.trim() || SUPERADMIN_DEFAULT_AVATAR;
   await tx.user.update({
     where: { id: samir.id },
     data: {
       jobFunction: pos.label,
       jobPositionId: pos.id,
       qualification,
+      landingPresentation,
+      avatar,
     },
   });
   await tx.collaborateurProfile.upsert({
@@ -223,7 +294,7 @@ async function backfillAdminsWithoutPole(tx, posByCode, qualByCode) {
   const qualification = joinQualLabels(['ADM_SCOLARITE', 'ADM_ACCUEIL'], qualByCode);
 
   for (const u of admins) {
-    await applyCollaborateurMetier(tx, u.id, pos, qualification, 'HR_ADMIN');
+    await applyCollaborateurMetier(tx, u.id, pos, qualification, 'HR_ADMIN', 'ADM_GENERAL');
   }
   return admins.length;
 }

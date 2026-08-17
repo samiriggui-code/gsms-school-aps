@@ -9,19 +9,54 @@ type UsePusherOptions = {
   enabled?: boolean;
 };
 
+type PusherChannel = ReturnType<Pusher['subscribe']>;
+
+/** Une seule connexion Pusher partagée (évite disconnect/reconnect à chaque hook). */
+let sharedClient: Pusher | null = null;
+const channelRefCounts = new Map<string, number>();
+
+function getSharedPusher(key: string, cluster: string): Pusher {
+  if (!sharedClient) {
+    sharedClient = new Pusher(key, {
+      cluster,
+      forceTLS: true,
+    });
+  }
+  return sharedClient;
+}
+
+function retainChannel(pusher: Pusher, channelName: string): PusherChannel {
+  const next = (channelRefCounts.get(channelName) ?? 0) + 1;
+  channelRefCounts.set(channelName, next);
+  return pusher.subscribe(channelName);
+}
+
+function releaseChannel(pusher: Pusher, channelName: string) {
+  const next = (channelRefCounts.get(channelName) ?? 1) - 1;
+  if (next <= 0) {
+    channelRefCounts.delete(channelName);
+    pusher.unsubscribe(channelName);
+  } else {
+    channelRefCounts.set(channelName, next);
+  }
+}
+
+export function isPusherClientConfigured(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_PUSHER_KEY?.trim());
+}
+
 export function usePusher(
   userId?: string,
-  onEvent?: (data: any) => void,
+  onEvent?: (data: unknown) => void,
   options?: UsePusherOptions,
 ) {
-  const pusherRef = useRef<Pusher | null>(null);
   const callbackRef = useRef(onEvent);
   const channelName =
     options?.channelName ?? (userId ? `user-${userId}` : undefined);
   const eventName = options?.eventName ?? 'new-notification';
   const enabled = options?.enabled ?? Boolean(channelName);
-  const key = process.env.NEXT_PUBLIC_PUSHER_KEY;
-  const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER || 'eu';
+  const key = process.env.NEXT_PUBLIC_PUSHER_KEY?.trim();
+  const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER?.trim() || 'eu';
 
   useEffect(() => {
     callbackRef.current = onEvent;
@@ -32,32 +67,21 @@ export function usePusher(
       return;
     }
 
-    if (!pusherRef.current) {
-      pusherRef.current = new Pusher(key, {
-        cluster,
-        forceTLS: true,
-      });
-    }
+    const pusher = getSharedPusher(key, cluster);
+    const channel = retainChannel(pusher, channelName);
 
-    const pusher = pusherRef.current;
-    const channel = pusher.subscribe(channelName);
-
-    const handleEvent = (data: any) => {
+    const handleEvent = (data: unknown) => {
       callbackRef.current?.(data);
     };
 
     channel.bind(eventName, handleEvent);
-
-    // Log utile en dev si le channel refuse l'abonnement.
-    channel.bind('pusher:subscription_error', (error: any) => {
+    channel.bind('pusher:subscription_error', (error: unknown) => {
       console.error('Pusher subscription error:', error);
     });
 
     return () => {
       channel.unbind(eventName, handleEvent);
-      pusher.unsubscribe(channelName);
-      pusher.disconnect();
-      pusherRef.current = null;
+      releaseChannel(pusher, channelName);
     };
   }, [enabled, channelName, eventName, key, cluster]);
 
@@ -65,8 +89,7 @@ export function usePusher(
     if (!process.env.NEXT_PUBLIC_PUSHER_KEY && process.env.NODE_ENV === 'development') {
       console.warn('NEXT_PUBLIC_PUSHER_KEY manquant: realtime desactive.');
     }
-    return;
   }, []);
 
-  return pusherRef.current;
+  return sharedClient;
 }

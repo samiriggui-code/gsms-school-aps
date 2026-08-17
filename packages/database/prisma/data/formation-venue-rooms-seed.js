@@ -73,6 +73,33 @@ const FORMATION_VENUE_ROOMS = [
     sortOrder: 5,
     imageUrl: ROOM_IMAGE_URLS[4] ?? null,
   },
+  {
+    id: 'c1a00006-0000-4000-8000-000000000006',
+    name: 'PCS Orion',
+    shortCode: 'ORION',
+    capacity: 12,
+    floorLabel: 'Rez-de-chaussée — plateau examen',
+    sortOrder: 6,
+    imageUrl: ROOM_IMAGE_URLS[0] ?? null,
+  },
+  {
+    id: 'c1a00007-0000-4000-8000-000000000007',
+    name: 'Plateau Phoenix',
+    shortCode: 'PHOENIX',
+    capacity: 14,
+    floorLabel: 'Niveau -1 — incendie SSIAP',
+    sortOrder: 7,
+    imageUrl: ROOM_IMAGE_URLS[2] ?? null,
+  },
+  {
+    id: 'c1a00008-0000-4000-8000-000000000008',
+    name: 'Parcours Atlas',
+    shortCode: 'ATLAS',
+    capacity: 8,
+    floorLabel: 'Couloirs / parking pédagogique',
+    sortOrder: 8,
+    imageUrl: ROOM_IMAGE_URLS[3] ?? null,
+  },
 ];
 
 module.exports = { FORMATION_VENUE_ROOMS };

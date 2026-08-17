@@ -11,6 +11,11 @@ const {
   DIRECTION_ORG_UNIT_ID,
   DIRECTION_TEAM_ID,
 } = require('./direction-team-seed');
+const {
+  seedSchoolSites,
+  dispatchStaffToSchoolSites,
+  SCHOOL_SITE_CAMPUS,
+} = require('./school-sites-seed');
 
 
 
@@ -140,6 +145,8 @@ const STRUCTURE_TEAM_DEFS = [
 
     profileKind: 'formateur',
 
+    siteCode: 'PLATEAU-INC',
+
   },
 
   {
@@ -166,6 +173,8 @@ const STRUCTURE_TEAM_DEFS = [
 
     profileKind: 'collaborateur',
 
+    siteCode: SCHOOL_SITE_CAMPUS,
+
   },
 
   {
@@ -191,6 +200,8 @@ const STRUCTURE_TEAM_DEFS = [
     profileService: 'HR_ADMIN',
 
     profileKind: 'collaborateur',
+
+    siteCode: SCHOOL_SITE_CAMPUS,
 
   },
 
@@ -358,7 +369,8 @@ async function purgeNonCanonicalPermanentTeams(tx) {
 }
 
 async function seedRhStructureTeams(tx) {
-  await seedDirectionTeam(tx);
+  const siteByCode = await seedSchoolSites(tx);
+  await seedDirectionTeam(tx, siteByCode);
   await purgeNonCanonicalPermanentTeams(tx);
   await hydrateStaffUserDisplay(tx);
 
@@ -378,7 +390,9 @@ async function seedRhStructureTeams(tx) {
 
     const leaderId = members[0]?.id ?? null;
 
-
+    const siteCode = def.siteCode ?? SCHOOL_SITE_CAMPUS;
+    const siteId = siteByCode.get(siteCode) ?? null;
+    const sector = siteId ? 'CAMPUS' : 'HEADQUARTERS';
 
     await tx.rhOrgUnit.upsert({
 
@@ -428,7 +442,9 @@ async function seedRhStructureTeams(tx) {
 
         type: def.teamType,
 
-        sector: 'HEADQUARTERS',
+        sector,
+
+        siteId,
 
         image: def.teamImage,
 
@@ -450,7 +466,9 @@ async function seedRhStructureTeams(tx) {
 
         type: def.teamType,
 
-        sector: 'HEADQUARTERS',
+        sector,
+
+        siteId,
 
         image: def.teamImage,
 
@@ -484,7 +502,7 @@ async function seedRhStructureTeams(tx) {
 
   );
 
-
+  await dispatchStaffToSchoolSites(tx, siteByCode);
 
   const { seedLandingTeamCatalog } = require('./landing-team-catalog-seed');
 

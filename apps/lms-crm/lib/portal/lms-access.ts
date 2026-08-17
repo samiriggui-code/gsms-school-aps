@@ -1,18 +1,16 @@
 import type { CandidatureStatus } from '@repo/database';
-import type { LmsAccessTier } from './lms-access-shared';
+import {
+  getLmsAccessTier,
+  type LmsAccessTier,
+} from './lms-access-shared';
 
 export type { LmsAccessTier } from './lms-access-shared';
-export { lmsAccessLabel } from './lms-access-shared';
-
-const FULL_STATUSES: CandidatureStatus[] = ['VALIDATED', 'COMPLETED'];
-
-const PRE_CNAPS_STATUSES: CandidatureStatus[] = [
-  'SUBMITTED',
-  'MISSING_DOCUMENTS',
-  'VALIDATION_PENDING',
-  'PENDING_CNAPS',
-  'CNAPS_APPROVED',
-];
+export {
+  getLmsAccessTier,
+  lmsAccessLabel,
+  lmsAccessShortLabel,
+  lmsAccessBadgeVariant,
+} from './lms-access-shared';
 
 export type LmsLearnerAccess = {
   tier: LmsAccessTier;
@@ -20,11 +18,10 @@ export type LmsLearnerAccess = {
   sessionStartsAt: Date | null;
 };
 
-export function getLmsAccessTier(status: CandidatureStatus | null | undefined): LmsAccessTier {
-  if (!status) return 'none';
-  if (FULL_STATUSES.includes(status)) return 'full';
-  if (PRE_CNAPS_STATUSES.includes(status)) return 'pre_cnaps';
-  return 'none';
+export function getLmsAccessTierFromCandidature(
+  status: CandidatureStatus | null | undefined,
+): LmsAccessTier {
+  return getLmsAccessTier(status ?? null);
 }
 
 export function resolveSessionStartsAt(

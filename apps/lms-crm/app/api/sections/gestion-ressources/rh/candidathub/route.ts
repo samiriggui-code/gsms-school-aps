@@ -7,6 +7,7 @@ import {
 import { CandidatureStatus, Prisma } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { fail } from '@/app/api/_shared/http/response';
+import { getLmsAccessTier } from '@/lib/portal/lms-access';
 import {
   candidatHubLifecycleWhere,
   HUB_DOSSIER_LABEL_FR,
@@ -16,8 +17,10 @@ const hubSelect = {
   id: true,
   name: true,
   email: true,
+  proEmail: true,
   avatar: true,
   status: true,
+  lastSignInAt: true,
   updatedAt: true,
   role: { select: { slug: true, name: true } },
   candidatures: {
@@ -78,10 +81,14 @@ function mapHubListRow(u: HubUserRow) {
     userId: u.id,
     name: u.name,
     email: u.email,
+    personalEmail: u.email,
+    proEmail: u.proEmail,
     avatar: u.avatar,
     userStatus: u.status,
     roleSlug: u.role.slug,
     roleName: u.role.name,
+    lastSignInAt: u.lastSignInAt?.toISOString() ?? null,
+    lmsAccessTier: getLmsAccessTier(dossierStatus),
     updatedAt: u.updatedAt.toISOString(),
     dossierStatus,
     dossierLabel,
@@ -114,6 +121,7 @@ const { searchParams } = new URL(request.url);
           OR: [
             { name: { contains: query, mode: 'insensitive' } },
             { email: { contains: query, mode: 'insensitive' } },
+            { proEmail: { contains: query, mode: 'insensitive' } },
           ],
         }
       : {}),

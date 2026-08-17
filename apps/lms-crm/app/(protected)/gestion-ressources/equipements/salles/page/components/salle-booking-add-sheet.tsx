@@ -92,6 +92,12 @@ export function SalleBookingAddSheet({
           <SheetTitle>Réservation ponctuelle de salle</SheetTitle>
         </SheetHeader>
         <SheetBody className="space-y-4 py-4">
+          <div className="rounded-lg border border-border/80 bg-muted/30 p-3 text-xs text-muted-foreground leading-relaxed">
+            <strong className="text-foreground">Réunion / événement ponctuel</strong> : la salle fournit son
+            mobilier fixe (chaises, tables, VP). Réservez uniquement du matériel <strong>mobile</strong> si besoin
+            (micros, caméras, kits déplacement) — la réservation d&apos;équipement sur ce type d&apos;événement
+            sera disponible dans une prochaine itération.
+          </div>
           <div className="space-y-2">
             <Label>Salle</Label>
             <Select value={venueRoomId} onValueChange={setVenueRoomId}>

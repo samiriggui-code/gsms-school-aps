@@ -6,7 +6,12 @@ import { NotificationService, createWorkflowEngine } from '@repo/api-core';
 import { FinanceDevisStatus, Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { totalsFromLines, type DevisLineInput } from '@/lib/finance-devis-totals';
-import { clientSnapshotFieldsFromLead, companyFromLeadNotes } from '@/lib/landing-lead-notes';
+import { createDraftDevisFromLead } from '@/lib/finance/create-draft-devis-from-lead';
+import {
+  expireOverdueSentDevis,
+  loadDevisWorkflowSettings,
+  validUntilFromDays,
+} from '@/lib/finance/devis-workflow-settings-server';
 
 async function emitDevisCreatedWorkflow(created: {
   id: string;
@@ -117,6 +122,8 @@ export async function GET(request: NextRequest) {
   };
 
   try {
+    await expireOverdueSentDevis(prisma);
+
     const [total, pipelineAgg, grouped, rows] = await Promise.all([
       prisma.financeDevis.count({ where }),
       prisma.financeDevis.aggregate({
@@ -177,6 +184,17 @@ export async function GET(request: NextRequest) {
       pipelineTtc: decimalNum(pipelineAgg._sum.totalTtc),
     };
 
+    const devisIds = rows.map((r) => r.id);
+    const msgGrouped =
+      devisIds.length > 0
+        ? await prisma.financeDevisPlaquetteMessage.groupBy({
+            by: ['devisId'],
+            where: { devisId: { in: devisIds } },
+            _count: { _all: true },
+          })
+        : [];
+    const msgCountByDevis = Object.fromEntries(msgGrouped.map((g) => [g.devisId, g._count._all]));
+
     const items = rows.map((r) => ({
       id: r.id,
       referenceCode: r.referenceCode,
@@ -195,6 +213,7 @@ export async function GET(request: NextRequest) {
       clientCompany: companyFromClientSnapshot(r.clientSnapshot),
       lead: r.lead,
       formation: r.formation,
+      plaquetteMessageCount: msgCountByDevis[r.id] ?? 0,
     }));
 
     return ok({
@@ -217,10 +236,8 @@ type PostBody = {
   forceNew?: boolean;
 };
 
-function defaultValidUntil(): Date {
-  const d = new Date();
-  d.setDate(d.getDate() + 45);
-  return d;
+function defaultValidUntil(validityDays: number): Date {
+  return validUntilFromDays(validityDays);
 }
 
 function decimalToNumber(d: unknown): number {
@@ -288,163 +305,81 @@ export async function POST(request: NextRequest) {
   const leadId = (body.leadId ?? '').trim();
 
   try {
+    const workflowSettings = await loadDevisWorkflowSettings(prisma);
+
+    if (leadId) {
+      const result = await createDraftDevisFromLead(prisma, leadId, {
+        title: body.title,
+        forceNew: body.forceNew === true,
+        validityDays: workflowSettings.defaultValidityDays,
+      });
+      if (!result) return fail('Lead introuvable.', 404);
+
+      if (result.created) {
+        await notifyDevisCreated(result);
+        await emitDevisCreatedWorkflow({ ...result, leadId });
+      }
+      return ok(result, result.reusedDraft ? 200 : 201);
+    }
+
     const ref = await allocateReferenceCode();
+    const title = (body.title ?? '').trim() || 'Nouveau devis';
+    let formationId: string | null = null;
+    const formationIdRaw = (body.formationId ?? '').trim();
+    let formationForLines: {
+      name: string;
+      priceFrom: unknown;
+      currency: string;
+      catalogOffer: { catalogStatus: string; priceFromOverride: unknown } | null;
+    } | null = null;
 
-    if (!leadId) {
-      const title = (body.title ?? '').trim() || 'Nouveau devis';
-      let formationId: string | null = null;
-      const formationIdRaw = (body.formationId ?? '').trim();
-      let formationForLines: {
-        name: string;
-        priceFrom: unknown;
-        currency: string;
-        catalogOffer: { catalogStatus: string; priceFromOverride: unknown } | null;
-      } | null = null;
-
-      if (formationIdRaw) {
-        const formation = await prisma.formation.findFirst({
-          where: { id: formationIdRaw, status: 'ACTIVE' },
-          select: {
-            id: true,
-            name: true,
-            priceFrom: true,
-            currency: true,
-            catalogOffer: { select: { catalogStatus: true, priceFromOverride: true } },
-          },
-        });
-        if (formation) {
-          formationId = formation.id;
-          formationForLines = formation;
-        }
-      }
-
-      const lines = initialLinesForFormation(formationForLines);
-      const lineTotals = totalsFromLines(lines);
-      const currency =
-        formationForLines?.currency?.trim().length === 3
-          ? formationForLines.currency.trim().toUpperCase()
-          : 'EUR';
-
-      const created = await prisma.financeDevis.create({
-        data: {
-          referenceCode: ref,
-          title,
-          leadId: null,
-          formationId,
-          candidatureId: null,
-          formationSessionId: null,
-          clientSnapshot: {},
-          lines: lines as unknown as Prisma.InputJsonValue,
-          subtotalHt: lineTotals.subtotalHt,
-          vatTotal: lineTotals.vatTotal,
-          totalTtc: lineTotals.totalTtc,
-          currency,
-          notes: null,
-          validUntil: defaultValidUntil(),
-          status: FinanceDevisStatus.DRAFT,
+    if (formationIdRaw) {
+      const formation = await prisma.formation.findFirst({
+        where: { id: formationIdRaw, status: 'ACTIVE' },
+        select: {
+          id: true,
+          name: true,
+          priceFrom: true,
+          currency: true,
+          catalogOffer: { select: { catalogStatus: true, priceFromOverride: true } },
         },
-        select: { id: true, referenceCode: true, title: true },
       });
-
-      await notifyDevisCreated(created);
-      await emitDevisCreatedWorkflow(created);
-      return ok(created, 201);
-    }
-
-    const lead = await prisma.lead.findUnique({
-      where: { id: leadId },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        phone: true,
-        formationId: true,
-        notes: true,
-        formation: {
-          select: {
-            name: true,
-            priceFrom: true,
-            currency: true,
-            catalogOffer: { select: { catalogStatus: true, priceFromOverride: true } },
-          },
-        },
-      },
-    });
-    if (!lead) return fail('Lead introuvable.', 404);
-
-    const candidature = await prisma.candidature.findUnique({
-      where: { leadId: lead.id },
-      select: { id: true, interestedSessionId: true },
-    });
-
-    const orgLabel =
-      companyFromLeadNotes(lead.notes) ?? `${lead.firstName} ${lead.lastName}`.trim();
-    const title =
-      (body.title ?? '').trim() ||
-      (lead.formation?.name
-        ? `Devis ${lead.formation.name} — ${orgLabel}`.trim()
-        : `Proposition commerciale — ${orgLabel}`.trim());
-
-    const clientSnapshot = clientSnapshotFieldsFromLead(lead) as Prisma.InputJsonValue;
-
-    const forceNew = body.forceNew === true;
-
-    if (!forceNew) {
-      const existingDraft = await prisma.financeDevis.findFirst({
-        where: { leadId: lead.id, status: FinanceDevisStatus.DRAFT },
-        orderBy: { updatedAt: 'desc' },
-        select: { id: true, referenceCode: true, title: true },
-      });
-      if (existingDraft) {
-        await prisma.financeDevis.update({
-          where: { id: existingDraft.id },
-          data: {
-            title,
-            clientSnapshot,
-            notes: lead.notes,
-            formationId: lead.formationId,
-            candidatureId: candidature?.id ?? null,
-            formationSessionId: candidature?.interestedSessionId ?? null,
-          },
-        });
-        return ok(
-          { id: existingDraft.id, referenceCode: existingDraft.referenceCode, title, reusedDraft: true },
-          200,
-        );
+      if (formation) {
+        formationId = formation.id;
+        formationForLines = formation;
       }
     }
 
-    const lines = initialLinesForFormation(lead.formation);
+    const lines = initialLinesForFormation(formationForLines);
     const lineTotals = totalsFromLines(lines);
     const currency =
-      lead.formation?.currency?.trim().length === 3
-        ? lead.formation.currency.trim().toUpperCase()
+      formationForLines?.currency?.trim().length === 3
+        ? formationForLines.currency.trim().toUpperCase()
         : 'EUR';
 
     const created = await prisma.financeDevis.create({
       data: {
         referenceCode: ref,
         title,
-        leadId: lead.id,
-        formationId: lead.formationId,
-        candidatureId: candidature?.id ?? null,
-        formationSessionId: candidature?.interestedSessionId ?? null,
-        clientSnapshot,
+        leadId: null,
+        formationId,
+        candidatureId: null,
+        formationSessionId: null,
+        clientSnapshot: {},
         lines: lines as unknown as Prisma.InputJsonValue,
         subtotalHt: lineTotals.subtotalHt,
         vatTotal: lineTotals.vatTotal,
         totalTtc: lineTotals.totalTtc,
         currency,
-        notes: lead.notes,
-        validUntil: defaultValidUntil(),
+        notes: null,
+        validUntil: defaultValidUntil(workflowSettings.defaultValidityDays),
         status: FinanceDevisStatus.DRAFT,
       },
       select: { id: true, referenceCode: true, title: true },
     });
 
     await notifyDevisCreated(created);
-    await emitDevisCreatedWorkflow({ ...created, leadId: lead.id });
+    await emitDevisCreatedWorkflow(created);
     return ok(created, 201);
   } catch (e) {
     console.error('[finance-devis POST]', e);

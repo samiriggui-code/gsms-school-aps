@@ -42,10 +42,6 @@ export const MODULE_WORKSPACE_PAGE_META: Record<ModuleWorkspaceViewKey, ModuleWo
     title: 'Tickets',
     description: 'File support utilisateurs (tickets CRM).',
   },
-  'support-base-aide': {
-    title: 'Catalogue formations (aide)',
-    description: 'Fiches catalogue actives — documentation complète dans le guide école (/docs).',
-  },
   'support-incidents': {
     title: 'Incidents',
     description: 'Matériel hors service et erreurs système à traiter.',

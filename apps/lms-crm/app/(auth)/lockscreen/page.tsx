@@ -1,12 +1,17 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { BrandedLayout } from '../layouts/branded';
 
-const LockscreenPage = dynamic(() => import('./lockscreen-page-with-layout'), {
+const LockscreenPageClient = dynamic(() => import('./lockscreen-page-client'), {
   ssr: false,
   loading: () => <div className="min-h-screen w-full" aria-busy="true" />,
 });
 
 export default function Page() {
-  return <LockscreenPage />;
+  return (
+    <BrandedLayout>
+      <LockscreenPageClient />
+    </BrandedLayout>
+  );
 }

@@ -25,6 +25,9 @@ import {
   TOPBAR_SHEET_ROW_PADDING,
   TOPBAR_SHEET_SCROLL_CLASS,
   TOPBAR_SHEET_THREAD_CLASS,
+  TOPBAR_CHAT_SPLIT_CLASS,
+  TOPBAR_CHAT_LIST_PANE_CLASS,
+  TOPBAR_CHAT_THREAD_PANE_CLASS,
 } from '@/lib/topbar-sheet-layout';
 import {
   Avatar,
@@ -55,7 +58,7 @@ import {
 } from '@/components/ui/dialog';
 import { getDateFnsLocale } from '@/i18n/date-locale';
 import { useTranslation } from '@/hooks/useTranslation';
-import { usePusher } from '@/hooks/use-pusher';
+import { usePusher, isPusherClientConfigured } from '@/hooks/use-pusher';
 import { useLanguage } from '@/providers/i18n-provider';
 import {
   createChatConversation,
@@ -519,7 +522,7 @@ function MessageThread({
   const { data, isLoading } = useQuery({
     queryKey: ['topbar-chat-messages', conversationId],
     queryFn: () => fetchChatMessages(conversationId),
-    refetchInterval: 15000,
+    refetchInterval: isPusherClientConfigured() ? 60_000 : 15_000,
   });
 
   usePusher(
@@ -796,7 +799,7 @@ export function ChatSheet({
     queryKey: ['topbar-chat-conversations'],
     queryFn: fetchChatConversations,
     enabled: open,
-    refetchInterval: open ? 20000 : false,
+    refetchInterval: open ? (isPusherClientConfigured() ? 60_000 : 20_000) : false,
   });
 
   const conversations = data?.conversations ?? [];
@@ -864,10 +867,6 @@ export function ChatSheet({
           ) : null}
         </SheetHeader>
 
-        {open && !activeConversation && !showNew ? (
-          <ChatPendingInvitations enabled={open} onAccepted={(id) => setActiveId(id)} />
-        ) : null}
-
         {showNew ? (
           <SheetBody className={cn(TOPBAR_SHEET_BODY_CLASS, 'overflow-y-auto')}>
             <NewConversationForm
@@ -878,40 +877,67 @@ export function ChatSheet({
               onCancel={() => setShowNew(false)}
             />
           </SheetBody>
-        ) : !activeConversation ? (
-          <SheetBody className={TOPBAR_SHEET_BODY_CLASS}>
-            {isLoading ? (
-              <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
-                <LoaderCircleIcon className="size-4 animate-spin" />
-                {t('topbar.chat.loading')}
-              </div>
-            ) : conversations.length === 0 ? (
-              <div className="space-y-4 px-3 py-10 text-center text-sm text-muted-foreground sm:px-4">
-                <p>
-                  {t('topbar.chat.emptyConversations')}
-                  <br />
-                  <span className="text-xs">{t('topbar.chat.emptyConversationsHint')}</span>
-                </p>
-                <Button variant="mono" size="sm" onClick={() => setShowNew(true)}>
-                  <MessageSquarePlus className="size-4 me-1" />
-                  {t('topbar.chat.newConversation')}
-                </Button>
+        ) : (
+          <div className={TOPBAR_CHAT_SPLIT_CLASS}>
+            {/* Liste — toujours visible en md+, stack mobile si pas de thread */}
+            <div
+              className={cn(
+                TOPBAR_CHAT_LIST_PANE_CLASS,
+                activeConversation || showNew ? 'hidden md:flex' : 'flex',
+              )}
+            >
+              {open ? (
+                <ChatPendingInvitations enabled={open} onAccepted={(id) => setActiveId(id)} />
+              ) : null}
+              <SheetBody className={TOPBAR_SHEET_BODY_CLASS}>
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground">
+                    <LoaderCircleIcon className="size-4 animate-spin" />
+                    {t('topbar.chat.loading')}
+                  </div>
+                ) : conversations.length === 0 ? (
+                  <div className="space-y-4 px-3 py-10 text-center text-sm text-muted-foreground sm:px-4">
+                    <p>
+                      {t('topbar.chat.emptyConversations')}
+                      <br />
+                      <span className="text-xs">{t('topbar.chat.emptyConversationsHint')}</span>
+                    </p>
+                    <Button variant="mono" size="sm" onClick={() => setShowNew(true)}>
+                      <MessageSquarePlus className="size-4 me-1" />
+                      {t('topbar.chat.newConversation')}
+                    </Button>
+                  </div>
+                ) : (
+                  <ScrollArea className={TOPBAR_SHEET_SCROLL_CLASS}>
+                    <ConversationList
+                      conversations={conversations}
+                      activeId={activeId}
+                      onSelect={setActiveId}
+                    />
+                  </ScrollArea>
+                )}
+              </SheetBody>
+            </div>
+
+            {/* Thread — plein écran mobile, panneau droit desktop */}
+            {activeConversation ? (
+              <div className={TOPBAR_CHAT_THREAD_PANE_CLASS}>
+                <MessageThread
+                  conversation={activeConversation}
+                  currentUserAvatar={userAvatar}
+                />
               </div>
             ) : (
-              <ScrollArea className={TOPBAR_SHEET_SCROLL_CLASS}>
-                <ConversationList
-                  conversations={conversations}
-                  activeId={activeId}
-                  onSelect={setActiveId}
-                />
-              </ScrollArea>
+              <div
+                className={cn(
+                  TOPBAR_CHAT_THREAD_PANE_CLASS,
+                  'hidden items-center justify-center p-6 text-center text-sm text-muted-foreground md:flex',
+                )}
+              >
+                {t('topbar.chat.emptyConversationsHint')}
+              </div>
             )}
-          </SheetBody>
-        ) : (
-          <MessageThread
-            conversation={activeConversation}
-            currentUserAvatar={userAvatar}
-          />
+          </div>
         )}
       </SheetContent>
     </Sheet>

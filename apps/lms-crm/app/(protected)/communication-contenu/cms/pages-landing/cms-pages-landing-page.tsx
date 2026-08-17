@@ -48,8 +48,8 @@ const I18N_SECTION_HINT =
 const SECTION_EDIT_GUIDE: SectionEditGuide[] = [
   {
     type: 'hero',
-    editPath: '/gestion-ressources/compagnie/profil',
-    editLabel: 'Profil compagnie',
+    editPath: '/securite-configuration/parametres/settings#settings_etablissement',
+    editLabel: 'Réglages établissement',
     hint: 'Logo, nom de l’école et identité visuelle.',
   },
   {
@@ -99,8 +99,8 @@ const SECTION_EDIT_GUIDE: SectionEditGuide[] = [
   {
     type: 'contact',
     anchor: '#contact',
-    editPath: '/gestion-ressources/compagnie/profil',
-    editLabel: 'Profil compagnie',
+    editPath: '/securite-configuration/parametres/settings#settings_etablissement',
+    editLabel: 'Réglages établissement',
     hint: 'Coordonnées, adresse et formulaire contact.',
   },
 ];

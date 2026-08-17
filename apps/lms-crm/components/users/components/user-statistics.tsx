@@ -1,68 +1,61 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { TrendingUp, Clock, ShieldCheck, Activity } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { TrendingUp, Clock, ShieldCheck, Activity } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
-export function UserStatistics({ user }: { user: any }) {
+export function UserStatistics({ user }: { user: { id?: string } }) {
+  void user;
   const items = [
-    { 
-      total: '94%', 
+    {
+      total: '94%',
       label: 'Score Moyen',
       badgeLabel: 'Excellence',
-      badgeColor: 'success',
+      badgeColor: 'success' as const,
       text: 'Performance globale',
       icon: <ShieldCheck className="size-3" />,
-    }, 
-    { 
-      total: '12', 
+    },
+    {
+      total: '12',
       label: 'Certifications',
       badgeLabel: '+2',
-      badgeColor: 'primary',
+      badgeColor: 'primary' as const,
       text: 'Ce trimestre',
       icon: <TrendingUp className="size-3" />,
-    }, 
-    { 
-      total: '28', 
+    },
+    {
+      total: '28',
       label: 'Cours terminés',
       badgeLabel: 'Active',
-      badgeColor: 'success',
+      badgeColor: 'success' as const,
       text: 'Sur 32 assignés',
       icon: <Activity className="size-3" />,
-    }, 
-    { 
-      total: '458h', 
+    },
+    {
+      total: '458h',
       label: 'Temps de formation',
       badgeLabel: '12h',
-      badgeColor: 'primary',
+      badgeColor: 'primary' as const,
       text: 'Moyenne mensuelle',
       icon: <Clock className="size-3" />,
-    }
+    },
   ];
 
   return (
-    <Card className="rounded-md mb-5 bg-accent/70 p-1">
-      <CardContent className="rounded-md p-0 bg-background border border-border">
-        <div className="grid md:grid-cols-4 lg:gap-5">
-          {items.map((item, index) => ( 
-            <div key={index} className={`flex flex-col justify-between gap-5 p-4.5 pb-3.5 ${index > 0 ? 'md:border-s border-border' : ''}`}>
+    <Card className="mb-5 rounded-md bg-accent/70 p-1">
+      <CardContent className="rounded-md border border-border bg-background p-0">
+        <div className="divide-y divide-border lg:grid lg:grid-cols-4 lg:divide-x lg:divide-y-0">
+          {items.map((item) => (
+            <div key={item.label} className="flex flex-col justify-between gap-4 p-4 sm:gap-5 sm:p-4.5">
               <div className="flex flex-col gap-0.5">
-                <span className="text-xl lg:text-2xl font-semibold text-foreground">
-                  {item.total}
-                </span>
-                <span className="text-xs font-normal text-secondary-foreground/70">
-                  {item.label}
-                </span>
+                <span className="text-xl font-semibold text-foreground sm:text-2xl">{item.total}</span>
+                <span className="text-xs font-normal text-secondary-foreground/70">{item.label}</span>
               </div>
-
-              <div className="flex items-center flex-wrap gap-1.5">
-                <Badge variant={item.badgeColor as any} size="sm" appearance="light" className="w-fit">
-                {item.icon} {item.badgeLabel}
+              <div className="flex flex-col items-start gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-1.5">
+                <Badge variant={item.badgeColor} size="sm" appearance="light" className="w-fit">
+                  {item.icon} {item.badgeLabel}
                 </Badge>
-                <span className="text-xs font-normal text-secondary-foreground">
-                  {item.text}
-                </span>
+                <span className="text-xs font-normal text-secondary-foreground">{item.text}</span>
               </div>
             </div>
           ))}

@@ -1,7 +1,17 @@
 'use client';
 
+import {
+  ReportCallout,
+  ReportDataTable,
+  ReportKpiGrid,
+  ReportPageBreak,
+  ReportSection,
+  ReportStatusPill,
+} from '@/components/reports/report-ui-primitives';
+
 export type FinanceMonthlyReportData = {
   summary: string;
+  methodology?: string;
   kpis: { label: string; value: string | number; subtitle: string }[];
   overdueRows: {
     reference: string;
@@ -10,59 +20,79 @@ export type FinanceMonthlyReportData = {
     daysOverdue: number;
     candidate: string;
   }[];
+  pipelineTable?: {
+    id: string;
+    reference: string;
+    title: string;
+    status: string;
+    amount: string;
+    lead: string;
+    updated: string;
+  }[];
 };
 
 export function FinanceMonthlySummaryReport({ data }: { data: FinanceMonthlyReportData }) {
   return (
-    <div className="space-y-8">
-      <p className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">{data.summary}</p>
+    <div className="space-y-10">
+      <ReportCallout title="Synthèse financière mensuelle" tone="info">
+        {data.summary}
+        {data.methodology ? <p className="mt-2">{data.methodology}</p> : null}
+      </ReportCallout>
 
-      <section>
-        <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">Indicateurs finance</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {data.kpis.map((kpi) => (
-            <div key={kpi.label} className="rounded-lg border border-slate-200 bg-white p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{kpi.label}</p>
-              <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">{kpi.value}</p>
-              <p className="text-xs text-slate-500">{kpi.subtitle}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <ReportSection title="Indicateurs financiers">
+        <ReportKpiGrid items={data.kpis} columns={4} />
+      </ReportSection>
 
-      <section>
-        <h3 className="mb-3 text-sm font-semibold text-slate-800">Impayés prioritaires</h3>
-        <table className="w-full border-collapse text-xs">
-          <thead>
-            <tr className="border-b border-slate-200 text-left text-slate-500">
-              <th className="py-2 pe-2">Référence</th>
-              <th className="py-2 pe-2">Titre</th>
-              <th className="py-2 pe-2">Montant dû</th>
-              <th className="py-2 pe-2">Retard (j)</th>
-              <th className="py-2">Candidat</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.overdueRows.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="py-4 text-slate-500">
-                  Aucun impayé enregistré.
-                </td>
-              </tr>
-            ) : (
-              data.overdueRows.map((row) => (
-                <tr key={row.reference} className="border-b border-slate-100">
-                  <td className="py-2 pe-2 font-mono text-[11px]">{row.reference}</td>
-                  <td className="py-2 pe-2">{row.title}</td>
-                  <td className="py-2 pe-2 font-medium">{row.amount}</td>
-                  <td className="py-2 pe-2">{row.daysOverdue}</td>
-                  <td className="py-2">{row.candidate}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </section>
+      <ReportSection
+        title="Tableau des impayés"
+        description="Devis avec solde restant dû — base des relances et justificatifs financeurs."
+        breakable
+      >
+        <ReportDataTable
+          rows={data.overdueRows.map((r) => ({ ...r, id: r.reference }))}
+          columns={[
+            { key: 'reference', header: 'Référence', cell: (r) => <span className="font-mono text-[10px]">{r.reference}</span> },
+            { key: 'title', header: 'Objet', cell: (r) => r.title },
+            { key: 'candidate', header: 'Client / stagiaire', cell: (r) => r.candidate },
+            { key: 'amount', header: 'Montant dû', align: 'right', cell: (r) => r.amount },
+            {
+              key: 'daysOverdue',
+              header: 'Retard (j)',
+              align: 'center',
+              cell: (r) => (
+                <ReportStatusPill
+                  label={String(r.daysOverdue)}
+                  tone={r.daysOverdue >= 15 ? 'alert' : r.daysOverdue >= 7 ? 'review' : 'ok'}
+                />
+              ),
+            },
+          ]}
+        />
+      </ReportSection>
+
+      {data.pipelineTable?.length ? (
+        <>
+          <ReportPageBreak />
+          <ReportSection
+            title="Annexe — Pipeline devis"
+            description="État commercial du mois (émission, acceptation, facturation)."
+            breakable
+          >
+            <ReportDataTable
+              dense
+              rows={data.pipelineTable}
+              columns={[
+                { key: 'reference', header: 'Réf.', cell: (r) => <span className="font-mono text-[10px]">{r.reference}</span> },
+                { key: 'title', header: 'Titre', cell: (r) => r.title },
+                { key: 'status', header: 'Statut', cell: (r) => r.status },
+                { key: 'amount', header: 'Montant TTC', align: 'right', cell: (r) => r.amount },
+                { key: 'lead', header: 'Contact', cell: (r) => r.lead },
+                { key: 'updated', header: 'MAJ', cell: (r) => r.updated },
+              ]}
+            />
+          </ReportSection>
+        </>
+      ) : null}
     </div>
   );
 }

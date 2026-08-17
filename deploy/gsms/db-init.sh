@@ -1,5 +1,5 @@
 #!/bin/bash
-# Init Postgres : migrate deploy + seed (monorepo packages/database)
+# Init Postgres : migrate deploy + db push + seed (monorepo pnpm)
 set -euo pipefail
 
 APP_ROOT="${APP_ROOT:-/opt/gsms-school}"
@@ -26,42 +26,45 @@ if [[ "${RESET_DB:-0}" == "1" ]]; then
     'DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO lms; GRANT ALL ON SCHEMA public TO public;'
 fi
 
-echo "==> prisma migrate deploy"
-docker run --rm \
-  --network gsms \
-  -v "$APP_ROOT/packages/database:/work" \
-  -w /work \
-  -e DATABASE_URL \
-  node:22-bookworm-slim bash -lc '
-    apt-get update -qq && apt-get install -y -qq openssl ca-certificates && rm -rf /var/lib/apt/lists/*
-    npm install prisma@7.8.0 --no-save --no-audit --no-fund
-    npx prisma migrate deploy --schema=prisma/schema.prisma
-  '
-
-echo "==> prisma db push (alignement schema)"
-docker run --rm \
-  --network gsms \
-  -v "$APP_ROOT/packages/database:/work" \
-  -w /work \
-  -e DATABASE_URL \
-  node:22-bookworm-slim bash -lc '
-    apt-get update -qq && apt-get install -y -qq openssl ca-certificates && rm -rf /var/lib/apt/lists/*
-    npm install prisma@7.8.0 --no-save --no-audit --no-fund
-    npx prisma db push --schema=prisma/schema.prisma --accept-data-loss
-  '
-
-echo "==> seed"
+echo "==> Prisma migrate + push + seed (pnpm monorepo)"
 docker run --rm \
   --network gsms \
   -v "$APP_ROOT:/app" \
   -w /app \
   -e DATABASE_URL \
+  -e SKIP_SEED="${SKIP_SEED:-0}" \
   node:22-bookworm-slim bash -lc '
-    apt-get update -qq && apt-get install -y -qq openssl ca-certificates && rm -rf /var/lib/apt/lists/*
-    corepack enable && corepack prepare pnpm@11.5.1 --activate
+    set -euo pipefail
+    apt-get update -qq
+    apt-get install -y -qq openssl ca-certificates git >/dev/null
+    rm -rf /var/lib/apt/lists/*
+
+    corepack enable
+    corepack prepare pnpm@11.5.1 --activate
+
+    echo "==> pnpm install (@repo/database + deps workspace)"
     pnpm install --filter @repo/database... --ignore-scripts
+
+    echo "==> prisma generate"
     pnpm -C packages/database db:generate
-    pnpm -C packages/database db:seed || echo "AVERTISSEMENT: seed partiel"
+
+    echo "==> prisma migrate deploy"
+    pnpm -C packages/database exec prisma migrate deploy --schema=prisma/schema.prisma
+
+    echo "==> prisma db push (alignement schema)"
+    pnpm -C packages/database exec prisma db push --schema=prisma/schema.prisma --accept-data-loss
+
+    if [[ "${SKIP_SEED}" != "1" ]]; then
+      echo "==> seed"
+      pnpm -C packages/database db:seed || echo "AVERTISSEMENT: seed partiel"
+    else
+      echo "==> SKIP_SEED=1 (pas de seed)"
+    fi
+
+    if [[ "${SKIP_DIRECTION_SYNC:-0}" != "1" ]]; then
+      echo "==> sync équipe direction + emails structure (idempotent)"
+      node packages/database/prisma/scripts/sync-direction-team.js || echo "AVERTISSEMENT: sync direction partiel"
+    fi
   '
 
 echo "==> Tables: $(docker exec gsms-postgres psql -U lms -d lms_app -tAc "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';")"

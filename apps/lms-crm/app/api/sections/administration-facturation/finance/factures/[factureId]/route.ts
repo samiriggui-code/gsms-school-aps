@@ -6,6 +6,7 @@ import { FinanceDevisStatus, Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { parseLinesJson, totalsFromLines } from '@/lib/finance-devis-totals';
 import { getStoredFinancePdf } from '@/lib/finance/store-finance-pdf-asset';
+import { summarizePayments } from '@/lib/finance/finance-payment-summary';
 
 /**
  * Détail / mise à jour d’un dossier **accepté** à facturer (`FinanceDevis` avec statut ACCEPTED).
@@ -60,6 +61,27 @@ export async function GET(_request: NextRequest, context: Ctx) {
     }
 
     const invoicePdfAsset = await getStoredFinancePdf(row.id, 'invoice-pdf');
+    const payments = await prisma.financePayment.findMany({
+      where: { devisId: row.id },
+      orderBy: { createdAt: 'desc' },
+      take: 20,
+      select: {
+        id: true,
+        referenceCode: true,
+        amount: true,
+        currency: true,
+        status: true,
+        method: true,
+        paidAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    const totalTtc = decimalNum(row.totalTtc);
+    const paymentSummary = summarizePayments(
+      totalTtc,
+      payments.map((p) => ({ amount: p.amount, status: p.status })),
+    );
 
     return ok({
       id: row.id,
@@ -85,6 +107,11 @@ export async function GET(_request: NextRequest, context: Ctx) {
       formation: row.formation,
       candidature: row.candidature,
       formationSession: row.formationSession,
+      einvoiceStatus: row.einvoiceStatus,
+      einvoiceProfile: row.einvoiceProfile,
+      einvoiceGeneratedAt: row.einvoiceGeneratedAt?.toISOString() ?? null,
+      einvoicePdpMessageId: row.einvoicePdpMessageId,
+      einvoiceLastError: row.einvoiceLastError,
       invoicePdf: invoicePdfAsset
         ? {
             id: invoicePdfAsset.id,
@@ -94,13 +121,25 @@ export async function GET(_request: NextRequest, context: Ctx) {
             createdAt: invoicePdfAsset.createdAt.toISOString(),
           }
         : null,
+      paymentSummary,
+      payments: payments.map((p) => ({
+        id: p.id,
+        referenceCode: p.referenceCode,
+        amount: decimalNum(p.amount),
+        currency: p.currency,
+        status: p.status,
+        method: p.method,
+        paidAt: p.paidAt?.toISOString() ?? null,
+        createdAt: p.createdAt.toISOString(),
+        updatedAt: p.updatedAt.toISOString(),
+      })),
     });
   } catch (e) {
     console.error('[finance-factures GET one]', e);
     const code = typeof e === 'object' && e !== null && 'code' in e ? String((e as { code: string }).code) : '';
     if (code === 'P2022') {
       return fail(
-        'Base de données non migrée : la table FinanceDevis attend des colonnes optionnelles (liens dossier). Exécutez les migrations Prisma.',
+        'Base de données non migrée : colonnes e-facture / FinanceDevis manquantes. Exécutez `pnpm db:push` puis `pnpm db:generate`.',
         500,
         e,
       );
@@ -238,12 +277,14 @@ export async function DELETE(_request: NextRequest, context: Ctx) {
       select: { id: true, status: true },
     });
     if (!row) return fail('Dossier introuvable.', 404);
-    if (row.status !== FinanceDevisStatus.DRAFT) {
-      return fail('Seuls les dossiers en brouillon peuvent être supprimés.', 409);
+    if (row.status !== FinanceDevisStatus.ACCEPTED) {
+      return fail('Seuls les dossiers acceptés (factures) sont gérés ici.', 409);
     }
 
-    await prisma.financeDevis.delete({ where: { id: factureId } });
-    return ok({ deleted: true });
+    return fail(
+      'Un dossier accepté ne peut pas être supprimé. Repassez le devis en « refusé » ou « expiré » depuis Devis, ou archivez les paiements associés.',
+      409,
+    );
   } catch (e) {
     console.error('[finance-factures DELETE]', e);
     return fail('Suppression impossible.', 500, e);

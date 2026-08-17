@@ -1,18 +1,14 @@
 import { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { NotificationService } from '@repo/api-core';
+import { NotificationService, createWorkflowEngine } from '@repo/api-core';
 import { Prisma, SupportTicketPriority, SupportTicketStatus } from '@repo/database';
-
-async function nextReference(prefix: string, count: number) {
-  return `${prefix}-${String(count + 1).padStart(4, '0')}`;
-}
+import { requireSupportEdit, requireSupportView } from '../../_lib/require-support-auth';
+import { nextTicketReference } from '../../_lib/ticket-reference';
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireSupportView();
+  if (!auth.ok) return auth.response;
 
   const sp = request.nextUrl.searchParams;
   const q = (sp.get('q') ?? '').trim();
@@ -64,6 +60,7 @@ export async function GET(request: NextRequest) {
           createdAt: true,
           updatedAt: true,
           assignedTo: { select: { id: true, name: true, email: true } },
+          _count: { select: { comments: true, attachments: true } },
         },
       }),
     ]);
@@ -71,10 +68,19 @@ export async function GET(request: NextRequest) {
     return ok({
       stats: { total, open, inProgress, resolved, urgent },
       items: rows.map((r) => ({
-        ...r,
+        id: r.id,
+        referenceCode: r.referenceCode,
+        subject: r.subject,
+        status: r.status,
+        priority: r.priority,
+        requesterName: r.requesterName,
+        requesterEmail: r.requesterEmail,
+        resolvedAt: r.resolvedAt?.toISOString() ?? null,
         createdAt: r.createdAt.toISOString(),
         updatedAt: r.updatedAt.toISOString(),
-        resolvedAt: r.resolvedAt?.toISOString() ?? null,
+        assignedTo: r.assignedTo,
+        commentCount: r._count.comments,
+        attachmentCount: r._count.attachments,
       })),
       pagination: { page, limit, total },
     });
@@ -85,8 +91,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireSupportEdit();
+  if (!auth.ok) return auth.response;
 
   let body: Record<string, unknown>;
   try {
@@ -109,7 +115,7 @@ export async function POST(request: NextRequest) {
     const count = await prisma.supportTicket.count();
     const row = await prisma.supportTicket.create({
       data: {
-        referenceCode: await nextReference('TKT', count),
+        referenceCode: await nextTicketReference(count),
         subject,
         description,
         requesterName,
@@ -117,7 +123,16 @@ export async function POST(request: NextRequest) {
         priority: Object.values(SupportTicketPriority).includes(priority)
           ? priority
           : SupportTicketPriority.MEDIUM,
-        createdById: session.user?.id ?? null,
+        createdById: auth.userId,
+      },
+    });
+
+    await prisma.ticketComment.create({
+      data: {
+        ticketId: row.id,
+        authorId: auth.userId,
+        body: description,
+        isInternal: false,
       },
     });
 
@@ -127,14 +142,19 @@ export async function POST(request: NextRequest) {
         where: {
           isTrashed: false,
           status: 'ACTIVE',
-          role: { slug: 'admin', isTrashed: false },
+          role: {
+            isTrashed: false,
+            permissions: {
+              some: { permission: { slug: 'crm.support.view' } },
+            },
+          },
         },
         select: { id: true },
-        take: 20,
+        take: 30,
       })
     ).map((u) => u.id);
 
-    const ticketHref = '/support-qualite/support/tickets';
+    const ticketHref = `/support-qualite/support/tickets?ticket=${row.id}`;
     const payload = {
       category: 'TICKET' as const,
       title: `Ticket ${row.referenceCode}`,
@@ -145,8 +165,26 @@ export async function POST(request: NextRequest) {
 
     if (adminIds.length > 0) {
       await notifier.emitMany(adminIds, payload);
-    } else if (session.user?.id) {
-      await notifier.emit({ ...payload, userId: session.user.id });
+    } else {
+      await notifier.emit({ ...payload, userId: auth.userId });
+    }
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.support.ticket.created',
+        {
+          ticketId: row.id,
+          referenceCode: row.referenceCode,
+          subject,
+          requesterName,
+          requesterEmail,
+          priority: row.priority,
+        },
+        { dedupeKey: `ticket:${row.id}` },
+      );
+    } catch (e) {
+      console.error('[support-tickets] workflow', e);
     }
 
     return ok({ id: row.id, referenceCode: row.referenceCode }, 201);

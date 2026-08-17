@@ -567,6 +567,7 @@ exports.Prisma.EquipmentMaintenanceScalarFieldEnum = {
   notes: 'notes',
   scheduledDate: 'scheduledDate',
   completedDate: 'completedDate',
+  costAmount: 'costAmount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -683,6 +684,17 @@ exports.Prisma.FormationVenueRoomScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.VenueRoomFixedEquipmentScalarFieldEnum = {
+  id: 'id',
+  venueRoomId: 'venueRoomId',
+  equipmentId: 'equipmentId',
+  quantity: 'quantity',
+  installedAt: 'installedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.VenueRoomBookingScalarFieldEnum = {
   id: 'id',
   venueRoomId: 'venueRoomId',
@@ -704,6 +716,8 @@ exports.Prisma.FormationSessionScalarFieldEnum = {
   endDate: 'endDate',
   registrationClosesAt: 'registrationClosesAt',
   examDate: 'examDate',
+  examVenueRoomId: 'examVenueRoomId',
+  examReservedEquipmentIds: 'examReservedEquipmentIds',
   traineesMin: 'traineesMin',
   traineesMax: 'traineesMax',
   trainerUserId: 'trainerUserId',
@@ -718,6 +732,23 @@ exports.Prisma.FormationSessionScalarFieldEnum = {
   sortOrder: 'sortOrder',
   bookingEnabled: 'bookingEnabled',
   bookingUrl: 'bookingUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionAutomationRunScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  participantId: 'participantId',
+  candidatureId: 'candidatureId',
+  circuitKey: 'circuitKey',
+  n8nExecutionId: 'n8nExecutionId',
+  status: 'status',
+  milestones: 'milestones',
+  metadata: 'metadata',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -791,6 +822,20 @@ exports.Prisma.FormationSessionEmargementScalarFieldEnum = {
   status: 'status',
   markedAt: 'markedAt',
   markedByUserId: 'markedByUserId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FormationExamScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  scheduledAt: 'scheduledAt',
+  venueRoomId: 'venueRoomId',
+  status: 'status',
+  juryPresidentName: 'juryPresidentName',
+  examinerName: 'examinerName',
+  juryMemberNames: 'juryMemberNames',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -901,6 +946,7 @@ exports.Prisma.QuizQuestionBankItemScalarFieldEnum = {
   choices: 'choices',
   correctIndex: 'correctIndex',
   tags: 'tags',
+  chapterId: 'chapterId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1020,6 +1066,12 @@ exports.Prisma.FinanceDevisScalarFieldEnum = {
   validUntil: 'validUntil',
   notes: 'notes',
   internalNotes: 'internalNotes',
+  einvoiceStatus: 'einvoiceStatus',
+  einvoiceProfile: 'einvoiceProfile',
+  einvoiceGeneratedAt: 'einvoiceGeneratedAt',
+  einvoicePdpMessageId: 'einvoicePdpMessageId',
+  einvoiceLastError: 'einvoiceLastError',
+  einvoiceXmlAssetKey: 'einvoiceXmlAssetKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1258,6 +1310,90 @@ exports.Prisma.SupportTicketScalarFieldEnum = {
   assignedToId: 'assignedToId',
   createdById: 'createdById',
   resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TicketCommentScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  authorId: 'authorId',
+  body: 'body',
+  isInternal: 'isInternal',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TicketAttachmentScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  commentId: 'commentId',
+  fileAssetId: 'fileAssetId',
+  uploadedById: 'uploadedById',
+  fileName: 'fileName',
+  fileUrl: 'fileUrl',
+  fileKey: 'fileKey',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.QualityIncidentScalarFieldEnum = {
+  id: 'id',
+  referenceCode: 'referenceCode',
+  title: 'title',
+  description: 'description',
+  severity: 'severity',
+  status: 'status',
+  category: 'category',
+  ticketId: 'ticketId',
+  equipmentId: 'equipmentId',
+  assignedToId: 'assignedToId',
+  reportedById: 'reportedById',
+  rootCause: 'rootCause',
+  correctiveAction: 'correctiveAction',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.HelpArticleScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  slug: 'slug',
+  body: 'body',
+  excerpt: 'excerpt',
+  category: 'category',
+  audience: 'audience',
+  status: 'status',
+  tags: 'tags',
+  viewCount: 'viewCount',
+  helpfulCount: 'helpfulCount',
+  authorId: 'authorId',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.UserNotificationPreferenceScalarFieldEnum = {
+  userId: 'userId',
+  email: 'email',
+  inApp: 'inApp',
+  chat: 'chat',
+  desktop: 'desktop',
+  doNotDisturb: 'doNotDisturb',
+  academicAlerts: 'academicAlerts',
+  sessionReminders: 'sessionReminders',
+  chatMessages: 'chatMessages',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ModuleSettingScalarFieldEnum = {
+  id: 'id',
+  moduleKey: 'moduleKey',
+  settingKey: 'settingKey',
+  value: 'value',
+  updatedById: 'updatedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1572,6 +1708,7 @@ exports.ReportJobStatus = exports.$Enums.ReportJobStatus = {
 
 exports.ReportScheduleFrequency = exports.$Enums.ReportScheduleFrequency = {
   DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
   MONTHLY: 'MONTHLY',
   QUARTERLY: 'QUARTERLY'
 };
@@ -1702,6 +1839,13 @@ exports.FormationVitrineSessionKind = exports.$Enums.FormationVitrineSessionKind
   OTHER: 'OTHER'
 };
 
+exports.SessionAutomationStatus = exports.$Enums.SessionAutomationStatus = {
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  FAILED: 'FAILED'
+};
+
 exports.CandidatureSource = exports.$Enums.CandidatureSource = {
   MANUAL: 'MANUAL',
   LEAD: 'LEAD',
@@ -1745,6 +1889,13 @@ exports.FormationSessionEmargementStatus = exports.$Enums.FormationSessionEmarge
   ABSENT: 'ABSENT',
   LATE: 'LATE',
   EXCUSED: 'EXCUSED'
+};
+
+exports.FormationExamStatus = exports.$Enums.FormationExamStatus = {
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.LmsContentReviewStatus = exports.$Enums.LmsContentReviewStatus = {
@@ -1801,6 +1952,17 @@ exports.FinanceDevisStatus = exports.$Enums.FinanceDevisStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.FinanceEinvoiceStatus = exports.$Enums.FinanceEinvoiceStatus = {
+  NOT_READY: 'NOT_READY',
+  READY: 'READY',
+  GENERATED: 'GENERATED',
+  QUEUED: 'QUEUED',
+  SENT: 'SENT',
+  ACCEPTED_BY_PDP: 'ACCEPTED_BY_PDP',
+  REJECTED_BY_PDP: 'REJECTED_BY_PDP',
+  FAILED: 'FAILED'
+};
+
 exports.SupportTicketStatus = exports.$Enums.SupportTicketStatus = {
   OPEN: 'OPEN',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -1814,6 +1976,34 @@ exports.SupportTicketPriority = exports.$Enums.SupportTicketPriority = {
   MEDIUM: 'MEDIUM',
   HIGH: 'HIGH',
   URGENT: 'URGENT'
+};
+
+exports.QualityIncidentSeverity = exports.$Enums.QualityIncidentSeverity = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  CRITICAL: 'CRITICAL'
+};
+
+exports.QualityIncidentStatus = exports.$Enums.QualityIncidentStatus = {
+  REPORTED: 'REPORTED',
+  UNDER_ANALYSIS: 'UNDER_ANALYSIS',
+  ACTION_IN_PROGRESS: 'ACTION_IN_PROGRESS',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+};
+
+exports.HelpArticleAudience = exports.$Enums.HelpArticleAudience = {
+  STAFF: 'STAFF',
+  FORMATEUR: 'FORMATEUR',
+  STAGIAIRE: 'STAGIAIRE',
+  PUBLIC: 'PUBLIC'
+};
+
+exports.HelpArticleStatus = exports.$Enums.HelpArticleStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
 };
 
 exports.MarketingCampaignStatus = exports.$Enums.MarketingCampaignStatus = {
@@ -1978,13 +2168,16 @@ exports.Prisma.ModelName = {
   FormationCatalogOffer: 'FormationCatalogOffer',
   LandingTeamOffer: 'LandingTeamOffer',
   FormationVenueRoom: 'FormationVenueRoom',
+  VenueRoomFixedEquipment: 'VenueRoomFixedEquipment',
   VenueRoomBooking: 'VenueRoomBooking',
   FormationSession: 'FormationSession',
+  SessionAutomationRun: 'SessionAutomationRun',
   PortalSessionAnnouncement: 'PortalSessionAnnouncement',
   Candidature: 'Candidature',
   FormationSessionParticipant: 'FormationSessionParticipant',
   FormationSessionDay: 'FormationSessionDay',
   FormationSessionEmargement: 'FormationSessionEmargement',
+  FormationExam: 'FormationExam',
   FormationAttestation: 'FormationAttestation',
   Course: 'Course',
   Category: 'Category',
@@ -2027,6 +2220,12 @@ exports.Prisma.ModelName = {
   CourseEmbedding: 'CourseEmbedding',
   CollaborationDocument: 'CollaborationDocument',
   SupportTicket: 'SupportTicket',
+  TicketComment: 'TicketComment',
+  TicketAttachment: 'TicketAttachment',
+  QualityIncident: 'QualityIncident',
+  HelpArticle: 'HelpArticle',
+  UserNotificationPreference: 'UserNotificationPreference',
+  ModuleSetting: 'ModuleSetting',
   MarketingCampaign: 'MarketingCampaign',
   SeoRedirect: 'SeoRedirect',
   FinancePayment: 'FinancePayment',

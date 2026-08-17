@@ -6,7 +6,7 @@ import { toAbsoluteUrl } from '@/lib/helpers';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LifeBuoy, BookOpenText, Settings } from 'lucide-react';
+import { AlertTriangle, LifeBuoy } from 'lucide-react';
 
 export function SupportWelcomeCallout() {
   return (
@@ -27,7 +27,7 @@ export function SupportWelcomeCallout() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-lg bg-primary/10">
-                <Settings className="w-8 h-8 text-primary" />
+                <LifeBuoy className="w-8 h-8 text-primary" />
               </div>
               <div className="flex -space-x-2.5">
                 <Avatar className="size-10">
@@ -51,7 +51,8 @@ export function SupportWelcomeCallout() {
               Module <span className="text-primary">Support</span>
             </h2>
             <p className="text-sm font-normal text-secondary-foreground leading-5.5">
-              Tickets support et fiches catalogue (aide self-service).
+              Helpdesk interne : tickets utilisateurs et incidents qualité (matériel, processus).
+              La documentation produit reste dans le guide Mintlify.
             </p>
           </div>
         </CardContent>
@@ -63,9 +64,9 @@ export function SupportWelcomeCallout() {
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/support-qualite/support/base-aide">
-              <BookOpenText className="size-4 mr-1" />
-              Catalogue (aide)
+            <Link href="/support-qualite/support/incidents">
+              <AlertTriangle className="size-4 mr-1" />
+              Incidents
             </Link>
           </Button>
         </CardFooter>

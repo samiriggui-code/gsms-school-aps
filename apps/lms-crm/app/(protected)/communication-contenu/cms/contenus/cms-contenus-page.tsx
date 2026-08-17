@@ -1,10 +1,7 @@
 'use client';
 
-import { useTranslation } from '@/hooks/useTranslation';
 import { useState } from 'react';
-import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { ExternalLink, Search } from 'lucide-react';
 import { Container } from '@/components/common/container';
 import {
   Toolbar,
@@ -13,57 +10,43 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
+import { cmsCatalogQueryKey, LandingCatalogList, LandingCatalogSearch } from './components/landing-catalog-list';
 
-type ContenuRow = {
-  id: string;
-  name: string;
-  slug: string;
-  status: string;
-  catalogStatus: string | null;
-  updatedAt: string;
-  editPath: string;
-};
-
-type ContenusResponse = {
-  stats: { total: number; active: number; catalogActive: number; draft: number };
-  items: ContenuRow[];
-  pagination: { page: number; limit: number; total: number };
+type Stats = {
+  total: number;
+  landingVisible: number;
+  active: number;
+  draft: number;
+  archived: number;
 };
 
 export default function CmsContenusPage() {
-  const { t } = useTranslation();
   const { title, description } = usePageToolbarMeta('/communication-contenu/cms/contenus');
-  const [page, setPage] = useState(1);
-  const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
 
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ['cms-contenus', page, search] as const,
-    queryFn: async (): Promise<ContenusResponse | undefined> => {
-      const sp = new URLSearchParams({ page: String(page), limit: '20' });
+  const { data: stats } = useQuery({
+    queryKey: [...cmsCatalogQueryKey, 'stats', search] as const,
+    queryFn: async (): Promise<Stats> => {
+      const sp = new URLSearchParams({ scope: 'all' });
       if (search.trim()) sp.set('q', search.trim());
       const res = await apiFetch(`/api/sections/communication-contenu/cms/contenus?${sp}`);
       const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error((json as { error?: { message?: string } }).error?.message ?? 'Erreur');
-      return unwrapSectionApiData<ContenusResponse>(json);
+      if (!res.ok) throw new Error('Erreur');
+      const payload = unwrapSectionApiData<{ stats: Stats }>(json);
+      return payload?.stats ?? { total: 0, landingVisible: 0, active: 0, draft: 0, archived: 0 };
     },
   });
 
-  const totalPages = Math.max(1, Math.ceil((data?.pagination.total ?? 0) / 20));
-
-  const stats = [
-    { label: 'Formations', value: data?.stats.total ?? 0, subtitle: 'Fiches catalogue' },
-    { label: 'Actives', value: data?.stats.active ?? 0, subtitle: 'Publiables' },
-    { label: 'Landing', value: data?.stats.catalogActive ?? 0, subtitle: 'Visibles vitrine' },
-    { label: 'Brouillons', value: data?.stats.draft ?? 0, subtitle: 'Hors ligne' },
-    { label: 'Couverture', value: data?.stats.total ?? 0, subtitle: 'Fiches suivies' },
+  const kpi = [
+    { label: 'Offres catalogue', value: stats?.total ?? 0, subtitle: 'Fiches avec offre CRM' },
+    { label: 'Landing', value: stats?.landingVisible ?? 0, subtitle: 'Visibles sur #pricing' },
+    { label: 'Actives', value: stats?.active ?? 0, subtitle: 'Statut catalogue ACTIVE' },
+    { label: 'Brouillons', value: stats?.draft ?? 0, subtitle: 'Hors publication' },
+    { label: 'Archivées', value: stats?.archived ?? 0, subtitle: 'Suspendues du catalogue' },
   ];
 
   return (
@@ -79,7 +62,7 @@ export default function CmsContenusPage() {
 
       <Container className="space-y-5 lg:space-y-7.5 pb-8">
         <div className={MODULE_LANDING_STATS_GRID_ROW}>
-          {stats.map((s, i) => {
+          {kpi.map((s, i) => {
             const accent = SECTION_KPI_CARD_ACCENTS[i % SECTION_KPI_CARD_ACCENTS.length];
             return (
               <div
@@ -97,63 +80,16 @@ export default function CmsContenusPage() {
 
         <Card>
           <CardHeader className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-between">
-            <Button variant="outline" size="sm" onClick={() => refetch()}>
-              Actualiser
-            </Button>
-            <div className="flex max-w-md flex-1 gap-2 sm:ms-auto">
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('datagrid.search.generic')} className="flex-1" />
-              <Button variant="secondary" onClick={() => { setSearch(q); setPage(1); }}>
-                <Search className="size-4" />
-              </Button>
-            </div>
+            <p className="text-sm text-muted-foreground max-w-xl">
+              Prix, sessions et financement dans{' '}
+              <span className="font-medium text-foreground">Vie scolaire → Formations</span>. Cliquez
+              sur le badge de statut (vert = landing, orange = partiel, gris = inactif) pour publier ou
+              retirer une formation du CRM et du landing.
+            </p>
+            <LandingCatalogSearch onSearch={setSearch} />
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px] text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/30 text-muted-foreground">
-                    <th className="px-4 py-3 text-left font-medium">Formation</th>
-                    <th className="px-4 py-3 text-left font-medium">Slug</th>
-                    <th className="px-4 py-3 text-left font-medium">Statut</th>
-                    <th className="px-4 py-3 text-left font-medium">Catalogue</th>
-                    <th className="px-4 py-3 text-right font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">Chargement…</td></tr>
-                  ) : (data?.items.length ?? 0) === 0 ? (
-                    <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">Aucune fiche</td></tr>
-                  ) : (
-                    data!.items.map((row) => (
-                      <tr key={row.id} className="border-b hover:bg-muted/20">
-                        <td className="px-4 py-3 font-medium">{row.name}</td>
-                        <td className="px-4 py-3 font-mono text-xs">{row.slug}</td>
-                        <td className="px-4 py-3"><Badge variant="secondary">{row.status}</Badge></td>
-                        <td className="px-4 py-3">{row.catalogStatus ?? '—'}</td>
-                        <td className="px-4 py-3 text-right">
-                          <Button size="sm" variant="outline" asChild>
-                            <Link href={row.editPath}>
-                              Éditer
-                              <ExternalLink className="ms-1 size-3" />
-                            </Link>
-                          </Button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {(data?.pagination.total ?? 0) > 20 && (
-              <div className="flex items-center justify-between border-t px-4 py-3">
-                <span className="text-xs text-muted-foreground">Page {page} / {totalPages}</span>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Préc.</Button>
-                  <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Suiv.</Button>
-                </div>
-              </div>
-            )}
+          <CardContent className="pt-5">
+            <LandingCatalogList search={search} />
           </CardContent>
         </Card>
       </Container>

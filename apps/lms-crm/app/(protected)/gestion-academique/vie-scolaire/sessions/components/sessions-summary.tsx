@@ -4,7 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 import {
   MODULE_LANDING_STATS_GRID_ROW,
+  MODULE_PAGE_KPI_COUNT,
   SECTION_KPI_CARD_ACCENTS,
+  kpiStatsGridClass,
 } from '@/components/common/stat-card-metric-layout';
 import { CalendarRange, GraduationCap, Layers, UserRound, UserMinus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -38,14 +40,12 @@ export function SessionsSummary({ variant = 'grid' }: { variant?: 'grid' | 'row'
   });
 
   const gridClasses =
-    variant === 'row'
-      ? MODULE_LANDING_STATS_GRID_ROW
-      : 'grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 h-full items-stretch';
+    variant === 'row' ? MODULE_LANDING_STATS_GRID_ROW : kpiStatsGridClass(MODULE_PAGE_KPI_COUNT);
 
   if (isLoading) {
     return (
       <div className={gridClasses}>
-        {[1, 2, 3, 4, 5].map((i) => (
+        {Array.from({ length: MODULE_PAGE_KPI_COUNT }, (_, i) => i + 1).map((i) => (
           <div key={i} className="rounded-xl border border-border/70 p-4 shadow-none">
             <Skeleton className="mb-3 h-8 w-8 rounded-lg" />
             <Skeleton className="mb-2 h-7 w-16" />

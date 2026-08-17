@@ -7,8 +7,10 @@ import {
   emitVenueRoomSessionPatchNotifications,
   notifyVenueRoomReleased,
   applySessionEquipmentDiff,
+  ensureFormationExamForSession,
   parseReservedEquipmentIds,
   releaseAllSessionEquipment,
+  cancelSessionAutomationRuns,
 } from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { FormationSessionPatchSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/forms/session-crud-schema';
@@ -134,6 +136,15 @@ export async function PATCH(
       const okEquip = await assertEquipmentIds(d.reservedEquipmentIds);
       if (!okEquip) return fail('Un ou plusieurs équipements sont introuvables.', 422);
     }
+    if (d.examReservedEquipmentIds !== undefined) {
+      const okExamEquip = await assertEquipmentIds(d.examReservedEquipmentIds);
+      if (!okExamEquip) return fail('Matériel examen introuvable.', 422);
+    }
+
+    if (d.examVenueRoomId !== undefined && d.examVenueRoomId) {
+      const okExamRoom = await assertVenueRoomIdExists(prisma, d.examVenueRoomId);
+      if (!okExamRoom) return fail('Salle examen inconnue ou inactive.', 422);
+    }
 
     const current = await prisma.formationSession.findUnique({
       where: { id: id.trim() },
@@ -143,6 +154,7 @@ export async function PATCH(
         endDate: true,
         venueRoomId: true,
         reservedEquipmentIds: true,
+        examReservedEquipmentIds: true,
         venueRoom: { select: { id: true, name: true } },
       },
     });
@@ -172,6 +184,8 @@ export async function PATCH(
     }
 
     const previousEquipmentIds = parseReservedEquipmentIds(current.reservedEquipmentIds);
+    const previousExamEquipmentIds = parseReservedEquipmentIds(current.examReservedEquipmentIds);
+    const previousAllEquipmentIds = [...new Set([...previousEquipmentIds, ...previousExamEquipmentIds])];
 
     const updated = await prisma.$transaction(async (tx) => {
       const hasScalarPatch =
@@ -213,6 +227,12 @@ export async function PATCH(
             ? { registrationClosesAt: parseDateInput(d.registrationClosesAt) }
             : {}),
           ...(d.examDate !== undefined ? { examDate: parseDateInput(d.examDate) } : {}),
+          ...(d.examVenueRoomId !== undefined ? { examVenueRoomId: d.examVenueRoomId } : {}),
+          ...(d.examReservedEquipmentIds !== undefined
+            ? {
+                examReservedEquipmentIds: d.examReservedEquipmentIds as unknown as Prisma.InputJsonValue,
+              }
+            : {}),
           ...(d.traineesMin !== undefined ? { traineesMin: d.traineesMin } : {}),
           ...(d.traineesMax !== undefined ? { traineesMax: d.traineesMax } : {}),
           ...(normalizedTrainer !== undefined
@@ -262,6 +282,8 @@ export async function PATCH(
         }
       }
 
+      await ensureFormationExamForSession(tx, id.trim());
+
       return tx.formationSession.findUniqueOrThrow({
         where: { id: id.trim() },
         include: formationSessionRelationInclude,
@@ -270,15 +292,28 @@ export async function PATCH(
 
     const item = await serializeFormationSessionRow(updated as SessionRowPayload);
 
+    const scheduleChanged =
+      d.startDate !== undefined || d.endDate !== undefined || d.examDate !== undefined;
+    if (scheduleChanged) {
+      try {
+        await cancelSessionAutomationRuns(prisma, id.trim());
+      } catch (automationError) {
+        console.error('[session PATCH] cancel automation runs', automationError);
+      }
+    }
+
     const sideEffectWarnings: string[] = [];
 
-    if (d.reservedEquipmentIds !== undefined) {
+    if (d.reservedEquipmentIds !== undefined || d.examReservedEquipmentIds !== undefined) {
+      const nextSessionEquip = d.reservedEquipmentIds ?? previousEquipmentIds;
+      const nextExamEquip = d.examReservedEquipmentIds ?? previousExamEquipmentIds;
+      const nextAll = [...new Set([...nextSessionEquip, ...nextExamEquip])];
       try {
         await applySessionEquipmentDiff(
           prisma,
           id.trim(),
-          previousEquipmentIds,
-          d.reservedEquipmentIds,
+          previousAllEquipmentIds,
+          nextAll,
           { actorUserId: session.user?.id ?? null },
         );
       } catch (equipmentError) {

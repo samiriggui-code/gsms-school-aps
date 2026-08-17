@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { displayUserName, requireSessionUserId } from '@/app/api/_shared/topbar-auth';
+import { requireChatSession } from '@/lib/chat-scope';
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -12,7 +13,7 @@ async function assertParticipant(userId: string, conversationId: string) {
 }
 
 export async function GET(_request: NextRequest, { params }: RouteParams) {
-  const auth = await requireSessionUserId();
+  const auth = await requireChatSession();
   if ('error' in auth) return auth.error;
 
   const { id: conversationId } = await params;
@@ -58,7 +59,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
-  const auth = await requireSessionUserId();
+  const auth = await requireChatSession();
   if ('error' in auth) return auth.error;
 
   const { id: conversationId } = await params;

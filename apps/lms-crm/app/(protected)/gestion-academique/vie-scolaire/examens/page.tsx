@@ -1,33 +1,16 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { ExamensParcoursStats } from './components/examens-parcours-stats';
-import { ParcoursSessionExamensPanel } from './components/parcours-session-examens-panel';
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
-export default function Page() {
-  const { title, description } = usePageToolbarMeta('/gestion-academique/vie-scolaire/examens');
-  return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-        </Toolbar>
-      </Container>
-
-      <Container className="space-y-5 lg:space-y-7.5">
-        <ExamensParcoursStats />
-        <ParcoursSessionExamensPanel />
-      </Container>
-    </>
-  );
+export default async function ExamensRedirectPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const qs = new URLSearchParams();
+  qs.set('tab', 'examens');
+  const sessionId = params.sessionId;
+  if (typeof sessionId === 'string' && sessionId.trim()) {
+    qs.set('sessionId', sessionId.trim());
+  }
+  redirect(`/gestion-academique/vie-scolaire/suivi-formations?${qs.toString()}`);
 }

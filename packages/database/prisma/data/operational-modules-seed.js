@@ -68,7 +68,7 @@ async function seedOperationalModules(prisma) {
   const budgetLines = [
     { label: 'Formations présentiel', category: 'FORMATION', periodYear: year, periodMonth: null, plannedAmount: 120000 },
     { label: 'Charges pédagogiques', category: 'RH', periodYear: year, periodMonth: null, plannedAmount: 85000 },
-    { label: 'Matériel & consommables', category: 'EQUIPEMENT', periodYear: year, periodMonth: null, plannedAmount: 15000 },
+    { label: 'Matériel & consommables', category: 'EQUIPEMENT', periodYear: year, periodMonth: null, plannedAmount: 20000 },
   ];
 
   for (const line of budgetLines) {
@@ -105,8 +105,9 @@ async function seedOperationalModules(prisma) {
 
   const ticketRef = 'TKT-0001';
   const existingTicket = await prisma.supportTicket.findUnique({ where: { referenceCode: ticketRef } });
+  let ticketId = existingTicket?.id;
   if (!existingTicket) {
-    await prisma.supportTicket.create({
+    const created = await prisma.supportTicket.create({
       data: {
         referenceCode: ticketRef,
         subject: 'Question sur modalité de financement CPF',
@@ -116,6 +117,112 @@ async function seedOperationalModules(prisma) {
         requesterName: 'Jean Dupont',
         requesterEmail: 'jean.dupont@example.com',
       },
+    });
+    ticketId = created.id;
+  }
+
+  const helpArticles = [
+    {
+      slug: 'prise-en-charge-ticket',
+      title: 'Comment prendre en charge un ticket support',
+      body: 'Ouvrez la file tickets, cliquez sur Prendre en charge ou assignez-vous dans la fiche. Répondez via l’onglet Conversation.',
+      excerpt: 'Workflow de prise en charge des tickets CRM.',
+      category: 'support',
+      audience: 'STAFF',
+      status: 'PUBLISHED',
+      tags: ['ticket', 'support', 'workflow'],
+    },
+    {
+      slug: 'declarer-incident-qualite',
+      title: 'Déclarer un incident qualité',
+      body: 'Créez un incident depuis Qualité > Incidents. Liez le ticket et l’équipement concernés pour la traçabilité.',
+      excerpt: 'Procédure de déclaration incident matériel ou processus.',
+      category: 'qualite',
+      audience: 'STAFF',
+      status: 'PUBLISHED',
+      tags: ['incident', 'qualite'],
+    },
+    {
+      slug: 'financement-cpf-faq',
+      title: 'FAQ — Financement CPF',
+      body: 'Le CPF est utilisable si la formation est éligible et le dossier candidat complet. Vérifier le NDA et Qualiopi.',
+      excerpt: 'Réponses aux questions fréquentes sur le CPF.',
+      category: 'finance',
+      audience: 'PUBLIC',
+      status: 'PUBLISHED',
+      tags: ['cpf', 'finance'],
+    },
+  ];
+
+  for (const article of helpArticles) {
+    await prisma.helpArticle.upsert({
+      where: { slug: article.slug },
+      create: {
+        ...article,
+        publishedAt: new Date(),
+      },
+      update: {
+        title: article.title,
+        body: article.body,
+        excerpt: article.excerpt,
+        category: article.category,
+        status: article.status,
+      },
+    });
+  }
+
+  const equipment = await prisma.equipment.findFirst({
+    where: { status: 'OUT_OF_SERVICE' },
+    select: { id: true },
+  });
+
+  const incidents = [
+    {
+      referenceCode: 'INC-0001',
+      title: 'Portique détecteur hors service',
+      description: 'Le portique pédagogique ne s’allume plus — impact sur les sessions pratiques sécurité.',
+      severity: 'HIGH',
+      status: 'UNDER_ANALYSIS',
+      category: 'Matériel',
+      ticketId: ticketId ?? null,
+      equipmentId: equipment?.id ?? null,
+    },
+    {
+      referenceCode: 'INC-0002',
+      title: 'Retard traitement tickets urgents',
+      description: 'Backlog de tickets HIGH/URGENT non résolus sous 48h.',
+      severity: 'MEDIUM',
+      status: 'REPORTED',
+      category: 'Processus',
+      ticketId: ticketId ?? null,
+    },
+  ];
+
+  for (const inc of incidents) {
+    const existing = await prisma.qualityIncident.findUnique({
+      where: { referenceCode: inc.referenceCode },
+    });
+    if (!existing) {
+      await prisma.qualityIncident.create({ data: inc });
+    }
+  }
+
+  const defaultLayouts = [
+    { moduleKey: 'crm-dashboard', settingKey: 'layout', value: { widgets: ['kpis', 'highlights', 'welcome', 'menu-cards'] } },
+    { moduleKey: 'formateur-dashboard', settingKey: 'layout', value: { widgets: ['sessions', 'learners', 'tasks'] } },
+    { moduleKey: 'stagiaire-dashboard', settingKey: 'layout', value: { widgets: ['parcours', 'documents', 'planning'] } },
+  ];
+
+  for (const layout of defaultLayouts) {
+    await prisma.moduleSetting.upsert({
+      where: {
+        moduleKey_settingKey: {
+          moduleKey: layout.moduleKey,
+          settingKey: layout.settingKey,
+        },
+      },
+      create: layout,
+      update: { value: layout.value },
     });
   }
 }

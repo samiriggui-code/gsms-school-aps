@@ -46,11 +46,11 @@ export function Upload({ Etudiant }: { Etudiant: Etudiant }) {
         throw new Error('Failed to update avatar');
       }
 
-      toast.success("Avatar mis Ã  jour avec succÃ¨s");
+      toast.success('Avatar mis à jour avec succès');
       setIsImageChanged(false);
     } catch (error) {
       console.error(error);
-      toast.error("Erreur lors de la mise Ã  jour de l'avatar");
+      toast.error("Erreur lors de la mise à jour de l'avatar");
     } finally {
       setIsSaving(false);
     }
@@ -105,7 +105,7 @@ export function Upload({ Etudiant }: { Etudiant: Etudiant }) {
         {[
           { label: "Nom complet", value: Etudiant.name },
           { label: "Email", value: Etudiant.email },
-          { label: "CatÃ©gorie", value: Etudiant.userCategory },
+          { label: 'Catégorie', value: Etudiant.userCategory },
           { label: "Fonction", value: Etudiant.jobFunction || '-' },
           { label: "ID Etudiant", value: Etudiant.id.substring(0, 8) }
         ].map((item, index) => (

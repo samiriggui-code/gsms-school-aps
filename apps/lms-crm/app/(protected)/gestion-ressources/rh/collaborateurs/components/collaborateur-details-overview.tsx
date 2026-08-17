@@ -60,7 +60,7 @@ export function CollaborateurDetailsOverview({
         <FormateurOverviewStats collaborateur={collaborateur} />
       : <CollaborateurOverviewStats collaborateur={collaborateur} />}
 
-      <div className="grid lg:grid-cols-3 gap-5 items-stretch">
+      <div className="grid gap-4 md:gap-5 lg:grid-cols-3 lg:items-stretch">
         <div className="lg:col-span-2">
           {mode === 'formateur' ?
             <FormateurHRInfo collaborateur={collaborateur} />

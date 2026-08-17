@@ -1,23 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { getClientIP } from '@/lib/api';
 import { prisma } from '@/lib/prisma';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { ok } from '@/app/api/_shared/http/response';
+import { ok, fail } from '@/app/api/_shared/http/response';
 import { getCompanyProfileGET, loadSystemSettings } from '@/app/api/_shared/company-profile-get';
-import { CompanyProfileSchema } from '@/app/(protected)/gestion-ressources/compagnie/profil/forms/company-profile-schema';
+import { CompanyProfileSchema } from '@/lib/company-profile';
 import { systemLog } from '@/services/system-log';
 import { saveCompanyLogoLocal } from '@/app/api/_shared/save-company-logo-local';
 import { saveCompanyProfileImageLocal } from '@/app/api/_shared/save-company-profile-image-local';
 import { UserStatus } from '@/app/models/user';
+import { requireAnyPermission, requireCrmApiAuth } from '@/lib/auth/require-permission';
+import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
 
 /** Route dédiée : évite le proxy interne `[...path]` → `fetch` (sources de 405) et clarifie le « tenant » comme alias compagnie (`SystemSetting`). */
 
 export async function GET() {
+  const auth = await requireAnyPermission([
+    CRM_PERMISSION.securiteView,
+    CRM_PERMISSION.ressourcesView,
+  ]);
+  if ('error' in auth) return auth.error;
   return getCompanyProfileGET();
 }
 
 export async function HEAD() {
+  const auth = await requireAnyPermission([
+    CRM_PERMISSION.securiteView,
+    CRM_PERMISSION.ressourcesView,
+  ]);
+  if ('error' in auth) return auth.error;
   const res = await getCompanyProfileGET();
   return new NextResponse(null, { status: res.status });
 }
@@ -53,12 +63,11 @@ function parseOptionalPositiveInt(s: string | null | undefined): number | null {
 
 /** Mise à jour profil compagnie (`application/json` ou `multipart/form-data` avec `payload` + fichier logo). */
 export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
-    }
+  const auth = await requireCrmApiAuth(CRM_PERMISSION.securiteEdit);
+  if (!auth.ok) return auth.response;
 
+  try {
+    const session = auth.session;
     const settings = await loadSystemSettings();
     if (!settings) {
       return NextResponse.json({ message: 'Settings not found.' }, { status: 404 });

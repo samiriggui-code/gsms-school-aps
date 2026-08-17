@@ -1,16 +1,21 @@
 'use client';
 
 import { ReactNode, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSettings } from '@/providers/settings-provider';
 import { Footer } from './components/footer';
 import { Header } from './components/header';
 import { Sidebar } from './components/sidebar';
-import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/user-management-support-section';
 
 export function Demo1Layout({ children }: { children: ReactNode }) {
   const isMobile = useIsMobile();
+  const pathname = usePathname();
   const { settings, setOption } = useSettings();
+
+  /** Aide injectée dans le layout Paramètres système (évite chevauchement sidebar). */
+  const hideGlobalHelp = pathname?.includes('/parametres/settings') ?? false;
 
   useEffect(() => {
     const bodyClass = document.body.classList;
@@ -61,7 +66,7 @@ export function Demo1Layout({ children }: { children: ReactNode }) {
           <div className="page-main-content min-w-0 w-full min-h-0 flex-1 pb-5 lg:pb-8">
             {children}
           </div>
-          <UserManagementSupportSection />
+          {!hideGlobalHelp && <UserManagementSupportSection />}
         </main>
 
         <Footer />

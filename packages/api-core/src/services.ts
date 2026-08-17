@@ -1,5 +1,5 @@
 import { PrismaClient, UserStatus, CandidatureStatus } from '@repo/database';
-import { redis, getCache, setCache } from '@repo/redis';
+import { getCache, setCache } from '@repo/redis';
 import { ModuleStatsResponse, StatKpiCard } from './contracts';
 
 const CANDIDATURE_STATUS_LABEL_FR: Partial<Record<CandidatureStatus, string>> = {
@@ -284,7 +284,14 @@ export class StatService {
         { label: 'Offres Catalogue', value: formationsCatalogPublished, color: 'primary', icon: 'BookOpen' },
         { label: 'Sessions', value: sessionsTotal, color: 'info', icon: 'Calendar' },
         { label: 'Inscriptions', value: sessionParticipantsTotal, color: 'success', icon: 'UserCheck' },
-        { label: 'Dossiers en attente', value: candidaturesPending, trend: 'up', color: 'warning', icon: 'FileText' },
+        {
+          label: 'Dossiers en attente',
+          value: candidaturesPending,
+          trend: 'neutral',
+          trendValue: `${candidaturesValidated} validés`,
+          color: 'warning',
+          icon: 'FileText',
+        },
       ];
 
       const categoryDistribution = candidaturesGrouped
@@ -402,7 +409,8 @@ export class StatService {
       const now = new Date();
       const timelineStart = new Date(now.getFullYear(), now.getMonth() - (months - 1), 1);
 
-      const [totalDevis, acceptedDevis, totalLeads, devisEvolution] = await Promise.all([
+      const [totalDevis, acceptedDevis, totalLeads, devisEvolution, acceptedUnpaidRows] =
+        await Promise.all([
         this.prisma.financeDevis.count(),
         this.prisma.financeDevis.count({ where: { status: 'ACCEPTED' } }),
         this.prisma.lead.count(),
@@ -410,7 +418,30 @@ export class StatService {
           where: { createdAt: { gte: timelineStart } },
           select: { createdAt: true, totalTtc: true },
         }),
+        this.prisma.financeDevis.findMany({
+          where: { status: 'ACCEPTED' },
+          select: {
+            totalTtc: true,
+            payments: { where: { status: 'RECEIVED' }, select: { amount: true } },
+          },
+        }),
       ]);
+
+      let pendingInvoices = 0;
+      for (const row of acceptedUnpaidRows) {
+        const total =
+          row.totalTtc != null && typeof row.totalTtc === 'object' && 'toNumber' in row.totalTtc
+            ? (row.totalTtc as { toNumber: () => number }).toNumber()
+            : Number(row.totalTtc ?? 0);
+        const paid = row.payments.reduce((sum, p) => {
+          const amt =
+            p.amount != null && typeof p.amount === 'object' && 'toNumber' in p.amount
+              ? (p.amount as { toNumber: () => number }).toNumber()
+              : Number(p.amount ?? 0);
+          return sum + amt;
+        }, 0);
+        if (total > 0 && paid < total - 0.01) pendingInvoices += 1;
+      }
 
       const monthMap = new Map<string, number>();
       for (const devis of devisEvolution) {
@@ -422,7 +453,7 @@ export class StatService {
         { label: 'Devis Émis', value: totalDevis, color: 'primary', icon: 'FileText' },
         { label: 'Devis Acceptés', value: acceptedDevis, color: 'success', icon: 'CheckCircle' },
         { label: 'Nouveaux Leads', value: totalLeads, color: 'info', icon: 'UserPlus' },
-        { label: 'Factures en attente', value: 0, color: 'warning', icon: 'Clock' },
+        { label: 'Factures en attente', value: pendingInvoices, color: 'warning', icon: 'Clock' },
       ];
 
       const timeline = StatService.generateMonthlyTimeline(months);

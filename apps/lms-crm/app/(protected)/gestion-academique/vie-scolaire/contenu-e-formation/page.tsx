@@ -1,5 +1,16 @@
-import { LmsContentReviewPage } from '@/components/gestion-academique/lms-content-review-page';
+import { redirect } from 'next/navigation';
 
-export default function ContenuEFormationPage() {
-  return <LmsContentReviewPage />;
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function ContenuEFormationRedirectPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const qs = new URLSearchParams();
+  qs.set('tab', 'eformation');
+  const sessionId = params.sessionId;
+  if (typeof sessionId === 'string' && sessionId.trim()) {
+    qs.set('sessionId', sessionId.trim());
+  }
+  redirect(`/gestion-academique/vie-scolaire/suivi-formations?${qs.toString()}`);
 }

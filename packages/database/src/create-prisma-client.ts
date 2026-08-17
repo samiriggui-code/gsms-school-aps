@@ -21,10 +21,11 @@ const REQUIRED_DELEGATES = [
   'rhQualification',
   'formationSessionDay',
   'formationSessionEmargement',
+  'venueRoomFixedEquipment',
 ] as const;
 
 /** Bump quand le client généré change (modèles / champs métier RH). */
-const CLIENT_SCHEMA_REVISION = 'suivi-formations-phase3-v1';
+const CLIENT_SCHEMA_REVISION = 'equipment-room-fixed-inventory-v1';
 
 /** Marqueurs d'enum + révision — invalide le singleton dev si le client généré a changé. */
 function prismaSchemaFingerprint(): string {

@@ -9,10 +9,24 @@ export const TOPBAR_SHEET_CONTENT_CLASS = cn(
   'sm:h-auto sm:max-h-[calc(100dvh-1.5rem)]',
   'sm:w-[min(100vw-1.5rem,26rem)] sm:rounded-xl sm:border sm:border-border sm:shadow-xl',
   'md:end-4 md:inset-y-4 md:w-[min(100vw-2rem,30rem)]',
-  'lg:w-[min(100vw-2rem,28rem)]',
+  // Chat dual-pane : plus large sur desktop
+  'lg:w-[min(100vw-2rem,42rem)]',
   '[&_[data-slot=sheet-close]]:top-[max(0.75rem,env(safe-area-inset-top))]',
   '[&_[data-slot=sheet-close]]:end-[max(0.75rem,env(safe-area-inset-right))]',
   'sm:[&_[data-slot=sheet-close]]:top-4 sm:[&_[data-slot=sheet-close]]:end-4',
+);
+
+/** Contenu chat en 2 colonnes (liste | thread) dès `md`. */
+export const TOPBAR_CHAT_SPLIT_CLASS = cn(
+  'flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row',
+);
+
+export const TOPBAR_CHAT_LIST_PANE_CLASS = cn(
+  'flex min-h-0 w-full flex-col overflow-hidden border-border md:w-[14.5rem] md:shrink-0 md:border-e',
+);
+
+export const TOPBAR_CHAT_THREAD_PANE_CLASS = cn(
+  'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden',
 );
 
 export const TOPBAR_SHEET_HEADER_CLASS = cn(

@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { LANDING_QUOTE_LEAD_SOURCE } from '@repo/database';
 import { sendQuoteRequestEmails } from '@repo/mail';
 import { createWorkflowEngine } from '@repo/api-core';
+import {
+  createDraftDevisFromLead,
+  isFinanceAutoDevisFromLeadEnabled,
+} from '@/lib/finance/create-draft-devis-from-lead';
 import prisma from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
@@ -9,6 +13,7 @@ export const dynamic = 'force-dynamic';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Body = {
+  requesterType?: 'entreprise' | 'particulier';
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -65,6 +70,7 @@ export async function POST(request: NextRequest) {
   const message = clean(body.message).slice(0, 4000);
   const formationSlug = clean(body.formationSlug);
   const formationNameFallback = clean(body.formationName);
+  const requesterType = body.requesterType === 'particulier' ? 'particulier' : 'entreprise';
 
   if (!firstName || !lastName || !email || !phone || !formationSlug) {
     return NextResponse.json(
@@ -73,19 +79,35 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (!company || !traineesExpected || !preferredDates) {
+  if (!EMAIL_RE.test(email)) {
+    return NextResponse.json({ message: 'Adresse email invalide.' }, { status: 400 });
+  }
+
+  if (requesterType === 'entreprise' && !company) {
+    return NextResponse.json({ message: 'La raison sociale est obligatoire pour une entreprise.' }, { status: 400 });
+  }
+
+  if (requesterType === 'entreprise' && !traineesExpected) {
     return NextResponse.json(
-      {
-        message:
-          'Raison sociale, nombre de stagiaires (ou fourchette) et période / dates souhaitées sont obligatoires.',
-      },
+      { message: 'Le nombre de stagiaires (ou fourchette) est obligatoire pour une entreprise.' },
       { status: 400 },
     );
   }
 
-  if (!EMAIL_RE.test(email)) {
-    return NextResponse.json({ message: 'Adresse email invalide.' }, { status: 400 });
+  const traineesResolved =
+    traineesExpected || (requesterType === 'particulier' ? '1' : '');
+
+  if (!preferredDates) {
+    return NextResponse.json(
+      { message: 'Indiquez une période ou des dates souhaitées.' },
+      { status: 400 },
+    );
   }
+
+  const companyResolved =
+    requesterType === 'particulier'
+      ? company || `Particulier — ${firstName} ${lastName}`.trim()
+      : company;
 
   if (companySiret && (companySiret.length < 9 || companySiret.length > 14)) {
     return NextResponse.json({ message: 'SIRET / SIREN : 9 à 14 chiffres si renseigné.' }, { status: 400 });
@@ -115,19 +137,22 @@ export async function POST(request: NextRequest) {
     formation && !catalogOk ? '⚠ Offre catalogue inactive — rattachement formation ignoré.' : '',
     !formation ? '⚠ Slug inconnu en base — à rapprocher manuellement du catalogue.' : '',
     '',
+    '=== Type de demandeur ===',
+    requesterType === 'particulier' ? 'Particulier' : 'Entreprise / organisme',
+    '',
     '=== Contact ===',
     `${firstName} ${lastName}`,
     `Email: ${email}`,
     `Téléphone: ${phone}`,
     contactRole ? `Fonction: ${contactRole}` : '',
     '',
-    '=== Entreprise / structure ===',
-    `Raison sociale: ${company}`,
+    requesterType === 'entreprise' ? '=== Entreprise / structure ===' : '=== Coordonnées ===',
+    requesterType === 'entreprise' ? `Raison sociale: ${companyResolved}` : `Profil: ${companyResolved}`,
     companySiret ? `SIRET / SIREN: ${companySiret}` : '',
     companyAddress ? `Adresse / site d’intervention: ${companyAddress}` : '',
     '',
     '=== Projet & planning ===',
-    `Nombre de stagiaires (estimation): ${traineesExpected}`,
+    `Nombre de stagiaires (estimation): ${traineesResolved}`,
     deliveryMode ? `Modalité souhaitée: ${deliveryMode}` : '',
     `Période ou dates souhaitées: ${preferredDates.replace(/\s*\n\s*/g, ' · ').trim()}`,
     fundingHint ? `Financement envisagé: ${fundingHint}` : '',
@@ -157,9 +182,9 @@ export async function POST(request: NextRequest) {
         lastName,
         email,
         phone,
-        company,
+        company: companyResolved,
         formationLabel,
-        traineesExpected,
+        traineesExpected: traineesResolved,
         preferredDates: preferredDates.replace(/\s*\n\s*/g, ' · ').trim(),
         details: notesSections,
       },
@@ -179,10 +204,11 @@ export async function POST(request: NextRequest) {
         lastName,
         email,
         phone,
-        company,
+        company: companyResolved,
         formationSlug,
         formationLabel,
-        traineesExpected,
+        traineesExpected: traineesResolved,
+        requesterType,
         deliveryMode,
         fundingHint,
       },
@@ -192,5 +218,39 @@ export async function POST(request: NextRequest) {
     console.error('[quote-requests] workflow', e);
   }
 
-  return NextResponse.json({ message: 'Demande enregistrée.' }, { status: 201 });
+  let autoDevis: { id: string; referenceCode: string } | null = null;
+  if (isFinanceAutoDevisFromLeadEnabled()) {
+    try {
+      const draft = await createDraftDevisFromLead(prisma, lead.id);
+      if (draft) {
+        autoDevis = { id: draft.id, referenceCode: draft.referenceCode };
+        try {
+          const workflows = createWorkflowEngine(prisma);
+          await workflows.emit(
+            'crm.finance.devis.created',
+            {
+              devisId: draft.id,
+              referenceCode: draft.referenceCode,
+              title: draft.title,
+              leadId: lead.id,
+              source: 'landing.auto',
+            },
+            { dedupeKey: `workflow:devis-created:${draft.id}` },
+          );
+        } catch (e) {
+          console.error('[quote-requests] auto-devis workflow', e);
+        }
+      }
+    } catch (e) {
+      console.error('[quote-requests] auto-devis', e);
+    }
+  }
+
+  return NextResponse.json(
+    {
+      message: 'Demande enregistrée.',
+      ...(autoDevis ? { devisId: autoDevis.id, devisReference: autoDevis.referenceCode } : {}),
+    },
+    { status: 201 },
+  );
 }

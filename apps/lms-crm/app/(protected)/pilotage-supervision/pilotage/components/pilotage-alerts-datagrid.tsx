@@ -50,7 +50,6 @@ import {
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { usePusher } from '@/hooks/use-pusher';
-import { PILOTAGE_PAGE_INTRO } from '@/lib/pilotage/page-copy';
 import { cn } from '@/lib/utils';
 import { formatDateTime } from '@/lib/helpers';
 import {
@@ -64,9 +63,8 @@ import {
   PilotageModuleTabs,
   pilotageModuleKeyPrefix,
 } from './pilotage-module-tabs';
+import { usePilotageAlertesSettings } from '@/hooks/use-pilotage-alertes-settings';
 import { PilotageAlertDetailSheet } from './pilotage-alert-detail-sheet';
-import { PilotagePageIntro } from './pilotage-page-intro';
-import { PilotageAlertsPermissionMatrix } from './pilotage-alerts-permission-matrix';
 
 const PAGE_SIZE = 10;
 
@@ -87,9 +85,9 @@ function severityLabel(severity: InAppNotificationItem['severity']) {
 
 export function PilotageAlertsDatagrid() {
   const { title, description } = usePageToolbarMeta('/pilotage-supervision/pilotage/alertes');
-  const intro = PILOTAGE_PAGE_INTRO.alertes;
   const { data: session } = useSession();
   const canViewPilotage = sessionHasPermission(session, CRM_PERMISSION.pilotageView);
+  const { settings: alertesSettings } = usePilotageAlertesSettings();
   const queryClient = useQueryClient();
   const [moduleId, setModuleId] = useState<PilotageModuleId>('all');
   const [tab, setTab] = useState<'all' | 'unread'>('all');
@@ -344,22 +342,27 @@ export function PilotageAlertsDatagrid() {
       </Container>
 
       <Container className="space-y-5 pb-8 lg:space-y-7.5">
+        <div className="rounded-lg border border-dashed bg-muted/20 px-4 py-3 text-sm text-muted-foreground">
+          Seuils alertes (Paramètres métier) — candidatures en attente :{' '}
+          <strong className="text-foreground">{alertesSettings.candidaturesPending}</strong>, factures
+          en retard : <strong className="text-foreground">{alertesSettings.overdueInvoices}</strong>,
+          maintenances dues :{' '}
+          <strong className="text-foreground">{alertesSettings.equipmentMaintenanceDue}</strong>,
+          sessions sans formateur :{' '}
+          <strong className="text-foreground">{alertesSettings.sessionsWithoutTrainer}</strong>.
+          <Link
+            href="/securite-configuration/parametres/settings#settings_modules"
+            className="ms-2 font-medium text-primary hover:underline"
+          >
+            Modifier les seuils
+          </Link>
+        </div>
+
         <ModuleKpiStatsRow items={kpiCards} />
-
-        <PilotageModuleTabs value={moduleId} onChange={setModuleId} />
-
-        <PilotagePageIntro lead={intro.lead} detail={intro.detail} />
-
-        <PilotageAlertsPermissionMatrix />
 
         <Card className="mb-5 border-border shadow-none">
           <CardHeader className="space-y-4 py-4">
-            <div className="space-y-1">
-              <h3 className="text-base font-semibold text-foreground">Registre des alertes opérationnelles</h3>
-              <p className="text-xs text-muted-foreground">
-                Filtrez par module, sévérité ou état de lecture — synchronisé avec la cloche du CRM.
-              </p>
-            </div>
+            <PilotageModuleTabs value={moduleId} onChange={setModuleId} />
 
             <div className="relative w-full">
               <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />

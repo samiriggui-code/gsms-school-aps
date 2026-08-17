@@ -62,14 +62,19 @@ export function LandingTeamList() {
           (json as { error?: { message?: string } }).error?.message ?? 'Synchronisation impossible',
         );
       }
-      return unwrapSectionApiData<{ published: number }>(json) ?? { published: 0 };
+      return unwrapSectionApiData<{ published: number; archived?: number }>(json) ?? { published: 0 };
     },
     onSuccess: (result) => {
-      toast.success(
-        result.published > 0
-          ? `${result.published} membre(s) publié(s) sur le landing`
-          : 'Aucun membre à publier (vérifiez les équipes RH)',
-      );
+      if (result.published === 0 && (result.archived ?? 0) === 0) {
+        toast.success('Aucun membre à publier (vérifiez les équipes RH)');
+        void qc.invalidateQueries({ queryKey: landingTeamQueryKey });
+        return;
+      }
+      const parts = [`${result.published} membre(s) publié(s) sur le landing`];
+      if ((result.archived ?? 0) > 0) {
+        parts.push(`${result.archived} retiré(s) (hors équipes RH)`);
+      }
+      toast.success(parts.join(' · '));
       void qc.invalidateQueries({ queryKey: landingTeamQueryKey });
     },
     onError: (e: Error) => toast.error(e.message),

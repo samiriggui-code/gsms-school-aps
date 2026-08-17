@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const NotificationSettingsSchema = z.object({
   notifyStockEmail: z.boolean(),
   notifyStockWeb: z.boolean(),
+  notifyStockThreshold: z.number().int().min(0).max(9999),
   notifyStockRoleIds: z.array(z.string()),
   notifyNewOrderEmail: z.boolean(),
   notifyNewOrderWeb: z.boolean(),

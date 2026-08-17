@@ -4,6 +4,7 @@ const SKIP_PREFIXES = ['/api', '/_next', '/brand', '/favicon', '/media', '/css',
 
 /** Chemins CRM / auth — pas de redirection SEO landing. */
 const CRM_SKIP_PREFIXES = [
+  '/p',
   '/signin',
   '/mon-dossier',
   '/cnaps',

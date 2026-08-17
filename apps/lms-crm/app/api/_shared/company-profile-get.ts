@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok } from '@/app/api/_shared/http/response';
 import { UserStatus } from '@/app/models/user';
 
@@ -34,14 +32,10 @@ function dateToInputValue(d: Date | null | undefined): string {
 
 /**
  * Profil « compagnie / école » : `SystemSetting` (+ repli `ClientSite` si nom/adresse vides) + compteurs + admin.
+ * Auth : à la charge de la route appelante (`tenant/profile`, etc.).
  */
 export async function getCompanyProfileGET(): Promise<NextResponse> {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
-    }
-
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
 

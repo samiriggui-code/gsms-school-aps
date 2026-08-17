@@ -17,6 +17,7 @@ import { FormationSheetTabsList } from '@/components/formation-sheet-tabs';
 import { useFormationSheetLabels } from '@/hooks/useFormationSheetLabels';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Upload } from './customers/components/upload';
+import { FormationCatalogSheetFooter } from '@/components/formation-catalog-sheet-footer';
 import { FormationQuoteFooter } from '@/components/formation-quote-footer';
 import { sstCatalogSlug } from '@/lib/catalog-formation-slugs';
 import { Statistics3 } from './customers/components/statistics3';
@@ -156,7 +157,13 @@ export function SstDetailsSheet({ open, onOpenChange, type }: SstDetailsSheetPro
               catalogSlug={sstCatalogSlug('SST Entreprise')}
               formationDisplayName={title}
             />
-          ) : null}
+          ) : (
+            <FormationCatalogSheetFooter
+              catalogSlug={sstCatalogSlug(type)}
+              formationDisplayName={title}
+              requiresQuote={false}
+            />
+          )}
           <Button
             variant="mono"
             onClick={() => onOpenChange(false)}

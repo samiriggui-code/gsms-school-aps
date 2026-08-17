@@ -1,11 +1,10 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import {
   ColumnDef,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   PaginationState,
   useReactTable,
@@ -90,7 +89,7 @@ import { PilotageModuleTabs, pilotageApiModuleId } from './pilotage-module-tabs'
 import { PilotagePageIntro } from './pilotage-page-intro';
 import { PilotageRapportDetailSheet } from './pilotage-rapport-detail-sheet';
 import { PilotageRapportEditSheet } from './pilotage-rapport-edit-sheet';
-import { PilotageRapportGenerateDialog } from './pilotage-rapport-generate-dialog';
+import { PilotageRapportGenerateSheet } from './pilotage-rapport-generate-sheet';
 import { PilotageReportActorCell } from './pilotage-report-actor-cell';
 import { PilotageRapportsSchedulesSheet } from './pilotage-rapports-schedules-sheet';
 
@@ -146,7 +145,7 @@ export function PilotageRapportsContent() {
 
   const [manualRefresh, setManualRefresh] = useState(false);
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['pilotage-rapports', apiModule, periodQueryKey],
     queryFn: () =>
       fetchPilotageRapports(
@@ -155,6 +154,7 @@ export function PilotageRapportsContent() {
         periodApi.customRange,
       ),
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
     refetchIntervalInBackground: false,
     refetchInterval: (query) => {
@@ -194,7 +194,7 @@ export function PilotageRapportsContent() {
     }));
   }, [data?.kpis]);
 
-  const allRows = data?.rows ?? [];
+  const allRows = useMemo(() => data?.rows ?? [], [data?.rows]);
   const filteredRows = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return allRows;
@@ -419,7 +419,6 @@ export function PilotageRapportsContent() {
     onPaginationChange: setPagination,
     getRowId: (r) => r.id,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
@@ -482,44 +481,34 @@ export function PilotageRapportsContent() {
 
         <Card className="mb-5 border-border shadow-none">
           <CardHeader className="space-y-4 py-4">
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 space-y-1">
                 <h3 className="text-base font-semibold text-foreground">Historique des rapports générés</h3>
                 <p className="text-xs text-muted-foreground">
                   Sélectionnez des lignes pour télécharger, imprimer ou supprimer en lot.
                 </p>
               </div>
-              <div
-                className={cn(
-                  'flex w-full shrink-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end xl:w-auto',
-                  DATAGRID_TOOLBAR_ACTIONS,
-                )}
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <ReportPeriodRangePicker value={periodValue} onChange={handlePeriodChange} />
-                  {data?.periodLabel ? (
-                    <Badge variant="outline" appearance="light" className="text-[10px] font-medium">
-                      {data.periodLabel}
-                    </Badge>
-                  ) : null}
-                </div>
+              <div className={cn('flex shrink-0 flex-wrap items-center gap-2', DATAGRID_TOOLBAR_ACTIONS)}>
                 <Button variant="outline" type="button" onClick={() => setSchedulesOpen(true)}>
                   <CalendarClock className="size-4" />
                   Automatisations
                 </Button>
                 <Button
                   variant="outline"
-                  disabled={manualRefresh}
+                  disabled={manualRefresh || isFetching}
                   onClick={() => {
                     setManualRefresh(true);
                     void refetch().finally(() => setManualRefresh(false));
                   }}
                 >
-                  <RefreshCw className={cn('size-4', manualRefresh && 'animate-spin')} />
+                  <RefreshCw className={cn('size-4', (manualRefresh || isFetching) && 'animate-spin')} />
                   Actualiser
                 </Button>
               </div>
             </div>
+
+            <ReportPeriodRangePicker value={periodValue} onChange={handlePeriodChange} />
+
             <div className="relative w-full">
               <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -538,7 +527,7 @@ export function PilotageRapportsContent() {
         <DataGrid
           table={table}
           recordCount={filteredRows.length}
-          isLoading={isLoading}
+          isLoading={isLoading && !data}
           loadingMessage="Chargement des rapports…"
           emptyMessage={
             data?.periodLabel
@@ -562,10 +551,9 @@ export function PilotageRapportsContent() {
         </DataGrid>
       </Container>
 
-      <PilotageRapportGenerateDialog
+      <PilotageRapportGenerateSheet
         open={generateOpen}
         onOpenChange={setGenerateOpen}
-        legacyCsvTemplates={data?.templates ?? []}
         defaultPeriodValue={periodValue}
         onGenerated={() => queryClient.invalidateQueries({ queryKey: ['pilotage-rapports'] })}
       />

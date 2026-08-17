@@ -1,6 +1,6 @@
 'use client';
 
-/** Panneau unique : même coque que `EtudiantDetailsSheet` · onglet « Parcours » regroupe CRM, conformité et activité. */
+/** Panneau unique : même coque que `EtudiantDetailsSheet` · onglets dossier / conformité / accès séparés. */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'date-fns';
@@ -63,6 +63,9 @@ import { EtudiantDetailsAbsences } from './etudiant-details-absences';
 import { EtudiantDetailsCompliance } from './etudiant-details-compliance';
 import { CandidatDocumentsCnapsTab } from './candidat-documents-cnaps-tab';
 import { CandidatConformiteDossierSection } from './details/candidat-conformite-dossier-section';
+import { EtudiantAccesTab } from './etudiant-acces-tab';
+import { EtudiantPlatformAccessPanel } from './etudiant-platform-access-panel';
+import { getLmsAccessTier } from '@/lib/portal/lms-access-shared';
 import {
   fetchUserRhDocuments,
   isCnapsDossierStructurallyComplete,
@@ -78,25 +81,45 @@ const escapeHtml = (value: unknown) => {
     .replace(/'/g, '&#39;');
 };
 
-export type DetailTab = 'overview' | 'parcours' | 'sessions' | 'absences' | 'documents' | 'settings';
+export type DetailTab =
+  | 'overview'
+  | 'dossier'
+  | 'conformite'
+  | 'compte';
 
 export type CandidatureDetailSheetInitialTab =
   | DetailTab
   | 'dossiers'
   | 'pipeline'
+  | 'parcours'
   | 'permissions'
   | 'compliance'
   | 'activity'
   | 'synthese'
-  | 'conformite';
+  | 'conformite'
+  | 'acces'
+  | 'sessions'
+  | 'absences'
+  | 'documents'
+  | 'settings';
 
-const ACTIVE_TABS = new Set<string>(['overview', 'parcours', 'sessions', 'absences', 'documents', 'settings']);
+const ACTIVE_TABS = new Set<string>([
+  'overview',
+  'dossier',
+  'conformite',
+  'compte',
+]);
 
 function mapInitialTab(t: CandidatureDetailSheetInitialTab | undefined): DetailTab {
   if (!t || t === 'synthese') return 'overview';
-  if (t === 'permissions') return 'overview';
-  if (t === 'dossiers' || t === 'pipeline' || t === 'conformite' || t === 'compliance' || t === 'activity') {
-    return 'parcours';
+  if (t === 'permissions' || t === 'acces' || t === 'settings' || t === 'absences') {
+    return 'compte';
+  }
+  if (t === 'dossiers' || t === 'pipeline' || t === 'parcours' || t === 'sessions') {
+    return 'dossier';
+  }
+  if (t === 'conformite' || t === 'compliance' || t === 'activity' || t === 'documents') {
+    return 'conformite';
   }
   return ACTIVE_TABS.has(t as string) ? (t as DetailTab) : 'overview';
 }
@@ -408,8 +431,15 @@ export function CandidatureDetailSheet({
 
   const goPipeline = (candidatureId: string) => {
     setSelectedCandidatureId(candidatureId);
-    setActiveTab('parcours');
+    setActiveTab('dossier');
   };
+
+  const lmsAccessTier = useMemo(
+    () => getLmsAccessTier(selectedCandidature?.status ?? primary?.status),
+    [selectedCandidature?.status, primary?.status],
+  );
+
+  const dossierLabelForAccess = primary ? STATUS_LABEL[primary.status] ?? primary.status : null;
 
   usePusher(
     session?.user?.id,
@@ -422,26 +452,18 @@ export function CandidatureDetailSheet({
     },
     {
       channelName:
-        sheetActive &&
-        ((session?.user as { companyId?: string })?.companyId ||
-          (session?.user as { tenantId?: string })?.tenantId) &&
-        Etudiant?.id
+        sheetActive && Etudiant?.id
           ? getEtudiantActivityChannel(
               String(
                 (session?.user as { companyId?: string })?.companyId ||
-                  (session?.user as { tenantId?: string })?.tenantId,
+                  (session?.user as { tenantId?: string })?.tenantId ||
+                  'solo',
               ),
               Etudiant.id,
             )
           : undefined,
       eventName: Etudiant_ACTIVITY_EVENT,
-      enabled: Boolean(
-        sheetActive &&
-          session?.user?.id &&
-          (((session?.user as { companyId?: string })?.companyId ||
-            (session?.user as { tenantId?: string })?.tenantId) &&
-            Etudiant?.id),
-      ),
+      enabled: Boolean(sheetActive && session?.user?.id && Etudiant?.id),
     },
   );
 
@@ -451,7 +473,7 @@ export function CandidatureDetailSheet({
     settingsFormRef.current?.requestSubmit();
   };
 
-  const handleEditClick = () => setActiveTab('settings');
+  const handleEditClick = () => setActiveTab('compte');
 
   const handleSendResetEmail = async () => {
     if (!Etudiant) return;
@@ -541,7 +563,7 @@ export function CandidatureDetailSheet({
             </div>
           : Etudiant && hub ?
             <>
-              <div className="flex justify-between flex-wrap gap-2 border-b border-border bg-background px-4 py-4 sm:px-5 sm:py-5 shrink-0">
+              <div className="flex justify-between flex-wrap gap-3 border-b border-border bg-background px-3 py-3 sm:px-4 sm:py-4 md:px-5 md:py-5 shrink-0">
                 <div className="flex min-w-0 flex-1 flex-col gap-3">
                   <div className="flex min-w-0 flex-wrap items-center gap-2.5">
                     <span className="min-w-0 break-words text-base font-bold leading-tight tracking-tight text-foreground sm:text-lg lg:text-[24px]">
@@ -605,21 +627,21 @@ export function CandidatureDetailSheet({
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center flex-wrap gap-2 text-2sm">
+                  <div className="flex items-center flex-wrap gap-x-2 gap-y-1.5 text-2sm">
                     <div className="flex items-center gap-1.5 bg-muted/30 px-2 py-0.5 rounded-md border border-border/50">
                       <span className="font-semibold text-muted-foreground text-[10px] uppercase tracking-wider">ID</span>
                       <span className="font-bold text-foreground/80">{Etudiant.id.substring(0, 8)}</span>
                     </div>
-                    <BadgeDot className="bg-muted-foreground/30 size-1" />
-                    <span className="font-normal text-muted-foreground">Formation visée&nbsp;:</span>
-                    <span className="font-bold text-foreground/80">
+                    <BadgeDot className="bg-muted-foreground/30 size-1 hidden sm:inline-flex" />
+                    <span className="font-normal text-muted-foreground w-full sm:w-auto">Formation visée&nbsp;:</span>
+                    <span className="font-bold text-foreground/80 break-words">
                       {enteteFormationVisée}
                     </span>
-                    <BadgeDot className="bg-muted-foreground/30 size-1" />
-                    <span className="font-normal text-muted-foreground">Autorisation préalable&nbsp;:</span>
-                    <span className="font-bold text-foreground/80">{enteteAutorisationPrealable}</span>
-                    <BadgeDot className="bg-muted-foreground/30 size-1" />
-                    <span className="font-normal text-muted-foreground">Dernière visite&nbsp;:</span>
+                    <BadgeDot className="bg-muted-foreground/30 size-1 hidden md:inline-flex" />
+                    <span className="font-normal text-muted-foreground w-full sm:w-auto">Autorisation préalable&nbsp;:</span>
+                    <span className="font-bold text-foreground/80 break-words">{enteteAutorisationPrealable}</span>
+                    <BadgeDot className="bg-muted-foreground/30 size-1 hidden md:inline-flex" />
+                    <span className="font-normal text-muted-foreground w-full sm:w-auto">Dernière visite&nbsp;:</span>
                     <span className="font-semibold text-foreground/80">
                       {Etudiant.lastSignInAt ?
                         formatDateTime(new Date(Etudiant.lastSignInAt))
@@ -629,10 +651,10 @@ export function CandidatureDetailSheet({
                 </div>
               </div>
 
-              <div className="mx-1.5 min-h-0 flex-1 overflow-y-auto overscroll-contain">
-                <div className="flex flex-wrap items-start lg:flex-nowrap px-3.5">
-                  <div className="w-full shrink-0 lg:w-[280px] py-5 lg:pe-5 space-y-4">
-                    <div className="w-full h-[240px] bg-muted/10 border border-border rounded-lg flex items-center justify-center overflow-hidden relative">
+              <div className="mx-0 sm:mx-1.5 min-h-0 flex-1 overflow-y-auto overscroll-contain">
+                <div className="flex flex-col items-stretch lg:flex-row lg:flex-nowrap px-2 sm:px-3.5">
+                  <div className="w-full shrink-0 lg:w-[280px] py-4 sm:py-5 lg:pe-5 space-y-4 border-b border-border lg:border-b-0">
+                    <div className="w-full h-[160px] sm:h-[200px] lg:h-[240px] bg-muted/10 border border-border rounded-lg flex items-center justify-center overflow-hidden relative">
                       {Etudiant.avatar ?
                         <img
                           src={getAvatarUrl(Etudiant.avatar)}
@@ -649,6 +671,7 @@ export function CandidatureDetailSheet({
                     <div className="space-y-3">
                       {[
                         { label: 'Nom complet', value: Etudiant.name },
+                        { label: 'Email connexion (pro)', value: Etudiant.proEmail?.trim() || '—' },
                         { label: 'Email personnel', value: Etudiant.email },
                         ...(Etudiant.phone ? [{ label: 'Téléphone', value: Etudiant.phone }] : []),
                         { label: 'Catégorie', value: Etudiant.userCategory ?? '—' },
@@ -660,9 +683,9 @@ export function CandidatureDetailSheet({
                         : []),
                         { label: 'ID candidat', value: Etudiant.id.substring(0, 8) },
                       ].map((item, index) => (
-                        <div key={index} className="flex justify-between items-center text-2sm">
-                          <span className="text-muted-foreground">{item.label}</span>
-                          <span className="font-semibold text-foreground truncate max-w-[150px]">{item.value}</span>
+                        <div key={index} className="flex justify-between items-start gap-3 text-2sm">
+                          <span className="text-muted-foreground shrink-0">{item.label}</span>
+                          <span className="font-semibold text-foreground text-end break-all min-w-0">{item.value}</span>
                         </div>
                       ))}
                     </div>
@@ -690,28 +713,42 @@ export function CandidatureDetailSheet({
                         </>
                       : null}
                     </div>
+
+                    <EtudiantPlatformAccessPanel
+                      etudiant={Etudiant}
+                      lmsAccessTier={lmsAccessTier}
+                      dossierLabel={dossierLabelForAccess}
+                      compact
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-xs"
+                      onClick={() => setActiveTab('compte')}
+                    >
+                      Gérer accès &amp; permissions
+                    </Button>
                   </div>
 
-                  <div className="grow lg:border-s border-border space-y-5 py-5 lg:ps-5 min-w-0">
-                    <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as DetailTab)} className="w-auto text-sm text-muted-foreground">
-                      <TabsList className="inline-flex w-auto grow-0 mb-2.5 flex-wrap gap-y-1 max-w-full">
+                  <div className="grow lg:border-s border-border space-y-5 py-4 sm:py-5 lg:ps-5 min-w-0 w-full">
+                    <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as DetailTab)} className="w-full min-w-0 text-sm text-muted-foreground">
+                      <div className="-mx-1 overflow-x-auto pb-1 [scrollbar-width:thin]">
+                        <TabsList className="inline-flex w-max min-w-full sm:w-auto grow-0 mb-2.5 flex-nowrap gap-1 sm:flex-wrap sm:gap-y-1 px-1">
                         <TabsTrigger value="overview">Vue d&apos;ensemble</TabsTrigger>
-                        <TabsTrigger value="parcours">Parcours &amp; conformité</TabsTrigger>
-                        <TabsTrigger value="sessions">Sessions</TabsTrigger>
-                        <TabsTrigger value="absences" className="relative">
-                          Absences
+                        <TabsTrigger value="dossier">Dossier CRM</TabsTrigger>
+                        <TabsTrigger value="conformite">Conformité</TabsTrigger>
+                        <TabsTrigger value="compte">
+                          Compte
                           {Etudiant.status === UserStatus.ABSENT && (
-                            <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
-                            </span>
+                            <span className="ms-1.5 inline-flex h-2 w-2 rounded-full bg-destructive" />
                           )}
                         </TabsTrigger>
-                        <TabsTrigger value="documents">Documents</TabsTrigger>
-                        <TabsTrigger value="settings">Paramètres</TabsTrigger>
-                      </TabsList>
+                        </TabsList>
+                      </div>
 
                       <TabsContent value="overview">
+                        {activeTab === 'overview' ? (
                         <EtudiantDetailsOverview
                           Etudiant={Etudiant}
                           hideRecentActivity
@@ -721,9 +758,11 @@ export function CandidatureDetailSheet({
                           personaCopy="candidat"
                           hrCardTitle="Informations candidat & administratives"
                         />
+                        ) : null}
                       </TabsContent>
 
-                      <TabsContent value="parcours" className="mt-0 space-y-8 pb-4">
+                      <TabsContent value="dossier" className="mt-0 space-y-8 pb-4">
+                        {activeTab === 'dossier' ? (<>
                         {selectedCandidature ? (
                           <CandidatureParcoursActions
                             candidatureId={selectedCandidature.id}
@@ -769,10 +808,6 @@ export function CandidatureDetailSheet({
                             ))
                           }
                         </section>
-
-                        {Etudiant?.id ?
-                          <CandidatConformiteDossierSection userId={Etudiant.id} />
-                        : null}
 
                         <section className="space-y-4">
                           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -905,52 +940,90 @@ export function CandidatureDetailSheet({
                                   </p>
                                 }
                               </div>
-
-                              <Separator className="my-6" />
-                              <div>
-                                <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                  Conformité CNAPS (dossier sélectionné)
-                                </p>
-                                {!cnapsSubject ?
-                                  <p className="text-sm text-muted-foreground">
-                                    Pas de champ CNAPS disponible pour ce dossier.
-                                  </p>
-                                : <dl className="grid gap-3 text-sm">
-                                    <div>
-                                      <dt className="text-xs uppercase text-muted-foreground">Référence CNAPS</dt>
-                                      <dd>{cnapsSubject.cnapsReference || '—'}</dd>
-                                    </div>
-                                    <div>
-                                      <dt className="text-xs uppercase text-muted-foreground">Préfavorable</dt>
-                                      <dd>
-                                        {cnapsSubject.cnapsPrefavorable === null ||
-                                        cnapsSubject.cnapsPrefavorable === undefined ?
-                                          '—'
-                                        : cnapsSubject.cnapsPrefavorable ?
-                                          'Oui'
-                                        : 'Non'}
-                                      </dd>
-                                    </div>
-                                    <div>
-                                      <dt className="text-xs uppercase text-muted-foreground">Soumission CNAPS</dt>
-                                      <dd>{fmtDate(cnapsSubject.cnapsSubmittedAt ?? undefined)}</dd>
-                                    </div>
-                                    <div>
-                                      <dt className="text-xs uppercase text-muted-foreground">Décision CNAPS</dt>
-                                      <dd>{fmtDate(cnapsSubject.cnapsDecisionAt ?? undefined)}</dd>
-                                    </div>
-                                    <div>
-                                      <dt className="text-xs uppercase text-muted-foreground">Validé dossier</dt>
-                                      <dd>{fmtDate(cnapsSubject.validatedAt ?? undefined)}</dd>
-                                    </div>
-                                  </dl>
-                                }
-                              </div>
                             </>
                           }
                         </section>
 
                         <Separator />
+
+                        <section className="space-y-3">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            Sessions CRM
+                          </p>
+                          {!isDossierValidePourSessions ?
+                            <Alert variant="secondary" appearance="outline" className="border-border bg-muted/15">
+                              <AlertIcon>
+                                <AlertCircle className="size-4 text-amber-600" />
+                              </AlertIcon>
+                              <div className="flex flex-col gap-1">
+                                <AlertTitle className="text-sm font-semibold text-foreground">
+                                  Sessions après validation du dossier
+                                </AlertTitle>
+                                <AlertDescription className="text-xs text-muted-foreground leading-relaxed">
+                                  L&apos;inscription CRM aux sessions reste verrouillée tant que le dossier n&apos;est pas
+                                  validé.
+                                </AlertDescription>
+                              </div>
+                            </Alert>
+                          : hub.formationSessionParticipants.length === 0 ?
+                            <p className="text-sm text-muted-foreground">Aucune inscription session CRM pour ce candidat.</p>
+                          : hub.formationSessionParticipants.map((p) => (
+                              <div key={p.id} className="rounded-lg border border-border px-3 py-2 text-sm">
+                                <p className="font-medium">{p.session.dateDisplayLabel}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {p.session.formation?.name ?? 'Formation'} · inscription :{' '}
+                                  <span className="text-foreground">{p.enrollmentStatus}</span>
+                                </p>
+                              </div>
+                            ))
+                          }
+                        </section>
+                        </>) : null}
+                      </TabsContent>
+
+                      <TabsContent value="conformite" className="mt-0 space-y-8 pb-4">
+                        {activeTab === 'conformite' ? (
+                        <>
+                        {Etudiant?.id ?
+                          <CandidatConformiteDossierSection userId={Etudiant.id} />
+                        : null}
+
+                        {selectedCandidature && cnapsSubject ?
+                          <section className="space-y-4">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              CNAPS (dossier sélectionné)
+                            </p>
+                            <dl className="grid gap-3 text-sm sm:grid-cols-2">
+                              <div>
+                                <dt className="text-xs uppercase text-muted-foreground">Référence CNAPS</dt>
+                                <dd>{cnapsSubject.cnapsReference || '—'}</dd>
+                              </div>
+                              <div>
+                                <dt className="text-xs uppercase text-muted-foreground">Préfavorable</dt>
+                                <dd>
+                                  {cnapsSubject.cnapsPrefavorable === null ||
+                                  cnapsSubject.cnapsPrefavorable === undefined ?
+                                    '—'
+                                  : cnapsSubject.cnapsPrefavorable ?
+                                    'Oui'
+                                  : 'Non'}
+                                </dd>
+                              </div>
+                              <div>
+                                <dt className="text-xs uppercase text-muted-foreground">Soumission CNAPS</dt>
+                                <dd>{fmtDate(cnapsSubject.cnapsSubmittedAt ?? undefined)}</dd>
+                              </div>
+                              <div>
+                                <dt className="text-xs uppercase text-muted-foreground">Décision CNAPS</dt>
+                                <dd>{fmtDate(cnapsSubject.cnapsDecisionAt ?? undefined)}</dd>
+                              </div>
+                              <div>
+                                <dt className="text-xs uppercase text-muted-foreground">Validé dossier</dt>
+                                <dd>{fmtDate(cnapsSubject.validatedAt ?? undefined)}</dd>
+                              </div>
+                            </dl>
+                          </section>
+                        : null}
 
                         <section className="space-y-4">
                           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -967,73 +1040,71 @@ export function CandidatureDetailSheet({
                           </p>
                           <EtudiantDetailsActivity Etudiant={Etudiant} />
                         </section>
+
+                        <Separator />
+
+                        <section className="space-y-4">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                            Documents CNAPS
+                          </p>
+                          <CandidatDocumentsCnapsTab
+                            Etudiant={Etudiant}
+                            candidatureId={selectedCandidature?.id ?? null}
+                            formationLabel={formationLabelPourCnaps}
+                            companyProfile={companyProfile ?? null}
+                          />
+                        </section>
+                        </>
+                        ) : null}
                       </TabsContent>
 
-                      <TabsContent value="sessions" className="mt-0 space-y-3 pb-4">
-                        {!isDossierValidePourSessions ?
-                          <Alert variant="secondary" appearance="outline" className="border-border bg-muted/15">
-                            <AlertIcon>
-                              <AlertCircle className="size-4 text-amber-600" />
-                            </AlertIcon>
-                            <div className="flex flex-col gap-1">
-                              <AlertTitle className="text-sm font-semibold text-foreground">
-                                Sessions disponibles après validation du dossier
-                              </AlertTitle>
-                              <AlertDescription className="text-xs text-muted-foreground leading-relaxed">
-                                Tant que le dossier catalogue n&apos;est pas au statut <strong>Dossier validé</strong> (ou sans
-                                date de validation enregistrée), l&apos;inscription CRM aux sessions de formation reste verrouillée.
-                                Complétez la conformité et le pipeline puis validez le dossier lorsque les conditions sont réunies.
-                              </AlertDescription>
-                            </div>
-                          </Alert>
-                        : hub.formationSessionParticipants.length === 0 ?
-                          <p className="text-sm text-muted-foreground">Aucune inscription session CRM pour ce candidat.</p>
-                        : hub.formationSessionParticipants.map((p) => (
-                            <div key={p.id} className="rounded-lg border border-border px-3 py-2 text-sm">
-                              <p className="font-medium">{p.session.dateDisplayLabel}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {p.session.formation?.name ?? 'Formation'} · inscription :{' '}
-                                <span className="text-foreground">{p.enrollmentStatus}</span>
+                      <TabsContent value="compte" className="mt-0 space-y-8 pb-4">
+                        {activeTab === 'compte' ? (
+                          <>
+                            <section className="space-y-3">
+                              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                Accès plateforme
                               </p>
-                            </div>
-                          ))
-                        }
-                      </TabsContent>
+                              <EtudiantAccesTab
+                                etudiant={Etudiant}
+                                lmsAccessTier={lmsAccessTier}
+                                dossierLabel={dossierLabelForAccess}
+                              />
+                            </section>
 
-                      <TabsContent value="absences">
-                        {!isDossierValidePourSessions ?
-                          <Alert variant="secondary" appearance="outline" className="mb-4 border-border bg-muted/15">
-                            <AlertIcon>
-                              <AlertCircle className="size-4 text-muted-foreground" />
-                            </AlertIcon>
-                            <div className="flex flex-col gap-1">
-                              <AlertTitle className="text-sm font-semibold text-foreground">
-                                Absences : suivi hors parcours candidature
-                              </AlertTitle>
-                              <AlertDescription className="text-xs text-muted-foreground leading-relaxed">
-                                La fréquentation sera suivie lorsque le candidat sera inscrit à une session puis pris en charge
-                                via la fiche de suivi élève quotidienne (émargement / présence). Pendant la phase dossier /
-                                autorisation préalable, les données d&apos;absence restent généralement inopérantes ou vides.
-                              </AlertDescription>
-                            </div>
-                          </Alert>
-                        : null}
-                        <EtudiantDetailsAbsences Etudiant={Etudiant} />
-                      </TabsContent>
-                      <TabsContent value="documents">
-                        <CandidatDocumentsCnapsTab
-                          Etudiant={Etudiant}
-                          candidatureId={selectedCandidature?.id ?? null}
-                          formationLabel={formationLabelPourCnaps}
-                          companyProfile={companyProfile ?? null}
-                        />
-                      </TabsContent>
-                      <TabsContent value="settings">
-                        <EtudiantDetailsSettings
-                          Etudiant={Etudiant}
-                          formRef={settingsFormRef}
-                          onSuccess={() => invalidateEtudiant()}
-                        />
+                            <Separator />
+
+                            <section className="space-y-3">
+                              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                Absences
+                              </p>
+                              {!isDossierValidePourSessions ?
+                                <Alert variant="secondary" appearance="outline" className="mb-4 border-border bg-muted/15">
+                                  <AlertIcon>
+                                    <AlertCircle className="size-4 text-muted-foreground" />
+                                  </AlertIcon>
+                                  <AlertDescription className="text-xs text-muted-foreground leading-relaxed">
+                                    Suivi d&apos;absence pertinent après inscription session / émargement.
+                                  </AlertDescription>
+                                </Alert>
+                              : null}
+                              <EtudiantDetailsAbsences Etudiant={Etudiant} />
+                            </section>
+
+                            <Separator />
+
+                            <section className="space-y-3">
+                              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                                Identité &amp; cycle de vie
+                              </p>
+                              <EtudiantDetailsSettings
+                                Etudiant={Etudiant}
+                                formRef={settingsFormRef}
+                                onSuccess={() => invalidateEtudiant()}
+                              />
+                            </section>
+                          </>
+                        ) : null}
                       </TabsContent>
                     </Tabs>
                   </div>
@@ -1044,17 +1115,17 @@ export function CandidatureDetailSheet({
           }
         </SheetBody>
 
-        <SheetFooter className="flex shrink-0 flex-row items-center gap-2 border-t border-border bg-background p-5 pb-4 sm:gap-2.5">
+        <SheetFooter className="flex shrink-0 flex-col-reverse gap-2 border-t border-border bg-background p-3 pb-4 sm:flex-row sm:items-center sm:gap-2.5 sm:p-5">
           {!isPage ? (
-            <Button variant="ghost" className="shrink-0" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" className="w-full shrink-0 sm:w-auto" onClick={() => onOpenChange(false)}>
               Fermer
             </Button>
           ) : (
             <span className="shrink-0 self-center px-1 text-xs text-muted-foreground">Profil parcours (session)</span>
           )}
           {Etudiant ?
-            <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-end gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-2.5 [&::-webkit-scrollbar]:hidden">
-              {activeTab === 'settings' ?
+            <div className="flex w-full min-w-0 flex-col gap-2 sm:ml-auto sm:flex-1 sm:flex-row sm:flex-nowrap sm:items-center sm:justify-end sm:gap-2.5 sm:overflow-x-auto sm:[-ms-overflow-style:none] sm:[scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {activeTab === 'compte' ?
                 <Button
                   variant="outline"
                   className="shrink-0 border-none bg-foreground font-bold text-background hover:bg-foreground/90"
@@ -1069,8 +1140,8 @@ export function CandidatureDetailSheet({
                     type="button"
                     onClick={handlePrintEtudiantFiche}
                     className={cn(
-                      'shrink-0 gap-2 border-none bg-indigo-600 font-bold text-white hover:bg-indigo-700',
-                      !isPage && 'max-md:hidden',
+                      'w-full shrink-0 gap-2 border-none bg-indigo-600 font-bold text-white hover:bg-indigo-700 sm:w-auto',
+                      !isPage && 'md:inline-flex hidden',
                     )}
                   >
                     <Printer className="size-4" />
@@ -1078,7 +1149,7 @@ export function CandidatureDetailSheet({
                   </Button>
                   <Button
                     variant="outline"
-                    className="shrink-0"
+                    className="w-full shrink-0 sm:w-auto"
                     type="button"
                     onClick={handleSendResetEmail}
                     disabled={isLoadingEmail}
@@ -1105,7 +1176,7 @@ export function CandidatureDetailSheet({
                   <Button
                     variant="outline"
                     type="button"
-                    className="shrink-0 border-none bg-foreground font-bold text-background hover:bg-foreground/90"
+                    className="w-full shrink-0 border-none bg-foreground font-bold text-background hover:bg-foreground/90 sm:w-auto"
                     onClick={handleEditClick}
                   >
                     Modifier les détails
@@ -1147,7 +1218,7 @@ export function CandidatureDetailSheet({
       <SheetContent
         className={cn(
           VIE_SCOLAIRE_SHEET_AUTO,
-          'h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] min-h-0',
+          'max-sm:h-dvh max-sm:max-h-dvh sm:h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-2rem)]',
         )}
       >
         {candidatChrome}

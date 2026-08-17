@@ -38,12 +38,12 @@ export function kpiStatsGridClass(itemCount: number): string {
 }
 
 /**
- * Grille 5 colonnes pour les bandeaux KPI des **pages de section** (ex. Profil, Structure, Documents, Collaborateurs).
- * Préférer `kpiStatsGridClass(n)` si le nombre de cartes peut varier (pages workspace, CRUD, tickets…).
+ * Grille 5 colonnes pour les bandeaux KPI des pages module (standard produit LMS).
+ * Utiliser `kpiStatsGridClass(n)` si le nombre de cartes varie ponctuellement.
  */
 export const MODULE_LANDING_STATS_GRID_ROW = kpiStatsGridClass(5);
 
-/** Nombre standard de cartes KPI sur les pages module / workspace (aligné Profil compagnie). */
+/** Nombre standard de cartes KPI sur les pages module / workspace. */
 export const MODULE_PAGE_KPI_COUNT = 5;
 
 /** Halo + pastille icône pour les cartes KPI des pages de section (aligné sur Profil / Structure). */

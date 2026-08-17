@@ -10,6 +10,8 @@ const formationSessionFieldsSchema = z.object({
   endDate: z.string().nullable().optional(),
   registrationClosesAt: z.string().nullable().optional(),
   examDate: z.string().nullable().optional(),
+  examVenueRoomId: z.union([z.string().uuid(), z.null()]).optional(),
+  examReservedEquipmentIds: z.array(z.string().uuid()).optional(),
   traineesMin: z.number().int().min(1).nullable().optional(),
   traineesMax: z.number().int().min(1).nullable().optional(),
   trainerUserId: z.string().uuid().nullable().optional(),

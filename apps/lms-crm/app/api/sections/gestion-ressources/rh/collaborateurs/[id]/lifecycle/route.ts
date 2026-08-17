@@ -4,7 +4,8 @@ import {
   applyAccountLifecycle,
   type AccountLifecycleAction,
 } from '@/lib/rh/account-lifecycle';
-import { requireGestionRessourcesEdit } from '../../../../_lib/require-gestion-ressources-auth';
+import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
+import { requireAnyPermission } from '@/lib/auth/require-permission';
 
 const ACTIONS = new Set<AccountLifecycleAction>(['suspend', 'archive', 'restore']);
 
@@ -12,9 +13,13 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const auth = await requireGestionRessourcesEdit();
-  if (!auth.ok) return auth.response;
-  const actorId = auth.session.user.id;
+  // RH (collaborateurs / formateurs) ou vie scolaire (élèves / stagiaires)
+  const auth = await requireAnyPermission([
+    CRM_PERMISSION.ressourcesEdit,
+    CRM_PERMISSION.academiqueEdit,
+  ]);
+  if ('error' in auth) return auth.error;
+  const actorId = auth.userId;
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));

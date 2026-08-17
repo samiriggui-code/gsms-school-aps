@@ -18,7 +18,7 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { uploadFile } from '@repo/storage';
 
-const PERIODS = new Set<PilotagePeriod>(['day', 'week', 'month', 'year']);
+const PERIODS = new Set<PilotagePeriod>(['day', 'week', 'month', 'quarter', 'year']);
 
 function parsePeriod(raw: unknown): PilotagePeriod {
   if (typeof raw === 'string' && PERIODS.has(raw as PilotagePeriod)) return raw as PilotagePeriod;

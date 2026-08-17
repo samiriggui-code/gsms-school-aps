@@ -714,7 +714,7 @@ const CollaborateurAddSheet = ({
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="__default__">Repli selon le rôle</SelectItem>
+                                  <SelectItem value="__default__">Automatique (déduit du rôle IAM)</SelectItem>
                                   <SelectItem value="DIRECTION">Direction de l&apos;école</SelectItem>
                                   <SelectItem value="TRAINER_POOL">Équipe formateurs</SelectItem>
                                   <SelectItem value="PEDAGOGICAL">Équipe pédagogique</SelectItem>

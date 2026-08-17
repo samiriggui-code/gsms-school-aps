@@ -228,6 +228,14 @@ export async function getDevisPlaquetteData(
   const clientNeeds = snapshotRows(row.clientSnapshot);
   const timeline = buildTimeline(row);
 
+  const rawLines = Array.isArray(row.lines) ? (row.lines as Record<string, unknown>[]) : [];
+  const devisLines = rawLines.map((l) => ({
+    label: typeof l.label === 'string' ? l.label : 'Ligne',
+    quantity: Number(l.quantity ?? 1) || 1,
+    unitPriceHt: decimalNum(l.unitPriceHt),
+    vatRate: Number(l.vatRate ?? 20) || 0,
+  }));
+
   const lead =
     row.lead && opts?.forPublicViewer
       ? {
@@ -249,7 +257,9 @@ export async function getDevisPlaquetteData(
       createdAt: row.createdAt.toISOString(),
       updatedAt: row.updatedAt.toISOString(),
       subtotalHt: decimalNum(row.subtotalHt),
+      vatTotal: decimalNum(row.vatTotal),
       totalTtc: decimalNum(row.totalTtc),
+      lines: devisLines,
     },
     lead,
     formationSession: row.formationSession,

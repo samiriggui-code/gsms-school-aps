@@ -1,6 +1,6 @@
 'use client';
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { PILOTAGE_PERIOD_OPTIONS, type PilotagePeriod } from '@/lib/pilotage/modules';
 
 type Props = {
@@ -10,14 +10,21 @@ type Props = {
 
 export function PilotagePeriodSelector({ value, onChange }: Props) {
   return (
-    <Tabs value={value} onValueChange={(v) => onChange(v as PilotagePeriod)}>
-      <TabsList className="h-9">
-        {PILOTAGE_PERIOD_OPTIONS.map((p) => (
-          <TabsTrigger key={p.id} value={p.id} className="text-xs px-3">
-            {p.label}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </Tabs>
+    <ToggleGroup
+      type="single"
+      value={value}
+      onValueChange={(v) => {
+        if (v) onChange(v as PilotagePeriod);
+      }}
+      variant="outline"
+      size="sm"
+      className="h-9 flex-wrap"
+    >
+      {PILOTAGE_PERIOD_OPTIONS.map((p) => (
+        <ToggleGroupItem key={p.id} value={p.id} className="px-3 text-xs">
+          {p.label}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
   );
 }

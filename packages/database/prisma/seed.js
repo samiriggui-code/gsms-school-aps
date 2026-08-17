@@ -43,6 +43,8 @@ const { CRM_PERMISSIONS } = require('./data/crm-role-permissions');
 const { seedFormationsCatalog } = require('./data/formations-seed');
 const { seedPortalLmsContent, seedPortalLmsEnrollments, seedPortalAnnouncements } = require('./data/portal-lms-seed');
 const { FORMATION_VENUE_ROOMS } = require('./data/formation-venue-rooms-seed');
+const { seedSchoolEquipmentInventory } = require('./data/equipment-school-inventory-seed');
+const { syncEquipmentBudgetFromInventorySeed } = require('./data/equipment-inventory-finance');
 const { seedLandingLeadsAndDevis } = require('./data/landing-leads-devis-seed');
 const { seedOperationalModules } = require('./data/operational-modules-seed');
 const { seedTopbarDemo } = require('./data/topbar-seed');
@@ -59,6 +61,7 @@ const { seedCnapsCandidatProfiles } = require('./data/cnaps-candidat-profile-see
 const {
   resolveEmailPair,
   ensureUserEmailSplit,
+  ensureUniquePersonalEmail,
   findUserByAppLogin,
 } = require('./data/user-email-fields');
 
@@ -133,19 +136,23 @@ function buildUsersFromMetronic() {
     {
       name: 'Samir Iggui',
       email: 'samir.iggui@ecole.local',
-      avatar: null,
+      avatar: '/media/avatars/300-14.png',
       roleSlug: 'superadmin',
       isProtected: true,
     },
     // Comptes démo espace candidat (boutons /signin — mot de passe seed : demo1234)
     {
-      name: 'Candidat Dev 1',
+      name: 'Lucas MERCIER',
+      firstName: 'Lucas',
+      lastName: 'MERCIER',
       email: 'candidat.dev.1@ecole.local',
       avatar: null,
       roleSlug: 'candidat',
     },
     {
-      name: 'Candidat Dev 2',
+      name: 'Inès MARTIN',
+      firstName: 'Inès',
+      lastName: 'MARTIN',
       email: 'candidat.dev.2@ecole.local',
       avatar: null,
       roleSlug: 'candidat',
@@ -735,11 +742,17 @@ async function main() {
           i,
         );
         const existing = await findUserByAppLogin(tx, loginEmail);
+        const personalEmail = await ensureUniquePersonalEmail(
+          tx,
+          emailPair.email,
+          existing?.id ?? null,
+          i,
+        );
         const userData = {
           name: user.name,
           firstName,
           lastName,
-          email: emailPair.email,
+          email: personalEmail,
           proEmail: emailPair.proEmail,
           password: hashedPassword,
           avatar,
@@ -750,7 +763,11 @@ async function main() {
           isTrashed: false,
         };
         if (existing) {
-          await tx.user.update({ where: { id: existing.id }, data: userData });
+          const updateData = { ...userData };
+          if (!updateData.avatar?.trim() && existing.avatar?.trim()) {
+            delete updateData.avatar;
+          }
+          await tx.user.update({ where: { id: existing.id }, data: updateData });
         } else {
           await tx.user.create({
             data: { ...userData, createdAt: new Date() },
@@ -797,151 +814,11 @@ async function main() {
       }
       console.log('Users seeded.');
 
-      // Equipements - ecole de formation securite privee/incendie
-      const schoolSites = [
-        { code: 'CAMPUS-PARIS', name: 'Campus Principal Paris', city: 'Paris', country: 'FR' },
-        { code: 'PLATEAU-INC', name: 'Plateau Technique Incendie', city: 'Saint-Denis', country: 'FR' },
-        { code: 'ATELIER-EPI', name: 'Atelier EPI et Materiel Pedagogique', city: 'Nanterre', country: 'FR' },
-      ];
+      // Equipements — école de formation sécurité / incendie / secourisme
+      const { seedSchoolSites } = require('./data/school-sites-seed');
+      const siteByCode = await seedSchoolSites(tx);
 
-      const siteByCode = new Map();
-      for (const site of schoolSites) {
-        await tx.$executeRaw`
-          INSERT INTO "ClientSite" ("id", "code", "name", "city", "country", "isActive", "createdAt", "updatedAt")
-          VALUES (gen_random_uuid()::text, ${site.code}, ${site.name}, ${site.city}, ${site.country}, true, now(), now())
-          ON CONFLICT ("code")
-          DO UPDATE SET
-            "name" = EXCLUDED."name",
-            "city" = EXCLUDED."city",
-            "country" = EXCLUDED."country",
-            "isActive" = EXCLUDED."isActive",
-            "updatedAt" = now()
-        `;
-        const rows = await tx.$queryRaw`SELECT "id" FROM "ClientSite" WHERE "code" = ${site.code} LIMIT 1`;
-        if (rows[0]?.id) siteByCode.set(site.code, rows[0].id);
-      }
-
-      // Nettoyage complet avant seeding unitaire
-      await tx.$executeRaw`DELETE FROM "StockMovement"`;
-      await tx.$executeRaw`DELETE FROM "EquipmentMaintenance"`;
-      await tx.$executeRaw`DELETE FROM "Equipment"`;
-
-      const baseEquipments = [
-        { serialNumber: 'MAN-ADULTE', label: 'Mannequin RCP Adulte Pro', type: 'MANNEQUIN_PEDAGOGIQUE', siteCode: 'CAMPUS-PARIS' },
-        { serialNumber: 'MAN-ENFANT', label: 'Mannequin RCP Enfant', type: 'MANNEQUIN_PEDAGOGIQUE', siteCode: 'CAMPUS-PARIS' },
-        { serialNumber: 'MAN-NOUR', label: 'Mannequin RCP Nourrisson', type: 'MANNEQUIN_PEDAGOGIQUE', siteCode: 'CAMPUS-PARIS' },
-        { serialNumber: 'DEF-AED', label: 'Defibrillateur de formation AED', type: 'SECOURISME', siteCode: 'CAMPUS-PARIS' },
-        { serialNumber: 'EXT-EAU', label: 'Extincteur eau pulverisee 6L', type: 'INCENDIE', siteCode: 'PLATEAU-INC' },
-        { serialNumber: 'EXT-CO2', label: 'Extincteur CO2 5kg', type: 'INCENDIE', siteCode: 'PLATEAU-INC' },
-        { serialNumber: 'EXT-POU', label: 'Extincteur poudre ABC 9kg', type: 'INCENDIE', siteCode: 'PLATEAU-INC' },
-        { serialNumber: 'RIA', label: 'Module RIA pedagogique', type: 'INCENDIE', siteCode: 'PLATEAU-INC' },
-      ];
-
-      const equipmentsSeed = [];
-      for (const eq of baseEquipments) {
-        equipmentsSeed.push({ ...eq, serialNumber: `${eq.serialNumber}-001`, status: 'AVAILABLE' });
-        equipmentsSeed.push({ ...eq, serialNumber: `${eq.serialNumber}-002`, status: 'IN_USE' });
-        equipmentsSeed.push({ ...eq, serialNumber: `${eq.serialNumber}-003`, status: 'MAINTENANCE' });
-      }
-
-      const equipmentBySerial = new Map();
-      for (const item of equipmentsSeed) {
-        const assignedSiteId = siteByCode.get(item.siteCode) || null;
-        await tx.$executeRaw`
-          INSERT INTO "Equipment" (
-            "id", "serialNumber", "label", "type", "status", "assignedSiteId", "metadata", "createdAt", "updatedAt"
-          )
-          VALUES (
-            gen_random_uuid()::text,
-            ${item.serialNumber},
-            ${item.label},
-            ${item.type},
-            CAST(${item.status} AS "EquipmentStatus"),
-            ${assignedSiteId},
-            CAST('{"pedagogicDomain":"securite-privee-incendie"}' AS jsonb),
-            now(),
-            now()
-          )
-        `;
-        const rows = await tx.$queryRaw`SELECT "id" FROM "Equipment" WHERE "serialNumber" = ${item.serialNumber} LIMIT 1`;
-        if (rows[0]?.id) equipmentBySerial.set(item.serialNumber, rows[0].id);
-      }
-
-      await tx.$executeRaw`DELETE FROM "EquipmentMaintenance"`;
-      const maintenanceSeed = [
-        {
-          serialNumber: 'EXT-CO2-003',
-          status: 'IN_PROGRESS',
-          title: 'Verification pression et etancheite',
-          notes: 'Controle semestriel en cours par prestataire certifie',
-          scheduledDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-        },
-        {
-          serialNumber: 'MAN-ENFANT-003',
-          status: 'OVERDUE',
-          title: 'Remplacement valve respiratoire',
-          notes: 'Panne intermittente detectee en simulation',
-          scheduledDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
-        },
-        {
-          serialNumber: 'RIA-003',
-          status: 'SCHEDULED',
-          title: 'Essai debit et maintenance preventive',
-          notes: 'Maintenance planifiee avant session SSIAP',
-          scheduledDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-        },
-      ];
-
-      for (const item of maintenanceSeed) {
-        const equipmentId = equipmentBySerial.get(item.serialNumber);
-        if (!equipmentId) continue;
-        await tx.$executeRaw`
-          INSERT INTO "EquipmentMaintenance" (
-            "id", "equipmentId", "status", "title", "notes", "scheduledDate", "createdAt", "updatedAt"
-          )
-          VALUES (
-            gen_random_uuid()::text,
-            ${equipmentId},
-            CAST(${item.status} AS "EquipmentMaintenanceStatus"),
-            ${item.title},
-            ${item.notes},
-            ${item.scheduledDate},
-            now(),
-            now()
-          )
-        `;
-      }
-
-      await tx.$executeRaw`DELETE FROM "StockMovement"`;
-      const movementSeed = [
-        { serialNumber: 'MAN-ADULTE-001', type: 'IN', quantity: 1, notes: 'Reception lot secourisme' },
-        { serialNumber: 'EXT-EAU-001', type: 'OUT', quantity: 1, notes: 'Utilisation atelier feu reel' },
-        { serialNumber: 'EXT-CO2-003', type: 'TRANSFER', quantity: 1, notes: 'Transfert vers zone maintenance' },
-        { serialNumber: 'DEF-AED-001', type: 'OUT', quantity: 1, notes: 'Mise a disposition module secourisme' },
-        { serialNumber: 'RIA-001', type: 'IN', quantity: 1, notes: 'Reassort kit incendie' },
-      ];
-
-      for (const item of movementSeed) {
-        const equipmentId = equipmentBySerial.get(item.serialNumber);
-        if (!equipmentId) continue;
-        await tx.$executeRaw`
-          INSERT INTO "StockMovement" (
-            "id", "equipmentId", "type", "quantity", "notes", "movementDate", "createdAt", "updatedAt"
-          )
-          VALUES (
-            gen_random_uuid()::text,
-            ${equipmentId},
-            CAST(${item.type} AS "StockMovementType"),
-            ${item.quantity},
-            ${item.notes},
-            now(),
-            now(),
-            now()
-          )
-        `;
-      }
-      console.log('Equipements seeded.');
-
+      // Salles avant inventaire fixe (FK VenueRoomFixedEquipment)
       for (const r of FORMATION_VENUE_ROOMS) {
         await tx.formationVenueRoom.upsert({
           where: { id: r.id },
@@ -968,7 +845,31 @@ async function main() {
       }
       console.log('Salles formation (FormationVenueRoom) seedees.');
 
+      await tx.$executeRaw`DELETE FROM "VenueRoomFixedEquipment"`;
+      await tx.$executeRaw`DELETE FROM "StockMovement"`;
+      await tx.$executeRaw`DELETE FROM "EquipmentMaintenance"`;
+      await tx.$executeRaw`DELETE FROM "Equipment"`;
+
+      const { equipmentBySerial, financeSummary } = await seedSchoolEquipmentInventory(tx, siteByCode);
+      const unitTotal = equipmentBySerial.size;
+      console.log(`Equipements seeded (${unitTotal} unités — pool global, sans affectation salle).`);
+      if (financeSummary) {
+        console.log(
+          `  Inventaire finance : ${financeSummary.totalCapitalized.toLocaleString('fr-FR')} € capitalisés, ` +
+            `${financeSummary.annualAmortization.toLocaleString('fr-FR')} € amort./an (${financeSummary.unitCount} unités).`,
+        );
+      }
+
+      const { seedVenueRoomExamFixedEquipment } = require('./data/venue-room-exam-fixed-seed');
+      const fixedLinked = await seedVenueRoomExamFixedEquipment(tx, equipmentBySerial);
+      console.log(`Inventaire fixe salles examen : ${fixedLinked} lien(s) PCS / plateau / ronde.`);
+
       await seedFormationsCatalog(tx);
+      const { backfillFormationExamsForWithExamSessions } = require('./data/formation-exam-backfill-seed');
+      const examBackfill = await backfillFormationExamsForWithExamSessions(tx);
+      if (examBackfill.created > 0) {
+        console.log(`Examens catalogue : ${examBackfill.created} créé(s) / ${examBackfill.total} session(s) WITH_EXAM.`);
+      }
       await seedPortalLmsContent(tx);
       await migrateLegacyCnapsStorageKeys(tx);
       await seedDemoPortalCandidatures(tx);
@@ -977,6 +878,16 @@ async function main() {
       await seedPortalAnnouncements(tx);
       await seedLandingLeadsAndDevis(tx);
       await seedOperationalModules(tx);
+
+      const budgetYear = new Date().getFullYear();
+      const equipmentBudget = await syncEquipmentBudgetFromInventorySeed(tx, budgetYear);
+      console.log(
+        `Budget EQUIPEMENT ${budgetYear} synchronisé : réalisé ${equipmentBudget.actualAmount.toLocaleString('fr-FR')} € ` +
+          `(amort. ${equipmentBudget.amortizationTotal.toLocaleString('fr-FR')} €, ` +
+          `achats exercice ${equipmentBudget.purchasesInYear.toLocaleString('fr-FR')} €, ` +
+          `maint. ${equipmentBudget.maintenanceTotal.toLocaleString('fr-FR')} €).`,
+      );
+
       await seedComplianceTemplates(tx);
       await seedComplianceDossiersForOpenCandidatures(tx);
       await seedComplianceDossiersForStaff(tx);

@@ -12,6 +12,7 @@ import {
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserRolePermission } from '@/app/models/user';
 import { isSchoolIamRoleSlug } from '@/lib/rh-iam-roles';
+import { createWorkflowEngine } from '@repo/api-core';
 
 // GET: Fetch a specific role by ID, including permissions
 export async function GET(
@@ -130,6 +131,25 @@ export async function PUT(
           return role;
         },
       );
+
+      if (permissions !== undefined) {
+        try {
+          const workflows = createWorkflowEngine(prisma);
+          await workflows.emit(
+            'crm.security.role.permissions_changed',
+            {
+              roleId: id,
+              roleName: updatedRole.name,
+              roleSlug: updatedRole.slug,
+              permissionsCount: permissions.length,
+            },
+            { dedupeKey: `iam-role:${id}:matrix:${permissions.length}` },
+          );
+        } catch (e) {
+          console.error('[acces/roles] workflow permissions', e);
+        }
+      }
+
       return NextResponse.json(updatedRole);
     }
 
@@ -169,6 +189,24 @@ export async function PUT(
         return role;
       },
     );
+
+    if (permissions !== undefined) {
+      try {
+        const workflows = createWorkflowEngine(prisma);
+        await workflows.emit(
+          'crm.security.role.permissions_changed',
+          {
+            roleId: id,
+            roleName: updatedRole.name,
+            roleSlug: updatedRole.slug,
+            permissionsCount: permissions?.length ?? 0,
+          },
+          { dedupeKey: `iam-role:${id}:matrix:${permissions?.length ?? 0}` },
+        );
+      } catch (e) {
+        console.error('[acces/roles] workflow permissions', e);
+      }
+    }
 
     return NextResponse.json(updatedRole);
   } catch {

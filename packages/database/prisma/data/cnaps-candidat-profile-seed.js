@@ -43,6 +43,8 @@ function buildOnboardingMetadata(profile, formationSlug) {
 const DEMO_CNAPS_PROFILES = [
   {
     loginEmail: 'candidat.dev.1@ecole.local',
+    firstName: 'Lucas',
+    lastName: 'MERCIER',
     civility: 'M',
     usageName: '',
     phone: '06 12 34 56 78',
@@ -57,6 +59,8 @@ const DEMO_CNAPS_PROFILES = [
   },
   {
     loginEmail: 'candidat.dev.2@ecole.local',
+    firstName: 'Inès',
+    lastName: 'MARTIN',
     civility: 'MME',
     usageName: 'Martin',
     phone: '07 98 76 54 32',

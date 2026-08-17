@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useCompanyProfileSettings } from '../company-profile-context';
 import { SettingsFormFooter } from '../settings-form-footer';
-import { buildCompanyProfileDefaults } from '../../lib/company-profile-form-utils';
+import { buildCompanyProfileDefaults } from '@/lib/company-profile';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const Schema = z.object({

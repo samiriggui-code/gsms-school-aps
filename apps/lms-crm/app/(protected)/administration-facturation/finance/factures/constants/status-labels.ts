@@ -6,3 +6,17 @@ export const FACTURE_STATUS_LABEL_FR: Record<string, string> = {
   REJECTED: 'Refusé',
   EXPIRED: 'Expiré',
 };
+
+export const INVOICE_PAYMENT_STATUS_LABEL_FR: Record<string, string> = {
+  PAID: 'Payée',
+  PARTIAL: 'Partiellement payée',
+  UNPAID: 'À encaisser',
+};
+
+export function invoicePaymentBadgeVariant(
+  status: string,
+): 'success' | 'warning' | 'secondary' {
+  if (status === 'PAID') return 'success';
+  if (status === 'PARTIAL') return 'warning';
+  return 'secondary';
+}

@@ -93,6 +93,11 @@ export function extractFundingModeFromCandidature(
   const fromMeta = typeof meta.fundingMode === 'string' ? meta.fundingMode.trim() : '';
   if (fromMeta) return fromMeta;
 
+  const onboarding = asRecord(meta.onboarding);
+  const fromOnboarding =
+    typeof onboarding.fundingMode === 'string' ? onboarding.fundingMode.trim() : '';
+  if (fromOnboarding) return fromOnboarding;
+
   if (!notes) return null;
   const match = notes.match(/Mode de financement souhaité:\s*(.+)/i);
   return match?.[1]?.trim() ?? null;

@@ -17,7 +17,7 @@ import {
 } from '@repo/report-engine';
 import type { ReportGenerationSource } from './report-dedup';
 
-export type PilotagePeriod = 'day' | 'week' | 'month' | 'year';
+export type PilotagePeriod = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
 export type PilotageChartPoint = { label: string; value: number };
 export type PilotageDistributionSlice = { name: string; value: number };
@@ -242,6 +242,12 @@ export function pilotagePeriodRange(period: PilotagePeriod): { start: Date; end:
     case 'month':
       start.setMonth(start.getMonth() - 1);
       return { start, end, label: '30 derniers jours' };
+    case 'quarter': {
+      const quarter = Math.floor(end.getMonth() / 3);
+      start.setFullYear(end.getFullYear(), quarter * 3, 1);
+      start.setHours(0, 0, 0, 0);
+      return { start, end, label: `T${quarter + 1} ${end.getFullYear()}` };
+    }
     case 'year':
       start.setFullYear(start.getFullYear() - 1);
       return { start, end, label: '12 derniers mois' };
@@ -273,7 +279,7 @@ function parseReportMeta(raw: unknown): PilotageReportAssetMeta | null {
     label: parsed.label,
     moduleKey: parsed.moduleKey,
     format: parsed.format === 'EXCEL' ? 'Excel' : parsed.format,
-    period: (['day', 'week', 'month', 'year'].includes(parsed.period)
+    period: (['day', 'week', 'month', 'quarter', 'year'].includes(parsed.period)
       ? parsed.period
       : 'month') as PilotagePeriod,
     periodLabel: parsed.periodLabel,
@@ -541,6 +547,7 @@ export class PilotageHubService {
     const activityDay = await this.hourlyFluxToday();
     const activityWeek = await this.weeklyFlux(7);
     const activityMonth = await this.weeklyFlux(4);
+    const activityQuarter = await this.weeklyFlux(13);
     const activityYear = this.quarterlyFlux(notifRows);
 
     const rhRows = await this.prisma.user.findMany({
@@ -725,6 +732,7 @@ export class PilotageHubService {
           day: activityDay,
           week: activityWeek.map((p) => ({ period: p.period, value: p.value })),
           month: activityMonth.map((p) => ({ period: p.period, value: p.value })),
+          quarter: activityQuarter.map((p) => ({ period: p.period, value: p.value })),
           year: activityYear,
         },
         stats: [
@@ -1477,8 +1485,7 @@ export class PilotageHubService {
       },
       sections: [
         { title: 'Tickets', description: 'Demandes support', href: '/support-qualite/support/tickets' },
-        { title: 'Qualité', description: 'Incidents et indicateurs', href: '/support-qualite/qualite/incidents' },
-        { title: 'Base aide', description: 'Documentation self-service', href: '/support-qualite/support/base-aide' },
+        { title: 'Incidents', description: 'Qualité matériel et processus', href: '/support-qualite/support/incidents' },
       ],
     };
   }
@@ -1895,7 +1902,7 @@ export class PilotageHubService {
         exposition: equipmentHs,
         mesure: 'Suivi maintenance',
         moduleKey: CRM_MODULE_KEYS.EQUIPEMENTS,
-        href: '/support-qualite/qualite/incidents',
+        href: '/support-qualite/support/incidents',
         recommendation: 'Corréler tickets support et fiches maintenance équipements.',
       },
     ];
@@ -2182,7 +2189,7 @@ export class PilotageHubService {
             status: 'generated' as const,
             description: job.summary ?? tpl?.description ?? '',
             generatedAt: asset.createdAt.toISOString(),
-            period: (['day', 'week', 'month', 'year'].includes(job.period)
+            period: (['day', 'week', 'month', 'quarter', 'year'].includes(job.period)
               ? job.period
               : 'month') as PilotagePeriod,
             periodLabel: job.periodLabel,
@@ -2238,7 +2245,7 @@ export class PilotageHubService {
         status,
         description: job.summary ?? tpl?.description ?? '',
         generatedAt: (job.completedAt ?? job.createdAt).toISOString(),
-        period: (['day', 'week', 'month', 'year'].includes(job.period)
+        period: (['day', 'week', 'month', 'quarter', 'year'].includes(job.period)
           ? job.period
           : 'month') as PilotagePeriod,
         periodLabel: job.periodLabel,

@@ -174,6 +174,12 @@ export type SessionRowPayload = FormationSession & {
   formation: FormationSliceForSession;
   participants: { user: Pick<User, 'id' | 'name' | 'email' | 'avatar'> }[];
   venueRoom?: { id: string; name: string; imageUrl: string | null } | null;
+  examVenueRoom?: {
+    id: string;
+    name: string;
+    imageUrl: string | null;
+    shortCode: string | null;
+  } | null;
 };
 
 function normalizeEquipmentIds(value: unknown): string[] {
@@ -216,20 +222,10 @@ export async function serializeFormationSessionRow(
   row: SessionRowPayload,
   trainerById?: ReadonlyMap<string, TrainerBrief>,
 ) {
-  const equipmentIds = normalizeEquipmentIds(row.reservedEquipmentIds);
-  let reservedEquipment: {
-    id: string;
-    label: string;
-    serialNumber: string;
-    type: string | null;
-    status: 'AVAILABLE' | 'IN_USE' | 'MAINTENANCE' | 'OUT_OF_SERVICE';
-    createdAt: string;
-    updatedAt: string;
-    assignedSite: { id: string; name: string } | null;
-  }[] = [];
-  if (equipmentIds.length > 0) {
+  async function loadEquipmentRows(ids: string[]) {
+    if (ids.length === 0) return [];
     const equipRows = await prisma.equipment.findMany({
-      where: { id: { in: equipmentIds } },
+      where: { id: { in: ids } },
       select: {
         id: true,
         label: true,
@@ -242,7 +238,7 @@ export async function serializeFormationSessionRow(
       },
       orderBy: { label: 'asc' },
     });
-    reservedEquipment = equipRows.map((e) => ({
+    return equipRows.map((e) => ({
       id: e.id,
       label: e.label,
       serialNumber: e.serialNumber,
@@ -253,6 +249,11 @@ export async function serializeFormationSessionRow(
       assignedSite: e.assignedSite,
     }));
   }
+
+  const equipmentIds = normalizeEquipmentIds(row.reservedEquipmentIds);
+  const examEquipmentIds = normalizeEquipmentIds(row.examReservedEquipmentIds);
+  const reservedEquipment = await loadEquipmentRows(equipmentIds);
+  const examReservedEquipment = await loadEquipmentRows(examEquipmentIds);
 
   const trainer = await trainerBriefFor(row.trainerUserId, trainerById);
   const { priceFrom: catalogPriceFrom, currency: catalogPriceCurrency } = effectiveCatalogPriceAndCurrency(
@@ -279,6 +280,17 @@ export async function serializeFormationSessionRow(
     endDate: row.endDate?.toISOString() ?? null,
     registrationClosesAt: row.registrationClosesAt?.toISOString() ?? null,
     examDate: row.examDate?.toISOString() ?? null,
+    examVenueRoomId: row.examVenueRoomId ?? null,
+    examVenueRoom: row.examVenueRoom
+      ? {
+          id: row.examVenueRoom.id,
+          name: row.examVenueRoom.name,
+          imageUrl: row.examVenueRoom.imageUrl ?? null,
+          shortCode: row.examVenueRoom.shortCode ?? null,
+        }
+      : null,
+    examReservedEquipmentIds: examEquipmentIds,
+    examReservedEquipment,
     traineesMin: row.traineesMin,
     traineesMax: row.traineesMax,
     trainerUserId: row.trainerUserId,

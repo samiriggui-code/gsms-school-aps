@@ -5,6 +5,19 @@ import { buildEmargementPdfFilename } from '@/lib/formation-session-document-sto
 import { ensureSessionSuiviStoragePrefixes } from '@/lib/entity-storage';
 import type { FormationSessionDaySlot } from '@repo/database';
 import { parseIsoDateOnly } from '@/lib/suivi-formations/session-days';
+import {
+  type SessionDocumentUploadMetadata,
+  type SuiviDocumentKind,
+  type SuiviUploadCategory,
+  SUIVI_DOCUMENT_KIND_LABELS,
+  isSuiviUploadCategory,
+} from '@/lib/suivi-formations/session-upload-metadata';
+import {
+  archivePreviousSlotTemplates,
+  countSignedScansForSlot,
+} from '@/lib/suivi-formations/session-slot-documents';
+
+export { isSuiviUploadCategory, type SuiviUploadCategory };
 
 const MODULE = 'gestion-academique';
 const ENTITY_TYPE = 'formation_session';
@@ -65,6 +78,7 @@ export async function storeSessionSuiviPdfAsset(input: {
         dayDate: input.dayDateIso,
         slot: input.slot,
         storageCategory: input.storageCategory,
+        slotRole: 'template-pdf',
       },
     },
   });
@@ -78,6 +92,13 @@ export async function storeEmargementPdfForSlot(input: {
   buffer: Buffer;
   createdById: string;
 }) {
+  await archivePreviousSlotTemplates({
+    sessionId: input.sessionId,
+    dayId: input.dayId,
+    slot: input.slot,
+    reason: 'Nouvelle génération PDF modèle — version précédente conservée en archive',
+  });
+
   const slotLabel = input.slot === 'MORNING' ? 'matin' : 'soir';
   const filename = buildEmargementPdfFilename({
     sessionId: input.sessionId,
@@ -85,12 +106,14 @@ export async function storeEmargementPdfForSlot(input: {
     slot: slotLabel,
   });
 
-  return storeSessionSuiviPdfAsset({
+  const asset = await storeSessionSuiviPdfAsset({
     ...input,
     filename,
     category: EMARGEMENT_PDF_CATEGORY[input.slot],
     storageCategory: STORAGE_CATEGORY[input.slot],
   });
+
+  return asset;
 }
 
 export type SessionDocumentRow = {
@@ -101,15 +124,22 @@ export type SessionDocumentRow = {
   size: number;
   category: string;
   categoryLabel: string;
+  title: string | null;
+  documentKind: SuiviDocumentKind | null;
+  documentKindLabel: string | null;
+  notes: string | null;
   dayDate: string | null;
   slot: FormationSessionDaySlot | null;
+  slotRole: 'template-pdf' | 'signed-scan' | null;
+  scanIndex: number | null;
+  legalHold: boolean;
   createdAt: string;
   createdByName: string | null;
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
   'emargement-pdf-morning': 'Émargement PDF — matin',
-  'emargement-pdf-evening': 'Émargement PDF — soir',
+  'emargement-pdf-evening': 'Émargement PDF — après-midi',
   'attendance-pdf-blank': 'Feuille de présence générée',
   'attendance-scan': 'Feuille scannée',
   emargement: 'Émargement',
@@ -122,17 +152,38 @@ const CATEGORY_LABELS: Record<string, string> = {
   'upload-emargement': 'Scan émargement uploadé',
   'upload-suivi-quotidien': 'Document suivi uploadé',
   'upload-conformite': 'Pièce conformité uploadée',
+  'upload-examen': 'Document examen uploadé',
   'upload-archives': 'Archive uploadée',
   archives: 'Archives légales',
   general: 'Document général',
+  'session-dossier-closure': 'Clôture dossier session',
+  'exam-pdf-candidats': 'Examen — liste nominative candidats',
+  'exam-pdf-emargement': 'Examen — feuille d\'émargement',
+  'exam-pdf-convocation': 'Examen — convocations individuelles',
+  'exam-pdf-jury': 'Examen — fiche jury & délibération',
 };
 
 function parseMetadata(value: unknown): {
   dayDate: string | null;
   slot: FormationSessionDaySlot | null;
+  title: string | null;
+  documentKind: SuiviDocumentKind | null;
+  notes: string | null;
+  legalHold: boolean;
+  slotRole: 'template-pdf' | 'signed-scan' | null;
+  scanIndex: number | null;
 } {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return { dayDate: null, slot: null };
+    return {
+      dayDate: null,
+      slot: null,
+      title: null,
+      documentKind: null,
+      notes: null,
+      legalHold: false,
+      slotRole: null,
+      scanIndex: null,
+    };
   }
   const meta = value as Record<string, unknown>;
   const dayDate = typeof meta.dayDate === 'string' ? meta.dayDate : null;
@@ -145,7 +196,19 @@ function parseMetadata(value: unknown): {
         : slotRaw === 'soir'
           ? 'EVENING'
           : null;
-  return { dayDate, slot };
+  const title = typeof meta.title === 'string' ? meta.title : null;
+  const notes = typeof meta.notes === 'string' ? meta.notes : null;
+  const documentKindRaw = meta.documentKind;
+  const documentKind =
+    typeof documentKindRaw === 'string' && documentKindRaw in SUIVI_DOCUMENT_KIND_LABELS
+      ? (documentKindRaw as SuiviDocumentKind)
+      : null;
+  const legalHold = meta.legalHold === true;
+  const slotRoleRaw = meta.slotRole;
+  const slotRole =
+    slotRoleRaw === 'template-pdf' || slotRoleRaw === 'signed-scan' ? slotRoleRaw : null;
+  const scanIndex = typeof meta.scanIndex === 'number' ? meta.scanIndex : null;
+  return { dayDate, slot, title, documentKind, notes, legalHold, slotRole, scanIndex };
 }
 
 export async function listSessionSuiviDocuments(sessionId: string): Promise<SessionDocumentRow[]> {
@@ -154,7 +217,7 @@ export async function listSessionSuiviDocuments(sessionId: string): Promise<Sess
       module: MODULE,
       entityType: ENTITY_TYPE,
       entityId: sessionId,
-      status: 'ACTIVE',
+      status: { in: ['ACTIVE', 'ARCHIVED'] },
     },
     orderBy: { createdAt: 'desc' },
     take: 200,
@@ -166,14 +229,31 @@ export async function listSessionSuiviDocuments(sessionId: string): Promise<Sess
       size: true,
       category: true,
       metadata: true,
+      legalHold: true,
       createdAt: true,
       createdBy: { select: { name: true } },
     },
   });
 
   return rows.map((r) => {
-    const { dayDate, slot } = parseMetadata(r.metadata);
+    const {
+      dayDate,
+      slot,
+      title,
+      documentKind,
+      notes,
+      legalHold: metaLegalHold,
+      slotRole,
+      scanIndex,
+    } = parseMetadata(r.metadata);
     const category = r.category ?? 'general';
+    const inferredRole =
+      slotRole ??
+      (category === 'emargement-pdf-morning' || category === 'emargement-pdf-evening'
+        ? 'template-pdf'
+        : category === 'attendance-scan' || category === 'upload-emargement'
+          ? 'signed-scan'
+          : null);
     return {
       id: r.id,
       originalName: r.originalName,
@@ -182,8 +262,15 @@ export async function listSessionSuiviDocuments(sessionId: string): Promise<Sess
       size: r.size,
       category,
       categoryLabel: CATEGORY_LABELS[category] ?? category,
+      title,
+      documentKind,
+      documentKindLabel: documentKind ? SUIVI_DOCUMENT_KIND_LABELS[documentKind] : null,
+      notes,
       dayDate,
       slot,
+      slotRole: inferredRole,
+      scanIndex,
+      legalHold: r.legalHold || metaLegalHold,
       createdAt: r.createdAt.toISOString(),
       createdByName: r.createdBy?.name ?? null,
     };
@@ -244,12 +331,7 @@ export async function storeConformiteExportCsv(input: {
   });
 }
 
-const UPLOAD_CATEGORIES = ['general', 'emargement', 'suivi-quotidien', 'conformite', 'archives'] as const;
-export type SuiviUploadCategory = (typeof UPLOAD_CATEGORIES)[number];
-
-export function isSuiviUploadCategory(value: string): value is SuiviUploadCategory {
-  return (UPLOAD_CATEGORIES as readonly string[]).includes(value);
-}
+const UPLOAD_CATEGORIES = ['general', 'emargement', 'suivi-quotidien', 'conformite', 'examen', 'archives'] as const;
 
 export async function storeSessionDocumentUpload(input: {
   sessionId: string;
@@ -258,7 +340,13 @@ export async function storeSessionDocumentUpload(input: {
   mimeType: string;
   category: SuiviUploadCategory;
   createdById: string;
+  dayId?: string | null;
   dayDate?: string | null;
+  slot?: FormationSessionDaySlot | null;
+  documentKind?: SuiviDocumentKind;
+  title?: string | null;
+  notes?: string | null;
+  legalHold?: boolean;
 }) {
   await ensureSessionSuiviStoragePrefixes(input.sessionId);
 
@@ -278,6 +366,36 @@ export async function storeSessionDocumentUpload(input: {
   const assetCategory =
     input.category === 'emargement' ? 'attendance-scan' : `upload-${input.category}`;
 
+  const documentKind = input.documentKind ?? 'other';
+  const title =
+    input.title?.trim() ||
+    (documentKind in SUIVI_DOCUMENT_KIND_LABELS
+      ? SUIVI_DOCUMENT_KIND_LABELS[documentKind as SuiviDocumentKind]
+      : input.filename);
+
+  let scanIndex: number | null = null;
+  if (input.category === 'emargement' && input.dayId && input.slot) {
+    scanIndex = (await countSignedScansForSlot(input.sessionId, input.dayId, input.slot)) + 1;
+  }
+
+  const metadata: SessionDocumentUploadMetadata = {
+    sessionId: input.sessionId,
+    storageCategory: input.category,
+    documentKind,
+    title,
+    notes: input.notes?.trim() || null,
+    dayId: input.dayId ?? null,
+    dayDate: input.dayDate ?? null,
+    slot: input.slot ?? null,
+    kind: 'upload',
+    source: 'manual-deposit',
+    legalHold: input.legalHold === true,
+    slotRole: input.category === 'emargement' ? 'signed-scan' : undefined,
+    scanIndex: scanIndex ?? undefined,
+  };
+
+  const legalHold = input.legalHold === true || input.category === 'archives';
+
   return prisma.fileAsset.create({
     data: {
       module: MODULE,
@@ -292,12 +410,8 @@ export async function storeSessionDocumentUpload(input: {
       visibility: input.category === 'archives' ? 'PRIVATE' : 'INTERNAL',
       provider: 's3',
       createdById: input.createdById,
-      metadata: {
-        sessionId: input.sessionId,
-        storageCategory: input.category,
-        dayDate: input.dayDate ?? null,
-        kind: 'upload',
-      },
+      legalHold,
+      metadata,
     },
   });
 }

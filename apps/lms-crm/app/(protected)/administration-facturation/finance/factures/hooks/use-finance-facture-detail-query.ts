@@ -3,8 +3,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { financeFactureDetailQueryKey } from '../constants/query-keys';
+import type { FinancePaymentSummary } from '@/lib/finance/finance-payment-summary';
 
 /** Détail d’un dossier à facturer — même modèle que la proposition (`FinanceDevis`) au statut accepté. */
+export type FinanceFacturePaymentRow = {
+  id: string;
+  referenceCode: string;
+  amount: number;
+  currency: string;
+  status: string;
+  method: string | null;
+  paidAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type FinanceFactureDetail = {
   id: string;
   referenceCode: string;
@@ -44,8 +57,14 @@ export type FinanceFactureDetail = {
     size: number;
     createdAt: string;
   } | null;
+  paymentSummary?: FinancePaymentSummary;
+  payments?: FinanceFacturePaymentRow[];
+  einvoiceStatus?: string;
+  einvoiceProfile?: string;
+  einvoiceGeneratedAt?: string | null;
+  einvoicePdpMessageId?: string | null;
+  einvoiceLastError?: string | null;
 };
-
 export function useFinanceFactureDetailQuery(factureId: string | null, enabled: boolean) {
   return useQuery({
     queryKey: [...financeFactureDetailQueryKey, factureId] as const,

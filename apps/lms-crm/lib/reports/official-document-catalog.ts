@@ -215,7 +215,7 @@ export const OFFICIAL_DOCUMENT_CATALOG: OfficialDocumentEntry[] = [
     section: 'administration-facturation',
     module: 'finance / devis',
     formats: ['HTML'],
-    shell: 'legacy',
+    shell: 'unified',
     font: 'corporate',
   },
 ];

@@ -1,7 +1,8 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { UserPlus } from 'lucide-react';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
@@ -25,6 +26,11 @@ import { CandidatHubList, type CandidatHubListRow } from './components/candidat-
 
 export default function Page() {
   const { t } = useTranslation();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const deepLinkUserId = searchParams.get('userId')?.trim() || '';
+  const deepLinkCandidatureId = searchParams.get('candidatureId')?.trim() || '';
+  const appliedDeepLinkRef = useRef<string>('');
 
   const { title, description } = usePageToolbarMeta('/gestion-academique/vie-scolaire/etudiants');
   const [isAddCandidatOpen, setIsAddCandidatOpen] = useState(false);
@@ -35,6 +41,21 @@ export default function Page() {
   const [detailInitialTab, setDetailInitialTab] =
     useState<CandidatureDetailSheetInitialTab>('overview');
   const exportConfig = useMemo(() => candidatsHubExportConfig(), []);
+
+  // Deep-link notifs / n8n : ?userId=&candidatureId= (une seule fois par clé URL)
+  useEffect(() => {
+    if (!deepLinkUserId) {
+      appliedDeepLinkRef.current = '';
+      return;
+    }
+    const key = `${deepLinkUserId}:${deepLinkCandidatureId}`;
+    if (appliedDeepLinkRef.current === key) return;
+    appliedDeepLinkRef.current = key;
+    setDetailUserId(deepLinkUserId);
+    setDetailInitialCandidatureId(deepLinkCandidatureId || null);
+    setDetailInitialTab('overview');
+    setDetailOpen(true);
+  }, [deepLinkUserId, deepLinkCandidatureId]);
 
   const hubHeading = (
     <div className="space-y-1">
@@ -93,6 +114,10 @@ export default function Page() {
             setDetailUserId(null);
             setDetailInitialCandidatureId(null);
             setDetailInitialTab('overview');
+            if (deepLinkUserId || deepLinkCandidatureId) {
+              appliedDeepLinkRef.current = '';
+              router.replace('/gestion-academique/vie-scolaire/etudiants', { scroll: false });
+            }
           }
         }}
         hubUserId={detailOpen ? detailUserId : null}

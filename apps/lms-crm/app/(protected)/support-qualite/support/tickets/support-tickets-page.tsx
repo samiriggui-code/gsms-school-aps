@@ -1,11 +1,19 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import {
+  ColumnDef,
+  getCoreRowModel,
+  PaginationState,
+  useReactTable,
+} from '@tanstack/react-table';
 import { Plus, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { Container } from '@/components/common/container';
+import { ModuleDataGridShell } from '@/components/common/module-data-grid-shell';
+import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import {
   Toolbar,
   ToolbarActions,
@@ -17,7 +25,8 @@ import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
+import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
 import {
   Dialog,
   DialogContent,
@@ -37,8 +46,9 @@ import {
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
-import { useSupportTicketsQuery } from './hooks/use-support-tickets-query';
-import { TicketDetailSheet } from './components/ticket-detail-sheet';
+import { useSession } from 'next-auth/react';
+import { useSupportTicketsQuery, type SupportTicketRow } from './hooks/use-support-tickets-query';
+import { TicketWorkspaceSheet } from './components/ticket-workspace-sheet';
 
 const STATUS_LABEL: Record<string, string> = {
   OPEN: 'Ouvert',
@@ -57,9 +67,10 @@ const PRIORITY_LABEL: Record<string, string> = {
 
 export default function SupportTicketsPage() {
   const { t } = useTranslation();
+  const { data: session } = useSession();
   const { title, description } = usePageToolbarMeta('/support-qualite/support/tickets');
   const qc = useQueryClient();
-  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
   const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -75,13 +86,106 @@ export default function SupportTicketsPage() {
   });
 
   const { data, isLoading, refetch, isFetching } = useSupportTicketsQuery({
-    page,
-    limit: 15,
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
     q: search,
     status: statusFilter,
   });
 
-  const totalPages = Math.max(1, Math.ceil((data?.pagination.total ?? 0) / 15));
+  const patchTicket = useCallback(
+    async (id: string, payload: Record<string, unknown>) => {
+      const res = await apiFetch(`/api/sections/support-qualite/support/tickets/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        toast.error('Mise à jour impossible');
+        return;
+      }
+      qc.invalidateQueries({ queryKey: ['support-tickets'] });
+    },
+    [qc],
+  );
+
+  const columns = useMemo<ColumnDef<SupportTicketRow>[]>(
+    () => [
+      {
+        accessorKey: 'referenceCode',
+        header: ({ column }) => <DataGridColumnHeader title="Réf." column={column} />,
+        cell: ({ row }) => <span className="font-mono text-xs">{row.original.referenceCode}</span>,
+      },
+      {
+        accessorKey: 'subject',
+        header: ({ column }) => <DataGridColumnHeader title="Sujet" column={column} />,
+        cell: ({ row }) => <span className="font-medium">{row.original.subject}</span>,
+      },
+      {
+        id: 'requester',
+        header: ({ column }) => <DataGridColumnHeader title="Demandeur" column={column} />,
+        cell: ({ row }) => (
+          <div>
+            <div>{row.original.requesterName}</div>
+            <div className="text-xs text-muted-foreground">{row.original.requesterEmail}</div>
+          </div>
+        ),
+        enableSorting: false,
+      },
+      {
+        accessorKey: 'priority',
+        header: ({ column }) => <DataGridColumnHeader title="Priorité" column={column} />,
+        cell: ({ row }) => PRIORITY_LABEL[row.original.priority] ?? row.original.priority,
+      },
+      {
+        accessorKey: 'status',
+        header: ({ column }) => <DataGridColumnHeader title="Statut" column={column} />,
+        cell: ({ row }) => (
+          <Badge variant="secondary">{STATUS_LABEL[row.original.status] ?? row.original.status}</Badge>
+        ),
+      },
+      {
+        id: 'actions',
+        header: () => <span className="sr-only">Actions</span>,
+        cell: ({ row }) => (
+          <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+            {row.original.status === 'OPEN' && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() =>
+                  patchTicket(row.original.id, {
+                    status: 'IN_PROGRESS',
+                    assignedToId: session?.user?.id ?? null,
+                  })
+                }
+              >
+                Prendre en charge
+              </Button>
+            )}
+            {row.original.status === 'IN_PROGRESS' && (
+              <Button size="sm" variant="outline" onClick={() => patchTicket(row.original.id, { status: 'RESOLVED' })}>
+                Résoudre
+              </Button>
+            )}
+          </div>
+        ),
+        enableSorting: false,
+        size: 160,
+      },
+    ],
+    [patchTicket, session?.user?.id],
+  );
+
+  const table = useReactTable({
+    data: data?.items ?? [],
+    columns,
+    pageCount: Math.max(1, Math.ceil((data?.pagination.total ?? 0) / pagination.pageSize)),
+    getRowId: (row) => row.id,
+    state: { pagination },
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+  });
 
   async function createTicket() {
     const res = await apiFetch('/api/sections/support-qualite/support/tickets', {
@@ -97,19 +201,6 @@ export default function SupportTicketsPage() {
     toast.success(t('support.ticketCreated'));
     setOpenCreate(false);
     setForm({ subject: '', description: '', requesterName: '', requesterEmail: '', priority: 'MEDIUM' });
-    qc.invalidateQueries({ queryKey: ['support-tickets'] });
-  }
-
-  async function patchStatus(id: string, status: string) {
-    const res = await apiFetch(`/api/sections/support-qualite/support/tickets/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    });
-    if (!res.ok) {
-      toast.error('Mise à jour impossible');
-      return;
-    }
     qc.invalidateQueries({ queryKey: ['support-tickets'] });
   }
 
@@ -159,98 +250,67 @@ export default function SupportTicketsPage() {
           })}
         </div>
 
-        <Card>
+        <Card className="border-border shadow-none overflow-hidden">
           <CardHeader className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-between">
-            <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => {
+                setStatusFilter(v);
+                setPagination((p) => ({ ...p, pageIndex: 0 }));
+              }}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Statut" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous statuts</SelectItem>
                 {Object.entries(STATUS_LABEL).map(([k, v]) => (
-                  <SelectItem key={k} value={k}>{v}</SelectItem>
+                  <SelectItem key={k} value={k}>
+                    {v}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <div className="flex max-w-md flex-1 gap-2">
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('datagrid.search.generic')} className="flex-1" />
-              <Button variant="secondary" onClick={() => { setSearch(q); setPage(1); }}>
+              <Input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder={t('datagrid.search.generic')}
+                className="flex-1"
+              />
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setSearch(q);
+                  setPagination((p) => ({ ...p, pageIndex: 0 }));
+                }}
+              >
                 <Search className="size-4" />
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[800px] text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/30 text-muted-foreground">
-                    <th className="px-4 py-3 text-left font-medium">Réf.</th>
-                    <th className="px-4 py-3 text-left font-medium">Sujet</th>
-                    <th className="px-4 py-3 text-left font-medium">Demandeur</th>
-                    <th className="px-4 py-3 text-left font-medium">Priorité</th>
-                    <th className="px-4 py-3 text-left font-medium">Statut</th>
-                    <th className="px-4 py-3 text-right font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Chargement…</td></tr>
-                  ) : (data?.items.length ?? 0) === 0 ? (
-                    <tr><td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">Aucun ticket</td></tr>
-                  ) : (
-                    data!.items.map((row) => (
-                      <tr
-                        key={row.id}
-                        className="border-b hover:bg-muted/20 cursor-pointer"
-                        onClick={() => {
-                          setDetailId(row.id);
-                          setDetailOpen(true);
-                        }}
-                      >
-                        <td className="px-4 py-3 font-mono text-xs">{row.referenceCode}</td>
-                        <td className="px-4 py-3">{row.subject}</td>
-                        <td className="px-4 py-3">
-                          <div>{row.requesterName}</div>
-                          <div className="text-xs text-muted-foreground">{row.requesterEmail}</div>
-                        </td>
-                        <td className="px-4 py-3">{PRIORITY_LABEL[row.priority] ?? row.priority}</td>
-                        <td className="px-4 py-3">
-                          <Badge variant="secondary">{STATUS_LABEL[row.status] ?? row.status}</Badge>
-                        </td>
-                        <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
-                          {row.status === 'OPEN' && (
-                            <Button size="sm" variant="outline" onClick={() => patchStatus(row.id, 'IN_PROGRESS')}>
-                              Prendre en charge
-                            </Button>
-                          )}
-                          {row.status === 'IN_PROGRESS' && (
-                            <Button size="sm" variant="outline" onClick={() => patchStatus(row.id, 'RESOLVED')}>
-                              Résoudre
-                            </Button>
-                          )}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {(data?.pagination.total ?? 0) > 15 && (
-              <div className="flex items-center justify-between border-t px-4 py-3">
-                <span className="text-xs text-muted-foreground">Page {page} / {totalPages}</span>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Préc.</Button>
-                  <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Suiv.</Button>
-                </div>
-              </div>
-            )}
-          </CardContent>
+          <div className="p-0">
+            <ModuleDataGridShell
+              table={table}
+              recordCount={data?.pagination.total ?? 0}
+              isLoading={isLoading}
+              emptyMessage="Aucun ticket"
+              cardClassName="border-0 shadow-none rounded-none"
+              onRowClick={(row) => {
+                setDetailId(row.id);
+                setDetailOpen(true);
+              }}
+            />
+          </div>
         </Card>
       </Container>
 <Dialog open={openCreate} onOpenChange={setOpenCreate}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Nouveau ticket</DialogTitle>
+            <p className="text-sm text-muted-foreground">
+              Saisie manuelle d&apos;une demande (téléphone, e-mail, accueil). Les demandes peuvent aussi être créées automatiquement via les workflows CRM.
+            </p>
           </DialogHeader>
           <div className="grid gap-3">
             <div><Label>Sujet</Label><Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} /></div>
@@ -278,7 +338,7 @@ export default function SupportTicketsPage() {
         </DialogContent>
       </Dialog>
 
-      <TicketDetailSheet
+      <TicketWorkspaceSheet
         ticketId={detailId}
         open={detailOpen}
         onOpenChange={setDetailOpen}

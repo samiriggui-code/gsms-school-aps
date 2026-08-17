@@ -3,7 +3,6 @@
 import { Container } from '@/components/common/container';
 import {
   Headphones,
-  BookOpen,
   AlertOctagon,
   Clock,
   TrendingUp,
@@ -16,13 +15,12 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSupportQualiteStats } from '../hooks/use-support-qualite-stats';
 
-export type SupportLandingContext = 'tickets' | 'base-aide' | 'incidents';
+export type SupportLandingContext = 'tickets' | 'incidents';
 
-const ICON_BY_KPI = [Headphones, BookOpen, Clock, TrendingUp, AlertOctagon] as const;
+const ICON_BY_KPI = [Headphones, AlertOctagon, Clock, TrendingUp, Headphones] as const;
 
 const CONTEXT_ICONS: Record<SupportLandingContext, typeof Headphones> = {
   tickets: Headphones,
-  'base-aide': BookOpen,
   incidents: AlertOctagon,
 };
 

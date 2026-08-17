@@ -1,0 +1,76 @@
+=== page 0 ===
+y=  653.9 DEMANDED'AUTORISATIONP
+y=  606.0 D'AUTORISATIONPROVI
+y=  569.4 TITRESIerETIIDU LIVREVIDUCODEDELASÉCURI
+y=  544.0 Vous êtes informé(e) que dans le cadre de l’examen de votre demande, le CNAPS procèdera à une
+y=  138.4 autorisation vous permet d'accéder à une formation di
+y=  137.3 Autorisationpréalabled'accèsàlaformationCette
+
+=== page 1 ===
+y=  727.1 Il est fortement recommandé d’effectuervotre demanded'autorisation préalable directement sur
+y=  693.7 :https://espace-usagers.cnaps.interieur.gouv.fr/
+y=  543.9 ►
+y=  543.1 la mention utile
+y=  542.2 J’indique ma demandeCocher
+y=  410.6 ◌ OU ◌
+y=  278.8 ►Je précise mon identitéet mon adresse
+y=  235.4 Madame Monsieur Nom : _____________________________________Nom d’usage : _____________________
+
+=== page 2 ===
+y=  838.4 Adresse: __________________________________________________________________________________ __
+y=  557.4 J’autorise le CNAPS à utiliser mon courriel et mon numéro de téléphone afin de me contacter dans le cad
+
+=== page 3 ===
+y=  768.3 ►
+y=  767.5 pouvez cocher une ou pl
+y=  766.6 J’identifie les activités pour lesquelles je serai formé(e)Vous
+y=  725.4 Agentdegardiennageoudesurveillancehumainepouvantinclurel'utilisation demoyenséle
+y=  694.7 Agentdegardiennageoudesurveillancehumainepouvantinclurel'utilisation demoyenséle
+y=  663.8 Agentdegardiennageoudesurveillancehumainepouvantinclurel'utilisation demoyensél
+y=  633.1 Agentdetélésurveillance
+y=  616.2 Agentcynophile
+y=  599.4 Cyno-détection d’explosifs
+y=  582.5 Opérateur de vidéoprotection
+y=  565.6 Agentdesûretéaéroportuaire
+y=  548.7 Agentde protectionphysiquedespersonnes
+y=  532.7 B
+y=  531.9 et D
+y=  531.8 Agentdeprotectionphysiquedespersonnes,avecarmedescatégories
+y=  515.0 Agentderecherchesprivées
+y=  498.1 Transport de fonds: Agent de convoyage de fonds et de valeurs
+y=  481.3 Transport de fonds: Agent de maintenance et gestion de IAB
+y=  464.4 Transportdefonds:Opérateurdetraitementdevaleurs
+y=  447.4 Surveillance de grands événements
+y=  403.1 ►
+y=  401.4 J’identifie mon centre de formation ou mon employeur
+y=  376.2 Si vous faites une demande d'autorisation préalable, vous devez obligatoirement fournir l'a
+y=  283.8 Dénominationsocialedevotreemployeur
+y=  269.8 :_______________________________________________________________
+y=  214.2 :________________________________________
+y=  175.0 Numéro de l'autorisation d'exercer, délivrée par le CNAPS, de l'entreprise qui vous emploie:____________________
+y=   96.5 Adresse: _______________________________________________________________________________ _
+
+=== page 4 ===
+y=  838.4 Code postal:______________Commune : ___________________________________________
+
+=== page 5 ===
+y=  768.2 ►
+y=  766.5 J’identifie ma formation
+y=  739.2 Formation initiale (TFP ex-CQP, CQP, titre professionnel, diplôme, titre enregistré au RNCP)
+y=  711.5 Maintien et actualisationdes compétences
+y=  683.8 Ajout de chien
+y=  656.0 V. A. E. (Validation des Acquis de l'Expérience)Autre, préciser
+y=  627.8 : _____________________________________________________________________Libellé exact de
+y=  544.4 : ______________________________________________________________ __
+y=  487.1 ►
+y=  486.3 justificatif de mon identité :(Veuillez
+y=  485.4 J’identifie les pièces à joindre à mon dossierLe
+y=  405.7 Une copie recto-verso de votre carte nationale d'identité ou passeport en cours de validité si vous êtes Fran
+y=  350.1 Pour les ressortissants d’un Étatmembre de l’Union Européenne ou d’un autre Étatpartie à l’accord su
+y=  294.5 Pour lesressortissantsétrangers, hors Étatmembre de l’Union Européenne ou de l’EEE, une copie recto-v
+y=  280.2 Si vous êtes ressortissa
+y=  169.1 .
+y=  168.8 cocher la case correspondant à votre situation)
+y=  168.2 Le justificatif de mon adresse :(Veuillez
+y=   89.4 Pour tous les demandeurs, un justificatif de domicile daté de moins de 3 mois:facture de t
+

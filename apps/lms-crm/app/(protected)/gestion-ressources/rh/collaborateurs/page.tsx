@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useMemo, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import CollaborateurList from './components/collaborateur-list';
 import { CollaborateurStats } from './components/collaborateur-stats';
 import { Button } from '@/components/ui/button';
@@ -52,10 +52,12 @@ export default function Page() {
 
       <Container className="space-y-5 lg:space-y-7.5">
         <CollaborateurStats variant="row" profileSegment={listeSegment} />
-        <CollaborateurList
-          profileSegment={listeSegment}
-          onProfileSegmentChange={setListeSegment}
-        />
+        <Suspense fallback={null}>
+          <CollaborateurList
+            profileSegment={listeSegment}
+            onProfileSegmentChange={setListeSegment}
+          />
+        </Suspense>
       </Container>
       <CollaborateurAddSheet 
         open={isAddSheetOpen} 

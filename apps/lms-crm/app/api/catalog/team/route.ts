@@ -28,6 +28,6 @@ export async function GET() {
     return NextResponse.json(payload);
   } catch (error) {
     console.error('[catalog/team] GET failed', error);
-    return NextResponse.json({ items: [] }, { status: 500 });
+    return NextResponse.json({ items: [] });
   }
 }

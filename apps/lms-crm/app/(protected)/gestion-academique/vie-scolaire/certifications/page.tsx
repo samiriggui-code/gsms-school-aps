@@ -1,31 +1,16 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { ParcoursSessionCertificationsPanel } from './components/parcours-session-certifications-panel';
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
-export default function Page() {
-  const { title, description } = usePageToolbarMeta('/gestion-academique/vie-scolaire/certifications');
-  return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-        </Toolbar>
-      </Container>
-
-      <Container className="space-y-5 lg:space-y-7.5">
-        <ParcoursSessionCertificationsPanel />
-      </Container>
-    </>
-  );
+export default async function CertificationsRedirectPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const qs = new URLSearchParams();
+  qs.set('tab', 'certifications');
+  const sessionId = params.sessionId;
+  if (typeof sessionId === 'string' && sessionId.trim()) {
+    qs.set('sessionId', sessionId.trim());
+  }
+  redirect(`/gestion-academique/vie-scolaire/suivi-formations?${qs.toString()}`);
 }

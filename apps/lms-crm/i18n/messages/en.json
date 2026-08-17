@@ -52,6 +52,7 @@
       "description": "Organization, legal, training, notifications, social networks and integrations — single source of truth (SystemSetting).",
       "sidebar": {
         "general": "General",
+        "administrativeDossier": "Administrative dossier",
         "etablissement": "Organization",
         "legal": "Legal identity",
         "formation": "Training & compliance",
@@ -59,7 +60,16 @@
         "registre": "INPI registry",
         "notifications": "Notifications",
         "social": "Social networks",
-        "integrations": "Integrations"
+        "integrations": "Integrations",
+        "dashboard": "Dashboard layouts",
+        "modules": "Module parameters",
+        "workspacePages": "Page settings",
+        "group": {
+          "platform": "Organization & platform",
+          "spaces": "User spaces",
+          "modules": "CRM modules",
+          "pages": "Pages & workspaces"
+        }
       },
       "common": {
         "reset": "Reset",
@@ -160,7 +170,10 @@
         "rolePlaceholder": "Director, manager…",
         "email": "Email",
         "phone": "Phone",
-        "invalidEmail": "Invalid email"
+        "invalidEmail": "Invalid email",
+        "adminTitle": "Primary admin account",
+        "adminChangePhoto": "Admin photo",
+        "adminSaveSuccess": "Admin photo saved"
       },
       "registre": {
         "saveSuccess": "INPI registry saved",
@@ -184,6 +197,7 @@
         "columnWeb": "Web",
         "searchRoles": "Search roles…",
         "noRoles": "No roles found.",
+        "stockThreshold": "Equipment stock threshold (alert when quantity ≤)",
         "items": {
           "stock": {
             "label": "Equipment stock alerts",
@@ -296,6 +310,119 @@
     "certificationSaved": "Certificate recorded",
     "examResultSaved": "Exam result recorded"
   },
+  "vieScolaire": {
+    "common": {
+      "trainee": "Trainee",
+      "formation": "Course",
+      "session": "Session",
+      "close": "Close",
+      "edit": "Edit",
+      "email": "Email",
+      "noName": "No name",
+      "searchTrainee": "Search for a trainee…",
+      "loading": "Loading…",
+      "chooseFinancier": "Select funding source"
+    },
+    "outcomes": {
+      "PENDING": "Pending",
+      "PASSED": "Passed",
+      "FAILED": "Failed",
+      "ABSENT": "Absent"
+    },
+    "examStatus": {
+      "PLANNED": "Planned",
+      "IN_PROGRESS": "In progress",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "examens": {
+      "planExam": "Schedule an exam",
+      "sessionsWithExam": "Sessions with final exam",
+      "tabPlanned": "Scheduled exams",
+      "tabResults": "Candidate results",
+      "tabQcm": "MCQ bank",
+      "resultsTitle": "Session enrollees — exam results",
+      "resultsDesc": "Enter the in-person result. A passed exam (PASSED) automatically creates the certificate and triggers the post-exam n8n workflow.",
+      "columnOutcome": "Result",
+      "columnExamDate": "Exam date",
+      "columnEntry": "Entry",
+      "filterAllOutcomes": "All results",
+      "filterOutcomePlaceholder": "Filter by result",
+      "outcomePlaceholder": "Result",
+      "emptyResults": "No enrollee with a candidature file. Validate a file then enroll them in a session.",
+      "examResultPassedAuto": "Result saved — certificate created automatically when eligible.",
+      "sheetSaved": "Exam record saved",
+      "outcomeEntryHint": "Enter the result — certificate is created automatically when « Passed »."
+    },
+    "sessions": {
+      "enrolledStudents": "Enrolled students",
+      "noParticipants": "No students enrolled in this session yet.",
+      "reservedEquipment": "Reserved equipment",
+      "triggerCircuit": "Start automation circuit",
+      "triggerCircuitHint": "Triggers the n8n circuit (D-15 to D+45, compliance reminders, candidate emails, and funding branch based on the selected mode).",
+      "triggerCircuitSuccess": "n8n circuit triggered for the first confirmed enrollee.",
+      "triggerCircuitNoParticipant": "Enroll at least one confirmed candidate to start the circuit.",
+      "triggerCircuitPending": "Triggering…",
+      "automationTitle": "Session automations",
+      "sessionKindAll": "All session types",
+      "sessionKindWithExam": "With final exam",
+      "sessionKindInitial": "Initial session",
+      "sessionKindOther": "Other session",
+      "sessionKindFilter": "Session type"
+    },
+    "suivi": {
+      "trackedSession": "Tracked session",
+      "loadingSessions": "Loading sessions…",
+      "noEligibleSession": "No eligible session",
+      "chooseSession": "Choose a session",
+      "tabTrainees": "Trainees",
+      "tabJournal": "Daily journal",
+      "tabDocuments": "Documents",
+      "tabExams": "Exams",
+      "tabCertifications": "Certificates",
+      "tabElearning": "E-learning",
+      "pickSessionForExams": "Select a session to manage exams for this pathway.",
+      "pickSessionForCertifications": "Select a session to issue pathway certificates.",
+      "pickSessionForElearning": "Select a session to track e-learning progress.",
+      "elearningProgressTitle": "Trainee progress",
+      "elearningProgressDesc": "Course units and quizzes for this formation — open a trainee sheet for details.",
+      "elearningTraineesTitle": "Trainees — e-learning",
+      "qualiopiCircuitTitle": "Qualiopi / n8n circuit",
+      "qualiopiCircuitDesc": "Automated milestones (D-15 → D+45) triggered from the toolbar. Execution history for this session.",
+      "noAutomationRuns": "No circuit started for this session. Use “Trigger circuit” once enrollments are confirmed."
+    },
+    "certifications": {
+      "deliverTitle": "Issue a pathway certificate",
+      "deliverDesc": "Select a trainee with a passed exam to close the pathway.",
+      "autoAttestationAlert": "After a PASSED result, the CRM creates the certificate automatically. Use this form for exceptional cases or to attach a signed PDF.",
+      "searchEligible": "Search for an eligible trainee…",
+      "selectTraineeLabel": "Trainee (passed exam)",
+      "selectTraineePlaceholder": "Choose a session enrollee…",
+      "noEligible": "No eligible trainee — enter a passed exam first",
+      "existingAttestation": "(existing certificate)",
+      "columnAttestation": "Certificate",
+      "columnIssued": "Issued",
+      "uploaded": "Uploaded",
+      "deliveredListTitle": "Issued certificates",
+      "deliverButton": "Save certificate",
+      "titleLabel": "Title",
+      "titlePlaceholder": "e.g. SSIAP 1 certificate — March 2026 session",
+      "emptyDelivered": "No certificates yet.",
+      "filterDelivered": "Filter by trainee, course, title…"
+    },
+    "funding": {
+      "modeLabel": "Funding mode",
+      "automationHint": "This mode feeds the n8n finance circuit (CPF, OPCO, company, self-funded…). Save to lock it on the session.",
+      "referenceLabel": "Case reference",
+      "referencePlaceholder": "CPF, AIF, OPCO case number…",
+      "notesLabel": "Funder notes",
+      "notesPlaceholder": "Details for compliance exports…",
+      "saveButton": "Save funder",
+      "savedSuccess": "Funder saved.",
+      "unset": "Not specified",
+      "inheritedBadge": "Value inherited from candidature — save to lock on session"
+    }
+  },
   "support": {
     "ticketUpdated": "Ticket updated",
     "ticketCreated": "Ticket created"
@@ -400,7 +527,11 @@
       "actions": "Actions"
     },
     "companyNotSet": "Company name not provided",
-    "notLinkedFormation": "Not linked"
+    "notLinkedFormation": "Not linked",
+    "payments": {
+      "recordReceiptNow": "Mark as received immediately (triggers n8n automation)",
+      "recordedAndReceived": "Payment received — automation triggered."
+    }
   },
   "equipment": {
     "deleteTitle": "Delete this equipment?",
@@ -1067,21 +1198,20 @@
       "cards": {
         "compagnie": "Company profile, internal structure and administrative documents.",
         "rh": "Staff, trainers, absences and compliance from the sidebar menu.",
-        "equipements": "Inventory, session assignments and workshop maintenance."
+        "equipements": "Inventory, session assignments, workshop maintenance and training rooms."
       }
     },
     "gestionAcademique": {
-      "welcomeDescription": "Training, sessions, applications, scheduling, exams and certifications — manage student life from one hub.",
+      "welcomeDescription": "Training programs, sessions, scheduling, students, then pathway follow-up — the student life workflow.",
       "menuCardsTitle": "Student life — quick access to workspaces",
-      "menuCardsSubtitle": "Shortcuts to the six module workspaces (same as the sidebar menu)",
+      "menuCardsSubtitle": "Five workspaces in the same order as the sidebar menu",
       "securityHighlightsTitle": "Key metrics — Academic management",
       "cards": {
         "formations": "Catalog and training pathway management.",
-        "sessions": "Ongoing sessions, calendar and teaching organization.",
-        "etudiants": "Headcount, files and learner follow-up.",
-        "planning": "Schedule view, progress tracking and attendance.",
-        "examens": "Exam sessions, summons and results.",
-        "certifications": "Issue and verify diplomas and certificates."
+        "sessions": "Planned sessions, enrollments and teaching organization.",
+        "planning": "Weekly session calendar, rooms and trainers.",
+        "etudiants": "Applications, learner files and session enrollment.",
+        "suiviFormations": "Session follow-up: attendance, exams, certificates and e-learning."
       }
     },
     "communicationContenu": {
@@ -1118,20 +1248,27 @@
     },
     "pilotageSupervision": {
       "welcomeDescription": "Alerts, metrics, reports and risk register to supervise the organization.",
-      "menuCardsTitle": "Quick access — Operations & supervision",
-      "menuCardsSubtitle": "1 module and {{pages}} main pages per CRM menu",
+      "menuCardsTitle": "Operations — quick access to workspaces",
+      "menuCardsSubtitle": "Four workspaces in the same order as the sidebar menu",
       "securityHighlightsTitle": "Key metrics — Operations & supervision",
       "cards": {
-        "pilotage": "Dashboards, operational alerts, teaching KPIs, CSV reports and risk register."
+        "alertes": "Central CRM alert register — synced with the header bell.",
+        "indicateurs": "Consolidated KPIs per module: resources, student life, finance, support.",
+        "rapports": "CSV/PDF exports, history and scheduled reports (worker).",
+        "risques": "Operational risk register with severity and recommendations."
       }
     },
     "administrationFacturation": {
       "welcomeDescription": "Budget, quotes, invoices, payments and consolidated financial reports.",
       "menuCardsTitle": "Quick access — Administration & billing",
-      "menuCardsSubtitle": "1 module and {{pages}} main pages per CRM menu",
+      "menuCardsSubtitle": "5 modules and {{pages}} main pages per CRM menu",
       "securityHighlightsTitle": "Key metrics — Administration & billing",
       "cards": {
-        "finance": "Finance module for budget, quotes, invoices, payments and reports."
+        "budget": "Budget tracking, expense lines and training envelope management.",
+        "devis": "Sales pipeline, candidate quotes and shared brochures.",
+        "factures": "Invoice issuance, tracking and follow-ups on candidate files.",
+        "paiements": "Collections, reconciliation and payment status.",
+        "rapports": "Finance dashboards, exports and consolidated metrics."
       }
     }
   },

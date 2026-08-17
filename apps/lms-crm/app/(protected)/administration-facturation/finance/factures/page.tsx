@@ -27,8 +27,8 @@ export default function Page() {
     <div className="space-y-1">
       <h3 className="text-base font-semibold text-foreground">Factures</h3>
       <p className="text-muted-foreground text-xs">
-        Propositions acceptées prêtes à facturer — détail et actions via les endpoints Facturation (PDF proposition :
-        aperçu imprimable).
+        Devis au statut <span className="font-medium text-foreground">ACCEPTED</span> — même
+        enregistrement que dans Devis, vue facturation (PDF, paiements, export).
       </p>
     </div>
   );

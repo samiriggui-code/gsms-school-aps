@@ -5,7 +5,7 @@ import { useSettings } from '@/providers/settings-provider';
 import { InstructorHeader } from './instructor-header';
 import { InstructorSidebar } from './instructor-sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/user-management-support-section';
 
 export function InstructorLayout({ children }: { children: ReactNode }) {
   const isMobile = useIsMobile();

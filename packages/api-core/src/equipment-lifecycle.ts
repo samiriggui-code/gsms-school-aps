@@ -68,11 +68,14 @@ export async function releaseEquipmentStatusIfIdle(
 
   const equipment = await prisma.equipment.findUnique({
     where: { id: equipmentId },
-    select: { status: true },
+    select: {
+      status: true,
+      roomFixedAssignment: { select: { id: true } },
+    },
   });
   if (!equipment) throw new Error('Équipement introuvable.');
 
-  if (equipment.status === 'IN_USE') {
+  if (equipment.status === 'IN_USE' && !equipment.roomFixedAssignment) {
     await prisma.$transaction(async (tx) => {
       await tx.equipment.update({
         where: { id: equipmentId },
@@ -88,6 +91,10 @@ export async function releaseEquipmentStatusIfIdle(
       });
     });
     return { released: true, equipmentStatus: 'AVAILABLE' };
+  }
+
+  if (equipment.status === 'IN_USE' && equipment.roomFixedAssignment) {
+    return { released: true, equipmentStatus: 'IN_USE' };
   }
 
   return { released: false, equipmentStatus: equipment.status };
@@ -135,9 +142,20 @@ export async function assignEquipmentToSession(
 ): Promise<void> {
   const equipment = await prisma.equipment.findUnique({
     where: { id: equipmentId },
-    select: { id: true, label: true, status: true },
+    select: {
+      id: true,
+      label: true,
+      status: true,
+      roomFixedAssignment: { select: { id: true, venueRoomId: true } },
+    },
   });
   if (!equipment) throw new Error('Équipement introuvable.');
+
+  if (equipment.roomFixedAssignment) {
+    throw new Error(
+      `« ${equipment.label} » est installé en salle — transférez-le vers l'entrepôt ou une autre salle avant réservation session.`,
+    );
+  }
 
   if (equipment.status === 'OUT_OF_SERVICE' || equipment.status === 'MAINTENANCE') {
     throw new Error(

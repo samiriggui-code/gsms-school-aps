@@ -86,66 +86,54 @@ const UserProfile = ({
 
     return (
       <Card>
-        <CardContent>
-          <dl className="grid grid-cols-[auto_1fr] gap-3 text-sm mb-5 [&_dt]:text-muted-foreground">
-            <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt className="flex md:w-64">Nom complet&nbsp;:</dt>
-              <dd>{user.name || 'Non renseigné'}</dd>
+        <CardContent className="p-4 sm:p-6">
+          <dl className="mb-5 space-y-4 text-sm sm:space-y-3">
+            <div className="flex flex-col gap-1 border-b border-border/40 pb-3 sm:flex-row sm:items-start sm:gap-4 sm:border-0 sm:pb-0">
+              <dt className="shrink-0 text-muted-foreground sm:w-56">Nom complet&nbsp;:</dt>
+              <dd className="min-w-0 break-words">{user.name || 'Non renseigné'}</dd>
             </div>
-            <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Email professionnel (connexion)&nbsp;:</dt>
-              <dd className="flex items-center gap-2.5">
-                <span>{userIamLoginSubtitle(user)}</span>
-              </dd>
+            <div className="flex flex-col gap-1 border-b border-border/40 pb-3 sm:flex-row sm:items-start sm:gap-4 sm:border-0 sm:pb-0">
+              <dt className="shrink-0 text-muted-foreground sm:w-56">Email professionnel (connexion)&nbsp;:</dt>
+              <dd className="min-w-0 break-words">{userIamLoginSubtitle(user)}</dd>
             </div>
-            <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Email personnel&nbsp;:</dt>
-              <dd className="flex items-center gap-2.5">
+            <div className="flex flex-col gap-1 border-b border-border/40 pb-3 sm:flex-row sm:items-start sm:gap-4 sm:border-0 sm:pb-0">
+              <dt className="shrink-0 text-muted-foreground sm:w-56">Email personnel&nbsp;:</dt>
+              <dd className="flex min-w-0 flex-wrap items-center gap-2.5 break-words">
                 <span>{userPersonalMailbox(user) ?? '—'}</span>
-                {user.emailVerifiedAt ? (
-                  <Badge variant="secondary" appearance="light">
-                    Vérifié
-                  </Badge>
-                ) : (
-                  <Badge variant="warning" appearance="light">
-                    Non vérifié
-                  </Badge>
-                )}
+                {user.emailVerifiedAt ?
+                  <Badge variant="secondary" appearance="light">Vérifié</Badge>
+                : <Badge variant="warning" appearance="light">Non vérifié</Badge>}
               </dd>
             </div>
-            <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Rôle IAM&nbsp;:</dt>
-              <dd>
-                <span className="inline-flex items-center gap-1">
+            <div className="flex flex-col gap-1 border-b border-border/40 pb-3 sm:flex-row sm:items-start sm:gap-4 sm:border-0 sm:pb-0">
+              <dt className="shrink-0 text-muted-foreground sm:w-56">Rôle IAM&nbsp;:</dt>
+              <dd className="min-w-0">
+                <span className="inline-flex flex-wrap items-center gap-1">
                   {user.role?.name}
-                  {user.role?.isProtected && (
+                  {user.role?.isProtected ?
                     <Badge variant="outline">Système</Badge>
-                  )}
+                  : null}
                 </span>
               </dd>
             </div>
-            <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Statut du compte&nbsp;:</dt>
+            <div className="flex flex-col gap-1 border-b border-border/40 pb-3 sm:flex-row sm:items-start sm:gap-4 sm:border-0 sm:pb-0">
+              <dt className="shrink-0 text-muted-foreground sm:w-56">Statut du compte&nbsp;:</dt>
               <dd>
-                <div className="inline-flex gap-2.5">
+                <div className="inline-flex flex-wrap gap-2.5">
                   <Badge variant={statusVariant} appearance="ghost">
                     <BadgeDot />
                     {statusPros.label}
                   </Badge>
-                  {user.isTrashed && (
-                    <Badge variant="destructive" appearance="light">
-                      Corbeille
-                    </Badge>
-                  )}
+                  {user.isTrashed ?
+                    <Badge variant="destructive" appearance="light">Corbeille</Badge>
+                  : null}
                 </div>
               </dd>
             </div>
-            <div className="grid grid-cols-subgrid col-span-2 items-baseline">
-              <dt>Dernière connexion&nbsp;:</dt>
-              <dd>
-                {user.lastSignInAt
-                  ? formatDateTime(new Date(user.lastSignInAt))
-                  : 'Jamais'}
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:gap-4">
+              <dt className="shrink-0 text-muted-foreground sm:w-56">Dernière connexion&nbsp;:</dt>
+              <dd className="min-w-0 break-words">
+                {user.lastSignInAt ? formatDateTime(new Date(user.lastSignInAt)) : 'Jamais'}
               </dd>
             </div>
           </dl>

@@ -1,9 +1,13 @@
 ---
 title: Devis et factures
-description: Cycle commercial optionnel
+description: Cycle commercial FinanceDevis
 ---
 
 # Devis & factures
+
+## Modèle unique
+
+Il n’y a pas de table `FinanceFacture` séparée. Un **devis** (`FinanceDevis`) devient une **facture** dans l’UI lorsque son statut passe à **`ACCEPTED`** (acceptation plaquette client ou action CRM).
 
 ## Accès
 
@@ -15,8 +19,11 @@ Le devis peut être rattaché à un **lead**, une **candidature** ou une **sessi
 
 ## Usage
 
-1. Créer un devis depuis la fiche lead ou candidat.
-2. Envoyer la plaquette client.
-3. À l'acceptation, générer la facture.
+1. Lead landing (`/api/quote-requests`) ou fiche Marketing → créer un devis (brouillon).
+2. Envoyer la plaquette / email client.
+3. À l’acceptation (`ACCEPTED`), le dossier apparaît dans **Factures** (même enregistrement).
+4. Enregistrer les **paiements** — alimentent le **budget** (`actualAmount`).
 
-Le parcours candidat (validation → session → examen → archivage) reste indépendant du paiement.
+Option : `CRM_FINANCE_AUTO_DEVIS_FROM_LEAD=1` crée un brouillon automatiquement à chaque demande landing.
+
+Le parcours candidat reste indépendant du paiement.

@@ -6,13 +6,6 @@ import { formatDateTime } from '@/lib/helpers';
 import { Badge, BadgeDot } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   Sheet,
   SheetBody,
   SheetContent,
@@ -35,7 +28,7 @@ import { cn } from '@/lib/utils';
 import {
   Banknote,
   CalendarClock,
-  ChevronDown,
+  FileSpreadsheet,
   FileText,
   Hash,
   Pencil,
@@ -45,15 +38,23 @@ import {
   Download,
   Loader2,
   Printer,
+  FileCode2,
+  BadgeCheck,
+  Send,
   UserRound,
+  ExternalLink,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { apiFetch } from '@/lib/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { financeFactureDetailQueryKey } from '../constants/query-keys';
 import { useFinanceFactureDetailQuery, type FinanceFactureDetail } from '../hooks/use-finance-facture-detail-query';
 import { useFacturePatchMutation } from '../hooks/use-facture-patch-mutation';
 import { useFacturePdfMutation } from '../hooks/use-facture-pdf-mutation';
-import { FACTURE_STATUS_LABEL_FR } from '../constants/status-labels';
+import { INVOICE_PAYMENT_STATUS_LABEL_FR, invoicePaymentBadgeVariant } from '../constants/status-labels';
+import { FactureRecordPaymentDialog } from './facture-record-payment-dialog';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import { Upload } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/upload';
 import {
@@ -73,8 +74,10 @@ interface FactureDetailSheetProps {
   factureId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Onglet affiché à l’ouverture (ex. « edit » depuis le bouton Modifier de la liste). */
+  /** Onglet affiché à l’ouverture (ex. « notes » depuis le bouton Modifier de la liste). */
   initialTab?: FactureDetailInitialTab;
+  /** Ouvre directement le dialogue paiement à l’affichage. */
+  initialOpenPayment?: boolean;
 }
 
 const CLIENT_SNAPSHOT_LABELS: Record<string, string> = {
@@ -131,23 +134,6 @@ function formatAddressFromSnapshot(s: Record<string, unknown>): string | undefin
   const tail = [pc, city].filter(Boolean).join(' ').trim();
   const parts = [line, tail].filter(Boolean);
   return parts.length ? parts.join(', ') : undefined;
-}
-
-function factureStatusBadgeVariant(status: string): 'success' | 'warning' | 'info' | 'destructive' | 'secondary' {
-  switch (status) {
-    case 'ACCEPTED':
-      return 'success';
-    case 'DRAFT':
-      return 'warning';
-    case 'SENT':
-      return 'info';
-    case 'REJECTED':
-      return 'destructive';
-    case 'EXPIRED':
-      return 'secondary';
-    default:
-      return 'secondary';
-  }
 }
 
 function FactureFinancialOverviewCards({ detail }: { detail: FinanceFactureDetail }) {
@@ -353,6 +339,26 @@ function FactureLinesTable({
   );
 }
 
+function factureClientEmail(detail: FinanceFactureDetail): string | null {
+  const snapEmail = detail.clientSnapshot?.email;
+  if (typeof snapEmail === 'string' && snapEmail.trim()) return snapEmail.trim();
+  return detail.lead?.email?.trim() || null;
+}
+
+function resendFactureEmail(detail: FinanceFactureDetail, id: string) {
+  const email = factureClientEmail(detail);
+  if (!email) {
+    toast.error('Aucun e-mail client pour renvoyer la facture.');
+    return;
+  }
+  const pdfUrl = `${window.location.origin}/api/sections/administration-facturation/finance/factures/${id}/pdf?format=pdf`;
+  const subject = encodeURIComponent(`Facture ${detail.referenceCode}`);
+  const body = encodeURIComponent(
+    `Bonjour,\n\nVeuillez trouver votre facture ${detail.referenceCode} (${detail.title}) :\n${pdfUrl}\n\nCordialement`,
+  );
+  window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
+}
+
 function formatShortDate(iso: string | null | undefined): string {
   if (!iso) return '—';
   try {
@@ -367,15 +373,26 @@ export function FactureDetailSheet({
   open,
   onOpenChange,
   initialTab = 'overview',
+  initialOpenPayment = false,
 }: FactureDetailSheetProps) {
   const { data: detail, isLoading } = useFinanceFactureDetailQuery(factureId, open && !!factureId);
   const facturePatch = useFacturePatchMutation(factureId);
   const facturePdf = useFacturePdfMutation(factureId);
+  const queryClient = useQueryClient();
   const [detailTab, setDetailTab] = useState<FactureDetailInitialTab>('overview');
+  const [paymentOpen, setPaymentOpen] = useState(false);
   const tabSyncRef = useRef<{ factureId: string | null; initialTab: FactureDetailInitialTab }>({
     factureId: null,
     initialTab: 'overview',
   });
+
+  useEffect(() => {
+    if (!open) {
+      setPaymentOpen(false);
+      return;
+    }
+    if (initialOpenPayment) setPaymentOpen(true);
+  }, [open, initialOpenPayment, factureId]);
 
   useEffect(() => {
     if (!open) {
@@ -422,7 +439,7 @@ export function FactureDetailSheet({
       <SheetContent className={VIE_SCOLAIRE_SHEET_LARGE}>
         <SheetHeader className="border-b py-3.5 px-5 border-border bg-background shrink-0">
           <SheetTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground/80">
-            Fiche facturation
+            Fiche facture
           </SheetTitle>
         </SheetHeader>
 
@@ -441,15 +458,19 @@ export function FactureDetailSheet({
                     </span>
                     <Badge
                       size="sm"
-                      variant={factureStatusBadgeVariant(detail.status)}
+                      variant={invoicePaymentBadgeVariant(
+                        detail.paymentSummary?.invoicePaymentStatus ?? 'UNPAID',
+                      )}
                       appearance="light"
                       className="shrink-0"
                     >
-                      {FACTURE_STATUS_LABEL_FR[detail.status] ?? detail.status}
+                      {INVOICE_PAYMENT_STATUS_LABEL_FR[
+                        detail.paymentSummary?.invoicePaymentStatus ?? 'UNPAID'
+                      ] ?? 'À encaisser'}
                     </Badge>
                   </div>
                   <div className="text-2sm flex flex-wrap items-center gap-2 text-muted-foreground">
-                    <span className="font-normal">N° proposition</span>
+                    <span className="font-normal">N° facture</span>
                     <span className="font-medium text-foreground tabular-nums">{detail.referenceCode}</span>
                     <BadgeDot className="size-1 bg-muted-foreground" />
                     <span className="font-normal">Créé le</span>
@@ -522,6 +543,36 @@ export function FactureDetailSheet({
                   variant="outline"
                   size="sm"
                   className="gap-1.5"
+                  onClick={() => factureId && resendFactureEmail(detail, factureId)}
+                >
+                  <Send className="size-3.5" />
+                  Renvoyer au client
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => setPaymentOpen(true)}
+                >
+                  <Banknote className="size-3.5" />
+                  Enregistrer paiement
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => setDetailTab('notes')}
+                >
+                  <Pencil className="size-3.5" />
+                  Modifier notes
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
                   onClick={() => {
                     if (!factureId) return;
                     window.open(
@@ -531,8 +582,90 @@ export function FactureDetailSheet({
                     );
                   }}
                 >
+                  <FileSpreadsheet className="size-3.5" />
+                  Document en ligne
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => {
+                    if (!factureId) return;
+                    window.open(
+                      `/api/sections/administration-facturation/finance/factures/${factureId}/pdf?format=pdf`,
+                      '_blank',
+                      'noopener,noreferrer',
+                    );
+                  }}
+                >
                   <Printer className="size-3.5" />
-                  Aperçu imprimable
+                  Télécharger PDF
+                </Button>
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={async () => {
+                    if (!factureId) return;
+                    try {
+                      const check = await apiFetch(
+                        `/api/sections/administration-facturation/finance/factures/${factureId}/einvoice`,
+                      );
+                      const checkJson = await check.json().catch(() => ({}));
+                      if (!check.ok) {
+                        toast.error(
+                          (checkJson as { error?: { message?: string } }).error?.message ??
+                            'Contrôle e-facture impossible.',
+                        );
+                        return;
+                      }
+                      const data = (checkJson as { data?: { ready?: boolean; issues?: { message: string; severity: string }[] } })
+                        .data;
+                      if (!data?.ready) {
+                        const errors = (data?.issues ?? [])
+                          .filter((i) => i.severity === 'error')
+                          .map((i) => i.message);
+                        toast.error(
+                          errors[0] ??
+                            'Dossier incomplet pour Factur-X (SIRET école / client, adresse…).',
+                        );
+                        return;
+                      }
+                      const res = await apiFetch(
+                        `/api/sections/administration-facturation/finance/factures/${factureId}/einvoice`,
+                        { method: 'POST' },
+                      );
+                      if (!res.ok) {
+                        const err = await res.json().catch(() => ({}));
+                        toast.error(
+                          (err as { error?: { message?: string } }).error?.message ??
+                            'Génération Factur-X échouée.',
+                        );
+                        return;
+                      }
+                      const blob = await res.blob();
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `factur-x-${detail.referenceCode}.xml`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      toast.success('Factur-X (XML CII) téléchargé — prêt pour validation / PDP.');
+                      void queryClient.invalidateQueries({
+                        queryKey: [...financeFactureDetailQueryKey, factureId],
+                      });
+                    } catch (e) {
+                      toast.error(e instanceof Error ? e.message : 'Erreur e-facture.');
+                    }
+                  }}
+                >
+                  <FileCode2 className="size-3.5" />
+                  Factur-X
+                  {detail.einvoiceStatus === 'GENERATED' || detail.einvoiceStatus === 'SENT' ? (
+                    <BadgeCheck className="size-3.5 text-emerald-500" />
+                  ) : null}
                 </Button>
                 <Button
                   type="button"
@@ -645,6 +778,57 @@ export function FactureDetailSheet({
                       <TabsContent value="overview" className="space-y-5">
                         <FactureFinancialOverviewCards detail={detail} />
 
+                        {detail.paymentSummary ? (
+                          <Card className="shadow-none border border-border/50">
+                            <CardHeader className="pb-2 border-b border-border/40">
+                              <CardTitle className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                                <Banknote className="size-4 text-muted-foreground" />
+                                Encaissement
+                              </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-4 space-y-3 text-sm">
+                              <div className="grid gap-2 sm:grid-cols-3">
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Encaissé</p>
+                                  <p className="font-semibold tabular-nums">
+                                    {money(detail.paymentSummary.paidTotal, detail.currency)}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Reste dû</p>
+                                  <p className="font-semibold tabular-nums">
+                                    {money(detail.paymentSummary.balanceDue, detail.currency)}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Statut</p>
+                                  <Badge
+                                    variant={invoicePaymentBadgeVariant(detail.paymentSummary.invoicePaymentStatus)}
+                                    appearance="light"
+                                  >
+                                    {INVOICE_PAYMENT_STATUS_LABEL_FR[detail.paymentSummary.invoicePaymentStatus]}
+                                  </Badge>
+                                </div>
+                              </div>
+                              {(detail.payments?.length ?? 0) > 0 ? (
+                                <div className="border-t border-border/40 pt-3 space-y-2">
+                                  {detail.payments!.slice(0, 5).map((p) => (
+                                    <div key={p.id} className="flex justify-between gap-2 text-xs">
+                                      <span className="font-mono text-muted-foreground">{p.referenceCode}</span>
+                                      <span className="tabular-nums">{money(p.amount, p.currency)}</span>
+                                      <Badge variant="outline" className="text-[10px]">
+                                        {p.status}
+                                      </Badge>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-xs text-muted-foreground">Aucun paiement enregistré.</p>
+                              )}
+                            </CardContent>
+                          </Card>
+                        ) : null}
+
                         <Card className="shadow-none border border-border/50">
                           <CardHeader className="pb-2 border-b border-border/40">
                             <CardTitle className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
@@ -678,27 +862,11 @@ export function FactureDetailSheet({
                               </div>
                             </div>
                             <p className="text-xs text-muted-foreground leading-relaxed border-t border-border/40 pt-3">
-                              Proposition acceptée prête pour la facturation. Le détail client est dans l’onglet{' '}
-                              <span className="font-medium text-foreground">Client</span>, les lignes dans{' '}
-                              <span className="font-medium text-foreground">Lignes &amp; prix</span>, les notes dans{' '}
-                              <span className="font-medium text-foreground">Notes</span>. Pour modifier montants ou
-                              statut commercial, utilisez le{' '}
-                              <span className="font-medium text-foreground">module Devis</span> ou les actions dossier
-                              ci-dessous.
-                              {detail.status === 'DRAFT' ? (
-                                <>
-                                  {' '}
-                                  En brouillon, l’onglet{' '}
-                                  <button
-                                    type="button"
-                                    className="font-medium text-primary underline-offset-2 hover:underline"
-                                    onClick={() => setDetailTab('edit')}
-                                  >
-                                    En-tête
-                                  </button>{' '}
-                                  sert au titre, à la validité et à la devise.
-                                </>
-                              ) : null}
+                              Facture émise à partir du devis accepté. Utilisez{' '}
+                              <span className="font-medium text-foreground">Enregistrer paiement</span> ou le module{' '}
+                              <span className="font-medium text-foreground">Paiements</span> pour suivre l’encaissement.
+                              Les notes facture se modifient dans l’onglet{' '}
+                              <span className="font-medium text-foreground">Notes</span>.
                             </p>
                           </CardContent>
                         </Card>
@@ -758,65 +926,43 @@ export function FactureDetailSheet({
           )}
         </SheetBody>
 
-        <SheetFooter className="flex flex-row flex-wrap items-center justify-end gap-2 border-t border-border p-5 pb-4 lg:gap-2">
+        <SheetFooter className="flex flex-row flex-wrap items-center justify-between gap-2 border-t border-border p-5 pb-4 lg:gap-2">
           {detail ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button type="button" variant="outline" disabled={facturePatch.isPending} className="gap-1.5">
-                  Actions dossier
-                  <ChevronDown className="size-4 opacity-70" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem
-                  disabled={detail.status === 'DRAFT' || facturePatch.isPending}
-                  onClick={() => facturePatch.mutate({ status: 'DRAFT' })}
+            <div className="flex flex-wrap items-center gap-2">
+              <Button asChild variant="ghost" size="sm" className="gap-1.5 h-8 text-xs">
+                <Link
+                  href={`/administration-facturation/finance/paiements?q=${encodeURIComponent(detail.referenceCode)}`}
                 >
-                  Repasser en brouillon
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={detail.status === 'SENT' || facturePatch.isPending}
-                  onClick={() => facturePatch.mutate({ status: 'SENT' })}
-                >
-                  Marquer comme envoyé
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={detail.status === 'ACCEPTED' || facturePatch.isPending}
-                  onClick={() => facturePatch.mutate({ status: 'ACCEPTED' })}
-                >
-                  Marquer comme accepté
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={detail.status === 'REJECTED' || facturePatch.isPending}
-                  onClick={() => facturePatch.mutate({ status: 'REJECTED' })}
-                >
-                  Marquer comme refusé
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={detail.status === 'EXPIRED' || facturePatch.isPending}
-                  onClick={() => facturePatch.mutate({ status: 'EXPIRED' })}
-                >
-                  Marquer comme expiré
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    toast.message('Facturation', {
-                      description:
-                        'L’émission PDF « facture » dédiée arrive prochainement. Les actions de statut ci-dessous modifient encore la proposition (même données que le module Devis).',
-                    });
-                  }}
-                >
-                  Transformer en facture…
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : null}
+                  <ExternalLink className="size-3.5" />
+                  Paiements
+                </Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm" className="gap-1.5 h-8 text-xs">
+                <Link href={`/administration-facturation/finance/devis?devisId=${encodeURIComponent(detail.id)}`}>
+                  <FileText className="size-3.5" />
+                  Devis d&apos;origine
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <span />
+          )}
           <Button type="button" variant="mono" onClick={() => onOpenChange(false)}>
             Fermer
           </Button>
         </SheetFooter>
       </SheetContent>
+
+      {detail && factureId ? (
+        <FactureRecordPaymentDialog
+          open={paymentOpen}
+          onOpenChange={setPaymentOpen}
+          factureId={factureId}
+          referenceCode={detail.referenceCode}
+          defaultAmount={detail.paymentSummary?.balanceDue ?? detail.totalTtc}
+          currency={detail.currency}
+        />
+      ) : null}
     </Sheet>
   );
 }

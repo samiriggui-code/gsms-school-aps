@@ -69,7 +69,7 @@ export const SUIVI_ENROLLMENT_STATUS_LABELS: Record<string, string> = {
 export const SUIVI_EXAM_OUTCOME_LABELS: Record<string, string> = {
   PENDING: 'En attente',
   PASSED: 'Réussi',
-  FAILED: 'Échoué',
+  FAILED: 'Échec',
   ABSENT: 'Absent',
 };
 
@@ -85,6 +85,10 @@ export type SuiviJournalDayRow = {
   eveningComplete: boolean;
   morningPdfAssetId: string | null;
   eveningPdfAssetId: string | null;
+  morningScanCount: number;
+  eveningScanCount: number;
+  morningArchivedTemplates: number;
+  eveningArchivedTemplates: number;
 };
 
 export type SuiviEmargementStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED';
@@ -96,6 +100,8 @@ export const SUIVI_EMARGEMENT_STATUS_LABELS: Record<SuiviEmargementStatus, strin
   EXCUSED: 'Excusé',
 };
 
+export { SUIVI_DAY_SLOT_LABELS } from '@/lib/suivi-formations/session-location';
+
 export type SuiviDocumentRow = {
   id: string;
   originalName: string;
@@ -104,8 +110,15 @@ export type SuiviDocumentRow = {
   size: number;
   category: string;
   categoryLabel: string;
+  title: string | null;
+  documentKind: string | null;
+  documentKindLabel: string | null;
+  notes: string | null;
   dayDate: string | null;
   slot: 'MORNING' | 'EVENING' | null;
+  slotRole: 'template-pdf' | 'signed-scan' | null;
+  scanIndex: number | null;
+  legalHold: boolean;
   createdAt: string;
   createdByName: string | null;
 };

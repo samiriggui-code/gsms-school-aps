@@ -150,6 +150,66 @@ const HR_ADMIN_STAFF_ASSIGNMENTS = [
 
 const DIRECTOR_LOGIN_EMAIL = 'yassine.hidjeb@ecole.local';
 const SUPERADMIN_LOGIN_EMAIL = 'samir.iggui@ecole.local';
+/** Avatar vitrine / landing — fichier statique dans `public/media/avatars/`. */
+const SUPERADMIN_DEFAULT_AVATAR = '/media/avatars/300-14.png';
+
+/** Textes vitrine (#trainers) et annuaire Structure — clé = code RhPosition. */
+const LANDING_BIO_BY_POSITION_CODE = {
+  DIR_DIRECTEUR:
+    "Gérant et directeur de FORM'SSI : pilotage de l'établissement, conformité Qualiopi et relations institutionnelles.",
+  DIR_ADJ:
+    'Coordination stratégique des parcours et pilotage qualité — interface avec les financeurs et partenaires.',
+  DIR_RAF:
+    "Support à la direction sur la conformité réglementaire, le suivi des dossiers et l'organisation des sessions.",
+  DIR_COORD:
+    "Coordination opérationnelle des services, suivi des indicateurs et déploiement des procédures qualité.",
+  DIR_ASSIST:
+    "Assistanat de direction, préparation des instances et interface avec les partenaires institutionnels.",
+  PED_COORD:
+    "Coordination des parcours, animation des promotions et lien formateurs — apprenants.",
+  PED_REF:
+    "Référent pédagogique : suivi individualisé, conformité des dossiers et accompagnement jusqu'à la certification.",
+  PED_QUAL:
+    "Pilotage qualité & conformité Qualiopi, indicateurs pédagogiques et plans d'amélioration continue.",
+  PED_REF_ALTERN:
+    "Relations entreprises et alternance : conventions, tuteurs et suivi en centre de formation.",
+  PED_CHARG_SUIVI:
+    "Suivi des apprenants, emploi du temps, assiduité et remontées vers l'équipe pédagogique.",
+  PED_CHARG_EXAM:
+    "Organisation des examens, convocations jury et archivage des résultats de certification.",
+  ADM_GENERAL:
+    "Administration générale de l'établissement : dossiers, planning et support aux équipes.",
+  ADM_SECRETARIAT:
+    "Accueil, standard téléphonique et gestion des demandes entrantes candidats & entreprises.",
+  ADM_COMPTA:
+    "Comptabilité, facturation OPCO et suivi des encaissements formation.",
+  ADM_RH:
+    "Ressources humaines : recrutement, contrats, absences et dossiers du personnel.",
+  ADM_MARKETING:
+    "Communication digitale, acquisition leads et animation des réseaux de l'école.",
+  ADM_IT:
+    "Support informatique, CRM LMS et continuité des services numériques.",
+  FORM_PRINCIPAL:
+    "Formateur principal SST & prévention — interventions terrain et sessions certifiantes catalogue.",
+  FORM_EXPERT:
+    "Formateur expert incendie / secours — expérience opérationnelle et pédagogie active.",
+  FORM_VACATAIRE:
+    "Formateur vacataire spécialisé habilitations & travaux à risques.",
+  FORM_INTERV_PART:
+    "Intervenant partenaire — complément d'expertise sur modules réglementaires.",
+  FORM_REF_TECHNIQUE:
+    "Référent technique formation : veille réglementaire, mises à jour de programmes et qualité des contenus.",
+};
+
+function landingBioForPosition(positionCode, posLabel, qualification, specialties = []) {
+  const fixed = LANDING_BIO_BY_POSITION_CODE[positionCode];
+  if (fixed) return fixed;
+  if (specialties.length) {
+    return `${posLabel} — ${specialties.join(' · ')}. ${qualification}.`;
+  }
+  if (qualification) return `${posLabel} — ${qualification}.`;
+  return `${posLabel} — FORM'SSI.`;
+}
 
 module.exports = {
   RH_POSITIONS,
@@ -161,6 +221,9 @@ module.exports = {
   HR_ADMIN_STAFF_ASSIGNMENTS,
   DIRECTOR_LOGIN_EMAIL,
   SUPERADMIN_LOGIN_EMAIL,
+  SUPERADMIN_DEFAULT_AVATAR,
+  LANDING_BIO_BY_POSITION_CODE,
+  landingBioForPosition,
   /** @deprecated utiliser DIRECTOR_LOGIN_EMAIL */
   DIRECTOR_EMAIL: DIRECTOR_LOGIN_EMAIL,
   /** @deprecated utiliser SUPERADMIN_LOGIN_EMAIL */

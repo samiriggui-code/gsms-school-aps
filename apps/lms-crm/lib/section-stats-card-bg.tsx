@@ -31,5 +31,5 @@ export function sectionLandingStatsGridClass(itemCount: number): string {
   );
 }
 
-/** Grille 5 KPI par ligne — raccourci quand la page affiche toujours 5 cartes. */
+/** Grille 5 KPI par ligne — standard pages module. */
 export const SECTION_LANDING_STATS_GRID_CLASS = sectionLandingStatsGridClass(5);

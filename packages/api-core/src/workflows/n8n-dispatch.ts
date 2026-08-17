@@ -11,6 +11,10 @@ export type N8nDispatchInput = {
   event: string;
   payload: Record<string, unknown>;
   emittedAt?: string;
+  /** Destinataire email (candidat/client) — sinon email ops. */
+  emailTo?: string;
+  emailSubject?: string;
+  emailBody?: string;
 };
 
 export type N8nDispatchMessage = {
@@ -110,7 +114,11 @@ export function parseN8nDispatchInput(raw: unknown): N8nDispatchInput | null {
 
   const emittedAt = typeof body.emittedAt === 'string' ? body.emittedAt : undefined;
 
-  return { channels, event, payload, emittedAt };
+  const emailTo = typeof body.emailTo === 'string' ? body.emailTo.trim() : undefined;
+  const emailSubject = typeof body.emailSubject === 'string' ? body.emailSubject.trim() : undefined;
+  const emailBody = typeof body.emailBody === 'string' ? body.emailBody.trim() : undefined;
+
+  return { channels, event, payload, emittedAt, emailTo, emailSubject, emailBody };
 }
 
 export function buildN8nDispatchMessage(

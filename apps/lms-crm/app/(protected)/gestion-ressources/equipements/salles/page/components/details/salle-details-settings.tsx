@@ -126,6 +126,7 @@ export function SalleDetailsSettings({
       void queryClient.invalidateQueries({ queryKey: ['venue-rooms-stats'] });
       void queryClient.invalidateQueries({ queryKey: ['venue-rooms-planning'] });
       void queryClient.invalidateQueries({ queryKey: ['salle-equipment-sessions', room.id] });
+      void queryClient.invalidateQueries({ queryKey: ['room-dispatch-guide', room.id] });
       toast.custom(
         () => (
           <Alert variant="mono" icon="success">
@@ -261,6 +262,16 @@ export function SalleDetailsSettings({
         <Separator className="bg-border/50" />
 
         <section className="space-y-6">
+          <div className="rounded-lg border border-primary/25 bg-primary/5 p-4 space-y-2">
+            <p className="text-xs font-semibold text-foreground flex items-center gap-2">
+              <Package className="size-4 text-primary" />
+              Mobilier fixe de la salle
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              La <strong>capacité</strong> ci-dessous alimente l&apos;assistant de dispatch (chaises, tables, VP…).
+              Liez ensuite les unités depuis le stock global dans l&apos;onglet inventaire fixe de la fiche salle.
+            </p>
+          </div>
           <div className="flex items-center gap-2.5">
             <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/10">
               <Package className="size-4 text-primary" />

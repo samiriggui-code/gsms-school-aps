@@ -11,6 +11,7 @@ import {
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserStatus } from '@/app/models/user';
 import { ensureUserStoragePrefix, provisionStoragePrefixSafe } from '@/lib/entity-storage';
+import { createWorkflowEngine } from '@repo/api-core';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -231,6 +232,24 @@ export async function POST(request: NextRequest) {
     void provisionStoragePrefixSafe(`user:${result.id}`, () =>
       ensureUserStoragePrefix(result.id),
     );
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.security.user.created',
+        {
+          userId: result.id,
+          name: result.name,
+          email: result.email,
+          roleName: existingRole.name,
+          roleId: existingRole.id,
+          sourceFlow,
+        },
+        { dedupeKey: `iam-user:${result.id}:created` },
+      );
+    } catch (e) {
+      console.error('[acces/users] workflow create', e);
+    }
 
     return NextResponse.json(
       {

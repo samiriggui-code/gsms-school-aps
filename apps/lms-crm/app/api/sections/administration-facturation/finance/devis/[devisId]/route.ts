@@ -6,6 +6,7 @@ import { FinanceDevisStatus, Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { parseLinesJson, totalsFromLines } from '@/lib/finance-devis-totals';
 import { listPlaquetteMessagesForDevis } from '@/lib/devis-plaquette-messages-query';
+import { expireOverdueSentDevis } from '@/lib/finance/devis-workflow-settings-server';
 
 type Ctx = { params: Promise<{ devisId: string }> };
 
@@ -23,6 +24,8 @@ export async function GET(_request: NextRequest, context: Ctx) {
   const { devisId } = await context.params;
 
   try {
+    await expireOverdueSentDevis(prisma);
+
     const row = await prisma.financeDevis.findUnique({
       where: { id: devisId },
       include: {

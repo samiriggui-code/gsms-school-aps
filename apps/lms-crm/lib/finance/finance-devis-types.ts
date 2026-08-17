@@ -11,7 +11,9 @@ export type FinanceDevisPdfRow = {
   totalTtc: unknown;
   currency: string;
   notes: string | null;
-  lead: { firstName: string; lastName: string; email: string } | null;
+  validUntil: Date | null;
+  updatedAt: Date;
+  lead: { firstName: string; lastName: string; email: string; phone?: string | null } | null;
   formation: { name: string } | null;
 };
 

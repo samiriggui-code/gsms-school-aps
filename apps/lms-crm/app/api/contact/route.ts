@@ -102,6 +102,19 @@ export async function POST(request: NextRequest) {
         dedupeKey: referenceCode ? `landing-contact:${referenceCode}` : undefined,
       },
     );
+    await workflows.emit(
+      'crm.support.ticket.created',
+      {
+        ticketId: referenceCode,
+        referenceCode,
+        subject: safeSubject,
+        requesterName: safeName,
+        requesterEmail: safeEmail,
+        priority: 'MEDIUM',
+        source: 'landing-contact',
+      },
+      { dedupeKey: referenceCode ? `ticket-landing:${referenceCode}` : undefined, crm: false },
+    );
   } catch (e) {
     console.error('[contact] workflow', e);
   }

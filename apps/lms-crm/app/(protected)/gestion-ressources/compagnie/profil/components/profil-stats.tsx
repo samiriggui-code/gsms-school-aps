@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { SchoolStatsPayload } from '../types/school-stats';
+import type { SchoolStatsPayload } from '@/lib/company-profile';
 
 interface ProfilStatsProps {
   variant?: 'grid' | 'row';

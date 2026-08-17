@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { financeFactureListQueryKey } from '../constants/query-keys';
 
+import type { FinancePaymentSummary } from '@/lib/finance/finance-payment-summary';
+
 export type FinanceFactureRow = {
   id: string;
   referenceCode: string;
@@ -27,6 +29,7 @@ export type FinanceFactureRow = {
     phone: string | null;
   } | null;
   formation: { id: string; name: string; slug: string } | null;
+  paymentSummary: FinancePaymentSummary;
 };
 
 export type FinanceFactureListStats = {

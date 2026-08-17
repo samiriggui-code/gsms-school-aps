@@ -289,6 +289,12 @@ export async function POST(request: NextRequest, { params }: Params) {
           body: `Vous avez été ajouté à l'équipe « ${team.name} ».`,
           href: '/gestion-ressources/rh/equipes',
           dedupeKey: `rh-team-member:${team.id}:${memberId}`,
+          metadata: {
+            moduleKey: 'gestion-ressources.rh',
+            eventType: 'rh.team.member_added',
+            teamId: team.id,
+            teamName: team.name,
+          },
         });
       }
       return ok(serializeTeam(team), 201);
@@ -321,6 +327,12 @@ export async function POST(request: NextRequest, { params }: Params) {
         body: `Vous avez été ajouté à l'équipe « ${teamMeta.name} ».`,
         href: '/gestion-ressources/rh/equipes',
         dedupeKey: `rh-team-member:${teamId}:${userId}`,
+        metadata: {
+          moduleKey: 'gestion-ressources.rh',
+          eventType: 'rh.team.member_added',
+          teamId: teamMeta.id,
+          teamName: teamMeta.name,
+        },
       });
 
       const team = await prisma.rhTeam.findUnique({

@@ -7,9 +7,10 @@ import {
   countConfirmedParticipants,
   isoDateOnly,
   parseIsoDateOnly,
-  summarizeDaySlots,
+  summarizeDaysBatch,
   syncFormationSessionDays,
 } from '@/lib/suivi-formations/session-days';
+import { buildDaySlotDocumentCountsMap } from '@/lib/suivi-formations/session-slot-documents';
 import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ sessionId: string }> };
@@ -40,12 +41,20 @@ export async function GET(_request: NextRequest, context: Ctx) {
       },
     });
 
-    const items = await Promise.all(
-      days.map(async (day) => {
-        const slots = await summarizeDaySlots(sessionId, day.id, participantTotal);
-        const morning = slots.find((s) => s.slot === 'MORNING')!;
-        const evening = slots.find((s) => s.slot === 'EVENING')!;
-        return {
+    const dayIds = days.map((d) => d.id);
+    const [slotsByDay, docCountsByDay] = await Promise.all([
+      summarizeDaysBatch(sessionId, dayIds, participantTotal),
+      buildDaySlotDocumentCountsMap(sessionId, dayIds),
+    ]);
+
+    const items = days.map((day) => {
+      const slots = slotsByDay.get(day.id) ?? [];
+      const morning = slots.find((s) => s.slot === 'MORNING')!;
+      const evening = slots.find((s) => s.slot === 'EVENING')!;
+      const docCounts = docCountsByDay.get(day.id);
+      const morningDocs = docCounts?.MORNING;
+      const eveningDocs = docCounts?.EVENING;
+      return {
           id: day.id,
           dayDate: isoDateOnly(day.dayDate),
           journalNotesMorning: day.journalNotesMorning,
@@ -57,9 +66,12 @@ export async function GET(_request: NextRequest, context: Ctx) {
           eveningComplete: evening.complete,
           morningPdfAssetId: morning.pdfAssetId,
           eveningPdfAssetId: evening.pdfAssetId,
+          morningScanCount: morningDocs?.scanCount ?? 0,
+          eveningScanCount: eveningDocs?.scanCount ?? 0,
+          morningArchivedTemplates: morningDocs?.archivedTemplates ?? 0,
+          eveningArchivedTemplates: eveningDocs?.archivedTemplates ?? 0,
         };
-      }),
-    );
+      });
 
     return ok({
       items,

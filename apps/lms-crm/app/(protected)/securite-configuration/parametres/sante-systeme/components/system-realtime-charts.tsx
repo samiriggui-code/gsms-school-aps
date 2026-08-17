@@ -57,7 +57,7 @@ export function SystemRealtimeCharts() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 5000); // Poll every 5s
+    const interval = setInterval(fetchData, 30_000);
     return () => clearInterval(interval);
   }, []);
 

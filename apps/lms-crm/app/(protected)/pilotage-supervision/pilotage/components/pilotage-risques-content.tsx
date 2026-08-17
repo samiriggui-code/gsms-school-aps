@@ -76,7 +76,7 @@ function graviteVariant(g: PilotageRisqueRow['gravite']) {
 export function PilotageRisquesContent() {
   const { title, description } = usePageToolbarMeta('/pilotage-supervision/pilotage/risques');
   const intro = PILOTAGE_PAGE_INTRO.risques;
-  const [moduleId, setModuleId] = useState<PilotageModuleId>('gestion-ressources');
+  const [moduleId, setModuleId] = useState<PilotageModuleId>('all');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<PilotageRisqueRow | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);

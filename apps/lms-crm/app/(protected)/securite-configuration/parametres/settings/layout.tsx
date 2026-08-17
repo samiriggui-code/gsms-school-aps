@@ -12,6 +12,7 @@ import {
   ToolbarTitle,
   ToolbarDescription,
 } from '@/components/common/toolbar';
+import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/user-management-support-section';
 import { SettingsProvider } from './components/settings-context';
 import { CompanyProfileProvider } from './components/company-profile-context';
 import { SettingsSidebarLayout } from './components/settings-sidebar-layout';
@@ -48,20 +49,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SettingsProvider settings={settings} roles={roles}>
       <CompanyProfileProvider>
-        <Container>
-          <Toolbar>
-            <ToolbarHeading>
-              <ToolbarTitle>{t('pages.settings.title')}</ToolbarTitle>
-              <ToolbarDescription>
-                {t('pages.settings.description')}
-              </ToolbarDescription>
-            </ToolbarHeading>
-            <ToolbarActions />
-          </Toolbar>
-        </Container>
-        <Container>
-          <SettingsSidebarLayout>{children}</SettingsSidebarLayout>
-        </Container>
+        <div className="flex flex-col">
+          <Container>
+            <Toolbar>
+              <ToolbarHeading>
+                <ToolbarTitle>{t('pages.settings.title')}</ToolbarTitle>
+                <ToolbarDescription>
+                  {t('pages.settings.description')}
+                </ToolbarDescription>
+              </ToolbarHeading>
+              <ToolbarActions />
+            </Toolbar>
+          </Container>
+
+          <Container className="pb-8 lg:pb-10">
+            <SettingsSidebarLayout>{children}</SettingsSidebarLayout>
+          </Container>
+
+          <UserManagementSupportSection className="relative z-0" />
+        </div>
       </CompanyProfileProvider>
     </SettingsProvider>
   );

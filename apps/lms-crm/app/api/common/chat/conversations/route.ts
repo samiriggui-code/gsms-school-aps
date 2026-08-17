@@ -2,11 +2,15 @@ import { NextRequest } from 'next/server';
 import { ChatConversationType } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import { displayUserName, requireSessionUserId } from '@/app/api/_shared/topbar-auth';
+import { displayUserName } from '@/app/api/_shared/topbar-auth';
 import { assertEligibleParticipants } from '@/lib/chat-eligible';
+import {
+  assertParticipantsInChatScope,
+  requireChatSession,
+} from '@/lib/chat-scope';
 
 export async function GET() {
-  const auth = await requireSessionUserId();
+  const auth = await requireChatSession();
   if ('error' in auth) return auth.error;
 
   const participations = await prisma.chatParticipant.findMany({
@@ -96,7 +100,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireSessionUserId();
+  const auth = await requireChatSession();
   if ('error' in auth) return auth.error;
 
   let body: Record<string, unknown>;
@@ -125,6 +129,11 @@ export async function POST(request: NextRequest) {
 
   if (!(await assertEligibleParticipants(participantIds))) {
     return fail('Un ou plusieurs participants ne sont pas autorisés pour le chat.', 403);
+  }
+
+  const roleSlug = auth.session.user?.roleSlug ?? '';
+  if (!(await assertParticipantsInChatScope(auth.userId, roleSlug, participantIds))) {
+    return fail('Un ou plusieurs participants sont hors de votre périmètre équipe.', 403);
   }
 
   try {

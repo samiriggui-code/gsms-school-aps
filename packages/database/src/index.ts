@@ -14,6 +14,7 @@ export {
   CandidatureSource,
   FormationSessionEnrollmentStatus,
   FormationExamOutcome,
+  FormationExamStatus,
   AttendanceStatus,
   UserBusinessLabel,
   SchoolInternalService,
@@ -46,7 +47,14 @@ export {
   RhAbsenceStatus,
   RhTeamLifecycleStatus,
 } from '../generated/client';
-export { LandingTeamVolet, RhTeamType } from './prisma-enums';
+export {
+  LandingTeamVolet,
+  RhTeamType,
+  HelpArticleStatus,
+  HelpArticleAudience,
+  QualityIncidentSeverity,
+  QualityIncidentStatus,
+} from './prisma-enums';
 /** Types Prisma (modèles, inputs, enums) — sans ré-export runtime `export *`. */
 export type * from '../generated/client';
 export {

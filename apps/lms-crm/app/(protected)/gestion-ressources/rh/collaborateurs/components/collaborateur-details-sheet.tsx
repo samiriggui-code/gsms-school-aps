@@ -58,6 +58,27 @@ interface CollaborateurDetailsSheetProps {
   initialTab?: string;
 }
 
+function mapCollaborateurTab(tab: string | undefined): string {
+  if (!tab || tab === 'overview') return 'overview';
+  if (
+    tab === 'compliance' ||
+    tab === 'conformite' ||
+    tab === 'documents' ||
+    tab === 'activity'
+  ) {
+    return 'conformite';
+  }
+  if (
+    tab === 'settings' ||
+    tab === 'permissions' ||
+    tab === 'absences' ||
+    tab === 'compte'
+  ) {
+    return 'compte';
+  }
+  return 'overview';
+}
+
 const escapeHtml = (value: any) => {
   if (value === null || value === undefined) return '';
   return String(value)
@@ -390,10 +411,10 @@ export function CollaborateurDetailsSheet({
   const [collaborateur, setCollaborateur] = useState<Collaborateur | null>(initialCollaborateur);
   const [isLoadingEmail, setIsLoadingEmail] = useState(false);
   const [isLoadingRestore, setIsLoadingRestore] = useState(false);
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState(() => mapCollaborateurTab(initialTab));
 
   useEffect(() => {
-    setActiveTab(initialTab);
+    setActiveTab(mapCollaborateurTab(initialTab));
   }, [initialTab]);
   const hideActivityTab = useMaxWidthLg();
   const [complianceStatus, setComplianceStatus] = useState<any>(null);
@@ -406,12 +427,6 @@ export function CollaborateurDetailsSheet({
       setCollaborateur(initialCollaborateur);
     }
   }, [initialCollaborateur]);
-
-  useEffect(() => {
-    if (hideActivityTab && activeTab === 'activity') {
-      setActiveTab('overview');
-    }
-  }, [hideActivityTab, activeTab]);
 
   useEffect(() => {
     if (contentActive && initialCollaborateur?.id) {
@@ -476,11 +491,13 @@ export function CollaborateurDetailsSheet({
     },
     {
       channelName:
-        contentActive &&
-        ((session?.user as any)?.companyId || (session?.user as any)?.tenantId) &&
-        (collaborateur?.id || initialCollaborateur?.id)
+        contentActive && (collaborateur?.id || initialCollaborateur?.id)
           ? getCollaborateurActivityChannel(
-              (session?.user as any)?.companyId || (session?.user as any)?.tenantId,
+              String(
+                (session?.user as { companyId?: string })?.companyId ||
+                  (session?.user as { tenantId?: string })?.tenantId ||
+                  'solo',
+              ),
               collaborateur?.id || initialCollaborateur!.id,
             )
           : undefined,
@@ -488,7 +505,6 @@ export function CollaborateurDetailsSheet({
       enabled: Boolean(
         contentActive &&
           session?.user?.id &&
-          ((session?.user as any)?.companyId || (session?.user as any)?.tenantId) &&
           (collaborateur?.id || initialCollaborateur?.id),
       ),
     },
@@ -510,7 +526,7 @@ export function CollaborateurDetailsSheet({
   const statusProps = getCollaborateurStatusProps(collaborateur.status as UserStatus);
 
   const handleEditClick = () => {
-    setActiveTab('settings');
+    setActiveTab('compte');
     if (onEditClick) onEditClick();
   };
 
@@ -704,26 +720,19 @@ export function CollaborateurDetailsSheet({
               <div className="min-w-0 grow space-y-5 border-border py-5 lg:border-s lg:ps-5">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full min-w-0 max-w-full text-sm text-muted-foreground">
                   <TabsList className="mb-2.5 inline-flex h-auto w-auto max-w-full flex-wrap items-center gap-1">
-                    <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-                    <TabsTrigger value="permissions">Permissions</TabsTrigger>
-                    <TabsTrigger value="absences" className="relative">
-                      Absences
+                    <TabsTrigger value="overview">Vue d&apos;ensemble</TabsTrigger>
+                    <TabsTrigger value="conformite">Conformité</TabsTrigger>
+                    <TabsTrigger value="compte" className="relative">
+                      Compte
                       {isUserCurrentlyAbsent(collaborateur) && (
-                        <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>
-                        </span>
+                        <span className="ms-1.5 inline-flex h-2 w-2 rounded-full bg-destructive" />
                       )}
                     </TabsTrigger>
-                    <TabsTrigger value="documents">Documents</TabsTrigger>
-                    <TabsTrigger value="compliance">Conformité</TabsTrigger>
-                    <TabsTrigger value="activity" className="hidden lg:inline-flex">
-                      Activité
-                    </TabsTrigger>
-                    <TabsTrigger value="settings">Paramètres</TabsTrigger>
                   </TabsList>
-                  <div className="mt-4 min-w-0 max-w-full">
+                  <div className="mt-4 min-w-0 max-w-full space-y-6">
                     <TabsContent value="overview" className="m-0 min-w-0">
+                      {activeTab !== 'overview' ? null : (
+                      <>
                       {theme === 'formateur' && (
                         <Alert
                           variant="secondary"
@@ -737,7 +746,7 @@ export function CollaborateurDetailsSheet({
                             Autorisations formation
                           </AlertTitle>
                           <AlertDescription className="text-muted-foreground text-xs">
-                            La conformité et les pièces gérées dans cet onglet et dans{' '}
+                            La conformité et les pièces gérées dans l&apos;onglet{' '}
                             <span className="font-semibold text-foreground">Conformité</span> déterminent si ce compte peut
                             être désigné formateur référent sur des sessions catalogue.
                           </AlertDescription>
@@ -747,31 +756,55 @@ export function CollaborateurDetailsSheet({
                         collaborateur={collaborateur}
                         overviewVariant={theme === 'formateur' ? 'formateur' : 'collaborateur'}
                       />
+                      </>
+                      )}
                     </TabsContent>
-                    <TabsContent value="absences" className="m-0 min-w-0">
-                      <CollaborateurDetailsAbsences collaborateur={collaborateur} />
+
+                    <TabsContent value="conformite" className="m-0 min-w-0 space-y-8">
+                      {activeTab === 'conformite' ? (
+                        <>
+                          <CollaborateurDetailsCompliance
+                            collaborateur={collaborateur}
+                            trainerContext={theme === 'formateur'}
+                          />
+                          <CollaborateurDetailsDocuments
+                            collaborateur={collaborateur}
+                            companyProfile={companyProfile}
+                          />
+                          {!hideActivityTab ? (
+                            <CollaborateurDetailsActivity collaborateur={collaborateur} />
+                          ) : null}
+                        </>
+                      ) : null}
                     </TabsContent>
-                    <TabsContent value="documents" className="m-0 min-w-0">
-                      <CollaborateurDetailsDocuments collaborateur={collaborateur} companyProfile={companyProfile} />
-                    </TabsContent>
-                    <TabsContent value="compliance" className="m-0 min-w-0">
-                      <CollaborateurDetailsCompliance
-                        collaborateur={collaborateur}
-                        trainerContext={theme === 'formateur'}
-                      />
-                    </TabsContent>
-                    <TabsContent value="permissions" className="m-0 min-w-0">
-                      <CollaborateurDetailsPermissions collaborateur={collaborateur} />
-                    </TabsContent>
-                    <TabsContent value="activity" className="m-0 min-w-0 hidden lg:block">
-                      <CollaborateurDetailsActivity collaborateur={collaborateur} />
-                    </TabsContent>
-                    <TabsContent value="settings" className="m-0 min-w-0">
-                      <CollaborateurDetailsSettings 
-                        collaborateur={collaborateur} 
-                        formRef={settingsFormRef} 
-                        onSuccess={fetchCollaborateur}
-                      />
+
+                    <TabsContent value="compte" className="m-0 min-w-0 space-y-8">
+                      {activeTab === 'compte' ? (
+                        <>
+                          <section className="space-y-3">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              Permissions
+                            </p>
+                            <CollaborateurDetailsPermissions collaborateur={collaborateur} />
+                          </section>
+                          <section className="space-y-3">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              Absences
+                            </p>
+                            <CollaborateurDetailsAbsences collaborateur={collaborateur} />
+                          </section>
+                          <section className="space-y-3">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              Identité &amp; cycle de vie
+                            </p>
+                            <CollaborateurDetailsSettings
+                              collaborateur={collaborateur}
+                              formRef={settingsFormRef}
+                              onSuccess={fetchCollaborateur}
+                            />
+                          </section>
+                        </>
+                      ) : null}
                     </TabsContent>
                   </div>
                 </Tabs>
@@ -789,7 +822,7 @@ export function CollaborateurDetailsSheet({
             <span className="shrink-0 self-center px-1 text-xs text-muted-foreground">Profil métier (session)</span>
           )}
           <div className="flex min-w-0 flex-1 flex-nowrap items-center justify-end gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] sm:gap-2.5 [&::-webkit-scrollbar]:hidden">
-            {activeTab === 'settings' ? (
+            {activeTab === 'compte' ? (
               <Button 
                 variant="outline" 
                 className="shrink-0 bg-foreground text-background hover:bg-foreground/90 font-bold border-none" 

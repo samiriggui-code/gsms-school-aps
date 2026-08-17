@@ -6,6 +6,7 @@ import { Prisma } from '@repo/database';
 import {
   applySessionEquipmentDiff,
   buildSessionVenueNotificationContext,
+  ensureFormationExamForSession,
   notifyVenueRoomReserved,
 } from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
@@ -110,6 +111,7 @@ export async function POST(request: NextRequest) {
   const d = parsed.data;
   const participantIds = d.participantUserIds ?? [];
   const equipmentIds = d.reservedEquipmentIds ?? [];
+  const examEquipmentIds = d.examReservedEquipmentIds ?? [];
 
   try {
     const offer = await prisma.formationCatalogOffer.findUnique({
@@ -160,6 +162,8 @@ export async function POST(request: NextRequest) {
           endDate: parseDateInput(d.endDate),
           registrationClosesAt: parseDateInput(d.registrationClosesAt),
           examDate: parseDateInput(d.examDate),
+          examVenueRoomId: d.examVenueRoomId ?? null,
+          examReservedEquipmentIds: (examEquipmentIds.length > 0 ? examEquipmentIds : []) as unknown as Prisma.InputJsonValue,
           traineesMin: d.traineesMin ?? undefined,
           traineesMax: d.traineesMax ?? undefined,
           trainerUserId: d.trainerUserId ?? undefined,
@@ -180,6 +184,10 @@ export async function POST(request: NextRequest) {
           data: participantIds.map((userId) => ({ sessionId: row.id, userId })),
           skipDuplicates: true,
         });
+      }
+
+      if (sessionKindStored === 'WITH_EXAM') {
+        await ensureFormationExamForSession(tx, row.id);
       }
 
       return tx.formationSession.findUniqueOrThrow({
@@ -208,8 +216,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (equipmentIds.length > 0) {
-      await applySessionEquipmentDiff(prisma, created.id, [], equipmentIds, {
+    if (equipmentIds.length > 0 || examEquipmentIds.length > 0) {
+      const merged = [...new Set([...equipmentIds, ...examEquipmentIds])];
+      await applySessionEquipmentDiff(prisma, created.id, [], merged, {
         actorUserId: sessionAuth.user?.id ?? null,
       });
     }

@@ -37,10 +37,12 @@ sync_stack_config() {
   cp -f "$APP_ROOT/deploy/gsms/deploy.sh" "$GSMS_DIR/"
   cp -f "$APP_ROOT/deploy/gsms/db-init.sh" "$GSMS_DIR/"
   cp -f "$APP_ROOT/deploy/gsms/docker-cleanup.sh" "$GSMS_DIR/"
+  cp -f "$APP_ROOT/deploy/gsms/vps-disk-cleanup.sh" "$GSMS_DIR/"
   cp -f "$APP_ROOT/deploy/gsms/verify.sh" "$GSMS_DIR/" 2>/dev/null || true
+  cp -f "$APP_ROOT/deploy/gsms/n8n/provision-n8n.sh" "$GSMS_DIR/n8n-provision.sh" 2>/dev/null || true
   cp -rf "$APP_ROOT/deploy/gsms/homepage/config/"* "$GSMS_DIR/homepage/config/"
   cp -f "$APP_ROOT/deploy/gsms/traefik/dynamic/routers.yaml" "$GSMS_DIR/traefik/dynamic/"
-  chmod +x "$GSMS_DIR/deploy.sh" "$GSMS_DIR/db-init.sh" "$GSMS_DIR/docker-cleanup.sh"
+  chmod +x "$GSMS_DIR/deploy.sh" "$GSMS_DIR/db-init.sh" "$GSMS_DIR/docker-cleanup.sh" "$GSMS_DIR/vps-disk-cleanup.sh"
   [[ -f "$GSMS_DIR/verify.sh" ]] && chmod +x "$GSMS_DIR/verify.sh"
 
   if [[ ! -f "$GSMS_DIR/.env" ]]; then
@@ -214,6 +216,36 @@ verify_deploy() {
   fi
 }
 
+provision_n8n() {
+  if [[ "${SKIP_N8N_PROVISION:-0}" == "1" ]]; then
+    echo "==> SKIP_N8N_PROVISION=1"
+    return 0
+  fi
+  local script="$APP_ROOT/deploy/gsms/n8n/provision-n8n.sh"
+  if [[ ! -f "$script" ]]; then
+    echo "==> n8n provision absent (skip)"
+    return 0
+  fi
+  chmod +x "$script" 2>/dev/null || true
+  echo "==> Provision n8n (workflows + secrets .env) ..."
+  if APP_ROOT="$APP_ROOT" GSMS_DIR="$GSMS_DIR" GSMS_ENV="$GSMS_DIR/.env" bash "$script"; then
+    echo "==> Redémarrage app/worker (secrets n8n dans .env) ..."
+    cd "$GSMS_DIR"
+    docker compose up -d --force-recreate app worker 2>/dev/null || true
+  else
+    echo "AVERTISSEMENT: provision n8n échouée — vérifier N8N_API_URL et N8N_API_KEY dans .env"
+  fi
+}
+
+post_build_disk_cleanup() {
+  if [[ "${SKIP_DISK_CLEANUP:-0}" == "1" ]]; then
+    return 0
+  fi
+  echo "==> Nettoyage disque VPS après rebuild..."
+  APP_ROOT="$APP_ROOT" GSMS_DIR="$GSMS_DIR" \
+    bash "$APP_ROOT/deploy/gsms/vps-disk-cleanup.sh" || true
+}
+
 normalize_scripts
 git_sync
 sync_stack_config
@@ -226,7 +258,9 @@ start_stack
 init_minio_bucket
 install_traefik_routes
 run_db_init
+provision_n8n
 verify_deploy
+post_build_disk_cleanup
 
 DOMAIN="$(read_env DOMAIN)"
 DOMAIN="${DOMAIN:-hosting-global-it-ss.com}"

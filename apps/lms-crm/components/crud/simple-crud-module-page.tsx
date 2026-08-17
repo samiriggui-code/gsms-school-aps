@@ -1,10 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { PaginationState } from '@tanstack/react-table';
 import { Plus, Search, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Container } from '@/components/common/container';
+import {
+  ConfigurableListDataGrid,
+  type ConfigurableListColumn,
+} from '@/components/common/configurable-list-datagrid';
+import {
+  createModuleLandingPagination,
+} from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import {
   Toolbar,
   ToolbarActions,
@@ -14,7 +22,7 @@ import {
 } from '@/components/common/toolbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -108,7 +116,7 @@ export function SimpleCrudModulePage({
       }),
     });
   const qc = useQueryClient();
-  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
   const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
   const [openCreate, setOpenCreate] = useState(false);
@@ -121,9 +129,12 @@ export function SimpleCrudModulePage({
   });
 
   const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: [queryKey, page, search, extraQueryParams] as const,
+    queryKey: [queryKey, pagination.pageIndex, pagination.pageSize, search, extraQueryParams] as const,
     queryFn: async (): Promise<ListResponse | undefined> => {
-      const sp = new URLSearchParams({ page: String(page), limit: '15' });
+      const sp = new URLSearchParams({
+        page: String(pagination.pageIndex + 1),
+        limit: String(pagination.pageSize),
+      });
       if (search.trim()) sp.set('q', search.trim());
       if (extraQueryParams) {
         for (const [k, v] of Object.entries(extraQueryParams)) sp.set(k, v);
@@ -136,7 +147,21 @@ export function SimpleCrudModulePage({
     staleTime: 30_000,
   });
 
-  const totalPages = Math.max(1, Math.ceil((data?.pagination.total ?? 0) / 15));
+  const gridColumns = useMemo<ConfigurableListColumn[]>(
+    () =>
+      columns.map((col) => ({
+        key: col.key,
+        label: workspaceColumnLabel(t, workspaceKey, col.key, col.label),
+        align: col.align,
+        format: (value, row) => {
+          if (col.format) return col.format(value, row);
+          if (value == null) return '—';
+          if (typeof value === 'boolean') return value ? t('crud.yes') : t('crud.no');
+          return String(value);
+        },
+      })),
+    [columns, t, workspaceKey],
+  );
 
   function refresh() {
     qc.invalidateQueries({ queryKey: [queryKey] });
@@ -187,14 +212,6 @@ export function SimpleCrudModulePage({
     refresh();
   }
 
-  function cellValue(row: Record<string, unknown>, col: CrudColumn) {
-    const v = row[col.key];
-    if (col.format) return col.format(v, row);
-    if (v == null) return '—';
-    if (typeof v === 'boolean') return v ? t('crud.yes') : t('crud.no');
-    return String(v);
-  }
-
   return (
     <>
       <Container>
@@ -240,97 +257,52 @@ export function SimpleCrudModulePage({
           })}
         </div>
 
-        <Card>
-          <CardHeader className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-end">
-            <div className="flex max-w-md flex-1 gap-2 sm:ms-auto">
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('crud.search')} className="flex-1" />
-              <Button variant="secondary" onClick={() => { setSearch(q); setPage(1); }}>
-                <Search className="size-4" />
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px] text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/30 text-muted-foreground">
-                    {columns.map((c) => (
-                      <th
-                        key={c.key}
-                        className={cn('px-4 py-3 font-medium', c.align === 'right' ? 'text-right' : 'text-left')}
-                      >
-                        {workspaceColumnLabel(t, workspaceKey, c.key, c.label)}
-                      </th>
-                    ))}
-                    {(rowActions || canDelete) && (
-                      <th className="px-4 py-3 text-right font-medium">{t('crud.actions')}</th>
+        <ConfigurableListDataGrid
+          columns={gridColumns}
+          rows={data?.items ?? []}
+          recordCount={data?.pagination.total ?? 0}
+          isLoading={isLoading}
+          emptyMessage={t('crud.empty')}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          renderActions={
+            rowActions || canDelete
+              ? (row) => (
+                  <>
+                    {rowActions?.(row, refresh)}
+                    {canDelete && (
+                      <Button size="sm" variant="ghost" onClick={() => deleteRow(String(row.id))}>
+                        <Trash2 className="size-4 text-destructive" />
+                      </Button>
                     )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    <tr>
-                      <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-muted-foreground">
-                        {t('crud.loading')}
-                      </td>
-                    </tr>
-                  ) : (data?.items.length ?? 0) === 0 ? (
-                    <tr>
-                      <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-muted-foreground">
-                        {t('crud.empty')}
-                      </td>
-                    </tr>
-                  ) : (
-                    data!.items.map((row) => (
-                      <tr key={String(row.id)} className="border-b hover:bg-muted/20">
-                        {columns.map((c) => (
-                          <td
-                            key={c.key}
-                            className={cn('px-4 py-3', c.align === 'right' ? 'text-right' : 'text-left')}
-                          >
-                            {cellValue(row, c)}
-                          </td>
-                        ))}
-                        {(rowActions || canDelete) && (
-                          <td className="px-4 py-3 text-right">
-                            <div className="flex justify-end gap-2">
-                              {rowActions?.(row, refresh)}
-                              {canDelete && (
-                                <Button size="sm" variant="ghost" onClick={() => deleteRow(String(row.id))}>
-                                  <Trash2 className="size-4 text-destructive" />
-                                </Button>
-                              )}
-                            </div>
-                          </td>
-                        )}
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {(data?.pagination.total ?? 0) > 15 && (
-              <div className="flex items-center justify-between border-t px-4 py-3">
-                <span className="text-xs text-muted-foreground">
-                  {t('crud.page', { page, total: totalPages })}
-                </span>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-                    {t('crud.prev')}
-                  </Button>
+                  </>
+                )
+              : undefined
+          }
+          toolbar={
+            <Card className="border-border shadow-none">
+              <CardHeader className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-end">
+                <div className="flex max-w-md flex-1 gap-2 sm:ms-auto">
+                  <Input
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder={t('crud.search')}
+                    className="flex-1"
+                  />
                   <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
+                    variant="secondary"
+                    onClick={() => {
+                      setSearch(q);
+                      setPagination((p) => ({ ...p, pageIndex: 0 }));
+                    }}
                   >
-                    {t('crud.next')}
+                    <Search className="size-4" />
                   </Button>
                 </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              </CardHeader>
+            </Card>
+          }
+        />
       </Container>
 
       <Dialog open={openCreate} onOpenChange={setOpenCreate}>

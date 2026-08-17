@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { MarketingCampaignStatus, Prisma } from '@repo/database';
+import { createWorkflowEngine } from '@repo/api-core';
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -84,6 +85,36 @@ export async function POST(request: NextRequest) {
         notes: String(body.notes ?? '').trim() || null,
       },
     });
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.marketing.campaign.created',
+        {
+          campaignId: row.id,
+          name: row.name,
+          channel: row.channel,
+          status: row.status,
+          utmCampaign: row.utmCampaign,
+        },
+        { dedupeKey: `campaign:${row.id}:created` },
+      );
+      if (row.status === 'ACTIVE') {
+        await workflows.emit(
+          'crm.marketing.campaign.activated',
+          {
+            campaignId: row.id,
+            name: row.name,
+            channel: row.channel,
+            utmCampaign: row.utmCampaign,
+          },
+          { dedupeKey: `campaign:${row.id}:active` },
+        );
+      }
+    } catch (e) {
+      console.error('[campagnes] workflow', e);
+    }
+
     return ok({ id: row.id }, 201);
   } catch (e) {
     return fail('Création impossible.', 500, e);

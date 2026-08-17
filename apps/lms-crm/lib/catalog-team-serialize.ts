@@ -5,7 +5,7 @@ import { getAvatarUrl } from '@/lib/helpers';
 
 type LandingTeamVoletValue = (typeof LandingTeamVolet)[keyof typeof LandingTeamVolet];
 
-type UserSlice = {
+export type UserSlice = {
   id: string;
   name: string | null;
   firstName: string | null;
@@ -56,7 +56,7 @@ function asStringArray(value: unknown): string[] {
   return value.filter((x): x is string => typeof x === 'string' && x.trim() !== '');
 }
 
-function inferTitle(user: UserSlice): string {
+export function inferTitle(user: UserSlice): string {
   return (
     user.jobFunction?.trim() ||
     user.collaborateurProfile?.jobFunction?.trim() ||
@@ -67,7 +67,7 @@ function inferTitle(user: UserSlice): string {
   );
 }
 
-function inferCertifications(user: UserSlice): string {
+export function inferCertifications(user: UserSlice): string {
   const certs = asStringArray(user.formateurProfile?.certifications);
   if (certs.length) return certs.join(' · ');
   const specs = asStringArray(user.formateurProfile?.specialties);
@@ -75,7 +75,7 @@ function inferCertifications(user: UserSlice): string {
   return '—';
 }
 
-function inferBio(user: UserSlice): string {
+export function inferBio(user: UserSlice): string {
   if (user.landingPresentation?.trim()) return user.landingPresentation.trim();
 
   const meta = user.formateurProfile?.metadata;

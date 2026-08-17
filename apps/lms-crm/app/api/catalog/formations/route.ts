@@ -103,7 +103,7 @@ export async function GET() {
     return NextResponse.json(payload);
   } catch (e) {
     console.error('[catalog/formations]', e);
-    await invalidateCatalogFormationsListCache();
-    return NextResponse.json({ message: 'Erreur serveur.' }, { status: 500 });
+    await invalidateCatalogFormationsListCache().catch(() => undefined);
+    return NextResponse.json({ items: [] });
   }
 }

@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   MODULE_LANDING_STATS_GRID_ROW,
+  MODULE_PAGE_KPI_COUNT,
   SECTION_KPI_CARD_ACCENTS,
+  kpiStatsGridClass,
 } from '@/components/common/stat-card-metric-layout';
 import { Users, CalendarCheck, FileCheck, Timer, FileX } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -42,14 +44,12 @@ export function CandidatHubStats({ variant = 'row' }: CandidatHubStatsProps) {
   });
 
   const gridClasses =
-    variant === 'row'
-      ? MODULE_LANDING_STATS_GRID_ROW
-      : 'grid w-full grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5';
+    variant === 'row' ? MODULE_LANDING_STATS_GRID_ROW : kpiStatsGridClass(MODULE_PAGE_KPI_COUNT);
 
   if (!mounted || isLoading) {
     return (
       <div className={gridClasses}>
-        {[1, 2, 3, 4, 5].map((i) => (
+        {Array.from({ length: MODULE_PAGE_KPI_COUNT }, (_, i) => i + 1).map((i) => (
           <div
             key={i}
             className="relative overflow-hidden rounded-xl border border-border/70 bg-gradient-to-br from-background via-background to-muted/30 px-4 py-4"

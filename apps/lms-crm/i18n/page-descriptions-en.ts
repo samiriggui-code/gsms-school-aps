@@ -31,7 +31,7 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
   'communication-contenu.seo': 'SEO management, indexing and redirects.',
   'communication-contenu.seo.redirections': '301/302 rules and landing site anchors.',
   'gestion-academique':
-    'Section grouping the Student life module: programs, sessions, applications, scheduling, exams and certifications.',
+    'Section grouping the Student life module: programs, sessions, scheduling, students and training follow-up (five menu workspaces).',
   'gestion-academique.vie-scolaire.certifications':
     'CRM certificate issuance after a passed exam (before closing the file).',
   'gestion-academique.vie-scolaire.etudiants':
@@ -107,13 +107,9 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'Configure general settings, notifications and global platform options.',
   'securite-configuration.parametres.sante-systeme':
     'Real-time resource usage overview (Postgres, Redis, Node.js).',
-  'support-qualite': 'Track user support, satisfaction and operational compliance.',
-  'support-qualite.qualite': 'Quality and incident tracking.',
-  'support-qualite.support':
-    'Support tickets and catalog sheets used as self-service help.',
+  'support-qualite': 'Track user support and quality incidents.',
+  'support-qualite.support': 'Helpdesk: incoming tickets and incident tracking (equipment, process).',
   'support-qualite.support.tickets': 'Create, assign and track support requests.',
-  'support-qualite.support.base-aide':
-    'Active training catalog sheets — full documentation in the integrated school guide (Documentation tab).',
-  'support-qualite.qualite.incidents':
-    'Out-of-service equipment and system errors — summary with quality charts.',
+  'support-qualite.support.incidents':
+    'Out-of-service equipment and process errors — analysis and corrective actions.',
 };

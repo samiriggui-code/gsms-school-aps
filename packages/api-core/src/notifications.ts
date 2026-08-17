@@ -2,6 +2,7 @@ import type { InAppNotificationCategory, PrismaClient } from '@repo/database';
 import { triggerUserNotification } from '@repo/realtime';
 import { enrichNotificationMetadata } from './notification-avatar-enrich';
 import { resolveNotificationChannel } from './notification-channel';
+import { canDeliverInAppToUser, canDeliverSystemWebNotification } from './notification-delivery';
 
 /**
  * Catégories in-app (Prisma `InAppNotificationCategory`) :
@@ -36,6 +37,13 @@ export class NotificationService {
   constructor(private readonly prisma: PrismaClient) {}
 
   async emit(input: EmitNotificationInput) {
+    if (!(await canDeliverInAppToUser(this.prisma, input.userId))) {
+      return null;
+    }
+    if (!(await canDeliverSystemWebNotification(this.prisma, input.category))) {
+      return null;
+    }
+
     if (input.dedupeKey) {
       const existing = await this.prisma.inAppNotification.findFirst({
         where: {

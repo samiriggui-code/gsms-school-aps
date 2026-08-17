@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { Activity, DoorOpen, RefreshCw, ShieldCheck, Users, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,7 +31,7 @@ const KPI_ICONS = [Users, ShieldCheck, Wrench, DoorOpen, Activity];
 export function PilotageIndicateursContent() {
   const { title, description } = usePageToolbarMeta('/pilotage-supervision/pilotage/indicateurs');
   const intro = PILOTAGE_PAGE_INTRO.indicateurs;
-  const [moduleId, setModuleId] = useState<PilotageModuleId>('gestion-ressources');
+  const [moduleId, setModuleId] = useState<PilotageModuleId>('all');
   const [period, setPeriod] = useState<PilotagePeriod>('month');
 
   const apiModule = pilotageApiModuleId(moduleId);
@@ -39,6 +39,7 @@ export function PilotageIndicateursContent() {
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ['pilotage-indicateurs', apiModule, period],
     queryFn: () => fetchPilotageIndicateurs(apiModule, period),
+    placeholderData: keepPreviousData,
     refetchInterval: 60_000,
   });
 

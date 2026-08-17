@@ -237,7 +237,9 @@ const InventaireList = ({
                 {row.original.label}
               </span>
               <span className="text-[10px] text-muted-foreground uppercase font-medium tracking-tight">
-                Réf. {row.original.serialNumber || 'N/A'}
+                {row.original.isCatalogEntry
+                  ? `${row.original.unitCount ?? 0} unité(s) au stock école`
+                  : `Réf. ${row.original.serialNumber || 'N/A'}`}
               </span>
             </div>
           </div>
@@ -254,6 +256,7 @@ const InventaireList = ({
           <EquipmentStockStatsCell
             stats={row.original.stockStats}
             unitCount={row.original.unitCount}
+            catalogView
           />
         ),
         size: 220,
@@ -424,10 +427,17 @@ const InventaireList = ({
                       
                       <div className="flex flex-col gap-2 w-full py-3 border-y border-border/50 mb-4">
                         <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter text-center">
-                          Réf. {item.serialNumber || 'N/A'}
+                          {item.isCatalogEntry
+                            ? `${item.unitCount ?? 0} unité(s) au stock école`
+                            : `Réf. ${item.serialNumber || 'N/A'}`}
                         </p>
                         <div className="flex justify-center">
-                          <EquipmentStockStatsCell stats={item.stockStats} unitCount={item.unitCount} compact />
+                          <EquipmentStockStatsCell
+                            stats={item.stockStats}
+                            unitCount={item.unitCount}
+                            compact
+                            catalogView={Boolean(item.isCatalogEntry)}
+                          />
                         </div>
                       </div>
 

@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { Prisma } from '@repo/database';
+import { syncEquipmentBudgetFromInventory } from '@/lib/finance/finance-budget-sync';
 
 function decimalNum(d: unknown): number {
   if (d == null) return 0;
@@ -36,13 +37,14 @@ export async function GET(request: NextRequest) {
   };
 
   try {
-    const [total, rows, agg] = await Promise.all([
+    const [total, rows, agg, equipmentBudget] = await Promise.all([
       prisma.financeBudgetLine.count({ where }),
       prisma.financeBudgetLine.findMany({ where, orderBy: { label: 'asc' }, skip, take: limit }),
       prisma.financeBudgetLine.aggregate({
         where,
         _sum: { plannedAmount: true, actualAmount: true },
       }),
+      syncEquipmentBudgetFromInventory(prisma, year).catch(() => ({ actualAmount: 0, unitCount: 0 })),
     ]);
 
     const planned = decimalNum(agg._sum.plannedAmount);
@@ -56,6 +58,7 @@ export async function GET(request: NextRequest) {
         ecart: planned - actual,
         consumptionRate: planned ? Math.round((actual / planned) * 100) : 0,
         year,
+        equipmentInventory: equipmentBudget,
       },
       items: rows.map((r) => ({
         id: r.id,

@@ -1,11 +1,29 @@
 import { prisma } from '@/lib/prisma';
 import type { FormationSessionDaySlot, FormationSessionEmargementStatus } from '@repo/database';
+import { getAvatarUrl } from '@/lib/helpers';
 import {
-  buildSessionAttendancePdfBuffer,
-  type AttendancePdfParticipant,
+  buildEmargementReportPdfBuffer,
 } from '@/lib/instructor/session-attendance-pdf';
 import { storeEmargementPdfForSlot } from '@/lib/suivi-formations/session-document-store';
 import { isoDateOnly, loadDayParticipantIds } from '@/lib/suivi-formations/session-days';
+import { loadEmargementReportPayload } from '@/lib/suivi-formations/emargement-report-payload';
+
+async function fetchAvatarBuffer(avatar: string | null | undefined): Promise<Buffer | null> {
+  if (!avatar?.trim()) return null;
+  try {
+    const path = getAvatarUrl(avatar);
+    const base =
+      process.env.NEXTAUTH_URL?.replace(/\/$/, '') ||
+      process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
+      'http://localhost:3001';
+    const url = /^https?:\/\//i.test(path) ? path : `${base}${path.startsWith('/') ? path : `/${path}`}`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+    if (!res.ok) return null;
+    return Buffer.from(await res.arrayBuffer());
+  } catch {
+    return null;
+  }
+}
 
 export type EmargementMarkInput = {
   participantId: string;
@@ -24,6 +42,7 @@ export async function loadDayDetail(dayId: string) {
           location: true,
           trainerUserId: true,
           trainer: { select: { name: true, email: true } },
+          venueRoom: { select: { name: true, shortCode: true } },
           formation: { select: { id: true, name: true, slug: true } },
         },
       },
@@ -138,29 +157,19 @@ export async function generateEmargementPdfForSlot(input: {
   const { day, participants, marks } = detail;
   const slotMarks = marks.filter((m) => m.slot === input.slot);
   const markByParticipant = new Map(slotMarks.map((m) => [m.participantId, m.status]));
-
-  const pdfParticipants: AttendancePdfParticipant[] = participants.map((p, i) => ({
-    index: i + 1,
-    name: participantDisplayName(p.user),
-    email: p.user.email,
-  }));
-
-  const trainerName =
-    day.session.trainer?.name?.trim() ||
-    day.session.trainer?.email ||
-    'Formateur référent';
-
   const dayDateIso = isoDateOnly(day.dayDate);
-  const slotTitle = input.slot === 'MORNING' ? 'Matin' : 'Soir';
 
-  const { buffer, filename } = await buildSessionAttendancePdfBuffer({
-    formationName: day.session.formation.name,
-    sessionLabel: `${day.session.dateDisplayLabel} — ${slotTitle}`,
-    location: day.session.location,
-    trainerName,
-    attendanceDate: dayDateIso,
-    participants: pdfParticipants,
-  });
+  const baseUrl =
+    process.env.NEXTAUTH_URL?.replace(/\/$/, '') ||
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
+    'http://localhost:3001';
+
+  const payload = await loadEmargementReportPayload(input.dayId, input.slot, baseUrl);
+  if (!payload) throw new Error('DAY_NOT_FOUND');
+
+  const avatarBuffers = await Promise.all(participants.map((p) => fetchAvatarBuffer(p.user.avatar)));
+
+  const { buffer, filename } = await buildEmargementReportPdfBuffer(payload, avatarBuffers);
 
   const asset = await storeEmargementPdfForSlot({
     sessionId: day.sessionId,

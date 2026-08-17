@@ -8,7 +8,6 @@ const PATH_PERMISSION_PREFIXES: { prefix: string; permissionSlug: string }[] = [
   { prefix: '/gestion-academique', permissionSlug: CRM_PERMISSION.academiqueView },
   { prefix: '/administration-facturation', permissionSlug: CRM_PERMISSION.financeView },
   { prefix: '/communication-contenu', permissionSlug: CRM_PERMISSION.communicationView },
-  { prefix: '/support-qualite/qualite', permissionSlug: CRM_PERMISSION.pilotageView },
   { prefix: '/support-qualite', permissionSlug: CRM_PERMISSION.supportView },
   { prefix: '/pilotage-supervision', permissionSlug: CRM_PERMISSION.pilotageView },
   { prefix: '/securite-configuration', permissionSlug: CRM_PERMISSION.securiteView },

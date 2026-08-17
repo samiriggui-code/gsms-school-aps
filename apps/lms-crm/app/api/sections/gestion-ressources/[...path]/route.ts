@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ok, fail } from '@/app/api/_shared/http/response';
+import { fail } from '@/app/api/_shared/http/response';
 import { internalApiOrigin } from '@/lib/internal-api-origin';
 
 type Params = { params: Promise<{ path: string[] }> };
@@ -16,19 +16,6 @@ function normalizeGestionRessourcesParts(partsIn: string[]): string[] {
       RH_SEGMENT_UUID.test(seg) ? seg : seg.toLowerCase(),
     ),
   ];
-}
-
-/** Écrans clone CRM hérités (Examens, Plannings, …) → registre collaborateurs. */
-const RH_USER_REGISTRY_ALIASES = new Set<string>();
-
-function listFallback(req: NextRequest) {
-  const url = new URL(req.url);
-  const page = Number(url.searchParams.get('page') || 1);
-  const limit = Number(url.searchParams.get('limit') || 10);
-  return ok({
-    items: [],
-    pagination: { page, limit, total: 0 },
-  });
 }
 
 async function forwardTo(
@@ -71,23 +58,6 @@ async function handler(request: NextRequest, { params }: Params) {
   const parts = normalizeGestionRessourcesParts(rawParts);
   const joined = parts.join('/');
 
-  const rhResource = parts[0] === 'rh' ? (parts[1] ?? '') : '';
-  if (RH_USER_REGISTRY_ALIASES.has(rhResource)) {
-    if (parts.length === 3 && parts[2] === 'stats' && request.method === 'GET') {
-      return forwardTo(request, '/api/sections/gestion-ressources/rh/collaborateurs/stats');
-    }
-    if (parts.length === 2 && (request.method === 'GET' || request.method === 'POST')) {
-      return forwardTo(request, '/api/sections/gestion-ressources/rh/collaborateurs');
-    }
-    if (parts.length >= 3 && !(parts.length === 3 && parts[2] === 'stats')) {
-      const sub = parts.slice(2).join('/');
-      return forwardTo(
-        request,
-        `/api/sections/gestion-ressources/rh/collaborateurs/${sub}`,
-      );
-    }
-  }
-
   if (joined === 'rh/collaborateurs') {
     return forwardTo(request, '/api/sections/securite-configuration/acces/users', 'collaborateur');
   }
@@ -114,25 +84,6 @@ async function handler(request: NextRequest, { params }: Params) {
 
   if (joined === 'tenant/profile/stats') {
     return forwardTo(request, '/api/dashboard/stats');
-  }
-
-  if (
-    joined.startsWith('rh/certifications') ||
-    joined.startsWith('partenaires/prestataires') ||
-    joined.startsWith('partenaires/compliance') ||
-    joined.startsWith('sites/')
-  ) {
-    if (request.method === 'GET') {
-      if (
-        joined.endsWith('stats') ||
-        joined.endsWith('statistics') ||
-        joined.endsWith('metrics')
-      ) {
-        return ok({});
-      }
-      return listFallback(request);
-    }
-    return ok({ migrated: false, endpoint: joined });
   }
 
   return fail('Section endpoint not mapped yet', 501, { endpoint: joined });

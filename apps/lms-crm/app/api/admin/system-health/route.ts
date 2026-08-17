@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
-import { redis, isRedisCacheDisabled } from '@repo/redis';
+import { getRedis, isRedisCacheDisabled, isRedisMemoryFallbackActive } from '@repo/redis';
 import prisma from '@/lib/prisma';
 import os from 'os';
+import { requireCrmApiAuth } from '@/lib/auth/require-permission';
+import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
 
 export async function GET() {
+  const auth = await requireCrmApiAuth(CRM_PERMISSION.securiteView);
+  if (!auth.ok) return auth.response;
+
   try {
-// 1. Node.js Stats
     const memoryUsage = process.memoryUsage();
     const cpuUsage = process.cpuUsage();
     const cpuPercent = (cpuUsage.user + cpuUsage.system) / 1000000;
@@ -21,50 +25,43 @@ export async function GET() {
       platform: process.platform,
     };
 
-    // 2. Redis Stats
     let redisStats: {
       status: string;
       info: { usedMemory: string; connectedClients: string; uptimeDays: string } | null;
     } = { status: 'disconnected', info: null };
-    if (isRedisCacheDisabled()) {
+    if (isRedisCacheDisabled() || isRedisMemoryFallbackActive()) {
       redisStats = {
         status: 'memory',
         info: {
-          usedMemory: 'in-process (REDIS_CACHE_DISABLED)',
+          usedMemory: isRedisCacheDisabled()
+            ? 'in-process (REDIS_CACHE_DISABLED)'
+            : 'in-process (Redis indisponible)',
           connectedClients: '0',
           uptimeDays: '—',
         },
       };
     } else {
       try {
-        const info = await redis.info();
+        const info = await getRedis().info();
         const usedMemory = info.match(/used_memory_human:(.*)/)?.[1] || 'N/A';
         const connectedClients = info.match(/connected_clients:(.*)/)?.[1] || 'N/A';
         const uptimeDays = info.match(/uptime_in_days:(.*)/)?.[1] || 'N/A';
 
         redisStats = {
           status: 'connected',
-          info: {
-            usedMemory,
-            connectedClients,
-            uptimeDays,
-          },
+          info: { usedMemory, connectedClients, uptimeDays },
         };
       } catch (err) {
         console.error('[SystemHealth] Redis error:', err);
       }
     }
 
-    // 3. PostgreSQL Stats
     let dbStats = { status: 'disconnected', size: 'N/A' };
     try {
       const result = await prisma.$queryRawUnsafe<{ size: string }[]>(
-        "SELECT pg_size_pretty(pg_database_size(current_database())) as size"
+        "SELECT pg_size_pretty(pg_database_size(current_database())) as size",
       );
-      dbStats = {
-        status: 'connected',
-        size: result[0]?.size || 'N/A'
-      };
+      dbStats = { status: 'connected', size: result[0]?.size || 'N/A' };
     } catch (err) {
       console.error('[SystemHealth] DB error:', err);
     }
@@ -74,7 +71,7 @@ export async function GET() {
       node: nodeStats,
       redis: redisStats,
       postgres: dbStats,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     console.error('[SystemHealth] Global error:', error);

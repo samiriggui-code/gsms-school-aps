@@ -26,6 +26,12 @@ export function resolveReportPeriod(
     case 'month':
       start.setMonth(start.getMonth() - 1);
       return { period, start, end, label: '30 derniers jours' };
+    case 'quarter': {
+      const quarter = Math.floor(end.getMonth() / 3);
+      start.setFullYear(end.getFullYear(), quarter * 3, 1);
+      start.setHours(0, 0, 0, 0);
+      return { period, start, end, label: `T${quarter + 1} ${end.getFullYear()}` };
+    }
     case 'year':
       start.setFullYear(start.getFullYear() - 1);
       return { period, start, end, label: '12 derniers mois' };

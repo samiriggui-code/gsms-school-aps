@@ -9,7 +9,7 @@ import { apiFetch } from '@/lib/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, LoaderCircle, Package, RotateCcw, Wrench } from 'lucide-react';
+import { Calendar, DoorOpen, LoaderCircle, Package, RotateCcw, Wrench } from 'lucide-react';
 
 export function EquipmentWelcomeCallout() {
   const queryClient = useQueryClient();
@@ -98,6 +98,12 @@ export function EquipmentWelcomeCallout() {
             <Link href="/gestion-ressources/equipements/maintenance">
               <Wrench className="size-4 shrink-0" />
               Maintenance
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" className="min-w-0 shrink" asChild>
+            <Link href="/gestion-ressources/equipements/salles">
+              <DoorOpen className="size-4 shrink-0" />
+              Salles
             </Link>
           </Button>
           <Button

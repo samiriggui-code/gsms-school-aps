@@ -3,8 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { createWorkflowEngine } from '@repo/api-core';
 import { FinancePaymentStatus, Prisma } from '@repo/database';
+import { markFinancePaymentReceived } from '@/lib/finance/finance-payment-workflow';
 
 function decimalNum(d: unknown): number {
   if (d == null) return 0;
@@ -101,6 +101,15 @@ export async function POST(request: NextRequest) {
   const amount = Number(body.amount);
   if (!Number.isFinite(amount) || amount <= 0) return fail('Montant invalide.', 400);
 
+  const statusRaw = String(body.status ?? 'PENDING').trim() as FinancePaymentStatus;
+  const initialStatus = Object.values(FinancePaymentStatus).includes(statusRaw)
+    ? statusRaw
+    : 'PENDING';
+  const recordReceipt =
+    body.recordReceipt === true ||
+    body.recordReceipt === 'true' ||
+    initialStatus === 'RECEIVED';
+
   try {
     const count = await prisma.financePayment.count();
     const row = await prisma.financePayment.create({
@@ -114,25 +123,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    try {
-      const workflows = createWorkflowEngine(prisma);
-      await workflows.emit(
-        'crm.finance.payment.recorded',
-        {
-          paymentId: row.id,
-          referenceCode: row.referenceCode,
-          amount,
-          currency: row.currency,
-          devisId: row.devisId,
-          status: row.status,
-        },
-        { dedupeKey: `workflow:payment:${row.id}` },
-      );
-    } catch (e) {
-      console.error('[finance-payment] workflow', e);
+    if (recordReceipt) {
+      await markFinancePaymentReceived(prisma, row.id);
     }
 
-    return ok({ id: row.id, referenceCode: row.referenceCode }, 201);
+    return ok(
+      {
+        id: row.id,
+        referenceCode: row.referenceCode,
+        status: recordReceipt ? 'RECEIVED' : 'PENDING',
+      },
+      201,
+    );
   } catch (e) {
     return fail('Création impossible.', 500, e);
   }

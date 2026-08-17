@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
 import { nextPublicPathPrefix } from '@/lib/next-public-path-prefix';
 import { getDevisPlaquetteData } from '@/lib/devis-plaquette-server';
+import { loadReportDocumentBrand } from '@/lib/reports/document-brand';
 import { DevisPlaquetteDocument } from './devis-plaquette-document';
 import { DevisPlaquettePrintBar } from './plaquette-print-bar';
 
@@ -23,11 +24,12 @@ export default async function DevisPlaquettePage({ params, searchParams }: PageP
   const prefix = nextPublicPathPrefix();
   const path = `${prefix}/administration-facturation/finance/devis`.replace(/\/+/g, '/');
   const devisHubUrl = `${origin}${path}?devisId=${encodeURIComponent(data.devis.id)}`;
+  const brand = await loadReportDocumentBrand(origin);
 
   return (
     <>
       <DevisPlaquettePrintBar autoPrint={sp.print === '1'} />
-      <DevisPlaquetteDocument data={data} devisHubUrl={devisHubUrl} variant="crm" />
+      <DevisPlaquetteDocument data={data} devisHubUrl={devisHubUrl} variant="crm" brand={brand} />
     </>
   );
 }

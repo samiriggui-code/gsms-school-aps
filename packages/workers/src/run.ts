@@ -7,23 +7,43 @@ import { setupReportGenerator } from './report-generator';
 import { setupReportScheduler } from './report-scheduler';
 import { setupComplianceAuditor } from './compliance-auditor';
 import { setupSessionTeamLifecycle } from './session-team-lifecycle';
+import { setupSupportBacklogMonitor } from './support-backlog';
+import { waitForDatabase } from './wait-for-database';
 
-const prisma = createPrismaClient('workers');
+async function main() {
+  const prisma = createPrismaClient('workers');
 
-setupStatsAggregation(prisma);
-setupNotificationDispatcher(prisma);
-setupRhAbsenceSync(prisma);
-setupEquipmentSessionRelease(prisma);
-setupReportGenerator(prisma);
-setupReportScheduler(prisma);
-setupComplianceAuditor(prisma);
-setupSessionTeamLifecycle(prisma);
+  try {
+    await waitForDatabase(prisma);
+  } catch (error) {
+    console.error(
+      '[Worker] Impossible de joindre PostgreSQL. Vérifiez que le service est démarré (Laragon) et que DATABASE_URL est correct.',
+    );
+    console.error(error);
+    process.exit(1);
+  }
 
-console.log(
-  '[Worker] Stats (hourly) + CRM events (1 min) + RH absences + équipements + rapports PDF (30s) + planifications (15 min) + conformité (15 min) + équipes session (hourly).',
-);
+  setupStatsAggregation(prisma);
+  setupNotificationDispatcher(prisma);
+  setupRhAbsenceSync(prisma);
+  setupEquipmentSessionRelease(prisma);
+  setupReportGenerator(prisma);
+  setupReportScheduler(prisma);
+  setupComplianceAuditor(prisma);
+  setupSessionTeamLifecycle(prisma);
+  setupSupportBacklogMonitor(prisma);
 
-process.on('SIGTERM', async () => {
-  await prisma.$disconnect();
-  process.exit(0);
+  console.log(
+    '[Worker] Stats (hourly) + CRM events (1 min) + RH absences + équipements + rapports PDF (30s) + planifications (15 min) + conformité (15 min) + équipes session (hourly) + backlog support (daily 8h).',
+  );
+
+  process.on('SIGTERM', async () => {
+    await prisma.$disconnect();
+    process.exit(0);
+  });
+}
+
+main().catch((error) => {
+  console.error('[Worker] Démarrage impossible:', error);
+  process.exit(1);
 });

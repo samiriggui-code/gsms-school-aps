@@ -14,6 +14,7 @@ import {
   parseFrenchPostalCode,
 } from '@/lib/cnaps/cnaps-onboarding-fields';
 import prisma from '@/lib/prisma';
+import { allocateUniqueProEmail } from '@/lib/user-email-routing';
 
 type PreinscriptionPayload = {
   firstName?: string;
@@ -293,6 +294,7 @@ export async function POST(request: NextRequest) {
     : await prisma.user.create({
         data: {
           email,
+          proEmail: await allocateUniqueProEmail(prisma, firstName, lastName),
           roleId: candidatRole.id,
           ...userProfileData,
         },
@@ -369,6 +371,7 @@ export async function POST(request: NextRequest) {
       status: CandidatureStatus.DRAFT,
       notes: leadNotes || null,
       metadata: {
+        fundingMode,
         onboarding: buildCnapsOnboardingMetadata({
           cnapsRequestType,
           civility,

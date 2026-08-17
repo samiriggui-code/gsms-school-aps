@@ -119,6 +119,18 @@ async function emailTaken(prisma, email, excludeId) {
   return Boolean(row);
 }
 
+async function proEmailTaken(prisma, proEmail, excludeId) {
+  if (!proEmail) return false;
+  const row = await prisma.user.findFirst({
+    where: {
+      proEmail: { equals: proEmail, mode: 'insensitive' },
+      ...(excludeId ? { NOT: { id: excludeId } } : {}),
+    },
+    select: { id: true },
+  });
+  return Boolean(row);
+}
+
 async function ensureUniquePersonalEmail(prisma, baseEmail, userId, seed) {
   let candidate = baseEmail;
   let attempt = 0;
@@ -128,6 +140,23 @@ async function ensureUniquePersonalEmail(prisma, baseEmail, userId, seed) {
     candidate = `${local}.${attempt}@${domain || 'gmail.com'}`;
     if (attempt > 20) {
       candidate = toPersonalEmail(slugifyName(userId), seed + attempt);
+    }
+  }
+  return candidate;
+}
+
+/** Évite d’écraser le login d’un superadmin / staff déjà existant (ex. préinscription Samir). */
+async function ensureUniqueProEmail(prisma, baseProEmail, userId) {
+  if (!baseProEmail) return baseProEmail;
+  let candidate = baseProEmail;
+  let attempt = 0;
+  while (await proEmailTaken(prisma, candidate, userId)) {
+    attempt += 1;
+    const [local, domain] = baseProEmail.split('@');
+    candidate = `${local}.u${attempt}@${domain || 'ecole.local'}`;
+    if (attempt > 30) {
+      candidate = `user.${slugifyName(userId).slice(0, 12)}@${domain || 'ecole.local'}`;
+      break;
     }
   }
   return candidate;
@@ -154,10 +183,11 @@ async function ensureUserEmailSplit(prisma) {
     const user = users[i];
     const target = resolveEmailPair(user, i);
     const personal = await ensureUniquePersonalEmail(prisma, target.email, user.id, i);
+    const proEmail = await ensureUniqueProEmail(prisma, target.proEmail, user.id);
 
     const unchanged =
       user.email === personal &&
-      (user.proEmail || '') === (target.proEmail || '');
+      (user.proEmail || '') === (proEmail || '');
 
     if (unchanged) {
       skipped += 1;
@@ -168,7 +198,7 @@ async function ensureUserEmailSplit(prisma) {
       where: { id: user.id },
       data: {
         email: personal,
-        proEmail: target.proEmail,
+        proEmail,
       },
     });
     updated += 1;
@@ -288,6 +318,7 @@ module.exports = {
   resolveEmailPair,
   ensureUserEmailSplit,
   findUserByAppLogin,
+  ensureUniquePersonalEmail,
   ensureDirectorAccount,
   DIRECTOR_LOGIN_EMAIL,
   DIRECTOR_PERSONAL_EMAIL,

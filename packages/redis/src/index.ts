@@ -2,12 +2,30 @@ import Redis from 'ioredis';
 
 const redisUrl = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 
-const globalForRedis = global as unknown as { redis: Redis | undefined };
+type RedisGlobal = {
+  redis?: Redis;
+  memoryFallbackActive?: boolean;
+  memoryFallbackWarned?: boolean;
+  memoryClient?: Redis;
+};
+
+const globalForRedis = global as unknown as { __gsmsRedis?: RedisGlobal };
+
+function redisGlobal(): RedisGlobal {
+  if (!globalForRedis.__gsmsRedis) {
+    globalForRedis.__gsmsRedis = {};
+  }
+  return globalForRedis.__gsmsRedis;
+}
 
 /** Dev local : pas de connexion à redis-server (cache stats en mémoire dans le process Node). */
 export function isRedisCacheDisabled(): boolean {
   const v = process.env.REDIS_CACHE_DISABLED?.trim().toLowerCase();
   return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+}
+
+export function isRedisMemoryFallbackActive(): boolean {
+  return isRedisCacheDisabled() || Boolean(redisGlobal().memoryFallbackActive);
 }
 
 type MemoryEntry = { value: string; expiresAt: number };
@@ -33,6 +51,54 @@ function memorySetRaw(key: string, value: string, ttlSeconds: number): void {
 
 function memoryDelRaw(key: string): void {
   memoryStore.delete(key);
+}
+
+function isRedisConnectionError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    message.includes('Connection is closed') ||
+    message.includes('ECONNREFUSED') ||
+    message.includes('ENOTFOUND') ||
+    message.includes('ETIMEDOUT') ||
+    message.includes('Redis get timeout') ||
+    message.includes('Redis set timeout') ||
+    message.includes('Stream isn\'t writeable') ||
+    message.includes('enableOfflineQueue')
+  );
+}
+
+function warnMemoryFallbackOnce(reason: string): void {
+  const g = redisGlobal();
+  if (g.memoryFallbackWarned) return;
+  g.memoryFallbackWarned = true;
+  console.warn(
+    `[Redis] ${reason} — cache mémoire activé pour cette session. ` +
+      'Définissez REDIS_CACHE_DISABLED=1 en dev ou démarrez redis-server.',
+  );
+}
+
+function activateMemoryFallback(reason: string): void {
+  const g = redisGlobal();
+  if (isRedisCacheDisabled() || g.memoryFallbackActive) return;
+  g.memoryFallbackActive = true;
+  disposeRedisClient();
+  warnMemoryFallbackOnce(reason);
+}
+
+function disposeRedisClient(): void {
+  const g = redisGlobal();
+  if (!g.redis) return;
+  try {
+    g.redis.disconnect();
+  } catch {
+    // ignore
+  }
+  g.redis = undefined;
+}
+
+function isRedisClientAlive(client: Redis): boolean {
+  const status = client.status;
+  return status !== 'end' && status !== 'close';
 }
 
 function createMemoryRedisClient(): Redis {
@@ -103,40 +169,109 @@ function createMemoryRedisClient(): Redis {
   return stub as unknown as Redis;
 }
 
-function createRedisClient(): Redis {
-  return (
-    globalForRedis.redis ??
-    new Redis(redisUrl, {
-      maxRetriesPerRequest: null,
-      lazyConnect: true,
-    })
-  );
+function getMemoryRedisClient(): Redis {
+  const g = redisGlobal();
+  g.memoryClient ??= createMemoryRedisClient();
+  return g.memoryClient;
 }
 
-export const redis: Redis = isRedisCacheDisabled()
-  ? createMemoryRedisClient()
-  : createRedisClient();
+function createLiveRedisClient(): Redis {
+  const client = new Redis(redisUrl, {
+    maxRetriesPerRequest: 2,
+    connectTimeout: 2_000,
+    commandTimeout: 2_000,
+    lazyConnect: true,
+    retryStrategy: (times) => (times > 2 ? null : Math.min(times * 200, 800)),
+  });
 
-if (!isRedisCacheDisabled() && process.env.NODE_ENV !== 'production') {
-  globalForRedis.redis = redis;
+  client.on('error', () => {
+    // ioredis émet souvent en dev sans Redis — le fallback mémoire gère les commandes.
+  });
+
+  client.on('close', () => {
+    const g = redisGlobal();
+    if (g.redis === client) {
+      g.redis = undefined;
+    }
+  });
+
+  return client;
 }
+
+function resolveRedisClient(): Redis {
+  if (isRedisMemoryFallbackActive()) {
+    return getMemoryRedisClient();
+  }
+
+  const g = redisGlobal();
+  if (g.redis && isRedisClientAlive(g.redis)) {
+    return g.redis;
+  }
+
+  disposeRedisClient();
+  g.redis = createLiveRedisClient();
+  return g.redis;
+}
+
+/** Client Redis effectif (réel ou stub mémoire si indisponible). */
+export function getRedis(): Redis {
+  if (isRedisCacheDisabled()) {
+    return getMemoryRedisClient();
+  }
+  return resolveRedisClient();
+}
+
+export const redis: Redis = getRedis();
 
 export default redis;
+
+async function runRedisGet(key: string, timeoutMs: number): Promise<string | null> {
+  const client = resolveRedisClient();
+  return Promise.race([
+    client.get(key),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Redis get timeout')), timeoutMs);
+    }),
+  ]);
+}
+
+async function runRedisSet(key: string, data: string, ttlSeconds: number): Promise<void> {
+  const client = resolveRedisClient();
+  await Promise.race([
+    client.set(key, data, 'EX', ttlSeconds),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Redis set timeout')), 2_500);
+    }),
+  ]);
+}
 
 /**
  * Helper simple pour le cache
  */
-export async function getCache<T>(key: string): Promise<T | null> {
+export async function getCache<T>(key: string, timeoutMs = 2_500): Promise<T | null> {
   try {
-    if (isRedisCacheDisabled()) {
+    if (isRedisMemoryFallbackActive()) {
       const data = memoryGetRaw(key);
       if (!data) return null;
       return JSON.parse(data) as T;
     }
-    const data = await redis.get(key);
+
+    const data = await runRedisGet(key, timeoutMs);
     if (!data) return null;
     return JSON.parse(data) as T;
   } catch (error) {
+    if (isRedisConnectionError(error)) {
+      activateMemoryFallback(
+        error instanceof Error ? error.message : 'Connexion Redis perdue',
+      );
+      const data = memoryGetRaw(key);
+      if (!data) return null;
+      try {
+        return JSON.parse(data) as T;
+      } catch {
+        return null;
+      }
+    }
     console.error(`[Redis] Error getting cache for key ${key}:`, error);
     return null;
   }
@@ -145,19 +280,27 @@ export async function getCache<T>(key: string): Promise<T | null> {
 export async function setCache(key: string, value: unknown, ttlSeconds: number = 3600): Promise<void> {
   const data = JSON.stringify(value);
   try {
-    if (isRedisCacheDisabled()) {
+    if (isRedisMemoryFallbackActive()) {
       memorySetRaw(key, data, ttlSeconds);
       return;
     }
-    await redis.set(key, data, 'EX', ttlSeconds);
+
+    await runRedisSet(key, data, ttlSeconds);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    if (message.includes('MISCONF') || message.includes('stop-writes-on-bgsave-error')) {
+    if (
+      message.includes('MISCONF') ||
+      message.includes('stop-writes-on-bgsave-error') ||
+      isRedisConnectionError(error)
+    ) {
+      if (isRedisConnectionError(error)) {
+        activateMemoryFallback(message);
+      } else {
+        warnMemoryFallbackOnce('Persistance Redis refusée (MISCONF)');
+        memorySetRaw(key, data, ttlSeconds);
+        return;
+      }
       memorySetRaw(key, data, ttlSeconds);
-      console.warn(
-        `[Redis] Écriture impossible (persistance disque) — cache mémoire pour ${key}. ` +
-          'Corrigez Redis ou définissez REDIS_CACHE_DISABLED=1 en dev.',
-      );
       return;
     }
     console.error(`[Redis] Error setting cache for key ${key}:`, error);
@@ -166,12 +309,19 @@ export async function setCache(key: string, value: unknown, ttlSeconds: number =
 
 export async function delCache(key: string): Promise<void> {
   try {
-    if (isRedisCacheDisabled()) {
+    if (isRedisMemoryFallbackActive()) {
       memoryDelRaw(key);
       return;
     }
-    await redis.del(key);
+    await resolveRedisClient().del(key);
   } catch (error) {
+    if (isRedisConnectionError(error)) {
+      activateMemoryFallback(
+        error instanceof Error ? error.message : 'Connexion Redis perdue',
+      );
+      memoryDelRaw(key);
+      return;
+    }
     console.error(`[Redis] Error deleting cache for key ${key}:`, error);
   }
 }
@@ -182,22 +332,40 @@ export async function delCache(key: string): Promise<void> {
 export async function rateLimit(
   key: string,
   limit: number,
-  windowSeconds: number
+  windowSeconds: number,
 ): Promise<{ success: boolean; limit: number; remaining: number; reset: number }> {
   const now = Math.floor(Date.now() / 1000);
   const reset = now + windowSeconds;
 
-  const multi = redis.multi();
-  multi.incr(key);
-  multi.expire(key, windowSeconds);
+  try {
+    const client = resolveRedisClient();
+    const multi = client.multi();
+    multi.incr(key);
+    multi.expire(key, windowSeconds);
 
-  const results = await multi.exec();
-  const count = (results?.[0]?.[1] as number) || 0;
+    const results = await multi.exec();
+    const count = (results?.[0]?.[1] as number) || 0;
 
-  return {
-    success: count <= limit,
-    limit,
-    remaining: Math.max(0, limit - count),
-    reset,
-  };
+    return {
+      success: count <= limit,
+      limit,
+      remaining: Math.max(0, limit - count),
+      reset,
+    };
+  } catch (error) {
+    if (isRedisConnectionError(error)) {
+      activateMemoryFallback(
+        error instanceof Error ? error.message : 'Connexion Redis perdue',
+      );
+      const current = Number(memoryGetRaw(key) ?? '0') + 1;
+      memorySetRaw(key, String(current), windowSeconds);
+      return {
+        success: current <= limit,
+        limit,
+        remaining: Math.max(0, limit - current),
+        reset,
+      };
+    }
+    throw error;
+  }
 }

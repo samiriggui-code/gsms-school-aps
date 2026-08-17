@@ -11,6 +11,7 @@ import {
   Sheet,
   SheetBody,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
@@ -21,6 +22,7 @@ import { apiFetch } from '@/lib/api';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../constants/sheet-shell-classes';
 import { SuiviStagiaireFundingTab } from './suivi-stagiaire-funding-tab';
 import {
+  SUIVI_DAY_SLOT_LABELS,
   SUIVI_EMARGEMENT_STATUS_LABELS,
   SUIVI_ENROLLMENT_STATUS_LABELS,
   SUIVI_EXAM_OUTCOME_LABELS,
@@ -107,7 +109,7 @@ function PresenceTab({
             {items.map((row) => (
               <tr key={`${row.dayId}-${row.slot}`} className="border-t border-border/50">
                 <td className="px-4 py-3 capitalize">{formatPresenceDay(row.dayDate)}</td>
-                <td className="px-4 py-3">{row.slot === 'MORNING' ? 'Matin' : 'Soir'}</td>
+                <td className="px-4 py-3">{SUIVI_DAY_SLOT_LABELS[row.slot]}</td>
                 <td className="px-4 py-3">
                   <Badge variant="secondary" appearance="outline">
                     {SUIVI_EMARGEMENT_STATUS_LABELS[row.status] ?? row.status}
@@ -353,6 +355,9 @@ export function SuiviStagiaireDetailsSheet({
             </Avatar>
             <div className="min-w-0 flex-1">
               <SheetTitle className="text-left">{stagiaire.name ?? stagiaire.email}</SheetTitle>
+              <SheetDescription className="text-left">
+                Progression LMS, historique de présence et financement du stagiaire.
+              </SheetDescription>
               <p className="text-sm text-muted-foreground">{stagiaire.email}</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 <Badge variant="secondary" appearance="outline">

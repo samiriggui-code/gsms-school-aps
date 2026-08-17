@@ -40,19 +40,21 @@ export async function syncFormationSessionDays(sessionId: string): Promise<numbe
 
   const end = session.endDate ?? session.startDate;
   const dayDates = eachCalendarDayInclusive(session.startDate, end);
-  let created = 0;
 
-  for (const dayDate of dayDates) {
-    const existing = await prisma.formationSessionDay.findUnique({
-      where: { sessionId_dayDate: { sessionId, dayDate } },
-      select: { id: true },
+  const existing = await prisma.formationSessionDay.findMany({
+    where: { sessionId },
+    select: { dayDate: true },
+  });
+  const existingKeys = new Set(existing.map((r) => isoDateOnly(r.dayDate)));
+  const toCreate = dayDates.filter((d) => !existingKeys.has(isoDateOnly(d)));
+
+  if (toCreate.length > 0) {
+    await prisma.formationSessionDay.createMany({
+      data: toCreate.map((dayDate) => ({ sessionId, dayDate })),
     });
-    if (existing) continue;
-    await prisma.formationSessionDay.create({ data: { sessionId, dayDate } });
-    created += 1;
   }
 
-  return created;
+  return toCreate.length;
 }
 
 export async function ensureTodaySessionDay(sessionId: string): Promise<string | null> {
@@ -90,26 +92,16 @@ export type DaySlotSummary = {
   pdfAssetId: string | null;
 };
 
-export async function summarizeDaySlots(
-  sessionId: string,
+type AttendanceRow = { dayId: string; slot: SuiviDaySlot; status: string; participantId: string };
+type PdfAssetRow = { id: string; category: string | null; metadata: unknown };
+
+function buildSlotSummariesForDay(
   dayId: string,
   participantTotal: number,
-): Promise<DaySlotSummary[]> {
-  const attendances = await prisma.formationSessionEmargement.findMany({
-    where: { dayId },
-    select: { slot: true, status: true, participantId: true },
-  });
-
-  const pdfRows = await prisma.fileAsset.findMany({
-    where: {
-      module: 'gestion-academique',
-      entityType: 'formation_session',
-      entityId: sessionId,
-      status: 'ACTIVE',
-      category: { in: ['emargement-pdf-morning', 'emargement-pdf-evening'] },
-    },
-    select: { id: true, category: true, metadata: true },
-  });
+  attendances: AttendanceRow[],
+  pdfRows: PdfAssetRow[],
+): DaySlotSummary[] {
+  const slotRows = attendances.filter((a) => a.dayId === dayId);
 
   const pdfBySlot: Record<SuiviDaySlot, string | null> = {
     MORNING: null,
@@ -122,14 +114,15 @@ export async function summarizeDaySlots(
         ? (asset.metadata as Record<string, unknown>)
         : {};
     if (meta.dayId !== dayId) continue;
+    if (!asset.category) continue;
     if (asset.category === 'emargement-pdf-morning') pdfBySlot.MORNING = asset.id;
     if (asset.category === 'emargement-pdf-evening') pdfBySlot.EVENING = asset.id;
   }
 
   return SUIVI_DAY_SLOTS.map((slot) => {
-    const slotRows = attendances.filter((a) => a.slot === slot);
-    const markedCount = slotRows.length;
-    const presentCount = slotRows.filter((a) => a.status === 'PRESENT' || a.status === 'LATE').length;
+    const rowsForSlot = slotRows.filter((a) => a.slot === slot);
+    const markedCount = rowsForSlot.length;
+    const presentCount = rowsForSlot.filter((a) => a.status === 'PRESENT' || a.status === 'LATE').length;
     const complete = participantTotal > 0 && markedCount >= participantTotal;
     return {
       slot,
@@ -140,6 +133,47 @@ export async function summarizeDaySlots(
       pdfAssetId: pdfBySlot[slot],
     };
   });
+}
+
+/** Une requête présences + une requête PDF pour tout le journal (évite N+1). */
+export async function summarizeDaysBatch(
+  sessionId: string,
+  dayIds: string[],
+  participantTotal: number,
+): Promise<Map<string, DaySlotSummary[]>> {
+  const result = new Map<string, DaySlotSummary[]>();
+  if (dayIds.length === 0) return result;
+
+  const [attendances, pdfRows] = await Promise.all([
+    prisma.formationSessionEmargement.findMany({
+      where: { dayId: { in: dayIds } },
+      select: { dayId: true, slot: true, status: true, participantId: true },
+    }),
+    prisma.fileAsset.findMany({
+      where: {
+        module: 'gestion-academique',
+        entityType: 'formation_session',
+        entityId: sessionId,
+        status: 'ACTIVE',
+        category: { in: ['emargement-pdf-morning', 'emargement-pdf-evening'] },
+      },
+      select: { id: true, category: true, metadata: true },
+    }),
+  ]);
+
+  for (const dayId of dayIds) {
+    result.set(dayId, buildSlotSummariesForDay(dayId, participantTotal, attendances, pdfRows));
+  }
+  return result;
+}
+
+export async function summarizeDaySlots(
+  sessionId: string,
+  dayId: string,
+  participantTotal: number,
+): Promise<DaySlotSummary[]> {
+  const map = await summarizeDaysBatch(sessionId, [dayId], participantTotal);
+  return map.get(dayId) ?? buildSlotSummariesForDay(dayId, participantTotal, [], []);
 }
 
 export async function computeTodaySuiviStats(sessionId: string): Promise<{

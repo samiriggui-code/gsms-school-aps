@@ -34,7 +34,8 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
@@ -96,26 +97,30 @@ export function NotificationsSettingsSection() {
 
   const form = useForm<NotificationSettingsSchemaType>({
     resolver: zodResolver(NotificationSettingsSchema),
-    defaultValues: notificationSettings.reduce<
-      Partial<NotificationSettingsSchemaType>
-    >(
-      (defaults, { emailField, webField, roleIdsField }) => ({
-        ...defaults,
-        [emailField]:
-          (settings as NotificationSettingsSchemaType)[
-            emailField as keyof NotificationSettingsSchemaType
-          ] ?? false,
-        [webField]:
-          (settings as NotificationSettingsSchemaType)[
-            webField as keyof NotificationSettingsSchemaType
-          ] ?? false,
-        [roleIdsField]:
-          (settings as NotificationSettingsSchemaType)[
-            roleIdsField as keyof NotificationSettingsSchemaType
-          ] ?? [],
-      }),
-      {},
-    ),
+    defaultValues: {
+      ...notificationSettings.reduce<
+        Partial<NotificationSettingsSchemaType>
+      >(
+        (defaults, { emailField, webField, roleIdsField }) => ({
+          ...defaults,
+          [emailField]:
+            (settings as NotificationSettingsSchemaType)[
+              emailField as keyof NotificationSettingsSchemaType
+            ] ?? false,
+          [webField]:
+            (settings as NotificationSettingsSchemaType)[
+              webField as keyof NotificationSettingsSchemaType
+            ] ?? false,
+          [roleIdsField]:
+            (settings as NotificationSettingsSchemaType)[
+              roleIdsField as keyof NotificationSettingsSchemaType
+            ] ?? [],
+        }),
+        {},
+      ),
+      notifyStockThreshold:
+        (settings as NotificationSettingsSchemaType).notifyStockThreshold ?? 10,
+    },
   });
 
   const mutation = useMutation({
@@ -198,6 +203,27 @@ export function NotificationsSettingsSection() {
         <Card className="pb-2.5">
           <CardHeader>
             <CardTitle>{t('pages.settings.notifications.title')}</CardTitle>
+            <FormField
+              control={form.control}
+              name="notifyStockThreshold"
+              render={({ field }) => (
+                <FormItem className="mt-3 max-w-xs">
+                  <FormLabel className="text-sm font-normal text-muted-foreground">
+                    {t('pages.settings.notifications.stockThreshold')}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={9999}
+                      className="h-9"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </CardHeader>
           <CardContent className="px-0 py-2.5">
             <Table>

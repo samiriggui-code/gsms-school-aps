@@ -19,7 +19,7 @@ const VOLET_BY_TEAM_TYPE = {
 /** Aligne le catalogue landing (#trainers) sur les équipes RH permanentes du CRM. */
 export async function syncLandingTeamOffersFromRhTeams(
   db: PrismaClient,
-): Promise<{ published: number }> {
+): Promise<{ published: number; archived: number }> {
   const teams = await db.rhTeam.findMany({
     where: {
       lifecycleStatus: 'ACTIVE',
@@ -36,7 +36,9 @@ export async function syncLandingTeamOffersFromRhTeams(
     orderBy: [{ type: 'asc' }, { name: 'asc' }],
   });
 
+  const syncedUserIds = new Set<string>();
   let sortOrder = 0;
+
   for (const team of teams) {
     const volet = (
       VOLET_BY_TEAM_TYPE as Partial<Record<RhTeamTypeValue, LandingTeamVoletValue>>
@@ -45,6 +47,7 @@ export async function syncLandingTeamOffersFromRhTeams(
     for (const member of team.members) {
       const u = member.user;
       if (!u || u.isTrashed || u.status !== 'ACTIVE') continue;
+      syncedUserIds.add(u.id);
       await db.landingTeamOffer.upsert({
         where: { userId: u.id },
         create: {
@@ -63,6 +66,19 @@ export async function syncLandingTeamOffersFromRhTeams(
     }
   }
 
+  const archived =
+    syncedUserIds.size > 0
+      ? (
+          await db.landingTeamOffer.updateMany({
+            where: {
+              catalogStatus: 'ACTIVE',
+              userId: { notIn: [...syncedUserIds] },
+            },
+            data: { catalogStatus: 'ARCHIVED' },
+          })
+        ).count
+      : 0;
+
   await invalidateCatalogTeamListCache();
-  return { published: sortOrder };
+  return { published: sortOrder, archived };
 }

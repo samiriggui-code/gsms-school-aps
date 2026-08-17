@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { issueFormationAttestation, createWorkflowEngine } from '@repo/api-core';
+import { Prisma } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 
@@ -13,8 +14,23 @@ export async function GET(request: NextRequest) {
   const page = Math.max(1, Number(searchParams.get('page') || 1));
   const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') || 20)));
   const candidatureId = searchParams.get('candidatureId');
+  const sessionId = (searchParams.get('sessionId') || '').trim();
+  const q = (searchParams.get('q') || '').trim();
 
-  const where = candidatureId ? { candidatureId } : {};
+  const where: Prisma.FormationAttestationWhereInput = {
+    ...(candidatureId ? { candidatureId } : {}),
+    ...(sessionId ? { sessionId } : {}),
+    ...(q
+      ? {
+          OR: [
+            { title: { contains: q, mode: 'insensitive' } },
+            { user: { name: { contains: q, mode: 'insensitive' } } },
+            { user: { email: { contains: q, mode: 'insensitive' } } },
+            { formation: { name: { contains: q, mode: 'insensitive' } } },
+          ],
+        }
+      : {}),
+  };
 
   const [total, items] = await Promise.all([
     prisma.formationAttestation.count({ where }),
@@ -33,7 +49,13 @@ export async function GET(request: NextRequest) {
   ]);
 
   return ok({
-    items,
+    items: items.map((row) => ({
+      ...row,
+      issueDate: row.issueDate.toISOString(),
+      expiryDate: row.expiryDate?.toISOString() ?? null,
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
+    })),
     pagination: { page, limit, total },
   });
 }
@@ -46,20 +68,54 @@ export async function POST(request: NextRequest) {
   if (!body || typeof body !== 'object') return fail('Corps JSON attendu.', 400);
 
   const candidatureId = typeof body.candidatureId === 'string' ? body.candidatureId.trim() : '';
-  const title = typeof body.title === 'string' ? body.title.trim() : '';
-  const sessionId =
+  const participantId =
+    typeof body.participantId === 'string' && body.participantId.trim()
+      ? body.participantId.trim()
+      : null;
+  let title = typeof body.title === 'string' ? body.title.trim() : '';
+  let sessionId =
     typeof body.sessionId === 'string' && body.sessionId.trim() ? body.sessionId.trim() : null;
   const certificateUrl =
     typeof body.certificateUrl === 'string' && body.certificateUrl.trim()
       ? body.certificateUrl.trim()
       : null;
 
-  if (!candidatureId || !title) {
-    return fail('candidatureId et title sont obligatoires.', 400);
+  let resolvedCandidatureId = candidatureId;
+
+  if (participantId) {
+    const participant = await prisma.formationSessionParticipant.findUnique({
+      where: { id: participantId },
+      select: {
+        candidatureId: true,
+        sessionId: true,
+        examOutcome: true,
+        candidature: {
+          select: {
+            formation: { select: { name: true } },
+          },
+        },
+        session: { select: { dateDisplayLabel: true } },
+      },
+    });
+    if (!participant?.candidatureId) {
+      return fail('Inscription session sans dossier candidature.', 400);
+    }
+    if (participant.examOutcome !== 'PASSED') {
+      return fail('L\'examen doit être au statut « Réussi » avant de délivrer une attestation.', 400);
+    }
+    resolvedCandidatureId = participant.candidatureId;
+    sessionId = participant.sessionId;
+    if (!title && participant.candidature?.formation?.name) {
+      title = `Attestation ${participant.candidature.formation.name} — ${participant.session.dateDisplayLabel}`;
+    }
+  }
+
+  if (!resolvedCandidatureId || !title) {
+    return fail('Sélectionnez un stagiaire éligible et un intitulé d\'attestation.', 400);
   }
 
   const candidature = await prisma.candidature.findUnique({
-    where: { id: candidatureId },
+    where: { id: resolvedCandidatureId },
     select: {
       id: true,
       userId: true,
@@ -93,6 +149,7 @@ export async function POST(request: NextRequest) {
           candidatureId: candidature.id,
           userId: candidature.userId,
           candidateName: candidature.user.name ?? candidature.user.email ?? 'Élève',
+          email: candidature.user.email ?? null,
           attestationTitle: title,
           sessionId,
         },

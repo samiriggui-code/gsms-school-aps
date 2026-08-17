@@ -1,15 +1,20 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Eye, Pencil, RefreshCw, Search, Trash2 } from 'lucide-react';
-import { formatDateTime } from '@/lib/helpers';
+import {
+  ColumnDef,
+  getCoreRowModel,
+  PaginationState,
+  useReactTable,
+} from '@tanstack/react-table';
+import { RefreshCw, Search, MessageCircle, Trash2, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -22,18 +27,29 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useFinanceDevisQuery } from '../hooks/use-finance-devis-query';
+import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import {
+  createModuleLandingPagination,
+} from '@/app/(protected)/securite-configuration/components/datagrid-standards';
+import { FinanceModuleDataGrid } from '../../components/finance-module-datagrid';
+import { useFinanceDevisQuery, type FinanceDevisRow } from '../hooks/use-finance-devis-query';
 import { DevisDetailSheet, type DevisDetailInitialTab } from './devis-detail-sheet';
 import { apiFetch } from '@/lib/api';
 import { toast } from 'sonner';
 import { financeDevisListQueryKey } from '../constants/query-keys';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
+import { devisStatusBadgeVariant } from '../lib/devis-workflow';
+import { DEVIS_STATUS_LABEL_FR } from '../constants/status-labels';
 
 interface DevisListProps {
-  leaderSlot?: ReactNode;
+  leaderSlot?: React.ReactNode;
 }
 
-export function DevisList({ leaderSlot }: DevisListProps) {
+function money(value: number, currency: string) {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: currency || 'EUR' }).format(value);
+}
+
+export function DevisList(_props: DevisListProps = {}) {
   const { t } = useTranslation();
   const sp = useSearchParams();
   const router = useRouter();
@@ -42,7 +58,7 @@ export function DevisList({ leaderSlot }: DevisListProps) {
 
   const [status, setStatus] = useState<string>('all');
   const [q, setQ] = useState('');
-  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
 
   const { isSyncing, sync: handleSync } = useDatagridSync({
     preset: 'finance',
@@ -51,7 +67,6 @@ export function DevisList({ leaderSlot }: DevisListProps) {
   const [selectedDevisId, setSelectedDevisId] = useState<string | null>(null);
   const [sheetInitialTab, setSheetInitialTab] = useState<DevisDetailInitialTab>('overview');
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; referenceCode: string } | null>(null);
-  const limit = 10;
 
   const leadIdFromUrl = (sp.get('leadId') ?? '').trim() || null;
   const devisIdFromUrl = (sp.get('devisId') ?? '').trim() || null;
@@ -65,8 +80,8 @@ export function DevisList({ leaderSlot }: DevisListProps) {
 
   const { data, isLoading, isFetching } = useFinanceDevisQuery({
     leadId: leadIdFromUrl,
-    page,
-    limit,
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
     q,
     status,
     sort: 'updatedAt',
@@ -81,13 +96,30 @@ export function DevisList({ leaderSlot }: DevisListProps) {
     router.replace(qs ? `${pathname}?${qs}` : pathname);
   };
 
-  const openDevisSheet = (id: string, tab: DevisDetailInitialTab = 'overview') => {
-    setSelectedDevisId(id);
-    setSheetInitialTab(tab);
-    const next = new URLSearchParams(sp.toString());
-    next.set('devisId', id);
-    router.replace(`${pathname}?${next.toString()}`);
-  };
+  const openDevisSheet = useCallback(
+    (id: string, tab: DevisDetailInitialTab = 'overview') => {
+      setSelectedDevisId(id);
+      setSheetInitialTab(tab);
+      const next = new URLSearchParams(sp.toString());
+      next.set('devisId', id);
+      router.replace(`${pathname}?${next.toString()}`);
+    },
+    [pathname, router, sp],
+  );
+
+  const openDevisFromRow = useCallback(
+    (devis: FinanceDevisRow) => {
+      openDevisSheet(
+        devis.id,
+        devis.status === 'DRAFT'
+          ? 'edition'
+          : (devis.plaquetteMessageCount ?? 0) > 0
+            ? 'suivi'
+            : 'overview',
+      );
+    },
+    [openDevisSheet],
+  );
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -112,223 +144,232 @@ export function DevisList({ leaderSlot }: DevisListProps) {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const totalPages = Math.max(1, Math.ceil((data?.pagination.total ?? 0) / limit));
-  const money = (value: number, currency: string) =>
-    new Intl.NumberFormat('fr-FR', { style: 'currency', currency: currency || 'EUR' }).format(value);
-
-  return (
-    <Card className="border-border shadow-none mb-5">
-      <CardHeader className="py-3">
-        <div className="flex flex-col gap-3 w-full">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 w-full">
-            <div>
-              <h3 className="text-base font-semibold text-foreground">{t('devis.listTitle')}</h3>
-              <p className="text-xs text-muted-foreground">{t('devis.listDescription')}</p>
-            </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <div className="relative w-full sm:w-80">
-                <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder={t('datagrid.search.quote')}
-                  value={q}
-                  onChange={(e) => {
-                    setQ(e.target.value);
-                    setPage(1);
-                  }}
-                  className="h-10 ps-9"
-                />
-              </div>
-              <Select
-                value={status}
-                onValueChange={(value) => {
-                  setStatus(value);
-                  setPage(1);
-                }}
-              >
-                <SelectTrigger className="h-10 w-full sm:w-44">
-                  <SelectValue placeholder={t('devis.statusFilterPlaceholder')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t('devis.allStatuses')}</SelectItem>
-                  {(['DRAFT', 'SENT', 'ACCEPTED', 'REJECTED', 'EXPIRED'] as const).map((key) => (
-                    <SelectItem key={key} value={key}>
-                      {t(`devis.status.${key}`)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-10 gap-2 border-dashed hover:bg-primary/5 hover:text-primary hover:border-primary/50 transition-all duration-300 shadow-sm"
-                onClick={handleSync}
-                disabled={isSyncing}
-              >
-                <RefreshCw className={cn('size-4', isSyncing && 'animate-spin')} />
-                <span className="font-bold uppercase tracking-wider text-[11px]">{t('datagrid.sync')}</span>
-              </Button>
-            </div>
+  const columns = useMemo<ColumnDef<FinanceDevisRow>[]>(
+    () => [
+      {
+        accessorKey: 'referenceCode',
+        header: ({ column }) => <DataGridColumnHeader title="Référence" column={column} />,
+        cell: ({ row }) => (
+          <div>
+            <div className="font-medium">{row.original.referenceCode}</div>
+            <div className="text-xs text-muted-foreground">{row.original.title}</div>
           </div>
-          {leaderSlot}
-          {leadIdFromUrl ? (
-            <p className="text-xs text-muted-foreground">
-              {t('devis.leadFilterActive')}{' '}
+        ),
+        size: 140,
+      },
+      {
+        id: 'client',
+        header: ({ column }) => <DataGridColumnHeader title="Client" column={column} />,
+        cell: ({ row }) => {
+          const devis = row.original;
+          if (devis.clientCompany) {
+            return (
+              <>
+                <div className="font-medium">{devis.clientCompany}</div>
+                {devis.lead ? (
+                  <div className="text-xs text-muted-foreground">
+                    {devis.lead.firstName} {devis.lead.lastName}
+                    {devis.lead.email ? ` · ${devis.lead.email}` : null}
+                  </div>
+                ) : null}
+              </>
+            );
+          }
+          if (devis.lead) {
+            return (
+              <>
+                <div className="font-medium text-muted-foreground">{t('finance.companyNotSet')}</div>
+                <div className="text-xs text-muted-foreground">
+                  {devis.lead.firstName} {devis.lead.lastName}
+                  {devis.lead.email ? ` · ${devis.lead.email}` : null}
+                </div>
+              </>
+            );
+          }
+          return <span className="text-muted-foreground">—</span>;
+        },
+        size: 200,
+      },
+      {
+        id: 'formation',
+        header: ({ column }) => <DataGridColumnHeader title="Formation" column={column} />,
+        cell: ({ row }) => row.original.formation?.name ?? t('finance.notLinkedFormation'),
+        size: 160,
+      },
+      {
+        accessorKey: 'totalTtc',
+        header: ({ column }) => <DataGridColumnHeader title="Montant TTC" column={column} />,
+        cell: ({ row }) => (
+          <span className="block text-right font-medium tabular-nums">
+            {money(row.original.totalTtc, row.original.currency)}
+          </span>
+        ),
+        size: 120,
+      },
+      {
+        accessorKey: 'status',
+        header: ({ column }) => <DataGridColumnHeader title="Statut" column={column} />,
+        cell: ({ row }) => (
+          <Badge variant={devisStatusBadgeVariant(row.original.status)} appearance="light" size="sm">
+            {DEVIS_STATUS_LABEL_FR[row.original.status] ?? row.original.status}
+          </Badge>
+        ),
+        size: 120,
+      },
+      {
+        id: 'messages',
+        header: ({ column }) => <DataGridColumnHeader title="Échanges" column={column} />,
+        cell: ({ row }) =>
+          (row.original.plaquetteMessageCount ?? 0) > 0 ? (
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
+              <MessageCircle className="size-3.5" />
+              {row.original.plaquetteMessageCount}
+            </span>
+          ) : (
+            <span className="text-xs text-muted-foreground">—</span>
+          ),
+        size: 90,
+        enableSorting: false,
+      },
+      {
+        id: 'actions',
+        header: () => <span className="sr-only">Actions</span>,
+        cell: ({ row }) => (
+          <div className="flex items-center justify-end gap-1 pe-1" onClick={(e) => e.stopPropagation()}>
+            <Button
+              type="button"
+              variant="ghost"
+              mode="icon"
+              className="size-8"
+              title="Ouvrir la fiche"
+              onClick={() => openDevisFromRow(row.original)}
+            >
+              <Eye className="size-4 text-muted-foreground" />
+            </Button>
+            {row.original.status === 'DRAFT' ? (
               <Button
                 type="button"
                 variant="ghost"
-                className="h-auto p-0 text-xs text-primary underline-offset-4 hover:underline"
-                onClick={() => {
-                  const next = new URLSearchParams(sp.toString());
-                  next.delete('leadId');
-                  const qs = next.toString();
-                  router.replace(qs ? `${pathname}?${qs}` : pathname);
-                }}
+                mode="icon"
+                className="size-8 text-destructive hover:text-destructive"
+                title="Supprimer le brouillon"
+                disabled={deleteMutation.isPending}
+                onClick={() =>
+                  setDeleteTarget({ id: row.original.id, referenceCode: row.original.referenceCode })
+                }
               >
-                {t('devis.clearLeadFilter')}
+                <Trash2 className="size-4" />
               </Button>
-            </p>
-          ) : null}
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-muted-foreground">
-                <th className="px-3 py-2 font-medium">{t('finance.columns.reference')}</th>
-                <th className="px-3 py-2 font-medium">{t('finance.columns.company')}</th>
-                <th className="px-3 py-2 font-medium">{t('finance.columns.formation')}</th>
-                <th className="px-3 py-2 font-medium">{t('finance.columns.amountTtc')}</th>
-                <th className="px-3 py-2 font-medium">{t('finance.columns.status')}</th>
-                <th className="px-3 py-2 font-medium">{t('finance.columns.updatedAt')}</th>
-                <th className="px-3 py-2 font-medium text-end">{t('finance.columns.actions')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(data?.items ?? []).map((devis) => (
-                <tr key={devis.id} className="border-b">
-                  <td className="px-3 py-3">
-                    <div className="font-medium">{devis.referenceCode}</div>
-                    <div className="text-xs text-muted-foreground">{devis.title}</div>
-                  </td>
-                  <td className="px-3 py-3">
-                    {devis.clientCompany ? (
-                      <>
-                        <div className="font-medium">{devis.clientCompany}</div>
-                        {devis.lead ? (
-                          <div className="text-xs text-muted-foreground">
-                            {devis.lead.firstName} {devis.lead.lastName}
-                            {devis.lead.email ? ` · ${devis.lead.email}` : null}
-                          </div>
-                        ) : null}
-                      </>
-                    ) : devis.lead ? (
-                      <>
-                        <div className="font-medium text-muted-foreground">{t('finance.companyNotSet')}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {devis.lead.firstName} {devis.lead.lastName}
-                          {devis.lead.email ? ` · ${devis.lead.email}` : null}
-                        </div>
-                      </>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-3">{devis.formation?.name ?? t('finance.notLinkedFormation')}</td>
-                  <td className="px-3 py-3 font-medium">{money(devis.totalTtc, devis.currency)}</td>
-                  <td className="px-3 py-3">
-                    <Badge variant={devis.status === 'SENT' ? 'warning' : 'secondary'}>
-                      {t(`devis.status.${devis.status}`, { defaultValue: devis.status })}
-                    </Badge>
-                  </td>
-                  <td className="px-3 py-3 text-xs text-muted-foreground whitespace-nowrap">
-                    {formatDateTime(devis.updatedAt)}
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="flex items-center justify-end gap-0.5 pe-1">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        mode="icon"
-                        className="size-8"
-                        title={t('devis.viewOverviewTitle')}
-                        aria-label={t('devis.viewAria')}
-                        onClick={() => openDevisSheet(devis.id, 'overview')}
-                      >
-                        <Eye className="size-4 text-muted-foreground" />
-                      </Button>
-                      {devis.status === 'DRAFT' ? (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          mode="icon"
-                          className="size-8"
-                          title={t('devis.editDraftTitle')}
-                          aria-label={t('devis.editAria')}
-                          onClick={() => openDevisSheet(devis.id, 'edit')}
-                        >
-                          <Pencil className="size-4 text-muted-foreground" />
-                        </Button>
-                      ) : null}
-                      {devis.status === 'DRAFT' ? (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          mode="icon"
-                          className="size-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                          title={t('devis.deleteDraftTooltip')}
-                          aria-label={t('devis.deleteDraftAria')}
-                          disabled={deleteMutation.isPending}
-                          onClick={() =>
-                            setDeleteTarget({ id: devis.id, referenceCode: devis.referenceCode })
-                          }
-                        >
-                          <Trash2 className="size-4" />
-                        </Button>
-                      ) : null}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {!isLoading && (data?.items.length ?? 0) === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-3 py-6 text-center text-sm text-muted-foreground">
-                    {t('devis.empty')}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">
-            {t('devis.pageInfo', {
-              page,
-              total: totalPages,
-              count: data?.pagination.total ?? 0,
-            })}
-          </p>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1 || isFetching}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              {t('crud.previous')}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages || isFetching}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            >
-              {t('crud.nextFull')}
-            </Button>
+            ) : null}
           </div>
-        </div>
-      </CardContent>
+        ),
+        size: 88,
+        minSize: 88,
+        maxSize: 88,
+        enableSorting: false,
+      },
+    ],
+    [deleteMutation.isPending, openDevisFromRow, t],
+  );
+
+  const table = useReactTable({
+    data: data?.items ?? [],
+    columns,
+    pageCount: Math.max(1, Math.ceil((data?.pagination.total ?? 0) / pagination.pageSize)),
+    getRowId: (row) => row.id,
+    state: { pagination },
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+  });
+
+  return (
+    <>
+      <Card className="mb-5 border-border shadow-none">
+        <CardHeader className="border-b border-border/60 py-3">
+          <div className="flex w-full flex-col gap-3">
+            <div className="flex w-full flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h3 className="text-base font-semibold text-foreground">Tous les devis</h3>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Cliquez sur une ligne pour ouvrir la fiche. Les brouillons sont modifiables ; les envoyés
+                  attendent le client.
+                </p>
+              </div>
+              <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                <div className="relative w-full sm:w-80">
+                  <Search className="absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder={t('datagrid.search.quote')}
+                    value={q}
+                    onChange={(e) => {
+                      setQ(e.target.value);
+                      setPagination((p) => ({ ...p, pageIndex: 0 }));
+                    }}
+                    className="h-10 ps-9"
+                  />
+                </div>
+                <Select
+                  value={status}
+                  onValueChange={(value) => {
+                    setStatus(value);
+                    setPagination((p) => ({ ...p, pageIndex: 0 }));
+                  }}
+                >
+                  <SelectTrigger className="h-10 w-full sm:w-44">
+                    <SelectValue placeholder={t('devis.statusFilterPlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{t('devis.allStatuses')}</SelectItem>
+                    {(['DRAFT', 'SENT', 'ACCEPTED', 'REJECTED', 'EXPIRED'] as const).map((key) => (
+                      <SelectItem key={key} value={key}>
+                        {t(`devis.status.${key}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-10 gap-2 border-dashed shadow-sm transition-all duration-300 hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+                  onClick={handleSync}
+                  disabled={isSyncing || isFetching}
+                >
+                  <RefreshCw className={cn('size-4', (isSyncing || isFetching) && 'animate-spin')} />
+                  <span className="text-[11px] font-bold uppercase tracking-wider">{t('datagrid.sync')}</span>
+                </Button>
+              </div>
+            </div>
+            {leadIdFromUrl ? (
+              <p className="text-xs text-muted-foreground">
+                {t('devis.leadFilterActive')}{' '}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-auto p-0 text-xs text-primary underline-offset-4 hover:underline"
+                  onClick={() => {
+                    const next = new URLSearchParams(sp.toString());
+                    next.delete('leadId');
+                    const qs = next.toString();
+                    router.replace(qs ? `${pathname}?${qs}` : pathname);
+                  }}
+                >
+                  {t('devis.clearLeadFilter')}
+                </Button>
+              </p>
+            ) : null}
+          </div>
+        </CardHeader>
+      </Card>
+
+      <FinanceModuleDataGrid
+        table={table}
+        recordCount={data?.pagination.total ?? 0}
+        isLoading={isLoading}
+        emptyMessage={t('devis.empty')}
+        onRowClick={openDevisFromRow}
+      />
 
       <AlertDialog
         open={deleteTarget !== null}
@@ -379,6 +420,6 @@ export function DevisList({ leaderSlot }: DevisListProps) {
           }
         }}
       />
-    </Card>
+    </>
   );
 }

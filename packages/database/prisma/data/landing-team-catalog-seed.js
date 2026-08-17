@@ -27,12 +27,15 @@ async function seedLandingTeamCatalog(tx) {
   teams.sort((a, b) => (typeOrder[a.type] ?? 9) - (typeOrder[b.type] ?? 9));
 
   let sortOrder = 0;
+  const syncedUserIds = new Set();
+
   for (const team of teams) {
     const volet = VOLET_BY_TEAM_TYPE[team.type];
     if (!volet) continue;
     for (const member of team.members) {
       const u = member.user;
       if (!u || u.isTrashed || u.status !== 'ACTIVE') continue;
+      syncedUserIds.add(u.id);
       await tx.landingTeamOffer.upsert({
         where: { userId: u.id },
         create: {
@@ -49,6 +52,16 @@ async function seedLandingTeamCatalog(tx) {
       });
       sortOrder += 1;
     }
+  }
+
+  if (syncedUserIds.size > 0) {
+    await tx.landingTeamOffer.updateMany({
+      where: {
+        catalogStatus: 'ACTIVE',
+        userId: { notIn: [...syncedUserIds] },
+      },
+      data: { catalogStatus: 'ARCHIVED' },
+    });
   }
 
   console.log(`[seed] Catalogue équipe landing : ${sortOrder} membre(s) publié(s).`);

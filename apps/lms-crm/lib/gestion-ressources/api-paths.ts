@@ -1,9 +1,12 @@
 /** Chemins API section Gestion administrative — alignés menu CRM. */
+import { COMPANY_PROFILE_READONLY_API } from '@/lib/company-profile';
+
 export const GESTION_RESSOURCES_API = {
   landing: '/api/sections/gestion-ressources/landing',
   stats: '/api/sections/gestion-ressources/stats',
   compagnie: {
-    profil: '/api/sections/gestion-ressources/compagnie/profil',
+    /** Lecture seule — édition via tenant/profile + Paramètres système */
+    profil: COMPANY_PROFILE_READONLY_API,
     dossier: '/api/sections/gestion-ressources/compagnie/dossier-administratif',
   },
   rh: {

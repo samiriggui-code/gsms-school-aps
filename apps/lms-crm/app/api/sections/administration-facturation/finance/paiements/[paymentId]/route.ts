@@ -4,6 +4,8 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { FinancePaymentStatus } from '@repo/database';
+import { syncBudgetFromPaymentStatusChange } from '@/lib/finance/finance-budget-sync';
+import { markFinancePaymentReceived } from '@/lib/finance/finance-payment-workflow';
 
 type Ctx = { params: Promise<{ paymentId: string }> };
 
@@ -19,18 +21,46 @@ export async function PATCH(request: NextRequest, context: Ctx) {
     return fail('Corps JSON invalide.', 400);
   }
 
-  const data: Record<string, unknown> = {};
+  let nextStatus: FinancePaymentStatus | undefined;
   if (body.status !== undefined) {
     const status = String(body.status).trim() as FinancePaymentStatus;
     if (!Object.values(FinancePaymentStatus).includes(status)) return fail('Statut invalide.', 400);
-    data.status = status;
-    if (status === 'RECEIVED') data.paidAt = new Date();
+    nextStatus = status;
   }
-  if (body.method !== undefined) data.method = String(body.method).trim() || null;
-  if (body.notes !== undefined) data.notes = String(body.notes).trim() || null;
+
+  const sideData: { method?: string | null; notes?: string | null } = {};
+  if (body.method !== undefined) sideData.method = String(body.method).trim() || null;
+  if (body.notes !== undefined) sideData.notes = String(body.notes).trim() || null;
 
   try {
+    const existing = await prisma.financePayment.findUnique({
+      where: { id: paymentId },
+      select: { status: true },
+    });
+    if (!existing) return fail('Paiement introuvable.', 404);
+
+    if (nextStatus === 'RECEIVED' && existing.status !== 'RECEIVED') {
+      if (Object.keys(sideData).length > 0) {
+        await prisma.financePayment.update({ where: { id: paymentId }, data: sideData });
+      }
+      await markFinancePaymentReceived(prisma, paymentId);
+      return ok({ updated: true });
+    }
+
+    const data: Record<string, unknown> = { ...sideData };
+    if (nextStatus !== undefined) {
+      data.status = nextStatus;
+      if (nextStatus === 'RECEIVED') data.paidAt = new Date();
+    }
+
+    if (Object.keys(data).length === 0) return ok({ updated: true });
+
     await prisma.financePayment.update({ where: { id: paymentId }, data });
+
+    if (nextStatus !== undefined && nextStatus !== existing.status) {
+      await syncBudgetFromPaymentStatusChange(prisma, paymentId, existing.status, nextStatus);
+    }
+
     return ok({ updated: true });
   } catch (e) {
     return fail('Mise à jour impossible.', 500, e);

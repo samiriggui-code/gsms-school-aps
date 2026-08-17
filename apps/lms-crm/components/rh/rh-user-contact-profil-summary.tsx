@@ -4,6 +4,7 @@ import { User as RhUser } from '@/app/models/user';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Phone, Briefcase, User as UserIcon, Network } from 'lucide-react';
 import { SCHOOL_USER_CATEGORY_LABELS } from '@/lib/rh-school-profile-fields';
+import { RhDetailFieldRow } from '@/components/rh/rh-detail-field-row';
 
 interface RhUserContactProfilSummaryProps {
   user: RhUser & {
@@ -36,72 +37,62 @@ export function RhUserContactProfilSummary({ user }: RhUserContactProfilSummaryP
       : user.userCategory || 'Non renseigné';
 
   const internalService =
-    user.collaborateurProfile?.schoolInternalService ??
-    user.formateurProfile?.schoolInternalService ??
-    null;
+    user.collaborateurProfile?.schoolInternalService ?? user.formateurProfile?.schoolInternalService ?? null;
 
   const manager = displayName(user.collaborateurProfile?.manager);
 
-  const rows = [
+  const contactRows = [
     { icon: Mail, label: 'Email personnel', value: user.email },
     { icon: Mail, label: 'Email professionnel', value: user.proEmail },
     { icon: Phone, label: 'Téléphone', value: user.phone },
-    { icon: UserIcon, label: 'Catégorie', value: categoryLabel },
+  ];
+
+  const profileRows = [
+    { icon: UserIcon, label: 'Catégorie', value: categoryLabel, badge: true },
     { icon: Briefcase, label: 'Rôle IAM', value: user.role?.name },
     { icon: Briefcase, label: 'Fonction / poste', value: user.jobFunction },
     { icon: Briefcase, label: 'Qualification', value: user.qualification },
     ...(internalService
-      ? [{ icon: Network, label: 'Pôle / service', value: SERVICE_LABELS[internalService] ?? internalService }]
+      ? [{ icon: Network, label: 'Pôle / service', value: SERVICE_LABELS[internalService] ?? internalService, badge: false }]
       : []),
-    ...(manager ? [{ icon: UserIcon, label: 'Responsable hiérarchique', value: manager }] : []),
+    ...(manager ? [{ icon: UserIcon, label: 'Responsable hiérarchique', value: manager, badge: false }] : []),
   ];
 
   return (
-    <div className="grid sm:grid-cols-2 gap-8">
+    <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
       <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-foreground/30" />
-          <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Contact</h4>
+        <div className="mb-1 flex items-center gap-2">
+          <span className="size-1.5 rounded-full bg-foreground/30" />
+          <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Contact</h4>
         </div>
         <div className="space-y-3">
-          {rows.slice(0, 3).map((row) => (
-            <div
-              key={row.label}
-              className="flex items-center justify-between text-2sm pb-2 border-b border-dashed border-border/60 gap-4"
-            >
-              <div className="flex items-center gap-2.5 text-muted-foreground shrink-0">
-                <row.icon className="size-3.5" />
-                <span className="font-medium">{row.label}</span>
-              </div>
-              <span className="font-semibold text-foreground text-right truncate">{row.value || 'Non renseigné'}</span>
-            </div>
+          {contactRows.map((row) => (
+            <RhDetailFieldRow key={row.label} icon={row.icon} label={row.label}>
+              <span className="font-semibold text-foreground">{row.value || 'Non renseigné'}</span>
+            </RhDetailFieldRow>
           ))}
         </div>
       </div>
 
       <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-foreground/30" />
-          <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">Profil métier</h4>
+        <div className="mb-1 flex items-center gap-2">
+          <span className="size-1.5 rounded-full bg-foreground/30" />
+          <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Profil métier</h4>
         </div>
         <div className="space-y-3">
-          {rows.slice(3).map((row) => (
-            <div
+          {profileRows.map((row) => (
+            <RhDetailFieldRow
               key={row.label}
-              className="flex items-center justify-between text-2sm pb-2 border-b border-dashed border-border/60 gap-4 last:border-0"
+              icon={row.icon}
+              label={row.label}
+              className="last:border-0"
             >
-              <div className="flex items-center gap-2.5 text-muted-foreground shrink-0">
-                <row.icon className="size-3.5" />
-                <span className="font-medium">{row.label}</span>
-              </div>
-              {row.label === 'Catégorie' && row.value !== 'Non renseigné' ? (
-                <Badge variant="outline" size="sm" className="font-bold text-foreground/80 max-w-[60%] truncate">
+              {row.badge && row.value !== 'Non renseigné' ?
+                <Badge variant="outline" size="sm" className="max-w-full truncate font-bold text-foreground/80">
                   {row.value}
                 </Badge>
-              ) : (
-                <span className="font-semibold text-foreground text-right truncate">{row.value || 'Non renseigné'}</span>
-              )}
-            </div>
+              : <span className="font-semibold text-foreground">{row.value || 'Non renseigné'}</span>}
+            </RhDetailFieldRow>
           ))}
         </div>
       </div>

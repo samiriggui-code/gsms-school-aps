@@ -95,9 +95,9 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
     path: '/support-qualite',
     descriptionKey: 'accueil.cards.support-qualite',
     icon: LifeBuoy,
-    moduleCount: 2,
-    subSections: ['support', 'qualite'],
-    subSectionPaths: ['/support-qualite/support', '/support-qualite/qualite'],
+    moduleCount: 1,
+    subSections: ['support'],
+    subSectionPaths: ['/support-qualite/support'],
     tone: 'orange',
   },
   {

@@ -61,5 +61,5 @@ export function pilotageModuleKeyPrefix(moduleId: PilotageModuleId): string | un
 }
 
 export function pilotageApiModuleId(moduleId: PilotageModuleId): string {
-  return moduleId === 'all' ? 'gestion-ressources' : moduleId;
+  return moduleId;
 }

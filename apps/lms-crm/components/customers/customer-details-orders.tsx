@@ -1,7 +1,7 @@
 'use client';
 
 import { Statistics2 } from "./components/statistics2";
-import { DetailsOrdersTable } from "../tables/details-orders";
+import { DetailsOrdersTable } from '@/components/_deprecated-metronic/tables/details-orders';
 
 export function CustomerDetailsOrders() {
   return (

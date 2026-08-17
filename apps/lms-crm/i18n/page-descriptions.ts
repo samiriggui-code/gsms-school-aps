@@ -1,13 +1,13 @@
 /** Page toolbar descriptions keyed by route (gestion-ressources.rh.collaborateurs). */
 export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
-  "administration-facturation.finance.devis": "Propositions commerciales, suivi des versions et passage en facturation.",
-  "administration-facturation.finance.factures": "Factures émises, relances et pièces jointes conformes à votre processus.",
+  "administration-facturation.finance.devis": "Propositions commerciales (FinanceDevis) — brouillon, envoi, acceptation client via plaquette.",
+  "administration-facturation.finance.factures": "Vue facturation des devis ACCEPTED (même dossier FinanceDevis) — PDF, encaissements et relances.",
   "administration-facturation.finance": "Suivez vos devis, factures et paiements pour piloter la performance financière en temps réel.",
   "administration-facturation.finance.budget": "Lignes budgétaires par exercice — prévisionnel vs réalisé.",
   "administration-facturation.finance.paiements": "Encaissements liés aux devis et relances.",
   "administration-facturation.finance.rapports": "Synthèse mensuelle devis, leads et chiffre d'affaires.",
   "administration-facturation": "Centralisez la facturation, les encaissements et les relances.",
-  "communication-contenu.cms.contenus": "Suivi des fiches formation publiées sur le landing (#pricing) — édition dans le module Formations.",
+  "communication-contenu.cms.contenus": "Catalogue formations publié sur le landing (#pricing) — volets par spécialité (sûreté, incendie, SST…). Édition dans Vie scolaire → Formations ; republier pour synchroniser la vitrine.",
   "communication-contenu.cms": "Gestion des pages landing et des contenus.",
   "communication-contenu.cms.pages-landing": "Ordre, visibilité et publication du site vitrine one-page.",
   "communication-contenu.cms.equipe-landing": "Catalogue équipe publié sur la section #trainers du landing (direction, formateurs, pédagogie, RH).",
@@ -19,7 +19,7 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "communication-contenu.seo.meta-indexation": "Balises title/description landing et liens sitemap / robots.",
   "communication-contenu.seo": "Pilotage SEO, indexation et redirections.",
   "communication-contenu.seo.redirections": "Règles 301/302 et ancres du site landing.",
-  "gestion-academique": "Section regroupant le module Vie scolaire : formations, sessions, candidatures, planning, examens et certifications (six espaces dans le menu).",
+  "gestion-academique": "Section regroupant le module Vie scolaire : formations, sessions, planning, étudiants et suivi de parcours (cinq espaces dans le menu).",
   "gestion-academique.vie-scolaire.certifications": "Délivrance des attestations CRM après examen réussi (avant clôture du dossier).",
   "gestion-academique.vie-scolaire.etudiants": "Dossiers apprenants, pipeline CRM et rattachement aux sessions.",
   "gestion-academique.vie-scolaire.examens": "Saisie des résultats pour les candidats inscrits à une session (parcours catalogue CRM).",
@@ -70,14 +70,11 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "securite-configuration": "Administrez les accès, la traçabilité et les paramètres de la plateforme.",
   "securite-configuration.parametres": "Configurez les réglages généraux, notifications et options globales de la plateforme.",
   "securite-configuration.parametres.sante-systeme": "Aperçu en temps réel de la consommation des ressources (Postgres, Redis, Node.js)",
-  "support-qualite": "Suivez le support utilisateur, la satisfaction et la conformité opérationnelle.",
-  "support-qualite.qualite": "Suivi qualité et incidents.",
-  "support-qualite.support": "Gestion des tickets et fiches catalogue utilisées comme aide self-service.",
+  "support-qualite": "Suivez le support utilisateur et les incidents qualité.",
+  "support-qualite.support": "Helpdesk : tickets entrants et suivi des incidents (matériel, processus).",
   "support-qualite.support.tickets": "Création, affectation et suivi des demandes support.",
-  "support-qualite.support.base-aide":
-    "Fiches du catalogue formations actif — documentation complète dans le guide école (onglet Documentation).",
-  "support-qualite.qualite.incidents":
-    "Matériel hors service et erreurs système — synthèse avec graphiques qualité.",
+  "support-qualite.support.incidents":
+    "Matériel hors service et erreurs processus — analyse et actions correctives.",
   "securite-configuration.acces.logs":
     "Journal d&apos;audit : connexions, actions sensibles et investigations conformité.",
   "securite-configuration.acces.security-log":

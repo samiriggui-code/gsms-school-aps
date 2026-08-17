@@ -13,6 +13,7 @@ import {
 } from '@tanstack/react-table';
 import { Pencil, Plus, Search, ShieldAlert, Trash, UserRound, X } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
+import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTable, CardToolbar } from '@/components/ui/card';
@@ -74,10 +75,7 @@ async function fetchRoles({
 }
 
 const RoleList = () => {
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
   const [sorting, setSorting] = useState<SortingState>([{ id: 'name', desc: false }]);
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | 'default' | 'system' | 'custom'>('all');

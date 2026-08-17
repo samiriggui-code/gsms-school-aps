@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useScrollPosition } from '@/hooks/use-scroll-position';
 import { useSettings as useThemeSettings } from '@/providers/settings-provider';
 import { Scrollspy } from '@/components/ui/scrollspy';
 import { SettingsSidebarNav } from './settings-sidebar-nav';
@@ -24,13 +23,7 @@ const stickySidebarClasses: Record<string, string> = {
 export function SettingsSidebarLayout({ children }: { children: ReactNode }) {
   const isMobile = useIsMobile();
   const { settings } = useThemeSettings();
-  const [sidebarSticky, setSidebarSticky] = useState(false);
   const parentRef = useRef<HTMLElement | Document>(document);
-  const scrollPosition = useScrollPosition({ targetRef: parentRef });
-
-  useEffect(() => {
-    setSidebarSticky(scrollPosition > 100);
-  }, [scrollPosition]);
 
   const stickyClass = settings?.layout
     ? stickySidebarClasses[settings.layout] ||
@@ -38,20 +31,15 @@ export function SettingsSidebarLayout({ children }: { children: ReactNode }) {
     : 'top-[calc(var(--header-height)+1rem)]';
 
   return (
-    <div className="flex grow gap-5 lg:gap-7.5">
+    <div className="flex min-w-0 grow items-start gap-5 lg:gap-7.5">
       {!isMobile && (
-        <div className="w-[230px] shrink-0">
-          <div
-            className={cn(
-              'w-[230px]',
-              sidebarSticky && `fixed z-10 start-auto ${stickyClass}`,
-            )}
-          >
+        <aside className="w-[230px] shrink-0 self-start">
+          <div className={cn('sticky z-[1] w-[230px]', stickyClass)}>
             <Scrollspy offset={120} targetRef={parentRef}>
               <SettingsSidebarNav />
             </Scrollspy>
           </div>
-        </div>
+        </aside>
       )}
       <div className="flex min-w-0 grow flex-col items-stretch gap-5 lg:gap-7.5">
         {children}

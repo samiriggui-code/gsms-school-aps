@@ -90,16 +90,25 @@ import {
   candidatHubStatsQueryKey,
   candidaturesListQueryKey,
 } from '../constants/query-keys';
+import type { LmsAccessTier } from '@/lib/portal/lms-access-shared';
+import {
+  lmsAccessBadgeVariant,
+  lmsAccessShortLabel,
+} from '@/lib/portal/lms-access-shared';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 export type CandidatHubListRow = {
   userId: string;
   name: string | null;
   email: string;
+  personalEmail?: string;
+  proEmail?: string | null;
   avatar: string | null;
   userStatus: string;
   roleSlug: string;
   roleName: string;
+  lastSignInAt?: string | null;
+  lmsAccessTier?: LmsAccessTier;
   updatedAt: string;
   dossierStatus: string | null;
   dossierLabel: string;
@@ -278,7 +287,7 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
         className="size-8"
         title="Éditer le pipeline"
         disabled={!r.candidatureId}
-        onClick={() => onOpenCandidate(r, 'pipeline')}
+        onClick={() => onOpenCandidate(r, 'dossier')}
       >
         <SquarePen className="size-4 text-muted-foreground" />
       </Button>
@@ -365,7 +374,9 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
                 >
                   {r.name || '—'}
                 </button>
-                <span className="truncate text-xs text-muted-foreground">{r.email}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {r.proEmail?.trim() || r.personalEmail || r.email}
+                </span>
               </div>
             </div>
           );
@@ -374,6 +385,37 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
         meta: {
           cellClassName: 'max-w-[min(28rem,calc(100vw-14rem))]',
         },
+      },
+      {
+        id: 'personalEmail',
+        accessorFn: (row) => row.personalEmail ?? row.email,
+        header: ({ column }) => <DataGridColumnHeader title="Email perso" column={column} />,
+        cell: ({ row }) => (
+          <span className="text-xs text-muted-foreground break-all">{row.original.personalEmail ?? row.original.email}</span>
+        ),
+        size: 180,
+      },
+      {
+        id: 'proEmail',
+        accessorFn: (row) => row.proEmail ?? '',
+        header: ({ column }) => <DataGridColumnHeader title="Login pro" column={column} />,
+        cell: ({ row }) => (
+          <span className="text-xs font-medium break-all">{row.original.proEmail?.trim() || '—'}</span>
+        ),
+        size: 180,
+      },
+      {
+        id: 'lmsAccessTier',
+        header: ({ column }) => <DataGridColumnHeader title="E-formation" column={column} />,
+        cell: ({ row }) => {
+          const tier = row.original.lmsAccessTier ?? 'none';
+          return (
+            <Badge variant={lmsAccessBadgeVariant(tier)} appearance="outline" size="sm" className="text-[10px] whitespace-normal">
+              {lmsAccessShortLabel(tier)}
+            </Badge>
+          );
+        },
+        size: 150,
       },
       {
         id: 'roleSlug',
@@ -691,9 +733,16 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
                             >
                               {EtudiantRow.name || '—'}
                             </h4>
-                            <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                              <Mail className="size-3 shrink-0" />
-                              <span className="max-w-[220px] truncate">{EtudiantRow.email}</span>
+                            <div className="flex flex-col items-center justify-center gap-1 text-xs text-muted-foreground">
+                              <div className="flex items-center justify-center gap-1.5">
+                                <Mail className="size-3 shrink-0" />
+                                <span className="max-w-[220px] truncate" title={EtudiantRow.proEmail ?? undefined}>
+                                  {EtudiantRow.proEmail?.trim() || '—'}
+                                </span>
+                              </div>
+                              <span className="max-w-[220px] truncate text-[10px] opacity-80">
+                                {EtudiantRow.personalEmail ?? EtudiantRow.email}
+                              </span>
                             </div>
                           </div>
                           <div className="mb-6 flex flex-wrap justify-center gap-2">
@@ -702,6 +751,13 @@ export function CandidatHubList({ leaderSlot, onOpenCandidate }: CandidatHubList
                             </Badge>
                             <Badge variant="secondary" appearance="light" className="max-w-[200px] text-[10px] font-bold uppercase">
                               {EtudiantRow.candidatureId ? EtudiantRow.dossierLabel : 'Sans dossier'}
+                            </Badge>
+                            <Badge
+                              variant={lmsAccessBadgeVariant(EtudiantRow.lmsAccessTier ?? 'none')}
+                              appearance="outline"
+                              className="max-w-[200px] text-[10px] font-bold whitespace-normal"
+                            >
+                              {lmsAccessShortLabel(EtudiantRow.lmsAccessTier ?? 'none')}
                             </Badge>
                             <Badge
                               variant={statusProps.variant as 'success' | 'warning' | 'destructive'}

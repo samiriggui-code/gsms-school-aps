@@ -213,7 +213,7 @@ model User {
   firstName       String?
   lastName        String?
   phone           String?
-  proEmail        String?
+  proEmail        String?   @unique
   userCategory    UserCategory @default(INTERNAL)
   subcontractorId String?
   jobFunction     String?
@@ -301,6 +301,12 @@ model User {
   requestedReportJobs   ReportGenerationJob[]  @relation("ReportJobsRequested")
   assignedSupportTickets SupportTicket[]       @relation("SupportTicketAssignee")
   createdSupportTickets  SupportTicket[]       @relation("SupportTicketCreatedBy")
+  ticketComments         TicketComment[]       @relation("TicketCommentAuthor")
+  ticketAttachments      TicketAttachment[]    @relation("TicketAttachmentUploader")
+  helpArticlesAuthored   HelpArticle[]         @relation("HelpArticleAuthor")
+  assignedQualityIncidents QualityIncident[]   @relation("QualityIncidentAssignee")
+  reportedQualityIncidents QualityIncident[]   @relation("QualityIncidentReporter")
+  notificationPreference UserNotificationPreference?
 
   inAppNotifications InAppNotification[]
   chatParticipants   ChatParticipant[]
@@ -356,6 +362,7 @@ model FileAsset {
   reportJobs     ReportGenerationJob[]
   complianceDossierItems ComplianceDossierItem[]
   complianceItemEvents   ComplianceItemEvent[]
+  ticketAttachments      TicketAttachment[]
 
   @@index([module, entityType, entityId])
   @@index([status, visibility])
@@ -890,6 +897,7 @@ model Equipment {
   stockMovements   StockMovement[]
   sessions         TrainingSession[]
   roomFixedAssignment VenueRoomFixedEquipment?
+  qualityIncidents   QualityIncident[]
 
   @@index([status])
   @@index([type])
@@ -1871,6 +1879,18 @@ enum FinanceDevisStatus {
   EXPIRED
 }
 
+/// Cycle e-facture (émission Factur-X / PDP) — distinct du statut commercial.
+enum FinanceEinvoiceStatus {
+  NOT_READY
+  READY
+  GENERATED
+  QUEUED
+  SENT
+  ACCEPTED_BY_PDP
+  REJECTED_BY_PDP
+  FAILED
+}
+
 model Lead {
   id        String     @id @default(uuid())
   firstName String
@@ -1935,6 +1955,17 @@ model FinanceDevis {
   notes         String? @db.Text
   internalNotes String? @db.Text
 
+  /// Facturation électronique (réforme FR 2026) — export Factur-X / envoi PDP.
+  einvoiceStatus       FinanceEinvoiceStatus @default(NOT_READY)
+  /// MINIMUM | BASIC | EN16931 (profil Factur-X).
+  einvoiceProfile      String                @default("BASIC")
+  einvoiceGeneratedAt  DateTime?
+  /// Identifiant retour PDP / plateforme (quand branchée).
+  einvoicePdpMessageId String?
+  einvoiceLastError    String?               @db.Text
+  /// Snapshot XML Factur-X (CII) généré — FileAsset key optionnelle côté storage.
+  einvoiceXmlAssetKey  String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1946,6 +1977,7 @@ model FinanceDevis {
   @@index([formationId])
   @@index([candidatureId])
   @@index([formationSessionId])
+  @@index([einvoiceStatus])
 }
 
 /// Message laissé par le client depuis la plaquette publique (lien signé) — consultable côté CRM.
@@ -2351,11 +2383,159 @@ model SupportTicket {
   resolvedAt  DateTime?
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
+  comments    TicketComment[]
+  attachments TicketAttachment[]
+  incidents   QualityIncident[]
 
   @@index([status])
   @@index([priority])
   @@index([leadId])
   @@index([assignedToId])
+}
+
+model TicketComment {
+  id         String        @id @default(uuid())
+  ticketId   String
+  ticket     SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId   String?
+  author     User?         @relation("TicketCommentAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  body       String        @db.Text
+  isInternal Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  attachments TicketAttachment[]
+
+  @@index([ticketId])
+  @@index([authorId])
+}
+
+model TicketAttachment {
+  id           String         @id @default(uuid())
+  ticketId     String
+  ticket       SupportTicket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  commentId    String?
+  comment      TicketComment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  fileAssetId  String?
+  fileAsset    FileAsset?     @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+  uploadedById String?
+  uploadedBy   User?          @relation("TicketAttachmentUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  fileName     String
+  fileUrl      String
+  fileKey      String?
+  mimeType     String?
+  sizeBytes    Int?
+  createdAt    DateTime       @default(now())
+
+  @@index([ticketId])
+  @@index([commentId])
+  @@index([fileAssetId])
+}
+
+enum QualityIncidentSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum QualityIncidentStatus {
+  REPORTED
+  UNDER_ANALYSIS
+  ACTION_IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model QualityIncident {
+  id                 String                  @id @default(uuid())
+  referenceCode      String                  @unique
+  title              String
+  description        String                  @db.Text
+  severity           QualityIncidentSeverity @default(MEDIUM)
+  status             QualityIncidentStatus   @default(REPORTED)
+  category           String?
+  ticketId           String?
+  ticket             SupportTicket?          @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  equipmentId        String?
+  equipment          Equipment?              @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
+  assignedToId       String?
+  assignedTo         User?                   @relation("QualityIncidentAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  reportedById       String?
+  reportedBy         User?                   @relation("QualityIncidentReporter", fields: [reportedById], references: [id], onDelete: SetNull)
+  rootCause          String?                 @db.Text
+  correctiveAction   String?                 @db.Text
+  resolvedAt         DateTime?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  @@index([status])
+  @@index([severity])
+  @@index([ticketId])
+  @@index([equipmentId])
+  @@index([assignedToId])
+}
+
+enum HelpArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum HelpArticleAudience {
+  STAFF
+  FORMATEUR
+  STAGIAIRE
+  PUBLIC
+}
+
+model HelpArticle {
+  id           String              @id @default(uuid())
+  title        String
+  slug         String              @unique
+  body         String              @db.Text
+  excerpt      String?             @db.Text
+  category     String              @default("general")
+  audience     HelpArticleAudience @default(STAFF)
+  status       HelpArticleStatus   @default(DRAFT)
+  tags         String[]
+  viewCount    Int                 @default(0)
+  helpfulCount Int                 @default(0)
+  authorId     String?
+  author       User?               @relation("HelpArticleAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  publishedAt  DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@index([audience])
+}
+
+model UserNotificationPreference {
+  userId           String   @id
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email            Boolean  @default(true)
+  inApp            Boolean  @default(true)
+  chat             Boolean  @default(true)
+  desktop          Boolean  @default(true)
+  doNotDisturb     Boolean  @default(false)
+  academicAlerts   Boolean  @default(true)
+  sessionReminders Boolean  @default(true)
+  chatMessages     Boolean  @default(true)
+  updatedAt        DateTime @updatedAt
+}
+
+model ModuleSetting {
+  id          String   @id @default(uuid())
+  moduleKey   String
+  settingKey  String
+  value       Json     @default("{}")
+  updatedById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([moduleKey, settingKey])
+  @@index([moduleKey])
 }
 
 enum MarketingCampaignStatus {

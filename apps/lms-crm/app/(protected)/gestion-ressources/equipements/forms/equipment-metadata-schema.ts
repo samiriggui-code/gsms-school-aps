@@ -14,10 +14,20 @@ export const EquipmentMetadataSchema = z.object({
   storageRoom: z.string().max(120).optional().or(z.literal('')),
   supplier: z.string().max(120).optional().or(z.literal('')),
   purchaseDate: optionalDateString,
+  /** Coût d'acquisition (€) — alimente le budget EQUIPEMENT en Finance. */
+  acquisitionCost: z.coerce.number().nonnegative().optional().or(z.literal('')),
+  /** Travaux / pose / installation (€). */
+  installationCost: z.coerce.number().nonnegative().optional().or(z.literal('')),
+  /** ACHAT | INSTALLATION | MOBILIER_SALLE | BUREAU | PEDAGOGIQUE_MOBILE | CONSOMMABLE | MAINTENANCE */
+  financialCategory: z.string().max(40).optional().or(z.literal('')),
+  purchaseInvoiceRef: z.string().max(120).optional().or(z.literal('')),
+  amortizationYears: z.coerce.number().int().positive().optional().or(z.literal('')),
   warrantyUntil: optionalDateString,
   lastControlDate: optionalDateString,
   nextControlDate: optionalDateString,
   regulatoryRef: z.string().max(200).optional().or(z.literal('')),
+  /** Rôle plateau examen : PCS_CORE, VIDEO_SURVEILLANCE, RADIO_PTI… */
+  examPedagogicalRole: z.string().max(40).optional().or(z.literal('')),
   notes: z.string().max(2000).optional().or(z.literal('')),
   avatar: z.string().optional(),
 });
@@ -31,6 +41,11 @@ export const emptyEquipmentMetadata = (): EquipmentMetadata => ({
   storageRoom: '',
   supplier: '',
   purchaseDate: '',
+  acquisitionCost: '',
+  installationCost: '',
+  financialCategory: '',
+  purchaseInvoiceRef: '',
+  amortizationYears: '',
   warrantyUntil: '',
   lastControlDate: '',
   nextControlDate: '',

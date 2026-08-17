@@ -11,6 +11,13 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 
 type Ctx = { params: Promise<{ factureId: string }> };
 
+function requestOrigin(request: NextRequest): string | undefined {
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') ?? 'http';
+  if (!host) return undefined;
+  return `${proto}://${host}`;
+}
+
 async function assertAcceptedFacture(factureId: string) {
   const row = await prisma.financeDevis.findUnique({
     where: { id: factureId },
@@ -27,12 +34,13 @@ async function assertAcceptedFacture(factureId: string) {
   return { ok: true as const };
 }
 
-/** Aperçu HTML imprimable de la proposition acceptée (facture). */
-export async function GET(_request: NextRequest, context: Ctx) {
+/** Aperçu HTML brandé ou PDF binaire (?format=pdf). */
+export async function GET(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return new NextResponse('Unauthorized', { status: 401 });
 
   const { factureId } = await context.params;
+  const format = request.nextUrl.searchParams.get('format');
 
   try {
     const check = await assertAcceptedFacture(factureId);
@@ -41,7 +49,19 @@ export async function GET(_request: NextRequest, context: Ctx) {
     const row = await loadFinanceDevisPdfRow(factureId);
     if (!row) return new NextResponse('Dossier introuvable', { status: 404 });
 
-    const html = buildFinanceDevisHtml(row, 'facture');
+    if (format === 'pdf') {
+      const { buffer, filename } = await buildFinanceDevisPdfBuffer(row, 'facture');
+      return new NextResponse(new Uint8Array(buffer), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `inline; filename="${filename}"`,
+        },
+      });
+    }
+
+    const origin = requestOrigin(request);
+    const html = await buildFinanceDevisHtml(row, 'facture', origin);
 
     return new NextResponse(html, {
       status: 200,

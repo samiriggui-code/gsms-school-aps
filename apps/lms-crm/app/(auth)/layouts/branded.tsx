@@ -14,10 +14,10 @@ export function BrandedLayout({ children }: { children: ReactNode }) {
       <style>
         {`
           .branded-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/1.png')}');
+            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/couv-dark.jpg')}');
           }
           .dark .branded-bg {
-            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/1-dark.png')}');
+            background-image: url('${toAbsoluteUrl('/media/images/2600x1600/couv-dark.jpg')}');
           }
         `}
       </style>
@@ -39,8 +39,8 @@ export function BrandedLayout({ children }: { children: ReactNode }) {
             </Link>
 
             <div className="flex flex-col gap-3">
-              <h3 className="text-2xl font-semibold text-mono">{t('auth.secureAccess')}</h3>
-              <div className="text-base font-medium text-secondary-foreground">
+              <h3 className="text-2xl font-semibold text-mono text-white">{t('auth.secureAccess')}</h3>
+              <div className="text-base font-medium text-white/90">
                 {t('auth.brandedSubtitle')}
               </div>
             </div>

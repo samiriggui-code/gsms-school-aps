@@ -2,6 +2,7 @@
 
 import { Fragment } from 'react';
 import Link from 'next/link';
+import { COMPANY_PROFILE_SETTINGS_HREF } from '@/lib/company-profile';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -51,8 +52,11 @@ export function CompagnieWelcomeCallout() {
               Module <span className="text-primary">Compagnie</span>
             </h2>
             <p className="text-sm font-normal text-secondary-foreground leading-5.5">
-              Gérez le profil de la compagnie, sa structure <br />
-              et ses documents administratifs.
+              Consultez le profil de la compagnie et ses indicateurs.{' '}
+              <Link href={COMPANY_PROFILE_SETTINGS_HREF} className="text-primary underline underline-offset-4">
+                Modifier le profil
+              </Link>{' '}
+              dans Paramètres système.
             </p>
           </div>
         </CardContent>

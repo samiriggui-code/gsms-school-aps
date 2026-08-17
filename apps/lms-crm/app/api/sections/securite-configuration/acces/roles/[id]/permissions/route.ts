@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { createWorkflowEngine } from '@repo/api-core';
 
 /** Toggle une permission sur un rôle (depuis la datagrid). */
 export async function PATCH(
@@ -40,6 +41,29 @@ export async function PATCH(
       });
     } else {
       await prisma.userRolePermission.deleteMany({ where: { roleId, permissionId } });
+    }
+
+    const permission = await prisma.userPermission.findUnique({
+      where: { id: permissionId },
+      select: { slug: true },
+    });
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.security.role.permissions_changed',
+        {
+          roleId,
+          roleName: role.name,
+          roleSlug: role.slug,
+          permissionId,
+          permissionSlug: permission?.slug ?? permissionId,
+          assigned,
+        },
+        { dedupeKey: `iam-role:${roleId}:perm:${permissionId}:${assigned ? 'on' : 'off'}` },
+      );
+    } catch (e) {
+      console.error('[acces/roles/permissions] workflow', e);
     }
 
     return NextResponse.json({ success: true });

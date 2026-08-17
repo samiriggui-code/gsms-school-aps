@@ -13,6 +13,7 @@ import {
 } from '@tanstack/react-table';
 import { Pencil, Search, X } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
+import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -53,10 +54,7 @@ import { PermissionDetailSheet } from './permission-detail-sheet';
 type PermissionRow = UserPermission & { domain?: string; roles?: UserRole[] };
 
 const PermissionList = () => {
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'slug', desc: false },
   ]);

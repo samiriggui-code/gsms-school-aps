@@ -70,6 +70,47 @@ export async function assertUserMailboxesAvailable(
   return { ok: true };
 }
 
+/**
+ * Alloue un proEmail unique (préinscription / candidat auto).
+ * Ne remplace pas assert pour les créations staff manuelles (échec explicite).
+ */
+export async function allocateUniqueProEmail(
+  prisma: PrismaUserEmailLookup,
+  firstName: string,
+  lastName: string,
+  preferred?: string | null,
+  excludeUserId?: string,
+): Promise<string> {
+  const base = (
+    preferred?.trim() ||
+    buildAppLoginEmail(firstName, lastName)
+  ).toLowerCase();
+  const [localPart, domainPart] = base.split('@');
+  const domain = domainPart || 'ecole.local';
+  const local = localPart || 'user';
+
+  for (let attempt = 0; attempt <= 40; attempt += 1) {
+    const candidate =
+      attempt === 0
+        ? `${local}@${domain}`
+        : attempt === 1
+          ? `${local}.candidat@${domain}`
+          : `${local}.u${attempt}@${domain}`;
+
+    const taken = await prisma.user.findFirst({
+      where: {
+        isTrashed: false,
+        proEmail: { equals: candidate, mode: 'insensitive' },
+        ...(excludeUserId ? { id: { not: excludeUserId } } : {}),
+      },
+      select: { id: true },
+    });
+    if (!taken) return candidate;
+  }
+
+  return `user.${Date.now().toString(36)}@${domain}`;
+}
+
 /** Identifiant affiché sous le nom (liste IAM, en-têtes) — connexion app. */
 export function userIamLoginSubtitle(user: UserMailboxFields): string {
   return userProfessionalMailbox(user) ?? userPersonalMailbox(user) ?? '—';

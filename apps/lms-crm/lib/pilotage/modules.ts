@@ -3,7 +3,9 @@ export type PilotageModuleId =
   | 'gestion-ressources'
   | 'gestion-academique'
   | 'administration-facturation'
-  | 'support-qualite';
+  | 'communication-contenu'
+  | 'support-qualite'
+  | 'securite-configuration';
 
 export type PilotageModuleTab = {
   id: PilotageModuleId;
@@ -40,14 +42,27 @@ export const PILOTAGE_MODULE_TABS: PilotageModuleTab[] = [
     moduleKeyPrefix: 'support-qualite',
     enabled: true,
   },
+  {
+    id: 'communication-contenu',
+    label: 'Communication',
+    moduleKeyPrefix: 'communication-contenu',
+    enabled: true,
+  },
+  {
+    id: 'securite-configuration',
+    label: 'Sécurité',
+    moduleKeyPrefix: 'securite-configuration',
+    enabled: true,
+  },
 ];
 
-export type PilotagePeriod = 'day' | 'week' | 'month' | 'year';
+export type PilotagePeriod = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
 export const PILOTAGE_PERIOD_OPTIONS: { id: PilotagePeriod; label: string }[] = [
   { id: 'day', label: 'Jour' },
   { id: 'week', label: 'Semaine' },
   { id: 'month', label: 'Mois' },
+  { id: 'quarter', label: 'Trimestre' },
   { id: 'year', label: 'Année' },
 ];
 
@@ -58,6 +73,8 @@ export function moduleLabelFromKey(moduleKey: string | null | undefined): string
   if (moduleKey.startsWith('administration-facturation')) return 'Admin facturation';
   if (moduleKey.startsWith('pilotage-supervision')) return 'Pilotage';
   if (moduleKey.startsWith('support-qualite')) return 'Support qualité';
+  if (moduleKey.startsWith('communication-contenu')) return 'Communication & contenu';
+  if (moduleKey.startsWith('securite-configuration')) return 'Sécurité & configuration';
   return moduleKey;
 }
 
@@ -69,5 +86,7 @@ export function moduleHrefFromKey(moduleKey: string | null | undefined): string 
   if (moduleKey.startsWith('gestion-academique')) return '/gestion-academique';
   if (moduleKey.startsWith('administration-facturation')) return '/administration-facturation';
   if (moduleKey.startsWith('support-qualite')) return '/support-qualite';
+  if (moduleKey.startsWith('communication-contenu')) return '/communication-contenu';
+  if (moduleKey.startsWith('securite-configuration')) return '/securite-configuration';
   return '/accueil';
 }

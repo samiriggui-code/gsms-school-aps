@@ -23,7 +23,8 @@ import { SalleDetailsOverview } from './salle-details-overview';
 import { SalleDetailsSessions } from './salle-details-sessions';
 import { SalleDetailsSettings } from './salle-details-settings';
 import type { VenueRoomRow } from '../types';
-import { Settings, Theater } from 'lucide-react';
+import { Settings, Theater, Package } from 'lucide-react';
+import { SalleDetailsFixedInventory } from '../page/components/details/salle-details-fixed-inventory';
 
 export type SalleDetailsSheetProps = {
   open: boolean;
@@ -136,6 +137,10 @@ export function SalleDetailsSheet({
                 <TabsList className={GESTION_RESSOURCES_SHEET_TABS_LIST}>
                   <TabsTrigger value="overview">Vue d&apos;ensemble</TabsTrigger>
                   <TabsTrigger value="sessions">Sessions</TabsTrigger>
+                  <TabsTrigger value="inventaire-fixe" className="gap-1.5">
+                    <Package className="size-3.5" />
+                    Inventaire fixe
+                  </TabsTrigger>
                   <TabsTrigger value="parametres" className="gap-1.5">
                     <Settings className="size-3.5" />
                     Paramètres
@@ -147,11 +152,15 @@ export function SalleDetailsSheet({
                 <TabsContent value="sessions">
                   <SalleDetailsSessions roomId={room.id} />
                 </TabsContent>
+                <TabsContent value="inventaire-fixe">
+                  <SalleDetailsFixedInventory roomId={room.id} roomCapacity={room.capacity} />
+                </TabsContent>
                 <TabsContent value="parametres">
                   <SalleDetailsSettings
                     room={room}
                     formRef={settingsFormRef}
                     onSuccess={() => fetchRoom(room.id)}
+                    onOpenFixedInventory={() => setActiveTab('inventaire-fixe')}
                   />
                 </TabsContent>
               </Tabs>

@@ -18,7 +18,7 @@ export function resolveStandardWebhookUrl(): string | null {
   if (direct) return direct;
 
   const base = process.env.N8N_WEBHOOK_BASE?.trim();
-  if (base) return `${base.replace(/\/$/, '')}/webhook/standard/gsms`;
+  if (base) return `${base.replace(/\/$/, '')}/webhook/gsms/standard`;
 
   return null;
 }

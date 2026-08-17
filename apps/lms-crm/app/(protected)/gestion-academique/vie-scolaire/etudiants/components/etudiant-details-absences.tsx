@@ -68,11 +68,11 @@ export function EtudiantDetailsAbsences({ Etudiant }: EtudiantDetailsAbsencesPro
   const getStatusProps = (status: string) => {
     switch (status.toUpperCase()) {
       case 'APPROVED':
-        return { label: 'ApprouvÃ©', variant: 'success', icon: CheckCircle2 };
+        return { label: 'Approuvé', variant: 'success', icon: CheckCircle2 };
       case 'PENDING':
         return { label: 'En attente', variant: 'warning', icon: Timer };
       case 'REJECTED':
-        return { label: 'RefusÃ©', variant: 'destructive', icon: XCircle };
+        return { label: 'Refusé', variant: 'destructive', icon: XCircle };
       default:
         return { label: status, variant: 'outline', icon: AlertCircle };
     }
@@ -88,7 +88,7 @@ export function EtudiantDetailsAbsences({ Etudiant }: EtudiantDetailsAbsencesPro
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
         <Card className="shadow-none border-border/60 bg-muted/30">
           <CardContent className="p-4 flex flex-col items-center justify-center text-center">
             <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Total Absences</span>
@@ -97,7 +97,7 @@ export function EtudiantDetailsAbsences({ Etudiant }: EtudiantDetailsAbsencesPro
         </Card>
         <Card className="shadow-none border-border/60 bg-muted/30">
           <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Jours cumulÃ©s</span>
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">Jours cumulés</span>
             <span className="text-2xl font-bold text-foreground">
               {absences.reduce((acc, curr) => acc + (curr.status === 'APPROVED' ? (Number(curr.duration) || 0) : 0), 0)}
             </span>
@@ -124,7 +124,7 @@ export function EtudiantDetailsAbsences({ Etudiant }: EtudiantDetailsAbsencesPro
           {absences.length === 0 ? (
             <div className="py-12 flex flex-col items-center justify-center text-muted-foreground bg-card">
               <Calendar className="size-10 mb-3 opacity-20" />
-              <p className="text-sm font-medium">Aucune absence enregistrÃ©e</p>
+              <p className="text-sm font-medium">Aucune absence enregistrée</p>
             </div>
           ) : (
             <div className="divide-y divide-border">

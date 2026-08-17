@@ -5,10 +5,9 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const content = fs.readFileSync(path.join(root, 'config/menu.config.tsx'), 'utf8');
-const block = content.slice(
-  content.indexOf('export const MENU_SIDEBAR'),
-  content.indexOf('export const MENU_SIDEBAR_CUSTOM'),
-);
+const start = content.indexOf('export const MENU_SIDEBAR');
+const nextExport = content.indexOf('export const', start + 1);
+const block = content.slice(start, nextExport === -1 ? content.length : nextExport);
 
 const re = /title: '([^']*)'[\s\S]*?path: '([^']+)'/g;
 const fr = {};
@@ -17,6 +16,8 @@ while ((m = re.exec(block))) {
   fr[m[2].replace(/^\//, '').replace(/\//g, '.')] = m[1];
 }
 fr['support-qualite.support.base-aide'] = 'Base aide';
+fr['securite-configuration.gouvernance-donnees.storage'] = 'Coffre documentaire';
+fr['securite-configuration.gouvernance-donnees.storage-conformite'] = 'Coffre documentaire';
 
 const enMap = {
   Accueil: 'Home',
@@ -45,6 +46,8 @@ const enMap = {
   Examens: 'Exams',
   Certifications: 'Certifications',
   'Contenu e-formation': 'E-learning content',
+  'Suivi formations': 'Training follow-up',
+  'Coffre documentaire': 'Storage',
   'Admin facturation': 'Admin billing',
   Finance: 'Finance',
   Budget: 'Budget',
@@ -55,6 +58,8 @@ const enMap = {
   'Communication contenu': 'Communication content',
   CMS: 'CMS',
   'Pages landing': 'Landing pages',
+  'Équipe landing': 'Landing team',
+  'Catalogue vitrine': 'Showcase catalog',
   Contenus: 'Content',
   Marketing: 'Marketing',
   'Formulaires leads': 'Lead forms',

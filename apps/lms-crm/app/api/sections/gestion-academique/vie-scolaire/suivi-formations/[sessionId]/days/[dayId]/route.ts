@@ -8,6 +8,9 @@ import {
   isoDateOnly,
   summarizeDaySlots,
 } from '@/lib/suivi-formations/session-days';
+import { resolveFormationSessionLocation } from '@/lib/suivi-formations/session-location';
+import { summarizeSlotDocumentsForDay } from '@/lib/suivi-formations/session-slot-documents';
+import { loadSuiviSessionContext } from '@/lib/suivi-formations/session-suivi-context';
 
 type Ctx = { params: Promise<{ sessionId: string; dayId: string }> };
 
@@ -24,7 +27,16 @@ export async function GET(_request: NextRequest, context: Ctx) {
     }
 
     const participantTotal = await countConfirmedParticipants(sessionId);
-    const slots = await summarizeDaySlots(sessionId, dayId, participantTotal);
+    const [slots, slotDocuments, sessionContext] = await Promise.all([
+      summarizeDaySlots(sessionId, dayId, participantTotal),
+      summarizeSlotDocumentsForDay(sessionId, dayId),
+      loadSuiviSessionContext(sessionId),
+    ]);
+
+    const slotsWithDocuments = slots.map((s) => ({
+      ...s,
+      documents: slotDocuments[s.slot],
+    }));
 
     const marksByKey = new Map<string, (typeof detail.marks)[number]>();
     for (const mark of detail.marks) {
@@ -40,18 +52,46 @@ export async function GET(_request: NextRequest, context: Ctx) {
         p.user.email,
       email: p.user.email,
       avatar: p.user.avatar,
-      morning: marksByKey.get(`${p.id}:MORNING`) ?? null,
-      evening: marksByKey.get(`${p.id}:EVENING`) ?? null,
+      morning: marksByKey.get(`${p.id}:MORNING`)
+        ? {
+            status: marksByKey.get(`${p.id}:MORNING`)!.status,
+            notes: marksByKey.get(`${p.id}:MORNING`)!.notes,
+          }
+        : null,
+      evening: marksByKey.get(`${p.id}:EVENING`)
+        ? {
+            status: marksByKey.get(`${p.id}:EVENING`)!.status,
+            notes: marksByKey.get(`${p.id}:EVENING`)!.notes,
+          }
+        : null,
     }));
+
+    const sessionRow = detail.day.session;
+    const trainerName =
+      sessionRow.trainer?.name?.trim() ||
+      sessionRow.trainer?.email ||
+      'Formateur référent';
+    const locationDisplay = resolveFormationSessionLocation({
+      location: sessionRow.location,
+      venueRoom: sessionRow.venueRoom,
+    });
 
     return ok({
       id: detail.day.id,
       dayDate: isoDateOnly(detail.day.dayDate),
       journalNotesMorning: detail.day.journalNotesMorning,
       journalNotesEvening: detail.day.journalNotesEvening,
-      session: detail.day.session,
+      session: {
+        dateDisplayLabel: sessionRow.dateDisplayLabel,
+        location: locationDisplay,
+        locationDisplay,
+        trainerName,
+        venueRoom: sessionRow.venueRoom,
+        formation: sessionRow.formation,
+      },
+      sessionContext,
       participantTotal,
-      slots,
+      slots: slotsWithDocuments,
       participants,
     });
   } catch (error) {

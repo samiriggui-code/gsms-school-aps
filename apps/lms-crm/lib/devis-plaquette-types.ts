@@ -27,6 +27,13 @@ export type PlaquetteMessageRow = {
   createdAt: string;
 };
 
+export type PlaquetteDevisLine = {
+  label: string;
+  quantity: number;
+  unitPriceHt: number;
+  vatRate: number;
+};
+
 export type PlaquettePayload = {
   devis: {
     id: string;
@@ -39,7 +46,9 @@ export type PlaquettePayload = {
     createdAt: string;
     updatedAt: string;
     subtotalHt: number;
+    vatTotal: number;
     totalTtc: number;
+    lines: PlaquetteDevisLine[];
   };
   lead: {
     firstName: string;

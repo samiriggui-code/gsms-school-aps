@@ -6,6 +6,7 @@ import { GitBranch, LayoutGrid, Network, Users } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { getInitials, getAvatarUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
+import { structurePersonName } from './structure-display';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,12 +15,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 type SchoolService = 'TRAINER_POOL' | 'PEDAGOGICAL' | 'HR_ADMIN' | 'DIRECTION';
 
+export type { SchoolService };
+
 export type OrgChartUser = {
   id: string;
   name?: string | null;
   firstName?: string | null;
   lastName?: string | null;
   email?: string | null;
+  proEmail?: string | null;
   avatar?: string | null;
   status?: string | null;
   role?: { slug?: string | null; name?: string | null } | null;
@@ -73,9 +77,7 @@ const SERVICE_META: Record<
 };
 
 function displayName(u: OrgChartUser): string {
-  const parts = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
-  if (parts) return parts;
-  return (u.name || '').trim() || u.email || '—';
+  return structurePersonName(u);
 }
 
 /** Pôle métier affiché (schéma `SchoolInternalService`, avec repli selon le rôle applicatif). */
@@ -90,12 +92,23 @@ export function effectiveSchoolService(u: OrgChartUser): SchoolService {
   }
   if (cp?.schoolInternalService) return cp.schoolInternalService;
   if (slug === 'collaborateur') return 'PEDAGOGICAL';
+  const job = (u as OrgChartUser & { jobFunction?: string | null }).jobFunction?.toLowerCase() ?? '';
+  if (job.includes('directeur') || job.includes('direction')) return 'DIRECTION';
   return 'HR_ADMIN';
 }
 
 /** Libellé court pour pastille (cartes équipe). */
 export function servicePoleShortLabel(u: OrgChartUser): string {
   return SERVICE_META[effectiveSchoolService(u)].short;
+}
+
+export function schoolServiceLabel(svc: SchoolService): string {
+  return SERVICE_META[svc].label;
+}
+
+/** Libellé affiché quand aucun pôle n'est fixé manuellement en base. */
+export function automaticPoleLabelForUser(u: OrgChartUser): string {
+  return `Automatique — ${schoolServiceLabel(effectiveSchoolService(u))}`;
 }
 
 function computeHierarchy(users: OrgChartUser[]) {

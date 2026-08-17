@@ -82,18 +82,20 @@ export async function POST(request: NextRequest) {
   for (const channel of input.channels) {
     try {
       if (channel === 'email') {
-        const to = resolveOpsEmail();
+        const to = input.emailTo?.trim() || resolveOpsEmail();
         if (!to) {
           result.email = 'skipped';
           continue;
         }
         const href = message.href && crmOrigin ? `${crmOrigin}${message.href}` : message.href;
+        const subject = input.emailSubject?.trim() || `[GSMS] ${message.title}`;
+        const description = input.emailBody?.trim() || message.body;
         await sendEmail({
           to,
-          subject: `[GSMS] ${message.title}`,
+          subject,
           content: {
             title: message.title,
-            description: message.body,
+            description,
             buttonLabel: href ? 'Ouvrir dans le CRM' : undefined,
             buttonUrl: href ?? undefined,
           },

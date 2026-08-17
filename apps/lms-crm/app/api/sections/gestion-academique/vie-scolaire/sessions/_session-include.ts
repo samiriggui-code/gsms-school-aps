@@ -41,4 +41,5 @@ export const formationSessionRelationInclude = {
     include: { user: { select: { id: true, name: true, email: true, avatar: true } } },
   },
   venueRoom: { select: { id: true, name: true, imageUrl: true } },
+  examVenueRoom: { select: { id: true, name: true, imageUrl: true, shortCode: true } },
 } as const;

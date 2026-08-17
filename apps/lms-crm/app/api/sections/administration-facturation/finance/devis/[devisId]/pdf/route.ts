@@ -9,18 +9,38 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 
 type Ctx = { params: Promise<{ devisId: string }> };
 
-/** Aperçu HTML ou archivage PDF devis (MinIO + FileAsset). */
-export async function GET(_request: NextRequest, context: Ctx) {
+function requestOrigin(request: NextRequest): string | undefined {
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  const proto = request.headers.get('x-forwarded-proto') ?? 'http';
+  if (!host) return undefined;
+  return `${proto}://${host}`;
+}
+
+/** Aperçu HTML brandé ou PDF binaire (?format=pdf). */
+export async function GET(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return new NextResponse('Unauthorized', { status: 401 });
 
   const { devisId } = await context.params;
+  const format = request.nextUrl.searchParams.get('format');
 
   try {
     const row = await loadFinanceDevisPdfRow(devisId);
     if (!row) return new NextResponse('Devis introuvable', { status: 404 });
 
-    const html = buildFinanceDevisHtml(row, 'devis');
+    if (format === 'pdf') {
+      const { buffer, filename } = await buildFinanceDevisPdfBuffer(row, 'devis');
+      return new NextResponse(new Uint8Array(buffer), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `inline; filename="${filename}"`,
+        },
+      });
+    }
+
+    const origin = requestOrigin(request);
+    const html = await buildFinanceDevisHtml(row, 'devis', origin);
 
     return new NextResponse(html, {
       status: 200,

@@ -120,13 +120,81 @@ export function allowedModuleKeyPrefixes(
     .map(([prefix]) => prefix);
 }
 
-/** Filtre applicatif selon permissions module CRM. */
 export function filterNotificationItemsByModulePermission<
-  T extends { moduleKey?: string | null },
+  T extends { moduleKey?: string | null; eventType?: string | null },
 >(items: T[], permissionSlugs: ReadonlySet<string> | string[] | null | undefined): T[] {
   return items.filter((item) =>
-    canViewModuleNotifications(item.moduleKey ?? null, permissionSlugs ?? []),
+    canViewNotificationRow(item.moduleKey ?? null, item.eventType ?? null, permissionSlugs ?? []),
   );
+}
+
+/** Notifications nominatives (équipe, chat) toujours visibles pour le destinataire. */
+const PERSONAL_NOTIFICATION_EVENTS = new Set([
+  'rh.team.member_added',
+  'chat.invitation',
+  'report.completed',
+  'report.failed',
+]);
+
+export function canViewNotificationRow(
+  moduleKey: string | null | undefined,
+  eventType: string | null | undefined,
+  permissionSlugs: ReadonlySet<string> | string[],
+): boolean {
+  if (eventType && PERSONAL_NOTIFICATION_EVENTS.has(eventType)) return true;
+  return canViewModuleNotifications(moduleKey, permissionSlugs);
+}
+
+export function moduleKeyFromNotificationMetadata(metadata: unknown): string | null {
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return null;
+  const mk = (metadata as Record<string, unknown>).moduleKey;
+  return typeof mk === 'string' ? mk : null;
+}
+
+export function eventTypeFromNotificationMetadata(metadata: unknown): string | null {
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) return null;
+  const et = (metadata as Record<string, unknown>).eventType;
+  return typeof et === 'string' ? et : null;
+}
+
+/** Filtre Prisma — cloisonnement modules CRM (lecture). */
+export function buildModulePermissionWhere(
+  scope: NotificationsScope,
+  permissionSlugs: ReadonlySet<string> | string[] | null | undefined,
+): Prisma.InAppNotificationWhereInput {
+  if (scope !== 'crm-user') return {};
+
+  const slugs = permissionSlugs instanceof Set ? permissionSlugs : new Set(permissionSlugs ?? []);
+  if (slugs.has('settings.manage')) return {};
+
+  const prefixes = allowedModuleKeyPrefixes(slugs);
+  const allPrefixes = Object.keys(NOTIFICATION_MODULE_PERMISSIONS);
+  if (prefixes.length >= allPrefixes.length) return {};
+  if (prefixes.length === 0) {
+    return {
+      OR: PERSONAL_NOTIFICATION_EVENTS.size
+        ? [...PERSONAL_NOTIFICATION_EVENTS].map((eventType) => ({
+            metadata: { path: ['eventType'], equals: eventType },
+          }))
+        : [{ id: { in: [] as string[] } }],
+    };
+  }
+
+  const or: Prisma.InAppNotificationWhereInput[] = [];
+  for (const prefix of prefixes) {
+    or.push({ metadata: { path: ['moduleKey'], equals: prefix } });
+    or.push({ metadata: { path: ['moduleKey'], string_starts_with: `${prefix}.` } });
+  }
+
+  for (const eventType of PERSONAL_NOTIFICATION_EVENTS) {
+    or.push({ metadata: { path: ['eventType'], equals: eventType } });
+  }
+
+  if (slugs.has('crm.dashboard.view')) {
+    or.push({ category: 'SYSTEM' });
+  }
+
+  return { OR: or };
 }
 
 export { NOTIFICATION_MODULE_PERMISSIONS, canViewModuleNotifications };

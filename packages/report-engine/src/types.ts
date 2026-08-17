@@ -1,5 +1,5 @@
 /** Période standard des rapports (alignée pilotage + date picker UI). */
-export type ReportPeriod = 'day' | 'week' | 'month' | 'year' | 'custom';
+export type ReportPeriod = 'day' | 'week' | 'month' | 'quarter' | 'year' | 'custom';
 
 export type ReportOutputFormat = 'PDF' | 'EXCEL' | 'CSV';
 

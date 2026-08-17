@@ -34,6 +34,8 @@ import { FormationSessionVenueRoomSummary } from '@/app/(protected)/gestion-acad
 import { FormationSessionTrainerSummary } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-trainer-summary';
 import { FormationSessionDetailEquipmentGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-detail-equipment-grid';
 import { FormationSessionDetailParticipantsGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-detail-participants-grid';
+import { SessionCircuitTriggerButton } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-circuit-trigger-button';
+import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/lib/utils';
 
 export interface FormationSessionSheetCustomerProps {
@@ -52,6 +54,7 @@ export function FormationSessionSheetCustomer({
   onEditClick,
   onSessionRefreshed,
 }: FormationSessionSheetCustomerProps) {
+  const { t } = useTranslation();
   const row = session;
 
   const title =
@@ -230,7 +233,7 @@ export function FormationSessionSheetCustomer({
                             <div className="flex items-center gap-2">
                               <Package className="size-4 text-muted-foreground" aria-hidden />
                               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                Équipements réservés
+                                {t('vieScolaire.sessions.reservedEquipment')}
                               </p>
                             </div>
                             <FormationSessionDetailEquipmentGrid
@@ -244,9 +247,20 @@ export function FormationSessionSheetCustomer({
                       </TabsContent>
 
                       <TabsContent value="students" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-                        <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                          <Users className="size-4 shrink-0" aria-hidden />
-                          Élèves inscrits ({row.participants.length})
+                        <div className="mb-3 space-y-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                              <Users className="size-4 shrink-0" aria-hidden />
+                              {t('vieScolaire.sessions.enrolledStudents')} ({row.participants.length})
+                            </div>
+                            <SessionCircuitTriggerButton
+                              sessionId={row.id}
+                              participantCount={row.participants.length}
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {t('vieScolaire.sessions.triggerCircuitHint')}
+                          </p>
                         </div>
                         <FormationSessionDetailParticipantsGrid participants={row.participants} />
                       </TabsContent>
@@ -265,12 +279,12 @@ export function FormationSessionSheetCustomer({
           )}
         >
           <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-            Fermer
+            {t('vieScolaire.common.close')}
           </Button>
           {row && onEditClick ? (
             <Button type="button" variant="primary" className="gap-2" onClick={onEditClick}>
               <Pencil className="size-4" />
-              Modifier
+              {t('vieScolaire.common.edit')}
             </Button>
           ) : null}
         </SheetFooter>

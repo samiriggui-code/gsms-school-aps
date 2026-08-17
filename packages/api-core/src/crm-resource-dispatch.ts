@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@repo/database';
 import { CRM_MODULE_KEYS, CrmEventService, type CrmEventSeverity } from './crm-events';
 import { sendCrmResourceEventEmails } from './crm-event-emails';
+import { emitWorkflowBridge } from './workflows/workflow-bridge';
 
 export type DispatchCrmResourceEventInput = {
   eventType: string;
@@ -51,4 +52,17 @@ export async function dispatchCrmResourceEvent(
       });
     }
   }
+
+  void emitWorkflowBridge(
+    prisma,
+    input.eventType,
+    {
+      ...(input.payload ?? {}),
+      title: input.title,
+      body: input.body,
+      href: input.href ?? null,
+      eventType: input.eventType,
+    },
+    { dedupeKey: input.dedupeKey ? `n8n:${input.dedupeKey}` : undefined },
+  );
 }

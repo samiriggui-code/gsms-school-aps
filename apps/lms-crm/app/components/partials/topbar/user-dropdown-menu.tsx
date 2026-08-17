@@ -30,7 +30,7 @@ export function UserDropdownMenu({ trigger }: { trigger: ReactNode }) {
   const currentUserId = session?.user?.id;
   const profileSecuriteHref = currentUserId
     ? `/securite-configuration/acces/users/${currentUserId}`
-    : '/securite-configuration/acces/user-profile';
+    : '/mon-profil';
 
   const mailto = session?.user?.email ? `mailto:${session.user.email}` : undefined;
 

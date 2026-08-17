@@ -2,6 +2,13 @@ import { NextRequest } from 'next/server';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { requireNotificationsSession } from '@/app/api/_shared/topbar-auth';
+import {
+  canViewNotificationRow,
+  eventTypeFromNotificationMetadata,
+  moduleKeyFromNotificationMetadata,
+  resolveNotificationsScope,
+  scopeNotificationChannels,
+} from '@/lib/notifications-scope';
 
 type RouteParams = { params: Promise<{ id: string }> };
 
@@ -25,6 +32,21 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   if (!existing) {
     return fail('Notification introuvable', 404);
+  }
+
+  const scope = resolveNotificationsScope(auth.session.user?.roleSlug, null);
+  const allowedChannels = scopeNotificationChannels(scope);
+  if (!allowedChannels.includes(existing.channel)) {
+    return fail('Notification hors périmètre.', 403);
+  }
+
+  const moduleKey = moduleKeyFromNotificationMetadata(existing.metadata);
+  const eventType = eventTypeFromNotificationMetadata(existing.metadata);
+  if (
+    scope === 'crm-user' &&
+    !canViewNotificationRow(moduleKey, eventType, auth.session.user?.permissionSlugs ?? [])
+  ) {
+    return fail('Accès à cette notification non autorisé.', 403);
   }
 
   const replyText = typeof body.reply === 'string' ? body.reply.trim() : '';

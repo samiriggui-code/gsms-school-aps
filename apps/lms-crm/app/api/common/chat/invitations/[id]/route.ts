@@ -1,13 +1,13 @@
 import { NextRequest } from 'next/server';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { requireSessionUserId } from '@/app/api/_shared/topbar-auth';
+import { requireChatSession } from '@/lib/chat-scope';
 import { prisma } from '@/lib/prisma';
 
 type Params = { params: Promise<{ id: string }> };
 
 /** Accepter ou refuser une invitation chat. */
 export async function PATCH(request: NextRequest, { params }: Params) {
-  const auth = await requireSessionUserId();
+  const auth = await requireChatSession();
   if ('error' in auth) return auth.error;
 
   const { id } = await params;

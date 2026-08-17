@@ -20,6 +20,7 @@ export const SESSION_DOCUMENT_CATEGORY_LABELS: Record<SessionDocumentStorageCate
   emargement: 'Feuilles d’émargement (PDF)',
   'suivi-quotidien': 'Suivi quotidien matin / soir',
   conformite: 'Exports financeurs (CPF, France Travail…)',
+  examen: 'Documents examen (convocations, jury…)',
   archives: 'Archives légales (copies figées)',
 };
 
@@ -32,6 +33,7 @@ export const SESSION_DOCUMENT_CATEGORY_VISIBILITY: Record<
   emargement: 'internal',
   'suivi-quotidien': 'internal',
   conformite: 'internal',
+  examen: 'internal',
   archives: 'private',
 };
 

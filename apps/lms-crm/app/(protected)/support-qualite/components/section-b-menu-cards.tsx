@@ -1,6 +1,6 @@
 'use client';
 
-import { LifeBuoy, ShieldCheck } from 'lucide-react';
+import { LifeBuoy } from 'lucide-react';
 import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
 const items = [
@@ -10,17 +10,8 @@ const items = [
     descriptionKey: 'sections.supportQualite.cards.support',
     icon: LifeBuoy,
     backgroundImage: 'bg-3',
-    subSections: ['tickets', 'base-aide'],
+    subSections: ['tickets', 'incidents'],
     tone: 'cyan' as const,
-  },
-  {
-    moduleKey: 'support-qualite-qualite',
-    path: '/support-qualite/qualite',
-    descriptionKey: 'sections.supportQualite.cards.qualite',
-    icon: ShieldCheck,
-    backgroundImage: 'bg-3',
-    subSections: ['incidents'],
-    tone: 'orange' as const,
   },
 ];
 

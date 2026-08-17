@@ -9,6 +9,8 @@ import { isPlaquettePublicLinkConfigured, signPlaquettePublicToken } from '@/lib
 import { absolutePublicPlaquetteUrl } from '@/lib/devis-plaquette-public-url';
 import { renderDevisQuoteEmailHtml } from '@/lib/render-devis-quote-email';
 import { createWorkflowEngine } from '@repo/api-core';
+import { resolveDevisClientContact } from '@/lib/finance/resolve-devis-client-contact';
+import { createPlaquetteMessageRow } from '@/lib/devis-plaquette-messages-query';
 
 type Ctx = { params: Promise<{ devisId: string }> };
 
@@ -25,7 +27,7 @@ function moneyFr(value: number, currency: string): string {
 
 type Body = { message?: string };
 
-/** Envoie le récapitulatif du devis par e-mail au contact lead et passe le statut à SENT. */
+/** Envoie le récapitulatif du devis par e-mail (plaquette + PDF) et passe le statut à SENT si brouillon. */
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
@@ -45,11 +47,25 @@ export async function POST(request: NextRequest, context: Ctx) {
     const row = await prisma.financeDevis.findUnique({
       where: { id: devisId },
       include: {
-        lead: { select: { email: true, firstName: true, lastName: true } },
+        lead: { select: { email: true, firstName: true, lastName: true, phone: true } },
       },
     });
     if (!row) return fail('Devis introuvable.', 404);
-    if (!row.lead?.email) return fail('Aucun e-mail lead associé à ce devis.', 400);
+
+    if (row.status !== FinanceDevisStatus.DRAFT && row.status !== FinanceDevisStatus.SENT) {
+      return fail('Seuls les devis en brouillon ou déjà envoyés peuvent faire l’objet d’un envoi e-mail.', 409);
+    }
+
+    const contact = resolveDevisClientContact({
+      lead: row.lead,
+      clientSnapshot: row.clientSnapshot,
+    });
+    if (!contact.email) {
+      return fail(
+        'Aucun e-mail destinataire : renseignez le contact lead ou l’e-mail dans le contexte client du devis.',
+        400,
+      );
+    }
 
     const lines = Array.isArray(row.lines) ? (row.lines as Record<string, unknown>[]) : [];
     const lineRows = lines.map((l) => {
@@ -68,13 +84,16 @@ export async function POST(request: NextRequest, context: Ctx) {
     });
 
     let plaquetteUrl: string | null = null;
+    let plaquettePdfUrl: string | null = null;
     if (row.formationId && isPlaquettePublicLinkConfigured()) {
       try {
         const exp = Date.now() + 60 * 86400000;
         const token = signPlaquettePublicToken(devisId, exp);
         plaquetteUrl = absolutePublicPlaquetteUrl(request, devisId, token);
+        plaquettePdfUrl = `${plaquetteUrl}&print=1`;
       } catch {
         plaquetteUrl = null;
+        plaquettePdfUrl = null;
       }
     }
 
@@ -84,25 +103,49 @@ export async function POST(request: NextRequest, context: Ctx) {
     ensureEmailAssetsOrigin(process.env.NEXT_PUBLIC_SITE_URL);
 
     const html = await renderDevisQuoteEmailHtml({
-      firstName: row.lead.firstName,
-      lastName: row.lead.lastName,
+      firstName: contact.firstName || 'Madame, Monsieur',
+      lastName: contact.lastName,
       introLines,
       referenceCode: row.referenceCode,
       title: row.title,
       lines: lineRows,
       totalTtc: moneyFr(decimalNum(row.totalTtc), row.currency),
       plaquetteUrl,
+      plaquettePdfUrl,
     });
 
     await sendEmail({
-      to: row.lead.email,
+      to: contact.email,
       subject: `Votre devis ${row.referenceCode}`,
       html,
     });
 
-    await prisma.financeDevis.update({
-      where: { id: devisId },
-      data: { status: FinanceDevisStatus.SENT },
+    const wasDraft = row.status === FinanceDevisStatus.DRAFT;
+    if (wasDraft) {
+      await prisma.financeDevis.update({
+        where: { id: devisId },
+        data: { status: FinanceDevisStatus.SENT },
+      });
+    }
+
+    const staffLabel =
+      typeof session.user?.name === 'string' && session.user.name.trim()
+        ? session.user.name.trim()
+        : 'Équipe commerciale';
+
+    const messageBody = [
+      `Devis ${row.referenceCode} envoyé par e-mail à ${contact.email}.`,
+      plaquetteUrl ? 'Lien page client (plaquette + messagerie) inclus dans l’e-mail.' : 'Pas de lien plaquette (formation non liée ou secret non configuré).',
+      intro ? `Message d’accompagnement : ${intro}` : null,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    await createPlaquetteMessageRow({
+      devisId,
+      authorKind: 'STAFF',
+      authorLabel: staffLabel,
+      body: messageBody,
     });
 
     try {
@@ -112,7 +155,7 @@ export async function POST(request: NextRequest, context: Ctx) {
         {
           devisId,
           referenceCode: row.referenceCode,
-          leadEmail: row.lead.email,
+          leadEmail: contact.email,
         },
         { dedupeKey: `workflow:devis-sent:${devisId}` },
       );
@@ -120,9 +163,16 @@ export async function POST(request: NextRequest, context: Ctx) {
       console.error('[finance-devis send] workflow', e);
     }
 
-    return ok({ sent: true, status: FinanceDevisStatus.SENT });
+    return ok({
+      sent: true,
+      status: wasDraft ? FinanceDevisStatus.SENT : row.status,
+      recipientEmail: contact.email,
+      plaquetteUrl,
+      plaquettePdfUrl,
+      resent: !wasDraft,
+    });
   } catch (e) {
     console.error('[finance-devis send]', e);
-    return fail("Envoi impossible.", 500, e);
+    return fail('Envoi impossible.', 500, e);
   }
 }

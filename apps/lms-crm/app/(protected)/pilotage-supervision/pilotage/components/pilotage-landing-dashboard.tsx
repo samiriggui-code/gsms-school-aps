@@ -40,6 +40,7 @@ const ACTIVITY_PERIODS: { key: PilotagePeriod; label: string }[] = [
   { key: 'day', label: 'Jour' },
   { key: 'week', label: 'Semaine' },
   { key: 'month', label: 'Mois' },
+  { key: 'quarter', label: 'Trimestre' },
   { key: 'year', label: 'Année' },
 ];
 

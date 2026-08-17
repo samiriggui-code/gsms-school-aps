@@ -66,18 +66,18 @@ export function DevisStats({ variant = 'row' }: DevisStatsProps) {
       },
       {
         icon: Banknote,
-        title: 'Pipeline TTC',
+        title: 'Montant en cours',
         value: fmt(pipelineTtc),
-        subtitle: 'Brouillons + envoyés',
+        subtitle: 'Somme TTC des brouillons + devis envoyés (pas encore acceptés)',
       },
       {
         icon: Calculator,
-        title: 'Panier moyen TTC',
+        title: 'Panier moyen',
         value: dansPipeline > 0 ? fmt(panierMoyen) : '—',
         subtitle:
           dansPipeline > 0
-            ? `Sur ${dansPipeline} devis dans le pipeline`
-            : 'Aucun devis brouillon ou envoyé',
+            ? `Moyenne sur ${dansPipeline} devis ouverts`
+            : 'Créez ou ouvrez un devis pour démarrer',
       },
     ];
   }, [data]);

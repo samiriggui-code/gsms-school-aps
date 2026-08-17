@@ -28,6 +28,8 @@ export type FinanceDevisRow = {
     phone: string | null;
   } | null;
   formation: { id: string; name: string; slug: string } | null;
+  /** Messages échangés via la plaquette publique (client + RH). */
+  plaquetteMessageCount: number;
 };
 
 export type FinanceDevisListStats = {

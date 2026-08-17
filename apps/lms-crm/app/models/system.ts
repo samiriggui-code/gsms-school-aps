@@ -55,4 +55,7 @@ export interface SystemSetting {
   notifySystemErrorFailureEmail: boolean;
   notifySystemErrorWeb: boolean;
   notifySystemErrorRoleIds: string[];
+
+  /** Métadonnées JSON dossier administratif (pièces réglementaires). */
+  administrativeDossier?: Record<string, unknown> | null;
 }

@@ -9,6 +9,7 @@ import type { InstructorDashboardPayload } from '@/lib/instructor/instructor-typ
 import { instructorDashboardKpis } from '@/lib/instructor/instructor-kpi-stats';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
+import { useDashboardLayout } from '@/hooks/use-dashboard-layout';
 import { InstructorDashboardAlerts } from './instructor-dashboard-alerts';
 import { InstructorDashboardHighlights } from './instructor-dashboard-highlights';
 import { InstructorDashboardOverviewTable } from './instructor-dashboard-overview-table';
@@ -17,6 +18,7 @@ import { InstructorSessionsDonut } from './instructor-sessions-donut';
 import { InstructorWelcomeCallout } from './instructor-welcome-callout';
 
 export function InstructorDashboard() {
+  const { isVisible } = useDashboardLayout('formateur-dashboard');
   const [data, setData] = useState<
     (InstructorDashboardPayload & { user?: { name: string | null } }) | null
   >(null);
@@ -80,36 +82,50 @@ export function InstructorDashboard() {
       <div className="space-y-5 lg:space-y-7.5">
         <ModuleKpiStatsRow items={instructorDashboardKpis(stats)} />
 
-        <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          <div className="min-w-0 lg:col-span-1">
-            <InstructorDashboardHighlights highlights={highlights} />
+        {(isVisible('sessions')) && (
+          <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            <div className="min-w-0 lg:col-span-1">
+              <InstructorDashboardHighlights highlights={highlights} />
+            </div>
+            <div className="min-w-0 lg:col-span-2">
+              <InstructorWelcomeCallout
+                displayName={displayName}
+                stats={stats}
+                nextSession={nextSession}
+              />
+            </div>
           </div>
-          <div className="min-w-0 lg:col-span-2">
-            <InstructorWelcomeCallout
-              displayName={displayName}
-              stats={stats}
-              nextSession={nextSession}
-            />
-          </div>
-        </div>
+        )}
 
-        <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          <div className="min-w-0 lg:col-span-1">
-            <InstructorSessionsDonut slices={sessionSlices} />
+        {(isVisible('sessions') || isVisible('tasks')) && (
+          <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {isVisible('sessions') && (
+              <div className="min-w-0 lg:col-span-1">
+                <InstructorSessionsDonut slices={sessionSlices} />
+              </div>
+            )}
+            {isVisible('tasks') && (
+              <div className={isVisible('sessions') ? 'min-w-0 lg:col-span-2' : 'min-w-0 lg:col-span-3'}>
+                <InstructorDashboardActivityChart activity={activity} />
+              </div>
+            )}
           </div>
-          <div className="min-w-0 lg:col-span-2">
-            <InstructorDashboardActivityChart activity={activity} />
-          </div>
-        </div>
+        )}
 
-        <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          <div className="min-w-0 lg:col-span-1">
-            <InstructorDashboardAlerts alerts={alerts} />
+        {(isVisible('tasks') || isVisible('learners')) && (
+          <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {isVisible('tasks') && (
+              <div className="min-w-0 lg:col-span-1">
+                <InstructorDashboardAlerts alerts={alerts} />
+              </div>
+            )}
+            {isVisible('learners') && (
+              <div className={isVisible('tasks') ? 'min-w-0 lg:col-span-2' : 'min-w-0 lg:col-span-3'}>
+                <InstructorDashboardOverviewTable overview={overview} />
+              </div>
+            )}
           </div>
-          <div className="min-w-0 lg:col-span-2">
-            <InstructorDashboardOverviewTable overview={overview} />
-          </div>
-        </div>
+        )}
       </div>
     </PortalPageShell>
   );

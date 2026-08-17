@@ -1,5 +1,14 @@
 'use client';
 
+import {
+  ReportCallout,
+  ReportDataTable,
+  ReportKpiGrid,
+  ReportPageBreak,
+  ReportSection,
+  ReportStatusPill,
+} from '@/components/reports/report-ui-primitives';
+
 export type GrConformiteReportData = {
   kpis: { label: string; value: string | number; subtitle: string }[];
   criticalRows: {
@@ -19,74 +28,61 @@ export type GrConformiteReportData = {
 
 export function PilotageGrConformiteReport({ data }: { data: GrConformiteReportData }) {
   return (
-    <div className="space-y-8">
-      <section>
-        <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">Synthèse</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {data.kpis.map((kpi) => (
-            <div key={kpi.label} className="rounded-lg border border-slate-200 bg-white p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{kpi.label}</p>
-              <p className="mt-1 text-2xl font-bold tabular-nums text-slate-900">{kpi.value}</p>
-              <p className="text-xs text-slate-500">{kpi.subtitle}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+    <div className="space-y-10">
+      <ReportCallout title="Registre de conformité RH" tone="warning">
+        Document destiné aux audits internes, contrôles URSSAF/CNAPS et dossiers financeurs exigeant la
+        traçabilité des habilitations du personnel formateur et encadrant.
+      </ReportCallout>
 
-      <section>
-        <h3 className="mb-3 text-sm font-semibold text-slate-800">Échéances critiques (&lt; 7 jours)</h3>
-        <table className="w-full border-collapse text-xs">
-          <thead>
-            <tr className="border-b border-slate-200 text-left text-slate-500">
-              <th className="py-2 pe-2">Collaborateur</th>
-              <th className="py-2 pe-2">Fonction</th>
-              <th className="py-2 pe-2">Carte pro</th>
-              <th className="py-2">Titre séjour</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.criticalRows.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="py-4 text-slate-500">
-                  Aucune échéance critique sur la période.
-                </td>
-              </tr>
-            ) : (
-              data.criticalRows.map((row) => (
-                <tr key={row.email} className="border-b border-slate-100">
-                  <td className="py-2 pe-2 font-medium text-slate-900">{row.name}</td>
-                  <td className="py-2 pe-2">{row.function}</td>
-                  <td className="py-2 pe-2">{row.carteProExpiry}</td>
-                  <td className="py-2">{row.permitExpiry}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </section>
+      <ReportSection title="Synthèse des échéances">
+        <ReportKpiGrid items={data.kpis} columns={4} />
+      </ReportSection>
+
+      <ReportSection
+        title="Registre critique — échéances &lt; 7 jours"
+        description="Collaborateurs nécessitant une action immédiate."
+        breakable
+      >
+        <ReportDataTable
+          rows={data.criticalRows.map((r, i) => ({ ...r, id: String(i) }))}
+          emptyLabel="Aucune échéance critique — parc conforme sur ce seuil."
+          columns={[
+            { key: 'name', header: 'Collaborateur', cell: (r) => r.name },
+            { key: 'function', header: 'Fonction', cell: (r) => r.function },
+            { key: 'carteProExpiry', header: 'Carte pro', cell: (r) => r.carteProExpiry },
+            { key: 'permitExpiry', header: 'Titre séjour', cell: (r) => r.permitExpiry },
+            {
+              key: 'status',
+              header: 'Priorité',
+              cell: () => <ReportStatusPill label="Critique" tone="alert" />,
+            },
+          ]}
+        />
+      </ReportSection>
 
       {data.soonRows.length > 0 ? (
-        <section>
-          <h3 className="mb-3 text-sm font-semibold text-slate-800">Échéances à 30 jours</h3>
-          <table className="w-full border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-slate-200 text-left text-slate-500">
-                <th className="py-2 pe-2">Collaborateur</th>
-                <th className="py-2 pe-2">Carte pro</th>
-                <th className="py-2">Titre séjour</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.soonRows.map((row) => (
-                <tr key={row.email} className="border-b border-slate-100">
-                  <td className="py-2 pe-2 font-medium text-slate-900">{row.name}</td>
-                  <td className="py-2 pe-2">{row.carteProExpiry}</td>
-                  <td className="py-2">{row.permitExpiry}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        <>
+          <ReportPageBreak />
+          <ReportSection
+            title="Échéances à 30 jours"
+            description="Planifier les renouvellements avant blocage affectation session."
+            breakable
+          >
+            <ReportDataTable
+              rows={data.soonRows.map((r, i) => ({ ...r, id: String(i) }))}
+              columns={[
+                { key: 'name', header: 'Collaborateur', cell: (r) => r.name },
+                { key: 'carteProExpiry', header: 'Carte pro', cell: (r) => r.carteProExpiry },
+                { key: 'permitExpiry', header: 'Titre séjour', cell: (r) => r.permitExpiry },
+                {
+                  key: 'status',
+                  header: 'Priorité',
+                  cell: () => <ReportStatusPill label="À planifier" tone="review" />,
+                },
+              ]}
+            />
+          </ReportSection>
+        </>
       ) : null}
     </div>
   );

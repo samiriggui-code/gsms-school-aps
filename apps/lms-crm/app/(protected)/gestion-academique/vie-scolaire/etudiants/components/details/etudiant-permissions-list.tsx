@@ -38,8 +38,8 @@ export function EtudiantPermissionsList({ Etudiant }: { Etudiant: Etudiant }) {
                 <Info className="size-5 text-muted-foreground" />
               </div>
               <p className="text-sm font-medium text-foreground">Aucune permission directe</p>
-              <p className="text-xs text-muted-foreground max-w-[200px] mt-1">
-                Ce Etudiant n'a aucune permission spÃ©cifique associÃ©e Ã  son rÃ´le actuel.
+              <p className="text-xs text-muted-foreground max-w-[280px] mt-1">
+                Ce candidat n&apos;a aucune permission spécifique associée à son rôle actuel.
               </p>
             </div>
           )}

@@ -20,6 +20,7 @@ import { DataGridPagination } from '@/components/ui/data-grid-pagination';
 import { DataGridTable } from '@/components/ui/data-grid-table';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
+  createModuleLandingPagination,
   USER_MANAGEMENT_TABLE_CLASSNAMES,
   USER_MANAGEMENT_TABLE_LAYOUT,
 } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
@@ -46,10 +47,17 @@ export type CatalogUnitRow = {
   assignedSite?: { name?: string | null } | null;
   avatar?: string | null;
   metadata?: unknown;
+  dispatch?: {
+    location: string;
+    roomName?: string | null;
+    sessionIds?: string[];
+  };
+  roomAssignment?: { roomId: string; roomName: string; quantity: number } | null;
 };
 
 type InventaireCatalogUnitsTableProps = {
   catalogLabel: string;
+  catalogKey?: string;
   filterStatus?: EquipmentStatus | EquipmentStatus[];
   emptyMessage?: string;
   onOpenUnit: (unit: CatalogUnitRow) => void;
@@ -58,24 +66,23 @@ type InventaireCatalogUnitsTableProps = {
 
 export function InventaireCatalogUnitsTable({
   catalogLabel,
+  catalogKey,
   filterStatus,
   emptyMessage = 'Aucune unité pour cette catégorie.',
   onOpenUnit,
   onEditUnit,
 }: InventaireCatalogUnitsTableProps) {
   const { t } = useTranslation();
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['equipment-catalog-units', catalogLabel],
+    queryKey: ['equipment-catalog-units', catalogKey ?? catalogLabel],
     queryFn: async () => {
       const params = new URLSearchParams({
         mode: 'catalog-units',
         label: catalogLabel,
       });
+      if (catalogKey) params.set('catalogKey', catalogKey);
       const response = await apiFetch(
         `/api/sections/gestion-ressources/equipements/inventaire?${params.toString()}`,
       );
@@ -151,6 +158,36 @@ export function InventaireCatalogUnitsTable({
           );
         },
         size: 140,
+      },
+      {
+        id: 'dispatch',
+        header: ({ column }) => <DataGridColumnHeader title="Dispatch" column={column} />,
+        cell: ({ row }) => {
+          const d = row.original.dispatch;
+          const room = row.original.roomAssignment?.roomName ?? d?.roomName;
+          if (d?.location === 'ROOM_FIXED' && room) {
+            return (
+              <Badge variant="outline" className="text-[9px] font-semibold">
+                Salle · {room}
+              </Badge>
+            );
+          }
+          if (d?.location === 'SESSION_RESERVED') {
+            return (
+              <Badge variant="outline" className="text-[9px] font-semibold text-sky-700">
+                Session ({d.sessionIds?.length ?? 0})
+              </Badge>
+            );
+          }
+          if (d?.location === 'MAINTENANCE') {
+            return <span className="text-xs text-amber-700">Maintenance</span>;
+          }
+          if (d?.location === 'AVAILABLE') {
+            return <span className="text-xs text-emerald-700">Stock global</span>;
+          }
+          return <span className="text-xs text-muted-foreground">—</span>;
+        },
+        size: 160,
       },
       {
         accessorKey: 'type',

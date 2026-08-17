@@ -56,6 +56,8 @@ import { PortalProfileCard } from '@/components/portal/portal-profile-card';
 
 import { PortalFundingSection } from '@/components/portal/portal-funding-section';
 
+import { useDashboardLayout } from '@/hooks/use-dashboard-layout';
+
 import { RecentActivityFeed } from '@/components/portal/dossier/recent-activity-feed';
 
 import type { FormationSheetViewModel } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/utils/formation-catalog-sheet-view-model';
@@ -233,6 +235,8 @@ function displayUserName(user: DossierPayload['user']) {
 
 
 export function MonDossierClient({ initialCnapsOpen = false }: { initialCnapsOpen?: boolean }) {
+
+  const { isVisible } = useDashboardLayout('stagiaire-dashboard');
 
   const [data, setData] = useState<DossierPayload | null>(null);
 
@@ -442,6 +446,8 @@ export function MonDossierClient({ initialCnapsOpen = false }: { initialCnapsOpe
 
     <PortalPageShell width="full" className="space-y-5 lg:space-y-6">
 
+      {isVisible('parcours') && (
+        <>
       <PortalPageHero
 
         badge={candidature?.statusLabel ?? 'Sans dossier actif'}
@@ -511,14 +517,24 @@ export function MonDossierClient({ initialCnapsOpen = false }: { initialCnapsOpe
 
 
       <PortalStatGrid items={stats} />
+        </>
+      )}
 
 
+
+      {isVisible('documents') && (
 
       <PortalProfileCard profile={{ ...user, name: displayUserName(user) }} />
 
+      )}
 
+
+
+      {(isVisible('documents') || isVisible('planning')) && (
 
       <div className="grid gap-4 lg:grid-cols-2">
+
+        {isVisible('documents') && (
 
         <PortalSection
 
@@ -598,7 +614,11 @@ export function MonDossierClient({ initialCnapsOpen = false }: { initialCnapsOpe
 
         </PortalSection>
 
+        )}
 
+
+
+        {isVisible('planning') && (
 
         <PortalSection title="Mes sessions" icon={Users}>
 
@@ -666,9 +686,17 @@ export function MonDossierClient({ initialCnapsOpen = false }: { initialCnapsOpe
 
         </PortalSection>
 
+        )}
+
       </div>
 
+      )}
 
+
+
+      {isVisible('parcours') && (
+
+      <>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
 
@@ -813,6 +841,10 @@ export function MonDossierClient({ initialCnapsOpen = false }: { initialCnapsOpe
         </div>
 
       ) : null}
+
+      </>
+
+      )}
 
 
 

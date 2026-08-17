@@ -52,6 +52,7 @@
       "description": "Établissement, légal, formation, notifications, réseaux sociaux et intégrations — une seule source de vérité (SystemSetting).",
       "sidebar": {
         "general": "Général",
+        "administrativeDossier": "Dossier administratif",
         "etablissement": "Établissement",
         "legal": "Identité légale",
         "formation": "Formation & conformité",
@@ -59,7 +60,16 @@
         "registre": "Registre INPI",
         "notifications": "Notifications",
         "social": "Réseaux sociaux",
-        "integrations": "Intégrations"
+        "integrations": "Intégrations",
+        "dashboard": "Layouts dashboard",
+        "modules": "Paramètres métier",
+        "workspacePages": "Réglages par page",
+        "group": {
+          "platform": "Établissement & plateforme",
+          "spaces": "Espaces utilisateurs",
+          "modules": "Modules CRM",
+          "pages": "Pages & espaces"
+        }
       },
       "common": {
         "reset": "Réinitialiser",
@@ -160,7 +170,10 @@
         "rolePlaceholder": "Directeur, gérant…",
         "email": "E-mail",
         "phone": "Téléphone",
-        "invalidEmail": "E-mail invalide"
+        "invalidEmail": "E-mail invalide",
+        "adminTitle": "Compte administrateur principal",
+        "adminChangePhoto": "Photo administrateur",
+        "adminSaveSuccess": "Photo administrateur enregistrée"
       },
       "registre": {
         "saveSuccess": "Registre INPI enregistré",
@@ -184,6 +197,7 @@
         "columnWeb": "Web",
         "searchRoles": "Rechercher un rôle…",
         "noRoles": "Aucun rôle trouvé.",
+        "stockThreshold": "Seuil stock équipements (alerte si quantité ≤)",
         "items": {
           "stock": {
             "label": "Alertes stock équipements",
@@ -296,6 +310,119 @@
     "certificationSaved": "Attestation enregistrée",
     "examResultSaved": "Résultat examen enregistré"
   },
+  "vieScolaire": {
+    "common": {
+      "trainee": "Stagiaire",
+      "formation": "Formation",
+      "session": "Session",
+      "close": "Fermer",
+      "edit": "Modifier",
+      "email": "Email",
+      "noName": "Sans nom",
+      "searchTrainee": "Rechercher un stagiaire…",
+      "loading": "Chargement…",
+      "chooseFinancier": "Choisir un financeur"
+    },
+    "outcomes": {
+      "PENDING": "En attente",
+      "PASSED": "Réussi",
+      "FAILED": "Échec",
+      "ABSENT": "Absent"
+    },
+    "examStatus": {
+      "PLANNED": "Planifié",
+      "IN_PROGRESS": "En cours",
+      "COMPLETED": "Terminé",
+      "CANCELLED": "Annulé"
+    },
+    "examens": {
+      "planExam": "Planifier un examen",
+      "sessionsWithExam": "Sessions avec examen final",
+      "tabPlanned": "Examens planifiés",
+      "tabResults": "Résultats candidats",
+      "tabQcm": "Banque QCM",
+      "resultsTitle": "Inscrits session — résultats d'examen",
+      "resultsDesc": "Saisissez le résultat présentiel. Un examen réussi (ADMIS) déclenche la création automatique de l'attestation et le circuit n8n post-examen.",
+      "columnOutcome": "Résultat",
+      "columnExamDate": "Date examen",
+      "columnEntry": "Saisie",
+      "filterAllOutcomes": "Tous les résultats",
+      "filterOutcomePlaceholder": "Filtrer résultat",
+      "outcomePlaceholder": "Résultat",
+      "emptyResults": "Aucun inscrit avec dossier candidature. Validez un dossier puis inscrivez-le à une session.",
+      "examResultPassedAuto": "Résultat enregistré — attestation créée automatiquement si éligible.",
+      "sheetSaved": "Fiche examen enregistrée",
+      "outcomeEntryHint": "Saisie du résultat — attestation automatique si « Réussi »."
+    },
+    "sessions": {
+      "enrolledStudents": "Élèves inscrits",
+      "noParticipants": "Aucun élève inscrit sur cette session pour le moment.",
+      "reservedEquipment": "Équipements réservés",
+      "triggerCircuit": "Lancer le circuit automatisé",
+      "triggerCircuitHint": "Déclenche le circuit n8n (J-15 à J+45, relances conformité, emails candidats et branche financement selon le mode renseigné).",
+      "triggerCircuitSuccess": "Circuit n8n déclenché pour le premier inscrit confirmé.",
+      "triggerCircuitNoParticipant": "Inscrivez au moins un candidat confirmé pour lancer le circuit.",
+      "triggerCircuitPending": "Déclenchement…",
+      "automationTitle": "Automatisations session",
+      "sessionKindAll": "Tous types de session",
+      "sessionKindWithExam": "Avec examen final",
+      "sessionKindInitial": "Session initiale",
+      "sessionKindOther": "Autre session",
+      "sessionKindFilter": "Type de session"
+    },
+    "suivi": {
+      "trackedSession": "Session suivie",
+      "loadingSessions": "Chargement des sessions…",
+      "noEligibleSession": "Aucune session éligible",
+      "chooseSession": "Choisir une session",
+      "tabTrainees": "Stagiaires",
+      "tabJournal": "Journal quotidien",
+      "tabDocuments": "Documents",
+      "tabExams": "Examens",
+      "tabCertifications": "Certifications",
+      "tabElearning": "E-formation",
+      "pickSessionForExams": "Sélectionnez une session pour gérer les examens de ce parcours.",
+      "pickSessionForCertifications": "Sélectionnez une session pour délivrer les attestations du parcours.",
+      "pickSessionForElearning": "Sélectionnez une session pour suivre la progression e-learning.",
+      "elearningProgressTitle": "Progression des stagiaires",
+      "elearningProgressDesc": "UV et quiz liés au cours de la formation — ouvrez la fiche stagiaire pour le détail.",
+      "elearningTraineesTitle": "Stagiaires — e-learning",
+      "qualiopiCircuitTitle": "Circuit Qualiopi / n8n",
+      "qualiopiCircuitDesc": "Jalons automatisés (J-15 → J+45) déclenchés depuis la barre d'actions. Historique des exécutions pour cette session.",
+      "noAutomationRuns": "Aucun circuit lancé pour cette session. Utilisez « Déclencher le circuit » une fois les inscrits confirmés."
+    },
+    "certifications": {
+      "deliverTitle": "Délivrer une attestation parcours",
+      "deliverDesc": "Sélectionnez un stagiaire avec examen réussi pour clôturer le parcours.",
+      "autoAttestationAlert": "Après un résultat ADMIS (PASSED), l'attestation est créée automatiquement par le CRM. Utilisez ce formulaire pour les cas exceptionnels ou pour joindre un PDF signé.",
+      "searchEligible": "Rechercher un stagiaire éligible…",
+      "selectTraineeLabel": "Stagiaire (examen réussi)",
+      "selectTraineePlaceholder": "Choisir un inscrit session…",
+      "noEligible": "Aucun éligible — saisissez d'abord un examen réussi",
+      "existingAttestation": "(attestation existante)",
+      "columnAttestation": "Attestation",
+      "columnIssued": "Délivrance",
+      "uploaded": "Versé",
+      "deliveredListTitle": "Attestations délivrées",
+      "deliverButton": "Enregistrer l'attestation",
+      "titleLabel": "Intitulé",
+      "titlePlaceholder": "Ex. Attestation SSIAP 1 — session mars 2026",
+      "emptyDelivered": "Aucune attestation pour le moment.",
+      "filterDelivered": "Filtrer par stagiaire, formation, titre…"
+    },
+    "funding": {
+      "modeLabel": "Mode de financement",
+      "automationHint": "Ce mode alimente le circuit finance n8n (CPF, OPCO, entreprise, autofinancement…). Enregistrez pour figer sur la session.",
+      "referenceLabel": "Référence dossier",
+      "referencePlaceholder": "N° dossier CPF, AIF, OPCO…",
+      "notesLabel": "Notes financeur",
+      "notesPlaceholder": "Précisions pour les exports conformité…",
+      "saveButton": "Enregistrer le financeur",
+      "savedSuccess": "Financeur enregistré.",
+      "unset": "Non renseigné",
+      "inheritedBadge": "Valeur héritée du dossier candidature — enregistrer pour figer sur la session"
+    }
+  },
   "support": {
     "ticketUpdated": "Ticket mis à jour",
     "ticketCreated": "Ticket créé"
@@ -400,7 +527,11 @@
       "actions": "Actions"
     },
     "companyNotSet": "Raison sociale non renseignée",
-    "notLinkedFormation": "Non rattachée"
+    "notLinkedFormation": "Non rattachée",
+    "payments": {
+      "recordReceiptNow": "Encaisser immédiatement (déclenche l'automatisation n8n)",
+      "recordedAndReceived": "Paiement encaissé — automatisation déclenchée."
+    }
   },
   "equipment": {
     "deleteTitle": "Supprimer cet équipement ?",
@@ -1067,21 +1198,20 @@
       "cards": {
         "compagnie": "Profil entreprise, structure interne et documents administratifs.",
         "rh": "Collaborateurs, formateurs, absences et conformité au menu latéral.",
-        "equipements": "Inventaire, affectations sessions et maintenance atelier."
+        "equipements": "Inventaire, affectations, maintenance atelier et salles de formation."
       }
     },
     "gestionAcademique": {
-      "welcomeDescription": "Formations, sessions, candidatures, planning, examens et certifications — pilotez la vie scolaire depuis un seul espace.",
+      "welcomeDescription": "Formations, sessions, planning, étudiants puis suivi de parcours — le flux métier de la vie scolaire.",
       "menuCardsTitle": "Vie scolaire — accès rapide aux espaces",
-      "menuCardsSubtitle": "Raccourcis vers les six espaces du module (identiques au menu latéral)",
+      "menuCardsSubtitle": "Cinq espaces dans le même ordre que le menu latéral",
       "securityHighlightsTitle": "Indicateurs clés — Gestion académique",
       "cards": {
         "formations": "Catalogue et pilotage des parcours de formation.",
-        "sessions": "Sessions en cours, calendrier et organisation pédagogique.",
-        "etudiants": "Effectifs, dossiers et suivi des apprenants.",
-        "planning": "Vue planning, progression pédagogique et assiduité.",
-        "examens": "Sessions d'examen, convocations et résultats.",
-        "certifications": "Édition et vérification des diplômes et attestations."
+        "sessions": "Sessions planifiées, inscriptions et organisation pédagogique.",
+        "planning": "Calendrier hebdomadaire des sessions, salles et formateurs.",
+        "etudiants": "Candidatures, dossiers apprenants et rattachement aux sessions.",
+        "suiviFormations": "Suivi session : présence, examens, attestations et e-learning."
       }
     },
     "communicationContenu": {
@@ -1118,20 +1248,27 @@
     },
     "pilotageSupervision": {
       "welcomeDescription": "Alertes, indicateurs, rapports et registre des risques pour superviser l'établissement.",
-      "menuCardsTitle": "Accès rapide — Pilotage & supervision",
-      "menuCardsSubtitle": "1 module et {{pages}} pages principales selon le menu CRM",
+      "menuCardsTitle": "Pilotage — accès rapide aux espaces",
+      "menuCardsSubtitle": "Quatre espaces dans le même ordre que le menu latéral",
       "securityHighlightsTitle": "Indicateurs clés — Pilotage & supervision",
       "cards": {
-        "pilotage": "Tableaux de bord, alertes opérationnelles, KPI pédagogiques, rapports CSV et registre des risques."
+        "alertes": "Registre central des alertes CRM — synchronisé avec la cloche header.",
+        "indicateurs": "KPI consolidés par module : ressources, vie scolaire, finance, support.",
+        "rapports": "Exports CSV/PDF, historique et planifications automatiques (worker).",
+        "risques": "Registre des risques opérationnels avec gravité et recommandations."
       }
     },
     "administrationFacturation": {
       "welcomeDescription": "Budget, devis, factures, paiements et rapports financiers consolidés.",
       "menuCardsTitle": "Accès rapide — Administration & facturation",
-      "menuCardsSubtitle": "1 module et {{pages}} pages principales selon le menu CRM",
+      "menuCardsSubtitle": "5 modules et {{pages}} pages principales selon le menu CRM",
       "securityHighlightsTitle": "Indicateurs clés — Administration & facturation",
       "cards": {
-        "finance": "Module finance centralisant budget, devis, factures, paiements et rapports."
+        "budget": "Suivi budgétaire, lignes de dépenses et pilotage des enveloppes formation.",
+        "devis": "Pipeline commercial, devis candidats et plaquettes partagées.",
+        "factures": "Émission, suivi et relances des factures liées aux dossiers.",
+        "paiements": "Encaissements, réconciliation et statuts de règlement.",
+        "rapports": "Tableaux de bord finance, exports et indicateurs consolidés."
       }
     }
   },

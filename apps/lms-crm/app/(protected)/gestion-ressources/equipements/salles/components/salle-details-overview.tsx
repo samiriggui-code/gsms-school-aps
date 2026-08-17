@@ -74,6 +74,13 @@ export function SalleDetailsOverview({
             </button>
             <button
               type="button"
+              onClick={() => onTabChange('inventaire-fixe')}
+              className="text-xs font-bold text-primary hover:underline"
+            >
+              Configurer le mobilier fixe →
+            </button>
+            <button
+              type="button"
               onClick={() => onTabChange('parametres')}
               className="text-xs font-bold text-muted-foreground hover:text-primary hover:underline"
             >

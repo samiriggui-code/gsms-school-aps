@@ -9,6 +9,7 @@ import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 
 import { DEFAULT_LANDING_SECTIONS, type Prisma } from '@repo/database';
+import { createWorkflowEngine } from '@repo/api-core';
 
 
 
@@ -137,6 +138,17 @@ export async function PATCH(request: NextRequest) {
 
 
     const sections = DEFAULT_LANDING_SECTIONS;
+
+    try {
+      const workflows = createWorkflowEngine(prisma);
+      await workflows.emit(
+        'crm.cms.landing.updated',
+        { enabled: updated.enabled, sectionCount: sections.length },
+        { dedupeKey: `cms-landing:${updated.id}:${updated.updatedAt.toISOString()}` },
+      );
+    } catch (e) {
+      console.error('[cms/landing-config] workflow', e);
+    }
 
     return ok({
 

@@ -1,32 +1,61 @@
 'use client';
 
-import { GraduationCap } from 'lucide-react';
-import { MenuCard, menuCardPagesBadge } from '@/components/common/menu-card';
+import { BookOpen, CalendarDays, CalendarRange, ClipboardList, Users } from 'lucide-react';
+import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
-/** Carte unique du module Vie scolaire sur l’atterrissage de la section Gestion académique (sans liste de pages). */
+/** Accès rapide aux 5 espaces Vie scolaire (ordre = menu latéral). */
 export function GestionAcademiqueModuleMenuCards() {
   return (
-    <div className="grid gap-5 lg:gap-8">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-bold text-foreground">Accès au module</h2>
-        <p className="text-muted-foreground">
-          Section Gestion académique — entrée du module Vie scolaire (six espaces listés dans le menu latéral)
-        </p>
-      </div>
-
-      {/* Même grille que les atterrissages section : 3 cartes / ligne en lg ; une carte = 1/3 largeur, pas d’élargissement artificiel */}
-      <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-start">
-        <MenuCard
-          moduleKey="vie-scolaire"
-          title="Vie scolaire"
-          description="Pilotage pédagogique et administratif : catalogue, sessions, candidatures, calendrier, examens et certifications. Utilisez le menu pour ouvrir chaque espace."
-          icon={GraduationCap}
-          path="/gestion-academique/vie-scolaire"
-          badge={menuCardPagesBadge(6)}
-          backgroundImage="bg-3"
-          tone="violet"
-        />
-      </div>
-    </div>
+    <SectionMenuCardsShell
+      titleKey="sections.gestionAcademique.menuCardsTitle"
+      subtitleKey="sections.gestionAcademique.menuCardsSubtitle"
+      items={[
+        {
+          moduleKey: 'vie-scolaire-formations',
+          path: '/gestion-academique/vie-scolaire/formations',
+          descriptionKey: 'sections.gestionAcademique.cards.formations',
+          icon: BookOpen,
+          backgroundImage: 'bg-3',
+          subSections: ['catalogue', 'programmes'],
+          tone: 'violet',
+        },
+        {
+          moduleKey: 'vie-scolaire-sessions',
+          path: '/gestion-academique/vie-scolaire/sessions',
+          descriptionKey: 'sections.gestionAcademique.cards.sessions',
+          icon: CalendarDays,
+          backgroundImage: 'bg-3',
+          subSections: ['planification', 'inscriptions'],
+          tone: 'sky',
+        },
+        {
+          moduleKey: 'vie-scolaire-planning',
+          path: '/gestion-academique/vie-scolaire/planning',
+          descriptionKey: 'sections.gestionAcademique.cards.planning',
+          icon: CalendarRange,
+          backgroundImage: 'bg-3',
+          subSections: ['calendrier'],
+          tone: 'amber',
+        },
+        {
+          moduleKey: 'vie-scolaire-etudiants',
+          path: '/gestion-academique/vie-scolaire/etudiants',
+          descriptionKey: 'sections.gestionAcademique.cards.etudiants',
+          icon: Users,
+          backgroundImage: 'bg-3',
+          subSections: ['candidatures', 'dossiers'],
+          tone: 'rose',
+        },
+        {
+          moduleKey: 'vie-scolaire-suivi-formations',
+          path: '/gestion-academique/vie-scolaire/suivi-formations',
+          descriptionKey: 'sections.gestionAcademique.cards.suiviFormations',
+          icon: ClipboardList,
+          backgroundImage: 'bg-3',
+          subSections: ['stagiaires', 'examens', 'certifications', 'e-learning'],
+          tone: 'emerald',
+        },
+      ]}
+    />
   );
 }

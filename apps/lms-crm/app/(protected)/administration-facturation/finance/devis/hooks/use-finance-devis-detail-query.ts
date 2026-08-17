@@ -45,7 +45,11 @@ export type FinanceDevisDetail = {
   }[];
 };
 
-export function useFinanceDevisDetailQuery(devisId: string | null, enabled: boolean) {
+export function useFinanceDevisDetailQuery(
+  devisId: string | null,
+  enabled: boolean,
+  opts?: { refetchIntervalMs?: number | false },
+) {
   return useQuery({
     queryKey: [...financeDevisDetailQueryKey, devisId] as const,
     queryFn: async (): Promise<FinanceDevisDetail | undefined> => {
@@ -60,5 +64,6 @@ export function useFinanceDevisDetailQuery(devisId: string | null, enabled: bool
     },
     enabled: enabled && !!devisId,
     staleTime: 30_000,
+    refetchInterval: opts?.refetchIntervalMs || false,
   });
 }

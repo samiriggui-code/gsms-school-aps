@@ -4,6 +4,54 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { FormationLifecycleStatus, Prisma } from '@repo/database';
+import { serializeCmsCatalogRow } from '@/lib/cms-catalog-serialize';
+
+const formationSelect = {
+  id: true,
+  slug: true,
+  name: true,
+  description: true,
+  track: true,
+  tag: true,
+  duration: true,
+  modules: true,
+  outcomes: true,
+  featured: true,
+  parcoursSpecialite: true,
+  catalogProgramConfig: true,
+  priceFrom: true,
+  traineesMin: true,
+  traineesMax: true,
+  currency: true,
+  fundingBlocks: true,
+  prerequisitesTable: true,
+  logoUrl: true,
+  providerName: true,
+  providerEmail: true,
+  providerPhone: true,
+  providerAddress: true,
+  nextSessionLabel: true,
+  cpfEligible: true,
+  qualiopiCertified: true,
+  presentationTitle: true,
+  longDescription: true,
+  presentationBullets: true,
+  programModules: true,
+  certificationSteps: true,
+  complementaryDetails: true,
+  fundingChannels: true,
+  unitsCount: true,
+  volumeHoursLabel: true,
+  theoryPercent: true,
+  practicePercent: true,
+  minAgeLabel: true,
+  frenchLevel: true,
+  authorizationSummary: true,
+  criminalRecordRequirement: true,
+  rncpUrl: true,
+  status: true,
+  updatedAt: true,
+} as const;
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -11,57 +59,84 @@ export async function GET(request: NextRequest) {
 
   const sp = request.nextUrl.searchParams;
   const q = (sp.get('q') ?? '').trim();
-  const page = Math.max(Number(sp.get('page')) || 1, 1);
-  const limit = Math.min(Math.max(Number(sp.get('limit')) || 20, 1), 100);
-  const skip = (page - 1) * limit;
+  const scope = sp.get('scope')?.trim() ?? 'all';
 
-  const where: Prisma.FormationWhereInput = q
-    ? {
-        OR: [
-          { name: { contains: q, mode: 'insensitive' } },
-          { slug: { contains: q, mode: 'insensitive' } },
-        ],
-      }
-    : {};
+  const where: Prisma.FormationCatalogOfferWhereInput = {
+    ...(q
+      ? {
+          formation: {
+            OR: [
+              { name: { contains: q, mode: 'insensitive' } },
+              { slug: { contains: q, mode: 'insensitive' } },
+            ],
+          },
+        }
+      : {}),
+    ...(scope === 'landing'
+      ? {
+          catalogStatus: FormationLifecycleStatus.ACTIVE,
+          formation: { status: FormationLifecycleStatus.ACTIVE },
+        }
+      : scope === 'archived'
+        ? { catalogStatus: FormationLifecycleStatus.ARCHIVED }
+        : scope === 'draft'
+          ? { catalogStatus: FormationLifecycleStatus.DRAFT }
+          : {}),
+  };
 
   try {
-    const [total, active, catalogActive, draft, rows] = await Promise.all([
-      prisma.formation.count({ where }),
-      prisma.formation.count({ where: { ...where, status: FormationLifecycleStatus.ACTIVE } }),
-      prisma.formation.count({
-        where: { ...where, catalogOffer: { catalogStatus: FormationLifecycleStatus.ACTIVE } },
-      }),
-      prisma.formation.count({ where: { ...where, status: { not: FormationLifecycleStatus.ACTIVE } } }),
-      prisma.formation.findMany({
-        where,
-        orderBy: { updatedAt: 'desc' },
-        skip,
-        take: limit,
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          status: true,
-          updatedAt: true,
-          catalogOffer: { select: { catalogStatus: true } },
-        },
-      }),
-    ]);
+    const [total, landingVisible, activeOffers, draftOffers, archivedOffers, offers] =
+      await Promise.all([
+        prisma.formationCatalogOffer.count(),
+        prisma.formationCatalogOffer.count({
+          where: {
+            catalogStatus: FormationLifecycleStatus.ACTIVE,
+            formation: { status: FormationLifecycleStatus.ACTIVE },
+          },
+        }),
+        prisma.formationCatalogOffer.count({
+          where: { catalogStatus: FormationLifecycleStatus.ACTIVE },
+        }),
+        prisma.formationCatalogOffer.count({
+          where: { catalogStatus: FormationLifecycleStatus.DRAFT },
+        }),
+        prisma.formationCatalogOffer.count({
+          where: { catalogStatus: FormationLifecycleStatus.ARCHIVED },
+        }),
+        prisma.formationCatalogOffer.findMany({
+          where,
+          orderBy: [{ formation: { track: 'asc' } }, { formation: { name: 'asc' } }],
+          include: {
+            formation: {
+              select: {
+                ...formationSelect,
+                _count: { select: { sessions: true } },
+              },
+            },
+          },
+        }),
+      ]);
+
+    const items = offers.map((offer) => {
+      const row = serializeCmsCatalogRow(
+        offer,
+        offer.formation.status,
+        offer.formation._count.sessions,
+      );
+      return { ...row, updatedAt: offer.formation.updatedAt.toISOString() };
+    });
 
     return ok({
-      stats: { total, active, catalogActive, draft },
-      items: rows.map((r) => ({
-        id: r.id,
-        name: r.name,
-        slug: r.slug,
-        status: r.status,
-        catalogStatus: r.catalogOffer?.catalogStatus ?? null,
-        updatedAt: r.updatedAt.toISOString(),
-        editPath: `/gestion-academique/vie-scolaire/formations?formationId=${r.id}`,
-      })),
-      pagination: { page, limit, total },
+      stats: {
+        total,
+        landingVisible,
+        active: activeOffers,
+        draft: draftOffers,
+        archived: archivedOffers,
+      },
+      items,
     });
   } catch (e) {
-    return fail('Impossible de charger les contenus.', 500, e);
+    return fail('Impossible de charger le catalogue vitrine.', 500, e);
   }
 }

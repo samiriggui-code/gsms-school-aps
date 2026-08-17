@@ -68,6 +68,12 @@ export function CmsWelcomeCallout() {
               Contenus
             </Link>
           </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/communication-contenu/cms/equipe-landing">
+              <LayoutTemplate className="size-4 mr-1" />
+              Équipe landing
+            </Link>
+          </Button>
         </CardFooter>
       </Card>
     </Fragment>

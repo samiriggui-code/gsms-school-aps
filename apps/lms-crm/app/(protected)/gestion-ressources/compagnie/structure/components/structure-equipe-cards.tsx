@@ -10,34 +10,22 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  inferBio,
+  inferCertifications,
+  inferTitle,
+  type UserSlice,
+} from '@/lib/catalog-team-serialize';
 import { servicePoleShortLabel, type OrgChartUser } from './structure-organigramme';
+import { structurePersonName } from './structure-display';
 import { StructureEquipeEditor } from './structure-equipe-editor';
 
 type ProfileTab = 'direction' | 'formateur' | 'collaborateur' | 'interne';
 
-type SchoolService = 'TRAINER_POOL' | 'PEDAGOGICAL' | 'HR_ADMIN' | 'DIRECTION';
-
-type StaffRow = {
-  id: string;
-  name?: string | null;
-  firstName?: string | null;
-  lastName?: string | null;
+type StaffRow = UserSlice & {
   email?: string | null;
-  avatar?: string | null;
-  jobFunction?: string | null;
-  qualification?: string | null;
-  landingPresentation?: string | null;
+  proEmail?: string | null;
   role?: { slug?: string | null; name?: string | null } | null;
-  formateurProfile?: {
-    speciality?: string | null;
-    specialties?: string[] | null;
-    schoolInternalService?: SchoolService | null;
-  } | null;
-  collaborateurProfile?: {
-    qualification?: string | null;
-    jobFunction?: string | null;
-    schoolInternalService?: SchoolService | null;
-  } | null;
 };
 
 async function fetchStaffList(profileType: ProfileTab): Promise<StaffRow[]> {
@@ -55,37 +43,22 @@ async function fetchStaffList(profileType: ProfileTab): Promise<StaffRow[]> {
 }
 
 function displayName(u: StaffRow): string {
-  const parts = [u.firstName, u.lastName].filter(Boolean).join(' ').trim();
-  if (parts) return parts;
-  return u.name?.trim() || u.email || '—';
+  return structurePersonName(u);
 }
 
-function specialtyLine(u: StaffRow, tab: ProfileTab): string {
-  if (tab === 'formateur') {
-    const fp = u.formateurProfile;
-    if (fp?.speciality?.trim()) return fp.speciality.trim();
-    const s = fp?.specialties;
-    if (Array.isArray(s) && s.length) return s.filter(Boolean).join(' · ');
-  }
-  const cp = u.collaborateurProfile;
-  if (cp?.jobFunction?.trim()) return cp.jobFunction.trim();
-  if (cp?.qualification?.trim()) return cp.qualification.trim();
-  if (u.jobFunction?.trim()) return u.jobFunction.trim();
-  if (u.qualification?.trim()) return u.qualification.trim();
-  return tab === 'formateur'
-    ? 'Formateur certifié'
-    : tab === 'collaborateur'
-      ? 'Équipe pédagogique'
-      : tab === 'direction'
-        ? "Direction de l'école"
-        : 'Équipe administrative';
+function roleSubtitle(u: StaffRow, tab: ProfileTab): string {
+  const title = inferTitle(u);
+  if (title !== '—') return title;
+  if (tab === 'formateur') return 'Formateur certifié';
+  if (tab === 'collaborateur') return 'Équipe pédagogique';
+  if (tab === 'direction') return "Direction de l'école";
+  return 'Équipe administrative';
 }
 
-function bioLine(u: StaffRow): string {
-  if (u.landingPresentation?.trim()) return u.landingPresentation.trim();
-  const q = u.qualification || u.collaborateurProfile?.qualification;
-  if (q?.trim()) return q.trim();
-  return 'Professionnel(le) de terrain, engagé(e) dans la qualité des parcours et la conformité réglementaire.';
+function specialtiesSubtitle(u: StaffRow, tab: ProfileTab): string | null {
+  if (tab !== 'formateur') return null;
+  const certs = inferCertifications(u);
+  return certs !== '—' ? certs : null;
 }
 
 function TeamGrid({
@@ -136,7 +109,9 @@ function TeamGrid({
     <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
       {rows.map((u) => {
         const title = displayName(u);
-        const spec = specialtyLine(u, profileType);
+        const role = roleSubtitle(u, profileType);
+        const specs = specialtiesSubtitle(u, profileType);
+        const bio = inferBio(u);
         const avatarSrc = u.avatar ? getAvatarUrl(u.avatar) : undefined;
         return (
           <Card
@@ -156,13 +131,20 @@ function TeamGrid({
                     <h3 className="truncate text-base font-bold text-foreground">{title}</h3>
                     <Award className="size-4 shrink-0 text-violet-500" aria-hidden />
                   </div>
-                  <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">{spec}</p>
+                  <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">{role}</p>
+                  {specs ? (
+                    <p className="mt-0.5 text-xs font-medium text-violet-600 dark:text-violet-400">{specs}</p>
+                  ) : null}
                 </div>
               </div>
               <Badge variant="secondary" className="w-fit text-[10px] font-bold uppercase tracking-wide">
                 {servicePoleShortLabel(u as OrgChartUser)}
               </Badge>
-              <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">{bioLine(u)}</p>
+              <p className="line-clamp-4 text-sm leading-relaxed text-muted-foreground">
+                {bio !== '—'
+                  ? bio
+                  : 'Professionnel(le) de terrain, engagé(e) dans la qualité des parcours et la conformité réglementaire.'}
+              </p>
               <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4 text-xs text-muted-foreground">
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center gap-1">

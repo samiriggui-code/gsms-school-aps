@@ -104,6 +104,18 @@ export const PILOTAGE_ALERT_MODULE_PERMISSIONS: PilotageModulePermissionRow[] = 
     moduleKeyPrefix: 'support-qualite',
   },
   {
+    moduleId: 'communication-contenu',
+    label: 'Communication & contenu',
+    permissionSlug: 'crm.communication.view',
+    moduleKeyPrefix: 'communication-contenu',
+  },
+  {
+    moduleId: 'securite-configuration',
+    label: 'Sécurité & configuration',
+    permissionSlug: 'crm.securite.view',
+    moduleKeyPrefix: 'securite-configuration',
+  },
+  {
     moduleId: 'pilotage-supervision',
     label: 'Pilotage supervision',
     permissionSlug: 'crm.pilotage.view',

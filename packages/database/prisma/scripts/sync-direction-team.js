@@ -34,15 +34,21 @@ loadRootEnv();
 const { PrismaPg } = require('@prisma/adapter-pg');
 const { Pool } = require('pg');
 const { PrismaClient } = require(path.join(__dirname, '../../generated/client'));
+const { ensureUserEmailSplit } = require('../data/user-email-fields');
 const { seedRhStructureTeams } = require('../data/rh-structure-teams-seed');
+const { seedRhMetierReferential } = require('../data/rh-metier-referential-seed');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
 prisma
-  .$transaction(async (tx) => seedRhStructureTeams(tx), { timeout: 120000, maxWait: 120000 })
+  .$transaction(async (tx) => {
+    await ensureUserEmailSplit(tx);
+    await seedRhStructureTeams(tx);
+    await seedRhMetierReferential(tx);
+  }, { timeout: 120000, maxWait: 120000 })
   .then(() => {
-    console.log('Direction + équipes structure + landing team synchronisés.');
+    console.log('Direction + équipes structure + fiches métier + landing team synchronisés.');
   })
   .catch((e) => {
     console.error(e);

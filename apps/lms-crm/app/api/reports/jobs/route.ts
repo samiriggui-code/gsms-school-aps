@@ -8,7 +8,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 
-const PERIODS = new Set<ReportPeriod>(['day', 'week', 'month', 'year', 'custom']);
+const PERIODS = new Set<ReportPeriod>(['day', 'week', 'month', 'quarter', 'year', 'custom']);
 const FORMATS = new Set<ReportOutputFormat>(['PDF', 'EXCEL', 'CSV']);
 
 function parseCustomRange(body: {

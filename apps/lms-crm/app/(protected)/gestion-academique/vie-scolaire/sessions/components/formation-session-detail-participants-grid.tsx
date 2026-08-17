@@ -20,10 +20,12 @@ import { DataGridTable } from '@/components/ui/data-grid-table';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import type { FormationSessionApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 import { SessionUserAvatar } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-user-avatar';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export type SessionParticipantRow = FormationSessionApiRow['participants'][number];
 
 export function FormationSessionDetailParticipantsGrid({ participants }: { participants: SessionParticipantRow[] }) {
+  const { t } = useTranslation();
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: MODULE_LANDING_DATAGRID_PAGE_SIZE });
   const [sorting, setSorting] = useState<SortingState>([{ id: 'name', desc: false }]);
 
@@ -32,7 +34,9 @@ export function FormationSessionDetailParticipantsGrid({ participants }: { parti
       {
         accessorKey: 'name',
         id: 'name',
-        header: ({ column }) => <DataGridColumnHeader title="Stagiaire" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader title={t('vieScolaire.common.trainee')} column={column} />
+        ),
         sortingFn: (a, b) => {
           const na = (a.original.name?.trim() || a.original.email).toLocaleLowerCase();
           const nb = (b.original.name?.trim() || b.original.email).toLocaleLowerCase();
@@ -43,7 +47,7 @@ export function FormationSessionDetailParticipantsGrid({ participants }: { parti
           return (
             <div className="flex items-center gap-3">
               <SessionUserAvatar name={p.name} email={p.email} avatar={p.avatar} sizeClassName="size-9" />
-              <span className="font-medium text-foreground">{p.name?.trim() || 'Sans nom'}</span>
+              <span className="font-medium text-foreground">{p.name?.trim() || t('vieScolaire.common.noName')}</span>
             </div>
           );
         },
@@ -51,13 +55,15 @@ export function FormationSessionDetailParticipantsGrid({ participants }: { parti
       {
         accessorKey: 'email',
         id: 'email',
-        header: ({ column }) => <DataGridColumnHeader title="Email" column={column} />,
+        header: ({ column }) => (
+          <DataGridColumnHeader title={t('vieScolaire.common.email')} column={column} />
+        ),
         cell: ({ row }) => (
           <span className="max-w-[280px] truncate text-muted-foreground">{row.original.email}</span>
         ),
       },
     ],
-    [],
+    [t],
   );
 
   const table = useReactTable({
@@ -76,7 +82,7 @@ export function FormationSessionDetailParticipantsGrid({ participants }: { parti
     return (
       <div className="rounded-xl border border-border bg-muted/10 px-4 py-10 text-center text-sm text-muted-foreground">
         <Users className="mx-auto mb-2 size-8 opacity-40" aria-hidden />
-        Aucun élève inscrit sur cette session pour le moment.
+        {t('vieScolaire.sessions.noParticipants')}
       </div>
     );
   }

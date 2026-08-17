@@ -544,11 +544,11 @@ interface ManagerPickItem {
                     >
                       <FormControl>
                         <SelectTrigger className="h-10 bg-secondary/50 border-border">
-                          <SelectValue placeholder="Repli automatique selon le rôle" />
+                          <SelectValue placeholder="Automatique selon le rôle IAM" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="__default__">Repli selon le rôle du compte</SelectItem>
+                        <SelectItem value="__default__">Automatique (déduit du rôle IAM)</SelectItem>
                         <SelectItem value="DIRECTION">Direction de l&apos;école</SelectItem>
                         <SelectItem value="TRAINER_POOL">Équipe formateurs</SelectItem>
                         <SelectItem value="PEDAGOGICAL">Équipe pédagogique</SelectItem>

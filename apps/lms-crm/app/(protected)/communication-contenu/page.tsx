@@ -10,6 +10,7 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { useModuleLayout } from '@/hooks/use-module-layout';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -32,6 +33,7 @@ export default function SectionBLandingPage() {
   const { t } = useTranslation();
 
   const { title, description } = usePageToolbarMeta('/communication-contenu');
+  const { isVisible } = useModuleLayout('communication-landing');
   const [statsData, setStatsData] = useState<ISecurityHighlightsRow[]>([]);
   const [dynamicStats, setDynamicStats] = useState<any>(null);
   const [overallPerformance, setOverallPerformance] = useState({ value: 0, trend: 0 });
@@ -86,27 +88,30 @@ export default function SectionBLandingPage() {
         </Toolbar>
       </Container>
       <Container className="space-y-5 lg:space-y-7.5 pb-8">
-        <RessourcesStatsDynamic data={dynamicStats} isLoading={loading} />
+        {isVisible('stats') ? <RessourcesStatsDynamic data={dynamicStats} isLoading={loading} /> : null}
 
-        <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
-          <div className="min-w-0 lg:col-span-1">
-            <SecurityHighlightsB
-              limit={5}
-              statsData={statsData}
-              overallPerformance={overallPerformance}
-              categories={categories}
-            />
-
+        {(isVisible('stats') || isVisible('welcome')) && (
+          <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {isVisible('stats') ? (
+              <div className="min-w-0 lg:col-span-1">
+                <SecurityHighlightsB
+                  limit={5}
+                  statsData={statsData}
+                  overallPerformance={overallPerformance}
+                  categories={categories}
+                />
+              </div>
+            ) : null}
+            {isVisible('welcome') ? (
+              <div className={`min-w-0 ${isVisible('stats') ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+                <WelcomeCallout className="h-full" />
+              </div>
+            ) : null}
           </div>
+        )}
 
-          <div className="min-w-0 lg:col-span-2">
-            <WelcomeCallout className="h-full" />
-
-          </div>
-        </div>
-
-        <SectionBMenuCards />
-</Container>
+        {isVisible('menu-cards') ? <SectionBMenuCards /> : null}
+      </Container>
     </>
   );
 }

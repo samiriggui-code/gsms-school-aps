@@ -1,33 +1,25 @@
-import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Bell, Settings, Share2 } from "lucide-react";
+import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { AlertTriangle, LifeBuoy } from 'lucide-react';
 
 export function ModuleMenuCards() {
   const menuItems = [
     {
-      title: "Support",
-      description: "Reglages generaux de la plateforme et configuration globale.",
-      icon: Settings,
-      href: "/support-qualite/support",
-      badge: "Reglages",
-      stats: "Configuration generale",
+      title: 'Tickets',
+      description: 'Demandes entrantes — prise en charge, réponses et clôture.',
+      icon: LifeBuoy,
+      href: '/support-qualite/support/tickets',
+      badge: 'Helpdesk',
+      stats: 'File d&apos;attente support',
     },
     {
-      title: "Notifications",
-      description: "Regles de notifications systeme, web et email.",
-      icon: Bell,
-      href: "/support-qualite/support/notifications",
-      badge: "Actif",
-      stats: "Gestion des alertes",
-    },
-    {
-      title: "Social",
-      description: "Liens et canaux sociaux utilises par la plateforme.",
-      icon: Share2,
-      href: "/support-qualite/support/social",
-      badge: "Canaux",
-      stats: "Reseaux sociaux",
+      title: 'Incidents',
+      description: 'Non-conformités matérielles ou processus — analyse et actions correctives.',
+      icon: AlertTriangle,
+      href: '/support-qualite/support/incidents',
+      badge: 'Qualité',
+      stats: 'Suivi incidents',
     },
   ];
 

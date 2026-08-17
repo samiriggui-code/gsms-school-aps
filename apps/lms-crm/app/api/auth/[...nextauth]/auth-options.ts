@@ -55,11 +55,14 @@ export function getAuthOptions(req?: NextRequest): NextAuthOptions {
 
           const login = email.toLowerCase();
 
+          // Si plusieurs comptes partagent le même proEmail (bug historique),
+          // préférer le compte protégé / actif (ex. superadmin vs candidat).
           const user = await prisma.user.findFirst({
             where: {
               isTrashed: false,
               proEmail: { equals: login, mode: 'insensitive' },
             },
+            orderBy: [{ isProtected: 'desc' }, { createdAt: 'asc' }],
             select: {
               id: true,
               email: true,
@@ -70,6 +73,7 @@ export function getAuthOptions(req?: NextRequest): NextAuthOptions {
               avatar: true,
               status: true,
               isTrashed: true,
+              isProtected: true,
             },
           });
 

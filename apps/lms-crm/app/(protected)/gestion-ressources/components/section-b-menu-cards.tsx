@@ -23,7 +23,7 @@ export const SectionBMenuCards = () => (
         descriptionKey: 'sections.gestionRessources.cards.rh',
         icon: Users,
         backgroundImage: 'bg-3',
-        subSections: ['collaborateurs', 'equipes', 'formateurs', 'absences', 'conformite'],
+        subSections: ['collaborateurs', 'equipes', 'formateurs', 'absences', 'candidatures'],
         tone: 'rose',
       },
       {
@@ -32,7 +32,7 @@ export const SectionBMenuCards = () => (
         descriptionKey: 'sections.gestionRessources.cards.equipements',
         icon: Wrench,
         backgroundImage: 'bg-3',
-        subSections: ['inventaire', 'affectations', 'maintenance'],
+        subSections: ['inventaire', 'affectations', 'maintenance', 'salles'],
         tone: 'amber',
       },
     ]}

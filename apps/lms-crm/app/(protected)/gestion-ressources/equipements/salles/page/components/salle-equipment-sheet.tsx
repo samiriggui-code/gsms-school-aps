@@ -29,7 +29,8 @@ import { SalleDetailsSessions } from './details/salle-details-sessions';
 import { SalleDetailsSettings } from './details/salle-details-settings';
 import { SalleActiveToggle } from './salle-active-toggle';
 import type { VenueRoomRow, VenueRoomSheetInput } from '../types';
-import { Settings } from 'lucide-react';
+import { Settings, Package } from 'lucide-react';
+import { SalleDetailsFixedInventory } from './details/salle-details-fixed-inventory';
 
 export type SalleEquipmentSheetProps = {
   open: boolean;
@@ -157,6 +158,10 @@ export function SalleEquipmentSheet({
                   <TabsList className={GESTION_RESSOURCES_SHEET_TABS_LIST}>
                     <TabsTrigger value="overview">Vue d&apos;ensemble</TabsTrigger>
                     <TabsTrigger value="sessions">Sessions</TabsTrigger>
+                    <TabsTrigger value="inventaire-fixe" className="gap-1.5">
+                      <Package className="size-3.5" />
+                      Inventaire fixe
+                    </TabsTrigger>
                     <TabsTrigger value="parametres" className="gap-1.5">
                       <Settings className="size-3.5" />
                       Paramètres
@@ -167,6 +172,7 @@ export function SalleEquipmentSheet({
                       room={room}
                       onTabChange={setActiveTab}
                       quickNavTabs={[
+                        { label: 'Inventaire fixe de la salle →', tab: 'inventaire-fixe' },
                         { label: 'Sessions planifiées →', tab: 'sessions' },
                         { label: 'Modifier les paramètres →', tab: 'parametres' },
                       ]}
@@ -174,6 +180,9 @@ export function SalleEquipmentSheet({
                   </TabsContent>
                   <TabsContent value="sessions">
                     <SalleDetailsSessions room={room} />
+                  </TabsContent>
+                  <TabsContent value="inventaire-fixe">
+                    <SalleDetailsFixedInventory roomId={room.id} roomCapacity={room.capacity} />
                   </TabsContent>
                   <TabsContent value="parametres">
                     <SalleDetailsSettings

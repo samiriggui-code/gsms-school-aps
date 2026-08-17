@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { loadSystemSettings } from '@/app/api/_shared/company-profile-get';
+import { buildOrganizationAddressLine } from '@/lib/reports/document-brand';
 
 export type AttendancePdfBrandContext = {
   companyName: string;
@@ -88,11 +89,7 @@ export async function loadAttendancePdfBrandContext(): Promise<AttendancePdfBran
   const settings = await loadSystemSettings();
 
   const companyName = settings?.name?.trim() || "FORM'SSI";
-  const addressParts = [
-    settings?.address?.trim(),
-    [settings?.companyPostalCode?.trim(), settings?.companyCity?.trim()].filter(Boolean).join(' '),
-  ].filter(Boolean);
-  const addressLine = addressParts.join(' · ');
+  const addressLine = buildOrganizationAddressLine(settings);
 
   const logoFromSettings = await loadImageBuffer(settings?.logo ?? null);
   const logoBuffer = logoFromSettings ?? (await loadDefaultBrandLogo());

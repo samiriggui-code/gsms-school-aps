@@ -5,6 +5,7 @@ import { UserStatus } from '@/app/models/user';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { createFileAssetWithVersion } from '@/lib/file-asset-service';
 import { mapSystemLogsToRhActivity } from '@/lib/rh-iam-activity-history';
+import { systemLog } from '@/services/system-log';
 import {
   assertUserMailboxesAvailable,
   resolveCreateUserEmails,
@@ -251,16 +252,6 @@ function toCollaborateur(user: any) {
         }
       : user.role,
   };
-}
-
-function listFallback(req: NextRequest) {
-  const url = new URL(req.url);
-  const page = Number(url.searchParams.get('page') || 1);
-  const limit = Number(url.searchParams.get('limit') || 10);
-  return ok({
-    items: [],
-    pagination: { page, limit, total: 0 },
-  });
 }
 
 const SCHOOL_INTERNAL_SERVICE_VALUES = ['TRAINER_POOL', 'PEDAGOGICAL', 'HR_ADMIN', 'DIRECTION'] as const;
@@ -871,7 +862,7 @@ async function handler(request: NextRequest, { params }: Params) {
     return NextResponse.json(body);
   }
   if (!id) {
-    return listFallback(request);
+    return fail('Méthode non autorisée sur la collection collaborateurs.', 405);
   }
 
   if (method === 'GET') {
@@ -980,11 +971,29 @@ async function handler(request: NextRequest, { params }: Params) {
       include: collaborateurHydrateInclude,
     });
 
-    if (payload.landingPresentation !== undefined) {
+    const touchesLandingDisplay =
+      payload.name !== undefined ||
+      payload.firstName !== undefined ||
+      payload.lastName !== undefined ||
+      payload.jobFunction !== undefined ||
+      payload.qualification !== undefined ||
+      payload.landingPresentation !== undefined ||
+      av !== undefined ||
+      (payload as { schoolInternalService?: string | null }).schoolInternalService !== undefined;
+
+    if (touchesLandingDisplay) {
       void invalidateCatalogTeamListCache().catch((e) => {
         console.error('[collaborateurs] landing team cache invalidation', e);
       });
     }
+
+    await systemLog({
+      event: 'rh.collaborateur.updated',
+      userId: session.user.id,
+      entityId: id,
+      entityType: 'collaborateur',
+      description: 'Fiche collaborateur mise à jour',
+    });
 
     return NextResponse.json(toCollaborateur(hydrated));
   }

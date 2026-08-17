@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { Package } from 'lucide-react';
 import { SalleFormSchema, type SalleFormValues } from '../forms/salle-form-schema';
 import type { VenueRoomRow } from '../types';
 
@@ -25,10 +26,12 @@ export function SalleDetailsSettings({
   room,
   formRef,
   onSuccess,
+  onOpenFixedInventory,
 }: {
   room: VenueRoomRow;
   formRef?: React.RefObject<HTMLFormElement | null>;
   onSuccess?: () => void;
+  onOpenFixedInventory?: () => void;
 }) {
   const queryClient = useQueryClient();
   const form = useForm<SalleFormValues>({
@@ -90,6 +93,7 @@ export function SalleDetailsSettings({
       void queryClient.invalidateQueries({ queryKey: ['venue-room-detail', room.id] });
       void queryClient.invalidateQueries({ queryKey: ['venue-rooms-stats'] });
       void queryClient.invalidateQueries({ queryKey: ['venue-rooms-planning'] });
+      void queryClient.invalidateQueries({ queryKey: ['room-dispatch-guide', room.id] });
       toast.custom(
         () => (
           <Alert variant="mono" icon="success">
@@ -125,6 +129,26 @@ export function SalleDetailsSettings({
         className="space-y-5"
         onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
       >
+        <div className="rounded-lg border border-primary/25 bg-primary/5 p-4 space-y-2">
+          <p className="text-xs font-semibold text-foreground flex items-center gap-2">
+            <Package className="size-4 text-primary" />
+            Mobilier fixe de la salle
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Renseignez d&apos;abord la <strong>capacité</strong> ci-dessous, puis liez les unités depuis le stock
+            global dans l&apos;onglet <strong>Inventaire fixe</strong>. L&apos;assistant recommande chaises, tables et
+            équipements selon le profil de la salle.
+          </p>
+          {onOpenFixedInventory ? (
+            <button
+              type="button"
+              onClick={onOpenFixedInventory}
+              className="text-xs font-bold text-primary hover:underline"
+            >
+              Ouvrir l&apos;inventaire fixe →
+            </button>
+          ) : null}
+        </div>
         <FormField
           control={form.control}
           name="name"

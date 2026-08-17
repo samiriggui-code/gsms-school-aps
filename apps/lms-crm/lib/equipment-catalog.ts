@@ -1,5 +1,5 @@
 /** Siège unique — entrepôt de l'école (affichage catalogue / stock). */
-export const EQUIPMENT_HEADQUARTERS_SITE_NAME = 'Siège — Campus Principal Paris';
+export const EQUIPMENT_HEADQUARTERS_SITE_NAME = 'Campus Principal Reuil';
 
 const LEGACY_UNIT_SUFFIX = /-(USE|MNT)$/i;
 const UNIT_INDEX_SUFFIX = /-(\d{3})$/;

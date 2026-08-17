@@ -4,67 +4,74 @@ import {
   ModuleLandingStatGradientCard,
   type MetricStatTone,
 } from '@/components/common/stat-card-metric-layout';
-import { Users, ShieldCheck, Calendar, AlertTriangle } from 'lucide-react';
-import { useSectionHubStats } from '@/hooks/use-section-hub-stats';
+import { Settings, Bell, Plug, FileText } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
-type RHStatsApi = {
-  totalCollaborators?: number;
-  activeCollaborators?: number;
-  absentCollaborators?: number;
-  complianceRate?: number;
-  complianceIssues?: number;
+type SettingsSummary = {
+  name: string;
+  active: boolean;
+  notifySystemErrorWeb: boolean;
+  websiteURL: string | null;
 };
 
-interface RHStat {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: string;
-  trend: 'up' | 'down' | 'neutral';
-  trendValue: string;
-  color: MetricStatTone;
-}
+export function ParametresStats() {
+  const { data: settings } = useQuery({
+    queryKey: ['parametres-settings-summary'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/sections/securite-configuration/parametres/settings');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) return null;
+      const payload = json as { settings?: SettingsSummary };
+      return payload.settings ?? null;
+    },
+    staleTime: 60_000,
+  });
 
-export function RHStats() {
-  const { data: statsApi = {} } = useSectionHubStats('securite', 12);
+  const { data: moduleSettings = [] } = useQuery({
+    queryKey: ['module-settings-count'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/sections/securite-configuration/parametres/module-settings');
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) return [];
+      return unwrapSectionApiData<Array<{ id: string }>>(json) ?? [];
+    },
+    staleTime: 60_000,
+  });
 
-  
-  const total = statsApi.totalCollaborators ?? 0;
-  const active = statsApi.activeCollaborators ?? 0;
-  const absences = statsApi.absentCollaborators ?? 0;
-  const complianceRate = statsApi.complianceRate ?? 0;
-  const alerts = statsApi.complianceIssues ?? 0;
-
-  const stats: RHStat[] = [
+  const stats: Array<{
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+    value: string;
+    detail: string;
+    color: MetricStatTone;
+  }> = [
     {
-      icon: Users,
-      label: 'Effectif Actif',
-      value: String(active),
-      trend: 'neutral',
-      trendValue: `${total}`,
+      icon: Settings,
+      label: 'Établissement',
+      value: settings?.active ? 'Actif' : 'Inactif',
+      detail: settings?.name ?? '—',
       color: 'primary',
     },
     {
-      icon: ShieldCheck,
-      label: 'Conformité',
-      value: `${complianceRate}%`,
-      trend: 'neutral',
-      trendValue: `${alerts}`,
-      color: 'success',
-    },
-    {
-      icon: Calendar,
-      label: 'Absences',
-      value: String(absences),
-      trend: 'neutral',
-      trendValue: `${total}`,
+      icon: Bell,
+      label: 'Alertes système',
+      value: settings?.notifySystemErrorWeb ? 'Web ON' : 'Web OFF',
+      detail: 'Notifications',
       color: 'warning',
     },
     {
-      icon: AlertTriangle,
-      label: 'Alertes',
-      value: String(alerts),
-      trend: 'neutral',
-      trendValue: `${complianceRate}%`,
+      icon: Plug,
+      label: 'Modules config',
+      value: String(moduleSettings.length),
+      detail: 'Clés enregistrées',
+      color: 'success',
+    },
+    {
+      icon: FileText,
+      label: 'Site web',
+      value: settings?.websiteURL ? 'Configuré' : 'À définir',
+      detail: settings?.websiteURL ?? 'URL manquante',
       color: 'destructive',
     },
   ];
@@ -78,8 +85,8 @@ export function RHStats() {
           tone={stat.color}
           label={stat.label}
           value={stat.value}
-          detail={stat.trendValue}
-          trend={stat.trend}
+          detail={stat.detail}
+          trend="neutral"
         />
       ))}
     </div>

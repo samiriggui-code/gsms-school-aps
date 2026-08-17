@@ -47,6 +47,13 @@ import {
   WORK_TIME_TYPE_VALUES,
   rhEnumFieldOrNull,
 } from '@/lib/rh-form-schema-shared';
+import { AccountLifecycleActions } from '@/components/rh/account-lifecycle-actions';
+import {
+  candidatHubListQueryKey,
+  candidatHubStatsQueryKey,
+  etudiantsListQueryKey,
+  etudiantsStatsQueryKey,
+} from '../constants/query-keys';
 
 interface EtudiantDetailsSettingsProps {
   Etudiant: Etudiant;
@@ -244,6 +251,18 @@ export function EtudiantDetailsSettings({ Etudiant, formRef, onSuccess }: Etudia
   };
 
   return (
+    <div className="space-y-6">
+      <AccountLifecycleActions
+        user={Etudiant}
+        onSuccess={onSuccess}
+        queryKeys={[
+          [...etudiantsListQueryKey],
+          [...etudiantsStatsQueryKey],
+          [...candidatHubListQueryKey],
+          [...candidatHubStatsQueryKey],
+          ['etudiant', Etudiant.id],
+        ]}
+      />
     <Card className="border-none shadow-none bg-transparent">
       <CardContent className="p-0">
         <Form {...form}>
@@ -1046,6 +1065,7 @@ export function EtudiantDetailsSettings({ Etudiant, formRef, onSuccess }: Etudia
         </Form>
       </CardContent>
     </Card>
+    </div>
   );
 }
 

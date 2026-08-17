@@ -3,10 +3,13 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
-import type { CompanyProfileView } from '@/app/(protected)/gestion-ressources/compagnie/profil/types/company-profile-view';
-import type { PrimaryAdminContactPayload } from '@/app/(protected)/gestion-ressources/compagnie/profil/types/school-stats';
-import type { CompanyProfileSchemaType } from '@/app/(protected)/gestion-ressources/compagnie/profil/forms/company-profile-schema';
-import { saveCompanyProfilePayload } from '../lib/company-profile-form-utils';
+import {
+  COMPANY_PROFILE_API,
+  saveCompanyProfilePayload,
+  type CompanyProfileSchemaType,
+  type CompanyProfileView,
+  type PrimaryAdminContactPayload,
+} from '@/lib/company-profile';
 
 type CompanyProfileApiData = {
   companyProfile?: CompanyProfileView;
@@ -38,7 +41,7 @@ export function CompanyProfileProvider({ children }: { children: ReactNode }) {
   const { data, isLoading } = useQuery({
     queryKey: ['company-profile'],
     queryFn: async () => {
-      const response = await apiFetch('/api/sections/administration-facturation/tenant/profile');
+      const response = await apiFetch(COMPANY_PROFILE_API);
       if (!response.ok) throw new Error('fetch');
       const json = (await response.json()) as { data?: CompanyProfileApiData };
       return json.data;
@@ -56,7 +59,7 @@ export function CompanyProfileProvider({ children }: { children: ReactNode }) {
       };
     }) => {
       const body = await saveCompanyProfilePayload(args.payload, args.files);
-      const response = await apiFetch('/api/sections/administration-facturation/tenant/profile', {
+      const response = await apiFetch(COMPANY_PROFILE_API, {
         method: 'POST',
         ...(body instanceof FormData
           ? { body }

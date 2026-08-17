@@ -18,7 +18,10 @@ export type DevisQuoteEmailProps = {
   title: string;
   lines: DevisQuoteLineRow[];
   totalTtc: string;
+  /** Page client interactive (chat, acceptation) — lien signé. */
   plaquetteUrl: string | null;
+  /** Même page en mode impression / PDF navigateur. */
+  plaquettePdfUrl: string | null;
 };
 
 export function DevisQuoteEmail({
@@ -30,6 +33,7 @@ export function DevisQuoteEmail({
   lines,
   totalTtc,
   plaquetteUrl,
+  plaquettePdfUrl,
 }: DevisQuoteEmailProps) {
   return (
     <BareboneShell
@@ -55,10 +59,18 @@ export function DevisQuoteEmail({
       {plaquetteUrl ? (
         <Section className="mb-6 text-left">
           <Button href={plaquetteUrl} className={EMAIL_BUTTON_CLASS}>
-            Ouvrir la plaquette (présentation et suivi)
+            Consulter ma proposition en ligne
           </Button>
-          <Text className="font-13 text-fg-3 mt-4 mb-0 font-sans">
-            Lien personnel et limité dans le temps — merci de ne pas le transférer.
+          {plaquettePdfUrl ? (
+            <Section className="mt-3 text-left">
+              <Button href={plaquettePdfUrl} className={EMAIL_BUTTON_CLASS}>
+                Imprimer ou enregistrer en PDF
+              </Button>
+            </Section>
+          ) : null}
+          <Text className="font-13 text-fg-3 mt-4 mb-0 font-sans leading-relaxed">
+            Sur cette page sécurisée : détail de la formation, montants, questions à notre équipe RH et acceptation du
+            devis en ligne. Lien personnel — merci de ne pas le transférer.
           </Text>
         </Section>
       ) : null}
@@ -116,7 +128,7 @@ export function DevisQuoteEmail({
 
       <Text className="font-16 text-fg m-0 mb-6 font-sans font-semibold">Total TTC : {totalTtc}</Text>
       <Text className="font-13 text-fg-3 m-0 font-sans">
-        Pour toute question, répondez directement à cet e-mail.
+        Pour toute question, utilisez la messagerie sur votre page de proposition ou répondez à cet e-mail.
       </Text>
     </BareboneShell>
   );

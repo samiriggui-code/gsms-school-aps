@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { Suspense, useMemo } from 'react';
+import { Suspense } from 'react';
 import { Container } from '@/components/common/container';
 import {
   Toolbar,
@@ -16,18 +16,12 @@ import { financeDevisExportConfig } from '@/lib/datagrid/export-presets';
 import { FinanceDevisPageActions } from './components/finance-devis-page-actions';
 import { DevisStats } from './components/devis-stats';
 import { DevisList } from './components/devis-list';
+import { DevisWorkflowGuide } from './components/devis-workflow-guide';
 
 export default function Page() {
   const { t } = useTranslation();
-
   const { title, description } = usePageToolbarMeta('/administration-facturation/finance/devis');
-  const exportConfig = useMemo(() => financeDevisExportConfig(), []);
-  const hubHeading = (
-    <div className="space-y-1">
-      <h3 className="text-base font-semibold text-foreground">Devis</h3>
-      <p className="text-muted-foreground text-xs">Liste adaptée aux données devis Finance réelles.</p>
-    </div>
-  );
+  const exportConfig = financeDevisExportConfig();
 
   return (
     <>
@@ -35,7 +29,9 @@ export default function Page() {
         <Toolbar>
           <ToolbarHeading>
             <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
+            <ToolbarDescription>
+              Propositions commerciales chiffrées — avant facturation et encaissement.
+            </ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions className="flex flex-wrap items-center gap-2">
             <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
@@ -44,10 +40,11 @@ export default function Page() {
         </Toolbar>
       </Container>
 
-      <Container className="space-y-5 lg:space-y-7.5">
+      <Container className="space-y-5 lg:space-y-7.5 pb-8">
+        <DevisWorkflowGuide />
         <DevisStats variant="row" />
         <Suspense fallback={null}>
-          <DevisList leaderSlot={hubHeading} />
+          <DevisList />
         </Suspense>
       </Container>
     </>

@@ -101,16 +101,6 @@ function toCandidat(user: any) {
   };
 }
 
-function listFallback(req: NextRequest) {
-  const url = new URL(req.url);
-  const page = Number(url.searchParams.get('page') || 1);
-  const limit = Number(url.searchParams.get('limit') || 10);
-  return ok({
-    items: [],
-    pagination: { page, limit, total: 0 },
-  });
-}
-
 async function parseBody(request: NextRequest) {
   const contentType = request.headers.get('content-type') || '';
   if (contentType.includes('multipart/form-data')) {
@@ -485,10 +475,12 @@ async function handler(request: NextRequest, { params }: Params) {
   const suffix = parts.slice(1).join('/');
 
   if (id && suffix === 'history') {
-    return listFallback(request);
+    return fail('Historique candidat non implémenté.', 501, {
+      endpoint: `rh/candidats/${id}/history`,
+    });
   }
   if (!id) {
-    return listFallback(request);
+    return fail('Identifiant candidat manquant.', 400);
   }
 
   if (method === 'GET') {

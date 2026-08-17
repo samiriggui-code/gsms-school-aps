@@ -129,8 +129,6 @@ export class ModuleWorkspaceService {
         return this.commSeoRedirections(page, limit, q);
       case 'support-tickets':
         return this.supportTickets(page, limit, q);
-      case 'support-base-aide':
-        return this.supportBaseAide(page, limit, q);
       case 'support-incidents':
         return this.supportIncidents(page, limit, q);
       case 'gouvernance-storage':
@@ -671,45 +669,6 @@ export class ModuleWorkspaceService {
       rows: slice,
       pagination: { page, limit, total: filteredTotal },
       footnote: 'File support (SupportTicket).',
-    };
-  }
-
-  private async supportBaseAide(page: number, limit: number, q: string): Promise<WorkspacePayload> {
-    const formations = await this.prisma.formation.findMany({
-      where: { status: FormationLifecycleStatus.ACTIVE },
-      orderBy: { name: 'asc' },
-      select: { name: true, slug: true, description: true },
-    });
-
-    const rowsAll = formations
-      .filter((f) => !q || `${f.name} ${f.slug}`.toLowerCase().includes(q))
-      .map((f) => ({
-        article: f.name,
-        slug: f.slug,
-        extrait: (f.description ?? 'Formation sécurité FORM\'SSI').slice(0, 72),
-        categorie: 'Catalogue',
-      }));
-
-    const { slice, total } = paginate(rowsAll, page, limit);
-
-    return {
-      viewKey: 'support-base-aide',
-      kpis: [
-        { key: 'articles', label: 'Articles', value: formations.length, subtitle: 'Fiches formation' },
-        { key: 'faq', label: 'FAQ dédiée', value: 0, subtitle: 'À enrichir' },
-        { key: 'searches', label: 'Recherches', value: '—', subtitle: 'Analytics à brancher' },
-        { key: 'satisfaction', label: 'Satisfaction', value: '—', subtitle: 'Enquêtes à brancher' },
-        { key: 'coverage', label: 'Couverture', value: formations.length, subtitle: 'Fiches actives' },
-      ],
-      columns: [
-        { key: 'article', label: 'Article' },
-        { key: 'slug', label: 'Slug' },
-        { key: 'extrait', label: 'Extrait' },
-        { key: 'categorie', label: 'Catégorie' },
-      ],
-      rows: slice,
-      pagination: { page, limit, total },
-      footnote: 'Fiches catalogue formations actives (aide self-service). Documentation : /docs dans l’app.',
     };
   }
 
@@ -1292,7 +1251,6 @@ export const MODULE_WORKSPACE_VIEW_KEYS = [
   'comm-seo-meta',
   'comm-seo-redirections',
   'support-tickets',
-  'support-base-aide',
   'support-incidents',
   'gouvernance-storage',
   'gouvernance-demandes',

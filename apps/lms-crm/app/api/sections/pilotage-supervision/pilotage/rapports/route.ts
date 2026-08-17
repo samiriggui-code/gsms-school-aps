@@ -6,7 +6,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 
-const PERIODS = new Set<string>(['day', 'week', 'month', 'year', 'custom']);
+const PERIODS = new Set<string>(['day', 'week', 'month', 'quarter', 'year', 'custom']);
 
 function parsePeriod(raw: string | null, customRange?: { start: Date; end: Date }): PilotagePeriod | 'custom' {
   if (raw === 'custom' && customRange) return 'custom';

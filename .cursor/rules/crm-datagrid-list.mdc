@@ -1,0 +1,52 @@
+---
+description: Pattern unique pour les listes DataGrid du CRM (template collaborateur-list)
+globs: apps/lms-crm/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+# Listes CRM — pattern DataGrid obligatoire
+
+## Référence (gold template)
+
+Copier la structure de :
+
+`apps/lms-crm/app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-list.tsx`
+
+## Stack obligatoire
+
+1. `@tanstack/react-table` : `ColumnDef`, `useReactTable`, `getCoreRowModel`
+2. `DataGridColumnHeader` pour les en-têtes de colonnes
+3. Shell carte + pagination (ne pas réimplémenter) :
+   - **Listes module complètes** : `ModuleDataGridShell` (`components/common/module-data-grid-shell.tsx`)
+   - **Alias finance** : `FinanceModuleDataGrid` (réexport du shell)
+   - **Landings avec lien « Voir tout »** : `ModuleLandingDataGridShell`
+   - **Colonnes dynamiques (CRUD / workspace)** : `ConfigurableListDataGrid`
+4. Standards : `datagrid-standards.tsx`
+   - `MODULE_LANDING_DATAGRID_PAGE_SIZE = 5`
+   - `createModuleLandingPagination()`
+   - `USER_MANAGEMENT_TABLE_LAYOUT` + `USER_MANAGEMENT_TABLE_CLASSNAMES`
+
+## Pagination
+
+- **Toujours 5 lignes/page** sur les landings et listes module (sauf justification documentée).
+- Pagination serveur : `page: pagination.pageIndex + 1`, `limit: pagination.pageSize`, `manualPagination: true`.
+- Pagination client (rapports, sous-ensembles) : `getPaginationRowModel()`.
+
+## Interdit
+
+- `<table>` HTML brut pour une liste module paginée
+- Pagination custom (boutons Préc./Suiv. hors `DataGridPagination`)
+- `pageSize: 10` par défaut sur les nouvelles listes
+- Nouveaux composants dans `components/tables/*` (legacy Metronic)
+
+## Toolbar filtres
+
+Carte séparée au-dessus du shell (voir `devis-list.tsx`) : recherche, filtres, actions — puis `ModuleDataGridShell` ou `ConfigurableListDataGrid`.
+
+## Checklist nouvelle liste
+
+- [ ] Colonnes `useMemo` + `DataGridColumnHeader`
+- [ ] `createModuleLandingPagination()` pour l'état initial
+- [ ] Shell partagé (pas de copie locale DataGrid + Card)
+- [ ] API alignée menu (`/api/sections/...`)
+- [ ] `emptyMessage` + `isLoading` passés au shell

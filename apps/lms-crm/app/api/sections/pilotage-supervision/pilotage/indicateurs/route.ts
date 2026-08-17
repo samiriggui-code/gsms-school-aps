@@ -5,7 +5,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 
-const PERIODS = new Set<PilotagePeriod>(['day', 'week', 'month', 'year']);
+const PERIODS = new Set<PilotagePeriod>(['day', 'week', 'month', 'quarter', 'year']);
 
 function parsePeriod(raw: string | null): PilotagePeriod {
   if (raw && PERIODS.has(raw as PilotagePeriod)) return raw as PilotagePeriod;
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         moduleId,
         period,
         available: false,
-        message: 'Module en cours de déploiement — données gestion ressources actives.',
+        message: 'Module non reconnu ou données indisponibles.',
       });
     }
     return ok({ ...data, available: true });

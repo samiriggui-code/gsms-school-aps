@@ -1,0 +1,12 @@
+{
+  "name": "default",
+  "label": "Circuit session standard (Qualiopi)",
+  "milestones": [
+    { "key": "jMinus15", "offsetDays": -15, "label": "Convention entreprise", "action": "notify" },
+    { "key": "jMinus10", "offsetDays": -10, "label": "Convocation + docs formateur", "action": "notify" },
+    { "key": "jMinus5", "offsetDays": -5, "label": "Auto-évaluation + email candidat", "action": "notify" },
+    { "key": "j0", "offsetDays": 0, "label": "Rappel émargement J0", "action": "notify" },
+    { "key": "jFin", "offsetDays": 0, "label": "Satisfaction à chaud", "action": "notify" },
+    { "key": "jPlus45", "offsetDays": 45, "label": "Satisfaction à froid", "action": "notify" }
+  ]
+}

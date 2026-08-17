@@ -1,69 +1,81 @@
 'use client';
-import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
 
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { apiFetch } from '@/lib/api';
-import { AlertCircle, Clock, ShieldAlert, ArrowRight } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { AlertTriangle, LifeBuoy, ArrowRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import Link from 'next/link';
+import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
-interface Alert {
+type UrgentItem = {
   id: string;
-  userId: string;
-  userName: string;
-  type: string;
-  itemType: string;
-  expiryDate: string;
-  severity: 'CRITICAL' | 'WARNING';
-}
-
-function normalizeAlerts(payload: unknown): Alert[] {
-  if (Array.isArray(payload)) {
-    return payload as Alert[];
-  }
-  if (payload && typeof payload === 'object') {
-    const record = payload as Record<string, unknown>;
-    if (Array.isArray(record.data)) return record.data as Alert[];
-    if (record.data && typeof record.data === 'object') {
-      const nested = record.data as Record<string, unknown>;
-      if (Array.isArray(nested.items)) return nested.items as Alert[];
-    }
-    if (Array.isArray(record.items)) return record.items as Alert[];
-  }
-  return [];
-}
+  kind: 'ticket' | 'incident';
+  reference: string;
+  title: string;
+  severity: string;
+  href: string;
+};
 
 export function ComplianceAlerts() {
-  const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: alerts = [], isLoading } = useQuery({
+    queryKey: ['support-urgent-alerts'],
+    queryFn: async (): Promise<UrgentItem[]> => {
+      const [ticketsRes, incidentsRes] = await Promise.all([
+        apiFetch('/api/sections/support-qualite/support/tickets?limit=50&status=OPEN'),
+        apiFetch('/api/sections/support-qualite/support/incidents?limit=50'),
+      ]);
+      const items: UrgentItem[] = [];
 
-  useEffect(() => {
-    const fetchAlerts = async () => {
-      try {
-        const response = await apiFetch('/api/sections/gestion-ressources/rh/compliance/alerts');
-        if (response.ok) {
-          const data = await response.json();
-          setAlerts(normalizeAlerts(data));
+      if (ticketsRes.ok) {
+        const json = await ticketsRes.json();
+        const tickets = unwrapSectionApiData<{ items: { id: string; referenceCode: string; subject: string; priority: string }[] }>(json);
+        for (const t of tickets?.items ?? []) {
+          if (t.priority === 'HIGH' || t.priority === 'URGENT') {
+            items.push({
+              id: t.id,
+              kind: 'ticket',
+              reference: t.referenceCode,
+              title: t.subject,
+              severity: t.priority,
+              href: `/support-qualite/support/tickets?ticket=${t.id}`,
+            });
+          }
         }
-      } catch (error) {
-        console.error("Erreur chargement alertes:", error);
-      } finally {
-        setIsLoading(false);
       }
-    };
 
-    fetchAlerts();
-  }, []);
+      if (incidentsRes.ok) {
+        const json = await incidentsRes.json();
+        const incidents = unwrapSectionApiData<{ items: { id: string; referenceCode: string; title: string; severity: string; status: string }[] }>(json);
+        for (const i of incidents?.items ?? []) {
+          if (
+            (i.severity === 'HIGH' || i.severity === 'CRITICAL') &&
+            i.status !== 'RESOLVED' &&
+            i.status !== 'CLOSED'
+          ) {
+            items.push({
+              id: i.id,
+              kind: 'incident',
+              reference: i.referenceCode,
+              title: i.title,
+              severity: i.severity,
+              href: `/support-qualite/support/incidents?incident=${i.id}`,
+            });
+          }
+        }
+      }
+
+      return items.slice(0, 8);
+    },
+    staleTime: 60_000,
+  });
 
   if (isLoading) {
     return (
       <Card className="h-full">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-bold uppercase tracking-wider">Alertes de Conformité</CardTitle>
+          <CardTitle className="text-sm font-bold uppercase">À traiter en priorité</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -79,55 +91,42 @@ export function ComplianceAlerts() {
       <CardHeader className="pb-3 flex flex-row border-b border-dashed items-center justify-between">
         <div className="space-y-1">
           <CardTitle className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
-            <ShieldAlert className="size-4 text-destructive" />
-            Alertes Critiques
+            <AlertTriangle className="size-4 text-destructive" />
+            À traiter en priorité
           </CardTitle>
-          <p className="text-xs text-muted-foreground font-medium">Expirations à 30 jours</p>
+          <p className="text-xs text-muted-foreground">Tickets urgents et incidents critiques</p>
         </div>
         <Badge variant="outline" className="font-bold">{alerts.length}</Badge>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {alerts.length > 0 ? alerts.map((alert) => (
-            <div key={alert.id} className="group relative bg-background border border-border rounded-lg p-3 hover:border-primary/30 transition-all">
-              <div className="flex items-start justify-between gap-3">
-                <div className="space-y-1">
-                  <p className="text-xs font-bold text-foreground/90 uppercase truncate max-w-[150px]">
-                    {alert.userName}
-                  </p>
-                  <div className="flex items-center gap-1.5">
-                    <Badge variant="outline" size="xs" className="text-[9px] font-bold uppercase tracking-tighter py-0">
-                      {alert.itemType.replace('_', ' ')}
-                    </Badge>
-                  </div>
-                </div>
-                
-                <div className="text-right">
-                  <div className={`flex items-center justify-end gap-1 text-[10px] font-bold ${
-                    alert.severity === 'CRITICAL' ? 'text-destructive' : 'text-warning'
-                  }`}>
-                    <Clock className="size-3" />
-                    {formatDistanceToNow(new Date(alert.expiryDate), { addSuffix: true, locale: fr })}
-                  </div>
-                  <p className="text-[9px] text-muted-foreground font-medium">
-                    le {new Date(alert.expiryDate).toLocaleDateString('fr-FR')}
-                  </p>
-                </div>
-              </div>
-              
-              <Link 
-                href={`/gestion-ressources/rh/collaborateurs?id=${alert.userId}`}
-                className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 bg-primary/5 flex items-center justify-center transition-opacity rounded-lg"
+          {alerts.length > 0 ? (
+            alerts.map((alert) => (
+              <Link
+                key={`${alert.kind}-${alert.id}`}
+                href={alert.href}
+                className="group flex items-start justify-between gap-3 rounded-lg border border-border bg-background p-3 hover:border-primary/30 transition-all"
               >
-                <ArrowRight className="size-4 text-primary" />
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    {alert.kind === 'ticket' ? (
+                      <LifeBuoy className="size-3.5 text-primary shrink-0" />
+                    ) : (
+                      <AlertTriangle className="size-3.5 text-destructive shrink-0" />
+                    )}
+                    <span className="font-mono text-2xs text-muted-foreground">{alert.reference}</span>
+                  </div>
+                  <p className="text-xs font-medium truncate">{alert.title}</p>
+                  <Badge variant="outline" className="text-2xs uppercase">
+                    {alert.kind === 'ticket' ? 'Ticket' : 'Incident'} · {alert.severity}
+                  </Badge>
+                </div>
+                <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary shrink-0 mt-1" />
               </Link>
-            </div>
-          )) : (
+            ))
+          ) : (
             <div className="py-8 flex flex-col items-center justify-center text-center">
-              <div className="size-10 bg-success/10 rounded-full flex items-center justify-center mb-2">
-                <ShieldAlert className="size-5 text-success" />
-              </div>
-              <p className="text-xs font-bold text-muted-foreground">Aucune alerte critique</p>
+              <p className="text-xs font-bold text-muted-foreground">Aucune urgence en cours</p>
             </div>
           )}
         </div>

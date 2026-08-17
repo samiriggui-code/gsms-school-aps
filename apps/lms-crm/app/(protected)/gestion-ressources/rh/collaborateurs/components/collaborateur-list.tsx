@@ -2,7 +2,8 @@
 import { useTranslation } from '@/hooks/useTranslation';
 import { MODULE_LANDING_DATAGRID_PAGE_SIZE, DATAGRID_SELECTION_BAR_WRAPPER, DATAGRID_SELECTION_BAR_INNER, DATAGRID_SELECTION_BAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ColumnDef,
@@ -82,6 +83,10 @@ const CollaborateurList = ({
   onProfileSegmentChange: setSelectedProfileType,
 }: CollaborateurListProps) => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const deepLinkUserId = searchParams.get('userId')?.trim() || '';
+  const appliedDeepLinkRef = useRef<string>('');
   const queryClient = useQueryClient();
   const [view, setView] = useState<'table' | 'grid'>('table');
   const [pagination, setPagination] = useState<PaginationState>({
@@ -99,6 +104,45 @@ const CollaborateurList = ({
   
   const [selectedCollaborateurForDetails, setSelectedCollaborateurForDetails] = useState<Collaborateur | null>(null);
   const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState(false);
+
+  // Deep-link notifs : ?userId=
+  useEffect(() => {
+    if (!deepLinkUserId) {
+      appliedDeepLinkRef.current = '';
+      return;
+    }
+    if (appliedDeepLinkRef.current === deepLinkUserId) return;
+    appliedDeepLinkRef.current = deepLinkUserId;
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        const response = await apiFetch(
+          `/api/sections/gestion-ressources/rh/collaborateurs/${encodeURIComponent(deepLinkUserId)}`,
+        );
+        if (!response.ok) return;
+        const result = await response.json();
+        const row = (result?.data ?? result) as Collaborateur | null;
+        if (cancelled || !row?.id) return;
+        setSelectedCollaborateurForDetails(row);
+        setIsDetailsSheetOpen(true);
+      } catch {
+        /* ignore deep-link fetch errors */
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [deepLinkUserId]);
+
+  const clearDeepLink = () => {
+    if (!searchParams.get('userId')) return;
+    const next = new URLSearchParams(searchParams.toString());
+    next.delete('userId');
+    const qs = next.toString();
+    router.replace(qs ? `?${qs}` : window.location.pathname, { scroll: false });
+  };
 
   const { isSyncing, sync: handleSync } = useDatagridSync({
     preset: 'rhPersonnel',
@@ -570,7 +614,14 @@ const CollaborateurList = ({
 
       <CollaborateurDetailsSheet 
         open={isDetailsSheetOpen} 
-        onOpenChange={setIsDetailsSheetOpen} 
+        onOpenChange={(open) => {
+          setIsDetailsSheetOpen(open);
+          if (!open) {
+            setSelectedCollaborateurForDetails(null);
+            clearDeepLink();
+            appliedDeepLinkRef.current = '';
+          }
+        }} 
         collaborateur={selectedCollaborateurForDetails} 
       />
     </>

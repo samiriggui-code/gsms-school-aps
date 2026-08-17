@@ -57,6 +57,8 @@ const SHEET_SELECT_CONTENT_CLASS = cn(
 type CentralPreinscriptionSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Pré-sélectionne la formation à l’ouverture (depuis une fiche catalogue landing). */
+  initialFormationSlug?: string | null;
 };
 
 type FormState = {
@@ -151,6 +153,7 @@ function fundingLabelForKey(key: FundingKey, funding: Record<FundingKey, string>
 export function CentralPreinscriptionSheet({
   open,
   onOpenChange,
+  initialFormationSlug = null,
 }: CentralPreinscriptionSheetProps) {
   const { languageCode } = useLanguage();
   const locale = languageCode === 'en' ? 'en' : 'fr';
@@ -169,8 +172,15 @@ export function CentralPreinscriptionSheet({
       setIsSubmitting(false);
       setCatalogSessions([]);
       setSessionsLoading(false);
+      return;
     }
-  }, [open]);
+    const slug = initialFormationSlug?.trim();
+    if (slug) {
+      setForm({ ...EMPTY_FORM, formationSlug: slug });
+      setCompliance(EMPTY_COMPLIANCE);
+      setIsSubmitting(false);
+    }
+  }, [open, initialFormationSlug]);
 
   useEffect(() => {
     if (!form.formationSlug) {

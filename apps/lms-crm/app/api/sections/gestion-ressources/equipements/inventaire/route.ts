@@ -15,6 +15,15 @@ import {
   isLegacyEquipmentClone,
 } from '@/lib/equipment-catalog';
 import { buildStatusStockStats } from './_lib/stock-stats';
+import {
+  getEquipmentCatalogKey,
+  getEquipmentCatalogLabel,
+} from '@/lib/equipment-catalog-taxonomy';
+import {
+  buildCatalogStockStats,
+  loadEquipmentDispatchContext,
+  resolveUnitDispatch,
+} from '@/lib/equipment-stock-ledger';
 
 function buildSearchWhere(query: string | null) {
   if (!query) return {};
@@ -78,41 +87,46 @@ function mapEquipmentRow(item: {
 
 async function fetchCatalogEntries(query: string | null) {
   const where = buildSearchWhere(query);
-  const rows = await prisma.equipment.findMany({
-    where,
-    orderBy: [{ label: 'asc' }, { serialNumber: 'asc' }],
-    include: {
-      assignedSite: true,
-      _count: {
-        select: {
-          stockMovements: true,
-          maintenanceItems: true,
-          sessions: true,
+  const [rows, dispatchCtx] = await Promise.all([
+    prisma.equipment.findMany({
+      where,
+      orderBy: [{ label: 'asc' }, { serialNumber: 'asc' }],
+      include: {
+        assignedSite: true,
+        _count: {
+          select: {
+            stockMovements: true,
+            maintenanceItems: true,
+            sessions: true,
+          },
         },
       },
-    },
-  });
+    }),
+    loadEquipmentDispatchContext(prisma),
+  ]);
 
   const filtered = rows.filter((row) => !isLegacyEquipmentClone(row.serialNumber));
-  const byLabel = new Map<string, typeof filtered>();
+  const byCatalogKey = new Map<string, typeof filtered>();
 
   for (const row of filtered) {
-    const list = byLabel.get(row.label) ?? [];
+    const key = getEquipmentCatalogKey(row.metadata, row.label);
+    const list = byCatalogKey.get(key) ?? [];
     list.push(row);
-    byLabel.set(row.label, list);
+    byCatalogKey.set(key, list);
   }
 
-  return Array.from(byLabel.entries()).map(([label, units]) => {
+  return Array.from(byCatalogKey.entries()).map(([catalogKey, units]) => {
     const representative =
       units.find((u) => extractUnitIndex(u.serialNumber) === 1) ?? units[0];
-    const stats = buildStatusStockStats(units);
+    const displayLabel = getEquipmentCatalogLabel(representative.metadata, representative.label);
+    const stats = buildCatalogStockStats(units, dispatchCtx);
 
     return {
       id: representative.id,
-      catalogKey: label,
+      catalogKey,
       isCatalogEntry: true,
       serialNumber: getCatalogBaseSerial(representative.serialNumber),
-      label,
+      label: displayLabel,
       type: representative.type || null,
       status: 'CATALOG' as const,
       avatar:
@@ -124,13 +138,17 @@ async function fetchCatalogEntries(query: string | null) {
       metadata: representative.metadata,
       unitCount: units.length,
       stockStats: stats,
-      units: units.map((u) => ({
-        id: u.id,
-        serialNumber: u.serialNumber,
-        status: u.status,
-        unitIndex: extractUnitIndex(u.serialNumber),
-        unitLabel: u.serialNumber,
-      })),
+      units: units.map((u) => {
+        const dispatch = resolveUnitDispatch(u, dispatchCtx);
+        return {
+          id: u.id,
+          serialNumber: u.serialNumber,
+          status: u.status,
+          unitIndex: extractUnitIndex(u.serialNumber),
+          unitLabel: u.serialNumber,
+          dispatch,
+        };
+      }),
     };
   });
 }
@@ -148,6 +166,7 @@ export async function GET(request: NextRequest) {
     const query = url.searchParams.get('query');
     const mode = url.searchParams.get('mode');
     const catalogLabel = url.searchParams.get('label');
+    const catalogKeyParam = url.searchParams.get('catalogKey');
 
     if (mode === 'catalog') {
       const all = await fetchCatalogEntries(query);
@@ -164,47 +183,67 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (mode === 'catalog-units' && catalogLabel) {
-      const units = await prisma.equipment.findMany({
-        where: {
-          label: catalogLabel,
-          ...(query ? buildSearchWhere(query) : {}),
-        },
-        orderBy: { serialNumber: 'asc' },
-        include: {
-          assignedSite: true,
-          maintenanceItems: { orderBy: { scheduledDate: 'desc' }, take: 3 },
-          sessions: {
-            take: 5,
-            orderBy: { startDate: 'desc' },
-            select: {
-              id: true,
-              title: true,
-              startDate: true,
-              endDate: true,
-              location: true,
+    if (mode === 'catalog-units' && (catalogKeyParam || catalogLabel)) {
+      const catalogWhere = catalogKeyParam
+        ? {
+            OR: [
+              { metadata: { path: ['catalogKey'], equals: catalogKeyParam } },
+              ...(catalogLabel ? [{ label: catalogLabel }] : []),
+            ],
+          }
+        : { label: catalogLabel! };
+
+      const [units, dispatchCtx] = await Promise.all([
+        prisma.equipment.findMany({
+          where: {
+            ...catalogWhere,
+            ...(query ? buildSearchWhere(query) : {}),
+          },
+          orderBy: { serialNumber: 'asc' },
+          include: {
+            assignedSite: true,
+            roomFixedAssignment: {
+              include: { venueRoom: { select: { id: true, name: true } } },
+            },
+            maintenanceItems: { orderBy: { scheduledDate: 'desc' }, take: 3 },
+            _count: {
+              select: {
+                stockMovements: true,
+                maintenanceItems: true,
+                sessions: true,
+              },
             },
           },
-          _count: {
-            select: {
-              stockMovements: true,
-              maintenanceItems: true,
-              sessions: true,
-            },
-          },
-        },
-      });
+        }),
+        loadEquipmentDispatchContext(prisma),
+      ]);
 
       const filtered = units.filter((u) => !isLegacyEquipmentClone(u.serialNumber));
       const statusStats = filtered.map((u) => ({ label: u.label, status: u.status }));
+      const resolvedKey =
+        catalogKeyParam ??
+        (filtered[0] ? getEquipmentCatalogKey(filtered[0].metadata, filtered[0].label) : catalogLabel);
+      const resolvedLabel =
+        catalogLabel ??
+        (filtered[0] ? getEquipmentCatalogLabel(filtered[0].metadata, filtered[0].label) : resolvedKey);
 
       return ok({
-        catalogKey: catalogLabel,
-        label: catalogLabel,
+        catalogKey: resolvedKey,
+        label: resolvedLabel,
         isCatalogEntry: true,
         assignedSite: { name: EQUIPMENT_HEADQUARTERS_SITE_NAME },
-        units: filtered.map((u) => mapEquipmentRow(u, statusStats)),
-        stockStats: buildStatusStockStats(filtered),
+        units: filtered.map((u) => ({
+          ...mapEquipmentRow(u, statusStats),
+          dispatch: resolveUnitDispatch(u, dispatchCtx),
+          roomAssignment: u.roomFixedAssignment
+            ? {
+                roomId: u.roomFixedAssignment.venueRoomId,
+                roomName: u.roomFixedAssignment.venueRoom.name,
+                quantity: u.roomFixedAssignment.quantity,
+              }
+            : null,
+        })),
+        stockStats: buildCatalogStockStats(filtered, dispatchCtx),
       });
     }
 

@@ -42,6 +42,24 @@
   break-inside: avoid-page;
 }
 
+.report-section--breakable {
+  break-inside: auto;
+}
+
+.report-page-break {
+  break-before: page;
+  page-break-before: always;
+  height: 0;
+}
+
+.report-document--qualiopi .report-header {
+  border-bottom-color: #4338ca;
+}
+
+.report-document--finance .report-header {
+  border-bottom-color: #047857;
+}
+
 .report-header {
   break-after: avoid-page;
 }

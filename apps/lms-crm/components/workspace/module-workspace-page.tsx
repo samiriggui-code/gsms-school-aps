@@ -1,9 +1,17 @@
 'use client';
 
 import { useMemo, useState, type ReactNode } from 'react';
+import { PaginationState } from '@tanstack/react-table';
 import { RefreshCw, Search } from 'lucide-react';
 import type { ModuleWorkspaceViewKey } from '@repo/api-core';
 import { Container } from '@/components/common/container';
+import {
+  ConfigurableListDataGrid,
+  type ConfigurableListColumn,
+} from '@/components/common/configurable-list-datagrid';
+import {
+  createModuleLandingPagination,
+} from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import {
   Toolbar,
   ToolbarActions,
@@ -13,7 +21,7 @@ import {
 } from '@/components/common/toolbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
@@ -43,27 +51,28 @@ export function ModuleWorkspacePage({ viewKey, beforeContent, charts, afterConte
   const description = t(`workspace.${viewKey}.description`, { defaultValue: fallback.description });
   const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
 
   const { data, isLoading, isFetching, refetch } = useModuleWorkspaceQuery({
     viewKey,
-    page,
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
     q: search,
   });
 
-  const totalPages = useMemo(() => {
-    const total = data?.pagination.total ?? 0;
-    const limit = data?.pagination.limit ?? 15;
-    return Math.max(1, Math.ceil(total / limit));
-  }, [data?.pagination.limit, data?.pagination.total]);
+  const gridColumns = useMemo<ConfigurableListColumn[]>(() => {
+    const cols = data?.columns ?? [];
+    return cols.map((col) => ({
+      key: col.key,
+      label: workspaceColumnLabel(t, viewKey, col.key, col.label),
+      align: col.align,
+    }));
+  }, [data?.columns, t, viewKey]);
 
-  const columns = data?.columns ?? [];
-  const columnCount = Math.max(columns.length, 4);
-
-  const onSearch = () => {
-    setPage(1);
-    setSearch(q.trim());
-  };
+  const rows = useMemo(
+    () => (data?.rows ?? []) as Record<string, unknown>[],
+    [data?.rows],
+  );
 
   return (
     <>
@@ -126,122 +135,54 @@ export function ModuleWorkspacePage({ viewKey, beforeContent, charts, afterConte
           <div className="grid min-w-0 grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-8">{charts}</div>
         ) : null}
 
-        <Card>
-          <CardHeader className="flex flex-col gap-3 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="text-base font-semibold text-foreground">{t('crud.consolidatedData')}</h3>
-              {data?.footnote ? (
-                <p className="text-xs text-muted-foreground">
-                  {t(`workspace.${viewKey}.footnote`, { defaultValue: data.footnote })}
-                </p>
-              ) : null}
-            </div>
-            <div className="flex w-full max-w-md items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && onSearch()}
-                  placeholder={t('crud.search')}
-                  className="pl-9"
-                />
-              </div>
-              <Button type="button" variant="secondary" onClick={onSearch}>
-                {t('crud.filter')}
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px] text-sm">
-                <thead>
-                  <tr className="border-b border-border/70 bg-muted/30">
-                    {columns.map((col) => (
-                      <th
-                        key={col.key}
-                        className={cn(
-                          'px-4 py-3 font-medium text-muted-foreground',
-                          col.align === 'right' ? 'text-right' : 'text-left',
-                        )}
-                      >
-                        {workspaceColumnLabel(t, viewKey, col.key, col.label)}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {isLoading ? (
-                    Array.from({ length: 5 }).map((_, i) => (
-                      <tr key={i} className="border-b border-border/50">
-                        <td colSpan={columnCount} className="px-4 py-4">
-                          <Skeleton className="h-4 w-full" />
-                        </td>
-                      </tr>
-                    ))
-                  ) : (data?.rows.length ?? 0) === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={Math.max(columns.length, 1)}
-                        className="px-4 py-10 text-center text-muted-foreground"
-                      >
-                        {t('crud.emptyView')}
-                      </td>
-                    </tr>
-                  ) : (
-                    data!.rows.map((row, idx) => (
-                      <tr key={idx} className="border-b border-border/50 hover:bg-muted/20">
-                        {columns.map((col) => (
-                          <td
-                            key={col.key}
-                            className={cn(
-                              'px-4 py-3 text-foreground',
-                              col.align === 'right' ? 'text-right' : 'text-left',
-                            )}
-                          >
-                            {row[col.key] ?? '—'}
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {(data?.pagination.total ?? 0) > (data?.pagination.limit ?? 15) ? (
-              <div className="flex items-center justify-between border-t border-border/60 px-4 py-3">
-                <p className="text-xs text-muted-foreground">
-                  {t('crud.pageWithCount', {
-                    page,
-                    total: totalPages,
-                    count: data?.pagination.total ?? 0,
-                  })}
-                </p>
-                <div className="flex gap-2">
+        <ConfigurableListDataGrid
+          columns={gridColumns}
+          rows={rows}
+          recordCount={data?.pagination.total ?? 0}
+          isLoading={isLoading}
+          emptyMessage={t('crud.emptyView')}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          header={{
+            title: t('crud.consolidatedData'),
+            subtitle: data?.footnote
+              ? t(`workspace.${viewKey}.footnote`, { defaultValue: data.footnote })
+              : undefined,
+          }}
+          toolbar={
+            <Card className="border-border shadow-none">
+              <CardHeader className="flex flex-col gap-3 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-end">
+                <div className="flex w-full max-w-md items-center gap-2 sm:ms-auto">
+                  <div className="relative flex-1">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      value={q}
+                      onChange={(e) => setQ(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          setSearch(q.trim());
+                          setPagination((p) => ({ ...p, pageIndex: 0 }));
+                        }
+                      }}
+                      placeholder={t('crud.search')}
+                      className="pl-9"
+                    />
+                  </div>
                   <Button
                     type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    variant="secondary"
+                    onClick={() => {
+                      setSearch(q.trim());
+                      setPagination((p) => ({ ...p, pageIndex: 0 }));
+                    }}
                   >
-                    {t('crud.previous')}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                  >
-                    {t('crud.nextFull')}
+                    {t('crud.filter')}
                   </Button>
                 </div>
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
+              </CardHeader>
+            </Card>
+          }
+        />
         {afterContent}
       </Container>
 

@@ -55,6 +55,7 @@ import { Upload } from '@/app/(protected)/gestion-academique/vie-scolaire/format
 import { buildFormationSheetViewModel } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/utils/formation-catalog-sheet-view-model';
 import type { FormationSessionApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 import { FormationSessionEquipmentPickGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-equipment-pick-grid';
+import { SessionEquipmentDispatchGuide } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-equipment-dispatch-guide';
 import { FormationSessionParticipantPickGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-participant-pick-grid';
 import { FormationSessionOverviewMetrics } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-overview-metrics';
 import { sessionsListQueryKey } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/sessions-manager';
@@ -64,6 +65,12 @@ import { sessionKindDerivedFromFormationParcours } from '@/app/(protected)/gesti
 const formateursQueryKey = ['gestion-academique', 'vie-scolaire', 'sessions', 'formateurs'] as const;
 const equipmentPickQueryKey = ['gestion-academique', 'vie-scolaire', 'sessions', 'equipment-pick'] as const;
 const venueRoomsQueryKey = ['gestion-academique', 'vie-scolaire', 'sessions', 'venue-rooms'] as const;
+
+type VenueRoomOption = {
+  id: string;
+  name: string;
+  shortCode?: string | null;
+};
 /** Clé distincte de `sessionsListQueryKey` : le manager met en cache `{ items }`, pas un tableau brut. */
 const sessionsForEquipmentPickQueryKey = [
   ...sessionsListQueryKey,
@@ -86,6 +93,7 @@ const formSchema = z
     endLocal: z.string(),
     registrationClosesLocal: z.string(),
     examLocal: z.string(),
+    examVenueRoomId: z.string(),
     traineesMin: z.string(),
     traineesMax: z.string(),
     trainerUserId: z.string(),
@@ -133,7 +141,11 @@ function parseOptionalTrainees(s: string): number | null {
   return n;
 }
 
-function buildSessionExtrasPayload(values: FormationSessionAddSheetValues, equipmentIds: Set<string>) {
+function buildSessionExtrasPayload(
+  values: FormationSessionAddSheetValues,
+  equipmentIds: Set<string>,
+  examEquipmentIds: Set<string>,
+) {
   const traineesMin = parseOptionalTrainees(values.traineesMin);
   const traineesMax = parseOptionalTrainees(values.traineesMax);
   if (values.traineesMin.trim() && traineesMin === null) {
@@ -147,14 +159,17 @@ function buildSessionExtrasPayload(values: FormationSessionAddSheetValues, equip
   }
   const trainer = values.trainerUserId.trim();
   const room = values.venueRoomId.trim();
+  const examRoom = values.examVenueRoomId.trim();
   return {
     registrationClosesAt: isoOrNull(values.registrationClosesLocal),
     examDate: isoOrNull(values.examLocal),
+    examVenueRoomId: examRoom ? examRoom : null,
     traineesMin,
     traineesMax,
     trainerUserId: trainer ? trainer : null,
     venueRoomId: room ? room : null,
     reservedEquipmentIds: Array.from(equipmentIds),
+    examReservedEquipmentIds: Array.from(examEquipmentIds),
   };
 }
 
@@ -193,6 +208,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
   const [activeTab, setActiveTab] = useState('overview');
   const [participantIds, setParticipantIds] = useState<Set<string>>(new Set());
   const [equipmentIds, setEquipmentIds] = useState<Set<string>>(new Set());
+  const [examEquipmentIds, setExamEquipmentIds] = useState<Set<string>>(new Set());
 
   const form = useForm<FormationSessionAddSheetValues>({
     resolver: zodResolver(formSchema),
@@ -204,6 +220,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       endLocal: '',
       registrationClosesLocal: '',
       examLocal: '',
+      examVenueRoomId: '',
       traineesMin: '',
       traineesMax: '',
       trainerUserId: '',
@@ -291,12 +308,12 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
 
   const venueRoomsQuery = useQuery({
     queryKey: venueRoomsQueryKey,
-    queryFn: async (): Promise<{ id: string; name: string }[]> => {
+    queryFn: async (): Promise<VenueRoomOption[]> => {
       const res = await apiFetch('/api/sections/gestion-academique/vie-scolaire/sessions/venue-rooms');
       if (!res.ok) throw new Error('Salles indisponibles.');
       const j = await res.json();
       if (!j?.success || !Array.isArray(j?.data?.items)) throw new Error('Réponse salles invalide.');
-      return j.data.items as { id: string; name: string }[];
+      return j.data.items as VenueRoomOption[];
     },
     staleTime: 120_000,
     enabled: open,
@@ -336,6 +353,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       endLocal: '',
       registrationClosesLocal: '',
       examLocal: '',
+      examVenueRoomId: '',
       traineesMin: '',
       traineesMax: '',
       trainerUserId: '',
@@ -343,6 +361,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
     });
     setParticipantIds(new Set());
     setEquipmentIds(new Set());
+    setExamEquipmentIds(new Set());
     setActiveTab('overview');
   };
 
@@ -355,6 +374,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       endLocal: toDatetimeLocal(row.endDate),
       registrationClosesLocal: toDatetimeLocal(row.registrationClosesAt),
       examLocal: toDatetimeLocal(row.examDate),
+      examVenueRoomId: row.examVenueRoomId ?? '',
       traineesMin: row.traineesMin != null ? String(row.traineesMin) : '',
       traineesMax: row.traineesMax != null ? String(row.traineesMax) : '',
       trainerUserId: row.trainerUserId ?? '',
@@ -362,6 +382,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
     });
     setParticipantIds(new Set(row.participants.map((p) => p.userId)));
     setEquipmentIds(new Set(row.reservedEquipmentIds ?? []));
+    setExamEquipmentIds(new Set(row.examReservedEquipmentIds ?? []));
     setActiveTab('overview');
   };
 
@@ -396,6 +417,8 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
   const traineesMaxWatch = form.watch('traineesMax');
   const trainerWatch = form.watch('trainerUserId');
   const venueRoomWatch = form.watch('venueRoomId');
+  const examVenueRoomWatch = form.watch('examVenueRoomId');
+  const examLocalWatch = form.watch('examLocal');
   const startLocalWatch = form.watch('startLocal');
   const endLocalWatch = form.watch('endLocal');
 
@@ -470,7 +493,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       if (!formationRow) throw new Error('Formation catalogue introuvable.');
       let extras: ReturnType<typeof buildSessionExtrasPayload>;
       try {
-        extras = buildSessionExtrasPayload(values, equipmentIds);
+        extras = buildSessionExtrasPayload(values, equipmentIds, examEquipmentIds);
       } catch (e) {
         throw new Error((e as Error).message);
       }
@@ -482,6 +505,8 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
         endDate: values.endLocal ? new Date(values.endLocal).toISOString() : null,
         registrationClosesAt: extras.registrationClosesAt,
         examDate: extras.examDate,
+        examVenueRoomId: extras.examVenueRoomId,
+        examReservedEquipmentIds: extras.examReservedEquipmentIds,
         traineesMin: extras.traineesMin,
         traineesMax: extras.traineesMax,
         trainerUserId: extras.trainerUserId,
@@ -515,7 +540,7 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
       if (!formationRow) throw new Error('Formation catalogue introuvable.');
       let extras: ReturnType<typeof buildSessionExtrasPayload>;
       try {
-        extras = buildSessionExtrasPayload(values, equipmentIds);
+        extras = buildSessionExtrasPayload(values, equipmentIds, examEquipmentIds);
       } catch (e) {
         throw new Error((e as Error).message);
       }
@@ -526,6 +551,8 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
         endDate: values.endLocal ? new Date(values.endLocal).toISOString() : null,
         registrationClosesAt: extras.registrationClosesAt,
         examDate: extras.examDate,
+        examVenueRoomId: extras.examVenueRoomId,
+        examReservedEquipmentIds: extras.examReservedEquipmentIds,
         traineesMin: extras.traineesMin,
         traineesMax: extras.traineesMax,
         trainerUserId: extras.trainerUserId,
@@ -910,6 +937,41 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
                             )}
                           />
                         </div>
+                        <FormField
+                          control={form.control}
+                          name="examVenueRoomId"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Salle d&apos;examen (PCS / plateau / ronde)</FormLabel>
+                              <Select
+                                value={field.value?.trim() ? field.value : '__none__'}
+                                onValueChange={(v) => field.onChange(v === '__none__' ? '' : v)}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="PCS Orion, Plateau Phoenix…" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent className="max-h-[min(320px,70vh)]">
+                                  <SelectItem value="__none__">— Non renseignée —</SelectItem>
+                                  {(venueRoomsQuery.data ?? []).map((room) => (
+                                    <SelectItem key={room.id} value={room.id}>
+                                      <span className="font-medium">{room.name}</span>
+                                      {room.shortCode ? (
+                                        <span className="text-muted-foreground"> · {room.shortCode}</span>
+                                      ) : null}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <p className="text-[11px] text-muted-foreground">
+                                Orion = PCS · Phoenix = plateau incendie SSIAP · Atlas = parcours ronde. Le matériel
+                                fixe (VSS, SSI, radio…) est géré dans l&apos;inventaire salle.
+                              </p>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                         <div className="grid grid-cols-2 gap-4 sm:grid-cols-2">
                           <FormField
                             control={form.control}
@@ -1040,8 +1102,30 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
                             </FormItem>
                           )}
                         />
+                        <SessionEquipmentDispatchGuide
+                          formationId={formationId}
+                          venueRoomId={venueRoomWatch?.trim() || null}
+                          examVenueRoomId={examVenueRoomWatch?.trim() || null}
+                          hasExamDate={Boolean(examLocalWatch?.trim())}
+                          traineesMax={parseOptionalTrainees(traineesMaxWatch)}
+                          sessionKind={
+                            selectedFormation
+                              ? sessionKindDerivedFromFormationParcours(selectedFormation.parcoursSpecialite)
+                              : draft?.sessionKind ?? null
+                          }
+                          startAt={equipmentSessionRange.start}
+                          endAt={equipmentSessionRange.end}
+                          selectedEquipmentIds={[
+                            ...Array.from(equipmentIds),
+                            ...Array.from(examEquipmentIds),
+                          ]}
+                        />
                         <div>
-                          <p className="mb-2 text-sm font-medium text-foreground">Équipements réservés</p>
+                          <p className="mb-1 text-sm font-medium text-foreground">Équipements mobiles réservés</p>
+                          <p className="mb-2 text-[11px] text-muted-foreground leading-relaxed">
+                            Matériel emprunté pour la durée de la session (débit au début, retour en stock à la
+                            fin). Le mobilier fixe de la salle sélectionnée n&apos;apparaît pas ici.
+                          </p>
                           <FormationSessionEquipmentPickGrid
                             inventory={equipmentQuery.data ?? EMPTY_EQUIPMENT_INVENTORY}
                             sessions={sessionsForEquipmentQuery.data ?? []}
@@ -1054,6 +1138,34 @@ export default function FormationSessionAddSheet({ open, onOpenChange, draft }: 
                             isLoadingSessions={sessionsForEquipmentQuery.isLoading}
                           />
                         </div>
+                        {examLocalWatch?.trim() ? (
+                          <div>
+                            <p className="mb-1 text-sm font-medium text-foreground">
+                              Matériel mobile réservé pour l&apos;examen
+                            </p>
+                            <p className="mb-2 text-[11px] text-muted-foreground leading-relaxed">
+                              Magnétomètre, fumigènes, gants palpation… (hors install fixe PCS / plateau).
+                            </p>
+                            <FormationSessionEquipmentPickGrid
+                              inventory={equipmentQuery.data ?? EMPTY_EQUIPMENT_INVENTORY}
+                              sessions={sessionsForEquipmentQuery.data ?? []}
+                              selectedIds={examEquipmentIds}
+                              onToggle={(id) => {
+                                setExamEquipmentIds((prev) => {
+                                  const next = new Set(prev);
+                                  if (next.has(id)) next.delete(id);
+                                  else next.add(id);
+                                  return next;
+                                });
+                              }}
+                              rangeStart={equipmentSessionRange.start}
+                              rangeEnd={equipmentSessionRange.end}
+                              excludeSessionId={editingId}
+                              isLoadingInventory={equipmentQuery.isLoading}
+                              isLoadingSessions={sessionsForEquipmentQuery.isLoading}
+                            />
+                          </div>
+                        ) : null}
                       </TabsContent>
 
                       <TabsContent value="eleves" className="mt-0 focus-visible:outline-none focus-visible:ring-0">

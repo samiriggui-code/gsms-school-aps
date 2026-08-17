@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { MarketingCampaignStatus } from '@repo/database';
+import { createWorkflowEngine } from '@repo/api-core';
 
 type Ctx = { params: Promise<{ campaignId: string }> };
 
@@ -30,7 +31,30 @@ export async function PATCH(request: NextRequest, context: Ctx) {
   }
 
   try {
-    await prisma.marketingCampaign.update({ where: { id: campaignId }, data });
+    const existing = await prisma.marketingCampaign.findUnique({ where: { id: campaignId } });
+    if (!existing) return fail('Campagne introuvable.', 404);
+
+    const row = await prisma.marketingCampaign.update({ where: { id: campaignId }, data });
+
+    const nextStatus = typeof data.status === 'string' ? data.status : existing.status;
+    if (existing.status !== 'ACTIVE' && nextStatus === 'ACTIVE') {
+      try {
+        const workflows = createWorkflowEngine(prisma);
+        await workflows.emit(
+          'crm.marketing.campaign.activated',
+          {
+            campaignId: row.id,
+            name: row.name,
+            channel: row.channel,
+            utmCampaign: row.utmCampaign,
+          },
+          { dedupeKey: `campaign:${row.id}:active` },
+        );
+      } catch (e) {
+        console.error('[campagnes] workflow activate', e);
+      }
+    }
+
     return ok({ updated: true });
   } catch (e) {
     return fail('Mise à jour impossible.', 500, e);

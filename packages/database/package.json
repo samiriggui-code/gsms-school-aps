@@ -33,6 +33,7 @@
     "db:push:accept": "node --env-file=../../.env node_modules/prisma/build/index.js db push --accept-data-loss",
     "db:backfill-file-versions": "node --env-file=../../.env prisma/backfill-file-asset-versions.js",
     "db:backfill-compliance": "pnpm exec tsx --env-file=../../.env prisma/backfill-compliance-dossiers.ts",
+    "db:dedupe-proemail": "node --env-file=../../.env prisma/scripts/dedupe-proemail.mjs",
     "db:generate": "node node_modules/prisma/build/index.js generate",
     "db:seed": "node prisma/seed.js",
     "db:migrate": "node --env-file=../../.env node_modules/prisma/build/index.js migrate deploy",

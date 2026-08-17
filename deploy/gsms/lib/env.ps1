@@ -128,6 +128,19 @@ function Invoke-EnvWizard {
   $smtpPass = Read-SecretInput 'SMTP_PASS' (Get-OrDefault $existing.SMTP_PASS '')
   $smtpFrom = Read-InputDefault 'SMTP_FROM' (Get-OrDefault $existing.SMTP_FROM $smtpUser)
 
+  $n8nDefault = Get-OrDefault (Read-EnvValue $OutputPath 'N8N_PUBLIC_URL') 'https://n8n-k2pw.srv1722028.hstgr.cloud'
+  $n8nPublic = Read-InputDefault 'N8N_PUBLIC_URL (instance n8n)' $n8nDefault
+  $n8nApiKey = Read-EnvValue $OutputPath 'N8N_API_KEY'
+  if ([string]::IsNullOrWhiteSpace($n8nApiKey)) {
+    Write-Warn 'N8N_API_KEY absent — les workflows seront provisionnes au prochain deploy si vous ajoutez la cle API n8n.'
+    $n8nApiKey = ''
+  } else {
+    $keepKey = Read-YesNo 'Garder N8N_API_KEY existante ?' $true
+    if (-not $keepKey) {
+      $n8nApiKey = Read-Host 'N8N_API_KEY (Settings n8n → API)'
+    }
+  }
+
   $dbUrl = 'postgresql://lms:{0}@postgres:5432/lms_app' -f $pgEncoded
 
   $vars = @{
@@ -157,6 +170,13 @@ function Invoke-EnvWizard {
     SMTP_PASS                 = $smtpPass
     SMTP_FROM                 = $smtpFrom
     CONTACT_TO_EMAIL          = $smtpFrom
+    N8N_PUBLIC_URL            = $n8nPublic.TrimEnd('/')
+    N8N_API_URL               = $n8nPublic.TrimEnd('/')
+    N8N_WEBHOOK_STANDARD_URL  = ('{0}/webhook/gsms/standard' -f $n8nPublic.TrimEnd('/'))
+    WORKFLOWS_N8N_STANDARD_ENABLED = 'true'
+  }
+  if ($n8nApiKey) {
+    $vars['N8N_API_KEY'] = $n8nApiKey
   }
 
   Build-DeployEnvFile -ExamplePath $ExamplePath -OutputPath $OutputPath -Vars $vars

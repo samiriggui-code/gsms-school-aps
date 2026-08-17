@@ -40,25 +40,26 @@ export class WorkflowEngine {
     const runLegacyHub = options?.legacyHub === true;
 
     const crmDefinition = STANDARD_WEBHOOK_CRM[eventType];
-    const tasks: Promise<void>[] = [];
 
+    // Outbox CRM : synchrone (écriture DB locale, rapide) — alimente la cloche / worker.
     if (runCrm && crmDefinition) {
-      tasks.push(
-        enqueueWorkflowCrmEvent(this.prisma, crmDefinition, payload, options).catch((err) => {
-          console.error('[workflow] CRM outbox', err instanceof Error ? err.message : err);
-        }),
-      );
+      await enqueueWorkflowCrmEvent(this.prisma, crmDefinition, payload, options).catch((err) => {
+        console.error('[workflow] CRM outbox', err instanceof Error ? err.message : err);
+      });
     }
 
+    // Webhooks n8n : fire-and-forget — ne pas bloquer les routes HTTP (timeout 8s côté fetch).
     if (runStandard) {
-      tasks.push(dispatchStandardWebhook(eventType, payload));
+      void dispatchStandardWebhook(eventType, payload).catch((err) => {
+        console.error('[workflow] webhook standard', err instanceof Error ? err.message : err);
+      });
     }
 
     if (runLegacyHub) {
-      tasks.push(dispatchN8nWebhook(eventType, payload));
+      void dispatchN8nWebhook(eventType, payload).catch((err) => {
+        console.error('[workflow] n8n legacy hub', err instanceof Error ? err.message : err);
+      });
     }
-
-    await Promise.all(tasks);
   }
 }
 

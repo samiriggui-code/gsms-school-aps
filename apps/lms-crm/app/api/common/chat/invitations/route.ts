@@ -1,34 +1,18 @@
 import { NextRequest } from 'next/server';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { displayUserName, requireSessionUserId } from '@/app/api/_shared/topbar-auth';
+import { displayUserName } from '@/app/api/_shared/topbar-auth';
 import { enrichNotificationMetadata } from '@repo/api-core';
 import { prisma } from '@/lib/prisma';
-import { CHAT_ELIGIBLE_ROLE_SLUGS } from '@/lib/chat-eligible';
-import { isCrmRole, isInstructorRole } from '@/lib/auth/app-routing';
+import { assertEligibleParticipants } from '@/lib/chat-eligible';
+import {
+  assertParticipantsInChatScope,
+  requireChatSession,
+  userBelongsToRhTeam,
+} from '@/lib/chat-scope';
 
-function assertChatAccess(roleSlug: string) {
-  return isCrmRole(roleSlug) || isInstructorRole(roleSlug);
-}
-
-async function assertEligibleUserIds(userIds: string[]) {
-  if (userIds.length === 0) return true;
-  const count = await prisma.user.count({
-    where: {
-      id: { in: userIds },
-      status: 'ACTIVE',
-      role: { slug: { in: [...CHAT_ELIGIBLE_ROLE_SLUGS] } },
-    },
-  });
-  return count === userIds.length;
-}
-
-/** Invitations chat en attente pour l'utilisateur connecté. */
 export async function GET() {
-  const auth = await requireSessionUserId();
+  const auth = await requireChatSession();
   if ('error' in auth) return auth.error;
-  if (!assertChatAccess(auth.session.user?.roleSlug ?? '')) {
-    return fail('Accès chat non autorisé pour ce profil.', 403);
-  }
 
   const rows = await prisma.chatInvitation.findMany({
     where: { inviteeUserId: auth.userId, status: 'PENDING' },
@@ -81,13 +65,9 @@ export async function GET() {
   });
 }
 
-/** Crée des invitations (utilisateurs et/ou équipe RH). */
 export async function POST(request: NextRequest) {
-  const auth = await requireSessionUserId();
+  const auth = await requireChatSession();
   if ('error' in auth) return auth.error;
-  if (!assertChatAccess(auth.session.user?.roleSlug ?? '')) {
-    return fail('Accès chat non autorisé pour ce profil.', 403);
-  }
 
   let body: Record<string, unknown>;
   try {
@@ -123,6 +103,9 @@ export async function POST(request: NextRequest) {
 
   const teamId = body.teamId ? String(body.teamId).trim() : '';
   if (teamId) {
+    if (!(await userBelongsToRhTeam(auth.userId, teamId, auth.session.user?.roleSlug))) {
+      return fail('Vous ne pouvez inviter que les membres de vos équipes.', 403);
+    }
     const members = await prisma.rhTeamMember.findMany({
       where: { teamId },
       select: { userId: true },
@@ -143,8 +126,13 @@ export async function POST(request: NextRequest) {
     return fail('Aucun participant éligible à inviter.', 400);
   }
 
-  if (!(await assertEligibleUserIds(targetIds))) {
+  if (!(await assertEligibleParticipants(targetIds))) {
     return fail('Un ou plusieurs utilisateurs ne sont pas éligibles au chat.', 403);
+  }
+
+  const roleSlug = auth.session.user?.roleSlug ?? '';
+  if (!(await assertParticipantsInChatScope(auth.userId, roleSlug, targetIds))) {
+    return fail('Un ou plusieurs utilisateurs sont hors de votre périmètre équipe.', 403);
   }
 
   const message = body.message ? String(body.message).trim() : null;
@@ -202,6 +190,7 @@ export async function POST(request: NextRequest) {
         conversationId,
         conversationTitle,
         teamName: conversation.rhTeam?.name ?? null,
+        teamId: teamId || conversation.rhTeam?.id || null,
         actorId: inviter?.id ?? auth.userId,
         actorUserId: inviter?.id ?? auth.userId,
         actorName: inviterName,

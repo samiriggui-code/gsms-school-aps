@@ -36,6 +36,7 @@ export async function PATCH(request: NextRequest, context: Ctx) {
         where: { id: participantId },
         select: {
           id: true,
+          sessionId: true,
           candidatureId: true,
           userId: true,
           user: { select: { name: true, email: true } },
@@ -50,11 +51,39 @@ export async function PATCH(request: NextRequest, context: Ctx) {
             candidatureId: detail.candidatureId,
             userId: detail.userId,
             candidateName: detail.user.name ?? detail.user.email ?? 'Participant',
+            email: detail.user.email ?? null,
             examOutcome: outcomeRaw,
             examDate: row.examDate?.toISOString() ?? null,
           },
           { dedupeKey: `workflow:exam:${participantId}:${outcomeRaw}` },
         );
+
+        if (outcomeRaw === 'PASSED') {
+          const attestation = await prisma.formationAttestation.findFirst({
+            where: {
+              candidatureId: detail.candidatureId,
+              sessionId: detail.sessionId,
+            },
+            select: { id: true, title: true },
+            orderBy: { createdAt: 'desc' },
+          });
+          if (attestation) {
+            await workflows.emit(
+              'crm.candidature.attestation.issued',
+              {
+                attestationId: attestation.id,
+                candidatureId: detail.candidatureId,
+                userId: detail.userId,
+                candidateName: detail.user.name ?? detail.user.email ?? 'Participant',
+                email: detail.user.email ?? null,
+                attestationTitle: attestation.title,
+                sessionId: detail.sessionId,
+                autoIssuedOnExam: true,
+              },
+              { dedupeKey: `workflow:attestation:${attestation.id}` },
+            );
+          }
+        }
       }
     } catch (e) {
       console.error('[examens] workflow', e);

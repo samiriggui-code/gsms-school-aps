@@ -123,7 +123,21 @@ export async function recordExamOutcome(
 ) {
   const participant = await tx.formationSessionParticipant.findUnique({
     where: { id: participantId },
-    select: { id: true, candidatureId: true, trainingCompletedAt: true, sessionId: true },
+    select: {
+      id: true,
+      candidatureId: true,
+      trainingCompletedAt: true,
+      sessionId: true,
+      candidature: {
+        select: {
+          id: true,
+          userId: true,
+          formationId: true,
+          formation: { select: { name: true } },
+        },
+      },
+      session: { select: { dateDisplayLabel: true } },
+    },
   });
   if (!participant) throw new Error('PARTICIPANT_NOT_FOUND');
 
@@ -138,6 +152,37 @@ export async function recordExamOutcome(
   });
 
   await maybeAdvanceSessionTeamToPostExam(tx, participant.sessionId);
+
+  if (
+    outcome === FormationExamOutcome.PASSED &&
+    participant.candidatureId &&
+    participant.candidature?.formationId
+  ) {
+    const existing = await tx.formationAttestation.findFirst({
+      where: {
+        candidatureId: participant.candidatureId,
+        sessionId: participant.sessionId,
+      },
+      select: { id: true },
+    });
+    if (!existing) {
+      const formationName = participant.candidature.formation?.name ?? 'Formation';
+      const sessionLabel = participant.session?.dateDisplayLabel ?? '';
+      const title = `Attestation ${formationName}${sessionLabel ? ` — ${sessionLabel}` : ''}`;
+      await issueFormationAttestation(tx, {
+        userId: participant.candidature.userId,
+        candidatureId: participant.candidatureId,
+        formationId: participant.candidature.formationId,
+        sessionId: participant.sessionId,
+        title,
+      });
+      try {
+        await completeCandidatureParcours(tx, participant.candidatureId);
+      } catch {
+        /* parcours non clôturable (statut dossier, etc.) */
+      }
+    }
+  }
 
   return row;
 }

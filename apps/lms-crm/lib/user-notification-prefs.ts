@@ -1,4 +1,4 @@
-/** Préférences notifications (localStorage jusqu'à API dédiée). */
+/** Préférences notifications — persistées via API `/api/common/user-notification-prefs`. */
 
 export type NotificationChannelPrefs = {
   email: boolean;

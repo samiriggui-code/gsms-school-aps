@@ -4,6 +4,10 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { FinanceDevisStatus, Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import {
+  summarizePayments,
+  summarizePaymentsByDevisId,
+} from '@/lib/finance/finance-payment-summary';
 
 function decimalNum(d: Prisma.Decimal | null | undefined): number {
   if (d == null) return 0;
@@ -122,14 +126,27 @@ export async function GET(request: NextRequest) {
       sansFormation,
     };
 
-    const items = rows.map((r) => ({
+    const devisIds = rows.map((r) => r.id);
+    const paymentRows =
+      devisIds.length > 0
+        ? await prisma.financePayment.findMany({
+            where: { devisId: { in: devisIds } },
+            select: { devisId: true, amount: true, status: true },
+          })
+        : [];
+    const paymentsByDevis = summarizePaymentsByDevisId(paymentRows);
+
+    const items = rows.map((r) => {
+      const totalTtc = decimalNum(r.totalTtc);
+      const paymentSummary = summarizePayments(totalTtc, paymentsByDevis.get(r.id) ?? []);
+      return {
       id: r.id,
       referenceCode: r.referenceCode,
       title: r.title,
       status: r.status,
       subtotalHt: decimalNum(r.subtotalHt),
       vatTotal: decimalNum(r.vatTotal),
-      totalTtc: decimalNum(r.totalTtc),
+      totalTtc,
       currency: r.currency,
       validUntil: r.validUntil?.toISOString() ?? null,
       createdAt: r.createdAt.toISOString(),
@@ -139,7 +156,9 @@ export async function GET(request: NextRequest) {
       clientCompany: companyFromClientSnapshot(r.clientSnapshot),
       lead: r.lead,
       formation: r.formation,
-    }));
+      paymentSummary,
+    };
+    });
 
     return ok({
       stats,

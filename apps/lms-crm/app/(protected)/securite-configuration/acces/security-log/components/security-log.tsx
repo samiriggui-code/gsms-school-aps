@@ -31,6 +31,7 @@ import { Search, Settings2, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
+import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 
 import { Badge } from '@/components/ui/badge';
 
@@ -254,13 +255,7 @@ const SecurityLog = () => {
 
   const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const [pagination, setPagination] = useState<PaginationState>({
-
-    pageIndex: 0,
-
-    pageSize: 10,
-
-  });
+  const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
 
   const [sorting, setSorting] = useState<SortingState>([
 

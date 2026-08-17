@@ -30,6 +30,7 @@ import { CustomerDetailsActivity } from '@/app/(protected)/gestion-academique/vi
 import { CustomerDetailsOverviews } from './customers/customer-details-overviews';
 import { CustomerDetailsReviews } from './customers/customer-details-reviews';
 import { Upload } from './customers/components/upload';
+import { FormationCatalogSheetFooter } from '@/components/formation-catalog-sheet-footer';
 
 type CatalogFormationHeader = {
   name: string;
@@ -53,6 +54,7 @@ type CatalogPayload = {
   stats?: CatalogFormationStats | null;
   sheet?: FormationSheetViewModel | null;
   catalogInactive?: boolean;
+  requiresQuote?: boolean;
 };
 
 export function CustomerDetailsSheet({
@@ -223,6 +225,13 @@ export function CustomerDetailsSheet({
         </SheetBody>
 
         <SheetFooter className="flex-row flex-wrap border-t pb-4 p-4 sm:p-5 border-border gap-2.5 justify-end">
+          {catalogSlug && !payload?.catalogInactive ? (
+            <FormationCatalogSheetFooter
+              catalogSlug={catalogSlug}
+              formationDisplayName={displayName}
+              requiresQuote={payload?.requiresQuote ?? null}
+            />
+          ) : null}
           <Button variant="mono" onClick={() => onOpenChange(false)}>
             {labels.close}
           </Button>

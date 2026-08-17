@@ -51,8 +51,8 @@ export function ParametresWelcomeCallout() {
               Module <span className="text-primary">Parametres</span>
             </h2>
             <p className="text-sm font-normal text-secondary-foreground leading-relaxed">
-              Réglages généraux, notifications, réseaux sociaux et intégrations — depuis la sidebar
-              des paramètres système.
+              Paramètres système, santé infrastructure et layouts dashboard — accès à toutes les
+              sections depuis les cartes ci-dessous.
             </p>
           </div>
         </CardContent>

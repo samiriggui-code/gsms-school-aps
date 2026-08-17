@@ -5,7 +5,11 @@ import {
   Prisma,
 } from '@repo/database';
 import { prisma } from '@/lib/prisma';
-import { createWorkflowEngine } from '@repo/api-core';
+import {
+  createWorkflowEngine,
+  extractFundingModeFromCandidature,
+  normalizeFundingModeForN8n,
+} from '@repo/api-core';
 import { ensureSessionChat } from '@/lib/session-chat';
 
 async function promoteUserToEleve(userId: string) {
@@ -142,12 +146,26 @@ export async function postFormationSessionParticipant(sessionId: string, request
   }
 
   try {
+    let resolvedFunding: string | null = null;
+    if (candidatureRef?.id) {
+      const candFunding = await prisma.candidature.findUnique({
+        where: { id: candidatureRef.id },
+        select: { notes: true, metadata: true },
+      });
+      if (candFunding) {
+        resolvedFunding = normalizeFundingModeForN8n(
+          extractFundingModeFromCandidature(candFunding.notes, candFunding.metadata),
+        );
+      }
+    }
+
     const row = await prisma.formationSessionParticipant.create({
       data: {
         sessionId,
         userId: userId!,
         candidatureId: candidatureRef?.id ?? null,
         enrollmentStatus,
+        fundingMode: resolvedFunding,
       },
     });
 
@@ -167,6 +185,8 @@ export async function postFormationSessionParticipant(sessionId: string, request
             candidatureId: candidatureRef.id,
             userId: userId!,
             candidateName: user?.name ?? user?.email ?? 'Participant',
+            email: user?.email ?? null,
+            fundingMode: row.fundingMode ?? resolvedFunding,
             enrollmentStatus,
           },
           { dedupeKey: `workflow:session-enroll:${row.id}` },

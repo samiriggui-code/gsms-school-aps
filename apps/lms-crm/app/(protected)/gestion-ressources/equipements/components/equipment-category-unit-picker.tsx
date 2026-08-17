@@ -81,7 +81,7 @@ export function EquipmentCategoryUnitPicker({
       if (!selectedCategoryKey) return [];
       const params = new URLSearchParams({
         mode: 'catalog-units',
-        label: selectedCategoryKey,
+        catalogKey: selectedCategoryKey,
       });
       const res = await apiFetch(
         `/api/sections/gestion-ressources/equipements/inventaire?${params}`,

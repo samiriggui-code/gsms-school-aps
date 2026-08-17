@@ -24,11 +24,12 @@ api/
    ├─ gestion-ressources/
    ├─ administration-facturation/
    ├─ securite-configuration/
-   ├─ gestion-sites-clients/
-   ├─ gestion-academique/
-   ├─ evaluations-certification/
+   ├─ gestion-sites-clients/    # donnees sites clients (consommees par gestion-ressources; pas de section front dediee)
+   ├─ gestion-academique/       # inclut vie-scolaire (examens, certifications, suivi-formations...)
    ├─ communication-contenu/
-   └─ support-qualite/
+   ├─ pilotage-supervision/
+   ├─ support-qualite/
+   └─ workspace/                # vues workspace generiques par viewKey (useModuleWorkspaceQuery)
 ```
 
 ---

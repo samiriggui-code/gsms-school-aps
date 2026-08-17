@@ -11,6 +11,7 @@ import {
 } from '@/app/(protected)/securite-configuration/acces/roles/forms/role-schema';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { SCHOOL_IAM_ROLE_SLUGS } from '@/lib/rh-iam-roles';
+import { createWorkflowEngine } from '@repo/api-core';
 
 // GET: Fetch all roles with permissions
 export async function GET(request: Request) {
@@ -191,6 +192,24 @@ export async function POST(request: NextRequest) {
         });
       },
     );
+
+    if (createdRole) {
+      try {
+        const workflows = createWorkflowEngine(prisma);
+        await workflows.emit(
+          'crm.security.role.created',
+          {
+            roleId: createdRole.id,
+            roleName: createdRole.name,
+            roleSlug: createdRole.slug,
+            permissionsCount: permissions?.length ?? 0,
+          },
+          { dedupeKey: `iam-role:${createdRole.id}:created` },
+        );
+      } catch (e) {
+        console.error('[acces/roles] workflow create', e);
+      }
+    }
 
     return NextResponse.json(createdRole, { status: 201 });
   } catch {

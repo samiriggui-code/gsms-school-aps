@@ -1,14 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
-import { ProfilSettings } from './components/profil-settings';
 import { ProfilStats } from './components/profil-stats';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Edit3, Eye } from 'lucide-react';
 import { ProfilDetailsOverviews } from './components/profil-details-overviews';
 import { Container } from '@/components/common/container';
 import {
@@ -19,12 +17,17 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import type { CompanyProfileView } from './types/company-profile-view';
-
-/** Référence stable pour éviter un nouvel objet `{}` à chaque rendu (réinitialisations du formulaire). */
-const EMPTY_COMPANY_PROFILE: CompanyProfileView = {};
-import type { PrimaryAdminContactPayload, SchoolStatsPayload } from './types/school-stats';
+import {
+  COMPANY_PROFILE_READONLY_API,
+  COMPANY_PROFILE_SETTINGS_HREF,
+  type CompanyProfileView,
+  type PrimaryAdminContactPayload,
+  type SchoolStatsPayload,
+} from '@/lib/company-profile';
 import { RiErrorWarningFill } from '@remixicon/react';
+import { Settings } from 'lucide-react';
+
+const EMPTY_COMPANY_PROFILE: CompanyProfileView = {};
 
 type CompanyProfileApiData = {
   companyProfile?: CompanyProfileView;
@@ -34,7 +37,6 @@ type CompanyProfileApiData = {
 
 export default function Page() {
   const { title, description } = usePageToolbarMeta('/gestion-ressources/compagnie/profil');
-  const [isEditing, setIsEditing] = useState(false);
   const {
     data: profilePayload,
     isLoading,
@@ -43,7 +45,7 @@ export default function Page() {
   } = useQuery({
     queryKey: ['company-profile'],
     queryFn: async () => {
-      const response = await apiFetch('/api/sections/gestion-ressources/compagnie/profil');
+      const response = await apiFetch(COMPANY_PROFILE_READONLY_API);
       if (!response.ok) throw new Error('fetch');
       const json = (await response.json()) as { data?: CompanyProfileApiData };
       return json.data;
@@ -62,26 +64,31 @@ export default function Page() {
             <ToolbarDescription>{description}</ToolbarDescription>
           </ToolbarHeading>
           <ToolbarActions>
-            <Button
-              variant={isEditing ? 'outline' : 'primary'}
-              onClick={() => setIsEditing(!isEditing)}
-              className="gap-2"
-            >
-              {isEditing ? (
-                <>
-                  <Eye className="size-4" /> Afficher la vue lecture seule
-                </>
-              ) : (
-                <>
-                  <Edit3 className="size-4" /> Modifier
-                </>
-              )}
+            <Button variant="primary" asChild className="gap-2">
+              <Link href={COMPANY_PROFILE_SETTINGS_HREF}>
+                <Settings className="size-4" />
+                Modifier le profil
+              </Link>
             </Button>
           </ToolbarActions>
         </Toolbar>
       </Container>
 
       <Container className="space-y-5 lg:space-y-7.5">
+        <Alert variant="mono" icon="primary" size="md">
+          <AlertIcon />
+          <AlertTitle className="text-sm font-normal">
+            Vue lecture seule — KPIs et identité légale. Les modifications se font dans{' '}
+            <Link
+              href={COMPANY_PROFILE_SETTINGS_HREF}
+              className="font-medium underline underline-offset-4"
+            >
+              Paramètres système → Réglages établissement
+            </Link>
+            .
+          </AlertTitle>
+        </Alert>
+
         <ProfilStats
           variant="row"
           stats={profilePayload?.schoolStats}
@@ -111,12 +118,7 @@ export default function Page() {
             <Skeleton className="h-[200px] w-full rounded-xl" />
             <Skeleton className="h-[400px] w-full rounded-xl" />
           </div>
-        ) : isError ? null : isEditing ? (
-          <ProfilSettings
-            profile={profile}
-            primaryAdminContact={profilePayload?.primaryAdminContact ?? null}
-          />
-        ) : (
+        ) : isError ? null : (
           <ProfilDetailsOverviews
             profil={profile}
             primaryAdminContact={profilePayload?.primaryAdminContact ?? null}

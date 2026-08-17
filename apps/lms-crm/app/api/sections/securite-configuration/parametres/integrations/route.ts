@@ -1,9 +1,9 @@
-import { getServerSession } from 'next-auth/next';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { ok, fail } from '@/app/api/_shared/http/response';
 import { getDocsPublicUrl } from '@/config/general.config';
 import { prisma } from '@/lib/prisma';
-import redis, { isRedisCacheDisabled } from '@repo/redis';
+import { getRedis, isRedisCacheDisabled, isRedisMemoryFallbackActive } from '@repo/redis';
+import { ok, fail } from '@/app/api/_shared/http/response';
+import { requireCrmApiAuth } from '@/lib/auth/require-permission';
+import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
 
 type IntegrationItem = {
   id: string;
@@ -15,8 +15,8 @@ type IntegrationItem = {
 };
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requireCrmApiAuth(CRM_PERMISSION.securiteView);
+  if (!auth.ok) return auth.response;
 
   try {
     const setting = await prisma.systemSetting.findFirst({ orderBy: { id: 'asc' } });
@@ -28,15 +28,17 @@ export async function GET() {
     const crmUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? '').trim();
     const docsUrl = getDocsPublicUrl();
 
-    const redisMemoryMode = isRedisCacheDisabled();
+    const redisMemoryMode = isRedisCacheDisabled() || isRedisMemoryFallbackActive();
     let redisOk = false;
     let redisDetail = 'Redis inaccessible';
     if (redisMemoryMode) {
       redisOk = true;
-      redisDetail = 'Cache mémoire (REDIS_CACHE_DISABLED)';
+      redisDetail = isRedisCacheDisabled()
+        ? 'Cache mémoire (REDIS_CACHE_DISABLED)'
+        : 'Cache mémoire (Redis indisponible)';
     } else {
       try {
-        const pong = await redis.ping();
+        const pong = await getRedis().ping();
         redisOk = pong === 'PONG';
         redisDetail = redisOk ? 'Connexion OK' : 'Redis inaccessible';
       } catch {

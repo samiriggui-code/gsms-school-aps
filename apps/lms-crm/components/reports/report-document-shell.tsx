@@ -17,8 +17,10 @@ type Props = {
   summary?: string | null;
   reference?: string;
   brand?: ReportDocumentBrand;
-  kind?: OfficialDocumentKind;
+  kind?: OfficialDocumentKind | 'qualiopi' | 'finance';
   children: ReactNode;
+  /** Largeur max du document (défaut A4 imprimable). */
+  maxWidthClass?: string;
 };
 
 export function ReportDocumentShell({
@@ -33,6 +35,7 @@ export function ReportDocumentShell({
   brand,
   kind = 'corporate',
   children,
+  maxWidthClass = 'max-w-[210mm]',
 }: Props) {
   const dateStr = new Date(generatedAt).toLocaleString('fr-FR', {
     dateStyle: 'long',
@@ -48,11 +51,18 @@ export function ReportDocumentShell({
       ? { name: authorName.trim(), avatarUrl: null, email: null }
       : null);
 
-  const kindClass = kind === 'legal' ? 'report-document--legal' : 'report-document--corporate';
+  const kindClass =
+    kind === 'legal'
+      ? 'report-document--legal'
+      : kind === 'qualiopi'
+        ? 'report-document--qualiopi'
+        : kind === 'finance'
+          ? 'report-document--finance'
+          : 'report-document--corporate';
 
   return (
     <article
-      className={`report-document ${kindClass} mx-auto min-h-screen max-w-[210mm] bg-white text-slate-900 print:max-w-none`}
+      className={`report-document ${kindClass} mx-auto min-h-screen ${maxWidthClass} bg-white text-slate-900 print:max-w-none`}
     >
       <header className="report-header border-b-2 border-slate-800 px-8 pb-6 pt-8">
         <div className="flex items-start gap-6">

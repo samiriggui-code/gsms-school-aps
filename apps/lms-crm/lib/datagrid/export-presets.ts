@@ -1,4 +1,5 @@
 import type { ListExportConfig } from '@/lib/datagrid/list-export';
+import { lmsAccessShortLabel, type LmsAccessTier } from '@/lib/portal/lms-access-shared';
 import type { RhCollaborateurListSegment } from '@/lib/rh-collaborateur-list-segment';
 import type { RhSessionTeamPhase, RhTeamListScope } from '@/lib/rh-team-list-scope';
 
@@ -240,13 +241,15 @@ export function candidatsHubExportConfig(searchQuery?: string): ListExportConfig
     filename: 'candidatures-etudiants',
     title: 'Candidatures étudiants',
     subtitle: 'Vie scolaire',
-    headers: ['Apprenant', 'E-mail', 'Statut dossier', 'Formation', 'Dernière activité'],
+    headers: ['Apprenant', 'Email perso', 'Login pro', 'E-formation', 'Statut dossier', 'Formation', 'Dernière activité'],
     searchParams: searchQuery?.trim() ? { query: searchQuery.trim() } : undefined,
     mapRow: (item) => [
       userLabel(item),
-      cell(item.email),
-      cell(item.candidatureStatus ?? item.status),
-      cell(item.formationTitle ?? item.program),
+      cell(item.personalEmail ?? item.email),
+      cell(item.proEmail),
+      cell(item.lmsAccessTier ? lmsAccessShortLabel(item.lmsAccessTier as LmsAccessTier) : '—'),
+      cell(item.dossierLabel ?? item.candidatureStatus ?? item.status),
+      cell(item.formationTitle ?? item.program ?? item.formationName),
       cell(item.updatedAt ?? item.lastActivityAt),
     ],
   };

@@ -3,8 +3,23 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { buildFinanceBudgetLineDetail } from '@/lib/finance/finance-budget-detail-build';
 
 type Ctx = { params: Promise<{ lineId: string }> };
+
+export async function GET(_request: NextRequest, context: Ctx) {
+  const session = await getServerSession(authOptions);
+  if (!session) return fail('Unauthorized request', 401);
+
+  const { lineId } = await context.params;
+  try {
+    const detail = await buildFinanceBudgetLineDetail(prisma, lineId);
+    if (!detail) return fail('Ligne budget introuvable.', 404);
+    return ok(detail);
+  } catch (e) {
+    return fail('Impossible de charger le détail budget.', 500, e);
+  }
+}
 
 export async function PATCH(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);

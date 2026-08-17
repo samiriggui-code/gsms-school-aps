@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { SUIVI_FUNDING_MODE_OPTIONS } from '@/lib/suivi-formations/funding-modes';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { SuiviFundingPayload, SuiviStagiaireRow } from '../types/suivi-formations-api';
 
 export function SuiviStagiaireFundingTab({
@@ -32,6 +33,7 @@ export function SuiviStagiaireFundingTab({
     'fundingMode' | 'fundingReference' | 'fundingNotes' | 'fundingModeLabel' | 'fundingSource'
   >;
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [fundingMode, setFundingMode] = useState(initialFunding.fundingMode ?? '');
   const [fundingReference, setFundingReference] = useState(initialFunding.fundingReference ?? '');
@@ -65,7 +67,7 @@ export function SuiviStagiaireFundingTab({
       return (await res.json()).data as SuiviFundingPayload;
     },
     onSuccess: () => {
-      toast.success('Financeur enregistré.');
+      toast.success(t('vieScolaire.funding.savedSuccess'));
       queryClient.invalidateQueries({
         queryKey: ['gestion-academique', 'vie-scolaire', 'suivi-formations', 'participants'],
       });
@@ -75,24 +77,25 @@ export function SuiviStagiaireFundingTab({
 
   return (
     <div className="space-y-5 p-6">
+      <p className="text-sm text-muted-foreground">{t('vieScolaire.funding.automationHint')}</p>
       {initialFunding.fundingSource === 'candidature' ? (
         <Badge variant="secondary" appearance="outline">
-          Valeur héritée du dossier candidature — enregistrer pour figer sur la session
+          {t('vieScolaire.funding.inheritedBadge')}
         </Badge>
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2 sm:col-span-2">
-          <Label>Mode de financement</Label>
+          <Label>{t('vieScolaire.funding.modeLabel')}</Label>
           <Select
             value={fundingMode || 'unset'}
             onValueChange={(v) => setFundingMode(v === 'unset' ? '' : v)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Choisir un financeur" />
+              <SelectValue placeholder={t('vieScolaire.common.chooseFinancier')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="unset">Non renseigné</SelectItem>
+              <SelectItem value="unset">{t('vieScolaire.funding.unset')}</SelectItem>
               {SUIVI_FUNDING_MODE_OPTIONS.map((opt) => (
                 <SelectItem key={opt.value} value={opt.value}>
                   {opt.label}
@@ -103,21 +106,21 @@ export function SuiviStagiaireFundingTab({
         </div>
 
         <div className="space-y-2">
-          <Label>Référence dossier</Label>
+          <Label>{t('vieScolaire.funding.referenceLabel')}</Label>
           <Input
             value={fundingReference}
             onChange={(e) => setFundingReference(e.target.value)}
-            placeholder="N° dossier CPF, AIF, OPCO…"
+            placeholder={t('vieScolaire.funding.referencePlaceholder')}
           />
         </div>
 
         <div className="space-y-2 sm:col-span-2">
-          <Label>Notes financeur</Label>
+          <Label>{t('vieScolaire.funding.notesLabel')}</Label>
           <Textarea
             value={fundingNotes}
             onChange={(e) => setFundingNotes(e.target.value)}
             rows={3}
-            placeholder="Précisions pour les exports conformité…"
+            placeholder={t('vieScolaire.funding.notesPlaceholder')}
           />
         </div>
       </div>
@@ -130,7 +133,7 @@ export function SuiviStagiaireFundingTab({
         onClick={() => saveMutation.mutate()}
       >
         {saveMutation.isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
-        Enregistrer le financeur
+        {t('vieScolaire.funding.saveButton')}
       </Button>
     </div>
   );

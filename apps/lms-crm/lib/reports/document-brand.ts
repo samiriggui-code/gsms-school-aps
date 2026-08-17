@@ -25,6 +25,26 @@ function joinParts(parts: (string | null | undefined)[], separator: string): str
   return parts.map((part) => part?.trim()).filter(Boolean).join(separator);
 }
 
+/** Adresse organisme sans doublon code postal / ville déjà présents dans la rue. */
+export function buildOrganizationAddressLine(settings: {
+  address?: string | null;
+  companyPostalCode?: string | null;
+  companyCity?: string | null;
+  companyRegion?: string | null;
+} | null | undefined): string {
+  const street = settings?.address?.trim() ?? '';
+  const locality = [settings?.companyPostalCode?.trim(), settings?.companyCity?.trim()]
+    .filter(Boolean)
+    .join(' ');
+  const region = settings?.companyRegion?.trim() ?? '';
+  const streetLower = street.toLowerCase();
+  const parts: string[] = [];
+  if (street) parts.push(street);
+  if (locality && !streetLower.includes(locality.toLowerCase())) parts.push(locality);
+  if (region && !streetLower.includes(region.toLowerCase())) parts.push(region);
+  return parts.join(' · ');
+}
+
 /** Identité organisme (SystemSetting) pour en-tête / pied de page des documents imprimables. */
 export async function loadReportDocumentBrand(origin?: string): Promise<ReportDocumentBrand> {
   const settings = await loadSystemSettings();
@@ -35,11 +55,7 @@ export async function loadReportDocumentBrand(origin?: string): Promise<ReportDo
     settings?.industry?.trim() ||
     DEFAULT_ORGANIZATION_BRAND.tagline;
 
-  const addressParts = [
-    settings?.address?.trim(),
-    [settings?.companyPostalCode?.trim(), settings?.companyCity?.trim()].filter(Boolean).join(' '),
-    settings?.companyRegion?.trim(),
-  ].filter(Boolean);
+  const addressLine = buildOrganizationAddressLine(settings);
 
   const legalLine = joinParts(
     [
@@ -75,7 +91,7 @@ export async function loadReportDocumentBrand(origin?: string): Promise<ReportDo
     logoUrl,
     iconUrl,
     qualiopiLogoUrl,
-    addressLine: addressParts.join(' · '),
+    addressLine,
     legalLine,
     contactLine,
   };

@@ -7,12 +7,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  Award,
   BookOpen,
   CalendarDays,
   CalendarRange,
-  ClipboardCheck,
-  Settings,
+  ClipboardList,
+  GraduationCap,
   Users,
 } from 'lucide-react';
 
@@ -35,7 +34,7 @@ export function VieScolaireWelcomeCallout() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-lg bg-primary/10">
-                <Settings className="w-8 h-8 text-primary" />
+                <GraduationCap className="w-8 h-8 text-primary" />
               </div>
               <div className="flex -space-x-2.5">
                 <Avatar className="size-10">
@@ -59,7 +58,7 @@ export function VieScolaireWelcomeCallout() {
               Module <span className="text-primary">Vie scolaire</span>
             </h2>
             <p className="text-sm font-normal text-secondary-foreground leading-5.5">
-              Suivi pédagogique des formations et sessions.
+              Catalogue, sessions, planning, candidatures puis suivi de parcours par session.
             </p>
           </div>
         </CardContent>
@@ -73,13 +72,7 @@ export function VieScolaireWelcomeCallout() {
           <Button variant="outline" size="sm" className="min-w-0 shrink" asChild>
             <Link href="/gestion-academique/vie-scolaire/sessions">
               <CalendarDays className="size-4 shrink-0" />
-              Sessions pédagogiques
-            </Link>
-          </Button>
-          <Button variant="outline" size="sm" className="min-w-0 shrink" asChild>
-            <Link href="/gestion-academique/vie-scolaire/etudiants">
-              <Users className="size-4 shrink-0" />
-              Candidature
+              Sessions
             </Link>
           </Button>
           <Button variant="outline" size="sm" className="min-w-0 shrink" asChild>
@@ -89,15 +82,15 @@ export function VieScolaireWelcomeCallout() {
             </Link>
           </Button>
           <Button variant="outline" size="sm" className="min-w-0 shrink" asChild>
-            <Link href="/gestion-academique/vie-scolaire/examens">
-              <ClipboardCheck className="size-4 shrink-0" />
-              Examens
+            <Link href="/gestion-academique/vie-scolaire/etudiants">
+              <Users className="size-4 shrink-0" />
+              Étudiants
             </Link>
           </Button>
           <Button variant="outline" size="sm" className="min-w-0 shrink" asChild>
-            <Link href="/gestion-academique/vie-scolaire/certifications">
-              <Award className="size-4 shrink-0" />
-              Certifications
+            <Link href="/gestion-academique/vie-scolaire/suivi-formations">
+              <ClipboardList className="size-4 shrink-0" />
+              Suivi formations
             </Link>
           </Button>
         </CardFooter>

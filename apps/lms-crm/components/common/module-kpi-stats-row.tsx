@@ -14,7 +14,7 @@ export type ModuleKpiStatItem = {
   icon: LucideIcon;
 };
 
-/** Bandeau KPI notifications / pages module — dégradé, halo, icône coin, 5 colonnes max. */
+/** Bandeau KPI pages module — dégradé, halo, icône coin. Standard : **5 cartes** (`MODULE_PAGE_KPI_COUNT`). */
 export function ModuleKpiStatsRow({ items }: { items: ModuleKpiStatItem[] }) {
   if (items.length === 0) return null;
 

@@ -40,7 +40,8 @@ export async function GET(
       description: row.notes,
       startDate: row.scheduledDate?.toISOString() ?? row.createdAt.toISOString(),
       endDate: row.completedDate?.toISOString() ?? null,
-      cost: null,
+      cost: row.costAmount != null ? Number(row.costAmount) : null,
+      costAmount: row.costAmount != null ? Number(row.costAmount) : null,
       technician: null,
     }));
 
@@ -74,6 +75,10 @@ export async function POST(
     const title = String(body.title || 'Intervention atelier').trim();
     const notes = body.notes ? String(body.notes).trim() : null;
     const scheduledDate = body.scheduledDate ? new Date(body.scheduledDate) : null;
+    const costAmount =
+      body.costAmount != null && body.costAmount !== ''
+        ? Number(body.costAmount)
+        : null;
 
     const equipment = await prisma.equipment.findUnique({ where: { id: equipmentId } });
     if (!equipment) return fail('Équipement introuvable.', 404);
@@ -89,6 +94,7 @@ export async function POST(
           notes,
           scheduledDate,
           status: 'SCHEDULED',
+          costAmount: Number.isFinite(costAmount) && costAmount! > 0 ? costAmount : null,
         },
       });
       await tx.equipment.update({

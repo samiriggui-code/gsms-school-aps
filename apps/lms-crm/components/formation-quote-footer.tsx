@@ -23,27 +23,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useTranslation } from '@/hooks/useTranslation';
 
 type Props = {
   catalogSlug: string | null | undefined;
   formationDisplayName: string;
   mode?: 'catalog-missing-price' | 'devis-prestation';
+  /** Si fourni par le parent (ex. fiche catalogue), évite un second fetch et force l’éligibilité devis. */
+  requiresQuote?: boolean | null;
 };
 
+type RequesterType = 'entreprise' | 'particulier';
+
 const DELIVERY_KEYS = ['INTRA_SUR_SITE', 'CENTRE_FORMATION', 'MIXTE', 'DISTANCE'] as const;
-const FUNDING_KEYS = ['CPF', 'OPCO', 'BUDGET_ENTREPRISE', 'MULTI', 'AUTRE'] as const;
+const FUNDING_ENTREPRISE_KEYS = ['CPF', 'OPCO', 'BUDGET_ENTREPRISE', 'MULTI', 'AUTRE'] as const;
+const FUNDING_PARTICULIER_KEYS = ['CPF', 'AUTRE'] as const;
 
 export function FormationQuoteFooter({
   catalogSlug,
   formationDisplayName,
   mode = 'catalog-missing-price',
+  requiresQuote: requiresQuoteProp = null,
 }: Props) {
   const { t } = useTranslation();
   const [eligible, setEligible] = useState(false);
   const [checked, setChecked] = useState(false);
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [requesterType, setRequesterType] = useState<RequesterType>('entreprise');
 
   const deliveryOptions = useMemo(
     () =>
@@ -54,19 +62,23 @@ export function FormationQuoteFooter({
     [t],
   );
 
-  const fundingOptions = useMemo(
-    () =>
-      FUNDING_KEYS.map((value) => ({
-        value,
-        label: t(`landing.quote.funding.${value}`),
-      })),
-    [t],
-  );
+  const fundingOptions = useMemo(() => {
+    const keys = requesterType === 'particulier' ? FUNDING_PARTICULIER_KEYS : FUNDING_ENTREPRISE_KEYS;
+    return keys.map((value) => ({
+      value,
+      label: t(`landing.quote.funding.${value}`),
+    }));
+  }, [requesterType, t]);
 
   useEffect(() => {
     const s = catalogSlug?.trim();
     if (mode === 'devis-prestation') {
       setEligible(!!s);
+      setChecked(true);
+      return;
+    }
+    if (requiresQuoteProp != null) {
+      setEligible(requiresQuoteProp === true && !!s);
       setChecked(true);
       return;
     }
@@ -97,7 +109,7 @@ export function FormationQuoteFooter({
     return () => {
       cancelled = true;
     };
-  }, [catalogSlug, mode]);
+  }, [catalogSlug, mode, requiresQuoteProp]);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -114,7 +126,10 @@ export function FormationQuoteFooter({
   const [message, setMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
 
+  const isEntreprise = requesterType === 'entreprise';
+
   function resetForm() {
+    setRequesterType('entreprise');
     setFirstName('');
     setLastName('');
     setEmail('');
@@ -140,13 +155,14 @@ export function FormationQuoteFooter({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          requesterType,
           firstName,
           lastName,
           email,
           phone,
-          contactRole,
-          company,
-          companySiret,
+          contactRole: isEntreprise ? contactRole : '',
+          company: isEntreprise ? company : company.trim(),
+          companySiret: isEntreprise ? companySiret : '',
           companyAddress,
           traineesExpected,
           preferredDates,
@@ -191,7 +207,10 @@ export function FormationQuoteFooter({
           <DialogHeader>
             <DialogTitle>{t('landing.quote.title')}</DialogTitle>
             <DialogDescription>
-              {formationDisplayName}
+              <span className="font-medium text-foreground">{formationDisplayName}</span>
+              <span className="mt-1 block text-xs text-muted-foreground">
+                {catalogSlug ? `Réf. catalogue : ${catalogSlug}` : null}
+              </span>
               <span className="mt-1 block text-muted-foreground">
                 {mode === 'devis-prestation'
                   ? t('landing.quote.descriptionPrestation')
@@ -201,6 +220,34 @@ export function FormationQuoteFooter({
           </DialogHeader>
           <form onSubmit={onSubmit}>
             <DialogBody className="space-y-5">
+              <div className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t('landing.quote.sections.requesterType')}
+                </p>
+                <ToggleGroup
+                  type="single"
+                  value={requesterType}
+                  onValueChange={(v) => {
+                    if (v === 'entreprise' || v === 'particulier') {
+                      setRequesterType(v);
+                      if (v === 'particulier') {
+                        setContactRole('');
+                        setCompanySiret('');
+                        setFundingHint('');
+                      }
+                    }
+                  }}
+                  className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2"
+                >
+                  <ToggleGroupItem value="entreprise" className="justify-center px-3 py-2.5 text-sm">
+                    {t('landing.quote.requesterType.entreprise')}
+                  </ToggleGroupItem>
+                  <ToggleGroupItem value="particulier" className="justify-center px-3 py-2.5 text-sm">
+                    {t('landing.quote.requesterType.particulier')}
+                  </ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t('landing.quote.sections.contact')}
@@ -229,7 +276,11 @@ export function FormationQuoteFooter({
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <Label htmlFor="quote-email">{t('landing.quote.fields.email')}</Label>
+                    <Label htmlFor="quote-email">
+                      {isEntreprise
+                        ? t('landing.quote.fields.email')
+                        : t('landing.quote.fields.emailPersonal')}
+                    </Label>
                     <Input
                       id="quote-email"
                       type="email"
@@ -251,47 +302,68 @@ export function FormationQuoteFooter({
                     />
                   </div>
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="quote-role">{t('landing.quote.fields.contactRole')}</Label>
-                  <Input
-                    id="quote-role"
-                    placeholder={t('landing.quote.fields.contactRolePlaceholder')}
-                    value={contactRole}
-                    onChange={(e) => setContactRole(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {t('landing.quote.sections.company')}
-                </p>
-                <div className="space-y-1.5">
-                  <Label htmlFor="quote-co">{t('landing.quote.fields.company')}</Label>
-                  <Input
-                    id="quote-co"
-                    required
-                    autoComplete="organization"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                  />
-                </div>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {isEntreprise ? (
                   <div className="space-y-1.5">
-                    <Label htmlFor="quote-siret">{t('landing.quote.fields.siret')}</Label>
+                    <Label htmlFor="quote-role">{t('landing.quote.fields.contactRole')}</Label>
                     <Input
-                      id="quote-siret"
-                      inputMode="numeric"
-                      autoComplete="off"
-                      placeholder={t('landing.quote.fields.siretPlaceholder')}
-                      value={companySiret}
-                      onChange={(e) => setCompanySiret(e.target.value)}
+                      id="quote-role"
+                      placeholder={t('landing.quote.fields.contactRolePlaceholder')}
+                      value={contactRole}
+                      onChange={(e) => setContactRole(e.target.value)}
                     />
                   </div>
-                  <div className="space-y-1.5 sm:col-span-2">
-                    <Label htmlFor="quote-addr">{t('landing.quote.fields.address')}</Label>
+                ) : null}
+              </div>
+
+              {isEntreprise ? (
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t('landing.quote.sections.company')}
+                  </p>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="quote-co">{t('landing.quote.fields.company')}</Label>
                     <Input
-                      id="quote-addr"
+                      id="quote-co"
+                      required
+                      autoComplete="organization"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="quote-siret">{t('landing.quote.fields.siret')}</Label>
+                      <Input
+                        id="quote-siret"
+                        inputMode="numeric"
+                        autoComplete="off"
+                        placeholder={t('landing.quote.fields.siretPlaceholder')}
+                        value={companySiret}
+                        onChange={(e) => setCompanySiret(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <Label htmlFor="quote-addr">{t('landing.quote.fields.address')}</Label>
+                      <Input
+                        id="quote-addr"
+                        autoComplete="street-address"
+                        placeholder={t('landing.quote.fields.addressPlaceholder')}
+                        value={companyAddress}
+                        onChange={(e) => setCompanyAddress(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t('landing.quote.sections.company')}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{t('landing.quote.fields.companyParticulierHint')}</p>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="quote-addr-part">{t('landing.quote.fields.address')}</Label>
+                    <Input
+                      id="quote-addr-part"
                       autoComplete="street-address"
                       placeholder={t('landing.quote.fields.addressPlaceholder')}
                       value={companyAddress}
@@ -299,18 +371,26 @@ export function FormationQuoteFooter({
                     />
                   </div>
                 </div>
-              </div>
+              )}
 
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {t('landing.quote.sections.project')}
                 </p>
                 <div className="space-y-1.5">
-                  <Label htmlFor="quote-trainees">{t('landing.quote.fields.trainees')}</Label>
+                  <Label htmlFor="quote-trainees">
+                    {isEntreprise
+                      ? t('landing.quote.fields.trainees')
+                      : t('landing.quote.fields.traineesParticulier')}
+                  </Label>
                   <Input
                     id="quote-trainees"
-                    required
-                    placeholder={t('landing.quote.fields.traineesPlaceholder')}
+                    required={isEntreprise}
+                    placeholder={
+                      isEntreprise
+                        ? t('landing.quote.fields.traineesPlaceholder')
+                        : t('landing.quote.fields.traineesPlaceholderParticulier')
+                    }
                     value={traineesExpected}
                     onChange={(e) => setTraineesExpected(e.target.value)}
                   />

@@ -3,10 +3,9 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { formatDateTime } from '@/lib/helpers';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Badge, BadgeDot } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -15,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Sheet,
   SheetBody,
@@ -36,13 +36,10 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { nextPublicPathPrefix } from '@/lib/next-public-path-prefix';
 import {
   Banknote,
   CalendarClock,
   ChevronDown,
-  FileText,
-  FileSpreadsheet,
   Hash,
   Link2,
   MessageSquare,
@@ -50,6 +47,7 @@ import {
   Percent,
   Receipt,
   Building2,
+  FileSpreadsheet,
   Send,
   Printer,
   UserRound,
@@ -62,7 +60,12 @@ import { useDevisPatchMutation } from '../hooks/use-devis-patch-mutation';
 import { DEVIS_STATUS_LABEL_FR } from '../constants/status-labels';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import { financeDevisDetailQueryKey, financeDevisListQueryKey } from '../constants/query-keys';
-import { Upload } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/upload';
+import { DevisWorkflowStepper } from './devis-workflow-stepper';
+import { DevisClientSidebar } from './devis-client-sidebar';
+import { devisStatusBadgeVariant } from '../lib/devis-workflow';
+import { fetchPublicPlaquetteLink } from '@/lib/devis-plaquette-client-link';
+import { resolveDevisClientContact } from '@/lib/finance/resolve-devis-client-contact';
+import { useDevisWorkflowSettings } from '@/hooks/use-devis-workflow-settings';
 import {
   CRM_MARKETING_LEADS_PATH,
   CRM_CANDIDATURES_PATH,
@@ -74,13 +77,14 @@ import {
   DevisNotesEditorSection,
 } from './devis-draft-sections';
 
-export type DevisDetailInitialTab =
-  | 'overview'
-  | 'edit'
-  | 'client'
-  | 'lines'
-  | 'notes'
-  | 'exchanges';
+export type DevisDetailInitialTab = 'overview' | 'edition' | 'suivi' | 'edit' | 'client' | 'lines' | 'notes' | 'exchanges';
+
+function normalizeInitialTab(tab: DevisDetailInitialTab | undefined): DevisDetailInitialTab {
+  if (!tab || tab === 'overview') return 'overview';
+  if (tab === 'edit' || tab === 'client' || tab === 'lines') return 'edition';
+  if (tab === 'notes' || tab === 'exchanges') return 'suivi';
+  return tab;
+}
 
 interface DevisDetailSheetProps {
   devisId: string | null;
@@ -130,37 +134,6 @@ function formatSnapshotValue(value: unknown): string {
   if (value === null || value === undefined || value === '') return '—';
   if (typeof value === 'object') return '—';
   return String(value);
-}
-
-function strSnap(s: Record<string, unknown>, key: string): string | undefined {
-  const v = s[key];
-  return typeof v === 'string' && v.trim() ? v.trim() : undefined;
-}
-
-function formatAddressFromSnapshot(s: Record<string, unknown>): string | undefined {
-  const line = strSnap(s, 'address');
-  const pc = strSnap(s, 'postalCode');
-  const city = strSnap(s, 'city');
-  const tail = [pc, city].filter(Boolean).join(' ').trim();
-  const parts = [line, tail].filter(Boolean);
-  return parts.length ? parts.join(', ') : undefined;
-}
-
-function devisStatusBadgeVariant(status: string): 'success' | 'warning' | 'info' | 'destructive' | 'secondary' {
-  switch (status) {
-    case 'ACCEPTED':
-      return 'success';
-    case 'DRAFT':
-      return 'warning';
-    case 'SENT':
-      return 'info';
-    case 'REJECTED':
-      return 'destructive';
-    case 'EXPIRED':
-      return 'secondary';
-    default:
-      return 'secondary';
-  }
 }
 
 function DevisFinancialOverviewCards({ detail }: { detail: FinanceDevisDetail }) {
@@ -415,6 +388,7 @@ function DevisPlaquetteExchangesPanel({
       if (devisId) {
         void queryClient.invalidateQueries({ queryKey: [...financeDevisDetailQueryKey, devisId] });
       }
+      void queryClient.invalidateQueries({ queryKey: [...financeDevisListQueryKey] });
       setDraft('');
       toast.success(t('devis.replySaved'));
     },
@@ -492,7 +466,7 @@ function DevisPlaquetteExchangesPanel({
       <div className="space-y-2 border-t border-border/60 pt-4">
         <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Répondre au client</p>
         <p className="text-[11px] text-muted-foreground leading-relaxed">
-          Le texte est ajouté au même fil que sur la plaquette (lien magique). Pensez à prévenir le client par e-mail
+          Le texte est ajouté au même fil que sur la page client (lien plaquette). Pensez à prévenir le client par e-mail
           ou téléphone s’il doit consulter la page.
         </p>
         <Textarea
@@ -525,9 +499,15 @@ export function DevisDetailSheet({
 }: DevisDetailSheetProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { data: detail, isLoading } = useFinanceDevisDetailQuery(devisId, open && !!devisId);
-  const devisPatch = useDevisPatchMutation(devisId);
   const [detailTab, setDetailTab] = useState<DevisDetailInitialTab>('overview');
+  const [plaquetteLinkBusy, setPlaquetteLinkBusy] = useState(false);
+  const [sendEmailOpen, setSendEmailOpen] = useState(false);
+  const [sendEmailMessage, setSendEmailMessage] = useState('');
+  const { data: detail, isLoading } = useFinanceDevisDetailQuery(devisId, open && !!devisId, {
+    refetchIntervalMs: open && detailTab === 'suivi' ? 20_000 : false,
+  });
+  const devisPatch = useDevisPatchMutation(devisId);
+  const { settings: workflowSettings } = useDevisWorkflowSettings();
   const tabSyncRef = useRef<{ devisId: string | null; initialTab: DevisDetailInitialTab }>({
     devisId: null,
     initialTab: 'overview',
@@ -541,13 +521,13 @@ export function DevisDetailSheet({
     }
     if (!devisId) return;
 
-    const want = (initialTab ?? 'overview') as DevisDetailInitialTab;
+    const want = normalizeInitialTab(initialTab ?? 'overview');
     const sameIntent =
       tabSyncRef.current.devisId === devisId && tabSyncRef.current.initialTab === want;
     if (sameIntent) return;
 
     let next: DevisDetailInitialTab = want;
-    if (next === 'edit') {
+    if (next === 'edition') {
       if (!detail) return;
       if (detail.status !== 'DRAFT') next = 'overview';
     }
@@ -557,71 +537,78 @@ export function DevisDetailSheet({
 
   useEffect(() => {
     if (!open || !detail) return;
-    if (detailTab === 'edit' && detail.status !== 'DRAFT') setDetailTab('overview');
+    if (detailTab === 'edition' && detail.status !== 'DRAFT') setDetailTab('overview');
   }, [open, detail, detailTab]);
 
   const lineRows = detail ? normalizeDevisLines(detail.lines) : [];
+  const clientContact = detail
+    ? resolveDevisClientContact({ lead: detail.lead, clientSnapshot: detail.clientSnapshot })
+    : null;
+  const recipientEmail = clientContact?.email ?? null;
+  const canSendEmail =
+    !!recipientEmail && (detail?.status === 'DRAFT' || detail?.status === 'SENT') && !!detail?.formation;
 
   const sendMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (message: string) => {
       if (!devisId) throw new Error('Devis introuvable.');
       const res = await apiFetch(`/api/sections/administration-facturation/finance/devis/${devisId}/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ message: message.trim() || undefined }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
         throw new Error((json as { error?: { message?: string } }).error?.message ?? 'Envoi impossible.');
       }
-      return unwrapSectionApiData<{ sent?: boolean }>(json);
+      return unwrapSectionApiData<{ sent?: boolean; resent?: boolean; plaquetteUrl?: string | null }>(json);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: [...financeDevisDetailQueryKey, devisId] });
       void queryClient.invalidateQueries({ queryKey: [...financeDevisListQueryKey] });
-      toast.success(t('devis.emailSent'));
+      setSendEmailMessage('');
+      setSendEmailOpen(false);
+      setDetailTab('suivi');
+      toast.success(
+        data?.resent
+          ? 'E-mail renvoyé au client — historique mis à jour dans Suivi client.'
+          : 'Devis envoyé par e-mail (plaquette + PDF) — consultez Suivi client pour les réponses.',
+      );
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   const copyClientPlaquetteLink = async () => {
     if (!devisId) return;
-    const res = await apiFetch(
-      `/api/sections/administration-facturation/finance/devis/${devisId}/plaquette-public-link`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ttlDays: 60 }),
-      },
-    );
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      toast.error((json as { error?: { message?: string } }).error?.message ?? t('devis.linkGenerateFailed'));
-      return;
-    }
-    const payload = unwrapSectionApiData<{ url: string }>(json);
-    if (!payload?.url) {
-      toast.error(t('devis.unexpectedResponse'));
-      return;
-    }
+    setPlaquetteLinkBusy(true);
     try {
-      await navigator.clipboard.writeText(payload.url);
-      toast.success(t('devis.clientLinkCopied'));
-    } catch {
-      toast.message(t('devis.linkGeneratedTitle'), { description: payload.url });
+      const payload = await fetchPublicPlaquetteLink(devisId, 60);
+      try {
+        await navigator.clipboard.writeText(payload.url);
+        toast.success(t('devis.clientLinkCopied'));
+      } catch {
+        toast.message(t('devis.linkGeneratedTitle'), { description: payload.url });
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t('devis.linkGenerateFailed'));
+    } finally {
+      setPlaquetteLinkBusy(false);
+    }
+  };
+
+  const openClientPlaquettePage = async () => {
+    if (!devisId) return;
+    setPlaquetteLinkBusy(true);
+    try {
+      const payload = await fetchPublicPlaquetteLink(devisId, 60);
+      window.open(payload.url, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t('devis.linkGenerateFailed'));
+    } finally {
+      setPlaquetteLinkBusy(false);
     }
   };
 
   const snapshot = (detail?.clientSnapshot ?? {}) as Record<string, unknown>;
-  const companySidebar =
-    strSnap(snapshot, 'company') ??
-    (detail?.lead ? `${detail.lead.firstName} ${detail.lead.lastName}`.trim() : undefined);
-  const emailSidebar = strSnap(snapshot, 'email') ?? detail?.lead?.email ?? undefined;
-  const phoneSidebar = strSnap(snapshot, 'phone') ?? detail?.lead?.phone ?? undefined;
-  const addressSidebar = formatAddressFromSnapshot(snapshot);
-  const sessionLabel =
-    detail?.formation?.name ??
-    (detail?.title ? `Objet : ${detail.title}` : 'Proposition commerciale');
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -639,10 +626,10 @@ export function DevisDetailSheet({
             <div className="p-5 text-sm text-muted-foreground">Devis introuvable.</div>
           ) : (
             <>
-              <div className="flex shrink-0 flex-wrap justify-between gap-2 border-b border-border px-5 py-4 bg-background">
-                <div className="flex flex-col gap-3 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="text-lg font-semibold leading-none text-foreground lg:text-[22px] truncate">
+              <div className="flex shrink-0 gap-3 border-b border-border px-4 py-3 bg-background lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:px-5">
+                <div className="min-w-0 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-base font-semibold leading-tight text-foreground sm:text-lg truncate max-w-[min(100%,28rem)]">
                       {detail.title}
                     </span>
                     <Badge
@@ -654,212 +641,182 @@ export function DevisDetailSheet({
                       {DEVIS_STATUS_LABEL_FR[detail.status] ?? detail.status}
                     </Badge>
                   </div>
-                  <div className="text-2sm flex flex-wrap items-center gap-2 text-muted-foreground">
-                    <span className="font-normal">N° devis</span>
-                    <span className="font-medium text-foreground tabular-nums">{detail.referenceCode}</span>
-                    <BadgeDot className="size-1 bg-muted-foreground" />
-                    <span className="font-normal">Créé le</span>
-                    <span className="font-medium text-foreground">{formatShortDate(detail.createdAt)}</span>
-                    <BadgeDot className="size-1 bg-muted-foreground" />
-                    <span className="font-normal">Mis à jour</span>
-                    <span className="font-medium text-foreground">{formatShortDate(detail.updatedAt)}</span>
-                    <BadgeDot className="size-1 bg-muted-foreground" />
-                    <span className="font-normal">Validité</span>
-                    <span className="font-medium text-foreground">
-                      {detail.validUntil ? formatShortDate(detail.validUntil) : 'Non définie'}
+                  <p className="text-xs text-muted-foreground flex flex-wrap gap-x-2 gap-y-0.5">
+                    <span>
+                      <span className="font-semibold text-foreground tabular-nums">{detail.referenceCode}</span>
                     </span>
-                    <BadgeDot className="size-1 bg-muted-foreground" />
-                    <span className="font-normal">Devise</span>
-                    <span className="font-medium text-foreground">{detail.currency}</span>
-                    <BadgeDot className="size-1 bg-muted-foreground" />
-                    <span className="font-normal">Lignes</span>
-                    <span className="font-medium text-foreground tabular-nums">{lineRows.length}</span>
-                    {detail.lead?.source ? (
+                    <span aria-hidden>·</span>
+                    <span className="font-semibold text-foreground tabular-nums">
+                      {money(detail.totalTtc, detail.currency)} TTC
+                    </span>
+                    {detail.validUntil ? (
                       <>
-                        <BadgeDot className="size-1 bg-muted-foreground" />
-                        <span className="font-normal">Source demande</span>
-                        <span className="font-medium text-foreground max-w-[220px] truncate" title={detail.lead.source}>
-                          {detail.lead.source}
-                        </span>
+                        <span aria-hidden>·</span>
+                        <span>val. {formatShortDate(detail.validUntil)}</span>
                       </>
                     ) : null}
                     {detail.formation ? (
                       <>
-                        <BadgeDot className="size-1 bg-muted-foreground" />
-                        <span className="font-normal">Formation</span>
-                        <span className="font-medium text-foreground max-w-[280px] truncate" title={detail.formation.name}>
+                        <span aria-hidden className="hidden sm:inline">·</span>
+                        <span className="hidden sm:inline truncate max-w-[200px]" title={detail.formation.name}>
                           {detail.formation.name}
                         </span>
                       </>
                     ) : null}
-                    {detail.lead ? (
-                      <>
-                        <BadgeDot className="size-1 bg-muted-foreground" />
-                        <span className="font-normal">Contact</span>
-                        <span className="font-medium text-foreground">
-                          {detail.lead.firstName} {detail.lead.lastName}
-                        </span>
-                      </>
-                    ) : null}
-                    {detail.leadId ? (
-                      <>
-                        <BadgeDot className="size-1 bg-muted-foreground" />
-                        <span className="font-normal">ID lead</span>
-                        <span className="font-mono text-[11px] font-medium text-foreground/80" title={detail.leadId}>
-                          {detail.leadId.slice(0, 8)}…
-                        </span>
-                      </>
-                    ) : null}
-                  </div>
+                  </p>
+                  <DevisWorkflowStepper status={detail.status} compact className="max-w-md pt-0.5" />
+                </div>
+
+                <div className="flex flex-wrap items-center justify-end gap-1.5 shrink-0 lg:pt-0.5">
+                  {(detail.status === 'DRAFT' || detail.status === 'SENT') && recipientEmail ? (
+                    <Popover open={sendEmailOpen} onOpenChange={setSendEmailOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant={detail.status === 'DRAFT' ? 'primary' : 'outline'}
+                          size="sm"
+                          className="gap-1 h-8 text-xs"
+                          disabled={!canSendEmail || sendMutation.isPending}
+                        >
+                          <Send className="size-3.5" />
+                          {detail.status === 'DRAFT' ? 'Envoyer' : 'Renvoyer'}
+                          <ChevronDown className="size-3 opacity-60" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[min(100vw-2rem,22rem)] p-3" align="end">
+                        <p className="text-xs font-semibold text-foreground">E-mail au client</p>
+                        <p className="mt-1 text-[11px] text-muted-foreground leading-relaxed">
+                          À <span className="font-medium text-foreground">{recipientEmail}</span> — plaquette, PDF et
+                          lignes du devis.
+                        </p>
+                        <Textarea
+                          value={sendEmailMessage}
+                          onChange={(e) => setSendEmailMessage(e.target.value)}
+                          placeholder="Message optionnel…"
+                          className="mt-2 min-h-[72px] text-xs"
+                          maxLength={2000}
+                          disabled={sendMutation.isPending}
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="mt-2 w-full gap-1.5"
+                          disabled={!canSendEmail || sendMutation.isPending}
+                          onClick={() => sendMutation.mutate(sendEmailMessage)}
+                        >
+                          <Send className="size-3.5" />
+                          {sendMutation.isPending ? 'Envoi…' : 'Confirmer l’envoi'}
+                        </Button>
+                      </PopoverContent>
+                    </Popover>
+                  ) : null}
+
+                  {detail.status === 'SENT' ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs"
+                      disabled={devisPatch.isPending}
+                      onClick={() => devisPatch.mutate({ status: 'ACCEPTED' })}
+                    >
+                      Accepté
+                    </Button>
+                  ) : null}
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button type="button" variant="outline" size="sm" className="h-8 gap-1 text-xs">
+                        Partager
+                        <ChevronDown className="size-3 opacity-60" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-52">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (!devisId) return;
+                          window.open(
+                            `/api/sections/administration-facturation/finance/devis/${devisId}/pdf`,
+                            '_blank',
+                            'noopener,noreferrer',
+                          );
+                        }}
+                      >
+                        <FileSpreadsheet className="size-4" />
+                        Document en ligne
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          if (!devisId) return;
+                          window.open(
+                            `/api/sections/administration-facturation/finance/devis/${devisId}/pdf?format=pdf`,
+                            '_blank',
+                            'noopener,noreferrer',
+                          );
+                        }}
+                      >
+                        <Printer className="size-4" />
+                        Télécharger PDF
+                      </DropdownMenuItem>
+                      {detail.formation && devisId ? (
+                        <>
+                          <DropdownMenuItem disabled={plaquetteLinkBusy} onClick={() => void openClientPlaquettePage()}>
+                            <FileSpreadsheet className="size-4" />
+                            Page client
+                          </DropdownMenuItem>
+                          <DropdownMenuItem disabled={plaquetteLinkBusy} onClick={() => void copyClientPlaquetteLink()}>
+                            <Link2 className="size-4" />
+                            Copier le lien client
+                          </DropdownMenuItem>
+                        </>
+                      ) : null}
+                      {detail.leadId ? (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link href={`${CRM_MARKETING_LEADS_PATH}?leadId=${encodeURIComponent(detail.leadId)}`}>
+                              <UserRound className="size-4" />
+                              Lead d&apos;origine
+                            </Link>
+                          </DropdownMenuItem>
+                        </>
+                      ) : null}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
 
-              <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border px-5 py-2.5 bg-muted/15">
-                {detail.leadId ? (
-                  <Button asChild variant="outline" size="sm" className="gap-1.5">
-                    <Link href={`${CRM_MARKETING_LEADS_PATH}?leadId=${encodeURIComponent(detail.leadId)}`}>
-                      <UserRound className="size-3.5" />
-                      Voir le lead
-                    </Link>
-                  </Button>
-                ) : null}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5"
-                  onClick={() => {
-                    if (!devisId) return;
-                    window.open(
-                      `/api/sections/administration-facturation/finance/devis/${devisId}/pdf`,
-                      '_blank',
-                      'noopener,noreferrer',
-                    );
-                  }}
-                >
-                  <Printer className="size-3.5" />
-                  Aperçu imprimable
-                </Button>
-                {detail.formation && devisId ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5"
-                    onClick={() => {
-                      const u = new URL(window.location.href);
-                      const prefix = nextPublicPathPrefix();
-                      const path = `${prefix}/administration-facturation/finance/devis/${devisId}/plaquette`
-                        .replace(/\/{2,}/g, '/');
-                      const href = new URL(
-                        path.startsWith('/') ? path : `/${path}`,
-                        `${u.protocol}//${u.host}`,
-                      ).toString();
-                      window.open(href, '_blank', 'noopener,noreferrer');
-                    }}
-                  >
-                    <FileSpreadsheet className="size-3.5" />
-                    Plaquette commerciale
-                  </Button>
-                ) : null}
-                {detail.formation && devisId ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5"
-                    onClick={() => void copyClientPlaquetteLink()}
-                  >
-                    <Link2 className="size-3.5" />
-                    Lien client (magique)
-                  </Button>
-                ) : null}
-                <Button
-                  type="button"
-                  variant="primary"
-                  size="sm"
-                  className="gap-1.5"
-                  disabled={!detail.lead?.email || sendMutation.isPending}
-                  onClick={() => sendMutation.mutate()}
-                >
-                  <Send className="size-3.5" />
-                  {sendMutation.isPending ? 'Envoi…' : 'Envoyer au client'}
-                </Button>
-              </div>
-
-              {detail.candidature || detail.formationSession ? (
-                <div className="shrink-0 border-b border-border px-5 py-3 bg-background">
-                  <Card className="shadow-none border border-border/50">
-                    <CardHeader className="py-3 px-4 pb-2">
-                      <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Liens dossier & session
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-4 pt-0 text-sm space-y-2">
-                      {detail.candidature ? (
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-muted-foreground">Candidature CRM</span>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline">{detail.candidature.status}</Badge>
-                            <Button asChild variant="ghost" size="sm" className="h-auto p-0 text-primary underline-offset-4 hover:underline">
-                              <Link
-                                href={`${CRM_CANDIDATURES_PATH}?userId=${encodeURIComponent(detail.candidature.userId)}`}
-                              >
-                                Ouvrir le dossier
-                              </Link>
-                            </Button>
-                          </div>
-                        </div>
-                      ) : null}
-                      {detail.formationSession ? (
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <span className="text-muted-foreground">Session visée</span>
-                          <span className="font-medium text-right max-w-[70%]">
-                            {detail.formationSession.dateDisplayLabel} — {detail.formationSession.location}
-                          </span>
-                        </div>
-                      ) : null}
-                    </CardContent>
-                  </Card>
-                </div>
+              {(detail.status === 'DRAFT' || detail.status === 'SENT') && !recipientEmail ? (
+                <p className="shrink-0 border-b border-amber-200/80 bg-amber-50 px-4 py-2 text-[11px] text-amber-900 dark:bg-amber-950/30 dark:text-amber-200 lg:px-5">
+                  Ajoutez un e-mail (lead ou contexte client) pour envoyer la proposition.
+                </p>
               ) : null}
 
               <ScrollArea
-                className="mx-1.5 flex min-h-0 flex-1 flex-col h-[calc(100dvh-15.8rem)] max-h-[min(560px,calc(100dvh-14rem))]"
+                className="mx-0 flex min-h-0 flex-1 flex-col"
                 viewportClassName="[&>div]:h-full [&>div>div]:h-full"
               >
-                <div className="flex grow flex-wrap px-3.5 lg:flex-nowrap">
-                  <div className="w-full shrink-0 space-y-4 py-5 lg:w-[230px] lg:pe-5">
-                    <Upload
-                      allowDemoLogoFallback={false}
-                      logoUrl={null}
-                      companyName={companySidebar ?? ''}
-                      email={emailSidebar ?? ''}
-                      phone={phoneSidebar ?? ''}
-                      address={addressSidebar ?? ''}
-                      sessionLabel={sessionLabel || 'Contexte devis'}
-                    />
+                <div className="flex grow flex-wrap px-3 lg:flex-nowrap lg:px-4">
+                  <div className="w-full shrink-0 py-3 lg:w-[210px] lg:pe-4 lg:py-4">
+                    <DevisClientSidebar detail={detail} />
                   </div>
-                  <div className="grow space-y-5 border-border py-5 lg:border-s lg:ps-5 min-w-0">
+                  <div className="grow min-w-0 border-border py-3 lg:border-s lg:ps-4 lg:py-4">
                     <Tabs
                       value={detailTab}
-                      onValueChange={(v) => setDetailTab(v as DevisDetailInitialTab)}
+                      onValueChange={(v) => setDetailTab(normalizeInitialTab(v as DevisDetailInitialTab))}
                       className="w-auto text-sm text-muted-foreground"
                     >
                       <TabsList className="mb-2.5 inline-flex w-auto grow-0 flex-wrap gap-1">
-                        <TabsTrigger value="overview">Vue d&apos;ensemble</TabsTrigger>
+                        <TabsTrigger value="overview">Résumé</TabsTrigger>
                         {detail.status === 'DRAFT' ? (
-                          <TabsTrigger value="edit" className="gap-1.5">
+                          <TabsTrigger value="edition" className="gap-1.5">
                             <Pencil className="size-3.5 opacity-70" />
-                            En-tête
+                            Édition
                           </TabsTrigger>
                         ) : null}
-                        <TabsTrigger value="client">Client</TabsTrigger>
-                        <TabsTrigger value="lines">Lignes &amp; prix</TabsTrigger>
-                        <TabsTrigger value="notes">Notes</TabsTrigger>
-                        <TabsTrigger value="exchanges" className="gap-1.5">
+                        <TabsTrigger value="suivi" className="gap-1.5">
                           <MessageSquare className="size-3.5 opacity-70" />
-                          Échanges plaquette
+                          Suivi client
                           {(detail.plaquetteMessages?.length ?? 0) > 0 ? (
                             <span className="ms-0.5 min-w-[1.1rem] rounded-full bg-primary/15 px-1.5 py-0 text-[10px] font-semibold tabular-nums text-primary">
                               {detail.plaquetteMessages!.length}
@@ -868,134 +825,98 @@ export function DevisDetailSheet({
                         </TabsTrigger>
                       </TabsList>
 
-                      <TabsContent value="overview" className="space-y-5">
+                      <TabsContent value="overview" className="space-y-4 mt-0">
+                        {detailTab === 'overview' ? (
+                        <>
                         <DevisFinancialOverviewCards detail={detail} />
-
+                        {detail.candidature || detail.formationSession ? (
+                          <div className="flex flex-wrap gap-2 text-xs text-muted-foreground rounded-md border border-border/60 bg-muted/20 px-3 py-2">
+                            {detail.candidature ? (
+                              <span className="flex items-center gap-1.5">
+                                Candidature
+                                <Badge variant="outline" className="h-5 text-[10px]">
+                                  {detail.candidature.status}
+                                </Badge>
+                                <Link
+                                  href={`${CRM_CANDIDATURES_PATH}?userId=${encodeURIComponent(detail.candidature.userId)}`}
+                                  className="text-primary underline-offset-2 hover:underline"
+                                >
+                                  Ouvrir
+                                </Link>
+                              </span>
+                            ) : null}
+                            {detail.formationSession ? (
+                              <span>
+                                Session : {detail.formationSession.dateDisplayLabel} —{' '}
+                                {detail.formationSession.location}
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : null}
                         <Card className="shadow-none border border-border/50">
                           <CardHeader className="pb-2 border-b border-border/40">
-                            <CardTitle className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
-                              <FileText className="size-4 text-muted-foreground" />
-                              Résumé commercial
+                            <CardTitle className="text-sm font-bold flex items-center gap-2">
+                              <Hash className="size-4 text-muted-foreground" />
+                              Détail des prestations
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="pt-4 space-y-3 text-sm">
-                            <div className="grid gap-2 sm:grid-cols-2">
-                              <div className="flex justify-between gap-3 border-b border-dashed border-border/50 pb-2 sm:border-0 sm:pb-0">
-                                <span className="text-muted-foreground shrink-0">Référence</span>
-                                <span className="font-semibold text-right tabular-nums">{detail.referenceCode}</span>
-                              </div>
-                              <div className="flex justify-between gap-3 border-b border-dashed border-border/50 pb-2 sm:border-0 sm:pb-0">
-                                <span className="text-muted-foreground shrink-0">Objet / titre</span>
-                                <span className="font-medium text-right">{detail.title}</span>
-                              </div>
-                              <div className="flex justify-between gap-3 border-b border-dashed border-border/50 pb-2 sm:border-0 sm:pb-0">
-                                <span className="text-muted-foreground shrink-0">Création</span>
-                                <span className="font-medium text-right">{formatDateTime(detail.createdAt)}</span>
-                              </div>
-                              <div className="flex justify-between gap-3 border-b border-dashed border-border/50 pb-2 sm:border-0 sm:pb-0">
-                                <span className="text-muted-foreground shrink-0">Dernière MAJ</span>
-                                <span className="font-medium text-right">{formatDateTime(detail.updatedAt)}</span>
-                              </div>
-                              <div className="flex justify-between gap-3 sm:col-span-2">
-                                <span className="text-muted-foreground shrink-0">Montant TTC</span>
-                                <span className="font-semibold text-right text-base tabular-nums">
-                                  {money(detail.totalTtc, detail.currency)}
-                                </span>
-                              </div>
-                            </div>
-                            <p className="text-xs text-muted-foreground leading-relaxed border-t border-border/40 pt-3">
-                              Vue synthétique des montants et du titre. Le détail client se modifie dans l’onglet{' '}
-                              <span className="font-medium text-foreground">Client</span>, les lignes dans{' '}
-                              <span className="font-medium text-foreground">Lignes &amp; prix</span>, les notes dans{' '}
-                              <span className="font-medium text-foreground">Notes</span>, les échanges client
-                              (plaquette) dans{' '}
-                              <span className="font-medium text-foreground">Échanges plaquette</span>.
-                              {detail.formation ? (
-                                <>
-                                  {' '}
-                                  La{' '}
-                                  <span className="font-medium text-foreground">plaquette commerciale</span> s’ouvre
-                                  dans le layout CRM ; le bouton{' '}
-                                  <span className="font-medium text-foreground">Lien client (magique)</span> copie une
-                                  URL publique signée (hors CRM) pour consultation par le client.
-                                </>
-                              ) : null}
-                              {detail.status === 'DRAFT' ? (
-                                <>
-                                  {' '}
-                                  En brouillon, l’onglet{' '}
-                                  <button
-                                    type="button"
-                                    className="font-medium text-primary underline-offset-2 hover:underline"
-                                    onClick={() => setDetailTab('edit')}
-                                  >
-                                    En-tête
-                                  </button>{' '}
-                                  sert au titre, à la validité et à la devise.
-                                </>
-                              ) : null}
-                            </p>
+                          <CardContent className="pt-4">
+                            <DevisLinesTable lines={lineRows} currency={detail.currency} />
                           </CardContent>
                         </Card>
+                        {detail.status !== 'DRAFT' ? (
+                          <DevisClientContextCard snapshot={snapshot} />
+                        ) : null}
+                        {detail.notes?.trim() ? (
+                          <Card className="shadow-none border border-border/50">
+                            <CardHeader className="pb-2">
+                              <CardTitle className="text-sm font-bold">Notes internes</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{detail.notes}</p>
+                            </CardContent>
+                          </Card>
+                        ) : null}
+                        </>
+                        ) : null}
                       </TabsContent>
 
-                      <TabsContent value="edit" className="space-y-4">
-                        {detail.status === 'DRAFT' && devisId ? (
-                          <DevisDraftHeaderSection detail={detail} patchMutation={devisPatch} />
+                      <TabsContent value="edition" className="space-y-6">
+                        {detailTab !== 'edition' ? null : detail.status === 'DRAFT' && devisId ? (
+                          <>
+                            <p className="text-xs text-muted-foreground leading-relaxed rounded-lg border border-dashed border-primary/30 bg-primary/5 px-3 py-2.5">
+                              Complétez les trois blocs ci-dessous, puis utilisez{' '}
+                              <strong className="text-foreground">Envoyer par e-mail</strong> ou passez le statut à
+                              envoyé. Les montants se recalculent à chaque enregistrement des lignes.
+                            </p>
+                            <DevisDraftHeaderSection detail={detail} patchMutation={devisPatch} />
+                            <DevisDraftClientSection detail={detail} patchMutation={devisPatch} />
+                            <DevisDraftLinesSection detail={detail} patchMutation={devisPatch} />
+                          </>
                         ) : (
                           <p className="text-sm text-muted-foreground">
-                            L’en-tête (titre, validité, devise) n’est modifiable que pour les devis au statut brouillon.
+                            L&apos;édition n&apos;est disponible que pour les devis en brouillon.
                           </p>
                         )}
                       </TabsContent>
 
-                      <TabsContent value="client" className="space-y-3">
-                        {detail.status === 'DRAFT' && devisId ? (
-                          <DevisDraftClientSection detail={detail} patchMutation={devisPatch} />
-                        ) : (
+                      <TabsContent value="suivi" className="space-y-4 mt-0">
+                        {detailTab === 'suivi' ? (
                           <>
-                            <p className="text-xs text-muted-foreground">
-                              Contexte client figé sur ce devis (hors brouillon). Repassez en brouillon pour modifier.
-                            </p>
-                            <DevisClientContextCard snapshot={snapshot} />
-                          </>
-                        )}
-                      </TabsContent>
-
-                      <TabsContent value="lines" className="space-y-3">
-                        {detail.status === 'DRAFT' && devisId ? (
-                          <DevisDraftLinesSection detail={detail} patchMutation={devisPatch} />
-                        ) : (
-                          <Card className="shadow-none border">
-                            <CardHeader className="pb-2">
-                              <CardTitle className="text-sm flex items-center gap-2">
-                                <Hash className="size-4 text-muted-foreground" />
-                                Lignes du devis
-                              </CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0 sm:p-6 pt-0 space-y-3">
-                              <DevisLinesTable lines={lineRows} currency={detail.currency} />
-                            </CardContent>
-                          </Card>
-                        )}
-                      </TabsContent>
-
-                      <TabsContent value="notes" className="space-y-4">
                         {devisId ? <DevisNotesEditorSection detail={detail} patchMutation={devisPatch} /> : null}
-                      </TabsContent>
-
-                      <TabsContent value="exchanges" className="space-y-4">
                         <Card className="shadow-none border border-border/50">
                           <CardHeader className="pb-3 border-b border-border/40">
-                            <CardTitle className="text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                            <CardTitle className="text-sm font-bold flex items-center gap-2">
                               <MessageSquare className="size-4 text-muted-foreground" />
-                              Échanges via la plaquette
+                              Messages client (page plaquette)
                             </CardTitle>
                           </CardHeader>
                           <CardContent className="pt-4">
                             <DevisPlaquetteExchangesPanel messages={detail.plaquetteMessages ?? []} devisId={devisId} />
                           </CardContent>
                         </Card>
+                          </>
+                        ) : null}
                       </TabsContent>
                     </Tabs>
                   </div>
@@ -1023,13 +944,35 @@ export function DevisDetailSheet({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   disabled={detail.status === 'SENT' || devisPatch.isPending}
-                  onClick={() => devisPatch.mutate({ status: 'SENT' })}
+                  onClick={() => {
+                    if (
+                      workflowSettings.requirePlaquetteBeforeSend &&
+                      !detail.formation
+                    ) {
+                      toast.error(
+                        'Formation requise sur le devis avant envoi (paramètre plaquette activé).',
+                      );
+                      return;
+                    }
+                    devisPatch.mutate({ status: 'SENT' });
+                  }}
                 >
                   Marquer comme envoyé
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   disabled={detail.status === 'ACCEPTED' || devisPatch.isPending}
-                  onClick={() => devisPatch.mutate({ status: 'ACCEPTED' })}
+                  onClick={() => {
+                    devisPatch.mutate(
+                      { status: 'ACCEPTED' },
+                      {
+                        onSuccess: () => {
+                          if (workflowSettings.notifyOnAccept) {
+                            toast.info('Acceptation enregistrée — équipe notifiée.');
+                          }
+                        },
+                      },
+                    );
+                  }}
                 >
                   Marquer comme accepté
                 </DropdownMenuItem>
@@ -1046,16 +989,33 @@ export function DevisDetailSheet({
                   Marquer comme expiré
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    toast.message('Facturation', {
-                      description:
-                        'Le module factures est en cours de finalisation. La conversion devis → facture sera disponible ici ; en attendant, vous pouvez traiter le statut du devis (accepté / envoyé) et retrouver le lead depuis Marketing.',
-                    });
-                  }}
-                >
-                  Transformer en facture…
-                </DropdownMenuItem>
+                {detail.status === 'ACCEPTED' ? (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/administration-facturation/finance/factures?factureId=${encodeURIComponent(detail.id)}`}
+                    >
+                      Voir dans Factures (devis accepté)
+                    </Link>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    disabled={detail.status === 'REJECTED' || devisPatch.isPending}
+                    onClick={() => {
+                      devisPatch.mutate(
+                        { status: 'ACCEPTED' },
+                        {
+                          onSuccess: () => {
+                            toast.success(
+                              'Devis accepté — le dossier apparaît dans Factures (devis ACCEPTED).',
+                            );
+                          },
+                        },
+                      );
+                    }}
+                  >
+                    Marquer accepté → Factures
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : null}

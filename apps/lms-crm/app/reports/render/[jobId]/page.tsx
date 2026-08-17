@@ -138,7 +138,14 @@ export default async function ReportRenderPage({ params, searchParams }: Props) 
 
   const origin = await resolveOrigin();
   const brand = await loadReportDocumentBrand(origin);
-  const isLegalTemplate = job.templateKey === 'rh.contrat-travail';
+  const documentKind =
+    job.templateKey === 'rh.contrat-travail'
+      ? 'legal'
+      : job.templateKey === 'qualiopi.checklist'
+        ? 'qualiopi'
+        : job.templateKey === 'finance.monthly-summary'
+          ? 'finance'
+          : 'corporate';
 
   return (
     <ReportDocumentShell
@@ -149,7 +156,7 @@ export default async function ReportRenderPage({ params, searchParams }: Props) 
       author={authorRecord}
       summary={job.summary}
       brand={brand}
-      kind={isLegalTemplate ? 'legal' : 'corporate'}
+      kind={documentKind}
     >
       {body}
     </ReportDocumentShell>

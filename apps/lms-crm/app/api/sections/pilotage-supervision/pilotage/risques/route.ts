@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       return ok({
         moduleId,
         available: false,
-        message: 'Module en cours de déploiement — données gestion ressources actives.',
+        message: 'Module non reconnu ou données indisponibles.',
       });
     }
     return ok({ ...data, available: true });

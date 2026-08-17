@@ -238,6 +238,121 @@ export function EquipmentComplianceFields<T extends FieldValues>({
         />
         <FormField
           control={control}
+          name={n('acquisitionCost')}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs font-bold uppercase text-muted-foreground">
+                Coût acquisition (€)
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  placeholder="Budget Finance EQUIPEMENT"
+                  {...field}
+                  value={field.value === '' || field.value == null ? '' : String(field.value)}
+                  onChange={(e) => field.onChange(e.target.value === '' ? '' : Number(e.target.value))}
+                  className={inputClassName}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name={n('installationCost')}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs font-bold uppercase text-muted-foreground">
+                Installation / travaux (€)
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  placeholder="Pose, câblage, mise en service"
+                  {...field}
+                  value={field.value === '' || field.value == null ? '' : String(field.value)}
+                  onChange={(e) => field.onChange(e.target.value === '' ? '' : Number(e.target.value))}
+                  className={inputClassName}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name={n('financialCategory')}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs font-bold uppercase text-muted-foreground">
+                Catégorie finance
+              </FormLabel>
+              <Select value={(field.value as string) || ''} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger className={inputClassName}>
+                    <SelectValue placeholder="Classer pour le budget" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="ACHAT">Achat matériel</SelectItem>
+                  <SelectItem value="INSTALLATION">Travaux / installation</SelectItem>
+                  <SelectItem value="MOBILIER_SALLE">Mobilier de salle (fixe)</SelectItem>
+                  <SelectItem value="BUREAU">Bureau (PC, photocopieur…)</SelectItem>
+                  <SelectItem value="PEDAGOGIQUE_MOBILE">Matériel pédagogique mobile</SelectItem>
+                  <SelectItem value="CONSOMMABLE">Consommable</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name={n('purchaseInvoiceRef')}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs font-bold uppercase text-muted-foreground">
+                Réf. facture achat
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="N° facture fournisseur" {...field} value={(field.value as string) ?? ''} className={inputClassName} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name={n('amortizationYears')}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs font-bold uppercase text-muted-foreground">
+                Amortissement (années)
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min={1}
+                  max={20}
+                  step={1}
+                  placeholder="Ex: 5"
+                  {...field}
+                  value={field.value === '' || field.value == null ? '' : String(field.value)}
+                  onChange={(e) => field.onChange(e.target.value === '' ? '' : Number(e.target.value))}
+                  className={inputClassName}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
           name={n('warrantyUntil')}
           render={({ field }) => (
             <FormItem>

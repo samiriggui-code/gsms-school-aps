@@ -20,7 +20,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getInitials } from '@/lib/helpers';
 import { useCompanyProfileSettings } from '../company-profile-context';
 import { SettingsFormFooter } from '../settings-form-footer';
-import { buildCompanyProfileDefaults } from '../../lib/company-profile-form-utils';
+import {
+  buildCompanyProfileDefaults,
+  type CompanyProfileFormDefaults,
+  type PrimaryAdminContactPayload,
+} from '@/lib/company-profile';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const Schema = z.object({
@@ -165,8 +169,100 @@ export function DirigeantSettingsSection() {
             />
           </CardContent>
         </Card>
+
+        <Card className="pb-2.5">
+          <CardHeader>
+            <CardTitle>{t('pages.settings.dirigeant.adminTitle')}</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-5">
+            <AdminAvatarBlock
+              base={base}
+              primaryAdminContact={primaryAdminContact}
+              saveProfile={saveProfile}
+              isSaving={isSaving}
+            />
+          </CardContent>
+        </Card>
       </form>
     </Form>
+  );
+}
+
+function AdminAvatarBlock({
+  base,
+  primaryAdminContact,
+  saveProfile,
+  isSaving,
+}: {
+  base: CompanyProfileFormDefaults;
+  primaryAdminContact: PrimaryAdminContactPayload | null;
+  saveProfile: ReturnType<typeof useCompanyProfileSettings>['saveProfile'];
+  isSaving: boolean;
+}) {
+  const { t } = useTranslation();
+  const adminFileRef = useRef<HTMLInputElement | null>(null);
+  const [adminPreview, setAdminPreview] = useState<string | null>(
+    primaryAdminContact?.avatar ?? base.adminAvatar ?? null,
+  );
+  const [adminFile, setAdminFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    setAdminPreview(primaryAdminContact?.avatar ?? base.adminAvatar ?? null);
+    setAdminFile(null);
+  }, [primaryAdminContact, base.adminAvatar]);
+
+  const onSaveAdmin = async () => {
+    if (!adminFile) return;
+    try {
+      await saveProfile(
+        { ...base, adminAvatarAction: 'save' },
+        { adminAvatarFile: adminFile },
+      );
+      toast.success(t('pages.settings.dirigeant.adminSaveSuccess'));
+      setAdminFile(null);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t('pages.settings.common.error'));
+    }
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-4">
+      <Avatar className="size-16 rounded-xl">
+        <AvatarImage src={adminPreview || undefined} />
+        <AvatarFallback className="rounded-xl">
+          {getInitials(primaryAdminContact?.displayName ?? 'Admin')}
+        </AvatarFallback>
+      </Avatar>
+      <div className="space-y-2">
+        <p className="text-sm font-medium">{primaryAdminContact?.displayName ?? '—'}</p>
+        <p className="text-xs text-muted-foreground">{primaryAdminContact?.email ?? ''}</p>
+        <div className="flex flex-wrap gap-2">
+          <Button type="button" variant="outline" size="sm" onClick={() => adminFileRef.current?.click()}>
+            {t('pages.settings.dirigeant.adminChangePhoto')}
+          </Button>
+          {adminFile ? (
+            <Button type="button" size="sm" disabled={isSaving} onClick={() => void onSaveAdmin()}>
+              {t('pages.settings.common.save')}
+            </Button>
+          ) : null}
+        </div>
+        <input
+          ref={adminFileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0] ?? null;
+            setAdminFile(file);
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = () => setAdminPreview(reader.result as string);
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
+      </div>
+    </div>
   );
 }
 

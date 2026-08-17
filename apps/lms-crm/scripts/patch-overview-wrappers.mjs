@@ -10,12 +10,6 @@ const configs = [
     href: '/securite-configuration/acces/users',
   },
   {
-    file: 'securite-configuration/parametres/components/parametres-overview-table.tsx',
-    export: 'ParametresOverviewTable',
-    title: 'Collaborateurs récents',
-    href: '/gestion-ressources/rh/collaborateurs',
-  },
-  {
     file: 'securite-configuration/gouvernance-donnees/components/gouvernance-overview-table.tsx',
     export: 'GouvernanceOverviewTable',
     title: 'Collaborateurs récents',

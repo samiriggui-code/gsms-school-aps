@@ -6,7 +6,7 @@ import { requireNotificationsSession } from '@/app/api/_shared/topbar-auth';
 import { prisma } from '@/lib/prisma';
 import {
   buildNotificationScopeWhere,
-  filterNotificationItemsByModulePermission,
+  buildModulePermissionWhere,
   resolveNotificationsScope,
   scopeNotificationChannels,
   startOfTodayUtc,
@@ -54,6 +54,7 @@ function serializeNotification(row: {
     conversationTitle:
       typeof meta.conversationTitle === 'string' ? meta.conversationTitle : null,
     teamName: typeof meta.teamName === 'string' ? meta.teamName : null,
+    teamId: typeof meta.teamId === 'string' ? meta.teamId : null,
     actorName: typeof meta.actorName === 'string' ? meta.actorName : null,
     actorAvatar: typeof meta.actorAvatar === 'string' ? meta.actorAvatar : null,
     actorId:
@@ -87,7 +88,13 @@ async function scopedUserWhere(scopeParam: string | null) {
     userId: auth.userId,
     scope,
     permissionSlugs,
-    base: { userId: auth.userId, ...buildNotificationScopeWhere(scope) } satisfies Prisma.InAppNotificationWhereInput,
+    base: {
+      userId: auth.userId,
+      ...buildNotificationScopeWhere(scope),
+      ...(scope === 'crm-user'
+        ? buildModulePermissionWhere(scope, permissionSlugs)
+        : {}),
+    } satisfies Prisma.InAppNotificationWhereInput,
   };
 }
 
@@ -246,10 +253,7 @@ export async function GET(request: NextRequest) {
   });
 
   return ok({
-    items: filterNotificationItemsByModulePermission(
-      serialized,
-      ctx.scope === 'crm-user' ? ctx.permissionSlugs : undefined,
-    ),
+    items: serialized,
     unreadCount,
     scope: ctx.scope,
     pagination: isPaginated ? { page, limit, total } : undefined,

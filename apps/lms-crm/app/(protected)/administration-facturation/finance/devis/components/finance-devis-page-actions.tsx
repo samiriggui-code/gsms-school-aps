@@ -60,10 +60,10 @@ export function FinanceDevisPageActions() {
         className="gap-2"
         disabled={creating}
         onClick={createDevisOnFinancePage}
-        title="Crée un brouillon dans Facturation, sans passer par la page Marketing."
+        title="Crée un brouillon vide à compléter (client + lignes catalogue)"
       >
         <FilePlus2 className="size-4" />
-        {creating ? 'Création…' : 'Créer un devis'}
+        {creating ? 'Création…' : 'Nouveau devis'}
       </Button>
     </>
   );

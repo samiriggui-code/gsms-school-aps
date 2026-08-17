@@ -7,8 +7,8 @@ API vie scolaire alignées sur le **parcours candidat** :
 | `vie-scolaire/formations` | Catalogue CRM |
 | `vie-scolaire/sessions` | Sessions + inscrits |
 | `vie-scolaire/planning` | Calendrier sessions (6 sem.) |
-| `vie-scolaire/examens` | Résultats examen (`FormationSessionParticipant`) |
-| `vie-scolaire/certifications` | Attestations (`FormationAttestation`) |
+| `vie-scolaire/examens` | Résultats examen (`FormationSessionParticipant`) — UI dans `suivi-formations` |
+| `vie-scolaire/certifications` | Attestations (`FormationAttestation`) — UI dans `suivi-formations` |
 | `vie-scolaire/parcours/{id}` | État du parcours + clôture / archivage |
 
 Candidatures : `gestion-ressources/rh/candidatures` (PATCH statuts, sync lead).

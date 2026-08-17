@@ -33,6 +33,16 @@ export type FormationSessionApiRow = {
   endDate: string | null;
   registrationClosesAt: string | null;
   examDate: string | null;
+  /** Salle PCS / plateau incendie pour l'examen (distincte de la salle de cours). */
+  examVenueRoomId: string | null;
+  examVenueRoom: {
+    id: string;
+    name: string;
+    imageUrl: string | null;
+    shortCode: string | null;
+  } | null;
+  examReservedEquipmentIds: string[];
+  examReservedEquipment: FormationSessionApiRow['reservedEquipment'];
   traineesMin: number | null;
   traineesMax: number | null;
   trainerUserId: string | null;
