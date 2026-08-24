@@ -543,6 +543,20 @@ async function migrateLegacyCnapsStorageKeys(tx) {
 }
 
 async function main() {
+  // Garde-fou : le seed crée des comptes démo (@ecole.local / demo1234), des données
+  // CNAPS et Mux factices. Jamais en production, jamais sans opt-in explicite.
+  if (process.env.SKIP_SEED === '1') {
+    console.log('SKIP_SEED=1 — seed ignoré.');
+    return;
+  }
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PROD_SEED !== '1') {
+    console.error(
+      'Seed bloqué : NODE_ENV=production sans ALLOW_PROD_SEED=1. ' +
+        'Ce script crée des comptes démo (mot de passe demo1234) — ne jamais lancer sur une base client sans confirmation explicite.',
+    );
+    process.exit(1);
+  }
+
   console.log('Running database seeding...');
 
   await prisma.$transaction(

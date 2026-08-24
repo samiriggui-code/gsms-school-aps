@@ -24,6 +24,17 @@ pnpm dev
 
 Copier `apps/lms-crm/.env.example` vers `.env.local` et renseigner les variables requises.
 
+## Auth — filet `proxy.ts` (Next.js 16)
+
+Next.js 16 utilise **`proxy.ts`** (plus `middleware.ts`). Le fichier coupe court si aucune session NextAuth n’est présente :
+
+- pages CRM / portails → redirect `/signin`
+- API métier → `401` JSON
+
+Exceptions volontaires : `/api/auth`, catalogue, préinscription, contact, devis public, `/api/public/*`, `/api/internal/*` (auth propre), `/export/official/[token]`.
+
+Les helpers serveur (`requireCrmApiAuth`, portal, formateur…) restent obligatoires pour rôles et permissions.
+
 ## Documentation intégrée (`/docs`)
 
 - Contenu : `content/docs/` (fichiers MDX, FR + EN)

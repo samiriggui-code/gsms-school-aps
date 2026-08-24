@@ -41,6 +41,17 @@ async function sendVerificationEmail(user: User) {
 
 export async function POST(req: NextRequest) {
   try {
+    // Le front (signin-page-client.tsx) affiche "La création de compte public est désactivée."
+    // Cette route doit refléter la même règle — sinon le formulaire caché reste appelable
+    // directement (spam / comptes INACTIVE en masse). Activer via SIGNUP_ENABLED=1 si un
+    // vrai parcours d'inscription publique est un jour souhaité (avec recaptcha + rate-limit).
+    if (process.env.SIGNUP_ENABLED !== '1') {
+      return NextResponse.json(
+        { message: 'La création de compte public est désactivée.' },
+        { status: 403 },
+      );
+    }
+
     // Parse the request body as JSON.
     const body = await req.json();
 

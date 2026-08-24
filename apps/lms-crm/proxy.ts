@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-const SKIP_PREFIXES = ['/api', '/_next', '/brand', '/favicon', '/media', '/css', '/docs'];
+const SKIP_PREFIXES = ['/_next', '/brand', '/favicon', '/media', '/css'];
 
-/** Chemins CRM / auth — pas de redirection SEO landing. */
-const CRM_SKIP_PREFIXES = [
-  '/p',
-  '/signin',
+/**
+ * Pages qui exigent une session (layouts aujourd’hui en useSession client).
+ * Filet Edge/Node uniquement — les helpers API (requireCrmApiAuth, portal…)
+ * restent la source de vérité pour rôles / permissions.
+ */
+const SESSION_REQUIRED_PAGE_PREFIXES = [
+  '/accueil',
   '/mon-dossier',
   '/cnaps',
   '/formation',
   '/e-formation',
   '/apprendre',
   '/formateur',
-  '/accueil',
   '/communication-contenu',
   '/gestion-academique',
   '/gestion-ressources',
@@ -23,10 +26,107 @@ const CRM_SKIP_PREFIXES = [
   '/securite-configuration',
   '/mon-profil',
   '/account',
-];
+  '/reports',
+] as const;
 
+/** API volontairement publiques ou authentifiées autrement qu’avec la session NextAuth. */
+const PUBLIC_API_PREFIXES = [
+  '/api/auth',
+  '/api/catalog',
+  '/api/preinscriptions',
+  '/api/contact',
+  '/api/quote-requests',
+  '/api/seo',
+  '/api/common/health',
+  '/api/health',
+  '/api/public',
+  '/api/internal',
+] as const;
+
+/** Pages hors session (token signé, vitrine, auth). */
+const PUBLIC_PAGE_PREFIXES = [
+  '/signin',
+  '/signup',
+  '/verify-email',
+  '/reset-password',
+  '/2fa',
+  '/lockscreen',
+  '/change-password',
+  '/account-deactivated',
+  '/docs',
+  '/p',
+  '/export/official',
+] as const;
+
+function matchesPrefix(pathname: string, prefixes: readonly string[]): boolean {
+  return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
+function isSessionRequiredPage(pathname: string): boolean {
+  if (pathname === '/') return false;
+  if (matchesPrefix(pathname, PUBLIC_PAGE_PREFIXES)) return false;
+  return matchesPrefix(pathname, SESSION_REQUIRED_PAGE_PREFIXES);
+}
+
+function isSessionRequiredApi(pathname: string): boolean {
+  if (!pathname.startsWith('/api')) return false;
+  if (matchesPrefix(pathname, PUBLIC_API_PREFIXES)) return false;
+  return true;
+}
+
+async function hasSessionToken(request: NextRequest): Promise<boolean> {
+  const secret = process.env.NEXTAUTH_SECRET;
+  if (!secret) {
+    // Sans secret, getToken ne peut pas valider — fail-closed.
+    return false;
+  }
+  const token = await getToken({
+    req: request,
+    secret,
+  });
+  return Boolean(token);
+}
+
+function unauthorizedApi(): NextResponse {
+  return NextResponse.json({ message: 'Non authentifié.' }, { status: 401 });
+}
+
+function redirectToSignin(request: NextRequest): NextResponse {
+  const url = request.nextUrl.clone();
+  url.pathname = '/signin';
+  url.search = '';
+  const callback = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  if (callback && callback !== '/signin') {
+    url.searchParams.set('callbackUrl', callback);
+  }
+  return NextResponse.redirect(url);
+}
+
+/**
+ * Next.js 16 : convention `proxy.ts` (remplace middleware.ts).
+ * 1) Filet session pour pages/API protégées
+ * 2) Redirect /apprendre → /e-formation
+ * 3) Redirections SEO landing
+ */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (
+    SKIP_PREFIXES.some((p) => pathname.startsWith(p)) ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next();
+  }
+
+  if (isSessionRequiredApi(pathname)) {
+    if (!(await hasSessionToken(request))) {
+      return unauthorizedApi();
+    }
+  } else if (isSessionRequiredPage(pathname)) {
+    if (!(await hasSessionToken(request))) {
+      return redirectToSignin(request);
+    }
+  }
 
   if (pathname === '/apprendre' || pathname.startsWith('/apprendre/')) {
     const url = request.nextUrl.clone();
@@ -36,9 +136,14 @@ export async function proxy(request: NextRequest) {
 
   if (
     pathname === '/' ||
-    CRM_SKIP_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`)) ||
-    SKIP_PREFIXES.some((p) => pathname.startsWith(p)) ||
-    pathname.includes('.')
+    matchesPrefix(pathname, SESSION_REQUIRED_PAGE_PREFIXES) ||
+    matchesPrefix(pathname, PUBLIC_PAGE_PREFIXES) ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/docs') ||
+    pathname.startsWith('/brand') ||
+    pathname.startsWith('/favicon') ||
+    pathname.startsWith('/media') ||
+    pathname.startsWith('/css')
   ) {
     return NextResponse.next();
   }
