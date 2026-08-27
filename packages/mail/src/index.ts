@@ -65,4 +65,9 @@ export {
   type PilotageReportEmailInput,
 } from './report-flows';
 
+export {
+  sendSessionConvocationEmail,
+  type SessionConvocationEmailInput,
+} from './session-flows';
+
 export type { DevisQuoteEmailProps } from '@repo/emails';

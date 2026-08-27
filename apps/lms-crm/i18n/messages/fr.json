@@ -361,6 +361,8 @@
       "triggerCircuit": "Lancer le circuit automatisé",
       "triggerCircuitHint": "Déclenche le circuit n8n (J-15 à J+45, relances conformité, emails candidats et branche financement selon le mode renseigné).",
       "triggerCircuitSuccess": "Circuit n8n déclenché pour le premier inscrit confirmé.",
+      "triggerCircuitEmailSent": "Convocation générée et envoyée par e-mail au participant.",
+      "triggerCircuitEmailSkipped": "Convocation générée, mais e-mail non envoyé :",
       "triggerCircuitNoParticipant": "Inscrivez au moins un candidat confirmé pour lancer le circuit.",
       "triggerCircuitPending": "Déclenchement…",
       "automationTitle": "Automatisations session",

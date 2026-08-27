@@ -34,8 +34,14 @@ export function SessionCircuitTriggerButton({
       }
       return body.data;
     },
-    onSuccess: () => {
-      toast.success(t('vieScolaire.sessions.triggerCircuitSuccess'));
+    onSuccess: (data: { emailSent?: boolean; emailSkippedReason?: string | null }) => {
+      if (data?.emailSent) {
+        toast.success(t('vieScolaire.sessions.triggerCircuitEmailSent'));
+      } else if (data?.emailSkippedReason) {
+        toast.warning(`${t('vieScolaire.sessions.triggerCircuitEmailSkipped')} ${data.emailSkippedReason}`);
+      } else {
+        toast.success(t('vieScolaire.sessions.triggerCircuitSuccess'));
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });

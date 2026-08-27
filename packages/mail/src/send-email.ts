@@ -167,12 +167,19 @@ export function getSmtpTransportConfig(): SmtpTransportConfig | null {
   };
 }
 
+export interface SendEmailAttachment {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
+}
+
 export interface SendEmailProps {
   to: string;
   subject: string;
   text?: string;
   html?: string;
   replyTo?: string;
+  attachments?: SendEmailAttachment[];
 }
 
 async function sendViaResend(input: SendEmailProps): Promise<void> {
@@ -202,6 +209,12 @@ async function sendViaResend(input: SendEmailProps): Promise<void> {
   };
   if (input.replyTo) {
     body.reply_to = input.replyTo;
+  }
+  if (input.attachments?.length) {
+    body.attachments = input.attachments.map((a) => ({
+      filename: a.filename,
+      content: a.content.toString('base64'),
+    }));
   }
 
   const res = await fetch('https://api.resend.com/emails', {
@@ -255,6 +268,11 @@ export async function sendEmail(input: SendEmailProps): Promise<void> {
       text: input.text,
       html: input.html,
       replyTo: input.replyTo,
+      attachments: input.attachments?.map((a) => ({
+        filename: a.filename,
+        content: a.content,
+        contentType: a.contentType,
+      })),
     });
     console.info(`[smtp] sent → ${input.to}`);
   } catch (error) {

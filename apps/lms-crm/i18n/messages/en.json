@@ -361,6 +361,8 @@
       "triggerCircuit": "Start automation circuit",
       "triggerCircuitHint": "Triggers the n8n circuit (D-15 to D+45, compliance reminders, candidate emails, and funding branch based on the selected mode).",
       "triggerCircuitSuccess": "n8n circuit triggered for the first confirmed enrollee.",
+      "triggerCircuitEmailSent": "Convocation generated and emailed to the participant.",
+      "triggerCircuitEmailSkipped": "Convocation generated, but email not sent:",
       "triggerCircuitNoParticipant": "Enroll at least one confirmed candidate to start the circuit.",
       "triggerCircuitPending": "Triggering…",
       "automationTitle": "Session automations",
