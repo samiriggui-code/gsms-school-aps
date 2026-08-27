@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { deleteFileByKey, resolveKeyFromUrl } from '@repo/storage';
+import { canManageFileAsset } from '@/lib/file-asset-service';
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -14,6 +15,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
   const asset = await prisma.fileAsset.findUnique({ where: { id } });
   if (!asset) return NextResponse.json({ message: 'File not found' }, { status: 404 });
+  if (!canManageFileAsset(session, asset)) {
+    return NextResponse.json({ message: 'File not found' }, { status: 404 });
+  }
 
   let body: Record<string, unknown>;
   try {
@@ -66,6 +70,9 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
   const { id } = await params;
   const asset = await prisma.fileAsset.findUnique({ where: { id } });
   if (!asset) return NextResponse.json({ message: 'File not found' }, { status: 404 });
+  if (!canManageFileAsset(session, asset)) {
+    return NextResponse.json({ message: 'File not found' }, { status: 404 });
+  }
 
   const key = asset.storageKey || resolveKeyFromUrl(asset.url || '') || '';
   if (key) {

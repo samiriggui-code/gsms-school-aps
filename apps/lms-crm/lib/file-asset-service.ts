@@ -1,7 +1,42 @@
 import { createHash } from 'node:crypto';
+import type { Session } from 'next-auth';
 import type { FileAsset, FileAssetVisibility, Prisma } from '@repo/database';
 import { uploadFile, type StorageVisibility } from '@repo/storage';
 import { prisma } from '@/lib/prisma';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
+export type FileAssetAccessRecord = { visibility: FileAssetVisibility; createdById: string | null };
+
+/**
+ * Lecture d'un fichier — respecte la visibilité déclarée (PUBLIC/INTERNAL/PRIVATE).
+ * Un fichier PRIVATE sans créateur tracé reste lisible par tout utilisateur authentifié
+ * (TODO GSMS-SEC-03 : remplacer par une ACL par entité liée quand elle existera).
+ */
+export function canReadFileAsset(
+  session: Session | null | undefined,
+  asset: FileAssetAccessRecord,
+): boolean {
+  if (asset.visibility === 'PUBLIC') return true;
+  const userId = session?.user?.id;
+  if (!userId) return false;
+  if (asset.visibility === 'INTERNAL') return true;
+  if (!asset.createdById) return true;
+  return asset.createdById === userId || sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin);
+}
+
+/**
+ * Gestion (modification de métadonnées, suppression) — réservée au créateur du fichier
+ * ou à un titulaire de la permission gouvernance de stockage. Jamais « authentifié = autorisé ».
+ */
+export function canManageFileAsset(
+  session: Session | null | undefined,
+  asset: { createdById: string | null },
+): boolean {
+  const userId = session?.user?.id;
+  if (!userId) return false;
+  if (sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) return true;
+  return Boolean(asset.createdById) && asset.createdById === userId;
+}
 
 export type CreateFileAssetInput = {
   file: File;

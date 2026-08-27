@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import {
   archiveFileAsset,
   ensureFileAssetHasVersion,
@@ -14,6 +15,9 @@ type Params = { params: Promise<{ id: string }> };
 export async function GET(_request: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await params;
   await ensureFileAssetHasVersion(id);
@@ -66,6 +70,9 @@ export async function GET(_request: NextRequest, { params }: Params) {
 export async function POST(request: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await params;
   const body = (await request.json().catch(() => ({}))) as {
