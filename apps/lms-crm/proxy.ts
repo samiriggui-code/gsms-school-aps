@@ -41,6 +41,7 @@ const PUBLIC_API_PREFIXES = [
   '/api/health',
   '/api/public',
   '/api/internal',
+  '/api/landing',
 ] as const;
 
 /** Pages hors session (token signé, vitrine, auth). */
