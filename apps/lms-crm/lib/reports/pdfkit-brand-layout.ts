@@ -76,3 +76,79 @@ export function drawPdfBrandFooter(doc: PdfDoc, brand: AttendancePdfBrandContext
   }
   doc.fillColor('#000');
 }
+
+/**
+ * Pied de page « document officiel » (logo Qualiopi, mentions légales, contact) — utilisé par tous
+ * les documents personnalisés multi-pages (convocations examen, convocations session, à terme
+ * conventions/certificats). Distinct de `drawPdfBrandFooter` (pied simple une ligne).
+ */
+export function drawBrandDocumentFooter(doc: PdfDoc, brand: AttendancePdfBrandContext) {
+  const footerY = 755;
+  doc.moveTo(PDF_PAGE_MARGIN, footerY - 8)
+    .lineTo(PDF_PAGE_MARGIN + PDF_CONTENT_WIDTH, footerY - 8)
+    .stroke('#e2e8f0');
+
+  if (brand.qualiopiLogoBuffer) {
+    try {
+      doc.image(brand.qualiopiLogoBuffer, PDF_PAGE_MARGIN, footerY, { fit: [72, 34] });
+    } catch {
+      /* ignore */
+    }
+  }
+
+  const note = [
+    brand.companyName,
+    [brand.siret ? `SIRET ${brand.siret}` : null, brand.ndaNumber ? `NDA ${brand.ndaNumber}` : null]
+      .filter(Boolean)
+      .join(' · '),
+    brand.qualiopiRef ? `Certification Qualiopi — ${brand.qualiopiRef}` : null,
+  ]
+    .filter(Boolean)
+    .join(' — ');
+
+  doc.fontSize(7).fillColor('#64748b').text(note, PDF_PAGE_MARGIN + 84, footerY + 6, {
+    width: PDF_CONTENT_WIDTH - 84,
+    align: 'center',
+  });
+
+  const contact = [brand.phone, brand.email, brand.website].filter(Boolean).join(' · ');
+  if (contact) {
+    doc.text(contact, PDF_PAGE_MARGIN + 84, footerY + 18, {
+      width: PDF_CONTENT_WIDTH - 84,
+      align: 'center',
+    });
+  }
+  doc.fillColor('#000');
+}
+
+/** Liste à puces sobre (pièces à présenter, consignes...), retourne le nouveau curseur Y. */
+export function drawBulletList(doc: PdfDoc, y: number, items: readonly string[]): number {
+  doc.fontSize(9).fillColor('#334155');
+  let cy = y;
+  for (const item of items) {
+    doc.text('•', PDF_PAGE_MARGIN + 8, cy, { continued: true, width: 12 });
+    doc.text(` ${item}`, { width: PDF_CONTENT_WIDTH - 24, lineGap: 1 });
+    cy = doc.y + 4;
+  }
+  doc.fillColor('#000');
+  return cy + 6;
+}
+
+/** Encadré « clé / valeur » (infos pratiques : date, lieu, participant...). */
+export function drawPdfInfoBox(
+  doc: PdfDoc,
+  y: number,
+  rows: Array<{ label: string; value: string }>,
+): number {
+  const boxH = 16 + rows.length * 18;
+  doc.roundedRect(PDF_PAGE_MARGIN, y, PDF_CONTENT_WIDTH, boxH, 4).fillAndStroke('#f8fafc', '#e2e8f0');
+  let cy = y + 10;
+  doc.fillColor('#334155').fontSize(9);
+  for (const row of rows) {
+    doc.font('Helvetica-Bold').text(`${row.label}`, PDF_PAGE_MARGIN + 12, cy, { continued: true });
+    doc.font('Helvetica').text(`  ${row.value}`, { width: PDF_CONTENT_WIDTH - 24 });
+    cy += 18;
+  }
+  doc.fillColor('#000');
+  return y + boxH + 14;
+}

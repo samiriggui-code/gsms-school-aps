@@ -8,8 +8,11 @@ import {
   type ExamPdfParticipantRow,
 } from '@/lib/vie-scolaire/formation-exam-emargement-payload';
 import {
+  drawBrandDocumentFooter,
+  drawBulletList,
   drawPdfBrandFooter,
   drawPdfBrandHeader,
+  drawPdfInfoBox,
   PDF_CONTENT_WIDTH,
   PDF_PAGE_MARGIN,
 } from '@/lib/reports/pdfkit-brand-layout';
@@ -80,20 +83,6 @@ function venueLabel(venueRoom: FormationExamPdfRow['venueRoom']): string {
     .join(' ');
 }
 
-function drawInfoBox(doc: PdfDoc, y: number, rows: Array<{ label: string; value: string }>) {
-  const boxH = 16 + rows.length * 18;
-  doc.roundedRect(PDF_PAGE_MARGIN, y, PDF_CONTENT_WIDTH, boxH, 4).fillAndStroke('#f8fafc', '#e2e8f0');
-  let cy = y + 10;
-  doc.fillColor('#334155').fontSize(9);
-  for (const row of rows) {
-    doc.font('Helvetica-Bold').text(`${row.label}`, PDF_PAGE_MARGIN + 12, cy, { continued: true });
-    doc.font('Helvetica').text(`  ${row.value}`, { width: PDF_CONTENT_WIDTH - 24 });
-    cy += 18;
-  }
-  doc.fillColor('#000');
-  return y + boxH + 14;
-}
-
 async function buildEmargementPdf(row: FormationExamPdfRow) {
   const payload = buildExamEmargementReportData(row);
   const avatarBuffers = await Promise.all(
@@ -103,57 +92,6 @@ async function buildEmargementPdf(row: FormationExamPdfRow) {
   const safeSlug = payload.formationName.replace(/[^\w\-]+/g, '-').slice(0, 40);
   const filename = `examen-emargement_${safeSlug}_${payload.attendanceDate}.pdf`;
   return { buffer, filename };
-}
-
-function drawConvocationFooter(doc: PdfDoc, brand: AttendancePdfBrandContext) {
-  const footerY = 755;
-  doc.moveTo(PDF_PAGE_MARGIN, footerY - 8)
-    .lineTo(PDF_PAGE_MARGIN + PDF_CONTENT_WIDTH, footerY - 8)
-    .stroke('#e2e8f0');
-
-  if (brand.qualiopiLogoBuffer) {
-    try {
-      doc.image(brand.qualiopiLogoBuffer, PDF_PAGE_MARGIN, footerY, { fit: [72, 34] });
-    } catch {
-      /* ignore */
-    }
-  }
-
-  const note = [
-    brand.companyName,
-    [brand.siret ? `SIRET ${brand.siret}` : null, brand.ndaNumber ? `NDA ${brand.ndaNumber}` : null]
-      .filter(Boolean)
-      .join(' · '),
-    brand.qualiopiRef ? `Certification Qualiopi — ${brand.qualiopiRef}` : null,
-  ]
-    .filter(Boolean)
-    .join(' — ');
-
-  doc.fontSize(7).fillColor('#64748b').text(note, PDF_PAGE_MARGIN + 84, footerY + 6, {
-    width: PDF_CONTENT_WIDTH - 84,
-    align: 'center',
-  });
-
-  const contact = [brand.phone, brand.email, brand.website].filter(Boolean).join(' · ');
-  if (contact) {
-    doc.text(contact, PDF_PAGE_MARGIN + 84, footerY + 18, {
-      width: PDF_CONTENT_WIDTH - 84,
-      align: 'center',
-    });
-  }
-  doc.fillColor('#000');
-}
-
-function drawBulletList(doc: PdfDoc, y: number, items: string[]): number {
-  doc.fontSize(9).fillColor('#334155');
-  let cy = y;
-  for (const item of items) {
-    doc.text('•', PDF_PAGE_MARGIN + 8, cy, { continued: true, width: 12 });
-    doc.text(` ${item}`, { width: PDF_CONTENT_WIDTH - 24, lineGap: 1 });
-    cy = doc.y + 4;
-  }
-  doc.fillColor('#000');
-  return cy + 6;
 }
 
 async function buildConvocationPdf(row: FormationExamPdfRow, brand: AttendancePdfBrandContext) {
@@ -191,7 +129,7 @@ async function buildConvocationPdf(row: FormationExamPdfRow, brand: AttendancePd
       doc.y,
       { width: PDF_CONTENT_WIDTH, align: 'center' },
     );
-    drawConvocationFooter(doc, brand);
+    drawBrandDocumentFooter(doc, brand);
   };
 
   if (participants.length === 0) {
@@ -236,7 +174,7 @@ async function buildConvocationPdf(row: FormationExamPdfRow, brand: AttendancePd
       );
       y = doc.y + 14;
 
-      y = drawInfoBox(doc, y, [
+      y = drawPdfInfoBox(doc, y, [
         { label: 'Date et heure', value: dateStr },
         { label: 'Lieu', value: location },
         ...(room ? [{ label: 'Salle d\'examen', value: room }] : []),
@@ -279,7 +217,7 @@ async function buildConvocationPdf(row: FormationExamPdfRow, brand: AttendancePd
         );
       }
 
-      drawConvocationFooter(doc, brand);
+      drawBrandDocumentFooter(doc, brand);
     }
   }
 
@@ -324,7 +262,7 @@ async function buildJuryPdf(row: FormationExamPdfRow, brand: AttendancePdfBrandC
   });
   y = doc.y + 16;
 
-  y = drawInfoBox(doc, y, [
+  y = drawPdfInfoBox(doc, y, [
     { label: 'Date examen', value: examDateLabel(row.scheduledAt ?? row.session.examDate) },
     { label: 'Président', value: row.juryPresidentName?.trim() || '—' },
     { label: 'Membres', value: juryMembers.length ? juryMembers.join(', ') : '—' },

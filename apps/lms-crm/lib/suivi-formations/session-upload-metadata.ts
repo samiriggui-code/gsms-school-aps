@@ -9,6 +9,8 @@ export type SuiviUploadCategory = SessionDocumentStorageCategory;
 export type SuiviDocumentKind =
   | 'session-info'
   | 'convocation'
+  | 'convention'
+  | 'certificate'
   | 'other'
   | 'signed-scan'
   | 'stamped-scan'
@@ -73,6 +75,30 @@ export const SESSION_UPLOAD_DOCUMENT_KINDS: Record<
       hint: 'Scan de la grille jury après délibération.',
     },
     { value: 'other', label: 'Autre pièce examen' },
+  ],
+  convocation: [
+    {
+      value: 'convocation',
+      label: 'Convocation de session (générée ou scan)',
+      hint: 'Copie de la convocation envoyée aux participants de cette session.',
+    },
+    { value: 'other', label: 'Autre pièce liée à la convocation' },
+  ],
+  convention: [
+    {
+      value: 'convention',
+      label: 'Convention de formation (générée ou signée)',
+      hint: 'Copie de la convention établie ou signée pour ce participant.',
+    },
+    { value: 'other', label: 'Autre pièce liée à la convention' },
+  ],
+  certificate: [
+    {
+      value: 'certificate',
+      label: 'Certificat de réalisation (généré ou signé)',
+      hint: 'Copie du certificat de réalisation délivré à ce participant.',
+    },
+    { value: 'other', label: 'Autre pièce liée au certificat' },
   ],
   archives: [
     {

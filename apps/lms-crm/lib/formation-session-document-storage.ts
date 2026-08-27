@@ -21,6 +21,9 @@ export const SESSION_DOCUMENT_CATEGORY_LABELS: Record<SessionDocumentStorageCate
   'suivi-quotidien': 'Suivi quotidien matin / soir',
   conformite: 'Exports financeurs (CPF, France Travail…)',
   examen: 'Documents examen (convocations, jury…)',
+  convocation: 'Convocations de session',
+  convention: 'Conventions de formation',
+  certificate: 'Certificats de réalisation',
   archives: 'Archives légales (copies figées)',
 };
 
@@ -34,6 +37,9 @@ export const SESSION_DOCUMENT_CATEGORY_VISIBILITY: Record<
   'suivi-quotidien': 'internal',
   conformite: 'internal',
   examen: 'internal',
+  convocation: 'internal',
+  convention: 'internal',
+  certificate: 'internal',
   archives: 'private',
 };
 
