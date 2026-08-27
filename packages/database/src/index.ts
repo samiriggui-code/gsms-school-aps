@@ -30,6 +30,7 @@ export {
   ActivitySubType,
   LeadStatus,
   FinanceDevisStatus,
+  FinanceEinvoiceStatus,
   SupportTicketStatus,
   SupportTicketPriority,
   MarketingCampaignStatus,
