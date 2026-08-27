@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
-export const dynamic = 'force-dynamic';
-
+/** Pas de force-dynamic : pages auth = UI client + i18n, zéro data serveur. */
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return <div className="flex min-h-screen w-full">{children}</div>;
 }
