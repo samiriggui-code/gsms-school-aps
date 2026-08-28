@@ -148,7 +148,7 @@
 | **GSMS-OF-02** | ✅ Fait | `c8e7871` — templates + envoi individuel participant |
 | **GSMS-OF-03** | ✅ Fait → **enrichir** | Circuit envoi + **idée 4** tokens externes (signature / sat.) |
 | **GSMS-OF-04** | Ouvert P1 | Financeur + Entreprise + **idée 3** registre légal BPF |
-| **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 ; **idée 5** checklist session à venir |
+| **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 + **idée 5** checklist session publiable (Claude) |
 | **GSMS-OF-06** | Ouvert P1 | Facture first-class UX |
 | **GSMS-OF-07** | P2 | BPF Cerfa + **idée 2** pilote garde-fous |
 | **GSMS-OF-08** | 🔶 Partiel | Qualiopi menu sidebar (Cursor) ; hub Docs·Circuits à faire |
@@ -161,7 +161,9 @@
 | ID | Statut |
 |----|--------|
 | **GSMS-AI-01** | ✅ Fait (Claude) |
-| **GSMS-AI-02…04** | Ouvert P0 |
+| **GSMS-AI-02** | 🔶 Spec Cursor | Brouillon `programModules` fiche Formation (`runStructuredAiTask` → PROPOSED → apply humain) |
+| **GSMS-AI-03** | Ouvert P0 | Déroulé pédagogique session (après AI-02) |
+| **GSMS-AI-04** | Ouvert P0 | À définir (copies emails / contenus CMS) |
 | **GSMS-AI-05…07** | P1 |
 | **GSMS-AI-08** | P2 (après OF-10) |
 | **GSMS-AI-X** | Bloqué |
@@ -203,7 +205,7 @@ OPS-02 n8n prod · OPS-03 workers AI · OPS-04 obs · OPS-05 démo 15 min.
 **Pour Claude — ordre corrigé (compatible existant + OPAGA idées 1 & 5) :**
 
 1. ~~SEC-01/02 · OF-01 pack · OF-03 envoi · AI-01 · auth · VF-06~~  
-2. **OF-05 UI** — classeur présent/manquant (seed V9) + **idée 5** checklist session publiable  
+2. ~~**OF-05 UI** — classeur + **idée 5** checklist session publiable~~  
 3. **OF-01 enrichi** — **idée 1** états docs multi-acteurs (NEED/REQUEST/DONE/scan) sur pack PDF déjà livré  
 4. **OF-10** — Survey + circuit J0/J+45 (+ **idée 4** token si besoin lien externe)  
 5. **OF-02** — pack emails  

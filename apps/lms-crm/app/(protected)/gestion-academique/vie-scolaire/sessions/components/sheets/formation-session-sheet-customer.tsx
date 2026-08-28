@@ -35,6 +35,8 @@ import { FormationSessionTrainerSummary } from '@/app/(protected)/gestion-academ
 import { FormationSessionDetailEquipmentGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-detail-equipment-grid';
 import { FormationSessionDetailParticipantsGrid } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-detail-participants-grid';
 import { SessionCircuitTriggerButton } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-circuit-trigger-button';
+import { SessionDocumentsMenuButton } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-documents-menu-button';
+import { SessionPublishabilityChecklist } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-publishability-checklist';
 import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/lib/utils';
 
@@ -191,6 +193,7 @@ export function FormationSessionSheetCustomer({
 
                       <TabsContent value="overview" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
                         <div className="space-y-5">
+                          <SessionPublishabilityChecklist row={row} />
                           {overviewMetrics ? (
                             <FormationSessionOverviewMetrics {...overviewMetrics} />
                           ) : null}
@@ -253,10 +256,16 @@ export function FormationSessionSheetCustomer({
                               <Users className="size-4 shrink-0" aria-hidden />
                               {t('vieScolaire.sessions.enrolledStudents')} ({row.participants.length})
                             </div>
-                            <SessionCircuitTriggerButton
-                              sessionId={row.id}
-                              participantCount={row.participants.length}
-                            />
+                            <div className="flex items-center gap-2">
+                              <SessionDocumentsMenuButton
+                                sessionId={row.id}
+                                participantCount={row.participants.length}
+                              />
+                              <SessionCircuitTriggerButton
+                                sessionId={row.id}
+                                participantCount={row.participants.length}
+                              />
+                            </div>
                           </div>
                           <p className="text-xs text-muted-foreground">
                             {t('vieScolaire.sessions.triggerCircuitHint')}
