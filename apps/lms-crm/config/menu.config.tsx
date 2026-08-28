@@ -183,6 +183,10 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Incidents', path: '/support-qualite/support/incidents' },
         ],
       },
+      {
+        title: 'Qualiopi',
+        path: '/support-qualite/qualiopi',
+      },
     ],
   },
   {

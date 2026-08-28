@@ -1,6 +1,6 @@
 # Bilan de chantiers — GSMS
 
-**Date mise à jour :** 28 août 2026 (Formacoop/OPAGA + 5 idées compatibles)  
+**Date mise à jour :** 28 août 2026 (deploy OF/IAM prod + menu Qualiopi)  
 **Périmètre :** VisioFormation · GSMS · ERPNext/Frappe · exports Qualiopi/satisfaction · Frappe Learning · **Formacoop/OPAGA**  
 **Principe :** plusieurs gisements d’idées, **un seul produit exécuté** — ne pas tout démarrer en parallèle.  
 **Pour Claude :** lire §0 bis + §4 avant de pousser du code OF — trajectoire corrigée (docs/circuits/BPF/financeurs > pas de module Qualiopi audit depuis OPAGA).
@@ -17,10 +17,13 @@
 | **GSMS-AI-01** | **Fait** (Claude) | `f1c15b4` — AiRun / AiArtifact + client serveur |
 | **Auth /signin hang** | **Fait** | `db496da` — i18n init synchrone ; prod `/signin` 200 |
 | Build / landing / types | **Fait** | `3f6efe8`, `d48aab2` |
-| **GSMS-OF-05** | **Amorcé** | Seed référentiel 32 ind. `SCHOOL_QUALIOPI` + `lib/of/qualiopi-indicators.ts` |
-| **GSMS-OF-10** | **Amorcé** | Template satisfaction `lib/of/satisfaction-survey-template.ts` (pas encore UI/DB Survey) |
+| **GSMS-OF-02** | **Fait** | `c8e7871` — pack emails OF (convocation/convention/attestation/facture) |
+| **GSMS-OF-05** | **Fait** | `c8e7871` — classeur Qualiopi 32 ind. + entité `complianceDossierItem` |
+| **GSMS-OF-10** | **Fait** | `c8e7871` — `SatisfactionSurvey`, lien public HMAC, cron J+45 |
+| **GSMS-IAM/NAF** | **Fait (socle)** | `196b70f` — framework entities + bascule list users/roles |
+| **Deploy prod** | **Fait** | 28/08 — archive `c8e7871`, `ALLOW_DB_PUSH_DATA_LOSS=1`, table `SatisfactionSurvey` OK |
 
-**Coordination :** Claude bosse en parallèle (IAM / framework / AI). Zones à ne pas écraser : `lib/framework/*`, `api/entities/*`, `acces/users|roles`, socle AiRun. Zone Cursor OF : `lib/of/*`, seed Qualiopi/satisfaction, bilan.
+**Coordination :** Claude = IAM/framework/AI · Cursor = deploy prod, menu navigation, bilan. WIP local hors périmètre : Factur-X/e-invoice (non commité).
 
 ---
 
@@ -142,15 +145,15 @@
 | ID | Statut | Contenu |
 |----|--------|---------|
 | **GSMS-OF-01** | ✅ Fait → **enrichir** | Pack PDF + **idée OPAGA 1** (états multi-signataires / scan) |
-| **GSMS-OF-02** | Ouvert P0 | Pack emails OF |
+| **GSMS-OF-02** | ✅ Fait | `c8e7871` — templates + envoi individuel participant |
 | **GSMS-OF-03** | ✅ Fait → **enrichir** | Circuit envoi + **idée 4** tokens externes (signature / sat.) |
 | **GSMS-OF-04** | Ouvert P1 | Financeur + Entreprise + **idée 3** registre légal BPF |
-| **GSMS-OF-05** | 🔶 Amorcé | 32 ind. seedés ; UI + **idée 5** checklist session — **pas** Formacoop |
+| **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 ; **idée 5** checklist session à venir |
 | **GSMS-OF-06** | Ouvert P1 | Facture first-class UX |
 | **GSMS-OF-07** | P2 | BPF Cerfa + **idée 2** pilote garde-fous |
-| **GSMS-OF-08** | P1 | Menu Docs · Qualiopi · Circuits |
+| **GSMS-OF-08** | 🔶 Partiel | Qualiopi menu sidebar (Cursor) ; hub Docs·Circuits à faire |
 | **GSMS-OF-09** | P2 | SCORM option |
-| **GSMS-OF-10** | 🔶 Amorcé | Template sat. + circuit J0/J+45 + **idée 4** token |
+| **GSMS-OF-10** | ✅ Fait | Survey DB + lien public + cron J+45 + trigger session |
 | **GSMS-OF-11** | Ouvert P1 | Non-conformité — ERPNext / Qualiopi TO_FIX, **pas** OPAGA |
 
 ### 3.4 AI
