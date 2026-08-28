@@ -303,6 +303,8 @@ model User {
   createdFileAssets        FileAsset[]                 @relation("FileAssetCreatedBy")
   createdFileAssetVersions FileAssetVersion[]          @relation("FileAssetVersionCreatedBy")
   requestedReportJobs      ReportGenerationJob[]       @relation("ReportJobsRequested")
+  requestedAiRuns          AiRun[]                     @relation("AiRunsRequested")
+  reviewedAiArtifacts      AiArtifact[]                @relation("AiArtifactReviewed")
   assignedSupportTickets   SupportTicket[]             @relation("SupportTicketAssignee")
   createdSupportTickets    SupportTicket[]             @relation("SupportTicketCreatedBy")
   ticketComments           TicketComment[]             @relation("TicketCommentAuthor")
@@ -424,6 +426,72 @@ model ReportGenerationJob {
   @@index([status, createdAt])
   @@index([requestedById])
   @@index([templateKey])
+}
+
+enum AiRunStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
+enum AiArtifactStatus {
+  PROPOSED
+  APPROVED
+  APPLIED
+  REJECTED
+}
+
+/// Exécution d'une tâche IA (génération de programme, déroulé, preuves Qualiopi...).
+/// Le modèle ne touche jamais la base directement : il produit un ou plusieurs
+/// AiArtifact que la fonction déterministe `apply*` correspondante valide et applique
+/// après revue humaine — jamais d'écriture directe par le LLM (GSMS-AI-01).
+model AiRun {
+  id               String      @id @default(uuid())
+  useCase          String
+  status           AiRunStatus @default(PENDING)
+  provider         String
+  model            String
+  inputSummary     Json        @default("{}")
+  promptTokens     Int?
+  completionTokens Int?
+  costCents        Int?
+  errorMessage     String?
+  requestedById    String
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  completedAt      DateTime?
+
+  requestedBy User         @relation("AiRunsRequested", fields: [requestedById], references: [id])
+  artifacts   AiArtifact[]
+
+  @@index([status, createdAt])
+  @@index([useCase])
+  @@index([requestedById])
+}
+
+/// Sortie structurée proposée par un AiRun. Reste à l'état PROPOSED tant qu'un humain
+/// ne l'a pas revue (reviewedById/reviewedAt) ; l'application effective (appliedAt) est
+/// faite par du code déterministe, jamais par le modèle lui-même.
+model AiArtifact {
+  id               String           @id @default(uuid())
+  runId            String
+  status           AiArtifactStatus @default(PROPOSED)
+  payload          Json
+  citations        Json             @default("[]")
+  targetEntityType String?
+  targetEntityId   String?
+  reviewedById     String?
+  reviewedAt       DateTime?
+  appliedAt        DateTime?
+  createdAt        DateTime         @default(now())
+
+  run        AiRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  reviewedBy User? @relation("AiArtifactReviewed", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([runId])
+  @@index([status])
+  @@index([targetEntityType, targetEntityId])
 }
 
 /// Planification automatique des rapports (quotidien, mensuel, trimestriel).
@@ -1279,6 +1347,7 @@ model FormationSession {
   formationExam       FormationExam?
   portalAnnouncements PortalSessionAnnouncement[]
   rhTeam              RhTeam?
+  satisfactionSurveys SatisfactionSurvey[]
 
   candidaturesInterested   Candidature[]          @relation("CandidatureInterestedSession")
   financeDevisSessionLinks FinanceDevis[]         @relation("FinanceDevisLinkedSession")
@@ -1414,7 +1483,8 @@ model FormationSessionParticipant {
   fundingReference String?
   fundingNotes     String? @db.Text
 
-  emargements FormationSessionEmargement[]
+  emargements         FormationSessionEmargement[]
+  satisfactionSurveys SatisfactionSurvey[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2991,4 +3061,41 @@ model ComplianceItemEvent {
 
   @@index([dossierId, createdAt])
   @@index([dossierItemId])
+}
+
+// ─── Enquête satisfaction stagiaire (GSMS-OF-10) ──────────────────────────────
+
+enum SatisfactionSurveyTiming {
+  HOT
+  COLD
+}
+
+enum SatisfactionSurveyStatus {
+  PENDING
+  SENT
+  COMPLETED
+  EXPIRED
+}
+
+/// Enquête de satisfaction stagiaire — une ligne « à chaud » (J0) et une ligne
+/// « à froid » (J+45) par participant confirmé de session. Réponses en JSON libre
+/// (voir lib/of/satisfaction-survey-template.ts pour le référentiel de questions).
+model SatisfactionSurvey {
+  id            String                   @id @default(uuid())
+  sessionId     String
+  participantId String
+  timing        SatisfactionSurveyTiming
+  status        SatisfactionSurveyStatus @default(PENDING)
+  sentAt        DateTime?
+  respondedAt   DateTime?
+  answers       Json?
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+
+  session     FormationSession            @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participant FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, participantId, timing])
+  @@index([sessionId])
+  @@index([status])
 }

@@ -1,6 +1,7 @@
+import { SessionDocumentEmail, renderEmail, type SessionDocumentKind } from '@repo/emails';
 import { sendEmail } from './send-email';
 
-export type SessionConvocationEmailInput = {
+export type SessionDocumentEmailInput = {
   to: string;
   participantName: string;
   formationName: string;
@@ -11,28 +12,34 @@ export type SessionConvocationEmailInput = {
   pdfFilename: string;
 };
 
-/**
- * Envoie la convocation de session au participant, PDF joint. Premier « circuit qui envoie
- * réellement » (GSMS-OF-03) — gabarit HTML simple pour l'instant, à faire évoluer vers un
- * template @repo/emails si l'usage se généralise.
- */
-export async function sendSessionConvocationEmail(input: SessionConvocationEmailInput): Promise<void> {
-  const subject = `Convocation — ${input.formationName} (${input.sessionLabel})`;
-  const text =
-    `Bonjour ${input.participantName},\n\n` +
-    `Vous trouverez ci-joint votre convocation à la formation « ${input.formationName} », ` +
-    `session ${input.sessionLabel}, à ${input.location}.\n\n` +
-    `Cordialement,\n${input.organizationName}`;
-  const html =
-    `<p>Bonjour ${input.participantName},</p>` +
-    `<p>Vous trouverez ci-joint votre convocation à la formation <strong>${input.formationName}</strong>, ` +
-    `session ${input.sessionLabel}, à ${input.location}.</p>` +
-    `<p>Cordialement,<br/>${input.organizationName}</p>`;
+/** Compat historique — alias du type générique, utilisé par les routes vie scolaire. */
+export type SessionConvocationEmailInput = SessionDocumentEmailInput;
+
+const DOCUMENT_SUBJECT_PREFIX: Record<SessionDocumentKind, string> = {
+  convocation: 'Convocation',
+  convention: 'Convention de formation',
+  attestation: 'Attestation de réalisation',
+};
+
+async function sendSessionDocumentEmail(
+  documentKind: SessionDocumentKind,
+  input: SessionDocumentEmailInput,
+): Promise<void> {
+  const subject = `${DOCUMENT_SUBJECT_PREFIX[documentKind]} — ${input.formationName} (${input.sessionLabel})`;
+  const html = await renderEmail(
+    SessionDocumentEmail({
+      documentKind,
+      participantName: input.participantName,
+      formationName: input.formationName,
+      sessionLabel: input.sessionLabel,
+      location: input.location,
+      organizationName: input.organizationName,
+    }),
+  );
 
   await sendEmail({
     to: input.to,
     subject,
-    text,
     html,
     attachments: [
       {
@@ -42,4 +49,22 @@ export async function sendSessionConvocationEmail(input: SessionConvocationEmail
       },
     ],
   });
+}
+
+/**
+ * Envoie la convocation de session au participant, PDF joint (GSMS-OF-03 puis GSMS-OF-02 pour le
+ * gabarit @repo/emails). Conserve le nom historique — utilisé par trigger-circuit/route.ts.
+ */
+export async function sendSessionConvocationEmail(input: SessionConvocationEmailInput): Promise<void> {
+  await sendSessionDocumentEmail('convocation', input);
+}
+
+/** Envoie la convention de formation au participant, PDF joint (GSMS-OF-02). */
+export async function sendSessionConventionEmail(input: SessionDocumentEmailInput): Promise<void> {
+  await sendSessionDocumentEmail('convention', input);
+}
+
+/** Envoie l'attestation de réalisation au participant, PDF joint (GSMS-OF-02). */
+export async function sendSessionAttestationEmail(input: SessionDocumentEmailInput): Promise<void> {
+  await sendSessionDocumentEmail('attestation', input);
 }

@@ -1341,6 +1341,7 @@ model FormationSession {
   formationExam FormationExam?
   portalAnnouncements PortalSessionAnnouncement[]
   rhTeam               RhTeam?
+  satisfactionSurveys   SatisfactionSurvey[]
 
   candidaturesInterested Candidature[] @relation("CandidatureInterestedSession")
   financeDevisSessionLinks FinanceDevis[] @relation("FinanceDevisLinkedSession")
@@ -1477,6 +1478,7 @@ model FormationSessionParticipant {
   fundingNotes     String? @db.Text
 
   emargements FormationSessionEmargement[]
+  satisfactionSurveys SatisfactionSurvey[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -3053,4 +3055,41 @@ model ComplianceItemEvent {
 
   @@index([dossierId, createdAt])
   @@index([dossierItemId])
+}
+
+// ─── Enquête satisfaction stagiaire (GSMS-OF-10) ──────────────────────────────
+
+enum SatisfactionSurveyTiming {
+  HOT
+  COLD
+}
+
+enum SatisfactionSurveyStatus {
+  PENDING
+  SENT
+  COMPLETED
+  EXPIRED
+}
+
+/// Enquête de satisfaction stagiaire — une ligne « à chaud » (J0) et une ligne
+/// « à froid » (J+45) par participant confirmé de session. Réponses en JSON libre
+/// (voir lib/of/satisfaction-survey-template.ts pour le référentiel de questions).
+model SatisfactionSurvey {
+  id            String                    @id @default(uuid())
+  sessionId     String
+  participantId String
+  timing        SatisfactionSurveyTiming
+  status        SatisfactionSurveyStatus  @default(PENDING)
+  sentAt        DateTime?
+  respondedAt   DateTime?
+  answers       Json?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  session     FormationSession            @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participant FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, participantId, timing])
+  @@index([sessionId])
+  @@index([status])
 }

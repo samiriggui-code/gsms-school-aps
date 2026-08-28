@@ -24,10 +24,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import {
   Banknote,
   CalendarClock,
+  ChevronDown,
   FileSpreadsheet,
   FileText,
   Hash,
@@ -47,8 +50,8 @@ import {
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { apiFetch } from '@/lib/api';
-import { useQueryClient } from '@tanstack/react-query';
+import { apiFetch, unwrapSectionApiData } from '@/lib/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { financeFactureDetailQueryKey } from '../constants/query-keys';
 import { useFinanceFactureDetailQuery, type FinanceFactureDetail } from '../hooks/use-finance-facture-detail-query';
 import { useFacturePatchMutation } from '../hooks/use-facture-patch-mutation';
@@ -345,20 +348,6 @@ function factureClientEmail(detail: FinanceFactureDetail): string | null {
   return detail.lead?.email?.trim() || null;
 }
 
-function resendFactureEmail(detail: FinanceFactureDetail, id: string) {
-  const email = factureClientEmail(detail);
-  if (!email) {
-    toast.error('Aucun e-mail client pour renvoyer la facture.');
-    return;
-  }
-  const pdfUrl = `${window.location.origin}/api/sections/administration-facturation/finance/factures/${id}/pdf?format=pdf`;
-  const subject = encodeURIComponent(`Facture ${detail.referenceCode}`);
-  const body = encodeURIComponent(
-    `Bonjour,\n\nVeuillez trouver votre facture ${detail.referenceCode} (${detail.title}) :\n${pdfUrl}\n\nCordialement`,
-  );
-  window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
-}
-
 function formatShortDate(iso: string | null | undefined): string {
   if (!iso) return '—';
   try {
@@ -381,6 +370,8 @@ export function FactureDetailSheet({
   const queryClient = useQueryClient();
   const [detailTab, setDetailTab] = useState<FactureDetailInitialTab>('overview');
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [sendEmailOpen, setSendEmailOpen] = useState(false);
+  const [sendEmailMessage, setSendEmailMessage] = useState('');
   const tabSyncRef = useRef<{ factureId: string | null; initialTab: FactureDetailInitialTab }>({
     factureId: null,
     initialTab: 'overview',
@@ -433,6 +424,31 @@ export function FactureDetailSheet({
   const sessionLabel =
     detail?.formation?.name ??
     (detail?.title ? `Objet : ${detail.title}` : 'Proposition commerciale');
+
+  const recipientEmail = detail ? factureClientEmail(detail) : null;
+
+  const sendMutation = useMutation({
+    mutationFn: async (message: string) => {
+      if (!factureId) throw new Error('Dossier introuvable.');
+      const res = await apiFetch(`/api/sections/administration-facturation/finance/factures/${factureId}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message.trim() || undefined }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error((json as { error?: { message?: string } }).error?.message ?? 'Envoi impossible.');
+      }
+      return unwrapSectionApiData<{ sent?: boolean; recipientEmail?: string }>(json);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: [...financeFactureDetailQueryKey, factureId] });
+      setSendEmailMessage('');
+      setSendEmailOpen(false);
+      toast.success('Facture envoyée par e-mail (PDF joint).');
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -538,16 +554,48 @@ export function FactureDetailSheet({
                     </Link>
                   </Button>
                 ) : null}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5"
-                  onClick={() => factureId && resendFactureEmail(detail, factureId)}
-                >
-                  <Send className="size-3.5" />
-                  Renvoyer au client
-                </Button>
+                {recipientEmail ? (
+                  <Popover open={sendEmailOpen} onOpenChange={setSendEmailOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5"
+                        disabled={sendMutation.isPending}
+                      >
+                        <Send className="size-3.5" />
+                        Envoyer par e-mail
+                        <ChevronDown className="size-3 opacity-60" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[min(100vw-2rem,22rem)] p-3" align="start">
+                      <p className="text-xs font-semibold text-foreground">E-mail au client</p>
+                      <p className="mt-1 text-[11px] text-muted-foreground leading-relaxed">
+                        À <span className="font-medium text-foreground">{recipientEmail}</span> — PDF de la
+                        facture joint.
+                      </p>
+                      <Textarea
+                        value={sendEmailMessage}
+                        onChange={(e) => setSendEmailMessage(e.target.value)}
+                        placeholder="Message optionnel…"
+                        className="mt-2 min-h-[72px] text-xs"
+                        maxLength={2000}
+                        disabled={sendMutation.isPending}
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        className="mt-2 w-full gap-1.5"
+                        disabled={sendMutation.isPending}
+                        onClick={() => sendMutation.mutate(sendEmailMessage)}
+                      >
+                        <Send className="size-3.5" />
+                        {sendMutation.isPending ? 'Envoi…' : 'Confirmer l’envoi'}
+                      </Button>
+                    </PopoverContent>
+                  </Popover>
+                ) : null}
                 <Button
                   type="button"
                   variant="outline"

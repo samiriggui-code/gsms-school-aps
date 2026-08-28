@@ -1,0 +1,253 @@
+# Bilan de chantiers — GSMS
+
+**Date mise à jour :** 28 août 2026 (Formacoop/OPAGA + 5 idées compatibles)  
+**Périmètre :** VisioFormation · GSMS · ERPNext/Frappe · exports Qualiopi/satisfaction · Frappe Learning · **Formacoop/OPAGA**  
+**Principe :** plusieurs gisements d’idées, **un seul produit exécuté** — ne pas tout démarrer en parallèle.  
+**Pour Claude :** lire §0 bis + §4 avant de pousser du code OF — trajectoire corrigée (docs/circuits/BPF/financeurs > pas de module Qualiopi audit depuis OPAGA).
+
+---
+
+## Avancement récent (28/08)
+
+| ID | Statut | Preuve |
+|----|--------|--------|
+| **GSMS-SEC-01** + **SEC-02** | **Fait** (commité + déployé) | `286f6d8` — FileAsset / storage verrouillés |
+| **GSMS-OF-01** | **Fait** | `ca884e3` — pack PDF session |
+| **GSMS-OF-03** | **Fait** | `cee0c09` — circuit email réel |
+| **GSMS-AI-01** | **Fait** (Claude) | `f1c15b4` — AiRun / AiArtifact + client serveur |
+| **Auth /signin hang** | **Fait** | `db496da` — i18n init synchrone ; prod `/signin` 200 |
+| Build / landing / types | **Fait** | `3f6efe8`, `d48aab2` |
+| **GSMS-OF-05** | **Amorcé** | Seed référentiel 32 ind. `SCHOOL_QUALIOPI` + `lib/of/qualiopi-indicators.ts` |
+| **GSMS-OF-10** | **Amorcé** | Template satisfaction `lib/of/satisfaction-survey-template.ts` (pas encore UI/DB Survey) |
+
+**Coordination :** Claude bosse en parallèle (IAM / framework / AI). Zones à ne pas écraser : `lib/framework/*`, `api/entities/*`, `acces/users|roles`, socle AiRun. Zone Cursor OF : `lib/of/*`, seed Qualiopi/satisfaction, bilan.
+
+---
+
+## 0. Carte mentale — 4 axes (+ gisements locaux)
+
+```
+ VF (concurrent) ──inspire──▶ GSMS (lms-crm) ◀── ERPNext local (concepts GPL)
+                                      ▲
+                                      │ idées only
+     Dolibarr sat. · Qualiopi V.9 · Frappe LMS · Formacoop/OPAGA (AGPL)
+```
+
+| Axe | Rôle | Lieu |
+|-----|------|------|
+| **VF** | Gisement n°1 — jamais dépendance | Essai app3 + `docs/AUDIT-VISIOFORMATION-*` |
+| **GSMS** | Seul produit prod | `C:\laragon\www\gsms-school` |
+| **ERPNext** | Gisement n°2 — DocTypes, 0 code repris | `C:\laragon\www\erpnext` |
+| **Formacoop / OPAGA** | Gisement n°3 — admin OF (docs, BPF, financeurs) | `C:\laragon\www\formacoop-master` |
+| **gsms-deploy** | Cockpit deploy (hors métier) | `C:\laragon\www\gsms-deploy` |
+
+### Gisements locaux — idées only
+
+| Source | Contenu | Chantier GSMS | Règle |
+|--------|---------|---------------|--------|
+| Export DigiRisk/Dolibarr satisfaction | Questionnaire stagiaire échelle 1–4 | **OF-10** | Contenu reconstruit en seed/template natif |
+| Export audit Qualiopi V.9 (32 ind.) | OK / KO / À réparer / NA + commentaire | **OF-05**, **OF-11** | Seed `DocumentRequirementTemplate` `SCHOOL_QUALIOPI` |
+| `lms-develop` = **Frappe Learning** (AGPL) | Batch, assignments, gates, certificats | **LMS-01**, KEEP-02 | **AGPL** — ne jamais copier |
+| **`formacoop-master` = OPAGA / WPOF** (AGPL) | Sessions, docs multi-signataires, BPF, financeurs, tokens | **OF-01**, **OF-03**, **OF-04**, **OF-07** | **AGPL** — idées produit uniquement ; WordPress ≠ stack GSMS |
+
+> Aucun de ces repos **ne tourne** dans GSMS. Livrable = équivalent Next/Prisma.
+
+---
+
+## 0 bis. Formacoop / OPAGA — trajectoire corrigée (pour Claude)
+
+**Identité :** plugin WordPress « OPAGA » (ex-formacoop / WPOF), AGPL v3, admin légale OF — **pas de LMS**, **pas de facturation**, **pas de module audit Qualiopi 32 ind.** (juste un n° Qualiopi en option).
+
+**Verdict vs GSMS déjà créé :**
+
+| Domaine OPAGA | Pertinence | Compatible avec l’existant GSMS ? |
+|---------------|------------|-----------------------------------|
+| Documents + signatures | Élevée | **Oui** — étend OF-01 (pack PDF déjà livré) |
+| Circuits inscription → convention → diffusion | Élevée | **Oui** — étend OF-03 + WorkflowEngine / n8n |
+| Financeurs / taxonomie BPF | Élevée | **Oui** — OF-04 (pas encore de modèle dédié) |
+| BPF Cerfa C–G + pilote | Élevée | **Oui** — OF-07 P2 (agrégats déterministes) |
+| Satisfaction quiz | Moyenne | **Oui** — OF-10 template déjà amorcé ; pas de 2e système |
+| Qualiopi audit 32 ind. | **Faible** | **Non à importer** — GSMS a déjà le seed V9 ; OPAGA est en retard |
+| Non-conformité | Faible | **Non** — rester sur OF-11 / ERPNext concepts |
+| LMS / CRM / Factur-X | Hors scope OPAGA | **Ignorer** — déjà couvert ou KEEP GSMS |
+
+### Les 5 idées retenues (compatibles uniquement)
+
+À implémenter **dans** la stack GSMS (Prisma, sessions, FileAsset, WorkflowEngine, pack PDF, n8n) — **jamais** en portant le PHP/WordPress.
+
+| # | Idée OPAGA | Compatible car… | Branche sur | Priorité |
+|---|------------|-----------------|-------------|----------|
+| **1** | Classeur docs session multi-acteurs (à signer / demandé / fait / scan) | OF-01 pack PDF existe ; FileAsset + session déjà là | **OF-01** (enrichir) · **OF-03** | **P0/P1** — suite naturelle pack PDF |
+| **2** | Pilote BPF avec garde-fous (`erreur_ctrl` : tarif/durée/heures) | Calculs déterministes = règle AI/OF déjà posée ; pas de LLM | **OF-07** | P2 — après OF-04 |
+| **3** | Registre légal unique financement / nature / statut stagiaire | Une source seed Prisma → session + PDF + BPF (évite listes dupliquées) | **OF-04** · **OF-07** · NAF seed | **P1** |
+| **4** | Portail tokenisé client/stagiaire (convention, sat. sans compte CRM) | Pattern proche liens publics devis / préinscription déjà en `api/public` | **OF-03** · **OF-10** | **P1** |
+| **5** | Checklist « session publiable » (dates, lieu, formateur, prix, docs) | Branche sur seed Qualiopi OF-05 + docs OF-01 — UI session, pas KB générique | **OF-01** · **OF-05** · KEEP-01 | **P1** — UI binder |
+
+**Ne pas faire à partir d’OPAGA :**
+- Recréer un audit Qualiopi (déjà OF-05 seed)  
+- Copier textes légaux / modèles SQL AGPL  
+- Brancher WordPress / Ultimate Member / dompdf  
+- Ouvrir un chantier LMS « comme OPAGA » (OPAGA n’en a pas)
+
+**Correction de trajectoire (si Claude planifiait autrement) :**
+1. Qualiopi audit = **continuer OF-05 UI** (seed V9), **pas** Formacoop  
+2. Prochaine valeur OF visible = **idée 1** (états docs) + **idée 5** (checklist session) sur l’existant sessions/PDF  
+3. Financeurs / BPF = idées **3** puis **2**, vague V4 / P1–P2  
+4. Satisfaction = **OF-10** + idée **4** (token), pas un quiz WordPress parallel
+
+---
+
+## 1. Vagues d’exécution
+
+| Vague | Focus | Pourquoi |
+|-------|--------|----------|
+| **V0** | Sécurité P0 | Prod dangereuse sinon |
+| **V1** | Surface OF + circuits | Battre VF sur l’essai |
+| **V2** | Vraie IA structurée | vs Lilya |
+| **V3** | Framework DocType-like | Dette CRUD |
+| **V4** | BPF / SCORM / financeurs | Parité longue |
+
+---
+
+## 2. Fondations déjà en place
+
+- Framework entités (amorcé) · WorkflowEngine + n8n · ComplianceDossier · Factur-X  
+- Pack PDF OF + circuit envoi réel · AiRun socle · Auth i18n OK en prod
+
+---
+
+## 3. Chantiers par thème
+
+### 3.1 SEC — Sécurité
+
+| ID | Statut | Contenu |
+|----|--------|---------|
+| **GSMS-SEC-01** | ✅ Fait | Storage public verrouillé |
+| **GSMS-SEC-02** | ✅ Fait | IDOR files |
+| **GSMS-SEC-03** | Ouvert | Permissions CRM (pas session seule) — *Claude/IAM en cours possible* |
+| **GSMS-SEC-04** | Ouvert | OAuth vs signup off |
+| **GSMS-SEC-05** | Ouvert P1 | Rate limit publics |
+
+### 3.2 VF — Veille
+
+| ID | Statut |
+|----|--------|
+| VF-01…03 | ✅ Fait |
+| VF-04 | Vigilance design |
+| VF-05 | Partiel (templates → OF) |
+| **VF-06** | ✅ Tranché (28/08) — école sécurité/CNAPS confirmée, généricité OF repoussée à NAF |
+
+### 3.3 OF — Surface organisme
+
+| ID | Statut | Contenu |
+|----|--------|---------|
+| **GSMS-OF-01** | ✅ Fait → **enrichir** | Pack PDF + **idée OPAGA 1** (états multi-signataires / scan) |
+| **GSMS-OF-02** | Ouvert P0 | Pack emails OF |
+| **GSMS-OF-03** | ✅ Fait → **enrichir** | Circuit envoi + **idée 4** tokens externes (signature / sat.) |
+| **GSMS-OF-04** | Ouvert P1 | Financeur + Entreprise + **idée 3** registre légal BPF |
+| **GSMS-OF-05** | 🔶 Amorcé | 32 ind. seedés ; UI + **idée 5** checklist session — **pas** Formacoop |
+| **GSMS-OF-06** | Ouvert P1 | Facture first-class UX |
+| **GSMS-OF-07** | P2 | BPF Cerfa + **idée 2** pilote garde-fous |
+| **GSMS-OF-08** | P1 | Menu Docs · Qualiopi · Circuits |
+| **GSMS-OF-09** | P2 | SCORM option |
+| **GSMS-OF-10** | 🔶 Amorcé | Template sat. + circuit J0/J+45 + **idée 4** token |
+| **GSMS-OF-11** | Ouvert P1 | Non-conformité — ERPNext / Qualiopi TO_FIX, **pas** OPAGA |
+
+### 3.4 AI
+
+| ID | Statut |
+|----|--------|
+| **GSMS-AI-01** | ✅ Fait (Claude) |
+| **GSMS-AI-02…04** | Ouvert P0 |
+| **GSMS-AI-05…07** | P1 |
+| **GSMS-AI-08** | P2 (après OF-10) |
+| **GSMS-AI-X** | Bloqué |
+
+### 3.5 KEEP
+
+Sessions · Mux · Devis/Factur-X · WorkflowEngine · RH · Leads — entretien ; brancher preuves Qualiopi (OF-05).
+
+### 3.6 NAF — framework DocType-like
+
+| ID | Priorité | Note |
+|----|----------|------|
+| NAF-00…03 | P0 | Formaliser track ; bascule 1 entité à la fois — *Claude possible* |
+| NAF-04…09 | P1 | Hooks, field ACL, child tables… |
+| NAF-10 | Décision | Jamais double backend Frappe en prod |
+| **NAF-11** | P1 | Workflow états déclaratifs |
+| **NAF-12** | P0 | Notifications J±N (porte OF-03 / OF-10) |
+| **NAF-13** | P1 | Print Format générique |
+| **NAF-14** | P1 | User Permission par enregistrement |
+
+### 3.7 LMS (Frappe Learning — clone local `lms-develop`)
+
+| ID | Priorité | Retenu |
+|----|----------|--------|
+| **LMS-01** | P2 | Devoirs fichier (assignments) |
+| **LMS-02** | P2 | Discussions cours |
+| (déjà couvert) | — | Course/chapter/lesson, quiz, batch≈session, visio, certificats OF-01 |
+
+**AGPL :** inspiration produit uniquement.
+
+### 3.8 OPS
+
+OPS-02 n8n prod · OPS-03 workers AI · OPS-04 obs · OPS-05 démo 15 min.
+
+---
+
+## 4. Cohorte — suite immédiate (après faits 28/08)
+
+**Pour Claude — ordre corrigé (compatible existant + OPAGA idées 1 & 5) :**
+
+1. ~~SEC-01/02 · OF-01 pack · OF-03 envoi · AI-01 · auth · VF-06~~  
+2. **OF-05 UI** — classeur présent/manquant (seed V9) + **idée 5** checklist session publiable  
+3. **OF-01 enrichi** — **idée 1** états docs multi-acteurs (NEED/REQUEST/DONE/scan) sur pack PDF déjà livré  
+4. **OF-10** — Survey + circuit J0/J+45 (+ **idée 4** token si besoin lien externe)  
+5. **OF-02** — pack emails  
+6. **SEC-03** / **NAF-00·01** — *laisser Claude si déjà dessus*  
+7. **OF-04** + **idée 3** registre financement (avant BPF)  
+8. **OF-07** + **idée 2** pilote garde-fous (P2)  
+9. **OF-11** — après OF-05 (écart = TO_FIX) — source ERPNext, pas Formacoop  
+
+**Hors trajectoire :** tout chantier « Qualiopi depuis Formacoop », portage WordPress, ou second moteur docs parallèle au pack PDF.
+
+---
+
+## 5. Roadmap 90 j (rappel)
+
+- **J0 continu :** SEC restants  
+- **J0–J30 :** AI-02…04 · OF-02 · OF-05 UI · NAF-00/01 · NAF-12  
+- **J31–J90 :** AI-05 · OF-04/07/08 · OPS-02 · OF-11
+
+---
+
+## 6. À ne pas faire
+
+- Cloner 96 liens VF · big-bang NAF · LLM écrit preuve Qualiopi/BPF · Lilya 7 menus · quota décoratif · annuaire PII · second Frappe prod sans NAF-10  
+- **Copier code AGPL** Frappe LMS / Formacoop-OPAGA · **GPL** ERPNext  
+- Importer un « Qualiopi » Formacoop (inexistant) à la place du seed V9 GSMS  
+- Brancher WordPress / Ultimate Member / dompdf en prod GSMS
+
+---
+
+## 7. Critères de succès (90 j)
+
+Programme IA → session → convocation auto → classeur Qualiopi preuves présentes/manquantes → devis/Factur-X → users/roles framework · **zéro faille storage P0**.
+
+---
+
+## 8. Fichiers liés (nouveaux 28/08)
+
+| Rôle | Chemin |
+|------|--------|
+| Seed indicateurs | `packages/database/prisma/data/qualiopi-indicators-v9.js` |
+| Seed templates conformité (+ SCHOOL_QUALIOPI) | `packages/database/prisma/data/compliance-templates-seed.js` |
+| Template satisfaction (data) | `packages/database/prisma/data/satisfaction-survey-templates.js` |
+| App Qualiopi | `apps/lms-crm/lib/of/qualiopi-indicators.ts` |
+| App satisfaction | `apps/lms-crm/lib/of/satisfaction-survey-template.ts` |
+| Audit VF | `docs/AUDIT-VISIOFORMATION-FINAL.md` |
+| Framework TODO | `docs/FRAMEWORK_TODO.md` |
+| Ce bilan | `docs/BILAN-CHANTIERS-GLOBAL.md` |
+
+**Exports / clones locaux (hors repo, lecture seule) :**  
+`C:\laragon\www\20250222201742_audit_interne_qualiopi_*` · `...\dolibarr_sheet_question_answer_*` · `C:\laragon\www\lms-develop` · **`C:\laragon\www\formacoop-master`** (OPAGA — §0 bis)

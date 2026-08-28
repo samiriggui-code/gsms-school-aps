@@ -17,6 +17,7 @@ export type StandardWebhookEventType =
   | 'crm.finance.devis.created'
   | 'crm.finance.devis.sent'
   | 'crm.finance.devis.accepted'
+  | 'crm.finance.facture.sent'
   | 'crm.finance.payment.recorded'
   | 'crm.finance.funding.branch'
   | 'crm.session.emargement.missing'
@@ -150,6 +151,12 @@ export const STANDARD_WEBHOOK_EVENT_META: Record<StandardWebhookEventType, Stand
     domain: 'finance',
     action: 'devis_accept',
     label: 'Devis accepté (plaquette publique)',
+  },
+  'crm.finance.facture.sent': {
+    app: 'crm',
+    domain: 'finance',
+    action: 'facture_send',
+    label: 'Facture envoyée au client',
   },
   'crm.finance.payment.recorded': {
     app: 'crm',
@@ -343,6 +350,13 @@ function devisHref(p: Record<string, unknown>): string | null {
   // Liste + sheet (?devisId=) — pas de page /devis/[id] hors plaquette.
   return id
     ? `/administration-facturation/finance/devis?devisId=${encodeURIComponent(id)}`
+    : null;
+}
+
+function factureHref(p: Record<string, unknown>): string | null {
+  const id = typeof p.factureId === 'string' ? p.factureId : null;
+  return id
+    ? `/administration-facturation/finance/factures?factureId=${encodeURIComponent(id)}`
     : null;
 }
 
@@ -579,6 +593,21 @@ export const STANDARD_WEBHOOK_CRM: Record<StandardWebhookEventType, WorkflowEven
     },
     buildBody: () => 'Acceptation via plaquette publique',
     buildHref: devisHref,
+  },
+  'crm.finance.facture.sent': {
+    crmEventType: 'crm.finance.facture.sent',
+    moduleKey: CRM_MODULE_KEYS.FINANCE,
+    category: 'FINANCE',
+    severity: 'INFO',
+    buildTitle: (p) => {
+      const ref = typeof p.referenceCode === 'string' ? p.referenceCode : 'Facture';
+      return `Facture ${ref} envoyée`;
+    },
+    buildBody: (p) => {
+      const email = typeof p.recipientEmail === 'string' ? p.recipientEmail : '';
+      return email ? `Envoyée à ${email}` : 'Envoi client effectué';
+    },
+    buildHref: factureHref,
   },
   'crm.finance.payment.recorded': {
     crmEventType: 'crm.finance.payment.recorded',

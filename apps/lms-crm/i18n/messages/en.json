@@ -1,4 +1,11 @@
 {
+  "menu": {
+    "byPath": {
+      "support-qualite": {
+        "qualiopi": "Qualiopi"
+      }
+    }
+  },
   "common": {
     "buttons": {
       "save": "Save",
@@ -36,6 +43,11 @@
     }
   },
   "pages": {
+    "descriptions": {
+      "support-qualite": {
+        "qualiopi": "Qualiopi V.9 32-indicator binder — audit status, evidence and completeness."
+      }
+    },
     "home": {
       "title": "Welcome",
       "description": "Welcome to the FORM'SSI CRM"
@@ -363,8 +375,30 @@
       "triggerCircuitSuccess": "n8n circuit triggered for the first confirmed enrollee.",
       "triggerCircuitEmailSent": "Convocation generated and emailed to the participant.",
       "triggerCircuitEmailSkipped": "Convocation generated, but email not sent:",
+      "documents": {
+        "menuLabel": "Documents",
+        "menuHint": "Generate the session documents (one PDF per confirmed participant)",
+        "noParticipant": "Enroll at least one confirmed participant to generate a document.",
+        "convocation": "Session convocation",
+        "convention": "Training agreement",
+        "certificate": "Certificate of completion",
+        "openAction": "Open / download",
+        "sendAction": "Send by email",
+        "sendSuccessSuffix": "email(s) sent.",
+        "sendSkippedSuffix": "participant(s) skipped (see console for details).",
+        "sendNoneSent": "No email sent — check participant addresses or the email channel configuration."
+      },
       "triggerCircuitNoParticipant": "Enroll at least one confirmed candidate to start the circuit.",
       "triggerCircuitPending": "Triggering…",
+      "satisfaction": {
+        "menuLabel": "Satisfaction surveys",
+        "menuHint": "Creates the surveys (hot + cold) for confirmed enrollees and sends the hot invitation.",
+        "triggerAction": "Trigger surveys",
+        "triggerPending": "Sending…",
+        "triggerSuccess": "{count} invitation(s) sent.",
+        "triggerNoneSent": "No new invitation to send (already triggered).",
+        "triggerNoParticipant": "Enroll at least one confirmed participant to trigger the surveys."
+      },
       "automationTitle": "Session automations",
       "sessionKindAll": "All session types",
       "sessionKindWithExam": "With final exam",
@@ -1234,6 +1268,7 @@
       "securityHighlightsTitle": "Key metrics — Support & quality",
       "cards": {
         "support": "Tickets, FAQ and user assistance.",
+        "qualiopi": "32-indicator Qualiopi binder — audit status and evidence.",
         "qualite": "Quality tracking and incident management."
       }
     },

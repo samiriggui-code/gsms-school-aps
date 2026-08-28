@@ -76,6 +76,19 @@ export {
   type PilotageReportReadyEmailProps,
 } from './templates/pilotage-report-ready';
 export {
+  SatisfactionSurveyInviteEmail,
+  type SatisfactionSurveyInviteEmailProps,
+} from './templates/satisfaction-survey-invite';
+export {
+  SessionDocumentEmail,
+  type SessionDocumentEmailProps,
+  type SessionDocumentKind,
+} from './templates/session-document-email';
+export {
+  FinanceFactureSendEmail,
+  type FinanceFactureSendEmailProps,
+} from './templates/finance-facture-send';
+export {
   EMAIL_TEMPLATE_CATALOG,
   CRM_EVENT_EMAIL_TEMPLATE,
   getEmailTemplateCatalogEntry,

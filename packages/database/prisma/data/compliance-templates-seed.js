@@ -1,7 +1,40 @@
 /**
- * Catalogue conformité documentaire — templates admission, CNAPS, onboarding collaborateur.
+ * Catalogue conformité documentaire — templates admission, CNAPS, onboarding collaborateur,
+ * + référentiel Qualiopi école (32 indicateurs V.9).
  * Aligné sur CNAPS_DOSSIER_SLOTS (apps/lms-crm/.../cnaps-dossier-documents.ts).
+ * Qualiopi : packages/database/prisma/data/qualiopi-indicators-v9.js (GSMS-OF-05).
  */
+
+const {
+  QUALIOPI_REFERENTIAL_VERSION,
+  QUALIOPI_INDICATORS_V9,
+} = require('./qualiopi-indicators-v9');
+
+/** Identifiant sujet fixe (mono-établissement) pour le dossier Qualiopi école — GSMS-OF-05. */
+const QUALIOPI_SCHOOL_SUBJECT_ID = 'school-default';
+
+const QUALIOPI_SCHOOL_TEMPLATE = {
+  kind: 'SCHOOL_QUALIOPI',
+  label: `Audit Qualiopi école — référentiel ${QUALIOPI_REFERENTIAL_VERSION}`,
+  description:
+    'Classeur des 32 indicateurs Qualiopi (V.9). Statuts d’item : MISSING / VALIDATED / REJECTED (preuve). Audit métier OK/KO/À réparer/NA stocké dans conditions.auditStatuses. Preuves = FileAsset liés aux objets session (GSMS-OF-05).',
+  moduleKey: 'support-qualite',
+  items: QUALIOPI_INDICATORS_V9.map((ind) => ({
+    code: ind.code,
+    label: `I${String(ind.indicator).padStart(2, '0')} — ${ind.label}`,
+    description: ind.description,
+    fileCategory: `QUALIOPI_${ind.code}`,
+    uploadedBy: 'ADMIN',
+    required: ind.required !== false,
+    sortOrder: ind.indicator * 10,
+    conditions: {
+      criterion: ind.criterion,
+      indicator: ind.indicator,
+      referentialVersion: QUALIOPI_REFERENTIAL_VERSION,
+      auditStatuses: ['OK', 'KO', 'TO_FIX', 'NA'],
+    },
+  })),
+};
 
 const TEMPLATES = [
   {
@@ -200,6 +233,7 @@ const TEMPLATES = [
       },
     ],
   },
+  QUALIOPI_SCHOOL_TEMPLATE,
 ];
 
 async function upsertTemplate(prisma, tpl) {
@@ -394,9 +428,57 @@ async function seedComplianceDossiersForStaff(prisma) {
   }
 }
 
+/** Instancie (une fois) le dossier Qualiopi école — GSMS-OF-05. */
+async function seedComplianceDossierForSchool(prisma) {
+  const kind = 'SCHOOL_QUALIOPI';
+  const subjectType = 'SCHOOL';
+  const subjectId = QUALIOPI_SCHOOL_SUBJECT_ID;
+
+  const existing = await prisma.complianceDossier.findUnique({
+    where: { kind_subjectType_subjectId: { kind, subjectType, subjectId } },
+  });
+  if (existing) return;
+
+  const template = await prisma.documentRequirementTemplate.findUnique({
+    where: { kind },
+    include: { items: { orderBy: { sortOrder: 'asc' } } },
+  });
+  if (!template) return;
+
+  await prisma.complianceDossier.create({
+    data: {
+      kind,
+      subjectType,
+      subjectId,
+      items: {
+        create: template.items.map((ti) => ({
+          templateItemId: ti.id,
+          code: ti.code,
+          label: ti.label,
+          fileCategory: ti.fileCategory,
+          required: ti.required,
+          uploadedBy: ti.uploadedBy,
+          status: 'MISSING',
+        })),
+      },
+      events: {
+        create: {
+          eventType: 'DOSSIER_CREATED',
+          payload: { kind, subjectType, source: 'seed-school' },
+        },
+      },
+    },
+  });
+  console.log('Dossier conformité Qualiopi école instancié (seed).');
+}
+
 module.exports = {
   TEMPLATES,
+  QUALIOPI_SCHOOL_TEMPLATE,
+  QUALIOPI_REFERENTIAL_VERSION,
+  QUALIOPI_SCHOOL_SUBJECT_ID,
   seedComplianceTemplates,
   seedComplianceDossiersForOpenCandidatures,
   seedComplianceDossiersForStaff,
+  seedComplianceDossierForSchool,
 };

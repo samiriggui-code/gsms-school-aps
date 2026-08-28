@@ -16,6 +16,11 @@ export const EMAIL_TEMPLATE_IDS = [
   'compliance-dossier-incomplete-admin',
   'ops-resource-alert',
   'pilotage-report-ready',
+  'satisfaction-survey-invite',
+  'session-convocation',
+  'session-convention',
+  'session-attestation',
+  'finance-facture-send',
 ] as const;
 
 export type EmailTemplateId = (typeof EMAIL_TEMPLATE_IDS)[number];

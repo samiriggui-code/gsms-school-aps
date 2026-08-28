@@ -47,6 +47,8 @@ export {
   RhAbsenceType,
   RhAbsenceStatus,
   RhTeamLifecycleStatus,
+  SatisfactionSurveyTiming,
+  SatisfactionSurveyStatus,
 } from '../generated/client';
 export {
   LandingTeamVolet,

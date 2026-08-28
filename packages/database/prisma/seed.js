@@ -54,6 +54,7 @@ const {
   seedComplianceTemplates,
   seedComplianceDossiersForOpenCandidatures,
   seedComplianceDossiersForStaff,
+  seedComplianceDossierForSchool,
 } = require('./data/compliance-templates-seed');
 const { seedRhStructureTeams } = require('./data/rh-structure-teams-seed');
 const { seedRhMetierReferential } = require('./data/rh-metier-referential-seed');
@@ -905,6 +906,7 @@ async function main() {
       await seedComplianceTemplates(tx);
       await seedComplianceDossiersForOpenCandidatures(tx);
       await seedComplianceDossiersForStaff(tx);
+      await seedComplianceDossierForSchool(tx);
 
       // Create a Course and a TrainingSession for testing assignments using raw SQL to bypass stale client
       const superadminRows = await tx.$queryRaw`SELECT "id" FROM "User" WHERE "proEmail" = 'samir.iggui@ecole.local' OR "email" = 'samir.iggui@ecole.local' LIMIT 1`;

@@ -39,6 +39,21 @@ export type FileAssetVersion = $Result.DefaultSelection<Prisma.$FileAssetVersion
  */
 export type ReportGenerationJob = $Result.DefaultSelection<Prisma.$ReportGenerationJobPayload>
 /**
+ * Model AiRun
+ * Exécution d'une tâche IA (génération de programme, déroulé, preuves Qualiopi...).
+ * Le modèle ne touche jamais la base directement : il produit un ou plusieurs
+ * AiArtifact que la fonction déterministe `apply*` correspondante valide et applique
+ * après revue humaine — jamais d'écriture directe par le LLM (GSMS-AI-01).
+ */
+export type AiRun = $Result.DefaultSelection<Prisma.$AiRunPayload>
+/**
+ * Model AiArtifact
+ * Sortie structurée proposée par un AiRun. Reste à l'état PROPOSED tant qu'un humain
+ * ne l'a pas revue (reviewedById/reviewedAt) ; l'application effective (appliedAt) est
+ * faite par du code déterministe, jamais par le modèle lui-même.
+ */
+export type AiArtifact = $Result.DefaultSelection<Prisma.$AiArtifactPayload>
+/**
  * Model ReportGenerationSchedule
  * Planification automatique des rapports (quotidien, mensuel, trimestriel).
  */
@@ -539,6 +554,13 @@ export type DocumentRequest = $Result.DefaultSelection<Prisma.$DocumentRequestPa
  * 
  */
 export type ComplianceItemEvent = $Result.DefaultSelection<Prisma.$ComplianceItemEventPayload>
+/**
+ * Model SatisfactionSurvey
+ * Enquête de satisfaction stagiaire — une ligne « à chaud » (J0) et une ligne
+ * « à froid » (J+45) par participant confirmé de session. Réponses en JSON libre
+ * (voir lib/of/satisfaction-survey-template.ts pour le référentiel de questions).
+ */
+export type SatisfactionSurvey = $Result.DefaultSelection<Prisma.$SatisfactionSurveyPayload>
 
 /**
  * Enums
@@ -778,6 +800,26 @@ export const StockMovementType: {
 };
 
 export type StockMovementType = (typeof StockMovementType)[keyof typeof StockMovementType]
+
+
+export const AiRunStatus: {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+};
+
+export type AiRunStatus = (typeof AiRunStatus)[keyof typeof AiRunStatus]
+
+
+export const AiArtifactStatus: {
+  PROPOSED: 'PROPOSED',
+  APPROVED: 'APPROVED',
+  APPLIED: 'APPLIED',
+  REJECTED: 'REJECTED'
+};
+
+export type AiArtifactStatus = (typeof AiArtifactStatus)[keyof typeof AiArtifactStatus]
 
 
 export const RhOrgUnitType: {
@@ -1236,6 +1278,24 @@ export const DocumentRequestChannel: {
 
 export type DocumentRequestChannel = (typeof DocumentRequestChannel)[keyof typeof DocumentRequestChannel]
 
+
+export const SatisfactionSurveyTiming: {
+  HOT: 'HOT',
+  COLD: 'COLD'
+};
+
+export type SatisfactionSurveyTiming = (typeof SatisfactionSurveyTiming)[keyof typeof SatisfactionSurveyTiming]
+
+
+export const SatisfactionSurveyStatus: {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  COMPLETED: 'COMPLETED',
+  EXPIRED: 'EXPIRED'
+};
+
+export type SatisfactionSurveyStatus = (typeof SatisfactionSurveyStatus)[keyof typeof SatisfactionSurveyStatus]
+
 }
 
 export type UserStatus = $Enums.UserStatus
@@ -1333,6 +1393,14 @@ export const EquipmentMaintenanceStatus: typeof $Enums.EquipmentMaintenanceStatu
 export type StockMovementType = $Enums.StockMovementType
 
 export const StockMovementType: typeof $Enums.StockMovementType
+
+export type AiRunStatus = $Enums.AiRunStatus
+
+export const AiRunStatus: typeof $Enums.AiRunStatus
+
+export type AiArtifactStatus = $Enums.AiArtifactStatus
+
+export const AiArtifactStatus: typeof $Enums.AiArtifactStatus
 
 export type RhOrgUnitType = $Enums.RhOrgUnitType
 
@@ -1510,6 +1578,14 @@ export type DocumentRequestChannel = $Enums.DocumentRequestChannel
 
 export const DocumentRequestChannel: typeof $Enums.DocumentRequestChannel
 
+export type SatisfactionSurveyTiming = $Enums.SatisfactionSurveyTiming
+
+export const SatisfactionSurveyTiming: typeof $Enums.SatisfactionSurveyTiming
+
+export type SatisfactionSurveyStatus = $Enums.SatisfactionSurveyStatus
+
+export const SatisfactionSurveyStatus: typeof $Enums.SatisfactionSurveyStatus
+
 /**
  * ##  Prisma Client ʲˢ
  *
@@ -1680,6 +1756,26 @@ export class PrismaClient<
     * ```
     */
   get reportGenerationJob(): Prisma.ReportGenerationJobDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiRun`: Exposes CRUD operations for the **AiRun** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiRuns
+    * const aiRuns = await prisma.aiRun.findMany()
+    * ```
+    */
+  get aiRun(): Prisma.AiRunDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.aiArtifact`: Exposes CRUD operations for the **AiArtifact** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AiArtifacts
+    * const aiArtifacts = await prisma.aiArtifact.findMany()
+    * ```
+    */
+  get aiArtifact(): Prisma.AiArtifactDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.reportGenerationSchedule`: Exposes CRUD operations for the **ReportGenerationSchedule** model.
@@ -2680,6 +2776,16 @@ export class PrismaClient<
     * ```
     */
   get complianceItemEvent(): Prisma.ComplianceItemEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.satisfactionSurvey`: Exposes CRUD operations for the **SatisfactionSurvey** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SatisfactionSurveys
+    * const satisfactionSurveys = await prisma.satisfactionSurvey.findMany()
+    * ```
+    */
+  get satisfactionSurvey(): Prisma.SatisfactionSurveyDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -3119,6 +3225,8 @@ export namespace Prisma {
     FileAsset: 'FileAsset',
     FileAssetVersion: 'FileAssetVersion',
     ReportGenerationJob: 'ReportGenerationJob',
+    AiRun: 'AiRun',
+    AiArtifact: 'AiArtifact',
     ReportGenerationSchedule: 'ReportGenerationSchedule',
     UserBusinessRole: 'UserBusinessRole',
     CollaborateurProfile: 'CollaborateurProfile',
@@ -3218,7 +3326,8 @@ export namespace Prisma {
     ComplianceDossier: 'ComplianceDossier',
     ComplianceDossierItem: 'ComplianceDossierItem',
     DocumentRequest: 'DocumentRequest',
-    ComplianceItemEvent: 'ComplianceItemEvent'
+    ComplianceItemEvent: 'ComplianceItemEvent',
+    SatisfactionSurvey: 'SatisfactionSurvey'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -3234,7 +3343,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3605,6 +3714,154 @@ export namespace Prisma {
           count: {
             args: Prisma.ReportGenerationJobCountArgs<ExtArgs>
             result: $Utils.Optional<ReportGenerationJobCountAggregateOutputType> | number
+          }
+        }
+      }
+      AiRun: {
+        payload: Prisma.$AiRunPayload<ExtArgs>
+        fields: Prisma.AiRunFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiRunFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiRunFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>
+          }
+          findFirst: {
+            args: Prisma.AiRunFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiRunFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>
+          }
+          findMany: {
+            args: Prisma.AiRunFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>[]
+          }
+          create: {
+            args: Prisma.AiRunCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>
+          }
+          createMany: {
+            args: Prisma.AiRunCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiRunCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>[]
+          }
+          delete: {
+            args: Prisma.AiRunDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>
+          }
+          update: {
+            args: Prisma.AiRunUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>
+          }
+          deleteMany: {
+            args: Prisma.AiRunDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiRunUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiRunUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>[]
+          }
+          upsert: {
+            args: Prisma.AiRunUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiRunPayload>
+          }
+          aggregate: {
+            args: Prisma.AiRunAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiRun>
+          }
+          groupBy: {
+            args: Prisma.AiRunGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiRunGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiRunCountArgs<ExtArgs>
+            result: $Utils.Optional<AiRunCountAggregateOutputType> | number
+          }
+        }
+      }
+      AiArtifact: {
+        payload: Prisma.$AiArtifactPayload<ExtArgs>
+        fields: Prisma.AiArtifactFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AiArtifactFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AiArtifactFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>
+          }
+          findFirst: {
+            args: Prisma.AiArtifactFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AiArtifactFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>
+          }
+          findMany: {
+            args: Prisma.AiArtifactFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>[]
+          }
+          create: {
+            args: Prisma.AiArtifactCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>
+          }
+          createMany: {
+            args: Prisma.AiArtifactCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AiArtifactCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>[]
+          }
+          delete: {
+            args: Prisma.AiArtifactDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>
+          }
+          update: {
+            args: Prisma.AiArtifactUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>
+          }
+          deleteMany: {
+            args: Prisma.AiArtifactDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AiArtifactUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AiArtifactUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>[]
+          }
+          upsert: {
+            args: Prisma.AiArtifactUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AiArtifactPayload>
+          }
+          aggregate: {
+            args: Prisma.AiArtifactAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAiArtifact>
+          }
+          groupBy: {
+            args: Prisma.AiArtifactGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AiArtifactGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AiArtifactCountArgs<ExtArgs>
+            result: $Utils.Optional<AiArtifactCountAggregateOutputType> | number
           }
         }
       }
@@ -11008,6 +11265,80 @@ export namespace Prisma {
           }
         }
       }
+      SatisfactionSurvey: {
+        payload: Prisma.$SatisfactionSurveyPayload<ExtArgs>
+        fields: Prisma.SatisfactionSurveyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SatisfactionSurveyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SatisfactionSurveyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>
+          }
+          findFirst: {
+            args: Prisma.SatisfactionSurveyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SatisfactionSurveyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>
+          }
+          findMany: {
+            args: Prisma.SatisfactionSurveyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>[]
+          }
+          create: {
+            args: Prisma.SatisfactionSurveyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>
+          }
+          createMany: {
+            args: Prisma.SatisfactionSurveyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SatisfactionSurveyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>[]
+          }
+          delete: {
+            args: Prisma.SatisfactionSurveyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>
+          }
+          update: {
+            args: Prisma.SatisfactionSurveyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>
+          }
+          deleteMany: {
+            args: Prisma.SatisfactionSurveyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SatisfactionSurveyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SatisfactionSurveyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>[]
+          }
+          upsert: {
+            args: Prisma.SatisfactionSurveyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SatisfactionSurveyPayload>
+          }
+          aggregate: {
+            args: Prisma.SatisfactionSurveyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSatisfactionSurvey>
+          }
+          groupBy: {
+            args: Prisma.SatisfactionSurveyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SatisfactionSurveyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SatisfactionSurveyCountArgs<ExtArgs>
+            result: $Utils.Optional<SatisfactionSurveyCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -11121,6 +11452,8 @@ export namespace Prisma {
     fileAsset?: FileAssetOmit
     fileAssetVersion?: FileAssetVersionOmit
     reportGenerationJob?: ReportGenerationJobOmit
+    aiRun?: AiRunOmit
+    aiArtifact?: AiArtifactOmit
     reportGenerationSchedule?: ReportGenerationScheduleOmit
     userBusinessRole?: UserBusinessRoleOmit
     collaborateurProfile?: CollaborateurProfileOmit
@@ -11221,6 +11554,7 @@ export namespace Prisma {
     complianceDossierItem?: ComplianceDossierItemOmit
     documentRequest?: DocumentRequestOmit
     complianceItemEvent?: ComplianceItemEventOmit
+    satisfactionSurvey?: SatisfactionSurveyOmit
   }
 
   /* Types for Logging */
@@ -11341,6 +11675,8 @@ export namespace Prisma {
     createdFileAssets: number
     createdFileAssetVersions: number
     requestedReportJobs: number
+    requestedAiRuns: number
+    reviewedAiArtifacts: number
     assignedSupportTickets: number
     createdSupportTickets: number
     ticketComments: number
@@ -11402,6 +11738,8 @@ export namespace Prisma {
     createdFileAssets?: boolean | UserCountOutputTypeCountCreatedFileAssetsArgs
     createdFileAssetVersions?: boolean | UserCountOutputTypeCountCreatedFileAssetVersionsArgs
     requestedReportJobs?: boolean | UserCountOutputTypeCountRequestedReportJobsArgs
+    requestedAiRuns?: boolean | UserCountOutputTypeCountRequestedAiRunsArgs
+    reviewedAiArtifacts?: boolean | UserCountOutputTypeCountReviewedAiArtifactsArgs
     assignedSupportTickets?: boolean | UserCountOutputTypeCountAssignedSupportTicketsArgs
     createdSupportTickets?: boolean | UserCountOutputTypeCountCreatedSupportTicketsArgs
     ticketComments?: boolean | UserCountOutputTypeCountTicketCommentsArgs
@@ -11716,6 +12054,20 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountRequestedAiRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiRunWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReviewedAiArtifactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiArtifactWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountAssignedSupportTicketsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SupportTicketWhereInput
   }
@@ -11904,6 +12256,37 @@ export namespace Prisma {
    */
   export type FileAssetCountOutputTypeCountTicketAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TicketAttachmentWhereInput
+  }
+
+
+  /**
+   * Count Type AiRunCountOutputType
+   */
+
+  export type AiRunCountOutputType = {
+    artifacts: number
+  }
+
+  export type AiRunCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    artifacts?: boolean | AiRunCountOutputTypeCountArtifactsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AiRunCountOutputType without action
+   */
+  export type AiRunCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRunCountOutputType
+     */
+    select?: AiRunCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AiRunCountOutputType without action
+   */
+  export type AiRunCountOutputTypeCountArtifactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiArtifactWhereInput
   }
 
 
@@ -12357,6 +12740,7 @@ export namespace Prisma {
     suiviDays: number
     attestations: number
     portalAnnouncements: number
+    satisfactionSurveys: number
     candidaturesInterested: number
     financeDevisSessionLinks: number
     automationRuns: number
@@ -12367,6 +12751,7 @@ export namespace Prisma {
     suiviDays?: boolean | FormationSessionCountOutputTypeCountSuiviDaysArgs
     attestations?: boolean | FormationSessionCountOutputTypeCountAttestationsArgs
     portalAnnouncements?: boolean | FormationSessionCountOutputTypeCountPortalAnnouncementsArgs
+    satisfactionSurveys?: boolean | FormationSessionCountOutputTypeCountSatisfactionSurveysArgs
     candidaturesInterested?: boolean | FormationSessionCountOutputTypeCountCandidaturesInterestedArgs
     financeDevisSessionLinks?: boolean | FormationSessionCountOutputTypeCountFinanceDevisSessionLinksArgs
     automationRuns?: boolean | FormationSessionCountOutputTypeCountAutomationRunsArgs
@@ -12409,6 +12794,13 @@ export namespace Prisma {
    */
   export type FormationSessionCountOutputTypeCountPortalAnnouncementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PortalSessionAnnouncementWhereInput
+  }
+
+  /**
+   * FormationSessionCountOutputType without action
+   */
+  export type FormationSessionCountOutputTypeCountSatisfactionSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatisfactionSurveyWhereInput
   }
 
   /**
@@ -12497,10 +12889,12 @@ export namespace Prisma {
 
   export type FormationSessionParticipantCountOutputType = {
     emargements: number
+    satisfactionSurveys: number
   }
 
   export type FormationSessionParticipantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     emargements?: boolean | FormationSessionParticipantCountOutputTypeCountEmargementsArgs
+    satisfactionSurveys?: boolean | FormationSessionParticipantCountOutputTypeCountSatisfactionSurveysArgs
   }
 
   // Custom InputTypes
@@ -12519,6 +12913,13 @@ export namespace Prisma {
    */
   export type FormationSessionParticipantCountOutputTypeCountEmargementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FormationSessionEmargementWhereInput
+  }
+
+  /**
+   * FormationSessionParticipantCountOutputType without action
+   */
+  export type FormationSessionParticipantCountOutputTypeCountSatisfactionSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatisfactionSurveyWhereInput
   }
 
 
@@ -15064,6 +15465,8 @@ export namespace Prisma {
     createdFileAssets?: boolean | User$createdFileAssetsArgs<ExtArgs>
     createdFileAssetVersions?: boolean | User$createdFileAssetVersionsArgs<ExtArgs>
     requestedReportJobs?: boolean | User$requestedReportJobsArgs<ExtArgs>
+    requestedAiRuns?: boolean | User$requestedAiRunsArgs<ExtArgs>
+    reviewedAiArtifacts?: boolean | User$reviewedAiArtifactsArgs<ExtArgs>
     assignedSupportTickets?: boolean | User$assignedSupportTicketsArgs<ExtArgs>
     createdSupportTickets?: boolean | User$createdSupportTicketsArgs<ExtArgs>
     ticketComments?: boolean | User$ticketCommentsArgs<ExtArgs>
@@ -15288,6 +15691,8 @@ export namespace Prisma {
     createdFileAssets?: boolean | User$createdFileAssetsArgs<ExtArgs>
     createdFileAssetVersions?: boolean | User$createdFileAssetVersionsArgs<ExtArgs>
     requestedReportJobs?: boolean | User$requestedReportJobsArgs<ExtArgs>
+    requestedAiRuns?: boolean | User$requestedAiRunsArgs<ExtArgs>
+    reviewedAiArtifacts?: boolean | User$reviewedAiArtifactsArgs<ExtArgs>
     assignedSupportTickets?: boolean | User$assignedSupportTicketsArgs<ExtArgs>
     createdSupportTickets?: boolean | User$createdSupportTicketsArgs<ExtArgs>
     ticketComments?: boolean | User$ticketCommentsArgs<ExtArgs>
@@ -15373,6 +15778,8 @@ export namespace Prisma {
       createdFileAssets: Prisma.$FileAssetPayload<ExtArgs>[]
       createdFileAssetVersions: Prisma.$FileAssetVersionPayload<ExtArgs>[]
       requestedReportJobs: Prisma.$ReportGenerationJobPayload<ExtArgs>[]
+      requestedAiRuns: Prisma.$AiRunPayload<ExtArgs>[]
+      reviewedAiArtifacts: Prisma.$AiArtifactPayload<ExtArgs>[]
       assignedSupportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
       createdSupportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
       ticketComments: Prisma.$TicketCommentPayload<ExtArgs>[]
@@ -15884,6 +16291,8 @@ export namespace Prisma {
     createdFileAssets<T extends User$createdFileAssetsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdFileAssetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileAssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdFileAssetVersions<T extends User$createdFileAssetVersionsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdFileAssetVersionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileAssetVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     requestedReportJobs<T extends User$requestedReportJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedReportJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    requestedAiRuns<T extends User$requestedAiRunsArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedAiRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    reviewedAiArtifacts<T extends User$reviewedAiArtifactsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewedAiArtifactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedSupportTickets<T extends User$assignedSupportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedSupportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdSupportTickets<T extends User$createdSupportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdSupportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ticketComments<T extends User$ticketCommentsArgs<ExtArgs> = {}>(args?: Subset<T, User$ticketCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -17432,6 +17841,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ReportGenerationJobScalarFieldEnum | ReportGenerationJobScalarFieldEnum[]
+  }
+
+  /**
+   * User.requestedAiRuns
+   */
+  export type User$requestedAiRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    where?: AiRunWhereInput
+    orderBy?: AiRunOrderByWithRelationInput | AiRunOrderByWithRelationInput[]
+    cursor?: AiRunWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiRunScalarFieldEnum | AiRunScalarFieldEnum[]
+  }
+
+  /**
+   * User.reviewedAiArtifacts
+   */
+  export type User$reviewedAiArtifactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    where?: AiArtifactWhereInput
+    orderBy?: AiArtifactOrderByWithRelationInput | AiArtifactOrderByWithRelationInput[]
+    cursor?: AiArtifactWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiArtifactScalarFieldEnum | AiArtifactScalarFieldEnum[]
   }
 
   /**
@@ -22012,6 +22469,2414 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ReportGenerationJobInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AiRun
+   */
+
+  export type AggregateAiRun = {
+    _count: AiRunCountAggregateOutputType | null
+    _avg: AiRunAvgAggregateOutputType | null
+    _sum: AiRunSumAggregateOutputType | null
+    _min: AiRunMinAggregateOutputType | null
+    _max: AiRunMaxAggregateOutputType | null
+  }
+
+  export type AiRunAvgAggregateOutputType = {
+    promptTokens: number | null
+    completionTokens: number | null
+    costCents: number | null
+  }
+
+  export type AiRunSumAggregateOutputType = {
+    promptTokens: number | null
+    completionTokens: number | null
+    costCents: number | null
+  }
+
+  export type AiRunMinAggregateOutputType = {
+    id: string | null
+    useCase: string | null
+    status: $Enums.AiRunStatus | null
+    provider: string | null
+    model: string | null
+    promptTokens: number | null
+    completionTokens: number | null
+    costCents: number | null
+    errorMessage: string | null
+    requestedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type AiRunMaxAggregateOutputType = {
+    id: string | null
+    useCase: string | null
+    status: $Enums.AiRunStatus | null
+    provider: string | null
+    model: string | null
+    promptTokens: number | null
+    completionTokens: number | null
+    costCents: number | null
+    errorMessage: string | null
+    requestedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type AiRunCountAggregateOutputType = {
+    id: number
+    useCase: number
+    status: number
+    provider: number
+    model: number
+    inputSummary: number
+    promptTokens: number
+    completionTokens: number
+    costCents: number
+    errorMessage: number
+    requestedById: number
+    createdAt: number
+    updatedAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type AiRunAvgAggregateInputType = {
+    promptTokens?: true
+    completionTokens?: true
+    costCents?: true
+  }
+
+  export type AiRunSumAggregateInputType = {
+    promptTokens?: true
+    completionTokens?: true
+    costCents?: true
+  }
+
+  export type AiRunMinAggregateInputType = {
+    id?: true
+    useCase?: true
+    status?: true
+    provider?: true
+    model?: true
+    promptTokens?: true
+    completionTokens?: true
+    costCents?: true
+    errorMessage?: true
+    requestedById?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type AiRunMaxAggregateInputType = {
+    id?: true
+    useCase?: true
+    status?: true
+    provider?: true
+    model?: true
+    promptTokens?: true
+    completionTokens?: true
+    costCents?: true
+    errorMessage?: true
+    requestedById?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+  }
+
+  export type AiRunCountAggregateInputType = {
+    id?: true
+    useCase?: true
+    status?: true
+    provider?: true
+    model?: true
+    inputSummary?: true
+    promptTokens?: true
+    completionTokens?: true
+    costCents?: true
+    errorMessage?: true
+    requestedById?: true
+    createdAt?: true
+    updatedAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type AiRunAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiRun to aggregate.
+     */
+    where?: AiRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiRuns to fetch.
+     */
+    orderBy?: AiRunOrderByWithRelationInput | AiRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiRuns
+    **/
+    _count?: true | AiRunCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AiRunAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AiRunSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiRunMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiRunMaxAggregateInputType
+  }
+
+  export type GetAiRunAggregateType<T extends AiRunAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiRun]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiRun[P]>
+      : GetScalarType<T[P], AggregateAiRun[P]>
+  }
+
+
+
+
+  export type AiRunGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiRunWhereInput
+    orderBy?: AiRunOrderByWithAggregationInput | AiRunOrderByWithAggregationInput[]
+    by: AiRunScalarFieldEnum[] | AiRunScalarFieldEnum
+    having?: AiRunScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiRunCountAggregateInputType | true
+    _avg?: AiRunAvgAggregateInputType
+    _sum?: AiRunSumAggregateInputType
+    _min?: AiRunMinAggregateInputType
+    _max?: AiRunMaxAggregateInputType
+  }
+
+  export type AiRunGroupByOutputType = {
+    id: string
+    useCase: string
+    status: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary: JsonValue
+    promptTokens: number | null
+    completionTokens: number | null
+    costCents: number | null
+    errorMessage: string | null
+    requestedById: string
+    createdAt: Date
+    updatedAt: Date
+    completedAt: Date | null
+    _count: AiRunCountAggregateOutputType | null
+    _avg: AiRunAvgAggregateOutputType | null
+    _sum: AiRunSumAggregateOutputType | null
+    _min: AiRunMinAggregateOutputType | null
+    _max: AiRunMaxAggregateOutputType | null
+  }
+
+  type GetAiRunGroupByPayload<T extends AiRunGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiRunGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiRunGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiRunGroupByOutputType[P]>
+            : GetScalarType<T[P], AiRunGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiRunSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    useCase?: boolean
+    status?: boolean
+    provider?: boolean
+    model?: boolean
+    inputSummary?: boolean
+    promptTokens?: boolean
+    completionTokens?: boolean
+    costCents?: boolean
+    errorMessage?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    artifacts?: boolean | AiRun$artifactsArgs<ExtArgs>
+    _count?: boolean | AiRunCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiRun"]>
+
+  export type AiRunSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    useCase?: boolean
+    status?: boolean
+    provider?: boolean
+    model?: boolean
+    inputSummary?: boolean
+    promptTokens?: boolean
+    completionTokens?: boolean
+    costCents?: boolean
+    errorMessage?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiRun"]>
+
+  export type AiRunSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    useCase?: boolean
+    status?: boolean
+    provider?: boolean
+    model?: boolean
+    inputSummary?: boolean
+    promptTokens?: boolean
+    completionTokens?: boolean
+    costCents?: boolean
+    errorMessage?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["aiRun"]>
+
+  export type AiRunSelectScalar = {
+    id?: boolean
+    useCase?: boolean
+    status?: boolean
+    provider?: boolean
+    model?: boolean
+    inputSummary?: boolean
+    promptTokens?: boolean
+    completionTokens?: boolean
+    costCents?: boolean
+    errorMessage?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type AiRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "useCase" | "status" | "provider" | "model" | "inputSummary" | "promptTokens" | "completionTokens" | "costCents" | "errorMessage" | "requestedById" | "createdAt" | "updatedAt" | "completedAt", ExtArgs["result"]["aiRun"]>
+  export type AiRunInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+    artifacts?: boolean | AiRun$artifactsArgs<ExtArgs>
+    _count?: boolean | AiRunCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AiRunIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AiRunIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AiRunPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiRun"
+    objects: {
+      requestedBy: Prisma.$UserPayload<ExtArgs>
+      artifacts: Prisma.$AiArtifactPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      useCase: string
+      status: $Enums.AiRunStatus
+      provider: string
+      model: string
+      inputSummary: Prisma.JsonValue
+      promptTokens: number | null
+      completionTokens: number | null
+      costCents: number | null
+      errorMessage: string | null
+      requestedById: string
+      createdAt: Date
+      updatedAt: Date
+      completedAt: Date | null
+    }, ExtArgs["result"]["aiRun"]>
+    composites: {}
+  }
+
+  type AiRunGetPayload<S extends boolean | null | undefined | AiRunDefaultArgs> = $Result.GetResult<Prisma.$AiRunPayload, S>
+
+  type AiRunCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiRunFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiRunCountAggregateInputType | true
+    }
+
+  export interface AiRunDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiRun'], meta: { name: 'AiRun' } }
+    /**
+     * Find zero or one AiRun that matches the filter.
+     * @param {AiRunFindUniqueArgs} args - Arguments to find a AiRun
+     * @example
+     * // Get one AiRun
+     * const aiRun = await prisma.aiRun.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiRunFindUniqueArgs>(args: SelectSubset<T, AiRunFindUniqueArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiRun that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiRunFindUniqueOrThrowArgs} args - Arguments to find a AiRun
+     * @example
+     * // Get one AiRun
+     * const aiRun = await prisma.aiRun.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiRunFindUniqueOrThrowArgs>(args: SelectSubset<T, AiRunFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiRun that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiRunFindFirstArgs} args - Arguments to find a AiRun
+     * @example
+     * // Get one AiRun
+     * const aiRun = await prisma.aiRun.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiRunFindFirstArgs>(args?: SelectSubset<T, AiRunFindFirstArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiRun that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiRunFindFirstOrThrowArgs} args - Arguments to find a AiRun
+     * @example
+     * // Get one AiRun
+     * const aiRun = await prisma.aiRun.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiRunFindFirstOrThrowArgs>(args?: SelectSubset<T, AiRunFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiRuns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiRunFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiRuns
+     * const aiRuns = await prisma.aiRun.findMany()
+     * 
+     * // Get first 10 AiRuns
+     * const aiRuns = await prisma.aiRun.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aiRunWithIdOnly = await prisma.aiRun.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AiRunFindManyArgs>(args?: SelectSubset<T, AiRunFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiRun.
+     * @param {AiRunCreateArgs} args - Arguments to create a AiRun.
+     * @example
+     * // Create one AiRun
+     * const AiRun = await prisma.aiRun.create({
+     *   data: {
+     *     // ... data to create a AiRun
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiRunCreateArgs>(args: SelectSubset<T, AiRunCreateArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiRuns.
+     * @param {AiRunCreateManyArgs} args - Arguments to create many AiRuns.
+     * @example
+     * // Create many AiRuns
+     * const aiRun = await prisma.aiRun.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiRunCreateManyArgs>(args?: SelectSubset<T, AiRunCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiRuns and returns the data saved in the database.
+     * @param {AiRunCreateManyAndReturnArgs} args - Arguments to create many AiRuns.
+     * @example
+     * // Create many AiRuns
+     * const aiRun = await prisma.aiRun.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiRuns and only return the `id`
+     * const aiRunWithIdOnly = await prisma.aiRun.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiRunCreateManyAndReturnArgs>(args?: SelectSubset<T, AiRunCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiRun.
+     * @param {AiRunDeleteArgs} args - Arguments to delete one AiRun.
+     * @example
+     * // Delete one AiRun
+     * const AiRun = await prisma.aiRun.delete({
+     *   where: {
+     *     // ... filter to delete one AiRun
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiRunDeleteArgs>(args: SelectSubset<T, AiRunDeleteArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiRun.
+     * @param {AiRunUpdateArgs} args - Arguments to update one AiRun.
+     * @example
+     * // Update one AiRun
+     * const aiRun = await prisma.aiRun.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiRunUpdateArgs>(args: SelectSubset<T, AiRunUpdateArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiRuns.
+     * @param {AiRunDeleteManyArgs} args - Arguments to filter AiRuns to delete.
+     * @example
+     * // Delete a few AiRuns
+     * const { count } = await prisma.aiRun.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiRunDeleteManyArgs>(args?: SelectSubset<T, AiRunDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiRunUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiRuns
+     * const aiRun = await prisma.aiRun.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiRunUpdateManyArgs>(args: SelectSubset<T, AiRunUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiRuns and returns the data updated in the database.
+     * @param {AiRunUpdateManyAndReturnArgs} args - Arguments to update many AiRuns.
+     * @example
+     * // Update many AiRuns
+     * const aiRun = await prisma.aiRun.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiRuns and only return the `id`
+     * const aiRunWithIdOnly = await prisma.aiRun.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiRunUpdateManyAndReturnArgs>(args: SelectSubset<T, AiRunUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiRun.
+     * @param {AiRunUpsertArgs} args - Arguments to update or create a AiRun.
+     * @example
+     * // Update or create a AiRun
+     * const aiRun = await prisma.aiRun.upsert({
+     *   create: {
+     *     // ... data to create a AiRun
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiRun we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiRunUpsertArgs>(args: SelectSubset<T, AiRunUpsertArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiRunCountArgs} args - Arguments to filter AiRuns to count.
+     * @example
+     * // Count the number of AiRuns
+     * const count = await prisma.aiRun.count({
+     *   where: {
+     *     // ... the filter for the AiRuns we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiRunCountArgs>(
+      args?: Subset<T, AiRunCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiRunCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiRunAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiRunAggregateArgs>(args: Subset<T, AiRunAggregateArgs>): Prisma.PrismaPromise<GetAiRunAggregateType<T>>
+
+    /**
+     * Group by AiRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiRunGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiRunGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiRunGroupByArgs['orderBy'] }
+        : { orderBy?: AiRunGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiRunGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiRunGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiRun model
+   */
+  readonly fields: AiRunFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiRun.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiRunClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    requestedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    artifacts<T extends AiRun$artifactsArgs<ExtArgs> = {}>(args?: Subset<T, AiRun$artifactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiRun model
+   */
+  interface AiRunFieldRefs {
+    readonly id: FieldRef<"AiRun", 'String'>
+    readonly useCase: FieldRef<"AiRun", 'String'>
+    readonly status: FieldRef<"AiRun", 'AiRunStatus'>
+    readonly provider: FieldRef<"AiRun", 'String'>
+    readonly model: FieldRef<"AiRun", 'String'>
+    readonly inputSummary: FieldRef<"AiRun", 'Json'>
+    readonly promptTokens: FieldRef<"AiRun", 'Int'>
+    readonly completionTokens: FieldRef<"AiRun", 'Int'>
+    readonly costCents: FieldRef<"AiRun", 'Int'>
+    readonly errorMessage: FieldRef<"AiRun", 'String'>
+    readonly requestedById: FieldRef<"AiRun", 'String'>
+    readonly createdAt: FieldRef<"AiRun", 'DateTime'>
+    readonly updatedAt: FieldRef<"AiRun", 'DateTime'>
+    readonly completedAt: FieldRef<"AiRun", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiRun findUnique
+   */
+  export type AiRunFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * Filter, which AiRun to fetch.
+     */
+    where: AiRunWhereUniqueInput
+  }
+
+  /**
+   * AiRun findUniqueOrThrow
+   */
+  export type AiRunFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * Filter, which AiRun to fetch.
+     */
+    where: AiRunWhereUniqueInput
+  }
+
+  /**
+   * AiRun findFirst
+   */
+  export type AiRunFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * Filter, which AiRun to fetch.
+     */
+    where?: AiRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiRuns to fetch.
+     */
+    orderBy?: AiRunOrderByWithRelationInput | AiRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiRuns.
+     */
+    cursor?: AiRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiRuns.
+     */
+    distinct?: AiRunScalarFieldEnum | AiRunScalarFieldEnum[]
+  }
+
+  /**
+   * AiRun findFirstOrThrow
+   */
+  export type AiRunFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * Filter, which AiRun to fetch.
+     */
+    where?: AiRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiRuns to fetch.
+     */
+    orderBy?: AiRunOrderByWithRelationInput | AiRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiRuns.
+     */
+    cursor?: AiRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiRuns.
+     */
+    distinct?: AiRunScalarFieldEnum | AiRunScalarFieldEnum[]
+  }
+
+  /**
+   * AiRun findMany
+   */
+  export type AiRunFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * Filter, which AiRuns to fetch.
+     */
+    where?: AiRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiRuns to fetch.
+     */
+    orderBy?: AiRunOrderByWithRelationInput | AiRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiRuns.
+     */
+    cursor?: AiRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiRuns.
+     */
+    distinct?: AiRunScalarFieldEnum | AiRunScalarFieldEnum[]
+  }
+
+  /**
+   * AiRun create
+   */
+  export type AiRunCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AiRun.
+     */
+    data: XOR<AiRunCreateInput, AiRunUncheckedCreateInput>
+  }
+
+  /**
+   * AiRun createMany
+   */
+  export type AiRunCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiRuns.
+     */
+    data: AiRunCreateManyInput | AiRunCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiRun createManyAndReturn
+   */
+  export type AiRunCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiRuns.
+     */
+    data: AiRunCreateManyInput | AiRunCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiRun update
+   */
+  export type AiRunUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AiRun.
+     */
+    data: XOR<AiRunUpdateInput, AiRunUncheckedUpdateInput>
+    /**
+     * Choose, which AiRun to update.
+     */
+    where: AiRunWhereUniqueInput
+  }
+
+  /**
+   * AiRun updateMany
+   */
+  export type AiRunUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiRuns.
+     */
+    data: XOR<AiRunUpdateManyMutationInput, AiRunUncheckedUpdateManyInput>
+    /**
+     * Filter which AiRuns to update
+     */
+    where?: AiRunWhereInput
+    /**
+     * Limit how many AiRuns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiRun updateManyAndReturn
+   */
+  export type AiRunUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * The data used to update AiRuns.
+     */
+    data: XOR<AiRunUpdateManyMutationInput, AiRunUncheckedUpdateManyInput>
+    /**
+     * Filter which AiRuns to update
+     */
+    where?: AiRunWhereInput
+    /**
+     * Limit how many AiRuns to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiRun upsert
+   */
+  export type AiRunUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AiRun to update in case it exists.
+     */
+    where: AiRunWhereUniqueInput
+    /**
+     * In case the AiRun found by the `where` argument doesn't exist, create a new AiRun with this data.
+     */
+    create: XOR<AiRunCreateInput, AiRunUncheckedCreateInput>
+    /**
+     * In case the AiRun was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiRunUpdateInput, AiRunUncheckedUpdateInput>
+  }
+
+  /**
+   * AiRun delete
+   */
+  export type AiRunDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+    /**
+     * Filter which AiRun to delete.
+     */
+    where: AiRunWhereUniqueInput
+  }
+
+  /**
+   * AiRun deleteMany
+   */
+  export type AiRunDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiRuns to delete
+     */
+    where?: AiRunWhereInput
+    /**
+     * Limit how many AiRuns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiRun.artifacts
+   */
+  export type AiRun$artifactsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    where?: AiArtifactWhereInput
+    orderBy?: AiArtifactOrderByWithRelationInput | AiArtifactOrderByWithRelationInput[]
+    cursor?: AiArtifactWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AiArtifactScalarFieldEnum | AiArtifactScalarFieldEnum[]
+  }
+
+  /**
+   * AiRun without action
+   */
+  export type AiRunDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiRun
+     */
+    select?: AiRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiRun
+     */
+    omit?: AiRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiRunInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AiArtifact
+   */
+
+  export type AggregateAiArtifact = {
+    _count: AiArtifactCountAggregateOutputType | null
+    _min: AiArtifactMinAggregateOutputType | null
+    _max: AiArtifactMaxAggregateOutputType | null
+  }
+
+  export type AiArtifactMinAggregateOutputType = {
+    id: string | null
+    runId: string | null
+    status: $Enums.AiArtifactStatus | null
+    targetEntityType: string | null
+    targetEntityId: string | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    appliedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AiArtifactMaxAggregateOutputType = {
+    id: string | null
+    runId: string | null
+    status: $Enums.AiArtifactStatus | null
+    targetEntityType: string | null
+    targetEntityId: string | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    appliedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AiArtifactCountAggregateOutputType = {
+    id: number
+    runId: number
+    status: number
+    payload: number
+    citations: number
+    targetEntityType: number
+    targetEntityId: number
+    reviewedById: number
+    reviewedAt: number
+    appliedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AiArtifactMinAggregateInputType = {
+    id?: true
+    runId?: true
+    status?: true
+    targetEntityType?: true
+    targetEntityId?: true
+    reviewedById?: true
+    reviewedAt?: true
+    appliedAt?: true
+    createdAt?: true
+  }
+
+  export type AiArtifactMaxAggregateInputType = {
+    id?: true
+    runId?: true
+    status?: true
+    targetEntityType?: true
+    targetEntityId?: true
+    reviewedById?: true
+    reviewedAt?: true
+    appliedAt?: true
+    createdAt?: true
+  }
+
+  export type AiArtifactCountAggregateInputType = {
+    id?: true
+    runId?: true
+    status?: true
+    payload?: true
+    citations?: true
+    targetEntityType?: true
+    targetEntityId?: true
+    reviewedById?: true
+    reviewedAt?: true
+    appliedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AiArtifactAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiArtifact to aggregate.
+     */
+    where?: AiArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiArtifacts to fetch.
+     */
+    orderBy?: AiArtifactOrderByWithRelationInput | AiArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AiArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AiArtifacts
+    **/
+    _count?: true | AiArtifactCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AiArtifactMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AiArtifactMaxAggregateInputType
+  }
+
+  export type GetAiArtifactAggregateType<T extends AiArtifactAggregateArgs> = {
+        [P in keyof T & keyof AggregateAiArtifact]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAiArtifact[P]>
+      : GetScalarType<T[P], AggregateAiArtifact[P]>
+  }
+
+
+
+
+  export type AiArtifactGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AiArtifactWhereInput
+    orderBy?: AiArtifactOrderByWithAggregationInput | AiArtifactOrderByWithAggregationInput[]
+    by: AiArtifactScalarFieldEnum[] | AiArtifactScalarFieldEnum
+    having?: AiArtifactScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AiArtifactCountAggregateInputType | true
+    _min?: AiArtifactMinAggregateInputType
+    _max?: AiArtifactMaxAggregateInputType
+  }
+
+  export type AiArtifactGroupByOutputType = {
+    id: string
+    runId: string
+    status: $Enums.AiArtifactStatus
+    payload: JsonValue
+    citations: JsonValue
+    targetEntityType: string | null
+    targetEntityId: string | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    appliedAt: Date | null
+    createdAt: Date
+    _count: AiArtifactCountAggregateOutputType | null
+    _min: AiArtifactMinAggregateOutputType | null
+    _max: AiArtifactMaxAggregateOutputType | null
+  }
+
+  type GetAiArtifactGroupByPayload<T extends AiArtifactGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AiArtifactGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AiArtifactGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AiArtifactGroupByOutputType[P]>
+            : GetScalarType<T[P], AiArtifactGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AiArtifactSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    runId?: boolean
+    status?: boolean
+    payload?: boolean
+    citations?: boolean
+    targetEntityType?: boolean
+    targetEntityId?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+    run?: boolean | AiRunDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AiArtifact$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["aiArtifact"]>
+
+  export type AiArtifactSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    runId?: boolean
+    status?: boolean
+    payload?: boolean
+    citations?: boolean
+    targetEntityType?: boolean
+    targetEntityId?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+    run?: boolean | AiRunDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AiArtifact$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["aiArtifact"]>
+
+  export type AiArtifactSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    runId?: boolean
+    status?: boolean
+    payload?: boolean
+    citations?: boolean
+    targetEntityType?: boolean
+    targetEntityId?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+    run?: boolean | AiRunDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AiArtifact$reviewedByArgs<ExtArgs>
+  }, ExtArgs["result"]["aiArtifact"]>
+
+  export type AiArtifactSelectScalar = {
+    id?: boolean
+    runId?: boolean
+    status?: boolean
+    payload?: boolean
+    citations?: boolean
+    targetEntityType?: boolean
+    targetEntityId?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type AiArtifactOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "runId" | "status" | "payload" | "citations" | "targetEntityType" | "targetEntityId" | "reviewedById" | "reviewedAt" | "appliedAt" | "createdAt", ExtArgs["result"]["aiArtifact"]>
+  export type AiArtifactInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    run?: boolean | AiRunDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AiArtifact$reviewedByArgs<ExtArgs>
+  }
+  export type AiArtifactIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    run?: boolean | AiRunDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AiArtifact$reviewedByArgs<ExtArgs>
+  }
+  export type AiArtifactIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    run?: boolean | AiRunDefaultArgs<ExtArgs>
+    reviewedBy?: boolean | AiArtifact$reviewedByArgs<ExtArgs>
+  }
+
+  export type $AiArtifactPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AiArtifact"
+    objects: {
+      run: Prisma.$AiRunPayload<ExtArgs>
+      reviewedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      runId: string
+      status: $Enums.AiArtifactStatus
+      payload: Prisma.JsonValue
+      citations: Prisma.JsonValue
+      targetEntityType: string | null
+      targetEntityId: string | null
+      reviewedById: string | null
+      reviewedAt: Date | null
+      appliedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["aiArtifact"]>
+    composites: {}
+  }
+
+  type AiArtifactGetPayload<S extends boolean | null | undefined | AiArtifactDefaultArgs> = $Result.GetResult<Prisma.$AiArtifactPayload, S>
+
+  type AiArtifactCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AiArtifactFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AiArtifactCountAggregateInputType | true
+    }
+
+  export interface AiArtifactDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AiArtifact'], meta: { name: 'AiArtifact' } }
+    /**
+     * Find zero or one AiArtifact that matches the filter.
+     * @param {AiArtifactFindUniqueArgs} args - Arguments to find a AiArtifact
+     * @example
+     * // Get one AiArtifact
+     * const aiArtifact = await prisma.aiArtifact.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AiArtifactFindUniqueArgs>(args: SelectSubset<T, AiArtifactFindUniqueArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AiArtifact that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AiArtifactFindUniqueOrThrowArgs} args - Arguments to find a AiArtifact
+     * @example
+     * // Get one AiArtifact
+     * const aiArtifact = await prisma.aiArtifact.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AiArtifactFindUniqueOrThrowArgs>(args: SelectSubset<T, AiArtifactFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiArtifact that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiArtifactFindFirstArgs} args - Arguments to find a AiArtifact
+     * @example
+     * // Get one AiArtifact
+     * const aiArtifact = await prisma.aiArtifact.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AiArtifactFindFirstArgs>(args?: SelectSubset<T, AiArtifactFindFirstArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AiArtifact that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiArtifactFindFirstOrThrowArgs} args - Arguments to find a AiArtifact
+     * @example
+     * // Get one AiArtifact
+     * const aiArtifact = await prisma.aiArtifact.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AiArtifactFindFirstOrThrowArgs>(args?: SelectSubset<T, AiArtifactFindFirstOrThrowArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AiArtifacts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiArtifactFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AiArtifacts
+     * const aiArtifacts = await prisma.aiArtifact.findMany()
+     * 
+     * // Get first 10 AiArtifacts
+     * const aiArtifacts = await prisma.aiArtifact.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const aiArtifactWithIdOnly = await prisma.aiArtifact.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AiArtifactFindManyArgs>(args?: SelectSubset<T, AiArtifactFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AiArtifact.
+     * @param {AiArtifactCreateArgs} args - Arguments to create a AiArtifact.
+     * @example
+     * // Create one AiArtifact
+     * const AiArtifact = await prisma.aiArtifact.create({
+     *   data: {
+     *     // ... data to create a AiArtifact
+     *   }
+     * })
+     * 
+     */
+    create<T extends AiArtifactCreateArgs>(args: SelectSubset<T, AiArtifactCreateArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AiArtifacts.
+     * @param {AiArtifactCreateManyArgs} args - Arguments to create many AiArtifacts.
+     * @example
+     * // Create many AiArtifacts
+     * const aiArtifact = await prisma.aiArtifact.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AiArtifactCreateManyArgs>(args?: SelectSubset<T, AiArtifactCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AiArtifacts and returns the data saved in the database.
+     * @param {AiArtifactCreateManyAndReturnArgs} args - Arguments to create many AiArtifacts.
+     * @example
+     * // Create many AiArtifacts
+     * const aiArtifact = await prisma.aiArtifact.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AiArtifacts and only return the `id`
+     * const aiArtifactWithIdOnly = await prisma.aiArtifact.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AiArtifactCreateManyAndReturnArgs>(args?: SelectSubset<T, AiArtifactCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AiArtifact.
+     * @param {AiArtifactDeleteArgs} args - Arguments to delete one AiArtifact.
+     * @example
+     * // Delete one AiArtifact
+     * const AiArtifact = await prisma.aiArtifact.delete({
+     *   where: {
+     *     // ... filter to delete one AiArtifact
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AiArtifactDeleteArgs>(args: SelectSubset<T, AiArtifactDeleteArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AiArtifact.
+     * @param {AiArtifactUpdateArgs} args - Arguments to update one AiArtifact.
+     * @example
+     * // Update one AiArtifact
+     * const aiArtifact = await prisma.aiArtifact.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AiArtifactUpdateArgs>(args: SelectSubset<T, AiArtifactUpdateArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AiArtifacts.
+     * @param {AiArtifactDeleteManyArgs} args - Arguments to filter AiArtifacts to delete.
+     * @example
+     * // Delete a few AiArtifacts
+     * const { count } = await prisma.aiArtifact.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AiArtifactDeleteManyArgs>(args?: SelectSubset<T, AiArtifactDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiArtifacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiArtifactUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AiArtifacts
+     * const aiArtifact = await prisma.aiArtifact.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AiArtifactUpdateManyArgs>(args: SelectSubset<T, AiArtifactUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AiArtifacts and returns the data updated in the database.
+     * @param {AiArtifactUpdateManyAndReturnArgs} args - Arguments to update many AiArtifacts.
+     * @example
+     * // Update many AiArtifacts
+     * const aiArtifact = await prisma.aiArtifact.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AiArtifacts and only return the `id`
+     * const aiArtifactWithIdOnly = await prisma.aiArtifact.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AiArtifactUpdateManyAndReturnArgs>(args: SelectSubset<T, AiArtifactUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AiArtifact.
+     * @param {AiArtifactUpsertArgs} args - Arguments to update or create a AiArtifact.
+     * @example
+     * // Update or create a AiArtifact
+     * const aiArtifact = await prisma.aiArtifact.upsert({
+     *   create: {
+     *     // ... data to create a AiArtifact
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AiArtifact we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AiArtifactUpsertArgs>(args: SelectSubset<T, AiArtifactUpsertArgs<ExtArgs>>): Prisma__AiArtifactClient<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AiArtifacts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiArtifactCountArgs} args - Arguments to filter AiArtifacts to count.
+     * @example
+     * // Count the number of AiArtifacts
+     * const count = await prisma.aiArtifact.count({
+     *   where: {
+     *     // ... the filter for the AiArtifacts we want to count
+     *   }
+     * })
+    **/
+    count<T extends AiArtifactCountArgs>(
+      args?: Subset<T, AiArtifactCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AiArtifactCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AiArtifact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiArtifactAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AiArtifactAggregateArgs>(args: Subset<T, AiArtifactAggregateArgs>): Prisma.PrismaPromise<GetAiArtifactAggregateType<T>>
+
+    /**
+     * Group by AiArtifact.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AiArtifactGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AiArtifactGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AiArtifactGroupByArgs['orderBy'] }
+        : { orderBy?: AiArtifactGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AiArtifactGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAiArtifactGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AiArtifact model
+   */
+  readonly fields: AiArtifactFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AiArtifact.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AiArtifactClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    run<T extends AiRunDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AiRunDefaultArgs<ExtArgs>>): Prisma__AiRunClient<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    reviewedBy<T extends AiArtifact$reviewedByArgs<ExtArgs> = {}>(args?: Subset<T, AiArtifact$reviewedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AiArtifact model
+   */
+  interface AiArtifactFieldRefs {
+    readonly id: FieldRef<"AiArtifact", 'String'>
+    readonly runId: FieldRef<"AiArtifact", 'String'>
+    readonly status: FieldRef<"AiArtifact", 'AiArtifactStatus'>
+    readonly payload: FieldRef<"AiArtifact", 'Json'>
+    readonly citations: FieldRef<"AiArtifact", 'Json'>
+    readonly targetEntityType: FieldRef<"AiArtifact", 'String'>
+    readonly targetEntityId: FieldRef<"AiArtifact", 'String'>
+    readonly reviewedById: FieldRef<"AiArtifact", 'String'>
+    readonly reviewedAt: FieldRef<"AiArtifact", 'DateTime'>
+    readonly appliedAt: FieldRef<"AiArtifact", 'DateTime'>
+    readonly createdAt: FieldRef<"AiArtifact", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AiArtifact findUnique
+   */
+  export type AiArtifactFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which AiArtifact to fetch.
+     */
+    where: AiArtifactWhereUniqueInput
+  }
+
+  /**
+   * AiArtifact findUniqueOrThrow
+   */
+  export type AiArtifactFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which AiArtifact to fetch.
+     */
+    where: AiArtifactWhereUniqueInput
+  }
+
+  /**
+   * AiArtifact findFirst
+   */
+  export type AiArtifactFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which AiArtifact to fetch.
+     */
+    where?: AiArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiArtifacts to fetch.
+     */
+    orderBy?: AiArtifactOrderByWithRelationInput | AiArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiArtifacts.
+     */
+    cursor?: AiArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiArtifacts.
+     */
+    distinct?: AiArtifactScalarFieldEnum | AiArtifactScalarFieldEnum[]
+  }
+
+  /**
+   * AiArtifact findFirstOrThrow
+   */
+  export type AiArtifactFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which AiArtifact to fetch.
+     */
+    where?: AiArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiArtifacts to fetch.
+     */
+    orderBy?: AiArtifactOrderByWithRelationInput | AiArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AiArtifacts.
+     */
+    cursor?: AiArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiArtifacts.
+     */
+    distinct?: AiArtifactScalarFieldEnum | AiArtifactScalarFieldEnum[]
+  }
+
+  /**
+   * AiArtifact findMany
+   */
+  export type AiArtifactFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * Filter, which AiArtifacts to fetch.
+     */
+    where?: AiArtifactWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AiArtifacts to fetch.
+     */
+    orderBy?: AiArtifactOrderByWithRelationInput | AiArtifactOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AiArtifacts.
+     */
+    cursor?: AiArtifactWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AiArtifacts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AiArtifacts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AiArtifacts.
+     */
+    distinct?: AiArtifactScalarFieldEnum | AiArtifactScalarFieldEnum[]
+  }
+
+  /**
+   * AiArtifact create
+   */
+  export type AiArtifactCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AiArtifact.
+     */
+    data: XOR<AiArtifactCreateInput, AiArtifactUncheckedCreateInput>
+  }
+
+  /**
+   * AiArtifact createMany
+   */
+  export type AiArtifactCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AiArtifacts.
+     */
+    data: AiArtifactCreateManyInput | AiArtifactCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AiArtifact createManyAndReturn
+   */
+  export type AiArtifactCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * The data used to create many AiArtifacts.
+     */
+    data: AiArtifactCreateManyInput | AiArtifactCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiArtifact update
+   */
+  export type AiArtifactUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AiArtifact.
+     */
+    data: XOR<AiArtifactUpdateInput, AiArtifactUncheckedUpdateInput>
+    /**
+     * Choose, which AiArtifact to update.
+     */
+    where: AiArtifactWhereUniqueInput
+  }
+
+  /**
+   * AiArtifact updateMany
+   */
+  export type AiArtifactUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AiArtifacts.
+     */
+    data: XOR<AiArtifactUpdateManyMutationInput, AiArtifactUncheckedUpdateManyInput>
+    /**
+     * Filter which AiArtifacts to update
+     */
+    where?: AiArtifactWhereInput
+    /**
+     * Limit how many AiArtifacts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiArtifact updateManyAndReturn
+   */
+  export type AiArtifactUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * The data used to update AiArtifacts.
+     */
+    data: XOR<AiArtifactUpdateManyMutationInput, AiArtifactUncheckedUpdateManyInput>
+    /**
+     * Filter which AiArtifacts to update
+     */
+    where?: AiArtifactWhereInput
+    /**
+     * Limit how many AiArtifacts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AiArtifact upsert
+   */
+  export type AiArtifactUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AiArtifact to update in case it exists.
+     */
+    where: AiArtifactWhereUniqueInput
+    /**
+     * In case the AiArtifact found by the `where` argument doesn't exist, create a new AiArtifact with this data.
+     */
+    create: XOR<AiArtifactCreateInput, AiArtifactUncheckedCreateInput>
+    /**
+     * In case the AiArtifact was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AiArtifactUpdateInput, AiArtifactUncheckedUpdateInput>
+  }
+
+  /**
+   * AiArtifact delete
+   */
+  export type AiArtifactDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
+    /**
+     * Filter which AiArtifact to delete.
+     */
+    where: AiArtifactWhereUniqueInput
+  }
+
+  /**
+   * AiArtifact deleteMany
+   */
+  export type AiArtifactDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AiArtifacts to delete
+     */
+    where?: AiArtifactWhereInput
+    /**
+     * Limit how many AiArtifacts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AiArtifact.reviewedBy
+   */
+  export type AiArtifact$reviewedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AiArtifact without action
+   */
+  export type AiArtifactDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AiArtifact
+     */
+    select?: AiArtifactSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AiArtifact
+     */
+    omit?: AiArtifactOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AiArtifactInclude<ExtArgs> | null
   }
 
 
@@ -56527,6 +59392,7 @@ export namespace Prisma {
     formationExam?: boolean | FormationSession$formationExamArgs<ExtArgs>
     portalAnnouncements?: boolean | FormationSession$portalAnnouncementsArgs<ExtArgs>
     rhTeam?: boolean | FormationSession$rhTeamArgs<ExtArgs>
+    satisfactionSurveys?: boolean | FormationSession$satisfactionSurveysArgs<ExtArgs>
     candidaturesInterested?: boolean | FormationSession$candidaturesInterestedArgs<ExtArgs>
     financeDevisSessionLinks?: boolean | FormationSession$financeDevisSessionLinksArgs<ExtArgs>
     automationRuns?: boolean | FormationSession$automationRunsArgs<ExtArgs>
@@ -56638,6 +59504,7 @@ export namespace Prisma {
     formationExam?: boolean | FormationSession$formationExamArgs<ExtArgs>
     portalAnnouncements?: boolean | FormationSession$portalAnnouncementsArgs<ExtArgs>
     rhTeam?: boolean | FormationSession$rhTeamArgs<ExtArgs>
+    satisfactionSurveys?: boolean | FormationSession$satisfactionSurveysArgs<ExtArgs>
     candidaturesInterested?: boolean | FormationSession$candidaturesInterestedArgs<ExtArgs>
     financeDevisSessionLinks?: boolean | FormationSession$financeDevisSessionLinksArgs<ExtArgs>
     automationRuns?: boolean | FormationSession$automationRunsArgs<ExtArgs>
@@ -56676,6 +59543,7 @@ export namespace Prisma {
       formationExam: Prisma.$FormationExamPayload<ExtArgs> | null
       portalAnnouncements: Prisma.$PortalSessionAnnouncementPayload<ExtArgs>[]
       rhTeam: Prisma.$RhTeamPayload<ExtArgs> | null
+      satisfactionSurveys: Prisma.$SatisfactionSurveyPayload<ExtArgs>[]
       candidaturesInterested: Prisma.$CandidaturePayload<ExtArgs>[]
       financeDevisSessionLinks: Prisma.$FinanceDevisPayload<ExtArgs>[]
       automationRuns: Prisma.$SessionAutomationRunPayload<ExtArgs>[]
@@ -57141,6 +60009,7 @@ export namespace Prisma {
     formationExam<T extends FormationSession$formationExamArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$formationExamArgs<ExtArgs>>): Prisma__FormationExamClient<$Result.GetResult<Prisma.$FormationExamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     portalAnnouncements<T extends FormationSession$portalAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$portalAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PortalSessionAnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rhTeam<T extends FormationSession$rhTeamArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$rhTeamArgs<ExtArgs>>): Prisma__RhTeamClient<$Result.GetResult<Prisma.$RhTeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    satisfactionSurveys<T extends FormationSession$satisfactionSurveysArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$satisfactionSurveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     candidaturesInterested<T extends FormationSession$candidaturesInterestedArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$candidaturesInterestedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financeDevisSessionLinks<T extends FormationSession$financeDevisSessionLinksArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$financeDevisSessionLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceDevisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     automationRuns<T extends FormationSession$automationRunsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$automationRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAutomationRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -57824,6 +60693,30 @@ export namespace Prisma {
      */
     include?: RhTeamInclude<ExtArgs> | null
     where?: RhTeamWhereInput
+  }
+
+  /**
+   * FormationSession.satisfactionSurveys
+   */
+  export type FormationSession$satisfactionSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    where?: SatisfactionSurveyWhereInput
+    orderBy?: SatisfactionSurveyOrderByWithRelationInput | SatisfactionSurveyOrderByWithRelationInput[]
+    cursor?: SatisfactionSurveyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SatisfactionSurveyScalarFieldEnum | SatisfactionSurveyScalarFieldEnum[]
   }
 
   /**
@@ -61913,6 +64806,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     candidature?: boolean | FormationSessionParticipant$candidatureArgs<ExtArgs>
     emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
+    satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["formationSessionParticipant"]>
 
@@ -61979,6 +64873,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     candidature?: boolean | FormationSessionParticipant$candidatureArgs<ExtArgs>
     emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
+    satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FormationSessionParticipantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -61999,6 +64894,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       candidature: Prisma.$CandidaturePayload<ExtArgs> | null
       emargements: Prisma.$FormationSessionEmargementPayload<ExtArgs>[]
+      satisfactionSurveys: Prisma.$SatisfactionSurveyPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -62416,6 +65312,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     candidature<T extends FormationSessionParticipant$candidatureArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$candidatureArgs<ExtArgs>>): Prisma__CandidatureClient<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     emargements<T extends FormationSessionParticipant$emargementsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$emargementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    satisfactionSurveys<T extends FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -62900,6 +65797,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionParticipant.satisfactionSurveys
+   */
+  export type FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    where?: SatisfactionSurveyWhereInput
+    orderBy?: SatisfactionSurveyOrderByWithRelationInput | SatisfactionSurveyOrderByWithRelationInput[]
+    cursor?: SatisfactionSurveyWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SatisfactionSurveyScalarFieldEnum | SatisfactionSurveyScalarFieldEnum[]
   }
 
   /**
@@ -140946,6 +143867,1138 @@ export namespace Prisma {
 
 
   /**
+   * Model SatisfactionSurvey
+   */
+
+  export type AggregateSatisfactionSurvey = {
+    _count: SatisfactionSurveyCountAggregateOutputType | null
+    _min: SatisfactionSurveyMinAggregateOutputType | null
+    _max: SatisfactionSurveyMaxAggregateOutputType | null
+  }
+
+  export type SatisfactionSurveyMinAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    participantId: string | null
+    timing: $Enums.SatisfactionSurveyTiming | null
+    status: $Enums.SatisfactionSurveyStatus | null
+    sentAt: Date | null
+    respondedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SatisfactionSurveyMaxAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    participantId: string | null
+    timing: $Enums.SatisfactionSurveyTiming | null
+    status: $Enums.SatisfactionSurveyStatus | null
+    sentAt: Date | null
+    respondedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SatisfactionSurveyCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    participantId: number
+    timing: number
+    status: number
+    sentAt: number
+    respondedAt: number
+    answers: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SatisfactionSurveyMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    participantId?: true
+    timing?: true
+    status?: true
+    sentAt?: true
+    respondedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SatisfactionSurveyMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    participantId?: true
+    timing?: true
+    status?: true
+    sentAt?: true
+    respondedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SatisfactionSurveyCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    participantId?: true
+    timing?: true
+    status?: true
+    sentAt?: true
+    respondedAt?: true
+    answers?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SatisfactionSurveyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatisfactionSurvey to aggregate.
+     */
+    where?: SatisfactionSurveyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatisfactionSurveys to fetch.
+     */
+    orderBy?: SatisfactionSurveyOrderByWithRelationInput | SatisfactionSurveyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SatisfactionSurveyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatisfactionSurveys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatisfactionSurveys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SatisfactionSurveys
+    **/
+    _count?: true | SatisfactionSurveyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SatisfactionSurveyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SatisfactionSurveyMaxAggregateInputType
+  }
+
+  export type GetSatisfactionSurveyAggregateType<T extends SatisfactionSurveyAggregateArgs> = {
+        [P in keyof T & keyof AggregateSatisfactionSurvey]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSatisfactionSurvey[P]>
+      : GetScalarType<T[P], AggregateSatisfactionSurvey[P]>
+  }
+
+
+
+
+  export type SatisfactionSurveyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SatisfactionSurveyWhereInput
+    orderBy?: SatisfactionSurveyOrderByWithAggregationInput | SatisfactionSurveyOrderByWithAggregationInput[]
+    by: SatisfactionSurveyScalarFieldEnum[] | SatisfactionSurveyScalarFieldEnum
+    having?: SatisfactionSurveyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SatisfactionSurveyCountAggregateInputType | true
+    _min?: SatisfactionSurveyMinAggregateInputType
+    _max?: SatisfactionSurveyMaxAggregateInputType
+  }
+
+  export type SatisfactionSurveyGroupByOutputType = {
+    id: string
+    sessionId: string
+    participantId: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status: $Enums.SatisfactionSurveyStatus
+    sentAt: Date | null
+    respondedAt: Date | null
+    answers: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SatisfactionSurveyCountAggregateOutputType | null
+    _min: SatisfactionSurveyMinAggregateOutputType | null
+    _max: SatisfactionSurveyMaxAggregateOutputType | null
+  }
+
+  type GetSatisfactionSurveyGroupByPayload<T extends SatisfactionSurveyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SatisfactionSurveyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SatisfactionSurveyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SatisfactionSurveyGroupByOutputType[P]>
+            : GetScalarType<T[P], SatisfactionSurveyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SatisfactionSurveySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    timing?: boolean
+    status?: boolean
+    sentAt?: boolean
+    respondedAt?: boolean
+    answers?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["satisfactionSurvey"]>
+
+  export type SatisfactionSurveySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    timing?: boolean
+    status?: boolean
+    sentAt?: boolean
+    respondedAt?: boolean
+    answers?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["satisfactionSurvey"]>
+
+  export type SatisfactionSurveySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    timing?: boolean
+    status?: boolean
+    sentAt?: boolean
+    respondedAt?: boolean
+    answers?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["satisfactionSurvey"]>
+
+  export type SatisfactionSurveySelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    timing?: boolean
+    status?: boolean
+    sentAt?: boolean
+    respondedAt?: boolean
+    answers?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SatisfactionSurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "participantId" | "timing" | "status" | "sentAt" | "respondedAt" | "answers" | "createdAt" | "updatedAt", ExtArgs["result"]["satisfactionSurvey"]>
+  export type SatisfactionSurveyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+  }
+  export type SatisfactionSurveyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+  }
+  export type SatisfactionSurveyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+  }
+
+  export type $SatisfactionSurveyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SatisfactionSurvey"
+    objects: {
+      session: Prisma.$FormationSessionPayload<ExtArgs>
+      participant: Prisma.$FormationSessionParticipantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sessionId: string
+      participantId: string
+      timing: $Enums.SatisfactionSurveyTiming
+      status: $Enums.SatisfactionSurveyStatus
+      sentAt: Date | null
+      respondedAt: Date | null
+      answers: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["satisfactionSurvey"]>
+    composites: {}
+  }
+
+  type SatisfactionSurveyGetPayload<S extends boolean | null | undefined | SatisfactionSurveyDefaultArgs> = $Result.GetResult<Prisma.$SatisfactionSurveyPayload, S>
+
+  type SatisfactionSurveyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SatisfactionSurveyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SatisfactionSurveyCountAggregateInputType | true
+    }
+
+  export interface SatisfactionSurveyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SatisfactionSurvey'], meta: { name: 'SatisfactionSurvey' } }
+    /**
+     * Find zero or one SatisfactionSurvey that matches the filter.
+     * @param {SatisfactionSurveyFindUniqueArgs} args - Arguments to find a SatisfactionSurvey
+     * @example
+     * // Get one SatisfactionSurvey
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SatisfactionSurveyFindUniqueArgs>(args: SelectSubset<T, SatisfactionSurveyFindUniqueArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SatisfactionSurvey that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SatisfactionSurveyFindUniqueOrThrowArgs} args - Arguments to find a SatisfactionSurvey
+     * @example
+     * // Get one SatisfactionSurvey
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SatisfactionSurveyFindUniqueOrThrowArgs>(args: SelectSubset<T, SatisfactionSurveyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatisfactionSurvey that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatisfactionSurveyFindFirstArgs} args - Arguments to find a SatisfactionSurvey
+     * @example
+     * // Get one SatisfactionSurvey
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SatisfactionSurveyFindFirstArgs>(args?: SelectSubset<T, SatisfactionSurveyFindFirstArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SatisfactionSurvey that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatisfactionSurveyFindFirstOrThrowArgs} args - Arguments to find a SatisfactionSurvey
+     * @example
+     * // Get one SatisfactionSurvey
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SatisfactionSurveyFindFirstOrThrowArgs>(args?: SelectSubset<T, SatisfactionSurveyFindFirstOrThrowArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SatisfactionSurveys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatisfactionSurveyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SatisfactionSurveys
+     * const satisfactionSurveys = await prisma.satisfactionSurvey.findMany()
+     * 
+     * // Get first 10 SatisfactionSurveys
+     * const satisfactionSurveys = await prisma.satisfactionSurvey.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const satisfactionSurveyWithIdOnly = await prisma.satisfactionSurvey.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SatisfactionSurveyFindManyArgs>(args?: SelectSubset<T, SatisfactionSurveyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SatisfactionSurvey.
+     * @param {SatisfactionSurveyCreateArgs} args - Arguments to create a SatisfactionSurvey.
+     * @example
+     * // Create one SatisfactionSurvey
+     * const SatisfactionSurvey = await prisma.satisfactionSurvey.create({
+     *   data: {
+     *     // ... data to create a SatisfactionSurvey
+     *   }
+     * })
+     * 
+     */
+    create<T extends SatisfactionSurveyCreateArgs>(args: SelectSubset<T, SatisfactionSurveyCreateArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SatisfactionSurveys.
+     * @param {SatisfactionSurveyCreateManyArgs} args - Arguments to create many SatisfactionSurveys.
+     * @example
+     * // Create many SatisfactionSurveys
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SatisfactionSurveyCreateManyArgs>(args?: SelectSubset<T, SatisfactionSurveyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SatisfactionSurveys and returns the data saved in the database.
+     * @param {SatisfactionSurveyCreateManyAndReturnArgs} args - Arguments to create many SatisfactionSurveys.
+     * @example
+     * // Create many SatisfactionSurveys
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SatisfactionSurveys and only return the `id`
+     * const satisfactionSurveyWithIdOnly = await prisma.satisfactionSurvey.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SatisfactionSurveyCreateManyAndReturnArgs>(args?: SelectSubset<T, SatisfactionSurveyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SatisfactionSurvey.
+     * @param {SatisfactionSurveyDeleteArgs} args - Arguments to delete one SatisfactionSurvey.
+     * @example
+     * // Delete one SatisfactionSurvey
+     * const SatisfactionSurvey = await prisma.satisfactionSurvey.delete({
+     *   where: {
+     *     // ... filter to delete one SatisfactionSurvey
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SatisfactionSurveyDeleteArgs>(args: SelectSubset<T, SatisfactionSurveyDeleteArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SatisfactionSurvey.
+     * @param {SatisfactionSurveyUpdateArgs} args - Arguments to update one SatisfactionSurvey.
+     * @example
+     * // Update one SatisfactionSurvey
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SatisfactionSurveyUpdateArgs>(args: SelectSubset<T, SatisfactionSurveyUpdateArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SatisfactionSurveys.
+     * @param {SatisfactionSurveyDeleteManyArgs} args - Arguments to filter SatisfactionSurveys to delete.
+     * @example
+     * // Delete a few SatisfactionSurveys
+     * const { count } = await prisma.satisfactionSurvey.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SatisfactionSurveyDeleteManyArgs>(args?: SelectSubset<T, SatisfactionSurveyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatisfactionSurveys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatisfactionSurveyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SatisfactionSurveys
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SatisfactionSurveyUpdateManyArgs>(args: SelectSubset<T, SatisfactionSurveyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SatisfactionSurveys and returns the data updated in the database.
+     * @param {SatisfactionSurveyUpdateManyAndReturnArgs} args - Arguments to update many SatisfactionSurveys.
+     * @example
+     * // Update many SatisfactionSurveys
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SatisfactionSurveys and only return the `id`
+     * const satisfactionSurveyWithIdOnly = await prisma.satisfactionSurvey.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SatisfactionSurveyUpdateManyAndReturnArgs>(args: SelectSubset<T, SatisfactionSurveyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SatisfactionSurvey.
+     * @param {SatisfactionSurveyUpsertArgs} args - Arguments to update or create a SatisfactionSurvey.
+     * @example
+     * // Update or create a SatisfactionSurvey
+     * const satisfactionSurvey = await prisma.satisfactionSurvey.upsert({
+     *   create: {
+     *     // ... data to create a SatisfactionSurvey
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SatisfactionSurvey we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SatisfactionSurveyUpsertArgs>(args: SelectSubset<T, SatisfactionSurveyUpsertArgs<ExtArgs>>): Prisma__SatisfactionSurveyClient<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SatisfactionSurveys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatisfactionSurveyCountArgs} args - Arguments to filter SatisfactionSurveys to count.
+     * @example
+     * // Count the number of SatisfactionSurveys
+     * const count = await prisma.satisfactionSurvey.count({
+     *   where: {
+     *     // ... the filter for the SatisfactionSurveys we want to count
+     *   }
+     * })
+    **/
+    count<T extends SatisfactionSurveyCountArgs>(
+      args?: Subset<T, SatisfactionSurveyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SatisfactionSurveyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SatisfactionSurvey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatisfactionSurveyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SatisfactionSurveyAggregateArgs>(args: Subset<T, SatisfactionSurveyAggregateArgs>): Prisma.PrismaPromise<GetSatisfactionSurveyAggregateType<T>>
+
+    /**
+     * Group by SatisfactionSurvey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SatisfactionSurveyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SatisfactionSurveyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SatisfactionSurveyGroupByArgs['orderBy'] }
+        : { orderBy?: SatisfactionSurveyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SatisfactionSurveyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSatisfactionSurveyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SatisfactionSurvey model
+   */
+  readonly fields: SatisfactionSurveyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SatisfactionSurvey.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SatisfactionSurveyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    session<T extends FormationSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDefaultArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    participant<T extends FormationSessionParticipantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipantDefaultArgs<ExtArgs>>): Prisma__FormationSessionParticipantClient<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SatisfactionSurvey model
+   */
+  interface SatisfactionSurveyFieldRefs {
+    readonly id: FieldRef<"SatisfactionSurvey", 'String'>
+    readonly sessionId: FieldRef<"SatisfactionSurvey", 'String'>
+    readonly participantId: FieldRef<"SatisfactionSurvey", 'String'>
+    readonly timing: FieldRef<"SatisfactionSurvey", 'SatisfactionSurveyTiming'>
+    readonly status: FieldRef<"SatisfactionSurvey", 'SatisfactionSurveyStatus'>
+    readonly sentAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
+    readonly respondedAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
+    readonly answers: FieldRef<"SatisfactionSurvey", 'Json'>
+    readonly createdAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
+    readonly updatedAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SatisfactionSurvey findUnique
+   */
+  export type SatisfactionSurveyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * Filter, which SatisfactionSurvey to fetch.
+     */
+    where: SatisfactionSurveyWhereUniqueInput
+  }
+
+  /**
+   * SatisfactionSurvey findUniqueOrThrow
+   */
+  export type SatisfactionSurveyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * Filter, which SatisfactionSurvey to fetch.
+     */
+    where: SatisfactionSurveyWhereUniqueInput
+  }
+
+  /**
+   * SatisfactionSurvey findFirst
+   */
+  export type SatisfactionSurveyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * Filter, which SatisfactionSurvey to fetch.
+     */
+    where?: SatisfactionSurveyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatisfactionSurveys to fetch.
+     */
+    orderBy?: SatisfactionSurveyOrderByWithRelationInput | SatisfactionSurveyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatisfactionSurveys.
+     */
+    cursor?: SatisfactionSurveyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatisfactionSurveys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatisfactionSurveys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatisfactionSurveys.
+     */
+    distinct?: SatisfactionSurveyScalarFieldEnum | SatisfactionSurveyScalarFieldEnum[]
+  }
+
+  /**
+   * SatisfactionSurvey findFirstOrThrow
+   */
+  export type SatisfactionSurveyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * Filter, which SatisfactionSurvey to fetch.
+     */
+    where?: SatisfactionSurveyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatisfactionSurveys to fetch.
+     */
+    orderBy?: SatisfactionSurveyOrderByWithRelationInput | SatisfactionSurveyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SatisfactionSurveys.
+     */
+    cursor?: SatisfactionSurveyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatisfactionSurveys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatisfactionSurveys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatisfactionSurveys.
+     */
+    distinct?: SatisfactionSurveyScalarFieldEnum | SatisfactionSurveyScalarFieldEnum[]
+  }
+
+  /**
+   * SatisfactionSurvey findMany
+   */
+  export type SatisfactionSurveyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * Filter, which SatisfactionSurveys to fetch.
+     */
+    where?: SatisfactionSurveyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SatisfactionSurveys to fetch.
+     */
+    orderBy?: SatisfactionSurveyOrderByWithRelationInput | SatisfactionSurveyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SatisfactionSurveys.
+     */
+    cursor?: SatisfactionSurveyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SatisfactionSurveys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SatisfactionSurveys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SatisfactionSurveys.
+     */
+    distinct?: SatisfactionSurveyScalarFieldEnum | SatisfactionSurveyScalarFieldEnum[]
+  }
+
+  /**
+   * SatisfactionSurvey create
+   */
+  export type SatisfactionSurveyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SatisfactionSurvey.
+     */
+    data: XOR<SatisfactionSurveyCreateInput, SatisfactionSurveyUncheckedCreateInput>
+  }
+
+  /**
+   * SatisfactionSurvey createMany
+   */
+  export type SatisfactionSurveyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SatisfactionSurveys.
+     */
+    data: SatisfactionSurveyCreateManyInput | SatisfactionSurveyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SatisfactionSurvey createManyAndReturn
+   */
+  export type SatisfactionSurveyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * The data used to create many SatisfactionSurveys.
+     */
+    data: SatisfactionSurveyCreateManyInput | SatisfactionSurveyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SatisfactionSurvey update
+   */
+  export type SatisfactionSurveyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SatisfactionSurvey.
+     */
+    data: XOR<SatisfactionSurveyUpdateInput, SatisfactionSurveyUncheckedUpdateInput>
+    /**
+     * Choose, which SatisfactionSurvey to update.
+     */
+    where: SatisfactionSurveyWhereUniqueInput
+  }
+
+  /**
+   * SatisfactionSurvey updateMany
+   */
+  export type SatisfactionSurveyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SatisfactionSurveys.
+     */
+    data: XOR<SatisfactionSurveyUpdateManyMutationInput, SatisfactionSurveyUncheckedUpdateManyInput>
+    /**
+     * Filter which SatisfactionSurveys to update
+     */
+    where?: SatisfactionSurveyWhereInput
+    /**
+     * Limit how many SatisfactionSurveys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatisfactionSurvey updateManyAndReturn
+   */
+  export type SatisfactionSurveyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * The data used to update SatisfactionSurveys.
+     */
+    data: XOR<SatisfactionSurveyUpdateManyMutationInput, SatisfactionSurveyUncheckedUpdateManyInput>
+    /**
+     * Filter which SatisfactionSurveys to update
+     */
+    where?: SatisfactionSurveyWhereInput
+    /**
+     * Limit how many SatisfactionSurveys to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SatisfactionSurvey upsert
+   */
+  export type SatisfactionSurveyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SatisfactionSurvey to update in case it exists.
+     */
+    where: SatisfactionSurveyWhereUniqueInput
+    /**
+     * In case the SatisfactionSurvey found by the `where` argument doesn't exist, create a new SatisfactionSurvey with this data.
+     */
+    create: XOR<SatisfactionSurveyCreateInput, SatisfactionSurveyUncheckedCreateInput>
+    /**
+     * In case the SatisfactionSurvey was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SatisfactionSurveyUpdateInput, SatisfactionSurveyUncheckedUpdateInput>
+  }
+
+  /**
+   * SatisfactionSurvey delete
+   */
+  export type SatisfactionSurveyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+    /**
+     * Filter which SatisfactionSurvey to delete.
+     */
+    where: SatisfactionSurveyWhereUniqueInput
+  }
+
+  /**
+   * SatisfactionSurvey deleteMany
+   */
+  export type SatisfactionSurveyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SatisfactionSurveys to delete
+     */
+    where?: SatisfactionSurveyWhereInput
+    /**
+     * Limit how many SatisfactionSurveys to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SatisfactionSurvey without action
+   */
+  export type SatisfactionSurveyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SatisfactionSurvey
+     */
+    select?: SatisfactionSurveySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SatisfactionSurvey
+     */
+    omit?: SatisfactionSurveyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SatisfactionSurveyInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -141097,6 +145150,43 @@ export namespace Prisma {
   };
 
   export type ReportGenerationJobScalarFieldEnum = (typeof ReportGenerationJobScalarFieldEnum)[keyof typeof ReportGenerationJobScalarFieldEnum]
+
+
+  export const AiRunScalarFieldEnum: {
+    id: 'id',
+    useCase: 'useCase',
+    status: 'status',
+    provider: 'provider',
+    model: 'model',
+    inputSummary: 'inputSummary',
+    promptTokens: 'promptTokens',
+    completionTokens: 'completionTokens',
+    costCents: 'costCents',
+    errorMessage: 'errorMessage',
+    requestedById: 'requestedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    completedAt: 'completedAt'
+  };
+
+  export type AiRunScalarFieldEnum = (typeof AiRunScalarFieldEnum)[keyof typeof AiRunScalarFieldEnum]
+
+
+  export const AiArtifactScalarFieldEnum: {
+    id: 'id',
+    runId: 'runId',
+    status: 'status',
+    payload: 'payload',
+    citations: 'citations',
+    targetEntityType: 'targetEntityType',
+    targetEntityId: 'targetEntityId',
+    reviewedById: 'reviewedById',
+    reviewedAt: 'reviewedAt',
+    appliedAt: 'appliedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type AiArtifactScalarFieldEnum = (typeof AiArtifactScalarFieldEnum)[keyof typeof AiArtifactScalarFieldEnum]
 
 
   export const ReportGenerationScheduleScalarFieldEnum: {
@@ -142772,6 +146862,22 @@ export namespace Prisma {
   export type ComplianceItemEventScalarFieldEnum = (typeof ComplianceItemEventScalarFieldEnum)[keyof typeof ComplianceItemEventScalarFieldEnum]
 
 
+  export const SatisfactionSurveyScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    participantId: 'participantId',
+    timing: 'timing',
+    status: 'status',
+    sentAt: 'sentAt',
+    respondedAt: 'respondedAt',
+    answers: 'answers',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SatisfactionSurveyScalarFieldEnum = (typeof SatisfactionSurveyScalarFieldEnum)[keyof typeof SatisfactionSurveyScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -143011,6 +147117,34 @@ export namespace Prisma {
    * Reference to a field of type 'ReportJobStatus[]'
    */
   export type ListEnumReportJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportJobStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AiRunStatus'
+   */
+  export type EnumAiRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AiRunStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AiRunStatus[]'
+   */
+  export type ListEnumAiRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AiRunStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AiArtifactStatus'
+   */
+  export type EnumAiArtifactStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AiArtifactStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AiArtifactStatus[]'
+   */
+  export type ListEnumAiArtifactStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AiArtifactStatus[]'>
     
 
 
@@ -143880,6 +148014,34 @@ export namespace Prisma {
    */
   export type ListEnumDocumentRequestChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentRequestChannel[]'>
     
+
+
+  /**
+   * Reference to a field of type 'SatisfactionSurveyTiming'
+   */
+  export type EnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SatisfactionSurveyTiming'>
+    
+
+
+  /**
+   * Reference to a field of type 'SatisfactionSurveyTiming[]'
+   */
+  export type ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SatisfactionSurveyTiming[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SatisfactionSurveyStatus'
+   */
+  export type EnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SatisfactionSurveyStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SatisfactionSurveyStatus[]'
+   */
+  export type ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SatisfactionSurveyStatus[]'>
+    
   /**
    * Deep Input Types
    */
@@ -144034,6 +148196,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetListRelationFilter
     createdFileAssetVersions?: FileAssetVersionListRelationFilter
     requestedReportJobs?: ReportGenerationJobListRelationFilter
+    requestedAiRuns?: AiRunListRelationFilter
+    reviewedAiArtifacts?: AiArtifactListRelationFilter
     assignedSupportTickets?: SupportTicketListRelationFilter
     createdSupportTickets?: SupportTicketListRelationFilter
     ticketComments?: TicketCommentListRelationFilter
@@ -144149,6 +148313,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetOrderByRelationAggregateInput
     createdFileAssetVersions?: FileAssetVersionOrderByRelationAggregateInput
     requestedReportJobs?: ReportGenerationJobOrderByRelationAggregateInput
+    requestedAiRuns?: AiRunOrderByRelationAggregateInput
+    reviewedAiArtifacts?: AiArtifactOrderByRelationAggregateInput
     assignedSupportTickets?: SupportTicketOrderByRelationAggregateInput
     createdSupportTickets?: SupportTicketOrderByRelationAggregateInput
     ticketComments?: TicketCommentOrderByRelationAggregateInput
@@ -144267,6 +148433,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetListRelationFilter
     createdFileAssetVersions?: FileAssetVersionListRelationFilter
     requestedReportJobs?: ReportGenerationJobListRelationFilter
+    requestedAiRuns?: AiRunListRelationFilter
+    reviewedAiArtifacts?: AiArtifactListRelationFilter
     assignedSupportTickets?: SupportTicketListRelationFilter
     createdSupportTickets?: SupportTicketListRelationFilter
     ticketComments?: TicketCommentListRelationFilter
@@ -144806,6 +148974,199 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ReportGenerationJob"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ReportGenerationJob"> | Date | string
     completedAt?: DateTimeNullableWithAggregatesFilter<"ReportGenerationJob"> | Date | string | null
+  }
+
+  export type AiRunWhereInput = {
+    AND?: AiRunWhereInput | AiRunWhereInput[]
+    OR?: AiRunWhereInput[]
+    NOT?: AiRunWhereInput | AiRunWhereInput[]
+    id?: StringFilter<"AiRun"> | string
+    useCase?: StringFilter<"AiRun"> | string
+    status?: EnumAiRunStatusFilter<"AiRun"> | $Enums.AiRunStatus
+    provider?: StringFilter<"AiRun"> | string
+    model?: StringFilter<"AiRun"> | string
+    inputSummary?: JsonFilter<"AiRun">
+    promptTokens?: IntNullableFilter<"AiRun"> | number | null
+    completionTokens?: IntNullableFilter<"AiRun"> | number | null
+    costCents?: IntNullableFilter<"AiRun"> | number | null
+    errorMessage?: StringNullableFilter<"AiRun"> | string | null
+    requestedById?: StringFilter<"AiRun"> | string
+    createdAt?: DateTimeFilter<"AiRun"> | Date | string
+    updatedAt?: DateTimeFilter<"AiRun"> | Date | string
+    completedAt?: DateTimeNullableFilter<"AiRun"> | Date | string | null
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artifacts?: AiArtifactListRelationFilter
+  }
+
+  export type AiRunOrderByWithRelationInput = {
+    id?: SortOrder
+    useCase?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    inputSummary?: SortOrder
+    promptTokens?: SortOrderInput | SortOrder
+    completionTokens?: SortOrderInput | SortOrder
+    costCents?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    requestedBy?: UserOrderByWithRelationInput
+    artifacts?: AiArtifactOrderByRelationAggregateInput
+  }
+
+  export type AiRunWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AiRunWhereInput | AiRunWhereInput[]
+    OR?: AiRunWhereInput[]
+    NOT?: AiRunWhereInput | AiRunWhereInput[]
+    useCase?: StringFilter<"AiRun"> | string
+    status?: EnumAiRunStatusFilter<"AiRun"> | $Enums.AiRunStatus
+    provider?: StringFilter<"AiRun"> | string
+    model?: StringFilter<"AiRun"> | string
+    inputSummary?: JsonFilter<"AiRun">
+    promptTokens?: IntNullableFilter<"AiRun"> | number | null
+    completionTokens?: IntNullableFilter<"AiRun"> | number | null
+    costCents?: IntNullableFilter<"AiRun"> | number | null
+    errorMessage?: StringNullableFilter<"AiRun"> | string | null
+    requestedById?: StringFilter<"AiRun"> | string
+    createdAt?: DateTimeFilter<"AiRun"> | Date | string
+    updatedAt?: DateTimeFilter<"AiRun"> | Date | string
+    completedAt?: DateTimeNullableFilter<"AiRun"> | Date | string | null
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    artifacts?: AiArtifactListRelationFilter
+  }, "id">
+
+  export type AiRunOrderByWithAggregationInput = {
+    id?: SortOrder
+    useCase?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    inputSummary?: SortOrder
+    promptTokens?: SortOrderInput | SortOrder
+    completionTokens?: SortOrderInput | SortOrder
+    costCents?: SortOrderInput | SortOrder
+    errorMessage?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    _count?: AiRunCountOrderByAggregateInput
+    _avg?: AiRunAvgOrderByAggregateInput
+    _max?: AiRunMaxOrderByAggregateInput
+    _min?: AiRunMinOrderByAggregateInput
+    _sum?: AiRunSumOrderByAggregateInput
+  }
+
+  export type AiRunScalarWhereWithAggregatesInput = {
+    AND?: AiRunScalarWhereWithAggregatesInput | AiRunScalarWhereWithAggregatesInput[]
+    OR?: AiRunScalarWhereWithAggregatesInput[]
+    NOT?: AiRunScalarWhereWithAggregatesInput | AiRunScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AiRun"> | string
+    useCase?: StringWithAggregatesFilter<"AiRun"> | string
+    status?: EnumAiRunStatusWithAggregatesFilter<"AiRun"> | $Enums.AiRunStatus
+    provider?: StringWithAggregatesFilter<"AiRun"> | string
+    model?: StringWithAggregatesFilter<"AiRun"> | string
+    inputSummary?: JsonWithAggregatesFilter<"AiRun">
+    promptTokens?: IntNullableWithAggregatesFilter<"AiRun"> | number | null
+    completionTokens?: IntNullableWithAggregatesFilter<"AiRun"> | number | null
+    costCents?: IntNullableWithAggregatesFilter<"AiRun"> | number | null
+    errorMessage?: StringNullableWithAggregatesFilter<"AiRun"> | string | null
+    requestedById?: StringWithAggregatesFilter<"AiRun"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AiRun"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AiRun"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"AiRun"> | Date | string | null
+  }
+
+  export type AiArtifactWhereInput = {
+    AND?: AiArtifactWhereInput | AiArtifactWhereInput[]
+    OR?: AiArtifactWhereInput[]
+    NOT?: AiArtifactWhereInput | AiArtifactWhereInput[]
+    id?: StringFilter<"AiArtifact"> | string
+    runId?: StringFilter<"AiArtifact"> | string
+    status?: EnumAiArtifactStatusFilter<"AiArtifact"> | $Enums.AiArtifactStatus
+    payload?: JsonFilter<"AiArtifact">
+    citations?: JsonFilter<"AiArtifact">
+    targetEntityType?: StringNullableFilter<"AiArtifact"> | string | null
+    targetEntityId?: StringNullableFilter<"AiArtifact"> | string | null
+    reviewedById?: StringNullableFilter<"AiArtifact"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"AiArtifact"> | Date | string | null
+    appliedAt?: DateTimeNullableFilter<"AiArtifact"> | Date | string | null
+    createdAt?: DateTimeFilter<"AiArtifact"> | Date | string
+    run?: XOR<AiRunScalarRelationFilter, AiRunWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type AiArtifactOrderByWithRelationInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    status?: SortOrder
+    payload?: SortOrder
+    citations?: SortOrder
+    targetEntityType?: SortOrderInput | SortOrder
+    targetEntityId?: SortOrderInput | SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    appliedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    run?: AiRunOrderByWithRelationInput
+    reviewedBy?: UserOrderByWithRelationInput
+  }
+
+  export type AiArtifactWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AiArtifactWhereInput | AiArtifactWhereInput[]
+    OR?: AiArtifactWhereInput[]
+    NOT?: AiArtifactWhereInput | AiArtifactWhereInput[]
+    runId?: StringFilter<"AiArtifact"> | string
+    status?: EnumAiArtifactStatusFilter<"AiArtifact"> | $Enums.AiArtifactStatus
+    payload?: JsonFilter<"AiArtifact">
+    citations?: JsonFilter<"AiArtifact">
+    targetEntityType?: StringNullableFilter<"AiArtifact"> | string | null
+    targetEntityId?: StringNullableFilter<"AiArtifact"> | string | null
+    reviewedById?: StringNullableFilter<"AiArtifact"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"AiArtifact"> | Date | string | null
+    appliedAt?: DateTimeNullableFilter<"AiArtifact"> | Date | string | null
+    createdAt?: DateTimeFilter<"AiArtifact"> | Date | string
+    run?: XOR<AiRunScalarRelationFilter, AiRunWhereInput>
+    reviewedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type AiArtifactOrderByWithAggregationInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    status?: SortOrder
+    payload?: SortOrder
+    citations?: SortOrder
+    targetEntityType?: SortOrderInput | SortOrder
+    targetEntityId?: SortOrderInput | SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    appliedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AiArtifactCountOrderByAggregateInput
+    _max?: AiArtifactMaxOrderByAggregateInput
+    _min?: AiArtifactMinOrderByAggregateInput
+  }
+
+  export type AiArtifactScalarWhereWithAggregatesInput = {
+    AND?: AiArtifactScalarWhereWithAggregatesInput | AiArtifactScalarWhereWithAggregatesInput[]
+    OR?: AiArtifactScalarWhereWithAggregatesInput[]
+    NOT?: AiArtifactScalarWhereWithAggregatesInput | AiArtifactScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AiArtifact"> | string
+    runId?: StringWithAggregatesFilter<"AiArtifact"> | string
+    status?: EnumAiArtifactStatusWithAggregatesFilter<"AiArtifact"> | $Enums.AiArtifactStatus
+    payload?: JsonWithAggregatesFilter<"AiArtifact">
+    citations?: JsonWithAggregatesFilter<"AiArtifact">
+    targetEntityType?: StringNullableWithAggregatesFilter<"AiArtifact"> | string | null
+    targetEntityId?: StringNullableWithAggregatesFilter<"AiArtifact"> | string | null
+    reviewedById?: StringNullableWithAggregatesFilter<"AiArtifact"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"AiArtifact"> | Date | string | null
+    appliedAt?: DateTimeNullableWithAggregatesFilter<"AiArtifact"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AiArtifact"> | Date | string
   }
 
   export type ReportGenerationScheduleWhereInput = {
@@ -147713,6 +152074,7 @@ export namespace Prisma {
     formationExam?: XOR<FormationExamNullableScalarRelationFilter, FormationExamWhereInput> | null
     portalAnnouncements?: PortalSessionAnnouncementListRelationFilter
     rhTeam?: XOR<RhTeamNullableScalarRelationFilter, RhTeamWhereInput> | null
+    satisfactionSurveys?: SatisfactionSurveyListRelationFilter
     candidaturesInterested?: CandidatureListRelationFilter
     financeDevisSessionLinks?: FinanceDevisListRelationFilter
     automationRuns?: SessionAutomationRunListRelationFilter
@@ -147755,6 +152117,7 @@ export namespace Prisma {
     formationExam?: FormationExamOrderByWithRelationInput
     portalAnnouncements?: PortalSessionAnnouncementOrderByRelationAggregateInput
     rhTeam?: RhTeamOrderByWithRelationInput
+    satisfactionSurveys?: SatisfactionSurveyOrderByRelationAggregateInput
     candidaturesInterested?: CandidatureOrderByRelationAggregateInput
     financeDevisSessionLinks?: FinanceDevisOrderByRelationAggregateInput
     automationRuns?: SessionAutomationRunOrderByRelationAggregateInput
@@ -147800,6 +152163,7 @@ export namespace Prisma {
     formationExam?: XOR<FormationExamNullableScalarRelationFilter, FormationExamWhereInput> | null
     portalAnnouncements?: PortalSessionAnnouncementListRelationFilter
     rhTeam?: XOR<RhTeamNullableScalarRelationFilter, RhTeamWhereInput> | null
+    satisfactionSurveys?: SatisfactionSurveyListRelationFilter
     candidaturesInterested?: CandidatureListRelationFilter
     financeDevisSessionLinks?: FinanceDevisListRelationFilter
     automationRuns?: SessionAutomationRunListRelationFilter
@@ -148213,6 +152577,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     candidature?: XOR<CandidatureNullableScalarRelationFilter, CandidatureWhereInput> | null
     emargements?: FormationSessionEmargementListRelationFilter
+    satisfactionSurveys?: SatisfactionSurveyListRelationFilter
   }
 
   export type FormationSessionParticipantOrderByWithRelationInput = {
@@ -148234,6 +152599,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     candidature?: CandidatureOrderByWithRelationInput
     emargements?: FormationSessionEmargementOrderByRelationAggregateInput
+    satisfactionSurveys?: SatisfactionSurveyOrderByRelationAggregateInput
   }
 
   export type FormationSessionParticipantWhereUniqueInput = Prisma.AtLeast<{
@@ -148259,6 +152625,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     candidature?: XOR<CandidatureNullableScalarRelationFilter, CandidatureWhereInput> | null
     emargements?: FormationSessionEmargementListRelationFilter
+    satisfactionSurveys?: SatisfactionSurveyListRelationFilter
   }, "id" | "sessionId_userId">
 
   export type FormationSessionParticipantOrderByWithAggregationInput = {
@@ -153750,6 +158117,90 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ComplianceItemEvent"> | Date | string
   }
 
+  export type SatisfactionSurveyWhereInput = {
+    AND?: SatisfactionSurveyWhereInput | SatisfactionSurveyWhereInput[]
+    OR?: SatisfactionSurveyWhereInput[]
+    NOT?: SatisfactionSurveyWhereInput | SatisfactionSurveyWhereInput[]
+    id?: StringFilter<"SatisfactionSurvey"> | string
+    sessionId?: StringFilter<"SatisfactionSurvey"> | string
+    participantId?: StringFilter<"SatisfactionSurvey"> | string
+    timing?: EnumSatisfactionSurveyTimingFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
+    sentAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
+    respondedAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
+    answers?: JsonNullableFilter<"SatisfactionSurvey">
+    createdAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
+    updatedAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
+    session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+  }
+
+  export type SatisfactionSurveyOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    timing?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    respondedAt?: SortOrderInput | SortOrder
+    answers?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    session?: FormationSessionOrderByWithRelationInput
+    participant?: FormationSessionParticipantOrderByWithRelationInput
+  }
+
+  export type SatisfactionSurveyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    sessionId_participantId_timing?: SatisfactionSurveySessionIdParticipantIdTimingCompoundUniqueInput
+    AND?: SatisfactionSurveyWhereInput | SatisfactionSurveyWhereInput[]
+    OR?: SatisfactionSurveyWhereInput[]
+    NOT?: SatisfactionSurveyWhereInput | SatisfactionSurveyWhereInput[]
+    sessionId?: StringFilter<"SatisfactionSurvey"> | string
+    participantId?: StringFilter<"SatisfactionSurvey"> | string
+    timing?: EnumSatisfactionSurveyTimingFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
+    sentAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
+    respondedAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
+    answers?: JsonNullableFilter<"SatisfactionSurvey">
+    createdAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
+    updatedAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
+    session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+  }, "id" | "sessionId_participantId_timing">
+
+  export type SatisfactionSurveyOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    timing?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    respondedAt?: SortOrderInput | SortOrder
+    answers?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SatisfactionSurveyCountOrderByAggregateInput
+    _max?: SatisfactionSurveyMaxOrderByAggregateInput
+    _min?: SatisfactionSurveyMinOrderByAggregateInput
+  }
+
+  export type SatisfactionSurveyScalarWhereWithAggregatesInput = {
+    AND?: SatisfactionSurveyScalarWhereWithAggregatesInput | SatisfactionSurveyScalarWhereWithAggregatesInput[]
+    OR?: SatisfactionSurveyScalarWhereWithAggregatesInput[]
+    NOT?: SatisfactionSurveyScalarWhereWithAggregatesInput | SatisfactionSurveyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SatisfactionSurvey"> | string
+    sessionId?: StringWithAggregatesFilter<"SatisfactionSurvey"> | string
+    participantId?: StringWithAggregatesFilter<"SatisfactionSurvey"> | string
+    timing?: EnumSatisfactionSurveyTimingWithAggregatesFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusWithAggregatesFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
+    sentAt?: DateTimeNullableWithAggregatesFilter<"SatisfactionSurvey"> | Date | string | null
+    respondedAt?: DateTimeNullableWithAggregatesFilter<"SatisfactionSurvey"> | Date | string | null
+    answers?: JsonNullableWithAggregatesFilter<"SatisfactionSurvey">
+    createdAt?: DateTimeWithAggregatesFilter<"SatisfactionSurvey"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SatisfactionSurvey"> | Date | string
+  }
+
   export type LandingConfigCreateInput = {
     id?: string
     sections?: JsonNullValueInput | InputJsonValue
@@ -153898,6 +158349,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -154011,6 +158464,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -154124,6 +158579,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -154237,6 +158694,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -154891,6 +159350,224 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AiRunCreateInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    requestedBy: UserCreateNestedOneWithoutRequestedAiRunsInput
+    artifacts?: AiArtifactCreateNestedManyWithoutRunInput
+  }
+
+  export type AiRunUncheckedCreateInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    requestedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    artifacts?: AiArtifactUncheckedCreateNestedManyWithoutRunInput
+  }
+
+  export type AiRunUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requestedBy?: UserUpdateOneRequiredWithoutRequestedAiRunsNestedInput
+    artifacts?: AiArtifactUpdateManyWithoutRunNestedInput
+  }
+
+  export type AiRunUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artifacts?: AiArtifactUncheckedUpdateManyWithoutRunNestedInput
+  }
+
+  export type AiRunCreateManyInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    requestedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type AiRunUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AiRunUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AiArtifactCreateInput = {
+    id?: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+    run: AiRunCreateNestedOneWithoutArtifactsInput
+    reviewedBy?: UserCreateNestedOneWithoutReviewedAiArtifactsInput
+  }
+
+  export type AiArtifactUncheckedCreateInput = {
+    id?: string
+    runId: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AiArtifactUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    run?: AiRunUpdateOneRequiredWithoutArtifactsNestedInput
+    reviewedBy?: UserUpdateOneWithoutReviewedAiArtifactsNestedInput
+  }
+
+  export type AiArtifactUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiArtifactCreateManyInput = {
+    id?: string
+    runId: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AiArtifactUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiArtifactUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReportGenerationScheduleCreateInput = {
@@ -158263,6 +162940,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -158300,6 +162978,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -158337,6 +163016,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -158374,6 +163054,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -158837,6 +163518,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateInput = {
@@ -158855,6 +163537,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUpdateInput = {
@@ -158873,6 +163556,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateInput = {
@@ -158891,6 +163575,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantCreateManyInput = {
@@ -164753,6 +169438,95 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SatisfactionSurveyCreateInput = {
+    id?: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutSatisfactionSurveysInput
+    participant: FormationSessionParticipantCreateNestedOneWithoutSatisfactionSurveysInput
+  }
+
+  export type SatisfactionSurveyUncheckedCreateInput = {
+    id?: string
+    sessionId: string
+    participantId: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SatisfactionSurveyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatisfactionSurveyCreateManyInput = {
+    id?: string
+    sessionId: string
+    participantId: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SatisfactionSurveyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -165207,6 +169981,18 @@ export namespace Prisma {
     none?: ReportGenerationJobWhereInput
   }
 
+  export type AiRunListRelationFilter = {
+    every?: AiRunWhereInput
+    some?: AiRunWhereInput
+    none?: AiRunWhereInput
+  }
+
+  export type AiArtifactListRelationFilter = {
+    every?: AiArtifactWhereInput
+    some?: AiArtifactWhereInput
+    none?: AiArtifactWhereInput
+  }
+
   export type SupportTicketListRelationFilter = {
     every?: SupportTicketWhereInput
     some?: SupportTicketWhereInput
@@ -165450,6 +170236,14 @@ export namespace Prisma {
   }
 
   export type ReportGenerationJobOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AiRunOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AiArtifactOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -166145,6 +170939,171 @@ export namespace Prisma {
     _max?: NestedEnumReportJobStatusFilter<$PrismaModel>
   }
 
+  export type EnumAiRunStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiRunStatus | EnumAiRunStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiRunStatusFilter<$PrismaModel> | $Enums.AiRunStatus
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type AiRunCountOrderByAggregateInput = {
+    id?: SortOrder
+    useCase?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    inputSummary?: SortOrder
+    promptTokens?: SortOrder
+    completionTokens?: SortOrder
+    costCents?: SortOrder
+    errorMessage?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type AiRunAvgOrderByAggregateInput = {
+    promptTokens?: SortOrder
+    completionTokens?: SortOrder
+    costCents?: SortOrder
+  }
+
+  export type AiRunMaxOrderByAggregateInput = {
+    id?: SortOrder
+    useCase?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    promptTokens?: SortOrder
+    completionTokens?: SortOrder
+    costCents?: SortOrder
+    errorMessage?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type AiRunMinOrderByAggregateInput = {
+    id?: SortOrder
+    useCase?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    model?: SortOrder
+    promptTokens?: SortOrder
+    completionTokens?: SortOrder
+    costCents?: SortOrder
+    errorMessage?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type AiRunSumOrderByAggregateInput = {
+    promptTokens?: SortOrder
+    completionTokens?: SortOrder
+    costCents?: SortOrder
+  }
+
+  export type EnumAiRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiRunStatus | EnumAiRunStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiRunStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAiRunStatusFilter<$PrismaModel>
+    _max?: NestedEnumAiRunStatusFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumAiArtifactStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiArtifactStatus | EnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiArtifactStatusFilter<$PrismaModel> | $Enums.AiArtifactStatus
+  }
+
+  export type AiRunScalarRelationFilter = {
+    is?: AiRunWhereInput
+    isNot?: AiRunWhereInput
+  }
+
+  export type AiArtifactCountOrderByAggregateInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    status?: SortOrder
+    payload?: SortOrder
+    citations?: SortOrder
+    targetEntityType?: SortOrder
+    targetEntityId?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    appliedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiArtifactMaxOrderByAggregateInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    status?: SortOrder
+    targetEntityType?: SortOrder
+    targetEntityId?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    appliedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AiArtifactMinOrderByAggregateInput = {
+    id?: SortOrder
+    runId?: SortOrder
+    status?: SortOrder
+    targetEntityType?: SortOrder
+    targetEntityId?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    appliedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumAiArtifactStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiArtifactStatus | EnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiArtifactStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiArtifactStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAiArtifactStatusFilter<$PrismaModel>
+    _max?: NestedEnumAiArtifactStatusFilter<$PrismaModel>
+  }
+
   export type EnumReportScheduleFrequencyFilter<$PrismaModel = never> = {
     equals?: $Enums.ReportScheduleFrequency | EnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
     in?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
@@ -166368,17 +171327,6 @@ export namespace Prisma {
     _max?: NestedEnumSchoolInternalServiceNullableFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type FloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -166445,22 +171393,6 @@ export namespace Prisma {
   export type FormateurProfileSumOrderByAggregateInput = {
     yearsOfExperience?: SortOrder
     hourlyRate?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -168281,6 +173213,12 @@ export namespace Prisma {
     isNot?: RhTeamWhereInput | null
   }
 
+  export type SatisfactionSurveyListRelationFilter = {
+    every?: SatisfactionSurveyWhereInput
+    some?: SatisfactionSurveyWhereInput
+    none?: SatisfactionSurveyWhereInput
+  }
+
   export type SessionAutomationRunListRelationFilter = {
     every?: SessionAutomationRunWhereInput
     some?: SessionAutomationRunWhereInput
@@ -168288,6 +173226,10 @@ export namespace Prisma {
   }
 
   export type FormationSessionDayOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SatisfactionSurveyOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -172316,6 +177258,83 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type EnumSatisfactionSurveyTimingFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyTiming | EnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyTimingFilter<$PrismaModel> | $Enums.SatisfactionSurveyTiming
+  }
+
+  export type EnumSatisfactionSurveyStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyStatus | EnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel> | $Enums.SatisfactionSurveyStatus
+  }
+
+  export type SatisfactionSurveySessionIdParticipantIdTimingCompoundUniqueInput = {
+    sessionId: string
+    participantId: string
+    timing: $Enums.SatisfactionSurveyTiming
+  }
+
+  export type SatisfactionSurveyCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    timing?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    respondedAt?: SortOrder
+    answers?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatisfactionSurveyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    timing?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    respondedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SatisfactionSurveyMinOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    timing?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    respondedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumSatisfactionSurveyTimingWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyTiming | EnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyTimingWithAggregatesFilter<$PrismaModel> | $Enums.SatisfactionSurveyTiming
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSatisfactionSurveyTimingFilter<$PrismaModel>
+    _max?: NestedEnumSatisfactionSurveyTimingFilter<$PrismaModel>
+  }
+
+  export type EnumSatisfactionSurveyStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyStatus | EnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyStatusWithAggregatesFilter<$PrismaModel> | $Enums.SatisfactionSurveyStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel>
+    _max?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel>
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -172642,6 +177661,20 @@ export namespace Prisma {
     connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutRequestedByInput | ReportGenerationJobCreateOrConnectWithoutRequestedByInput[]
     createMany?: ReportGenerationJobCreateManyRequestedByInputEnvelope
     connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+  }
+
+  export type AiRunCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<AiRunCreateWithoutRequestedByInput, AiRunUncheckedCreateWithoutRequestedByInput> | AiRunCreateWithoutRequestedByInput[] | AiRunUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AiRunCreateOrConnectWithoutRequestedByInput | AiRunCreateOrConnectWithoutRequestedByInput[]
+    createMany?: AiRunCreateManyRequestedByInputEnvelope
+    connect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+  }
+
+  export type AiArtifactCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput> | AiArtifactCreateWithoutReviewedByInput[] | AiArtifactUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutReviewedByInput | AiArtifactCreateOrConnectWithoutReviewedByInput[]
+    createMany?: AiArtifactCreateManyReviewedByInputEnvelope
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
   }
 
   export type SupportTicketCreateNestedManyWithoutAssignedToInput = {
@@ -173078,6 +178111,20 @@ export namespace Prisma {
     connectOrCreate?: ReportGenerationJobCreateOrConnectWithoutRequestedByInput | ReportGenerationJobCreateOrConnectWithoutRequestedByInput[]
     createMany?: ReportGenerationJobCreateManyRequestedByInputEnvelope
     connect?: ReportGenerationJobWhereUniqueInput | ReportGenerationJobWhereUniqueInput[]
+  }
+
+  export type AiRunUncheckedCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<AiRunCreateWithoutRequestedByInput, AiRunUncheckedCreateWithoutRequestedByInput> | AiRunCreateWithoutRequestedByInput[] | AiRunUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AiRunCreateOrConnectWithoutRequestedByInput | AiRunCreateOrConnectWithoutRequestedByInput[]
+    createMany?: AiRunCreateManyRequestedByInputEnvelope
+    connect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+  }
+
+  export type AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput = {
+    create?: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput> | AiArtifactCreateWithoutReviewedByInput[] | AiArtifactUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutReviewedByInput | AiArtifactCreateOrConnectWithoutReviewedByInput[]
+    createMany?: AiArtifactCreateManyReviewedByInputEnvelope
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
   }
 
   export type SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput = {
@@ -173852,6 +178899,34 @@ export namespace Prisma {
     update?: ReportGenerationJobUpdateWithWhereUniqueWithoutRequestedByInput | ReportGenerationJobUpdateWithWhereUniqueWithoutRequestedByInput[]
     updateMany?: ReportGenerationJobUpdateManyWithWhereWithoutRequestedByInput | ReportGenerationJobUpdateManyWithWhereWithoutRequestedByInput[]
     deleteMany?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
+  }
+
+  export type AiRunUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<AiRunCreateWithoutRequestedByInput, AiRunUncheckedCreateWithoutRequestedByInput> | AiRunCreateWithoutRequestedByInput[] | AiRunUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AiRunCreateOrConnectWithoutRequestedByInput | AiRunCreateOrConnectWithoutRequestedByInput[]
+    upsert?: AiRunUpsertWithWhereUniqueWithoutRequestedByInput | AiRunUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: AiRunCreateManyRequestedByInputEnvelope
+    set?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    disconnect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    delete?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    connect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    update?: AiRunUpdateWithWhereUniqueWithoutRequestedByInput | AiRunUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: AiRunUpdateManyWithWhereWithoutRequestedByInput | AiRunUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: AiRunScalarWhereInput | AiRunScalarWhereInput[]
+  }
+
+  export type AiArtifactUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput> | AiArtifactCreateWithoutReviewedByInput[] | AiArtifactUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutReviewedByInput | AiArtifactCreateOrConnectWithoutReviewedByInput[]
+    upsert?: AiArtifactUpsertWithWhereUniqueWithoutReviewedByInput | AiArtifactUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: AiArtifactCreateManyReviewedByInputEnvelope
+    set?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    disconnect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    delete?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    update?: AiArtifactUpdateWithWhereUniqueWithoutReviewedByInput | AiArtifactUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: AiArtifactUpdateManyWithWhereWithoutReviewedByInput | AiArtifactUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: AiArtifactScalarWhereInput | AiArtifactScalarWhereInput[]
   }
 
   export type SupportTicketUpdateManyWithoutAssignedToNestedInput = {
@@ -174716,6 +179791,34 @@ export namespace Prisma {
     deleteMany?: ReportGenerationJobScalarWhereInput | ReportGenerationJobScalarWhereInput[]
   }
 
+  export type AiRunUncheckedUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<AiRunCreateWithoutRequestedByInput, AiRunUncheckedCreateWithoutRequestedByInput> | AiRunCreateWithoutRequestedByInput[] | AiRunUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AiRunCreateOrConnectWithoutRequestedByInput | AiRunCreateOrConnectWithoutRequestedByInput[]
+    upsert?: AiRunUpsertWithWhereUniqueWithoutRequestedByInput | AiRunUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: AiRunCreateManyRequestedByInputEnvelope
+    set?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    disconnect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    delete?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    connect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+    update?: AiRunUpdateWithWhereUniqueWithoutRequestedByInput | AiRunUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: AiRunUpdateManyWithWhereWithoutRequestedByInput | AiRunUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: AiRunScalarWhereInput | AiRunScalarWhereInput[]
+  }
+
+  export type AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput = {
+    create?: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput> | AiArtifactCreateWithoutReviewedByInput[] | AiArtifactUncheckedCreateWithoutReviewedByInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutReviewedByInput | AiArtifactCreateOrConnectWithoutReviewedByInput[]
+    upsert?: AiArtifactUpsertWithWhereUniqueWithoutReviewedByInput | AiArtifactUpsertWithWhereUniqueWithoutReviewedByInput[]
+    createMany?: AiArtifactCreateManyReviewedByInputEnvelope
+    set?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    disconnect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    delete?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    update?: AiArtifactUpdateWithWhereUniqueWithoutReviewedByInput | AiArtifactUpdateWithWhereUniqueWithoutReviewedByInput[]
+    updateMany?: AiArtifactUpdateManyWithWhereWithoutReviewedByInput | AiArtifactUpdateManyWithWhereWithoutReviewedByInput[]
+    deleteMany?: AiArtifactScalarWhereInput | AiArtifactScalarWhereInput[]
+  }
+
   export type SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput = {
     create?: XOR<SupportTicketCreateWithoutAssignedToInput, SupportTicketUncheckedCreateWithoutAssignedToInput> | SupportTicketCreateWithoutAssignedToInput[] | SupportTicketUncheckedCreateWithoutAssignedToInput[]
     connectOrCreate?: SupportTicketCreateOrConnectWithoutAssignedToInput | SupportTicketCreateOrConnectWithoutAssignedToInput[]
@@ -175340,6 +180443,108 @@ export namespace Prisma {
     update?: XOR<XOR<FileAssetUpdateToOneWithWhereWithoutReportJobsInput, FileAssetUpdateWithoutReportJobsInput>, FileAssetUncheckedUpdateWithoutReportJobsInput>
   }
 
+  export type UserCreateNestedOneWithoutRequestedAiRunsInput = {
+    create?: XOR<UserCreateWithoutRequestedAiRunsInput, UserUncheckedCreateWithoutRequestedAiRunsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRequestedAiRunsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type AiArtifactCreateNestedManyWithoutRunInput = {
+    create?: XOR<AiArtifactCreateWithoutRunInput, AiArtifactUncheckedCreateWithoutRunInput> | AiArtifactCreateWithoutRunInput[] | AiArtifactUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutRunInput | AiArtifactCreateOrConnectWithoutRunInput[]
+    createMany?: AiArtifactCreateManyRunInputEnvelope
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+  }
+
+  export type AiArtifactUncheckedCreateNestedManyWithoutRunInput = {
+    create?: XOR<AiArtifactCreateWithoutRunInput, AiArtifactUncheckedCreateWithoutRunInput> | AiArtifactCreateWithoutRunInput[] | AiArtifactUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutRunInput | AiArtifactCreateOrConnectWithoutRunInput[]
+    createMany?: AiArtifactCreateManyRunInputEnvelope
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+  }
+
+  export type EnumAiRunStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AiRunStatus
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutRequestedAiRunsNestedInput = {
+    create?: XOR<UserCreateWithoutRequestedAiRunsInput, UserUncheckedCreateWithoutRequestedAiRunsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRequestedAiRunsInput
+    upsert?: UserUpsertWithoutRequestedAiRunsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRequestedAiRunsInput, UserUpdateWithoutRequestedAiRunsInput>, UserUncheckedUpdateWithoutRequestedAiRunsInput>
+  }
+
+  export type AiArtifactUpdateManyWithoutRunNestedInput = {
+    create?: XOR<AiArtifactCreateWithoutRunInput, AiArtifactUncheckedCreateWithoutRunInput> | AiArtifactCreateWithoutRunInput[] | AiArtifactUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutRunInput | AiArtifactCreateOrConnectWithoutRunInput[]
+    upsert?: AiArtifactUpsertWithWhereUniqueWithoutRunInput | AiArtifactUpsertWithWhereUniqueWithoutRunInput[]
+    createMany?: AiArtifactCreateManyRunInputEnvelope
+    set?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    disconnect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    delete?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    update?: AiArtifactUpdateWithWhereUniqueWithoutRunInput | AiArtifactUpdateWithWhereUniqueWithoutRunInput[]
+    updateMany?: AiArtifactUpdateManyWithWhereWithoutRunInput | AiArtifactUpdateManyWithWhereWithoutRunInput[]
+    deleteMany?: AiArtifactScalarWhereInput | AiArtifactScalarWhereInput[]
+  }
+
+  export type AiArtifactUncheckedUpdateManyWithoutRunNestedInput = {
+    create?: XOR<AiArtifactCreateWithoutRunInput, AiArtifactUncheckedCreateWithoutRunInput> | AiArtifactCreateWithoutRunInput[] | AiArtifactUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: AiArtifactCreateOrConnectWithoutRunInput | AiArtifactCreateOrConnectWithoutRunInput[]
+    upsert?: AiArtifactUpsertWithWhereUniqueWithoutRunInput | AiArtifactUpsertWithWhereUniqueWithoutRunInput[]
+    createMany?: AiArtifactCreateManyRunInputEnvelope
+    set?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    disconnect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    delete?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    connect?: AiArtifactWhereUniqueInput | AiArtifactWhereUniqueInput[]
+    update?: AiArtifactUpdateWithWhereUniqueWithoutRunInput | AiArtifactUpdateWithWhereUniqueWithoutRunInput[]
+    updateMany?: AiArtifactUpdateManyWithWhereWithoutRunInput | AiArtifactUpdateManyWithWhereWithoutRunInput[]
+    deleteMany?: AiArtifactScalarWhereInput | AiArtifactScalarWhereInput[]
+  }
+
+  export type AiRunCreateNestedOneWithoutArtifactsInput = {
+    create?: XOR<AiRunCreateWithoutArtifactsInput, AiRunUncheckedCreateWithoutArtifactsInput>
+    connectOrCreate?: AiRunCreateOrConnectWithoutArtifactsInput
+    connect?: AiRunWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReviewedAiArtifactsInput = {
+    create?: XOR<UserCreateWithoutReviewedAiArtifactsInput, UserUncheckedCreateWithoutReviewedAiArtifactsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedAiArtifactsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumAiArtifactStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AiArtifactStatus
+  }
+
+  export type AiRunUpdateOneRequiredWithoutArtifactsNestedInput = {
+    create?: XOR<AiRunCreateWithoutArtifactsInput, AiRunUncheckedCreateWithoutArtifactsInput>
+    connectOrCreate?: AiRunCreateOrConnectWithoutArtifactsInput
+    upsert?: AiRunUpsertWithoutArtifactsInput
+    connect?: AiRunWhereUniqueInput
+    update?: XOR<XOR<AiRunUpdateToOneWithWhereWithoutArtifactsInput, AiRunUpdateWithoutArtifactsInput>, AiRunUncheckedUpdateWithoutArtifactsInput>
+  }
+
+  export type UserUpdateOneWithoutReviewedAiArtifactsNestedInput = {
+    create?: XOR<UserCreateWithoutReviewedAiArtifactsInput, UserUncheckedCreateWithoutReviewedAiArtifactsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReviewedAiArtifactsInput
+    upsert?: UserUpsertWithoutReviewedAiArtifactsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReviewedAiArtifactsInput, UserUpdateWithoutReviewedAiArtifactsInput>, UserUncheckedUpdateWithoutReviewedAiArtifactsInput>
+  }
+
   export type EnumReportScheduleFrequencyFieldUpdateOperationsInput = {
     set?: $Enums.ReportScheduleFrequency
   }
@@ -175400,14 +180605,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutFormateurProfileInput, UserUncheckedCreateWithoutFormateurProfileInput>
     connectOrCreate?: UserCreateOrConnectWithoutFormateurProfileInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -177239,6 +182436,13 @@ export namespace Prisma {
     connect?: RhTeamWhereUniqueInput
   }
 
+  export type SatisfactionSurveyCreateNestedManyWithoutSessionInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutSessionInput, SatisfactionSurveyUncheckedCreateWithoutSessionInput> | SatisfactionSurveyCreateWithoutSessionInput[] | SatisfactionSurveyUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutSessionInput | SatisfactionSurveyCreateOrConnectWithoutSessionInput[]
+    createMany?: SatisfactionSurveyCreateManySessionInputEnvelope
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+  }
+
   export type CandidatureCreateNestedManyWithoutInterestedSessionInput = {
     create?: XOR<CandidatureCreateWithoutInterestedSessionInput, CandidatureUncheckedCreateWithoutInterestedSessionInput> | CandidatureCreateWithoutInterestedSessionInput[] | CandidatureUncheckedCreateWithoutInterestedSessionInput[]
     connectOrCreate?: CandidatureCreateOrConnectWithoutInterestedSessionInput | CandidatureCreateOrConnectWithoutInterestedSessionInput[]
@@ -177304,6 +182508,13 @@ export namespace Prisma {
     create?: XOR<RhTeamCreateWithoutFormationSessionInput, RhTeamUncheckedCreateWithoutFormationSessionInput>
     connectOrCreate?: RhTeamCreateOrConnectWithoutFormationSessionInput
     connect?: RhTeamWhereUniqueInput
+  }
+
+  export type SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutSessionInput, SatisfactionSurveyUncheckedCreateWithoutSessionInput> | SatisfactionSurveyCreateWithoutSessionInput[] | SatisfactionSurveyUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutSessionInput | SatisfactionSurveyCreateOrConnectWithoutSessionInput[]
+    createMany?: SatisfactionSurveyCreateManySessionInputEnvelope
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
   }
 
   export type CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput = {
@@ -177465,6 +182676,20 @@ export namespace Prisma {
     update?: XOR<XOR<RhTeamUpdateToOneWithWhereWithoutFormationSessionInput, RhTeamUpdateWithoutFormationSessionInput>, RhTeamUncheckedUpdateWithoutFormationSessionInput>
   }
 
+  export type SatisfactionSurveyUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutSessionInput, SatisfactionSurveyUncheckedCreateWithoutSessionInput> | SatisfactionSurveyCreateWithoutSessionInput[] | SatisfactionSurveyUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutSessionInput | SatisfactionSurveyCreateOrConnectWithoutSessionInput[]
+    upsert?: SatisfactionSurveyUpsertWithWhereUniqueWithoutSessionInput | SatisfactionSurveyUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: SatisfactionSurveyCreateManySessionInputEnvelope
+    set?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    disconnect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    delete?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    update?: SatisfactionSurveyUpdateWithWhereUniqueWithoutSessionInput | SatisfactionSurveyUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: SatisfactionSurveyUpdateManyWithWhereWithoutSessionInput | SatisfactionSurveyUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
+  }
+
   export type CandidatureUpdateManyWithoutInterestedSessionNestedInput = {
     create?: XOR<CandidatureCreateWithoutInterestedSessionInput, CandidatureUncheckedCreateWithoutInterestedSessionInput> | CandidatureCreateWithoutInterestedSessionInput[] | CandidatureUncheckedCreateWithoutInterestedSessionInput[]
     connectOrCreate?: CandidatureCreateOrConnectWithoutInterestedSessionInput | CandidatureCreateOrConnectWithoutInterestedSessionInput[]
@@ -177591,6 +182816,20 @@ export namespace Prisma {
     delete?: RhTeamWhereInput | boolean
     connect?: RhTeamWhereUniqueInput
     update?: XOR<XOR<RhTeamUpdateToOneWithWhereWithoutFormationSessionInput, RhTeamUpdateWithoutFormationSessionInput>, RhTeamUncheckedUpdateWithoutFormationSessionInput>
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutSessionInput, SatisfactionSurveyUncheckedCreateWithoutSessionInput> | SatisfactionSurveyCreateWithoutSessionInput[] | SatisfactionSurveyUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutSessionInput | SatisfactionSurveyCreateOrConnectWithoutSessionInput[]
+    upsert?: SatisfactionSurveyUpsertWithWhereUniqueWithoutSessionInput | SatisfactionSurveyUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: SatisfactionSurveyCreateManySessionInputEnvelope
+    set?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    disconnect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    delete?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    update?: SatisfactionSurveyUpdateWithWhereUniqueWithoutSessionInput | SatisfactionSurveyUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: SatisfactionSurveyUpdateManyWithWhereWithoutSessionInput | SatisfactionSurveyUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
   }
 
   export type CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput = {
@@ -177950,11 +183189,25 @@ export namespace Prisma {
     connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
   }
 
+  export type SatisfactionSurveyCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutParticipantInput, SatisfactionSurveyUncheckedCreateWithoutParticipantInput> | SatisfactionSurveyCreateWithoutParticipantInput[] | SatisfactionSurveyUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutParticipantInput | SatisfactionSurveyCreateOrConnectWithoutParticipantInput[]
+    createMany?: SatisfactionSurveyCreateManyParticipantInputEnvelope
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+  }
+
   export type FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
     createMany?: FormationSessionEmargementCreateManyParticipantInputEnvelope
     connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
+  export type SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutParticipantInput, SatisfactionSurveyUncheckedCreateWithoutParticipantInput> | SatisfactionSurveyCreateWithoutParticipantInput[] | SatisfactionSurveyUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutParticipantInput | SatisfactionSurveyCreateOrConnectWithoutParticipantInput[]
+    createMany?: SatisfactionSurveyCreateManyParticipantInputEnvelope
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
   }
 
   export type EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput = {
@@ -178005,6 +183258,20 @@ export namespace Prisma {
     deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
   }
 
+  export type SatisfactionSurveyUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutParticipantInput, SatisfactionSurveyUncheckedCreateWithoutParticipantInput> | SatisfactionSurveyCreateWithoutParticipantInput[] | SatisfactionSurveyUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutParticipantInput | SatisfactionSurveyCreateOrConnectWithoutParticipantInput[]
+    upsert?: SatisfactionSurveyUpsertWithWhereUniqueWithoutParticipantInput | SatisfactionSurveyUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: SatisfactionSurveyCreateManyParticipantInputEnvelope
+    set?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    disconnect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    delete?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    update?: SatisfactionSurveyUpdateWithWhereUniqueWithoutParticipantInput | SatisfactionSurveyUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: SatisfactionSurveyUpdateManyWithWhereWithoutParticipantInput | SatisfactionSurveyUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
+  }
+
   export type FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
@@ -178017,6 +183284,20 @@ export namespace Prisma {
     update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutParticipantInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutParticipantInput[]
     updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutParticipantInput | FormationSessionEmargementUpdateManyWithWhereWithoutParticipantInput[]
     deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<SatisfactionSurveyCreateWithoutParticipantInput, SatisfactionSurveyUncheckedCreateWithoutParticipantInput> | SatisfactionSurveyCreateWithoutParticipantInput[] | SatisfactionSurveyUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutParticipantInput | SatisfactionSurveyCreateOrConnectWithoutParticipantInput[]
+    upsert?: SatisfactionSurveyUpsertWithWhereUniqueWithoutParticipantInput | SatisfactionSurveyUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: SatisfactionSurveyCreateManyParticipantInputEnvelope
+    set?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    disconnect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    delete?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+    update?: SatisfactionSurveyUpdateWithWhereUniqueWithoutParticipantInput | SatisfactionSurveyUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: SatisfactionSurveyUpdateManyWithWhereWithoutParticipantInput | SatisfactionSurveyUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
   }
 
   export type FormationSessionCreateNestedOneWithoutSuiviDaysInput = {
@@ -182242,6 +187523,42 @@ export namespace Prisma {
     update?: XOR<XOR<FileAssetUpdateToOneWithWhereWithoutComplianceItemEventsInput, FileAssetUpdateWithoutComplianceItemEventsInput>, FileAssetUncheckedUpdateWithoutComplianceItemEventsInput>
   }
 
+  export type FormationSessionCreateNestedOneWithoutSatisfactionSurveysInput = {
+    create?: XOR<FormationSessionCreateWithoutSatisfactionSurveysInput, FormationSessionUncheckedCreateWithoutSatisfactionSurveysInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutSatisfactionSurveysInput
+    connect?: FormationSessionWhereUniqueInput
+  }
+
+  export type FormationSessionParticipantCreateNestedOneWithoutSatisfactionSurveysInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutSatisfactionSurveysInput, FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutSatisfactionSurveysInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+  }
+
+  export type EnumSatisfactionSurveyTimingFieldUpdateOperationsInput = {
+    set?: $Enums.SatisfactionSurveyTiming
+  }
+
+  export type EnumSatisfactionSurveyStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SatisfactionSurveyStatus
+  }
+
+  export type FormationSessionUpdateOneRequiredWithoutSatisfactionSurveysNestedInput = {
+    create?: XOR<FormationSessionCreateWithoutSatisfactionSurveysInput, FormationSessionUncheckedCreateWithoutSatisfactionSurveysInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutSatisfactionSurveysInput
+    upsert?: FormationSessionUpsertWithoutSatisfactionSurveysInput
+    connect?: FormationSessionWhereUniqueInput
+    update?: XOR<XOR<FormationSessionUpdateToOneWithWhereWithoutSatisfactionSurveysInput, FormationSessionUpdateWithoutSatisfactionSurveysInput>, FormationSessionUncheckedUpdateWithoutSatisfactionSurveysInput>
+  }
+
+  export type FormationSessionParticipantUpdateOneRequiredWithoutSatisfactionSurveysNestedInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutSatisfactionSurveysInput, FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutSatisfactionSurveysInput
+    upsert?: FormationSessionParticipantUpsertWithoutSatisfactionSurveysInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+    update?: XOR<XOR<FormationSessionParticipantUpdateToOneWithWhereWithoutSatisfactionSurveysInput, FormationSessionParticipantUpdateWithoutSatisfactionSurveysInput>, FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -182615,6 +187932,67 @@ export namespace Prisma {
     _max?: NestedEnumReportJobStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumAiRunStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiRunStatus | EnumAiRunStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiRunStatusFilter<$PrismaModel> | $Enums.AiRunStatus
+  }
+
+  export type NestedEnumAiRunStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiRunStatus | EnumAiRunStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiRunStatus[] | ListEnumAiRunStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiRunStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiRunStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAiRunStatusFilter<$PrismaModel>
+    _max?: NestedEnumAiRunStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumAiArtifactStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiArtifactStatus | EnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiArtifactStatusFilter<$PrismaModel> | $Enums.AiArtifactStatus
+  }
+
+  export type NestedEnumAiArtifactStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AiArtifactStatus | EnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AiArtifactStatus[] | ListEnumAiArtifactStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAiArtifactStatusWithAggregatesFilter<$PrismaModel> | $Enums.AiArtifactStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAiArtifactStatusFilter<$PrismaModel>
+    _max?: NestedEnumAiArtifactStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumReportScheduleFrequencyFilter<$PrismaModel = never> = {
     equals?: $Enums.ReportScheduleFrequency | EnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
     in?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
@@ -182664,33 +188042,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumSchoolInternalServiceNullableFilter<$PrismaModel>
     _max?: NestedEnumSchoolInternalServiceNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -183795,6 +189146,40 @@ export namespace Prisma {
     _max?: NestedEnumDocumentRequestChannelFilter<$PrismaModel>
   }
 
+  export type NestedEnumSatisfactionSurveyTimingFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyTiming | EnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyTimingFilter<$PrismaModel> | $Enums.SatisfactionSurveyTiming
+  }
+
+  export type NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyStatus | EnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel> | $Enums.SatisfactionSurveyStatus
+  }
+
+  export type NestedEnumSatisfactionSurveyTimingWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyTiming | EnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyTiming[] | ListEnumSatisfactionSurveyTimingFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyTimingWithAggregatesFilter<$PrismaModel> | $Enums.SatisfactionSurveyTiming
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSatisfactionSurveyTimingFilter<$PrismaModel>
+    _max?: NestedEnumSatisfactionSurveyTimingFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSatisfactionSurveyStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SatisfactionSurveyStatus | EnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SatisfactionSurveyStatus[] | ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSatisfactionSurveyStatusWithAggregatesFilter<$PrismaModel> | $Enums.SatisfactionSurveyStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel>
+    _max?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel>
+  }
+
   export type UserRoleCreateWithoutUsersInput = {
     id?: string
     slug: string
@@ -184473,6 +189858,7 @@ export namespace Prisma {
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutUserInput = {
@@ -184490,6 +189876,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutUserInput = {
@@ -184835,6 +190222,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -184871,6 +190259,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -184917,6 +190306,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -184953,6 +190343,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -185646,6 +191037,86 @@ export namespace Prisma {
 
   export type ReportGenerationJobCreateManyRequestedByInputEnvelope = {
     data: ReportGenerationJobCreateManyRequestedByInput | ReportGenerationJobCreateManyRequestedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AiRunCreateWithoutRequestedByInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    artifacts?: AiArtifactCreateNestedManyWithoutRunInput
+  }
+
+  export type AiRunUncheckedCreateWithoutRequestedByInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    artifacts?: AiArtifactUncheckedCreateNestedManyWithoutRunInput
+  }
+
+  export type AiRunCreateOrConnectWithoutRequestedByInput = {
+    where: AiRunWhereUniqueInput
+    create: XOR<AiRunCreateWithoutRequestedByInput, AiRunUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type AiRunCreateManyRequestedByInputEnvelope = {
+    data: AiRunCreateManyRequestedByInput | AiRunCreateManyRequestedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AiArtifactCreateWithoutReviewedByInput = {
+    id?: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+    run: AiRunCreateNestedOneWithoutArtifactsInput
+  }
+
+  export type AiArtifactUncheckedCreateWithoutReviewedByInput = {
+    id?: string
+    runId: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AiArtifactCreateOrConnectWithoutReviewedByInput = {
+    where: AiArtifactWhereUniqueInput
+    create: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type AiArtifactCreateManyReviewedByInputEnvelope = {
+    data: AiArtifactCreateManyReviewedByInput | AiArtifactCreateManyReviewedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -187887,6 +193358,75 @@ export namespace Prisma {
     completedAt?: DateTimeNullableFilter<"ReportGenerationJob"> | Date | string | null
   }
 
+  export type AiRunUpsertWithWhereUniqueWithoutRequestedByInput = {
+    where: AiRunWhereUniqueInput
+    update: XOR<AiRunUpdateWithoutRequestedByInput, AiRunUncheckedUpdateWithoutRequestedByInput>
+    create: XOR<AiRunCreateWithoutRequestedByInput, AiRunUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type AiRunUpdateWithWhereUniqueWithoutRequestedByInput = {
+    where: AiRunWhereUniqueInput
+    data: XOR<AiRunUpdateWithoutRequestedByInput, AiRunUncheckedUpdateWithoutRequestedByInput>
+  }
+
+  export type AiRunUpdateManyWithWhereWithoutRequestedByInput = {
+    where: AiRunScalarWhereInput
+    data: XOR<AiRunUpdateManyMutationInput, AiRunUncheckedUpdateManyWithoutRequestedByInput>
+  }
+
+  export type AiRunScalarWhereInput = {
+    AND?: AiRunScalarWhereInput | AiRunScalarWhereInput[]
+    OR?: AiRunScalarWhereInput[]
+    NOT?: AiRunScalarWhereInput | AiRunScalarWhereInput[]
+    id?: StringFilter<"AiRun"> | string
+    useCase?: StringFilter<"AiRun"> | string
+    status?: EnumAiRunStatusFilter<"AiRun"> | $Enums.AiRunStatus
+    provider?: StringFilter<"AiRun"> | string
+    model?: StringFilter<"AiRun"> | string
+    inputSummary?: JsonFilter<"AiRun">
+    promptTokens?: IntNullableFilter<"AiRun"> | number | null
+    completionTokens?: IntNullableFilter<"AiRun"> | number | null
+    costCents?: IntNullableFilter<"AiRun"> | number | null
+    errorMessage?: StringNullableFilter<"AiRun"> | string | null
+    requestedById?: StringFilter<"AiRun"> | string
+    createdAt?: DateTimeFilter<"AiRun"> | Date | string
+    updatedAt?: DateTimeFilter<"AiRun"> | Date | string
+    completedAt?: DateTimeNullableFilter<"AiRun"> | Date | string | null
+  }
+
+  export type AiArtifactUpsertWithWhereUniqueWithoutReviewedByInput = {
+    where: AiArtifactWhereUniqueInput
+    update: XOR<AiArtifactUpdateWithoutReviewedByInput, AiArtifactUncheckedUpdateWithoutReviewedByInput>
+    create: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput>
+  }
+
+  export type AiArtifactUpdateWithWhereUniqueWithoutReviewedByInput = {
+    where: AiArtifactWhereUniqueInput
+    data: XOR<AiArtifactUpdateWithoutReviewedByInput, AiArtifactUncheckedUpdateWithoutReviewedByInput>
+  }
+
+  export type AiArtifactUpdateManyWithWhereWithoutReviewedByInput = {
+    where: AiArtifactScalarWhereInput
+    data: XOR<AiArtifactUpdateManyMutationInput, AiArtifactUncheckedUpdateManyWithoutReviewedByInput>
+  }
+
+  export type AiArtifactScalarWhereInput = {
+    AND?: AiArtifactScalarWhereInput | AiArtifactScalarWhereInput[]
+    OR?: AiArtifactScalarWhereInput[]
+    NOT?: AiArtifactScalarWhereInput | AiArtifactScalarWhereInput[]
+    id?: StringFilter<"AiArtifact"> | string
+    runId?: StringFilter<"AiArtifact"> | string
+    status?: EnumAiArtifactStatusFilter<"AiArtifact"> | $Enums.AiArtifactStatus
+    payload?: JsonFilter<"AiArtifact">
+    citations?: JsonFilter<"AiArtifact">
+    targetEntityType?: StringNullableFilter<"AiArtifact"> | string | null
+    targetEntityId?: StringNullableFilter<"AiArtifact"> | string | null
+    reviewedById?: StringNullableFilter<"AiArtifact"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"AiArtifact"> | Date | string | null
+    appliedAt?: DateTimeNullableFilter<"AiArtifact"> | Date | string | null
+    createdAt?: DateTimeFilter<"AiArtifact"> | Date | string
+  }
+
   export type SupportTicketUpsertWithWhereUniqueWithoutAssignedToInput = {
     where: SupportTicketWhereUniqueInput
     update: XOR<SupportTicketUpdateWithoutAssignedToInput, SupportTicketUncheckedUpdateWithoutAssignedToInput>
@@ -188527,6 +194067,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -188639,6 +194181,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -189014,6 +194558,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -189126,6 +194672,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -189505,6 +195053,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -189617,6 +195167,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -189903,6 +195455,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -190015,6 +195569,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -190127,6 +195683,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -190239,6 +195797,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -190440,6 +196000,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -190552,6 +196114,8 @@ export namespace Prisma {
     managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -190652,6 +196216,1086 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
+  export type UserCreateWithoutRequestedAiRunsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    jobPosition?: RhPositionCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserUncheckedCreateWithoutRequestedAiRunsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    jobPositionId?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationUncheckedCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserCreateOrConnectWithoutRequestedAiRunsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRequestedAiRunsInput, UserUncheckedCreateWithoutRequestedAiRunsInput>
+  }
+
+  export type AiArtifactCreateWithoutRunInput = {
+    id?: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+    reviewedBy?: UserCreateNestedOneWithoutReviewedAiArtifactsInput
+  }
+
+  export type AiArtifactUncheckedCreateWithoutRunInput = {
+    id?: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AiArtifactCreateOrConnectWithoutRunInput = {
+    where: AiArtifactWhereUniqueInput
+    create: XOR<AiArtifactCreateWithoutRunInput, AiArtifactUncheckedCreateWithoutRunInput>
+  }
+
+  export type AiArtifactCreateManyRunInputEnvelope = {
+    data: AiArtifactCreateManyRunInput | AiArtifactCreateManyRunInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutRequestedAiRunsInput = {
+    update: XOR<UserUpdateWithoutRequestedAiRunsInput, UserUncheckedUpdateWithoutRequestedAiRunsInput>
+    create: XOR<UserCreateWithoutRequestedAiRunsInput, UserUncheckedCreateWithoutRequestedAiRunsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRequestedAiRunsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRequestedAiRunsInput, UserUncheckedUpdateWithoutRequestedAiRunsInput>
+  }
+
+  export type UserUpdateWithoutRequestedAiRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    jobPosition?: RhPositionUpdateOneWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRequestedAiRunsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    jobPositionId?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type AiArtifactUpsertWithWhereUniqueWithoutRunInput = {
+    where: AiArtifactWhereUniqueInput
+    update: XOR<AiArtifactUpdateWithoutRunInput, AiArtifactUncheckedUpdateWithoutRunInput>
+    create: XOR<AiArtifactCreateWithoutRunInput, AiArtifactUncheckedCreateWithoutRunInput>
+  }
+
+  export type AiArtifactUpdateWithWhereUniqueWithoutRunInput = {
+    where: AiArtifactWhereUniqueInput
+    data: XOR<AiArtifactUpdateWithoutRunInput, AiArtifactUncheckedUpdateWithoutRunInput>
+  }
+
+  export type AiArtifactUpdateManyWithWhereWithoutRunInput = {
+    where: AiArtifactScalarWhereInput
+    data: XOR<AiArtifactUpdateManyMutationInput, AiArtifactUncheckedUpdateManyWithoutRunInput>
+  }
+
+  export type AiRunCreateWithoutArtifactsInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+    requestedBy: UserCreateNestedOneWithoutRequestedAiRunsInput
+  }
+
+  export type AiRunUncheckedCreateWithoutArtifactsInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    requestedById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type AiRunCreateOrConnectWithoutArtifactsInput = {
+    where: AiRunWhereUniqueInput
+    create: XOR<AiRunCreateWithoutArtifactsInput, AiRunUncheckedCreateWithoutArtifactsInput>
+  }
+
+  export type UserCreateWithoutReviewedAiArtifactsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    jobPosition?: RhPositionCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserUncheckedCreateWithoutReviewedAiArtifactsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    jobPositionId?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationUncheckedCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserCreateOrConnectWithoutReviewedAiArtifactsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReviewedAiArtifactsInput, UserUncheckedCreateWithoutReviewedAiArtifactsInput>
+  }
+
+  export type AiRunUpsertWithoutArtifactsInput = {
+    update: XOR<AiRunUpdateWithoutArtifactsInput, AiRunUncheckedUpdateWithoutArtifactsInput>
+    create: XOR<AiRunCreateWithoutArtifactsInput, AiRunUncheckedCreateWithoutArtifactsInput>
+    where?: AiRunWhereInput
+  }
+
+  export type AiRunUpdateToOneWithWhereWithoutArtifactsInput = {
+    where?: AiRunWhereInput
+    data: XOR<AiRunUpdateWithoutArtifactsInput, AiRunUncheckedUpdateWithoutArtifactsInput>
+  }
+
+  export type AiRunUpdateWithoutArtifactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requestedBy?: UserUpdateOneRequiredWithoutRequestedAiRunsNestedInput
+  }
+
+  export type AiRunUncheckedUpdateWithoutArtifactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpsertWithoutReviewedAiArtifactsInput = {
+    update: XOR<UserUpdateWithoutReviewedAiArtifactsInput, UserUncheckedUpdateWithoutReviewedAiArtifactsInput>
+    create: XOR<UserCreateWithoutReviewedAiArtifactsInput, UserUncheckedCreateWithoutReviewedAiArtifactsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReviewedAiArtifactsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReviewedAiArtifactsInput, UserUncheckedUpdateWithoutReviewedAiArtifactsInput>
+  }
+
+  export type UserUpdateWithoutReviewedAiArtifactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    jobPosition?: RhPositionUpdateOneWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReviewedAiArtifactsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    jobPositionId?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
+  }
+
   export type UserCreateWithoutBusinessRolesInput = {
     id?: string
     email: string
@@ -190743,6 +197387,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -190855,6 +197501,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -190983,6 +197631,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -191095,6 +197745,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -191207,6 +197859,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -191319,6 +197973,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -191436,6 +198092,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -191548,6 +198206,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -191676,6 +198336,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -191788,6 +198450,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -191911,6 +198575,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -192023,6 +198689,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -192135,6 +198803,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -192247,6 +198917,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -192375,6 +199047,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -192487,6 +199161,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -192599,6 +199275,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -192711,6 +199389,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -193108,6 +199788,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -193220,6 +199902,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -193348,6 +200032,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -193460,6 +200146,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -193572,6 +200260,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -193684,6 +200374,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -193812,6 +200504,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -193924,6 +200618,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -194036,6 +200732,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -194148,6 +200846,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -194276,6 +200976,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -194388,6 +201090,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -194702,6 +201406,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -194814,6 +201520,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -195066,6 +201774,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -195178,6 +201888,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -195399,6 +202111,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -195511,6 +202225,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -195567,6 +202283,7 @@ export namespace Prisma {
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -195603,6 +202320,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -195844,6 +202562,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -195956,6 +202676,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -196018,6 +202740,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -196054,6 +202777,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -196237,6 +202961,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -196349,6 +203075,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -196524,6 +203252,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -196636,6 +203366,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -196748,6 +203480,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -196860,6 +203594,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -196977,6 +203713,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -197089,6 +203827,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -197217,6 +203957,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -197329,6 +204071,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -197452,6 +204196,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -197564,6 +204310,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -197675,6 +204423,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -197787,6 +204537,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -198503,6 +205255,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -198539,6 +205292,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -199568,6 +206322,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -199680,6 +206436,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -199808,6 +206566,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -199920,6 +206680,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -199972,6 +206734,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -200008,6 +206771,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -200054,6 +206818,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -200090,6 +206855,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -200617,6 +207383,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -200729,6 +207497,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -200902,6 +207672,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -201014,6 +207786,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -201297,6 +208071,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -201409,6 +208185,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -201526,6 +208304,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -201638,6 +208418,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -201747,6 +208529,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSessionInput = {
@@ -201764,6 +208547,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSessionInput = {
@@ -201946,6 +208730,40 @@ export namespace Prisma {
   export type RhTeamCreateOrConnectWithoutFormationSessionInput = {
     where: RhTeamWhereUniqueInput
     create: XOR<RhTeamCreateWithoutFormationSessionInput, RhTeamUncheckedCreateWithoutFormationSessionInput>
+  }
+
+  export type SatisfactionSurveyCreateWithoutSessionInput = {
+    id?: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participant: FormationSessionParticipantCreateNestedOneWithoutSatisfactionSurveysInput
+  }
+
+  export type SatisfactionSurveyUncheckedCreateWithoutSessionInput = {
+    id?: string
+    participantId: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SatisfactionSurveyCreateOrConnectWithoutSessionInput = {
+    where: SatisfactionSurveyWhereUniqueInput
+    create: XOR<SatisfactionSurveyCreateWithoutSessionInput, SatisfactionSurveyUncheckedCreateWithoutSessionInput>
+  }
+
+  export type SatisfactionSurveyCreateManySessionInputEnvelope = {
+    data: SatisfactionSurveyCreateManySessionInput | SatisfactionSurveyCreateManySessionInput[]
+    skipDuplicates?: boolean
   }
 
   export type CandidatureCreateWithoutInterestedSessionInput = {
@@ -202404,6 +209222,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -202516,6 +209336,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -202639,6 +209461,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -202751,6 +209575,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -203013,6 +209839,38 @@ export namespace Prisma {
     chatConversations?: ChatConversationUncheckedUpdateManyWithoutRhTeamNestedInput
   }
 
+  export type SatisfactionSurveyUpsertWithWhereUniqueWithoutSessionInput = {
+    where: SatisfactionSurveyWhereUniqueInput
+    update: XOR<SatisfactionSurveyUpdateWithoutSessionInput, SatisfactionSurveyUncheckedUpdateWithoutSessionInput>
+    create: XOR<SatisfactionSurveyCreateWithoutSessionInput, SatisfactionSurveyUncheckedCreateWithoutSessionInput>
+  }
+
+  export type SatisfactionSurveyUpdateWithWhereUniqueWithoutSessionInput = {
+    where: SatisfactionSurveyWhereUniqueInput
+    data: XOR<SatisfactionSurveyUpdateWithoutSessionInput, SatisfactionSurveyUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type SatisfactionSurveyUpdateManyWithWhereWithoutSessionInput = {
+    where: SatisfactionSurveyScalarWhereInput
+    data: XOR<SatisfactionSurveyUpdateManyMutationInput, SatisfactionSurveyUncheckedUpdateManyWithoutSessionInput>
+  }
+
+  export type SatisfactionSurveyScalarWhereInput = {
+    AND?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
+    OR?: SatisfactionSurveyScalarWhereInput[]
+    NOT?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
+    id?: StringFilter<"SatisfactionSurvey"> | string
+    sessionId?: StringFilter<"SatisfactionSurvey"> | string
+    participantId?: StringFilter<"SatisfactionSurvey"> | string
+    timing?: EnumSatisfactionSurveyTimingFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
+    sentAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
+    respondedAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
+    answers?: JsonNullableFilter<"SatisfactionSurvey">
+    createdAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
+    updatedAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
+  }
+
   export type CandidatureUpsertWithWhereUniqueWithoutInterestedSessionInput = {
     where: CandidatureWhereUniqueInput
     update: XOR<CandidatureUpdateWithoutInterestedSessionInput, CandidatureUncheckedUpdateWithoutInterestedSessionInput>
@@ -203113,6 +209971,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
   }
@@ -203149,6 +210008,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
   }
@@ -203201,6 +210061,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
   }
@@ -203237,6 +210098,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
   }
@@ -203405,6 +210267,7 @@ export namespace Prisma {
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -203441,6 +210304,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -203632,6 +210496,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -203668,6 +210533,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -203764,6 +210630,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -203876,6 +210744,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -204067,6 +210937,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
   }
@@ -204103,6 +210974,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -204214,6 +211086,7 @@ export namespace Prisma {
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutCandidatureInput = {
@@ -204231,6 +211104,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutCandidatureInput = {
@@ -204451,6 +211325,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -204563,6 +211439,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -204766,6 +211644,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
   }
@@ -204802,6 +211681,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -204946,6 +211826,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -204982,6 +211863,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -205083,6 +211965,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -205195,6 +212079,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -205310,6 +212196,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SatisfactionSurveyCreateWithoutParticipantInput = {
+    id?: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutSatisfactionSurveysInput
+  }
+
+  export type SatisfactionSurveyUncheckedCreateWithoutParticipantInput = {
+    id?: string
+    sessionId: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SatisfactionSurveyCreateOrConnectWithoutParticipantInput = {
+    where: SatisfactionSurveyWhereUniqueInput
+    create: XOR<SatisfactionSurveyCreateWithoutParticipantInput, SatisfactionSurveyUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type SatisfactionSurveyCreateManyParticipantInputEnvelope = {
+    data: SatisfactionSurveyCreateManyParticipantInput | SatisfactionSurveyCreateManyParticipantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FormationSessionUpsertWithoutParticipantsInput = {
     update: XOR<FormationSessionUpdateWithoutParticipantsInput, FormationSessionUncheckedUpdateWithoutParticipantsInput>
     create: XOR<FormationSessionCreateWithoutParticipantsInput, FormationSessionUncheckedCreateWithoutParticipantsInput>
@@ -205352,6 +212272,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -205388,6 +212309,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -205495,6 +212417,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -205607,6 +212531,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -205705,6 +212631,22 @@ export namespace Prisma {
     data: XOR<FormationSessionEmargementUpdateManyMutationInput, FormationSessionEmargementUncheckedUpdateManyWithoutParticipantInput>
   }
 
+  export type SatisfactionSurveyUpsertWithWhereUniqueWithoutParticipantInput = {
+    where: SatisfactionSurveyWhereUniqueInput
+    update: XOR<SatisfactionSurveyUpdateWithoutParticipantInput, SatisfactionSurveyUncheckedUpdateWithoutParticipantInput>
+    create: XOR<SatisfactionSurveyCreateWithoutParticipantInput, SatisfactionSurveyUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type SatisfactionSurveyUpdateWithWhereUniqueWithoutParticipantInput = {
+    where: SatisfactionSurveyWhereUniqueInput
+    data: XOR<SatisfactionSurveyUpdateWithoutParticipantInput, SatisfactionSurveyUncheckedUpdateWithoutParticipantInput>
+  }
+
+  export type SatisfactionSurveyUpdateManyWithWhereWithoutParticipantInput = {
+    where: SatisfactionSurveyScalarWhereInput
+    data: XOR<SatisfactionSurveyUpdateManyMutationInput, SatisfactionSurveyUncheckedUpdateManyWithoutParticipantInput>
+  }
+
   export type FormationSessionCreateWithoutSuiviDaysInput = {
     id?: string
     startDate?: Date | string | null
@@ -205736,6 +212678,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -205772,6 +212715,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -205858,6 +212802,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -205894,6 +212839,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -205955,6 +212901,7 @@ export namespace Prisma {
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutEmargementsInput = {
@@ -205972,6 +212919,7 @@ export namespace Prisma {
     fundingNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutEmargementsInput = {
@@ -206070,6 +213018,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -206182,6 +213132,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -206265,6 +213217,7 @@ export namespace Prisma {
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput = {
@@ -206282,6 +213235,7 @@ export namespace Prisma {
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type UserUpsertWithoutFormationSessionEmargementsMarkedInput = {
@@ -206386,6 +213340,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -206498,6 +213454,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -206550,6 +213508,7 @@ export namespace Prisma {
     attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -206586,6 +213545,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -206677,6 +213637,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -206713,6 +213674,7 @@ export namespace Prisma {
     attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -206854,6 +213816,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -206966,6 +213930,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -207211,6 +214177,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -207247,6 +214214,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -207359,6 +214327,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -207471,6 +214441,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -207734,6 +214706,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -207770,6 +214743,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -207983,6 +214957,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -208095,6 +215071,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -208737,6 +215715,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -208849,6 +215829,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -209517,6 +216499,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -209629,6 +216613,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -209945,6 +216931,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -210057,6 +217045,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -210319,6 +217309,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -210431,6 +217423,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -210678,6 +217672,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -210790,6 +217786,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -210918,6 +217916,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -211030,6 +218030,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -211271,6 +218273,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -211383,6 +218387,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -211785,6 +218791,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -211897,6 +218905,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -212261,6 +219271,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -212373,6 +219385,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -212704,6 +219718,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -212816,6 +219832,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -212997,6 +220015,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -213109,6 +220129,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -213221,6 +220243,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -213333,6 +220357,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -213510,6 +220536,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -213622,6 +220650,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -213846,6 +220876,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -213958,6 +220990,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -214149,6 +221183,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -214261,6 +221297,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -214373,6 +221411,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -214485,6 +221525,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -214613,6 +221655,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -214725,6 +221769,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -214837,6 +221883,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -214949,6 +221997,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -215233,6 +222283,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -215345,6 +222397,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -215568,6 +222622,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -215680,6 +222736,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -215900,6 +222958,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -216012,6 +223072,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -216228,6 +223290,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -216340,6 +223404,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -216503,6 +223569,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -216615,6 +223683,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -216768,6 +223838,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -216880,6 +223952,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -217065,6 +224139,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -217177,6 +224253,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -218176,6 +225254,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
   }
@@ -218212,6 +225291,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -218571,6 +225651,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
   }
@@ -218607,6 +225688,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -219333,6 +226415,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -219445,6 +226529,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -219594,6 +226680,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -219706,6 +226794,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -220021,6 +227111,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -220133,6 +227225,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -220338,6 +227432,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -220450,6 +227546,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -220658,6 +227756,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -220770,6 +227870,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -221020,6 +228122,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -221132,6 +228236,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -221344,6 +228450,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -221456,6 +228564,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -221625,6 +228735,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -221737,6 +228849,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -221876,6 +228990,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -221988,6 +229104,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -222149,6 +229267,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -222261,6 +229381,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -222552,6 +229674,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -222664,6 +229788,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -222825,6 +229951,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -222937,6 +230065,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -223049,6 +230179,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -223161,6 +230293,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -223337,6 +230471,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -223449,6 +230585,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -223794,6 +230932,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -223906,6 +231046,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -224065,6 +231207,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -224177,6 +231321,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -224362,6 +231508,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -224474,6 +231622,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -224602,6 +231752,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -224714,6 +231866,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -224826,6 +231980,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -224938,6 +232094,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -225098,6 +232256,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -225210,6 +232370,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -225681,6 +232843,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
@@ -225793,6 +232957,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
@@ -225910,6 +233076,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
@@ -226022,6 +233190,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
@@ -226307,6 +233477,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
@@ -226419,6 +233591,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
@@ -226542,6 +233716,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
@@ -226654,6 +233830,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
@@ -226857,6 +234035,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
@@ -226969,6 +234149,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
@@ -227182,6 +234364,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
@@ -227294,6 +234478,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
@@ -227563,6 +234749,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -227675,6 +234863,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -227962,6 +235152,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -228074,6 +235266,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -228268,6 +235462,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -228380,6 +235576,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -228497,6 +235695,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -228609,6 +235809,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -228831,6 +236033,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -228943,6 +236147,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -229066,6 +236272,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -229178,6 +236386,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -229290,6 +236500,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -229402,6 +236614,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -229530,6 +236744,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -229642,6 +236858,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -229754,6 +236972,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -229866,6 +237086,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -229994,6 +237216,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -230106,6 +237330,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -230350,6 +237576,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -230462,6 +237690,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -230590,6 +237820,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -230702,6 +237934,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -230794,6 +238028,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -230830,6 +238065,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -231013,6 +238249,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -231049,6 +238286,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -231223,6 +238461,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -231335,6 +238575,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -231452,6 +238694,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -231564,6 +238808,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -231727,6 +238973,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -231839,6 +239087,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -231962,6 +239212,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -232074,6 +239326,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -232215,6 +239469,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -232327,6 +239583,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -232490,6 +239748,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -232602,6 +239862,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -232743,6 +240005,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -232855,6 +240119,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -233018,6 +240284,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -233130,6 +240398,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -233446,6 +240716,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -233558,6 +240830,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -233863,6 +241137,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -233975,6 +241251,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -234345,6 +241623,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -234457,6 +241737,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -234820,6 +242102,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -234932,6 +242216,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -235168,6 +242454,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -235280,6 +242568,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -235512,6 +242802,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -235624,6 +242916,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -235828,6 +243122,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -235940,6 +243236,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -236245,6 +243543,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -236357,6 +243657,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -236455,6 +243757,258 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+  }
+
+  export type FormationSessionCreateWithoutSatisfactionSurveysInput = {
+    id?: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: number | null
+    traineesMax?: number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    formation: FormationCreateNestedOneWithoutSessionsInput
+    examVenueRoom?: FormationVenueRoomCreateNestedOneWithoutExamSessionsInput
+    trainer?: UserCreateNestedOneWithoutFormationSessionsTrainedInput
+    moderator?: UserCreateNestedOneWithoutFormationSessionsModeratedInput
+    chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
+    venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
+    participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
+    formationExam?: FormationExamCreateNestedOneWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
+    automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
+  }
+
+  export type FormationSessionUncheckedCreateWithoutSatisfactionSurveysInput = {
+    id?: string
+    formationId: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    examVenueRoomId?: string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: number | null
+    traineesMax?: number | null
+    trainerUserId?: string | null
+    moderatorUserId?: string | null
+    venueRoomId?: string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
+    participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
+    formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
+    automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type FormationSessionCreateOrConnectWithoutSatisfactionSurveysInput = {
+    where: FormationSessionWhereUniqueInput
+    create: XOR<FormationSessionCreateWithoutSatisfactionSurveysInput, FormationSessionUncheckedCreateWithoutSatisfactionSurveysInput>
+  }
+
+  export type FormationSessionParticipantCreateWithoutSatisfactionSurveysInput = {
+    id?: string
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutParticipantsInput
+    user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
+    candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    candidatureId?: string | null
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantCreateOrConnectWithoutSatisfactionSurveysInput = {
+    where: FormationSessionParticipantWhereUniqueInput
+    create: XOR<FormationSessionParticipantCreateWithoutSatisfactionSurveysInput, FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput>
+  }
+
+  export type FormationSessionUpsertWithoutSatisfactionSurveysInput = {
+    update: XOR<FormationSessionUpdateWithoutSatisfactionSurveysInput, FormationSessionUncheckedUpdateWithoutSatisfactionSurveysInput>
+    create: XOR<FormationSessionCreateWithoutSatisfactionSurveysInput, FormationSessionUncheckedCreateWithoutSatisfactionSurveysInput>
+    where?: FormationSessionWhereInput
+  }
+
+  export type FormationSessionUpdateToOneWithWhereWithoutSatisfactionSurveysInput = {
+    where?: FormationSessionWhereInput
+    data: XOR<FormationSessionUpdateWithoutSatisfactionSurveysInput, FormationSessionUncheckedUpdateWithoutSatisfactionSurveysInput>
+  }
+
+  export type FormationSessionUpdateWithoutSatisfactionSurveysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    formation?: FormationUpdateOneRequiredWithoutSessionsNestedInput
+    examVenueRoom?: FormationVenueRoomUpdateOneWithoutExamSessionsNestedInput
+    trainer?: UserUpdateOneWithoutFormationSessionsTrainedNestedInput
+    moderator?: UserUpdateOneWithoutFormationSessionsModeratedNestedInput
+    chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
+    venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
+    participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
+    formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
+    automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
+  }
+
+  export type FormationSessionUncheckedUpdateWithoutSatisfactionSurveysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formationId?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examVenueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
+    participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
+    formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
+    automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type FormationSessionParticipantUpsertWithoutSatisfactionSurveysInput = {
+    update: XOR<FormationSessionParticipantUpdateWithoutSatisfactionSurveysInput, FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput>
+    create: XOR<FormationSessionParticipantCreateWithoutSatisfactionSurveysInput, FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput>
+    where?: FormationSessionParticipantWhereInput
+  }
+
+  export type FormationSessionParticipantUpdateToOneWithWhereWithoutSatisfactionSurveysInput = {
+    where?: FormationSessionParticipantWhereInput
+    data: XOR<FormationSessionParticipantUpdateWithoutSatisfactionSurveysInput, FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput>
+  }
+
+  export type FormationSessionParticipantUpdateWithoutSatisfactionSurveysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
+    user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
+    candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    candidatureId?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type SystemLogCreateManyUserInput = {
@@ -236999,6 +244553,35 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     completedAt?: Date | string | null
+  }
+
+  export type AiRunCreateManyRequestedByInput = {
+    id?: string
+    useCase: string
+    status?: $Enums.AiRunStatus
+    provider: string
+    model: string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: number | null
+    completionTokens?: number | null
+    costCents?: number | null
+    errorMessage?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type AiArtifactCreateManyReviewedByInput = {
+    id?: string
+    runId: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
   }
 
   export type SupportTicketCreateManyAssignedToInput = {
@@ -237855,6 +245438,7 @@ export namespace Prisma {
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutUserInput = {
@@ -237872,6 +245456,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutUserInput = {
@@ -238260,6 +245845,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -238296,6 +245882,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -238358,6 +245945,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -238394,6 +245982,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -239001,6 +246590,95 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AiRunUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artifacts?: AiArtifactUpdateManyWithoutRunNestedInput
+  }
+
+  export type AiRunUncheckedUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    artifacts?: AiArtifactUncheckedUpdateManyWithoutRunNestedInput
+  }
+
+  export type AiRunUncheckedUpdateManyWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    useCase?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiRunStatusFieldUpdateOperationsInput | $Enums.AiRunStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    inputSummary?: JsonNullValueInput | InputJsonValue
+    promptTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    completionTokens?: NullableIntFieldUpdateOperationsInput | number | null
+    costCents?: NullableIntFieldUpdateOperationsInput | number | null
+    errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AiArtifactUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    run?: AiRunUpdateOneRequiredWithoutArtifactsNestedInput
+  }
+
+  export type AiArtifactUncheckedUpdateWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiArtifactUncheckedUpdateManyWithoutReviewedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SupportTicketUpdateWithoutAssignedToInput = {
@@ -240027,6 +247705,58 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AiArtifactCreateManyRunInput = {
+    id?: string
+    status?: $Enums.AiArtifactStatus
+    payload: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: string | null
+    targetEntityId?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AiArtifactUpdateWithoutRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reviewedBy?: UserUpdateOneWithoutReviewedAiArtifactsNestedInput
+  }
+
+  export type AiArtifactUncheckedUpdateWithoutRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AiArtifactUncheckedUpdateManyWithoutRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    citations?: JsonNullValueInput | InputJsonValue
+    targetEntityType?: NullableStringFieldUpdateOperationsInput | string | null
+    targetEntityId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyRoleInput = {
     id?: string
     email: string
@@ -240173,6 +247903,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -240285,6 +248017,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -240851,6 +248585,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -240963,6 +248699,8 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -241423,6 +249161,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -241459,6 +249198,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -241917,6 +249657,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -241953,6 +249694,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -242015,6 +249757,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -242051,6 +249794,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -242240,6 +249984,18 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type SatisfactionSurveyCreateManySessionInput = {
+    id?: string
+    participantId: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type CandidatureCreateManyInterestedSessionInput = {
     id?: string
     userId: string
@@ -242319,6 +250075,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSessionInput = {
@@ -242336,6 +250093,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutSessionInput = {
@@ -242454,6 +250212,42 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     publishedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatisfactionSurveyUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateManyWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -242804,6 +250598,7 @@ export namespace Prisma {
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutCandidatureInput = {
@@ -242821,6 +250616,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureInput = {
@@ -242978,6 +250774,18 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type SatisfactionSurveyCreateManyParticipantInput = {
+    id?: string
+    sessionId: string
+    timing: $Enums.SatisfactionSurveyTiming
+    status?: $Enums.SatisfactionSurveyStatus
+    sentAt?: Date | string | null
+    respondedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type FormationSessionEmargementUpdateWithoutParticipantInput = {
     id?: StringFieldUpdateOperationsInput | string
     slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
@@ -243010,6 +250818,42 @@ export namespace Prisma {
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatisfactionSurveyUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SatisfactionSurveyUncheckedUpdateManyWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
+    status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

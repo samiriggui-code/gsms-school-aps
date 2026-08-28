@@ -245,6 +245,37 @@ exports.Prisma.ReportGenerationJobScalarFieldEnum = {
   completedAt: 'completedAt'
 };
 
+exports.Prisma.AiRunScalarFieldEnum = {
+  id: 'id',
+  useCase: 'useCase',
+  status: 'status',
+  provider: 'provider',
+  model: 'model',
+  inputSummary: 'inputSummary',
+  promptTokens: 'promptTokens',
+  completionTokens: 'completionTokens',
+  costCents: 'costCents',
+  errorMessage: 'errorMessage',
+  requestedById: 'requestedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+};
+
+exports.Prisma.AiArtifactScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  status: 'status',
+  payload: 'payload',
+  citations: 'citations',
+  targetEntityType: 'targetEntityType',
+  targetEntityId: 'targetEntityId',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ReportGenerationScheduleScalarFieldEnum = {
   id: 'id',
   templateKey: 'templateKey',
@@ -1618,6 +1649,19 @@ exports.Prisma.ComplianceItemEventScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.SatisfactionSurveyScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  participantId: 'participantId',
+  timing: 'timing',
+  status: 'status',
+  sentAt: 'sentAt',
+  respondedAt: 'respondedAt',
+  answers: 'answers',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1704,6 +1748,20 @@ exports.ReportJobStatus = exports.$Enums.ReportJobStatus = {
   RUNNING: 'RUNNING',
   COMPLETED: 'COMPLETED',
   FAILED: 'FAILED'
+};
+
+exports.AiRunStatus = exports.$Enums.AiRunStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+};
+
+exports.AiArtifactStatus = exports.$Enums.AiArtifactStatus = {
+  PROPOSED: 'PROPOSED',
+  APPROVED: 'APPROVED',
+  APPLIED: 'APPLIED',
+  REJECTED: 'REJECTED'
 };
 
 exports.ReportScheduleFrequency = exports.$Enums.ReportScheduleFrequency = {
@@ -2136,12 +2194,26 @@ exports.DocumentRequestChannel = exports.$Enums.DocumentRequestChannel = {
   SMS: 'SMS'
 };
 
+exports.SatisfactionSurveyTiming = exports.$Enums.SatisfactionSurveyTiming = {
+  HOT: 'HOT',
+  COLD: 'COLD'
+};
+
+exports.SatisfactionSurveyStatus = exports.$Enums.SatisfactionSurveyStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  COMPLETED: 'COMPLETED',
+  EXPIRED: 'EXPIRED'
+};
+
 exports.Prisma.ModelName = {
   LandingConfig: 'LandingConfig',
   User: 'User',
   FileAsset: 'FileAsset',
   FileAssetVersion: 'FileAssetVersion',
   ReportGenerationJob: 'ReportGenerationJob',
+  AiRun: 'AiRun',
+  AiArtifact: 'AiArtifact',
   ReportGenerationSchedule: 'ReportGenerationSchedule',
   UserBusinessRole: 'UserBusinessRole',
   CollaborateurProfile: 'CollaborateurProfile',
@@ -2241,7 +2313,8 @@ exports.Prisma.ModelName = {
   ComplianceDossier: 'ComplianceDossier',
   ComplianceDossierItem: 'ComplianceDossierItem',
   DocumentRequest: 'DocumentRequest',
-  ComplianceItemEvent: 'ComplianceItemEvent'
+  ComplianceItemEvent: 'ComplianceItemEvent',
+  SatisfactionSurvey: 'SatisfactionSurvey'
 };
 
 /**

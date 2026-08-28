@@ -1,4 +1,11 @@
 {
+  "menu": {
+    "byPath": {
+      "support-qualite": {
+        "qualiopi": "Qualiopi"
+      }
+    }
+  },
   "common": {
     "buttons": {
       "save": "Enregistrer",
@@ -36,6 +43,11 @@
     }
   },
   "pages": {
+    "descriptions": {
+      "support-qualite": {
+        "qualiopi": "Classeur des 32 indicateurs Qualiopi V.9 — statut d'audit, preuves et complétude."
+      }
+    },
     "home": {
       "title": "Accueil",
       "description": "Bienvenue sur le CRM FORM'SSI"
@@ -363,8 +375,30 @@
       "triggerCircuitSuccess": "Circuit n8n déclenché pour le premier inscrit confirmé.",
       "triggerCircuitEmailSent": "Convocation générée et envoyée par e-mail au participant.",
       "triggerCircuitEmailSkipped": "Convocation générée, mais e-mail non envoyé :",
+      "documents": {
+        "menuLabel": "Documents",
+        "menuHint": "Générer les documents de la session (un PDF par participant confirmé)",
+        "noParticipant": "Inscrivez au moins un participant confirmé pour générer un document.",
+        "convocation": "Convocation de session",
+        "convention": "Convention de formation",
+        "certificate": "Certificat de réalisation",
+        "openAction": "Ouvrir / télécharger",
+        "sendAction": "Envoyer par e-mail",
+        "sendSuccessSuffix": "e-mail(s) envoyé(s).",
+        "sendSkippedSuffix": "participant(s) ignoré(s) (voir détail dans la console).",
+        "sendNoneSent": "Aucun e-mail envoyé — vérifiez les adresses des participants ou la configuration du canal e-mail."
+      },
       "triggerCircuitNoParticipant": "Inscrivez au moins un candidat confirmé pour lancer le circuit.",
       "triggerCircuitPending": "Déclenchement…",
+      "satisfaction": {
+        "menuLabel": "Enquêtes de satisfaction",
+        "menuHint": "Crée les enquêtes (à chaud + à froid) pour les inscrits confirmés et envoie l'invitation « à chaud ».",
+        "triggerAction": "Déclencher les enquêtes",
+        "triggerPending": "Envoi…",
+        "triggerSuccess": "{count} invitation(s) envoyée(s).",
+        "triggerNoneSent": "Aucune nouvelle invitation à envoyer (déjà déclenchées).",
+        "triggerNoParticipant": "Inscrivez au moins un participant confirmé pour déclencher les enquêtes."
+      },
       "automationTitle": "Automatisations session",
       "sessionKindAll": "Tous types de session",
       "sessionKindWithExam": "Avec examen final",
@@ -1234,6 +1268,7 @@
       "securityHighlightsTitle": "Indicateurs clés — Support & qualité",
       "cards": {
         "support": "Gestion des tickets, FAQ et accompagnement utilisateurs.",
+        "qualiopi": "Classeur des 32 indicateurs Qualiopi — statut d'audit et preuves.",
         "qualite": "Suivi qualité et gestion des incidents."
       }
     },

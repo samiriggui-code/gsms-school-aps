@@ -5,7 +5,8 @@ export type EmailTemplateDomain =
   | 'finance'
   | 'compliance'
   | 'ressources'
-  | 'system';
+  | 'system'
+  | 'formation';
 
 export type EmailTemplateCatalogEntry = {
   id: EmailTemplateId;
@@ -161,6 +162,41 @@ export const EMAIL_TEMPLATE_CATALOG: EmailTemplateCatalogEntry[] = [
     description: 'Notification e-mail lorsqu’un rapport PDF/CSV est généré (manuel ou planifié).',
     crmEventTypes: ['pilotage.report.generated'],
     channels: ['in_app', 'email'],
+  },
+  {
+    id: 'satisfaction-survey-invite',
+    labelFr: 'Satisfaction — invitation questionnaire',
+    domain: 'formation',
+    description: 'Invitation stagiaire à répondre à l’enquête de satisfaction (à chaud J0, à froid J+45).',
+    channels: ['email'],
+  },
+  {
+    id: 'session-convocation',
+    labelFr: 'Session — convocation',
+    domain: 'formation',
+    description: 'Envoi individuel de la convocation de session (PDF joint) à un participant confirmé.',
+    channels: ['email'],
+  },
+  {
+    id: 'session-convention',
+    labelFr: 'Session — convention de formation',
+    domain: 'formation',
+    description: 'Envoi individuel de la convention de formation (PDF joint) à un participant confirmé.',
+    channels: ['email'],
+  },
+  {
+    id: 'session-attestation',
+    labelFr: 'Session — attestation de réalisation',
+    domain: 'formation',
+    description: 'Envoi individuel de l’attestation de réalisation (PDF joint) à un participant confirmé.',
+    channels: ['email'],
+  },
+  {
+    id: 'finance-facture-send',
+    labelFr: 'Facture — envoi client',
+    domain: 'finance',
+    description: 'Envoi de la facture au client (PDF joint), sans plaquette (pas de portail client facture).',
+    channels: ['email'],
   },
 ];
 

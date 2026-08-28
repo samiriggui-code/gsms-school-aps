@@ -67,7 +67,17 @@ export {
 
 export {
   sendSessionConvocationEmail,
+  sendSessionConventionEmail,
+  sendSessionAttestationEmail,
   type SessionConvocationEmailInput,
+  type SessionDocumentEmailInput,
 } from './session-flows';
+
+export {
+  sendSatisfactionSurveyInviteEmail,
+  type SatisfactionSurveyInviteMailContext,
+} from './satisfaction-flows';
+
+export { sendFinanceFactureEmail, type FinanceFactureEmailInput } from './finance-flows';
 
 export type { DevisQuoteEmailProps } from '@repo/emails';
