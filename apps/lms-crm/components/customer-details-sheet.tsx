@@ -182,8 +182,8 @@ export function CustomerDetailsSheet({
                       />
                     </TabsContent>
                     <TabsContent value="program">
-                      {sheetModel ? (
-                        <CustomerDetailsOrders sheetModel={sheetModel} />
+                      {sheetModel && catalogSlug ? (
+                        <CustomerDetailsOrders sheetModel={sheetModel} formationSlug={catalogSlug} />
                       ) : (
                         <p className="text-sm text-muted-foreground py-6">
                           {t('landing.sheets.unavailable', { defaultValue: 'Contenu indisponible.' })}
