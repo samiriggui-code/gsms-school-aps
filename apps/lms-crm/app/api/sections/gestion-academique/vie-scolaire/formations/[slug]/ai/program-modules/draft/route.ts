@@ -1,0 +1,35 @@
+import { NextRequest } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { prisma } from '@/lib/prisma';
+import { ok, fail } from '@/app/api/_shared/http/response';
+import { draftFormationProgramModules } from '@/lib/ai/formation-program-modules-ai';
+
+type Ctx = { params: Promise<{ slug: string }> };
+
+/** Déclenche un brouillon IA du programme (GSMS-AI-02) — écrit un AiArtifact PROPOSED, jamais la fiche. */
+export async function POST(_request: NextRequest, context: Ctx) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return fail('Unauthorized request', 401);
+
+  const { slug } = await context.params;
+  if (!slug?.trim()) return fail('Slug manquant.', 400);
+
+  try {
+    const formation = await prisma.formation.findUnique({
+      where: { slug: slug.trim() },
+      select: { id: true },
+    });
+    if (!formation) return fail('Formation introuvable.', 404);
+
+    const result = await draftFormationProgramModules({
+      formationId: formation.id,
+      requestedById: session.user.id,
+    });
+
+    return ok(result, 201);
+  } catch (e) {
+    console.error('[ai/program-modules draft]', e);
+    return fail('Génération du brouillon impossible.', 500, e);
+  }
+}

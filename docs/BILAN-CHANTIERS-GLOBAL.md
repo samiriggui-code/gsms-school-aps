@@ -161,7 +161,7 @@
 | ID | Statut |
 |----|--------|
 | **GSMS-AI-01** | ✅ Fait (Claude) |
-| **GSMS-AI-02** | 🔶 Spec Cursor | Brouillon `programModules` fiche Formation (`runStructuredAiTask` → PROPOSED → apply humain) |
+| **GSMS-AI-02** | ✅ Fait | Brouillon `programModules` + UI review/apply (Claude backend + Cursor UI) |
 | **GSMS-AI-03** | Ouvert P0 | Déroulé pédagogique session (après AI-02) |
 | **GSMS-AI-04** | Ouvert P0 | À définir (copies emails / contenus CMS) |
 | **GSMS-AI-05…07** | P1 |

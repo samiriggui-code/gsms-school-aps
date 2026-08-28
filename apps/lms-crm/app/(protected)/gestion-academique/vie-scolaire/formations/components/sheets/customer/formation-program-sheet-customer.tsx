@@ -737,7 +737,9 @@ export function FormationProgramSheetCustomer({
                       />
                     </TabsContent>
                     <TabsContent value="orders">
-                      <CustomerDetailsOrders sheetModel={sheetModel} />
+                      {slug ? (
+                        <CustomerDetailsOrders sheetModel={sheetModel} formationSlug={slug} />
+                      ) : null}
                     </TabsContent>
                     <TabsContent value="invoices">
                       <CustomerDetailsInvoice sheetModel={sheetModel} />
