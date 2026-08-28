@@ -49,10 +49,10 @@ export const qualiopiComplianceDossierItemEntity: EntityDefinition = {
   label: 'Pièce de dossier conformité',
   prismaModel: 'complianceDossierItem',
   permissions: {
-    GET: CRM_PERMISSION.securiteView,
-    POST: CRM_PERMISSION.securiteEdit,
-    PATCH: CRM_PERMISSION.securiteEdit,
-    DELETE: CRM_PERMISSION.securiteEdit,
+    GET: CRM_PERMISSION.supportView,
+    POST: CRM_PERMISSION.supportEdit,
+    PATCH: CRM_PERMISSION.supportEdit,
+    DELETE: CRM_PERMISSION.supportEdit,
   },
   fields: [
     { name: 'id', type: 'string', label: 'ID', readOnly: true },

@@ -37,13 +37,26 @@ export default function SectionBLandingPage() {
             ) : null}
             {isVisible('stats') ? (
               <div className="flex min-w-0 flex-col gap-3 rounded-xl border border-dashed border-border bg-muted/20 p-5 lg:col-span-1">
-                <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">Module unique</p>
+                <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
+                  3 modules
+                </p>
                 <p className="text-sm leading-relaxed text-secondary-foreground">
-                  Tickets helpdesk et incidents qualité sont regroupés sous un seul module Support — pas de doublon RH ni base d&apos;aide.
+                  Helpdesk, classeur Qualiopi et surface organisme (satisfaction / circuits) —
+                  même arborescence que les autres sections CRM.
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li>· <span className="font-medium text-foreground">Tickets</span> — demandes utilisateurs</li>
-                  <li>· <span className="font-medium text-foreground">Incidents</span> — matériel &amp; processus</li>
+                  <li>
+                    · <span className="font-medium text-foreground">Support</span> — tickets &amp;
+                    incidents
+                  </li>
+                  <li>
+                    · <span className="font-medium text-foreground">Qualiopi</span> — 32 indicateurs
+                    V.9
+                  </li>
+                  <li>
+                    · <span className="font-medium text-foreground">Docs &amp; circuits</span> —
+                    enquêtes &amp; n8n
+                  </li>
                 </ul>
               </div>
             ) : null}

@@ -52,7 +52,7 @@
       "support-qualite": {
         "qualiopi": "Classeur des 32 indicateurs Qualiopi V.9 — statut d'audit, preuves et complétude.",
         "docs-circuits": {
-          "_self": "Hub organisme : Qualiopi, enquêtes satisfaction, circuits n8n et documents de session.",
+          "_self": "Enquêtes satisfaction et circuits n8n de session.",
           "satisfaction": "Enquêtes HOT (J0) et COLD (J+45) — suivi transverse des retours stagiaires.",
           "circuits": "Exécutions des circuits session (jalons J-N → J+N) enregistrées via n8n."
         }
@@ -1272,16 +1272,16 @@
       }
     },
     "supportQualite": {
-      "welcomeDescription": "Tickets support, base d'aide self-service et suivi qualité / incidents.",
+      "docsCircuitsTitle": "Docs & circuits",
+      "docsCircuitsSubtitle": "Enquêtes satisfaction et circuits n8n — module organisme",
+      "welcomeDescription": "Tickets support, classeur Qualiopi et surface organisme (satisfaction / circuits).",
       "menuCardsTitle": "Accès rapide — Support et qualité",
       "menuCardsSubtitle": "{{modules}} modules et {{pages}} pages principales selon le menu CRM",
       "securityHighlightsTitle": "Indicateurs clés — Support & qualité",
-      "docsCircuitsTitle": "Docs & circuits — surface organisme",
-      "docsCircuitsSubtitle": "{{modules}} accès : Qualiopi, satisfaction, circuits et documents de session",
       "cards": {
         "support": "Gestion des tickets, FAQ et accompagnement utilisateurs.",
         "qualiopi": "Classeur des 32 indicateurs Qualiopi — statut d'audit et preuves.",
-        "docsCircuits": "Hub OF : satisfaction, circuits n8n et accès documents de session.",
+        "docsCircuits": "Enquêtes satisfaction et circuits n8n de session.",
         "satisfaction": "Enquêtes à chaud / à froid — réponses et statut d'envoi.",
         "circuits": "Historique transverse des circuits session (n8n).",
         "docs": "Documents OF (convocation, convention, certificat) depuis les sessions.",

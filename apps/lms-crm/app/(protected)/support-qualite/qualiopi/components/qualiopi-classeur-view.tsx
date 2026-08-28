@@ -128,14 +128,14 @@ function IndicatorCard({
   const saveMutation = useMutation({
     mutationFn: async (patch: Record<string, unknown>) => {
       if (!item) throw new Error('Indicateur non initialisé — rechargez la page.');
-      const res = await apiFetch(`/api/entities/complianceDossierItem/${item.id}`, {
+      const res = await apiFetch(`/api/sections/support-qualite/qualiopi/items/${item.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patch),
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error((j as { error?: { message?: string } })?.error?.message || 'Échec de mise à jour');
+        throw new Error((j as { error?: string })?.error || 'Échec de mise à jour');
       }
       return j;
     },
@@ -164,14 +164,14 @@ function IndicatorCard({
       const asset = (j as { data?: { id: string } }).data;
       if (!asset?.id) throw new Error('Réponse serveur invalide');
 
-      const patchRes = await apiFetch(`/api/entities/complianceDossierItem/${item.id}`, {
+      const patchRes = await apiFetch(`/api/sections/support-qualite/qualiopi/items/${item.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fileAssetId: asset.id, auditStatus: 'OK' }),
       });
       if (!patchRes.ok) {
         const pj = await patchRes.json().catch(() => ({}));
-        throw new Error((pj as { error?: { message?: string } })?.error?.message || 'Liaison de la preuve impossible');
+        throw new Error((pj as { error?: string })?.error || 'Liaison de la preuve impossible');
       }
     },
     onSuccess: () => {
@@ -288,47 +288,35 @@ export function QualiopiClasseurView() {
     queryFn: async () => {
       const res = await apiFetch('/api/sections/support-qualite/qualiopi');
       if (!res.ok) throw new Error('fetch');
-      return unwrapSectionApiData<DossierBootstrap>(await res.json());
+      return unwrapSectionApiData<DossierBootstrap & { items: ComplianceItemRow[] }>(
+        await res.json(),
+      );
     },
     staleTime: 1000 * 30,
   });
 
   const dossierId = bootstrapQuery.data?.dossierId;
-
-  const itemsQuery = useQuery({
-    queryKey: [QUERY_KEY, 'items', dossierId],
-    enabled: Boolean(dossierId),
-    queryFn: async () => {
-      const res = await apiFetch(
-        `/api/entities/complianceDossierItem?dossierId=${dossierId}&limit=100&sort=code&dir=asc`,
-      );
-      if (!res.ok) throw new Error('fetch');
-      const json = await res.json();
-      const data = unwrapSectionApiData<{ data: ComplianceItemRow[] }>(json);
-      return data?.data ?? [];
-    },
-  });
+  const items = bootstrapQuery.data?.items ?? [];
 
   const itemsByCode = useMemo(() => {
     const map = new Map<string, ComplianceItemRow>();
-    for (const row of itemsQuery.data ?? []) map.set(row.code, row);
+    for (const row of items) map.set(row.code, row);
     return map;
-  }, [itemsQuery.data]);
+  }, [items]);
 
   const grouped = useMemo(() => qualiopiIndicatorsByCriterion(), []);
 
   const counts = useMemo(() => {
-    const rows = itemsQuery.data ?? [];
-    const total = rows.length;
-    const ok = rows.filter((r) => r.status === 'VALIDATED').length;
-    const ko = rows.filter((r) => r.status === 'REJECTED').length;
-    const toFix = rows.filter((r) => r.status === 'REQUESTED').length;
-    const na = rows.filter((r) => r.status === 'WAIVED').length;
+    const total = items.length;
+    const ok = items.filter((r) => r.status === 'VALIDATED').length;
+    const ko = items.filter((r) => r.status === 'REJECTED').length;
+    const toFix = items.filter((r) => r.status === 'REQUESTED').length;
+    const na = items.filter((r) => r.status === 'WAIVED').length;
     const pending = total - ok - ko - toFix - na;
     return { total, ok, ko, toFix, na, pending };
-  }, [itemsQuery.data]);
+  }, [items]);
 
-  const isLoading = bootstrapQuery.isLoading || (Boolean(dossierId) && itemsQuery.isLoading);
+  const isLoading = bootstrapQuery.isLoading;
 
   if (isLoading) {
     return (
