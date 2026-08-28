@@ -1,7 +1,7 @@
 import { ComplianceService } from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
-import { requireSupportView } from '../../_lib/require-support-auth';
+import { requireSupportView } from '../_lib/require-support-auth';
 import { QUALIOPI_SCHOOL_SUBJECT_ID } from '@/lib/of/qualiopi-indicators';
 import { ensureQualiopiSchoolTemplate } from '@/lib/of/ensure-qualiopi-template';
 
