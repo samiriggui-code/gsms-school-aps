@@ -2,7 +2,12 @@
   "menu": {
     "byPath": {
       "support-qualite": {
-        "qualiopi": "Qualiopi"
+        "qualiopi": "Qualiopi",
+        "docs-circuits": {
+          "_self": "Docs & circuits",
+          "satisfaction": "Satisfaction",
+          "circuits": "Circuits"
+        }
       }
     }
   },
@@ -45,7 +50,12 @@
   "pages": {
     "descriptions": {
       "support-qualite": {
-        "qualiopi": "Qualiopi V.9 32-indicator binder — audit status, evidence and completeness."
+        "qualiopi": "Qualiopi V.9 32-indicator binder — audit status, evidence and completeness.",
+        "docs-circuits": {
+          "_self": "OF hub: Qualiopi, satisfaction surveys, n8n circuits and session documents.",
+          "satisfaction": "HOT (D0) and COLD (D+45) surveys — cross-session trainee feedback.",
+          "circuits": "Session circuit runs (D-N → D+N milestones) recorded via n8n."
+        }
       }
     },
     "home": {
@@ -1266,9 +1276,15 @@
       "menuCardsTitle": "Quick access — Support & quality",
       "menuCardsSubtitle": "{{modules}} modules and {{pages}} main pages per CRM menu",
       "securityHighlightsTitle": "Key metrics — Support & quality",
+      "docsCircuitsTitle": "Docs & circuits — training organization surface",
+      "docsCircuitsSubtitle": "{{modules}} entries: Qualiopi, satisfaction, circuits and session documents",
       "cards": {
         "support": "Tickets, FAQ and user assistance.",
         "qualiopi": "32-indicator Qualiopi binder — audit status and evidence.",
+        "docsCircuits": "OF hub: satisfaction, n8n circuits and session documents.",
+        "satisfaction": "HOT / COLD surveys — responses and send status.",
+        "circuits": "Cross-session circuit run history (n8n).",
+        "docs": "OF documents (invitation, agreement, certificate) from sessions.",
         "qualite": "Quality tracking and incident management."
       }
     },

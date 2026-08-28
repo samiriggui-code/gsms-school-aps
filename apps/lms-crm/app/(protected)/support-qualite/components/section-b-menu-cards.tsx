@@ -1,6 +1,6 @@
 'use client';
 
-import { LifeBuoy, ShieldCheck } from 'lucide-react';
+import { FolderKanban, LifeBuoy, ShieldCheck } from 'lucide-react';
 import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
 const items = [
@@ -21,6 +21,15 @@ const items = [
     backgroundImage: 'bg-4',
     subSections: ['classeur'],
     tone: 'emerald' as const,
+  },
+  {
+    moduleKey: 'support-qualite-docs-circuits',
+    path: '/support-qualite/docs-circuits',
+    descriptionKey: 'sections.supportQualite.cards.docsCircuits',
+    icon: FolderKanban,
+    backgroundImage: 'bg-2',
+    subSections: ['satisfaction', 'circuits'],
+    tone: 'violet' as const,
   },
 ];
 

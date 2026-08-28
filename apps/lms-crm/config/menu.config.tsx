@@ -187,6 +187,14 @@ export const MENU_SIDEBAR: MenuConfig = [
         title: 'Qualiopi',
         path: '/support-qualite/qualiopi',
       },
+      {
+        title: 'Docs & circuits',
+        path: '/support-qualite/docs-circuits',
+        children: [
+          { title: 'Satisfaction', path: '/support-qualite/docs-circuits/satisfaction' },
+          { title: 'Circuits', path: '/support-qualite/docs-circuits/circuits' },
+        ],
+      },
     ],
   },
   {

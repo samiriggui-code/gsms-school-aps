@@ -48,9 +48,24 @@ export function usePageToolbarMeta(path?: string) {
   const { t } = useTranslation();
   const routePath = path ?? pathname;
   const key = menuPathToKey(routePath);
+  const rawDesc = t(`pages.descriptions.${key}`, {
+    defaultValue: '',
+    returnObjects: true,
+  });
+  const description =
+    typeof rawDesc === 'string' && rawDesc !== `pages.descriptions.${key}`
+      ? rawDesc
+      : rawDesc && typeof rawDesc === 'object'
+        ? String(
+            (rawDesc as { _self?: string; title?: string })._self ||
+              (rawDesc as { title?: string }).title ||
+              '',
+          )
+        : '';
+
   return {
     key,
     title: translateMenuTitle({ path: routePath, title: '' }, t),
-    description: t(`pages.descriptions.${key}`, { defaultValue: '' }),
+    description,
   };
 }

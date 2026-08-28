@@ -9,8 +9,22 @@ export function translateMenuTitle(item: MenuItem, t: TFunction): string {
   if (item.titleKey) return t(item.titleKey);
   if (item.path) {
     const key = menuPathToKey(item.path);
-    const translated = t(`menu.byPath.${key}`, { defaultValue: '' });
-    if (translated) return translated;
+    const translated = t(`menu.byPath.${key}`, {
+      defaultValue: '',
+      returnObjects: true,
+    });
+    if (translated && typeof translated === 'string' && translated !== `menu.byPath.${key}`) {
+      return translated;
+    }
+    // Hub imbriqué (ex. docs-circuits) : clé objet avec titre `_self` / `title`
+    if (translated && typeof translated === 'object') {
+      const obj = translated as Record<string, unknown>;
+      const nested =
+        (typeof obj._self === 'string' && obj._self) ||
+        (typeof obj.title === 'string' && obj.title) ||
+        '';
+      if (nested) return nested;
+    }
   }
   if (item.heading) {
     const translated = t(`menu.headings.${item.heading}`, { defaultValue: '' });

@@ -151,7 +151,7 @@
 | **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 + **idée 5** checklist session publiable (Claude) |
 | **GSMS-OF-06** | Ouvert P1 | Facture first-class UX |
 | **GSMS-OF-07** | P2 | BPF Cerfa + **idée 2** pilote garde-fous |
-| **GSMS-OF-08** | 🔶 Partiel | Qualiopi menu sidebar (Cursor) ; hub Docs·Circuits à faire |
+| **GSMS-OF-08** | 🔶 Partiel | Hub Docs & circuits (Cursor) + Qualiopi menu ; listes satisfaction/circuits |
 | **GSMS-OF-09** | P2 | SCORM option |
 | **GSMS-OF-10** | ✅ Fait | Survey DB + lien public + cron J+45 + trigger session |
 | **GSMS-OF-11** | Ouvert P1 | Non-conformité — ERPNext / Qualiopi TO_FIX, **pas** OPAGA |
