@@ -10,112 +10,84 @@ import {
   RoleSchemaType,
 } from '@/app/(protected)/securite-configuration/acces/roles/forms/role-schema';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { SCHOOL_IAM_ROLE_SLUGS } from '@/lib/rh-iam-roles';
 import { createWorkflowEngine } from '@repo/api-core';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+import { listEntity } from '@/lib/framework/engine';
 
-// GET: Fetch all roles with permissions
+// GET: Fetch all roles with permissions (moteur générique + forme legacy UI)
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const page = Number(searchParams.get('page') || 1);
-  const limit = Number(searchParams.get('limit') || 10);
-  const query = searchParams.get('query') || '';
-  const sortField = searchParams.get('sort') || 'createdAt';
-  const sortDirection = searchParams.get('dir') === 'desc' ? 'desc' : 'asc';
-  const skip = (page - 1) * limit;
-
   try {
-    // Validate user session
     const session = await getServerSession(authOptions);
 
     if (!session) {
       return NextResponse.json(
         { message: 'Unauthorized request' },
-        { status: 401 }, // Unauthorized
+        { status: 401 },
       );
     }
 
-    const roleWhere = {
-      isTrashed: false,
-      slug: { in: [...SCHOOL_IAM_ROLE_SLUGS] },
-      name: {
-        contains: query,
-        mode: 'insensitive' as const,
-      },
-    };
-
-    // Count total records matching the filter
-    const total = await prisma.userRole.count({
-      where: roleWhere,
-    });
-
-    let isTableEmpty = false;
-
-    if (total === 0) {
-      // Check if the entire table is empty
-      const overallTotal = await prisma.userRole.count();
-      isTableEmpty = overallTotal === 0;
+    if (!sessionHasPermission(session, IAM_PERMISSION.rolesView)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
+      );
     }
 
-    // Get paginated roles with their permissions
-    const roles =
-      total > 0
-        ? await prisma.userRole.findMany({
-            skip,
-            take: limit,
-            where: roleWhere,
-            orderBy: {
-              [sortField]: sortDirection,
-            },
-            include: {
-              permissions: {
-                select: {
-                  permission: {
-                    select: {
-                      id: true,
-                      name: true,
-                      slug: true,
-                    },
-                  },
-                },
-              },
-            },
+    const result = await listEntity(
+      'role',
+      {
+        searchParams: new URL(request.url).searchParams,
+        headers: request.headers,
+      },
+      session.user.roleSlug,
+    );
+
+    const formattedRoles = result.data.map((role) => {
+      const permissions = role.permissions;
+      const flat = Array.isArray(permissions)
+        ? permissions.map((rp) => {
+            if (rp && typeof rp === 'object' && 'permission' in rp) {
+              return (rp as { permission: unknown }).permission;
+            }
+            return rp;
           })
         : [];
-
-    type RoleWithPermissions = (typeof roles)[number];
-    type RolePermissionItem = NonNullable<RoleWithPermissions['permissions']>[number];
-    // Map permissions into a more straightforward structure
-    const formattedRoles = roles.map((role: RoleWithPermissions) => ({
-      ...role,
-      permissions: role.permissions?.map((rp: RolePermissionItem) => rp.permission),
-    }));
+      return { ...role, permissions: flat };
+    });
 
     return NextResponse.json({
       data: formattedRoles,
       pagination: {
-        total,
-        page,
+        total: result.pagination.total,
+        page: result.pagination.page,
       },
-      empty: isTableEmpty,
+      empty: result.pagination.total === 0,
     });
-  } catch {
-    return NextResponse.json(
-      { message: 'Oops! Something went wrong. Please try again in a moment.' },
-      { status: 500 },
-    );
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'Oops! Something went wrong. Please try again in a moment.';
+    return NextResponse.json({ message }, { status: 500 });
   }
 }
 
 // POST: Add a new role
 export async function POST(request: NextRequest) {
   try {
-    // Validate user session
     const session = await getServerSession(authOptions);
 
     if (!session) {
       return NextResponse.json(
         { message: 'Unauthorized request' },
-        { status: 401 }, // Unauthorized
+        { status: 401 },
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.rolesEdit)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 
@@ -126,14 +98,13 @@ export async function POST(request: NextRequest) {
     if (!parsedData.success) {
       return NextResponse.json(
         { message: 'Invalid input. Please check your data and try again.' },
-        { status: 400 }, // Bad Request
+        { status: 400 },
       );
     }
 
     const { name, slug, description, permissions }: RoleSchemaType =
       parsedData.data;
 
-    // Check for uniqueness
     const isUniqueRole = await isUnique('userRole', { slug, name });
     if (!isUniqueRole) {
       return NextResponse.json(
@@ -142,10 +113,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Use a Prisma transaction to ensure all operations succeed or fail together
     const createdRole = await prisma.$transaction(
       async (tx: Prisma.TransactionClient) => {
-        // Create the new role
         const newRole = await tx.userRole.create({
           data: {
             name,
@@ -154,7 +123,6 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // Add permissions to UserRolePermission table
         if (permissions && permissions.length > 0) {
           const rolePermissionEntries = permissions.map(
             (permissionId: string) => ({
@@ -168,7 +136,6 @@ export async function POST(request: NextRequest) {
           });
         }
 
-        // Log the event
         await systemLog(
           {
             event: 'create',
@@ -181,7 +148,6 @@ export async function POST(request: NextRequest) {
           tx,
         );
 
-        // Fetch the newly created role with its permissions
         return await tx.userRole.findUnique({
           where: { id: newRole.id },
           include: {

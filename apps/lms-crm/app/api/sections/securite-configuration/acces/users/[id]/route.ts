@@ -16,6 +16,7 @@ import {
   createWorkflowEngine,
 } from '@repo/api-core';
 import { serializeUserRoleForIam } from '@/lib/iam/serialize-user-role';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 const userDetailInclude = {
   role: {
@@ -62,6 +63,13 @@ export async function GET(
       );
     }
 
+    if (!sessionHasPermission(session, IAM_PERMISSION.usersView)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
+      );
+    }
+
     const { id } = await params;
 
     await syncUserAbsenceStatus(prisma, id);
@@ -105,6 +113,13 @@ export async function PUT(
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.usersEdit)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 
@@ -222,6 +237,13 @@ export async function DELETE(
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.usersDelete)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 

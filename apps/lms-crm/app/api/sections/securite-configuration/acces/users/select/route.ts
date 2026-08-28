@@ -2,23 +2,44 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import {
+  CRM_PERMISSION,
+  IAM_PERMISSION,
+  sessionHasAnyPermission,
+} from '@/lib/auth/crm-permissions';
 
+/**
+ * Dropdown utilisateurs (RH / académique / IAM).
+ * Fail-closed : session + au moins une permission métier liée aux consommateurs.
+ */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const query = searchParams.get('query') || ''; // Extract search query
+  const query = searchParams.get('query') || '';
 
   try {
-    // Validate user session
     const session = await getServerSession(authOptions);
 
     if (!session) {
       return NextResponse.json(
         { message: 'Unauthorized request' },
-        { status: 401 }, // Unauthorized
+        { status: 401 },
       );
     }
 
-    // Fetch users
+    // IAM (skill §2) + ressources/académique car 8 dropdowns RH/vie scolaire consomment cette route.
+    if (
+      !sessionHasAnyPermission(session, [
+        IAM_PERMISSION.usersView,
+        CRM_PERMISSION.ressourcesView,
+        CRM_PERMISSION.academiqueView,
+      ])
+    ) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
+      );
+    }
+
     const users = await prisma.user.findMany({
       where: {
         OR: [
