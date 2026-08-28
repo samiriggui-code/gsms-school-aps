@@ -135,7 +135,14 @@ function IndicatorCard({
       });
       const j = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error((j as { error?: string })?.error || 'Échec de mise à jour');
+        throw new Error(
+          (j as { error?: { message?: string } | string })?.error &&
+            typeof (j as { error?: { message?: string } }).error === 'object'
+            ? ((j as { error: { message?: string } }).error.message ?? 'Échec de mise à jour')
+            : typeof (j as { error?: string }).error === 'string'
+              ? (j as { error: string }).error
+              : 'Échec de mise à jour',
+        );
       }
       return j;
     },
