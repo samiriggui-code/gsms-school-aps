@@ -13,12 +13,14 @@ export type RecordStatusEvidenceInput = {
   formationId?: string | null;
   learnerUserId?: string | null;
   companyId?: string | null;
+  /** Codes indicateur Qualiopi V9 (ex. Q-I01) → EvidenceIndicatorLink. */
+  indicatorCodes?: string[];
   metadata?: Record<string, unknown>;
 };
 
-/** Preuve HISTORIQUE/DOCUMENT liée à un changement de statut (SD-06 / G8). */
+/** Preuve liée à un changement de statut (SD-06 / G8) + liens indicateurs optionnels (G9). */
 export async function recordStatusEvidence(db: Db, input: RecordStatusEvidenceInput) {
-  return db.evidence.create({
+  const evidence = await db.evidence.create({
     data: {
       category: input.category,
       sourceType: input.sourceType,
@@ -36,4 +38,13 @@ export async function recordStatusEvidence(db: Db, input: RecordStatusEvidenceIn
       },
     },
   });
+
+  const codes = [...new Set((input.indicatorCodes ?? []).map((c) => c.trim()).filter(Boolean))];
+  for (const indicatorCode of codes) {
+    await db.evidenceIndicatorLink.create({
+      data: { evidenceId: evidence.id, indicatorCode },
+    });
+  }
+
+  return evidence;
 }

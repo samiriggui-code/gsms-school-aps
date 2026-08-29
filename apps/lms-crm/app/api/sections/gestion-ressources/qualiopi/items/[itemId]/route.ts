@@ -107,6 +107,7 @@ export async function PATCH(request: NextRequest, context: Ctx) {
           eventName: 'COMPLIANCE_ITEM_STATUS_CHANGED',
           fromStatus,
           toStatus: row.status,
+          indicatorCodes: row.code ? [row.code] : undefined,
           metadata: {
             indicatorCode: row.code,
             dossierId: row.dossierId,

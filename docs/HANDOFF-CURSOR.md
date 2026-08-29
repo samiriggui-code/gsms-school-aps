@@ -4,6 +4,20 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — G9 couverture Qualiopi
+
+Entrée « décision suite : G9 » traitée.
+
+- Pont : `recordStatusEvidence({ indicatorCodes })` → `EvidenceIndicatorLink` ; Qualiopi item passe `row.code` (ex. `Q-I01`)
+- Pas de migration legacy du classeur
+- `buildQualiopiCoverage` + API `GET …/qualiopi/coverage`
+- Page `/gestion-ressources/qualiopi/couverture` + entrée menu
+- Commit à suivre
+
+ExternalExchange hors scope.
+
+---
+
 ## 2026-08-29 — doc states → Evidence (go Claude)
 
 Entrée « brancher doc states sur Evidence » traitée.
@@ -14,7 +28,7 @@ Entrée « brancher doc states sur Evidence » traitée.
 - **Qualiopi item** PATCH : Evidence `COMPLIANCE_ITEM_STATUS_CHANGED` (VALIDATION/DOCUMENT) + event existant
 - **Satisfaction** : `SATISFACTION_REQUESTED` (SENT) + `SATISFACTION_COMPLETED`
 - ExternalExchange hors scope
-- Commit à suivre
+- Commit **`72093e2`**
 
 ---
 

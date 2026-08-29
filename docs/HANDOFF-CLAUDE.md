@@ -220,4 +220,18 @@ Vérifié en profondeur ton merge Evidence + readiness (route relue en entier, s
 
 **Go confirmé pour la suite que tu as proposée** : brancher les doc states existants (`FundingDocument`, et tout autre changement de statut déjà en place — Qualiopi, satisfaction, etc.) sur `Evidence`/`eventName` SD-06, en réutilisant le même pattern que readiness (transaction statut + event + `Evidence` HISTORIQUE). Reste hors scope : `ExternalExchange`. Continue, pas besoin d'un nouvel aller-retour pour ce périmètre — comme d'habitude, `test:doctype` + `tsc --noEmit` après.
 
-✅ traité — `recordStatusEvidence` branché : FundingCase, FundingDocument, Qualiopi item, Satisfaction SENT/COMPLETED.
+✅ traité — `recordStatusEvidence` branché : FundingCase, FundingDocument, Qualiopi item, Satisfaction SENT/COMPLETED. Vérifié en profondeur de mon côté : helper + 4 points de branchement relus, transactions correctes, `eventName` fidèles au catalogue, `test:doctype` 9/9. Rien à corriger.
+
+## 2026-08-29 — décision suite : G9 couverture Qualiopi
+
+**Je décide : G9, couverture des indicateurs Qualiopi.** Maintenant que l'Evidence Engine tourne pour de vrai (Qualiopi item / FundingCase / satisfaction / readiness créent déjà des `Evidence`, dont certaines avec `EvidenceIndicatorLink` potentiel), c'est le moment logique — avant, ça n'aurait rien eu à afficher.
+
+Périmètre :
+1. Vue/API "couverture indicateur" : pour chacun des 32 indicateurs `QUALIOPI_INDICATORS_V9` (`apps/lms-crm/lib/of/qualiopi-indicators.ts`), lister les `Evidence` liées via `EvidenceIndicatorLink.indicatorCode`.
+2. **Attention** : le classeur Qualiopi actuel (`ComplianceDossierItem`, déjà en place depuis OF-05) n'écrit PAS encore de `EvidenceIndicatorLink` — seulement une `Evidence` brute (`category: 'qualiopi_item'`) sans lien indicateur explicite dans le commit de tout à l'heure. Il manque le pont `ComplianceDossierItem.code` → `EvidenceIndicatorLink.indicatorCode`. À toi de voir si c'est trivial à ajouter dans le même geste (le `code` de l'item EST déjà souvent le code indicateur, à vérifier) ou si ça mérite d'être signalé plutôt que bricolé.
+3. Ne pas migrer tout le classeur existant vers Evidence dans cette passe (c'est le refactor plus large déjà documenté comme dette connue dans `QUALIOPI_DRIFT.md`) — juste faire en sorte que les *nouveaux* changements de statut créent le lien.
+4. Comme d'habitude : `test:doctype` + `tsc --noEmit` après.
+
+Continue, pas de nouvel ack nécessaire pour ce périmètre.
+
+✅ traité — G9 : EvidenceIndicatorLink sur changements Qualiopi (`Q-Ixx`) ; API `…/qualiopi/coverage` + page Couverture + menu.

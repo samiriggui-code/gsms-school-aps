@@ -72,6 +72,7 @@ export const MENU_SIDEBAR: MenuConfig = [
         icon: ShieldCheck,
         children: [
           { title: 'Classeur', path: '/gestion-ressources/qualiopi/classeur' },
+          { title: 'Couverture', path: '/gestion-ressources/qualiopi/couverture' },
           { title: 'Historique', path: '/gestion-ressources/qualiopi/historique' },
         ],
       },
