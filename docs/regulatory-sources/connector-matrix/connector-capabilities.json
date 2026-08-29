@@ -1,0 +1,181 @@
+{
+  "$comment": "Capacités réelles par financeur, dérivées des sources dans source-registry.json. Chaque entrée référence les source_id qui la justifient. verified=false signifie : hypothèse raisonnable mais aucune source officielle trouvée.",
+  "last_verified_at": "2026-08-29",
+  "connectors": [
+    {
+      "connector_id": "EDOF_CATALOG",
+      "funder": "CPF / EDOF (Caisse des Dépôts)",
+      "scope": "Publication du catalogue de formations",
+      "api_available": false,
+      "transport": ["XML_FILE", "MANUAL_PORTAL"],
+      "format": "XML (XSD Lheo_import_fichier_xml_optimise)",
+      "authentication": "Session portail EDOF (OIDC efpconnect.emploi.gouv.fr) + code de sécurité e-mail depuis 03/09/2026",
+      "data_sent": ["formation", "action", "session (catalogue)"],
+      "data_received": ["statut de validation / rejet import"],
+      "documents": ["fichier XML catalogue"],
+      "sources": ["EDOF_XML_KIT_2026_06"],
+      "verified": true
+    },
+    {
+      "connector_id": "EDOF_DOSSIER",
+      "funder": "CPF / EDOF (Caisse des Dépôts)",
+      "scope": "Dossiers, service fait, appel à règlement",
+      "api_available": false,
+      "transport": ["MANUAL_PORTAL"],
+      "format": "Saisie écran",
+      "authentication": "Portail EDOF + code de sécurité e-mail (depuis 03/09/2026)",
+      "data_sent": ["entrée en formation", "déclaration de service fait", "appel à règlement"],
+      "data_received": ["statut dossier", "décision de règlement (ordonnancement direct CDC)"],
+      "documents": ["convention", "attestation", "justificatifs"],
+      "sources": ["EDOF_SECURITE_ACCES_2026_09", "EDOF_FACTURATION_ELECTRONIQUE_2026_08"],
+      "verified": true,
+      "notes": "Ne PAS câbler sur le pipeline Factur-X/PDP interne — explicitement hors périmètre selon la CDC."
+    },
+    {
+      "connector_id": "FRANCE_TRAVAIL_KAIROS_PORTAIL",
+      "funder": "France Travail — Kairos (portail)",
+      "scope": "Devis AIF/POEI, AIS, AES, assiduité, bilan, facturation",
+      "api_available": false,
+      "transport": ["MANUAL_PORTAL"],
+      "format": "Saisie écran",
+      "authentication": "portail-emploi.fr + habilitation GID Partenaires (identifiants envoyés par courrier postal)",
+      "data_sent": ["devis AIF/POEI", "attestations"],
+      "data_received": ["validation conseiller", "statut inscription (AIS)"],
+      "documents": ["devis", "attestation d'inscription", "attestation d'entrée"],
+      "sources": ["FT_KAIROS_PORTAIL"],
+      "verified": true,
+      "notes": "Saisie devis conditionnée à l'affichage de la certification Qualiopi côté France Travail."
+    },
+    {
+      "connector_id": "FRANCE_TRAVAIL_API_KAIROS",
+      "funder": "France Travail — famille API Kairos",
+      "scope": "Zéro Saisie (push AIS/AES), Parcours Formation (lecture inscriptions/présences), Individu, Open Formation",
+      "api_available": true,
+      "transport": ["REST_JSON"],
+      "format": "JSON",
+      "authentication": "OAuth2 client_credentials (client id + secret via francetravail.io), mTLS disponible. Open Formation en accès libre (licence Etalab) ; les 3 autres API sont à accès conditionné (mode test puis demande réelle).",
+      "apis": [
+        {
+          "name": "Zéro Saisie",
+          "direction": "OF_TO_FT",
+          "payload": ["AIS", "AES", "présence", "résultats"],
+          "access": "conditioned",
+          "purpose": "Supprimer la double saisie Kairos"
+        },
+        {
+          "name": "Parcours de Formation",
+          "direction": "FT_TO_OF",
+          "payload": ["inscriptions ICO", "présences/résultats ICO", "AIS", "AES"],
+          "access": "conditioned"
+        },
+        {
+          "name": "Open Formation",
+          "direction": "FT_TO_PUBLIC",
+          "payload": ["offre / partenaires", "dates RDV session"],
+          "access": "open_etalab",
+          "quota_hint": "~100k appels/mois"
+        },
+        {
+          "name": "Individu",
+          "direction": "FT_TO_OF",
+          "payload": ["données stagiaire Kairos"],
+          "access": "conditioned",
+          "notes": "Variante Individu étendue réservée aux financeurs"
+        }
+      ],
+      "data_sent": ["AIS", "AES", "présence", "résultats"],
+      "data_received": ["inscriptions ICO", "présences/résultats ICO", "AIS", "AES", "données individu stagiaire", "plages de candidature / RDV session"],
+      "documents": [],
+      "sources": ["FT_KAIROS_API_CATALOGUE", "FT_OPEN_FORMATION", "FT_ZERO_SAISIE_PARCOURS_INDIVIDU", "FT_OAUTH2_DOC", "FT_OF_ACTEURS_PAGE"],
+      "verified": true,
+      "verification_level": "PARTIAL",
+      "notes": "Existence + destination OF VERIFIED (catalogue + Open Formation). Schémas exacts, scopes OAuth, SLA, volumétrie, prérequis contractuels des 3 API conditionnées = UNVERIFIED jusqu'à lecture fiches login. Action : créer compte francetravail.io. Contact données réelles : piformation.00885@francetravail.fr. Ne pas confondre avec FRANCE_TRAVAIL_KAIROS_PORTAIL (devis AIF/POEI) ni Anotéa."
+    },
+    {
+      "connector_id": "AGORA",
+      "funder": "AGORA (hub CDC/DGEFP)",
+      "scope": "Hub de données financeurs",
+      "api_available": true,
+      "in_scope_for_gsms": false,
+      "transport": [],
+      "sources": ["AGORA_ELIGIBILITE"],
+      "verified": true,
+      "notes": "Existe et a des API, mais critères d'éligibilité excluent explicitement les organismes de formation (usage réservé aux financeurs : Régions, OPCO, France Travail...). Ne pas développer de connecteur GSMS vers AGORA."
+    },
+    {
+      "connector_id": "OPCO_API_CONVERGENCE_APPRENTISSAGE",
+      "funder": "Les 11 OPCO — apprentissage uniquement",
+      "scope": "Contrats Cerfa, conventions, factures, certificats de réalisation (apprentissage)",
+      "api_available": true,
+      "transport": ["REST_JSON"],
+      "format": "JSON (OpenAPI 3.0.4)",
+      "authentication": "Clé API X-API-KEY (CFA_KEY), une par OPCO, + headers EDITEUR/LOGICIEL/VERSION obligatoires",
+      "data_sent": ["dossier (Cerfa / Cerfa+Convention)", "facture", "certificat de réalisation", "rupture de contrat"],
+      "data_received": ["état des dossiers", "état des factures", "expiration de la clé (cfakeyinfo)"],
+      "documents": ["Cerfa V14", "convention", "certificat de réalisation"],
+      "sources": ["OPCO_LISTE_OFFICIELLE", "OPCO_API_CONVERGENCE_PORTAIL", "OPCO_API_CONVERGENCE_ACCROCHAGE", "OPCO_ATLAS_NORME"],
+      "verified": true,
+      "notes": "Ne s'applique QUE si GSMS School a une activité CFA/apprentissage. Implémentation très inégale par OPCO — voir opco/README.md pour le détail (ex. certificats de réalisation = AFDAS seul en prod)."
+    },
+    {
+      "connector_id": "OPCO_HORS_APPRENTISSAGE",
+      "funder": "Les 11 OPCO — formation continue (plan de développement des compétences)",
+      "scope": "Demande de prise en charge, convention, assiduité, facture",
+      "api_available": false,
+      "transport": ["MANUAL_PORTAL"],
+      "format": "Saisie écran + PDF",
+      "authentication": "Identifiants extranet prestataire propres à chaque OPCO (ex. MyA/Afdas, myAtlas)",
+      "data_sent": ["demande de prise en charge", "certification d'assiduité", "facture"],
+      "data_received": ["décision de prise en charge", "statut de règlement"],
+      "documents": ["convention", "facture", "justificatifs d'assiduité"],
+      "sources": ["OPCO_AFDAS_MYA_HORS_APPRENTISSAGE"],
+      "verified": false,
+      "notes": "Vérifié individuellement pour AFDAS et ATLAS seulement. Les 7 autres OPCO (AKTO, Constructys, L'Opcommerce, OCAPIAT, OPCO Mobilités, OPCO Santé, Uniformation) sont non vérifiés sur ce volet précis — aucun indice trouvé d'une extension de la norme Convergence, mais pas de confirmation individuelle."
+    },
+    {
+      "connector_id": "AGEFIPH",
+      "funder": "Agefiph",
+      "scope": "Financement / accompagnement lié au handicap",
+      "api_available": false,
+      "transport": ["MANUAL_PORTAL"],
+      "format": "Formulaire web + pièces jointes PDF",
+      "authentication": "Compte personnel agefiph.fr / extranet suiviaction.agefiph.fr",
+      "data_sent": ["demande d'aide", "suivi d'action formation"],
+      "data_received": ["décision", "statut"],
+      "documents": ["dossier de demande", "justificatifs"],
+      "sources": ["AGEFIPH_DEPOT_DEMANDE", "AGEFIPH_EXTRANET_PRESTATAIRES"],
+      "verified": false,
+      "notes": "Absence d'API non prouvée, seulement non documentée publiquement. Touche aussi Learner Accessibility / Handicap Workflow, pas uniquement le financement."
+    },
+    {
+      "connector_id": "TRANSITIONS_PRO",
+      "funder": "Transitions Pro (14 associations régionales)",
+      "scope": "Dossier PTP (Projet de Transition Professionnelle)",
+      "api_available": false,
+      "transport": ["MANUAL_PORTAL"],
+      "format": "Saisie écran (volet OF du dossier)",
+      "authentication": "Identifiants espace personnel, par ATpro régionale",
+      "data_sent": ["heures réalisées (assiduité)", "certificat de réalisation"],
+      "data_received": ["décision de financement", "statut du dossier"],
+      "documents": ["certificat de réalisation (remplace attestations de présence depuis 01/06/2020)"],
+      "sources": ["TRANSITIONS_PRO_SERVICES_OF", "TRANSITIONS_PRO_REGIONAL_STRUCTURE"],
+      "verified": false,
+      "notes": "Socle applicatif commun aux 14 régions plausible mais non confirmé par une source nommant un outil national partagé."
+    },
+    {
+      "connector_id": "REGIONS_PRF",
+      "funder": "Régions / Conseils régionaux (PRF)",
+      "scope": "Financement formation via marchés publics régionaux",
+      "api_available": false,
+      "transport": ["XML_FILE", "MANUAL_PORTAL"],
+      "format": "LHÉO XML pour l'offre catalogue vers le Carif-Oref régional ; portail/marché public pour les dossiers",
+      "authentication": "Variable par région",
+      "data_sent": ["offre de formation (LHÉO)"],
+      "data_received": ["remontée automatique vers Kairos via Carif-Oref"],
+      "documents": [],
+      "sources": ["LHEO_DECRET"],
+      "verified": false,
+      "notes": "Aucune API de gestion de dossiers de financement trouvée. Seul flux normalisé = publication de l'offre en LHÉO. 13-18 régions non auditées individuellement."
+    }
+  ]
+}

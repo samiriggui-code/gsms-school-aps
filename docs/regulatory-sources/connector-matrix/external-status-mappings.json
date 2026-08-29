@@ -1,0 +1,38 @@
+{
+  "updated_at": "2026-08-29",
+  "notes": "Normaliser les libellés externes vers FundingCase status GSMS. Remplir au fil des vérifications.",
+  "canonical_statuses": [
+    "DRAFT",
+    "DOCUMENTS_REQUIRED",
+    "READY_TO_SUBMIT",
+    "SUBMITTED",
+    "PENDING",
+    "APPROVED",
+    "PARTIALLY_APPROVED",
+    "REJECTED",
+    "SERVICE_IN_PROGRESS",
+    "SERVICE_COMPLETED",
+    "JUSTIFICATION_REQUIRED",
+    "READY_TO_INVOICE",
+    "INVOICED",
+    "PAYMENT_PENDING",
+    "PAID",
+    "CLOSED"
+  ],
+  "mappings": [
+    {
+      "provider": "EDOF",
+      "external_status": null,
+      "gsms_status": null,
+      "source_id": "EDOF_GUIDE_ENTREE_DSF",
+      "status": "TODO_EXTRACT_FROM_GUIDE"
+    },
+    {
+      "provider": "FRANCE_TRAVAIL_KAIROS",
+      "external_status": null,
+      "gsms_status": null,
+      "source_id": "FT_KAIROS_PRESENTATION",
+      "status": "TODO"
+    }
+  ]
+}

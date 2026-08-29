@@ -1,0 +1,55 @@
+{
+  "updated_at": "2026-08-29",
+  "notes": "Checklists FundingCase par funder_type. Liens Evidence → Qualiopi via EvidenceRule (pas n8n).",
+  "by_funder_type": {
+    "CPF": {
+      "source_ids": ["EDOF_GUIDE_INSCRIPTION", "EDOF_GUIDE_ENTREE_DSF", "EDOF_GUIDE_FACTURATION"],
+      "required_documents": [
+        "identity",
+        "needs_analysis_or_positioning",
+        "convention_or_contract",
+        "attendance",
+        "service_done_declaration",
+        "invoice"
+      ],
+      "mode": "ASSISTED_PORTAL"
+    },
+    "FRANCE_TRAVAIL": {
+      "source_ids": ["FT_AIF_PUBLIC", "FT_KAIROS_PRESENTATION"],
+      "required_documents": [
+        "quote_aif",
+        "prescription_or_validation",
+        "attendance",
+        "completion_certificate",
+        "invoice"
+      ],
+      "mode": "ASSISTED_PORTAL"
+    },
+    "OPCO": {
+      "source_ids": [],
+      "required_documents": [
+        "funding_request",
+        "company_agreement",
+        "attendance",
+        "completion_certificate",
+        "invoice"
+      ],
+      "mode": "ASSISTED_PORTAL"
+    },
+    "AGEFIPH": {
+      "source_ids": ["AGEFIPH_AIDES", "AGEFIPH_ADAPTATION_FORMATION"],
+      "required_documents": [
+        "adaptation_request",
+        "supporting_quotes",
+        "implementation_proof"
+      ],
+      "mode": "ASSISTED_PORTAL",
+      "cross_links": ["AccessibilityWorkflow", "QualiopiEngine"]
+    },
+    "COMPANY": {
+      "source_ids": [],
+      "required_documents": ["quote", "convention", "attendance", "invoice", "payment"],
+      "mode": "INTERNAL"
+    }
+  }
+}

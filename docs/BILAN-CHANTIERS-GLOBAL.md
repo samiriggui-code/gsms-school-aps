@@ -1,9 +1,9 @@
 # Bilan de chantiers — GSMS
 
-**Date mise à jour :** 28 août 2026 (deploy OF/IAM prod + menu Qualiopi)  
+**Date mise à jour :** 29 août 2026 (menu arbre + cartographie CRM + deploy purge)  
 **Périmètre :** VisioFormation · GSMS · ERPNext/Frappe · exports Qualiopi/satisfaction · Frappe Learning · **Formacoop/OPAGA**  
 **Principe :** plusieurs gisements d’idées, **un seul produit exécuté** — ne pas tout démarrer en parallèle.  
-**Pour Claude :** lire §0 bis + §4 avant de pousser du code OF — trajectoire corrigée (docs/circuits/BPF/financeurs > pas de module Qualiopi audit depuis OPAGA).
+**Pour Claude :** lire **`docs/CARTOGRAPHIE-CRM.md`** (arbre menu + interconnexions) puis §0 bis + §4 — trajectoire corrigée (docs/circuits/BPF/financeurs > pas de module Qualiopi audit depuis OPAGA).
 
 ---
 
