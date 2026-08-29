@@ -9,6 +9,8 @@ import {
   ToolbarTitle,
 } from '@/components/common/toolbar';
 import { Button } from '@/components/ui/button';
+import { prisma } from '@/lib/prisma';
+import { syncFundingProvidersFromConnectors } from '@/lib/funding/sync-providers-from-matrix';
 
 type ConnectorRow = {
   connector_id: string;
@@ -25,33 +27,36 @@ type CapabilitiesFile = {
 };
 
 async function loadConnectors(): Promise<CapabilitiesFile> {
-  const file = path.join(
-    process.cwd(),
-    '../../docs/regulatory-sources/connector-matrix/connector-capabilities.json',
-  );
-  try {
-    const raw = await readFile(file, 'utf8');
-    return JSON.parse(raw) as CapabilitiesFile;
-  } catch {
-    const alt = path.join(
-      process.cwd(),
-      'docs/regulatory-sources/connector-matrix/connector-capabilities.json',
-    );
+  const candidates = [
+    path.join(process.cwd(), '../../docs/regulatory-sources/connector-matrix/connector-capabilities.json'),
+    path.join(process.cwd(), 'docs/regulatory-sources/connector-matrix/connector-capabilities.json'),
+  ];
+  for (const file of candidates) {
     try {
-      const raw = await readFile(alt, 'utf8');
+      const raw = await readFile(file, 'utf8');
       return JSON.parse(raw) as CapabilitiesFile;
     } catch {
-      return { connectors: [] };
+      /* next */
     }
   }
+  return { connectors: [] };
 }
 
-/** CH-SAFE : lecture matrix connecteurs existante — pas encore FundingCase Prisma. */
+/** G5 — registre FundingProvider Prisma + matrice connecteurs (référence). */
 export default async function FinanceursPage() {
   const data = await loadConnectors();
-  const rows = data.connectors ?? [];
-  const verified = rows.filter((r) => r.verified).length;
-  const withApi = rows.filter((r) => r.api_available).length;
+  const matrixRows = data.connectors ?? [];
+
+  if ((await prisma.fundingProvider.count()) === 0 && matrixRows.length > 0) {
+    await syncFundingProvidersFromConnectors(prisma, matrixRows);
+  }
+
+  const providers = await prisma.fundingProvider.findMany({
+    orderBy: { label: 'asc' },
+    include: { _count: { select: { cases: true } } },
+  });
+  const caseCount = await prisma.fundingCase.count();
+  const activeProviders = providers.filter((p) => p.isActive).length;
 
   return (
     <Container>
@@ -59,9 +64,8 @@ export default async function FinanceursPage() {
         <ToolbarHeading>
           <ToolbarTitle>Financeurs</ToolbarTitle>
           <ToolbarDescription>
-            Matrice connecteurs (sources réglementaires) — registre FundingCase Prisma
-            en attente du gate post G1-E. Dernière vérif matrix :{' '}
-            {data.last_verified_at ?? 'n/a'}.
+            Registre Prisma FundingProvider / FundingCase (G5). Matrice connecteurs en référence
+            (dernière vérif : {data.last_verified_at ?? 'n/a'}).
           </ToolbarDescription>
         </ToolbarHeading>
         <Button variant="outline" size="sm" asChild>
@@ -71,19 +75,57 @@ export default async function FinanceursPage() {
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <div className="rounded-md border p-3">
-          <div className="text-2xl font-semibold">{rows.length}</div>
-          <div className="text-muted-foreground text-sm">Connecteurs listés</div>
+          <div className="text-2xl font-semibold">{providers.length}</div>
+          <div className="text-muted-foreground text-sm">Financeurs en base</div>
         </div>
         <div className="rounded-md border p-3">
-          <div className="text-2xl font-semibold">{verified}</div>
-          <div className="text-muted-foreground text-sm">Sources vérifiées</div>
+          <div className="text-2xl font-semibold">{activeProviders}</div>
+          <div className="text-muted-foreground text-sm">Actifs</div>
         </div>
         <div className="rounded-md border p-3">
-          <div className="text-2xl font-semibold">{withApi}</div>
-          <div className="text-muted-foreground text-sm">API déclarée disponible</div>
+          <div className="text-2xl font-semibold">{caseCount}</div>
+          <div className="text-muted-foreground text-sm">Dossiers FundingCase</div>
         </div>
       </div>
 
+      <h2 className="mb-2 text-sm font-semibold tracking-wide uppercase">Registre FundingProvider</h2>
+      <div className="mb-8 overflow-x-auto rounded-md border">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-muted/40 border-b">
+            <tr>
+              <th className="p-2 font-medium">Code</th>
+              <th className="p-2 font-medium">Libellé</th>
+              <th className="p-2 font-medium">Type</th>
+              <th className="p-2 font-medium">Transport</th>
+              <th className="p-2 font-medium">Actif</th>
+              <th className="p-2 font-medium">Dossiers</th>
+            </tr>
+          </thead>
+          <tbody>
+            {providers.map((p) => (
+              <tr key={p.id} className="border-b last:border-0">
+                <td className="p-2 font-mono text-xs">{p.code}</td>
+                <td className="p-2">{p.label}</td>
+                <td className="p-2 text-xs">{p.funderType}</td>
+                <td className="p-2 text-xs">{p.transport}</td>
+                <td className="p-2">{p.isActive ? 'oui' : 'non'}</td>
+                <td className="p-2">{p._count.cases}</td>
+              </tr>
+            ))}
+            {providers.length === 0 ? (
+              <tr>
+                <td className="text-muted-foreground p-4" colSpan={6}>
+                  Aucun financeur en base — lancer POST /api/sections/…/financeurs pour sync matrix.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 className="mb-2 text-sm font-semibold tracking-wide uppercase">
+        Matrice connecteurs (référence)
+      </h2>
       <div className="overflow-x-auto rounded-md border">
         <table className="w-full text-left text-sm">
           <thead className="bg-muted/40 border-b">
@@ -97,7 +139,7 @@ export default async function FinanceursPage() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
+            {matrixRows.map((r) => (
               <tr key={r.connector_id} className="border-b last:border-0">
                 <td className="p-2 font-mono text-xs">{r.connector_id}</td>
                 <td className="p-2">{r.funder}</td>
@@ -107,13 +149,6 @@ export default async function FinanceursPage() {
                 <td className="p-2">{r.verified ? 'oui' : 'non'}</td>
               </tr>
             ))}
-            {rows.length === 0 ? (
-              <tr>
-                <td className="text-muted-foreground p-4" colSpan={6}>
-                  Impossible de charger docs/regulatory-sources/connector-matrix/…
-                </td>
-              </tr>
-            ) : null}
           </tbody>
         </table>
       </div>
