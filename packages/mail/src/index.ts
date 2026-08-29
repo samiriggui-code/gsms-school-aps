@@ -76,6 +76,7 @@ export {
 export {
   sendSatisfactionSurveyInviteEmail,
   type SatisfactionSurveyInviteMailContext,
+  type SatisfactionInviteMailTiming,
 } from './satisfaction-flows';
 
 export { sendFinanceFactureEmail, type FinanceFactureEmailInput } from './finance-flows';

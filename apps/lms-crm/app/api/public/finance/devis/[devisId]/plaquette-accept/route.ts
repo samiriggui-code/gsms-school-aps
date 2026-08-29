@@ -25,9 +25,9 @@ export async function POST(request: NextRequest, context: Ctx) {
       return ok({ accepted: true, already: true, referenceCode: row.referenceCode });
     }
 
-    if (row.status !== FinanceDevisStatus.SENT) {
+    if (row.status !== FinanceDevisStatus.SENT && row.status !== FinanceDevisStatus.VIEWED) {
       return fail(
-        `L’acceptation en ligne est possible lorsque la proposition a été envoyée (statut actuel : ${row.status}).`,
+        `L’acceptation en ligne est possible lorsque la proposition a été envoyée ou consultée (statut actuel : ${row.status}).`,
         400,
       );
     }

@@ -1,10 +1,17 @@
 /** Parcours commercial devis — libellés et étapes pour l’UI. */
 
-export type DevisWorkflowStatus = 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
+export type DevisWorkflowStatus =
+  | 'DRAFT'
+  | 'SENT'
+  | 'VIEWED'
+  | 'ACCEPTED'
+  | 'REJECTED'
+  | 'EXPIRED';
 
 export const DEVIS_WORKFLOW_STEPS = [
   { key: 'DRAFT', label: 'Brouillon', hint: 'Compléter client, lignes et montants' },
-  { key: 'SENT', label: 'Envoyé', hint: 'En attente de réponse du client (plaquette + chat)' },
+  { key: 'SENT', label: 'Envoyé', hint: 'En attente d’ouverture / réponse du client' },
+  { key: 'VIEWED', label: 'Consulté', hint: 'Plaquette ouverte — relancer ou attendre l’acceptation' },
   { key: 'ACCEPTED', label: 'Accepté', hint: 'Visible dans Factures — émettre PDF et encaissement' },
 ] as const;
 
@@ -13,7 +20,9 @@ export function devisNextStepLabel(status: string): string {
     case 'DRAFT':
       return 'Finaliser puis envoyer (e-mail ou lien client)';
     case 'SENT':
-      return 'Client : plaquette + chat — vous : relancer ou marquer accepté';
+      return 'Client : ouvrir la plaquette — vous : relancer si besoin';
+    case 'VIEWED':
+      return 'Client : accepter via plaquette — vous : relancer ou marquer accepté';
     case 'ACCEPTED':
       return 'Ouvrir dans Factures → PDF facture + paiement';
     case 'REJECTED':
@@ -35,6 +44,8 @@ export function devisStatusBadgeVariant(
       return 'warning';
     case 'SENT':
       return 'info';
+    case 'VIEWED':
+      return 'info';
     case 'REJECTED':
       return 'destructive';
     case 'EXPIRED':
@@ -50,8 +61,10 @@ export function devisWorkflowStepIndex(status: string): number {
       return 0;
     case 'SENT':
       return 1;
-    case 'ACCEPTED':
+    case 'VIEWED':
       return 2;
+    case 'ACCEPTED':
+      return 3;
     case 'REJECTED':
     case 'EXPIRED':
       return 1;

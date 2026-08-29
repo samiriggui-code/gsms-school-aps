@@ -85,13 +85,17 @@ export const satisfactionSurveyDocType: DocTypeDefinition = {
       label: 'Participant',
       fieldtype: 'Link',
       options: 'FormationSessionParticipant',
-      required: true,
       linkDisplayField: 'id',
     },
+    { fieldname: 'audienceKey', label: 'Audience', fieldtype: 'Data', required: true },
     { fieldname: 'timing', label: 'Moment', fieldtype: 'Select', required: true },
     { fieldname: 'status', label: 'Statut', fieldtype: 'Select', required: true },
     { fieldname: 'sentAt', label: 'Envoyée', fieldtype: 'Datetime' },
     { fieldname: 'respondedAt', label: 'Répondue', fieldtype: 'Datetime' },
+    { fieldname: 'recipientEmail', label: 'E-mail destinataire', fieldtype: 'Data' },
+    { fieldname: 'recipientName', label: 'Nom destinataire', fieldtype: 'Data' },
+    { fieldname: 'scoreAverage', label: 'Score moyen', fieldtype: 'Decimal' },
+    { fieldname: 'scoreAlert', label: 'Alerte score', fieldtype: 'Boolean' },
   ],
   permissions: [
     {

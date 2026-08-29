@@ -21,7 +21,7 @@ export function DevisWorkflowStepper({
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center gap-1 sm:gap-2">
         {DEVIS_WORKFLOW_STEPS.map((step, i) => {
-          const done = i < active || (status === 'ACCEPTED' && i <= 2);
+          const done = i < active || (status === 'ACCEPTED' && i <= 3);
           const current = i === active && !isTerminal;
           return (
             <div key={step.key} className="flex flex-1 items-center gap-1 min-w-0">

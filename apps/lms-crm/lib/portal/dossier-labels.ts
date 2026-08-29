@@ -9,6 +9,7 @@ export const CANDIDATURE_SOURCE_LABEL_FR: Record<CandidatureSource, string> = {
 export const FINANCE_DEVIS_STATUS_LABEL_FR: Record<FinanceDevisStatus, string> = {
   [FinanceDevisStatus.DRAFT]: 'Brouillon',
   [FinanceDevisStatus.SENT]: 'Envoyé',
+  [FinanceDevisStatus.VIEWED]: 'Consulté',
   [FinanceDevisStatus.ACCEPTED]: 'Accepté',
   [FinanceDevisStatus.REJECTED]: 'Refusé',
   [FinanceDevisStatus.EXPIRED]: 'Expiré',

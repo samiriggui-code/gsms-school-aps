@@ -35,30 +35,30 @@ export type FileAsset = $Result.DefaultSelection<Prisma.$FileAssetPayload>
 export type FileAssetVersion = $Result.DefaultSelection<Prisma.$FileAssetVersionPayload>
 /**
  * Model ReportGenerationJob
- * Job asynchrone de gÃÂ©nÃÂ©ration document (PDF / Excel / CSV) Ã¢ÂÂ traitÃÂ© par @repo/workers.
+ * Job asynchrone de génération document (PDF / Excel / CSV) — traité par @repo/workers.
  */
 export type ReportGenerationJob = $Result.DefaultSelection<Prisma.$ReportGenerationJobPayload>
 /**
  * Model AiRun
- * ExÃÂ©cution d'une tÃÂ¢che IA (gÃÂ©nÃÂ©ration de programme, dÃÂ©roulÃÂ©, preuves Qualiopi...).
- * Le modÃÂ¨le ne touche jamais la base directement : il produit un ou plusieurs
- * AiArtifact que la fonction dÃÂ©terministe `apply*` correspondante valide et applique
- * aprÃÂ¨s revue humaine Ã¢ÂÂ jamais d'ÃÂ©criture directe par le LLM (GSMS-AI-01).
+ * Exécution d'une tâche IA (génération de programme, déroulé, preuves Qualiopi...).
+ * Le modèle ne touche jamais la base directement : il produit un ou plusieurs
+ * AiArtifact que la fonction déterministe `apply*` correspondante valide et applique
+ * après revue humaine — jamais d'écriture directe par le LLM (GSMS-AI-01).
  */
 export type AiRun = $Result.DefaultSelection<Prisma.$AiRunPayload>
 /**
  * Model AiArtifact
- * Sortie structurÃÂ©e proposÃÂ©e par un AiRun. Reste ÃÂ  l'ÃÂ©tat PROPOSED tant qu'un humain
+ * Sortie structurée proposée par un AiRun. Reste à l'état PROPOSED tant qu'un humain
  * ne l'a pas revue (reviewedById/reviewedAt) ; l'application effective (appliedAt) est
- * faite par du code dÃÂ©terministe, jamais par le modÃÂ¨le lui-mÃÂªme.
+ * faite par du code déterministe, jamais par le modèle lui-même.
  */
 export type AiArtifact = $Result.DefaultSelection<Prisma.$AiArtifactPayload>
 /**
  * Model AgentConversation
- * Fil de discussion agent attachÃ© Ã  un enregistrement (ex. un FundingCase). Une
- * conversation par entitÃ©. La transcription seule vit ici â toute proposition
- * d'Ã©criture faite pendant la conversation reste un AiRun/AiArtifact sÃ©parÃ©
- * (GSMS-AI-01) : ce modÃ¨le ne porte aucun statut ni cycle de vie.
+ * Fil de discussion agent attaché à un enregistrement (ex. un FundingCase). Une
+ * conversation par entité. La transcription seule vit ici — toute proposition
+ * d'écriture faite pendant la conversation reste un AiRun/AiArtifact séparé
+ * (GSMS-AI-01) : ce modèle ne porte aucun statut ni cycle de vie.
  */
 export type AgentConversation = $Result.DefaultSelection<Prisma.$AgentConversationPayload>
 /**
@@ -133,12 +133,12 @@ export type SystemSetting = $Result.DefaultSelection<Prisma.$SystemSettingPayloa
 export type ClientSite = $Result.DefaultSelection<Prisma.$ClientSitePayload>
 /**
  * Model RhOrgUnit
- * UnitÃÂ© organisationnelle RH (direction, pÃÂ´le, campusÃ¢ÂÂ¦)
+ * Unité organisationnelle RH (direction, pôle, campus…)
  */
 export type RhOrgUnit = $Result.DefaultSelection<Prisma.$RhOrgUnitPayload>
 /**
  * Model RhTeam
- * ÃÂquipe opÃÂ©rationnelle RH (pÃÂ´les pÃÂ©dagogiques, formateurs, qualitÃÂ©Ã¢ÂÂ¦)
+ * Équipe opérationnelle RH (pôles pédagogiques, formateurs, qualité…)
  */
 export type RhTeam = $Result.DefaultSelection<Prisma.$RhTeamPayload>
 /**
@@ -148,17 +148,17 @@ export type RhTeam = $Result.DefaultSelection<Prisma.$RhTeamPayload>
 export type RhTeamMember = $Result.DefaultSelection<Prisma.$RhTeamMemberPayload>
 /**
  * Model RhAbsence
- * Demande d'absence / congÃÂ© collaborateur
+ * Demande d'absence / congé collaborateur
  */
 export type RhAbsence = $Result.DefaultSelection<Prisma.$RhAbsencePayload>
 /**
  * Model RhPosition
- * RÃÂ©fÃÂ©rentiel postes / fonctions mÃÂ©tier ÃÂ©cole
+ * Référentiel postes / fonctions métier école
  */
 export type RhPosition = $Result.DefaultSelection<Prisma.$RhPositionPayload>
 /**
  * Model RhQualification
- * RÃÂ©fÃÂ©rentiel qualifications par pÃÂ´le interne (CFA).
+ * Référentiel qualifications par pôle interne (CFA).
  */
 export type RhQualification = $Result.DefaultSelection<Prisma.$RhQualificationPayload>
 /**
@@ -183,28 +183,28 @@ export type StockMovement = $Result.DefaultSelection<Prisma.$StockMovementPayloa
 export type Formation = $Result.DefaultSelection<Prisma.$FormationPayload>
 /**
  * Model FormationCatalogOffer
- * Inclusion d'une fiche rÃÂ©fÃÂ©rence dans le catalogue ÃÂ©cole Ã¢ÂÂ pas de duplication mÃÂ©tier, surcharges optionnelles.
+ * Inclusion d'une fiche référence dans le catalogue école — pas de duplication métier, surcharges optionnelles.
  */
 export type FormationCatalogOffer = $Result.DefaultSelection<Prisma.$FormationCatalogOfferPayload>
 /**
  * Model LandingTeamOffer
- * Membre de l'ÃÂ©quipe publiÃÂ©e sur le landing (#trainers) Ã¢ÂÂ liÃÂ© ÃÂ  un compte RH / formateur.
+ * Membre de l'équipe publiée sur le landing (#trainers) — lié à un compte RH / formateur.
  */
 export type LandingTeamOffer = $Result.DefaultSelection<Prisma.$LandingTeamOfferPayload>
 /**
  * Model FormationVenueRoom
- * Salle ou espace pÃÂ©dagogique rÃÂ©servable pour les sessions catalogue CRM (libellÃÂ©s mÃÂ©tier : ÃÂ« Salle Aurore ÃÂ», etc.).
+ * Salle ou espace pédagogique réservable pour les sessions catalogue CRM (libellés métier : « Salle Aurore », etc.).
  */
 export type FormationVenueRoom = $Result.DefaultSelection<Prisma.$FormationVenueRoomPayload>
 /**
  * Model VenueRoomFixedEquipment
- * Mobilier / matÃÂ©riel permanent installÃÂ© dans une salle (chaises, vidÃÂ©oprojecteurÃ¢ÂÂ¦).
- * Distinct des `FormationSession.reservedEquipmentIds` (rÃÂ©servation ponctuelle session).
+ * Mobilier / matériel permanent installé dans une salle (chaises, vidéoprojecteur…).
+ * Distinct des `FormationSession.reservedEquipmentIds` (réservation ponctuelle session).
  */
 export type VenueRoomFixedEquipment = $Result.DefaultSelection<Prisma.$VenueRoomFixedEquipmentPayload>
 /**
  * Model VenueRoomBooking
- * RÃÂ©servation ponctuelle de salle (rÃÂ©union staff, rÃÂ©union info, etc.) Ã¢ÂÂ hors session catalogue.
+ * Réservation ponctuelle de salle (réunion staff, réunion info, etc.) — hors session catalogue.
  */
 export type VenueRoomBooking = $Result.DefaultSelection<Prisma.$VenueRoomBookingPayload>
 /**
@@ -214,42 +214,42 @@ export type VenueRoomBooking = $Result.DefaultSelection<Prisma.$VenueRoomBooking
 export type FormationSession = $Result.DefaultSelection<Prisma.$FormationSessionPayload>
 /**
  * Model SessionAutomationRun
- * ExÃÂ©cution circuit n8n (jalons J-15 Ã¢ÂÂ J+45) Ã¢ÂÂ suivi / annulation si session reportÃÂ©e.
+ * Exécution circuit n8n (jalons J-15 → J+45) — suivi / annulation si session reportée.
  */
 export type SessionAutomationRun = $Result.DefaultSelection<Prisma.$SessionAutomationRunPayload>
 /**
  * Model PortalSessionAnnouncement
- * Annonce portail candidat Ã¢ÂÂ cible une session ou toute la formation (sessionId null).
+ * Annonce portail candidat â cible une session ou toute la formation (sessionId null).
  */
 export type PortalSessionAnnouncement = $Result.DefaultSelection<Prisma.$PortalSessionAnnouncementPayload>
 /**
  * Model Candidature
- * Dossier dÃ¢ÂÂentrÃÂ©e CRM
+ * Dossier d’entrée CRM
  */
 export type Candidature = $Result.DefaultSelection<Prisma.$CandidaturePayload>
 /**
  * Model FormationSessionParticipant
- * Participation ÃÂ  une session vitrine CRM. `candidatureId` rattache au dossier validÃÂ© lorsquÃ¢ÂÂexistant.
+ * Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.
  */
 export type FormationSessionParticipant = $Result.DefaultSelection<Prisma.$FormationSessionParticipantPayload>
 /**
  * Model FormationSessionDay
- * Jour de formation dans le suivi quotidien CRM (dates dÃÂ©rivÃÂ©es de la session ou ajout manuel).
+ * Jour de formation dans le suivi quotidien CRM (dates dérivées de la session ou ajout manuel).
  */
 export type FormationSessionDay = $Result.DefaultSelection<Prisma.$FormationSessionDayPayload>
 /**
  * Model FormationSessionEmargement
- * ÃÂmargement nominatif par stagiaire et crÃÂ©neau (matin / soir).
+ * Émargement nominatif par stagiaire et créneau (matin / soir).
  */
 export type FormationSessionEmargement = $Result.DefaultSelection<Prisma.$FormationSessionEmargementPayload>
 /**
  * Model FormationExam
- * Examen catalogue liÃÂ© ÃÂ  une session `WITH_EXAM` (1:1).
+ * Examen catalogue lié à une session `WITH_EXAM` (1:1).
  */
 export type FormationExam = $Result.DefaultSelection<Prisma.$FormationExamPayload>
 /**
  * Model FormationAttestation
- * Attestation / certification dÃÂ©livrÃÂ©e aprÃÂ¨s parcours catalogue CRM (distinct du LMS `UserCertificate`).
+ * Attestation / certification délivrée après parcours catalogue CRM (distinct du LMS `UserCertificate`).
  */
 export type FormationAttestation = $Result.DefaultSelection<Prisma.$FormationAttestationPayload>
 /**
@@ -284,7 +284,7 @@ export type Activity = $Result.DefaultSelection<Prisma.$ActivityPayload>
 export type MuxData = $Result.DefaultSelection<Prisma.$MuxDataPayload>
 /**
  * Model QuizQuestionBank
- * Banque de questions QCM rÃÂ©utilisable (par formation ou cours LMS).
+ * Banque de questions QCM réutilisable (par formation ou cours LMS).
  */
 export type QuizQuestionBank = $Result.DefaultSelection<Prisma.$QuizQuestionBankPayload>
 /**
@@ -339,17 +339,17 @@ export type Grade = $Result.DefaultSelection<Prisma.$GradePayload>
 export type Lead = $Result.DefaultSelection<Prisma.$LeadPayload>
 /**
  * Model FinanceDevis
- * Devis / proposition commerciale (Finance), souvent rattachÃÂ© ÃÂ  un lead landing devis.
+ * Devis / proposition commerciale (Finance), souvent rattaché à un lead landing devis.
  */
 export type FinanceDevis = $Result.DefaultSelection<Prisma.$FinanceDevisPayload>
 /**
  * Model FinanceDevisPlaquetteMessage
- * Message laissÃÂ© par le client depuis la plaquette publique (lien signÃÂ©) Ã¢ÂÂ consultable cÃÂ´tÃÂ© CRM.
+ * Message laissé par le client depuis la plaquette publique (lien signé) — consultable côté CRM.
  */
 export type FinanceDevisPlaquetteMessage = $Result.DefaultSelection<Prisma.$FinanceDevisPlaquetteMessagePayload>
 /**
  * Model FinanceCatalogLine
- * Lignes prÃÂ©remplies pour les devis : formations catalogue + prestations / frais saisis en base.
+ * Lignes préremplies pour les devis : formations catalogue + prestations / frais saisis en base.
  */
 export type FinanceCatalogLine = $Result.DefaultSelection<Prisma.$FinanceCatalogLinePayload>
 /**
@@ -539,7 +539,7 @@ export type ChatParticipant = $Result.DefaultSelection<Prisma.$ChatParticipantPa
 export type ChatMessage = $Result.DefaultSelection<Prisma.$ChatMessagePayload>
 /**
  * Model DocumentRequirementTemplate
- * Catalogue : modÃÂ¨le de dossier par situation mÃÂ©tier (admission, CNAPS, onboarding RHÃ¢ÂÂ¦).
+ * Catalogue : modèle de dossier par situation métier (admission, CNAPS, onboarding RH…).
  */
 export type DocumentRequirementTemplate = $Result.DefaultSelection<Prisma.$DocumentRequirementTemplatePayload>
 /**
@@ -549,7 +549,7 @@ export type DocumentRequirementTemplate = $Result.DefaultSelection<Prisma.$Docum
 export type DocumentRequirementTemplateItem = $Result.DefaultSelection<Prisma.$DocumentRequirementTemplateItemPayload>
 /**
  * Model ComplianceDossier
- * Instance de dossier pour un sujet (candidature, user, ÃÂ©coleÃ¢ÂÂ¦).
+ * Instance de dossier pour un sujet (candidature, user, école…).
  */
 export type ComplianceDossier = $Result.DefaultSelection<Prisma.$ComplianceDossierPayload>
 /**
@@ -569,9 +569,8 @@ export type DocumentRequest = $Result.DefaultSelection<Prisma.$DocumentRequestPa
 export type ComplianceItemEvent = $Result.DefaultSelection<Prisma.$ComplianceItemEventPayload>
 /**
  * Model SatisfactionSurvey
- * EnquÃÂªte de satisfaction stagiaire Ã¢ÂÂ une ligne ÃÂ« ÃÂ  chaud ÃÂ» (J0) et une ligne
- * ÃÂ« ÃÂ  froid ÃÂ» (J+45) par participant confirmÃÂ© de session. RÃÂ©ponses en JSON libre
- * (voir lib/of/satisfaction-survey-template.ts pour le rÃÂ©fÃÂ©rentiel de questions).
+ * Enquête de satisfaction — HOT/COLD par participant ; COMPANY/TRAINER/FUNDER
+ * une ligne par session (audienceKey fixe). Réponses en JSON libre.
  */
 export type SatisfactionSurvey = $Result.DefaultSelection<Prisma.$SatisfactionSurveyPayload>
 /**
@@ -616,7 +615,7 @@ export type SubcontractorStatusEvent = $Result.DefaultSelection<Prisma.$Subcontr
 export type Contact = $Result.DefaultSelection<Prisma.$ContactPayload>
 /**
  * Model TrainingRequest
- * Demande de formation B2B / employeur Â distincte du Lead individuel landing.
+ * Demande de formation B2B / employeur  distincte du Lead individuel landing.
  */
 export type TrainingRequest = $Result.DefaultSelection<Prisma.$TrainingRequestPayload>
 /**
@@ -631,7 +630,7 @@ export type Evidence = $Result.DefaultSelection<Prisma.$EvidencePayload>
 export type EvidenceIndicatorLink = $Result.DefaultSelection<Prisma.$EvidenceIndicatorLinkPayload>
 /**
  * Model SessionReadinessEvent
- * Audit trail transitions readiness (SD-06) â forÃ§able + findingIds dans payload.
+ * Audit trail transitions readiness (SD-06) — forçable + findingIds dans payload.
  */
 export type SessionReadinessEvent = $Result.DefaultSelection<Prisma.$SessionReadinessEventPayload>
 
@@ -1096,6 +1095,7 @@ export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
 export const FinanceDevisStatus: {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
+  VIEWED: 'VIEWED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   EXPIRED: 'EXPIRED'
@@ -1365,7 +1365,10 @@ export type DocumentRequestChannel = (typeof DocumentRequestChannel)[keyof typeo
 
 export const SatisfactionSurveyTiming: {
   HOT: 'HOT',
-  COLD: 'COLD'
+  COLD: 'COLD',
+  COMPANY: 'COMPANY',
+  TRAINER: 'TRAINER',
+  FUNDER: 'FUNDER'
 };
 
 export type SatisfactionSurveyTiming = (typeof SatisfactionSurveyTiming)[keyof typeof SatisfactionSurveyTiming]
@@ -1389,6 +1392,8 @@ export const FundingFunderType: {
   REGION: 'REGION',
   ENTREPRISE: 'ENTREPRISE',
   TRANSITIONS_PRO: 'TRANSITIONS_PRO',
+  SELF_FUNDED: 'SELF_FUNDED',
+  APPRENTICESHIP: 'APPRENTICESHIP',
   OTHER: 'OTHER'
 };
 
@@ -17549,11 +17554,11 @@ export namespace Prisma {
       documentRequestsRequested: Prisma.$DocumentRequestPayload<ExtArgs>[]
       complianceEventsActed: Prisma.$ComplianceItemEventPayload<ExtArgs>[]
       /**
-       * * Sessions formation CRM dont cet utilisateur est le formateur rÃÂ©fÃÂ©rent.
+       * * Sessions formation CRM dont cet utilisateur est le formateur référent.
        */
       formationSessionsTrained: Prisma.$FormationSessionPayload<ExtArgs>[]
       /**
-       * * Sessions dont cet utilisateur modÃÂ¨re le chat pÃÂ©dagogique.
+       * * Sessions dont cet utilisateur modère le chat pédagogique.
        */
       formationSessionsModerated: Prisma.$FormationSessionPayload<ExtArgs>[]
       certificates: Prisma.$UserCertificatePayload<ExtArgs>[]
@@ -17637,7 +17642,7 @@ export namespace Prisma {
       carteProExpiry: Date | null
       isSchedulable: boolean
       /**
-       * PrÃÂ©sentation courte affichÃÂ©e sur le landing (#trainers) et fiches publiques ÃÂ©quipe.
+       * Présentation courte affichée sur le landing (#trainers) et fiches publiques équipe.
        */
       landingPresentation: string | null
       documentCni: string | null
@@ -32802,16 +32807,16 @@ export namespace Prisma {
       userId: string
       companyId: string | null
       /**
-       * ÃÂquipe interne rattachÃÂ©e (formateurs salariÃÂ©s / pool maison).
+       * Équipe interne rattachée (formateurs salariés / pool maison).
        */
       schoolInternalService: $Enums.SchoolInternalService | null
       trainingCenterId: string | null
       /**
-       * PremiÃÂ¨re spÃÂ©cialitÃÂ© (doublon de confort avec `specialties[0]`).
+       * Première spécialité (doublon de confort avec `specialties[0]`).
        */
       speciality: string | null
       /**
-       * * Domaines dispensÃÂ©s au catalogue (JSON string[]): SST, TFPAPS, SSIAP, etc.
+       * * Domaines dispensés au catalogue (JSON string[]): SST, TFPAPS, SSIAP, etc.
        */
       specialties: Prisma.JsonValue
       pedagogicalReferences: Prisma.JsonValue | null
@@ -42320,19 +42325,19 @@ export namespace Prisma {
       companyCity: string | null
       companyPostalCode: string | null
       /**
-       * Identifiant lÃÂ©gal entreprise (ÃÂ©cole / organisme).
+       * Identifiant légal entreprise (école / organisme).
        */
       siret: string | null
       /**
-       * AgrÃÂ©ment CNAPS ou ÃÂ©quivalent, si applicable.
+       * Agrément CNAPS ou équivalent, si applicable.
        */
       cnaps: string | null
       /**
-       * ReprÃÂ©sentant / responsable lÃÂ©gal affichÃÂ© sur documents et profil ÃÂ©cole.
+       * Représentant / responsable légal affiché sur documents et profil école.
        */
       directorFullName: string | null
       /**
-       * Photo / avatar dirigeant (URL publique, preset `/compagnie-avatars/...` ou fichier uploadÃÂ©).
+       * Photo / avatar dirigeant (URL publique, preset `/compagnie-avatars/...` ou fichier uploadé).
        */
       directorAvatar: string | null
       industry: string | null
@@ -42340,7 +42345,7 @@ export namespace Prisma {
       companySize: string | null
       companyRegion: string | null
       /**
-       * NumÃÂ©ro DÃÂ©claration ActivitÃÂ© (NDA) et informations rÃÂ©glementaires formation.
+       * Numéro Déclaration Activité (NDA) et informations réglementaires formation.
        */
       ndaNumber: string | null
       ndaSpecialty: string | null
@@ -42349,7 +42354,7 @@ export namespace Prisma {
       ndaTrainingActions: string | null
       qualiopiCertifications: string | null
       /**
-       * Registre national des entreprises / donnÃÂ©es publiques INPIÃ¢ÂÂINSEE (rÃÂ©fÃÂ©rence).
+       * Registre national des entreprises / données publiques INPI–INSEE (référence).
        */
       siren: string | null
       establishmentNic: string | null
@@ -42369,7 +42374,7 @@ export namespace Prisma {
       collectiveAgreementNote: string | null
       inpiCompanySummary: string | null
       /**
-       * Capital social (Ã¢ÂÂ¬), mention rÃÂ©glementaire.
+       * Capital social (€), mention réglementaire.
        */
       shareCapitalEuros: number | null
       /**
@@ -42416,7 +42421,7 @@ export namespace Prisma {
       notifySystemErrorWeb: boolean
       notifySystemErrorRoleIds: string[]
       /**
-       * Fiches du dossier administratif de lÃ¢ÂÂÃÂ©cole (rÃÂ©fÃÂ©rences, dates, id de piÃÂ¨ce jointe `FileAsset`).
+       * Fiches du dossier administratif de l’école (références, dates, id de pièce jointe `FileAsset`).
        */
       administrativeDossier: Prisma.JsonValue | null
     }, ExtArgs["result"]["systemSetting"]>
@@ -46026,7 +46031,7 @@ export namespace Prisma {
       orgUnitId: string | null
       leaderId: string | null
       /**
-       * ÃÂquipe auto-provisionnÃÂ©e pour une session formation (1:1).
+       * Équipe auto-provisionnée pour une session formation (1:1).
        */
       formationSessionId: string | null
       lifecycleStatus: $Enums.RhTeamLifecycleStatus
@@ -53042,7 +53047,7 @@ export namespace Prisma {
       scheduledDate: Date | null
       completedDate: Date | null
       /**
-       * CoÃÂ»t intervention / piÃÂ¨ces (Ã¢ÂÂ¬) Ã¢ÂÂ charge budget EQUIPEMENT.
+       * Coût intervention / pièces (€) — charge budget EQUIPEMENT.
        */
       costAmount: Prisma.Decimal | null
       createdAt: Date
@@ -55830,7 +55835,7 @@ export namespace Prisma {
        */
       catalogOffer: Prisma.$FormationCatalogOfferPayload<ExtArgs> | null
       /**
-       * Ligne catalogue finance (prestations / tarifs devis), synchronisÃÂ©e depuis lÃ¢ÂÂoffre catalogue.
+       * Ligne catalogue finance (prestations / tarifs devis), synchronisée depuis l’offre catalogue.
        */
       financeCatalogLine: Prisma.$FinanceCatalogLinePayload<ExtArgs> | null
       candidatures: Prisma.$CandidaturePayload<ExtArgs>[]
@@ -55848,7 +55853,7 @@ export namespace Prisma {
       slug: string
       name: string
       /**
-       * RÃÂ©sumÃÂ© carte liste / SEO (catalogue vitrine).
+       * Résumé carte liste / SEO (catalogue vitrine).
        */
       description: string | null
       track: $Enums.FormationTrack
@@ -55858,7 +55863,7 @@ export namespace Prisma {
       status: $Enums.FormationLifecycleStatus
       featured: boolean
       /**
-       * Sidebar : logo formation (URL ou clÃÂ© mÃÂ©dia).
+       * Sidebar : logo formation (URL ou clé média).
        */
       logoUrl: string | null
       providerName: string | null
@@ -55866,7 +55871,7 @@ export namespace Prisma {
       providerPhone: string | null
       providerAddress: string | null
       /**
-       * LibellÃÂ© rapide type ÃÂ« DÃÂ¨s le 04 Mai 2026 ÃÂ» (sidebar upload).
+       * Libellé rapide type « Dès le 04 Mai 2026 » (sidebar upload).
        */
       nextSessionLabel: string | null
       cpfEligible: boolean
@@ -55875,7 +55880,7 @@ export namespace Prisma {
       rncpCode: string | null
       deliveryMode: $Enums.FormationDeliveryMode | null
       /**
-       * KPI vue dÃ¢ÂÂensemble (statistics1) Ã¢ÂÂ scalaires pour filtres / tri ; dÃÂ©tails dans overviewMetrics si besoin.
+       * KPI vue d’ensemble (statistics1) — scalaires pour filtres / tri ; détails dans overviewMetrics si besoin.
        */
       hoursMin: number | null
       hoursMax: number | null
@@ -55893,19 +55898,19 @@ export namespace Prisma {
       theoryPercent: number | null
       practicePercent: number | null
       /**
-       * Bandeau PrÃÂ©requis (statistics4).
+       * Bandeau Prérequis (statistics4).
        */
       minAgeLabel: string | null
       frenchLevel: string | null
       authorizationSummary: string | null
       criminalRecordRequirement: string | null
       /**
-       * Carte ÃÂ« PrÃÂ©sentation ÃÂ» (resent-order).
+       * Carte « Présentation » (resent-order).
        */
       presentationTitle: string | null
       longDescription: string | null
       /**
-       * listes / tableaux riches (structure libre, consommÃÂ©e par les sheets CRM).
+       * listes / tableaux riches (structure libre, consommée par les sheets CRM).
        */
       modules: Prisma.JsonValue
       outcomes: Prisma.JsonValue
@@ -55917,11 +55922,11 @@ export namespace Prisma {
       overviewMetrics: Prisma.JsonValue
       certificationSteps: Prisma.JsonValue
       /**
-       * RÃÂ©sumÃÂ©s carte ÃÂ« DÃÂ©tails complÃÂ©mentaires ÃÂ» + mÃÂ©tadonnÃÂ©es UI (axes, version commercialeÃ¢ÂÂ¦).
+       * Résumés carte « Détails complémentaires » + métadonnées UI (axes, version commerciale…).
        */
       complementaryDetails: Prisma.JsonValue
       /**
-       * Routage type sheet landing (`FORMATION_CATALOG_PROGRAM_BY_SLUG`) sÃÂ©rialisÃÂ© en JSON.
+       * Routage type sheet landing (`FORMATION_CATALOG_PROGRAM_BY_SLUG`) sérialisé en JSON.
        */
       catalogProgramConfig: Prisma.JsonValue
       /**
@@ -57411,13 +57416,13 @@ export namespace Prisma {
       id: string
       formationId: string
       /**
-       * Visible catalogue / brouillon / suspendu (archivÃÂ©). La ligne rÃÂ©fÃÂ©rence `Formation` n'est jamais supprimÃÂ©e.
+       * Visible catalogue / brouillon / suspendu (archivé). La ligne référence `Formation` n'est jamais supprimée.
        */
       catalogStatus: $Enums.FormationLifecycleStatus
       priceFromOverride: Prisma.Decimal | null
       currencyOverride: string | null
       /**
-       * Affichage catalogue : initial / MAC / RANÃ¢ÂÂ¦ si null, reprend `Formation.parcoursSpecialite`.
+       * Affichage catalogue : initial / MAC / RANâ¦ si null, reprend `Formation.parcoursSpecialite`.
        */
       parcoursSpecialiteOverride: $Enums.FormationParcoursSpecialite | null
       fundingBlocksOverride: Prisma.JsonValue | null
@@ -63643,7 +63648,7 @@ export namespace Prisma {
       trainer: Prisma.$UserPayload<ExtArgs> | null
       moderator: Prisma.$UserPayload<ExtArgs> | null
       /**
-       * Groupe chat liÃÂ© (formateur + ÃÂ©lÃÂ¨ves + modÃÂ©rateur) Ã¢ÂÂ relation inverse.
+       * Groupe chat lié (formateur + élèves + modérateur) — relation inverse.
        */
       chatConversation: Prisma.$ChatConversationPayload<ExtArgs> | null
       venueRoom: Prisma.$FormationVenueRoomPayload<ExtArgs> | null
@@ -63667,44 +63672,44 @@ export namespace Prisma {
       startDate: Date | null
       endDate: Date | null
       /**
-       * ClÃÂ´ture des inscriptions (horodatage).
+       * Clôture des inscriptions (horodatage).
        */
       registrationClosesAt: Date | null
       /**
-       * Date / heure dÃ¢ÂÂexamen prÃÂ©vue (optionnel).
+       * Date / heure d’examen prévue (optionnel).
        */
       examDate: Date | null
       /**
-       * Salle dÃ¢ÂÂexamen (PCS, plateau incendieÃ¢ÂÂ¦) si diffÃÂ©rente de la salle de cours.
+       * Salle d’examen (PCS, plateau incendie…) si différente de la salle de cours.
        */
       examVenueRoomId: string | null
       /**
-       * MatÃÂ©riel mobile rÃÂ©servÃÂ© pour le jour dÃ¢ÂÂexamen (magnÃÂ©tomÃÂ¨tre, fumigÃÂ¨nesÃ¢ÂÂ¦).
+       * Matériel mobile réservé pour le jour d’examen (magnétomètre, fumigènes…).
        */
       examReservedEquipmentIds: Prisma.JsonValue
       /**
-       * Effectif cible pour cette session (distinct de la fourchette ÃÂ« fiche formation ÃÂ»).
+       * Effectif cible pour cette session (distinct de la fourchette « fiche formation »).
        */
       traineesMin: number | null
       traineesMax: number | null
       /**
-       * Formateur rÃÂ©fÃÂ©rent (compte rÃÂ´le formateur).
+       * Formateur référent (compte rôle formateur).
        */
       trainerUserId: string | null
       /**
-       * RÃÂ©fÃÂ©rent pÃÂ©dagogique modÃÂ©rateur du chat de session.
+       * Référent pédagogique modérateur du chat de session.
        */
       moderatorUserId: string | null
       /**
-       * Salle allouÃÂ©e (disponibilitÃÂ© = pas de autre session mÃÂªme salle sur dates qui se chevauchent).
+       * Salle allouée (disponibilité = pas de autre session même salle sur dates qui se chevauchent).
        */
       venueRoomId: string | null
       /**
-       * Identifiants `Equipment` rÃÂ©servÃÂ©s pour la session (JSON : tableau dÃ¢ÂÂUUID).
+       * Identifiants `Equipment` réservés pour la session (JSON : tableau d’UUID).
        */
       reservedEquipmentIds: Prisma.JsonValue
       /**
-       * LibellÃÂ© affichÃÂ© (ex. ÃÂ« 04 Mai au 12 Juin 2026 ÃÂ») tant que les dates ne sont pas renseignÃÂ©es partout.
+       * Libellé affiché (ex. « 04 Mai au 12 Juin 2026 ») tant que les dates ne sont pas renseignées partout.
        */
       dateDisplayLabel: string
       location: string
@@ -67716,7 +67721,7 @@ export namespace Prisma {
       userId: string
       formationId: string | null
       /**
-       * Session prÃÂ©cise visÃÂ©e depuis le landing (optionnel ; doit appartenir ÃÂ  `formationId` lorsque les deux sont renseignÃÂ©s).
+       * Session précise visée depuis le landing (optionnel ; doit appartenir à `formationId` lorsque les deux sont renseignés).
        */
       interestedSessionId: string | null
       leadId: string | null
@@ -67726,7 +67731,7 @@ export namespace Prisma {
       cnapsReference: string | null
       cnapsDecisionAt: Date | null
       /**
-       * RÃÂ©ponse PN/CNAPS lorsque suivie manuellement (null = encore en cours).
+       * Réponse PN/CNAPS lorsque suivie manuellement (null = encore en cours).
        */
       cnapsPrefavorable: boolean | null
       validatedAt: Date | null
@@ -69103,7 +69108,7 @@ export namespace Prisma {
       certifiedAt: Date | null
       trainingCompletedAt: Date | null
       /**
-       * Financeur / modalitÃÂ© de prise en charge (CPF, France Travail, OPCOÃ¢ÂÂ¦).
+       * Financeur / modalité de prise en charge (CPF, France Travail, OPCO…).
        */
       fundingMode: string | null
       fundingReference: string | null
@@ -83682,13 +83687,13 @@ export namespace Prisma {
       position: number
       prompt: string
       /**
-       * Liste de rÃÂ©ponses proposÃÂ©es (JSON string[]).
+       * Liste de réponses proposées (JSON string[]).
        */
       choices: Prisma.JsonValue
       correctIndex: number
       tags: string[]
       /**
-       * UV LMS (chapitre) Ã¢ÂÂ banque QCM par unitÃÂ© de valeur.
+       * UV LMS (chapitre) — banque QCM par unité de valeur.
        */
       chapterId: string | null
       createdAt: Date
@@ -93874,7 +93879,7 @@ export namespace Prisma {
       notes: string | null
       courseId: string | null
       /**
-       * Fiche catalogue CRM (`Formation`) pour les devis landing Ã¢ÂÂ distinct du cours LMS (`courseId`).
+       * Fiche catalogue CRM (`Formation`) pour les devis landing â distinct du cours LMS (`courseId`).
        */
       formationId: string | null
       createdAt: Date
@@ -95363,15 +95368,15 @@ export namespace Prisma {
       leadId: string | null
       formationId: string | null
       /**
-       * Dossier candidature CRM (optionnel) Ã¢ÂÂ ex. aprÃÂ¨s conversion lead.
+       * Dossier candidature CRM (optionnel) — ex. après conversion lead.
        */
       candidatureId: string | null
       /**
-       * Session catalogue visÃÂ©e (optionnel).
+       * Session catalogue visée (optionnel).
        */
       formationSessionId: string | null
       /**
-       * Contexte client figÃÂ© (entreprise, effectifs, modalitÃÂ©Ã¢ÂÂ¦ Ã¢ÂÂ alignÃÂ© formulaire landing).
+       * Contexte client figé (entreprise, effectifs, modalité… — aligné formulaire landing).
        */
       clientSnapshot: Prisma.JsonValue
       /**
@@ -95386,7 +95391,7 @@ export namespace Prisma {
       notes: string | null
       internalNotes: string | null
       /**
-       * Facturation ÃÂ©lectronique (rÃÂ©forme FR 2026) Ã¢ÂÂ export Factur-X / envoi PDP.
+       * Facturation électronique (réforme FR 2026) — export Factur-X / envoi PDP.
        */
       einvoiceStatus: $Enums.FinanceEinvoiceStatus
       /**
@@ -95395,12 +95400,12 @@ export namespace Prisma {
       einvoiceProfile: string
       einvoiceGeneratedAt: Date | null
       /**
-       * Identifiant retour PDP / plateforme (quand branchÃÂ©e).
+       * Identifiant retour PDP / plateforme (quand branchée).
        */
       einvoicePdpMessageId: string | null
       einvoiceLastError: string | null
       /**
-       * Snapshot XML Factur-X (CII) gÃÂ©nÃÂ©rÃÂ© Ã¢ÂÂ FileAsset key optionnelle cÃÂ´tÃÂ© storage.
+       * Snapshot XML Factur-X (CII) généré — FileAsset key optionnelle côté storage.
        */
       einvoiceXmlAssetKey: string | null
       createdAt: Date
@@ -96626,7 +96631,7 @@ export namespace Prisma {
       id: string
       devisId: string
       /**
-       * CLIENT | STAFF (rÃÂ©ponses internes futures).
+       * CLIENT | STAFF (réponses internes futures).
        */
       authorKind: string
       body: string
@@ -97816,7 +97821,7 @@ export namespace Prisma {
        */
       category: string
       /**
-       * RenseignÃÂ© et unique pour les lignes synchronisÃÂ©es avec une offre catalogue formation.
+       * Renseigné et unique pour les lignes synchronisées avec une offre catalogue formation.
        */
       formationId: string | null
       label: string
@@ -148139,18 +148144,33 @@ export namespace Prisma {
 
   export type AggregateSatisfactionSurvey = {
     _count: SatisfactionSurveyCountAggregateOutputType | null
+    _avg: SatisfactionSurveyAvgAggregateOutputType | null
+    _sum: SatisfactionSurveySumAggregateOutputType | null
     _min: SatisfactionSurveyMinAggregateOutputType | null
     _max: SatisfactionSurveyMaxAggregateOutputType | null
+  }
+
+  export type SatisfactionSurveyAvgAggregateOutputType = {
+    scoreAverage: number | null
+  }
+
+  export type SatisfactionSurveySumAggregateOutputType = {
+    scoreAverage: number | null
   }
 
   export type SatisfactionSurveyMinAggregateOutputType = {
     id: string | null
     sessionId: string | null
     participantId: string | null
+    audienceKey: string | null
     timing: $Enums.SatisfactionSurveyTiming | null
     status: $Enums.SatisfactionSurveyStatus | null
     sentAt: Date | null
     respondedAt: Date | null
+    recipientEmail: string | null
+    recipientName: string | null
+    scoreAverage: number | null
+    scoreAlert: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -148159,10 +148179,15 @@ export namespace Prisma {
     id: string | null
     sessionId: string | null
     participantId: string | null
+    audienceKey: string | null
     timing: $Enums.SatisfactionSurveyTiming | null
     status: $Enums.SatisfactionSurveyStatus | null
     sentAt: Date | null
     respondedAt: Date | null
+    recipientEmail: string | null
+    recipientName: string | null
+    scoreAverage: number | null
+    scoreAlert: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -148171,25 +148196,43 @@ export namespace Prisma {
     id: number
     sessionId: number
     participantId: number
+    audienceKey: number
     timing: number
     status: number
     sentAt: number
     respondedAt: number
     answers: number
+    recipientEmail: number
+    recipientName: number
+    scoreAverage: number
+    scoreAlert: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
+  export type SatisfactionSurveyAvgAggregateInputType = {
+    scoreAverage?: true
+  }
+
+  export type SatisfactionSurveySumAggregateInputType = {
+    scoreAverage?: true
+  }
+
   export type SatisfactionSurveyMinAggregateInputType = {
     id?: true
     sessionId?: true
     participantId?: true
+    audienceKey?: true
     timing?: true
     status?: true
     sentAt?: true
     respondedAt?: true
+    recipientEmail?: true
+    recipientName?: true
+    scoreAverage?: true
+    scoreAlert?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -148198,10 +148241,15 @@ export namespace Prisma {
     id?: true
     sessionId?: true
     participantId?: true
+    audienceKey?: true
     timing?: true
     status?: true
     sentAt?: true
     respondedAt?: true
+    recipientEmail?: true
+    recipientName?: true
+    scoreAverage?: true
+    scoreAlert?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -148210,11 +148258,16 @@ export namespace Prisma {
     id?: true
     sessionId?: true
     participantId?: true
+    audienceKey?: true
     timing?: true
     status?: true
     sentAt?: true
     respondedAt?: true
     answers?: true
+    recipientEmail?: true
+    recipientName?: true
+    scoreAverage?: true
+    scoreAlert?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -148258,6 +148311,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: SatisfactionSurveyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SatisfactionSurveySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: SatisfactionSurveyMinAggregateInputType
@@ -148288,6 +148353,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: SatisfactionSurveyCountAggregateInputType | true
+    _avg?: SatisfactionSurveyAvgAggregateInputType
+    _sum?: SatisfactionSurveySumAggregateInputType
     _min?: SatisfactionSurveyMinAggregateInputType
     _max?: SatisfactionSurveyMaxAggregateInputType
   }
@@ -148295,15 +148362,22 @@ export namespace Prisma {
   export type SatisfactionSurveyGroupByOutputType = {
     id: string
     sessionId: string
-    participantId: string
+    participantId: string | null
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status: $Enums.SatisfactionSurveyStatus
     sentAt: Date | null
     respondedAt: Date | null
     answers: JsonValue | null
+    recipientEmail: string | null
+    recipientName: string | null
+    scoreAverage: number | null
+    scoreAlert: boolean
     createdAt: Date
     updatedAt: Date
     _count: SatisfactionSurveyCountAggregateOutputType | null
+    _avg: SatisfactionSurveyAvgAggregateOutputType | null
+    _sum: SatisfactionSurveySumAggregateOutputType | null
     _min: SatisfactionSurveyMinAggregateOutputType | null
     _max: SatisfactionSurveyMaxAggregateOutputType | null
   }
@@ -148326,89 +148400,129 @@ export namespace Prisma {
     id?: boolean
     sessionId?: boolean
     participantId?: boolean
+    audienceKey?: boolean
     timing?: boolean
     status?: boolean
     sentAt?: boolean
     respondedAt?: boolean
     answers?: boolean
+    recipientEmail?: boolean
+    recipientName?: boolean
+    scoreAverage?: boolean
+    scoreAlert?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
-    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    participant?: boolean | SatisfactionSurvey$participantArgs<ExtArgs>
   }, ExtArgs["result"]["satisfactionSurvey"]>
 
   export type SatisfactionSurveySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     sessionId?: boolean
     participantId?: boolean
+    audienceKey?: boolean
     timing?: boolean
     status?: boolean
     sentAt?: boolean
     respondedAt?: boolean
     answers?: boolean
+    recipientEmail?: boolean
+    recipientName?: boolean
+    scoreAverage?: boolean
+    scoreAlert?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
-    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    participant?: boolean | SatisfactionSurvey$participantArgs<ExtArgs>
   }, ExtArgs["result"]["satisfactionSurvey"]>
 
   export type SatisfactionSurveySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     sessionId?: boolean
     participantId?: boolean
+    audienceKey?: boolean
     timing?: boolean
     status?: boolean
     sentAt?: boolean
     respondedAt?: boolean
     answers?: boolean
+    recipientEmail?: boolean
+    recipientName?: boolean
+    scoreAverage?: boolean
+    scoreAlert?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
-    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    participant?: boolean | SatisfactionSurvey$participantArgs<ExtArgs>
   }, ExtArgs["result"]["satisfactionSurvey"]>
 
   export type SatisfactionSurveySelectScalar = {
     id?: boolean
     sessionId?: boolean
     participantId?: boolean
+    audienceKey?: boolean
     timing?: boolean
     status?: boolean
     sentAt?: boolean
     respondedAt?: boolean
     answers?: boolean
+    recipientEmail?: boolean
+    recipientName?: boolean
+    scoreAverage?: boolean
+    scoreAlert?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SatisfactionSurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "participantId" | "timing" | "status" | "sentAt" | "respondedAt" | "answers" | "createdAt" | "updatedAt", ExtArgs["result"]["satisfactionSurvey"]>
+  export type SatisfactionSurveyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "participantId" | "audienceKey" | "timing" | "status" | "sentAt" | "respondedAt" | "answers" | "recipientEmail" | "recipientName" | "scoreAverage" | "scoreAlert" | "createdAt" | "updatedAt", ExtArgs["result"]["satisfactionSurvey"]>
   export type SatisfactionSurveyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
-    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    participant?: boolean | SatisfactionSurvey$participantArgs<ExtArgs>
   }
   export type SatisfactionSurveyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
-    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    participant?: boolean | SatisfactionSurvey$participantArgs<ExtArgs>
   }
   export type SatisfactionSurveyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
-    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    participant?: boolean | SatisfactionSurvey$participantArgs<ExtArgs>
   }
 
   export type $SatisfactionSurveyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SatisfactionSurvey"
     objects: {
       session: Prisma.$FormationSessionPayload<ExtArgs>
-      participant: Prisma.$FormationSessionParticipantPayload<ExtArgs>
+      participant: Prisma.$FormationSessionParticipantPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       sessionId: string
-      participantId: string
+      /**
+       * Renseigné pour HOT/COLD ; null pour COMPANY/TRAINER/FUNDER.
+       */
+      participantId: string | null
+      /**
+       * Clé d'unicité : participantId (HOT/COLD) ou "COMPANY"|"TRAINER"|"FUNDER".
+       */
+      audienceKey: string
       timing: $Enums.SatisfactionSurveyTiming
       status: $Enums.SatisfactionSurveyStatus
       sentAt: Date | null
       respondedAt: Date | null
       answers: Prisma.JsonValue | null
+      /**
+       * Destinataire stakeholder (COMPANY/TRAINER/FUNDER) ou copie e-mail stagiaire.
+       */
+      recipientEmail: string | null
+      recipientName: string | null
+      /**
+       * Score moyen 1–4 calculé à la clôture (WF-32) ; null si pas de questions scale.
+       */
+      scoreAverage: number | null
+      /**
+       * true si score < seuil (alerte Qualiopi / Evidence LOG).
+       */
+      scoreAlert: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["satisfactionSurvey"]>
@@ -148806,7 +148920,7 @@ export namespace Prisma {
   export interface Prisma__SatisfactionSurveyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     session<T extends FormationSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDefaultArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    participant<T extends FormationSessionParticipantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipantDefaultArgs<ExtArgs>>): Prisma__FormationSessionParticipantClient<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    participant<T extends SatisfactionSurvey$participantArgs<ExtArgs> = {}>(args?: Subset<T, SatisfactionSurvey$participantArgs<ExtArgs>>): Prisma__FormationSessionParticipantClient<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -148839,11 +148953,16 @@ export namespace Prisma {
     readonly id: FieldRef<"SatisfactionSurvey", 'String'>
     readonly sessionId: FieldRef<"SatisfactionSurvey", 'String'>
     readonly participantId: FieldRef<"SatisfactionSurvey", 'String'>
+    readonly audienceKey: FieldRef<"SatisfactionSurvey", 'String'>
     readonly timing: FieldRef<"SatisfactionSurvey", 'SatisfactionSurveyTiming'>
     readonly status: FieldRef<"SatisfactionSurvey", 'SatisfactionSurveyStatus'>
     readonly sentAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
     readonly respondedAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
     readonly answers: FieldRef<"SatisfactionSurvey", 'Json'>
+    readonly recipientEmail: FieldRef<"SatisfactionSurvey", 'String'>
+    readonly recipientName: FieldRef<"SatisfactionSurvey", 'String'>
+    readonly scoreAverage: FieldRef<"SatisfactionSurvey", 'Float'>
+    readonly scoreAlert: FieldRef<"SatisfactionSurvey", 'Boolean'>
     readonly createdAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
     readonly updatedAt: FieldRef<"SatisfactionSurvey", 'DateTime'>
   }
@@ -149244,6 +149363,25 @@ export namespace Prisma {
      * Limit how many SatisfactionSurveys to delete.
      */
     limit?: number
+  }
+
+  /**
+   * SatisfactionSurvey.participant
+   */
+  export type SatisfactionSurvey$participantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionParticipant
+     */
+    select?: FormationSessionParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionParticipant
+     */
+    omit?: FormationSessionParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionParticipantInclude<ExtArgs> | null
+    where?: FormationSessionParticipantWhereInput
   }
 
   /**
@@ -165391,11 +165529,16 @@ export namespace Prisma {
     id: 'id',
     sessionId: 'sessionId',
     participantId: 'participantId',
+    audienceKey: 'audienceKey',
     timing: 'timing',
     status: 'status',
     sentAt: 'sentAt',
     respondedAt: 'respondedAt',
     answers: 'answers',
+    recipientEmail: 'recipientEmail',
+    recipientName: 'recipientName',
+    scoreAverage: 'scoreAverage',
+    scoreAlert: 'scoreAlert',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -177140,27 +177283,37 @@ export namespace Prisma {
     NOT?: SatisfactionSurveyWhereInput | SatisfactionSurveyWhereInput[]
     id?: StringFilter<"SatisfactionSurvey"> | string
     sessionId?: StringFilter<"SatisfactionSurvey"> | string
-    participantId?: StringFilter<"SatisfactionSurvey"> | string
+    participantId?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    audienceKey?: StringFilter<"SatisfactionSurvey"> | string
     timing?: EnumSatisfactionSurveyTimingFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
     sentAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
     respondedAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
     answers?: JsonNullableFilter<"SatisfactionSurvey">
+    recipientEmail?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    recipientName?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    scoreAverage?: FloatNullableFilter<"SatisfactionSurvey"> | number | null
+    scoreAlert?: BoolFilter<"SatisfactionSurvey"> | boolean
     createdAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
     updatedAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
-    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+    participant?: XOR<FormationSessionParticipantNullableScalarRelationFilter, FormationSessionParticipantWhereInput> | null
   }
 
   export type SatisfactionSurveyOrderByWithRelationInput = {
     id?: SortOrder
     sessionId?: SortOrder
-    participantId?: SortOrder
+    participantId?: SortOrderInput | SortOrder
+    audienceKey?: SortOrder
     timing?: SortOrder
     status?: SortOrder
     sentAt?: SortOrderInput | SortOrder
     respondedAt?: SortOrderInput | SortOrder
     answers?: SortOrderInput | SortOrder
+    recipientEmail?: SortOrderInput | SortOrder
+    recipientName?: SortOrderInput | SortOrder
+    scoreAverage?: SortOrderInput | SortOrder
+    scoreAlert?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     session?: FormationSessionOrderByWithRelationInput
@@ -177169,37 +177322,49 @@ export namespace Prisma {
 
   export type SatisfactionSurveyWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    sessionId_participantId_timing?: SatisfactionSurveySessionIdParticipantIdTimingCompoundUniqueInput
+    sessionId_timing_audienceKey?: SatisfactionSurveySessionIdTimingAudienceKeyCompoundUniqueInput
     AND?: SatisfactionSurveyWhereInput | SatisfactionSurveyWhereInput[]
     OR?: SatisfactionSurveyWhereInput[]
     NOT?: SatisfactionSurveyWhereInput | SatisfactionSurveyWhereInput[]
     sessionId?: StringFilter<"SatisfactionSurvey"> | string
-    participantId?: StringFilter<"SatisfactionSurvey"> | string
+    participantId?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    audienceKey?: StringFilter<"SatisfactionSurvey"> | string
     timing?: EnumSatisfactionSurveyTimingFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
     sentAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
     respondedAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
     answers?: JsonNullableFilter<"SatisfactionSurvey">
+    recipientEmail?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    recipientName?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    scoreAverage?: FloatNullableFilter<"SatisfactionSurvey"> | number | null
+    scoreAlert?: BoolFilter<"SatisfactionSurvey"> | boolean
     createdAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
     updatedAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
-    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
-  }, "id" | "sessionId_participantId_timing">
+    participant?: XOR<FormationSessionParticipantNullableScalarRelationFilter, FormationSessionParticipantWhereInput> | null
+  }, "id" | "sessionId_timing_audienceKey">
 
   export type SatisfactionSurveyOrderByWithAggregationInput = {
     id?: SortOrder
     sessionId?: SortOrder
-    participantId?: SortOrder
+    participantId?: SortOrderInput | SortOrder
+    audienceKey?: SortOrder
     timing?: SortOrder
     status?: SortOrder
     sentAt?: SortOrderInput | SortOrder
     respondedAt?: SortOrderInput | SortOrder
     answers?: SortOrderInput | SortOrder
+    recipientEmail?: SortOrderInput | SortOrder
+    recipientName?: SortOrderInput | SortOrder
+    scoreAverage?: SortOrderInput | SortOrder
+    scoreAlert?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SatisfactionSurveyCountOrderByAggregateInput
+    _avg?: SatisfactionSurveyAvgOrderByAggregateInput
     _max?: SatisfactionSurveyMaxOrderByAggregateInput
     _min?: SatisfactionSurveyMinOrderByAggregateInput
+    _sum?: SatisfactionSurveySumOrderByAggregateInput
   }
 
   export type SatisfactionSurveyScalarWhereWithAggregatesInput = {
@@ -177208,12 +177373,17 @@ export namespace Prisma {
     NOT?: SatisfactionSurveyScalarWhereWithAggregatesInput | SatisfactionSurveyScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"SatisfactionSurvey"> | string
     sessionId?: StringWithAggregatesFilter<"SatisfactionSurvey"> | string
-    participantId?: StringWithAggregatesFilter<"SatisfactionSurvey"> | string
+    participantId?: StringNullableWithAggregatesFilter<"SatisfactionSurvey"> | string | null
+    audienceKey?: StringWithAggregatesFilter<"SatisfactionSurvey"> | string
     timing?: EnumSatisfactionSurveyTimingWithAggregatesFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusWithAggregatesFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
     sentAt?: DateTimeNullableWithAggregatesFilter<"SatisfactionSurvey"> | Date | string | null
     respondedAt?: DateTimeNullableWithAggregatesFilter<"SatisfactionSurvey"> | Date | string | null
     answers?: JsonNullableWithAggregatesFilter<"SatisfactionSurvey">
+    recipientEmail?: StringNullableWithAggregatesFilter<"SatisfactionSurvey"> | string | null
+    recipientName?: StringNullableWithAggregatesFilter<"SatisfactionSurvey"> | string | null
+    scoreAverage?: FloatNullableWithAggregatesFilter<"SatisfactionSurvey"> | number | null
+    scoreAlert?: BoolWithAggregatesFilter<"SatisfactionSurvey"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"SatisfactionSurvey"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SatisfactionSurvey"> | Date | string
   }
@@ -189665,52 +189835,72 @@ export namespace Prisma {
 
   export type SatisfactionSurveyCreateInput = {
     id?: string
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutSatisfactionSurveysInput
-    participant: FormationSessionParticipantCreateNestedOneWithoutSatisfactionSurveysInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutSatisfactionSurveysInput
   }
 
   export type SatisfactionSurveyUncheckedCreateInput = {
     id?: string
     sessionId: string
-    participantId: string
+    participantId?: string | null
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type SatisfactionSurveyUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
-    participant?: FormationSessionParticipantUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutSatisfactionSurveysNestedInput
   }
 
   export type SatisfactionSurveyUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
-    participantId?: StringFieldUpdateOperationsInput | string
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -189718,23 +189908,33 @@ export namespace Prisma {
   export type SatisfactionSurveyCreateManyInput = {
     id?: string
     sessionId: string
-    participantId: string
+    participantId?: string | null
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type SatisfactionSurveyUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -189742,12 +189942,17 @@ export namespace Prisma {
   export type SatisfactionSurveyUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
-    participantId?: StringFieldUpdateOperationsInput | string
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -198776,33 +198981,52 @@ export namespace Prisma {
     not?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel> | $Enums.SatisfactionSurveyStatus
   }
 
-  export type SatisfactionSurveySessionIdParticipantIdTimingCompoundUniqueInput = {
+  export type FormationSessionParticipantNullableScalarRelationFilter = {
+    is?: FormationSessionParticipantWhereInput | null
+    isNot?: FormationSessionParticipantWhereInput | null
+  }
+
+  export type SatisfactionSurveySessionIdTimingAudienceKeyCompoundUniqueInput = {
     sessionId: string
-    participantId: string
     timing: $Enums.SatisfactionSurveyTiming
+    audienceKey: string
   }
 
   export type SatisfactionSurveyCountOrderByAggregateInput = {
     id?: SortOrder
     sessionId?: SortOrder
     participantId?: SortOrder
+    audienceKey?: SortOrder
     timing?: SortOrder
     status?: SortOrder
     sentAt?: SortOrder
     respondedAt?: SortOrder
     answers?: SortOrder
+    recipientEmail?: SortOrder
+    recipientName?: SortOrder
+    scoreAverage?: SortOrder
+    scoreAlert?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type SatisfactionSurveyAvgOrderByAggregateInput = {
+    scoreAverage?: SortOrder
   }
 
   export type SatisfactionSurveyMaxOrderByAggregateInput = {
     id?: SortOrder
     sessionId?: SortOrder
     participantId?: SortOrder
+    audienceKey?: SortOrder
     timing?: SortOrder
     status?: SortOrder
     sentAt?: SortOrder
     respondedAt?: SortOrder
+    recipientEmail?: SortOrder
+    recipientName?: SortOrder
+    scoreAverage?: SortOrder
+    scoreAlert?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -198811,12 +199035,21 @@ export namespace Prisma {
     id?: SortOrder
     sessionId?: SortOrder
     participantId?: SortOrder
+    audienceKey?: SortOrder
     timing?: SortOrder
     status?: SortOrder
     sentAt?: SortOrder
     respondedAt?: SortOrder
+    recipientEmail?: SortOrder
+    recipientName?: SortOrder
+    scoreAverage?: SortOrder
+    scoreAlert?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type SatisfactionSurveySumOrderByAggregateInput = {
+    scoreAverage?: SortOrder
   }
 
   export type EnumSatisfactionSurveyTimingWithAggregatesFilter<$PrismaModel = never> = {
@@ -198917,11 +199150,6 @@ export namespace Prisma {
   export type FundingProviderScalarRelationFilter = {
     is?: FundingProviderWhereInput
     isNot?: FundingProviderWhereInput
-  }
-
-  export type FormationSessionParticipantNullableScalarRelationFilter = {
-    is?: FormationSessionParticipantWhereInput | null
-    isNot?: FormationSessionParticipantWhereInput | null
   }
 
   export type FundingCaseEventListRelationFilter = {
@@ -210332,10 +210560,12 @@ export namespace Prisma {
     update?: XOR<XOR<FormationSessionUpdateToOneWithWhereWithoutSatisfactionSurveysInput, FormationSessionUpdateWithoutSatisfactionSurveysInput>, FormationSessionUncheckedUpdateWithoutSatisfactionSurveysInput>
   }
 
-  export type FormationSessionParticipantUpdateOneRequiredWithoutSatisfactionSurveysNestedInput = {
+  export type FormationSessionParticipantUpdateOneWithoutSatisfactionSurveysNestedInput = {
     create?: XOR<FormationSessionParticipantCreateWithoutSatisfactionSurveysInput, FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput>
     connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutSatisfactionSurveysInput
     upsert?: FormationSessionParticipantUpsertWithoutSatisfactionSurveysInput
+    disconnect?: FormationSessionParticipantWhereInput | boolean
+    delete?: FormationSessionParticipantWhereInput | boolean
     connect?: FormationSessionParticipantWhereUniqueInput
     update?: XOR<XOR<FormationSessionParticipantUpdateToOneWithWhereWithoutSatisfactionSurveysInput, FormationSessionParticipantUpdateWithoutSatisfactionSurveysInput>, FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput>
   }
@@ -233322,24 +233552,34 @@ export namespace Prisma {
 
   export type SatisfactionSurveyCreateWithoutSessionInput = {
     id?: string
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    participant: FormationSessionParticipantCreateNestedOneWithoutSatisfactionSurveysInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutSatisfactionSurveysInput
   }
 
   export type SatisfactionSurveyUncheckedCreateWithoutSessionInput = {
     id?: string
-    participantId: string
+    participantId?: string | null
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -234597,12 +234837,17 @@ export namespace Prisma {
     NOT?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
     id?: StringFilter<"SatisfactionSurvey"> | string
     sessionId?: StringFilter<"SatisfactionSurvey"> | string
-    participantId?: StringFilter<"SatisfactionSurvey"> | string
+    participantId?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    audienceKey?: StringFilter<"SatisfactionSurvey"> | string
     timing?: EnumSatisfactionSurveyTimingFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFilter<"SatisfactionSurvey"> | $Enums.SatisfactionSurveyStatus
     sentAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
     respondedAt?: DateTimeNullableFilter<"SatisfactionSurvey"> | Date | string | null
     answers?: JsonNullableFilter<"SatisfactionSurvey">
+    recipientEmail?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    recipientName?: StringNullableFilter<"SatisfactionSurvey"> | string | null
+    scoreAverage?: FloatNullableFilter<"SatisfactionSurvey"> | number | null
+    scoreAlert?: BoolFilter<"SatisfactionSurvey"> | boolean
     createdAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
     updatedAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
   }
@@ -237095,11 +237340,16 @@ export namespace Prisma {
 
   export type SatisfactionSurveyCreateWithoutParticipantInput = {
     id?: string
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutSatisfactionSurveysInput
@@ -237108,11 +237358,16 @@ export namespace Prisma {
   export type SatisfactionSurveyUncheckedCreateWithoutParticipantInput = {
     id?: string
     sessionId: string
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -280485,12 +280740,17 @@ export namespace Prisma {
 
   export type SatisfactionSurveyCreateManySessionInput = {
     id?: string
-    participantId: string
+    participantId?: string | null
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -280767,36 +281027,51 @@ export namespace Prisma {
 
   export type SatisfactionSurveyUpdateWithoutSessionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    participant?: FormationSessionParticipantUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutSatisfactionSurveysNestedInput
   }
 
   export type SatisfactionSurveyUncheckedUpdateWithoutSessionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    participantId?: StringFieldUpdateOperationsInput | string
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SatisfactionSurveyUncheckedUpdateManyWithoutSessionInput = {
     id?: StringFieldUpdateOperationsInput | string
-    participantId?: StringFieldUpdateOperationsInput | string
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -281480,11 +281755,16 @@ export namespace Prisma {
   export type SatisfactionSurveyCreateManyParticipantInput = {
     id?: string
     sessionId: string
+    audienceKey: string
     timing: $Enums.SatisfactionSurveyTiming
     status?: $Enums.SatisfactionSurveyStatus
     sentAt?: Date | string | null
     respondedAt?: Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: string | null
+    recipientName?: string | null
+    scoreAverage?: number | null
+    scoreAlert?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -281546,11 +281826,16 @@ export namespace Prisma {
 
   export type SatisfactionSurveyUpdateWithoutParticipantInput = {
     id?: StringFieldUpdateOperationsInput | string
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutSatisfactionSurveysNestedInput
@@ -281559,11 +281844,16 @@ export namespace Prisma {
   export type SatisfactionSurveyUncheckedUpdateWithoutParticipantInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -281571,11 +281861,16 @@ export namespace Prisma {
   export type SatisfactionSurveyUncheckedUpdateManyWithoutParticipantInput = {
     id?: StringFieldUpdateOperationsInput | string
     sessionId?: StringFieldUpdateOperationsInput | string
+    audienceKey?: StringFieldUpdateOperationsInput | string
     timing?: EnumSatisfactionSurveyTimingFieldUpdateOperationsInput | $Enums.SatisfactionSurveyTiming
     status?: EnumSatisfactionSurveyStatusFieldUpdateOperationsInput | $Enums.SatisfactionSurveyStatus
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    recipientEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    recipientName?: NullableStringFieldUpdateOperationsInput | string | null
+    scoreAverage?: NullableFloatFieldUpdateOperationsInput | number | null
+    scoreAlert?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -51,7 +51,8 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | `LEARNER_ABSENT` | session | manual | `type: RELATION` (absence + justification liée) | notification, statut `UNJUSTIFIED→JUSTIFICATION_REQUESTED→JUSTIFIED→RESOLVED` |
 | `DOCUMENT_SENT` | session | system | `type: EMAIL` ou `type: DOCUMENT` selon le canal | déjà implémenté ce soir (OF-02 : convocation/convention/attestation) |
 | `SATISFACTION_REQUESTED` | session | scheduled (J+45 pour COLD) | `type: QUESTIONNAIRE` | déjà implémenté ce soir (OF-10) |
-| `SATISFACTION_COMPLETED` | session | manual (soumission apprenant) | `type: QUESTIONNAIRE` | Qualiopi re-eval |
+| `SATISFACTION_COMPLETED` | session | manual (soumission apprenant / stakeholder) | `type: QUESTIONNAIRE` | Qualiopi re-eval |
+| `SATISFACTION_SCORE_ALERT` | session | system (score moyen < seuil WF-32) | `type: LOG` | alerte Qualiopi / suivi satisfaction |
 | `FUNDING_CASE_STATUS_CHANGED` | financeur | manual/system | `type: HISTORIQUE` | déjà implémenté ce soir — c'est littéralement `FundingCaseEvent`, déjà en base et fonctionnel. **Ce draft ne fait que documenter ce qui existe déjà**, pas ajouter de code. |
 | `FUNDING_DOCUMENT_STATUS_CHANGED` | financeur | manual | `type: DOCUMENT` | déjà implémenté ce soir (`FundingDocument`) |
 
@@ -67,19 +68,19 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | WF-44 France Travail | `FT_*` (checklist) | ✅ Implémenté | Voir `lib/connectors/france-travail/kairos-dossier-checklist.ts`. Rappel Qualiopi inclus dans le hint. |
 | WF-45 Autres financeurs | — | ❌ Non couvert | AGEFIPH, Transitions Pro, Régions — tous `verified: false` dans `connector-capabilities.json`. Pas d'invention tant qu'aucune source officielle n'est vérifiée (règle du soir : "aucune API/process n'est déclaré sans source officielle vérifiable"). |
 
-## 5. Catalogue famille B — organisme (WF-35 à WF-40, **nouveau, non implémenté**)
+## 5. Catalogue famille B — organisme (WF-35 à WF-40)
 
-Ces indicateurs Qualiopi ne sont pas liés à une session mais à l'organisme dans son ensemble. Contrairement à la famille A/C, **rien n'est encore codé** pour cette famille — c'est un vrai chantier futur, pas une simple checklist réutilisant l'existant.
+Ces indicateurs Qualiopi ne sont pas liés à une session mais à l'organisme dans son ensemble.
 
-| event_name | domain | trigger_source | Cycle (dérivé WF) | evidence_generated |
-|---|---|---|---|---|
-| `VEILLE_ITEM_CREATED` | organisation | scheduled (périodique) | WF-35 réglementaire / WF-36 métiers-compétences / WF-37 pédagogique-techno : `collect sources → detect change → qualify relevance → create item → assign owner → analyse impact → record action` | `type: LOG` ou `type: DOCUMENT` selon la source |
-| `TRAINER_DOCUMENT_EXPIRING` | organisation | scheduled | WF-38 : `document_expiring → request update` | `type: LOG` |
-| `TRAINER_ANNUAL_REVIEW` | organisation | scheduled | WF-38 : `annual review → competency gap → development action` | `type: EVALUATION` |
-| `SUBCONTRACTOR_STATUS_CHANGED` | organisation | manual | WF-39 : state machine `PENDING_VALIDATION → APPROVED → ACTIVE → REVIEW_REQUIRED → SUSPENDED` | `type: VALIDATION` |
-| `DISABILITY_REFERENT_ACTION_RECORDED` | organisation | manual | WF-40 : maintenance référent/partenaires/ressources/procédures/actions | `type: LOG` |
+| event_name | domain | trigger_source | Cycle (dérivé WF) | evidence_generated | Statut (actualisé 29/08) |
+|---|---|---|---|---|---|
+| `VEILLE_ITEM_CREATED` | organisation | scheduled (périodique) | WF-35 réglementaire / WF-36 métiers-compétences / WF-37 pédagogique-techno : `collect sources → detect change → qualify relevance → create item → assign owner → analyse impact → record action` | `type: LOG` ou `type: DOCUMENT` selon la source | ❌ Non implémenté — aucune source externe branchée, prématuré de coder une infra de veille sans déclencheur réel |
+| `TRAINER_DOCUMENT_EXPIRING` | organisation | scheduled | WF-38 : `document_expiring → request update` | `type: LOG` | ✅ **Déjà implémenté** — `ComplianceService.auditOpenDossiers()` (générique, couvre `FORMATEUR_HABILITATION` avec tous les autres kinds), cron réel `packages/workers/src/compliance-auditor.ts` (`*/15 * * * *` relances + expirations, digest admin lundi 8h), wiré dans `packages/workers/src/run.ts`. Catalogue corrigé — ce n'était pas un gap, juste une doc pas à jour. |
+| `TRAINER_ANNUAL_REVIEW` | organisation | scheduled | WF-38 : `annual review → competency gap → development action` | `type: EVALUATION` | ❌ Non implémenté — aucun code trouvé (`competency gap`/revue annuelle absent hors docs) |
+| `SUBCONTRACTOR_STATUS_CHANGED` | organisation | manual | WF-39 : state machine `PENDING_VALIDATION → APPROVED → ACTIVE → REVIEW_REQUIRED → SUSPENDED` | `type: VALIDATION` | ✅ Implémenté (`SubcontractorRecord`, commit `987f6b7`) |
+| `DISABILITY_REFERENT_ACTION_RECORDED` | organisation | manual | WF-40 : maintenance référent/partenaires/ressources/procédures/actions | `type: LOG` | ✅ Implémenté (`DisabilityReferent`, commit `987f6b7`) |
 
-**Ce catalogue B est formalisé mais PAS un feu vert de code.** Contrairement à Evidence/readiness (déjà implémentés ce soir), la famille B n'a aucune UI/API/modèle existant à documenter — un futur chantier devra d'abord décider : nouveau modèle Prisma (`OrganisationWatchItem`, `SubcontractorRecord`, etc.) ou réutilisation d'un modèle existant type `ComplianceDossierItem`. Ce draft pose juste le nommage des événements pour que, le jour où ce chantier démarre, il s'aligne sur SD-06 dès le départ plutôt que de dériver.
+**Reste réellement ouvert dans cette famille** : WF-35-37 (veille, bloqué faute de source externe — pas d'invention tant qu'aucun déclencheur réel n'existe) et le volet "annual review" de WF-38 (pas de besoin métier urgent identifié ce soir). WF-38 "document expirant", WF-39 et WF-40 sont clos.
 
 ## 6. Ce que ce catalogue NE couvre PAS (hors scope explicite)
 
@@ -89,7 +90,7 @@ Ces indicateurs Qualiopi ne sont pas liés à une session mais à l'organisme da
 
 ## 7. Checklist review
 
-- [x] Famille A (session) : **LOCKED** — accord Claude ↔ Cursor du 29/08, implémenté (readiness + Evidence branchés partout).
+- [x] Famille A (session) : **LOCKED** — accord Claude ↔ Cursor du 29/08 sur le **sous-ensemble scopé en §3** (readiness + Evidence branchés pour ce sous-ensemble). **Correction 29/08 (audit complet WF-01→34)** : sur les 34 WF de la doctrine complète (`GSMS SCHOOL — WORKFLOWS OF COMPLETS.md`), seuls 10 sont ✅ pleinement implémentés, 13 sont 🟡 partiels, 11 sont ❌ à zéro code (WF-02, 03, 04, 14, 17, 19, 21, 28, 29, 30, 32). Ce "LOCKED" porte sur le contrat de nommage/pattern des événements déjà codés, **pas** sur une couverture complète de la famille A — voir `docs/AUDIT-WORKFLOWS-50-COMPLET.md` pour le détail WF par WF.
 - [x] Famille C (financeurs) : **implémentée** via les checklists EDOF/OPCO/FT — ce document formalise a posteriori ce qui existe déjà, rien à coder en plus pour clore ce point.
 - [x] Famille B (organisme) : **catalogué mais pas implémenté** — nommage posé pour un futur chantier, pas un go de code immédiat.
 

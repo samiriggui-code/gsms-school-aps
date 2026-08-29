@@ -28,6 +28,8 @@ type SurveyRow = {
   sessionLabel: string;
   formationName: string;
   participantName: string;
+  scoreAverage?: number | null;
+  scoreAlert?: boolean;
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -40,6 +42,9 @@ const STATUS_LABEL: Record<string, string> = {
 const TIMING_LABEL: Record<string, string> = {
   HOT: 'À chaud (J0)',
   COLD: 'À froid (J+45)',
+  COMPANY: 'Entreprise',
+  TRAINER: 'Formateur',
+  FUNDER: 'Financeur',
 };
 
 export default function SatisfactionSurveysPage() {
@@ -109,6 +114,12 @@ export default function SatisfactionSurveysPage() {
                   <Badge variant="secondary" appearance="outline">
                     {TIMING_LABEL[row.timing] ?? row.timing}
                   </Badge>
+                  {row.scoreAlert ? (
+                    <Badge variant="destructive" appearance="light">
+                      Alerte score
+                      {row.scoreAverage != null ? ` (${row.scoreAverage.toFixed(1)})` : ''}
+                    </Badge>
+                  ) : null}
                   <Badge
                     variant={row.status === 'COMPLETED' ? 'success' : 'secondary'}
                     appearance="light"

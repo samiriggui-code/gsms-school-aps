@@ -4,7 +4,7 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { requireGestionAcademiqueView } from '../../_lib/require-gestion-academique-auth';
 
 /**
- * Liste des enquêtes satisfaction (HOT/COLD) — module Suivi formations.
+ * Liste des enquêtes satisfaction (HOT/COLD + COMPANY/TRAINER/FUNDER) — Suivi formations.
  */
 export async function GET(request: NextRequest) {
   const auth = await requireGestionAcademiqueView();
@@ -26,6 +26,9 @@ export async function GET(request: NextRequest) {
         sentAt: true,
         respondedAt: true,
         createdAt: true,
+        recipientName: true,
+        scoreAverage: true,
+        scoreAlert: true,
         session: {
           select: {
             id: true,
@@ -43,21 +46,28 @@ export async function GET(request: NextRequest) {
     });
 
     return ok({
-      items: items.map((row) => ({
-        id: row.id,
-        timing: row.timing,
-        status: row.status,
-        sentAt: row.sentAt?.toISOString() ?? null,
-        respondedAt: row.respondedAt?.toISOString() ?? null,
-        createdAt: row.createdAt.toISOString(),
-        sessionId: row.session.id,
-        sessionLabel: row.session.dateDisplayLabel,
-        formationName: row.session.formation.name,
-        participantName: [row.participant.user?.firstName, row.participant.user?.lastName]
-          .filter(Boolean)
-          .join(' ')
-          .trim() || row.participant.user?.email || '—',
-      })),
+      items: items.map((row) => {
+        const fromParticipant = row.participant?.user
+          ? [row.participant.user.firstName, row.participant.user.lastName]
+              .filter(Boolean)
+              .join(' ')
+              .trim() || row.participant.user.email || null
+          : null;
+        return {
+          id: row.id,
+          timing: row.timing,
+          status: row.status,
+          sentAt: row.sentAt?.toISOString() ?? null,
+          respondedAt: row.respondedAt?.toISOString() ?? null,
+          createdAt: row.createdAt.toISOString(),
+          sessionId: row.session.id,
+          sessionLabel: row.session.dateDisplayLabel,
+          formationName: row.session.formation.name,
+          participantName: fromParticipant || row.recipientName || '—',
+          scoreAverage: row.scoreAverage,
+          scoreAlert: row.scoreAlert,
+        };
+      }),
     });
   } catch (e) {
     return fail('Lecture enquêtes impossible.', 500, e);

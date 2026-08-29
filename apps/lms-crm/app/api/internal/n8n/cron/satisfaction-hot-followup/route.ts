@@ -64,7 +64,10 @@ export async function GET(request: NextRequest) {
   for (const session of sessions) {
     const ensured = await ensureSurveysForSession(prisma, session.id);
     participantsCount += ensured.participantsCount;
-    surveysCreated += ensured.createdHotIds.length + ensured.createdColdIds.length;
+    surveysCreated +=
+      ensured.createdHotIds.length +
+      ensured.createdColdIds.length +
+      ensured.createdStakeholderIds.length;
 
     const pendingHot = await prisma.satisfactionSurvey.findMany({
       where: {

@@ -1672,11 +1672,16 @@ exports.Prisma.SatisfactionSurveyScalarFieldEnum = {
   id: 'id',
   sessionId: 'sessionId',
   participantId: 'participantId',
+  audienceKey: 'audienceKey',
   timing: 'timing',
   status: 'status',
   sentAt: 'sentAt',
   respondedAt: 'respondedAt',
   answers: 'answers',
+  recipientEmail: 'recipientEmail',
+  recipientName: 'recipientName',
+  scoreAverage: 'scoreAverage',
+  scoreAlert: 'scoreAlert',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -2197,6 +2202,7 @@ exports.LeadStatus = exports.$Enums.LeadStatus = {
 exports.FinanceDevisStatus = exports.$Enums.FinanceDevisStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
+  VIEWED: 'VIEWED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   EXPIRED: 'EXPIRED'
@@ -2391,7 +2397,10 @@ exports.DocumentRequestChannel = exports.$Enums.DocumentRequestChannel = {
 
 exports.SatisfactionSurveyTiming = exports.$Enums.SatisfactionSurveyTiming = {
   HOT: 'HOT',
-  COLD: 'COLD'
+  COLD: 'COLD',
+  COMPANY: 'COMPANY',
+  TRAINER: 'TRAINER',
+  FUNDER: 'FUNDER'
 };
 
 exports.SatisfactionSurveyStatus = exports.$Enums.SatisfactionSurveyStatus = {
@@ -2409,6 +2418,8 @@ exports.FundingFunderType = exports.$Enums.FundingFunderType = {
   REGION: 'REGION',
   ENTREPRISE: 'ENTREPRISE',
   TRANSITIONS_PRO: 'TRANSITIONS_PRO',
+  SELF_FUNDED: 'SELF_FUNDED',
+  APPRENTICESHIP: 'APPRENTICESHIP',
   OTHER: 'OTHER'
 };
 

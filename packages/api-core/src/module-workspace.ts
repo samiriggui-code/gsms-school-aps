@@ -66,6 +66,7 @@ const CANDIDATURE_STATUS_FR: Partial<Record<CandidatureStatus, string>> = {
 const DEVIS_STATUS_FR: Record<FinanceDevisStatus, string> = {
   DRAFT: 'Brouillon',
   SENT: 'Envoyé',
+  VIEWED: 'Consulté',
   ACCEPTED: 'Accepté',
   REJECTED: 'Refusé',
   EXPIRED: 'Expiré',

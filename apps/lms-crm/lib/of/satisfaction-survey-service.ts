@@ -1,13 +1,21 @@
 import type { NextRequest } from 'next/server';
-import type { PrismaClient } from '@repo/database';
+import type { PrismaClient, SatisfactionSurveyTiming } from '@repo/database';
 import { isEmailConfigured, sendSatisfactionSurveyInviteEmail } from '@repo/mail';
 import { signSatisfactionSurveyPublicToken } from '@/lib/of/satisfaction-survey-public-token';
 import { absolutePublicSatisfactionSurveyUrl } from '@/lib/of/satisfaction-survey-public-url';
-import { questionsForSurveyTiming } from '@/lib/of/satisfaction-survey-template';
+import {
+  SATISFACTION_ALERT_THRESHOLD,
+  audienceKeyForTiming,
+  averageScaleScore,
+  isStakeholderSurveyTiming,
+  questionsForSurveyTiming,
+} from '@/lib/of/satisfaction-survey-template';
 import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 
 /** Durée de validité du lien public — assez large pour couvrir l'enquête à froid (J+45). */
 const SURVEY_LINK_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+
+const STAKEHOLDER_TIMINGS = ['COMPANY', 'TRAINER', 'FUNDER'] as const;
 
 function participantDisplayName(user: {
   name: string | null;
@@ -21,15 +29,110 @@ function participantDisplayName(user: {
   );
 }
 
+function mailTimingBucket(
+  timing: SatisfactionSurveyTiming,
+): 'hot' | 'cold' | 'company' | 'trainer' | 'funder' {
+  switch (timing) {
+    case 'COLD':
+      return 'cold';
+    case 'COMPANY':
+      return 'company';
+    case 'TRAINER':
+      return 'trainer';
+    case 'FUNDER':
+      return 'funder';
+    case 'HOT':
+      return 'hot';
+    default: {
+      const _exhaustive: never = timing;
+      return _exhaustive;
+    }
+  }
+}
+
 export type EnsureSurveysForSessionResult = {
   participantsCount: number;
   createdHotIds: string[];
   createdColdIds: string[];
+  createdStakeholderIds: string[];
 };
 
+type Recipient = { email: string | null; name: string };
+
+async function resolveStakeholderRecipient(
+  prisma: PrismaClient,
+  sessionId: string,
+  timing: 'COMPANY' | 'TRAINER' | 'FUNDER',
+): Promise<Recipient> {
+  const session = await prisma.formationSession.findUnique({
+    where: { id: sessionId },
+    select: {
+      trainerUserId: true,
+      trainer: { select: { name: true, firstName: true, lastName: true, email: true } },
+      formationId: true,
+    },
+  });
+  if (!session) return { email: null, name: timing };
+
+  if (timing === 'TRAINER') {
+    const t = session.trainer;
+    if (!t) return { email: null, name: 'Formateur' };
+    return {
+      email: t.email?.trim() || null,
+      name: participantDisplayName(t),
+    };
+  }
+
+  if (timing === 'COMPANY') {
+    const tr = await prisma.trainingRequest.findFirst({
+      where: { formationId: session.formationId, companyId: { not: null } },
+      orderBy: { updatedAt: 'desc' },
+      select: {
+        company: {
+          select: {
+            name: true,
+            email: true,
+            contacts: {
+              orderBy: { updatedAt: 'desc' },
+              take: 1,
+              select: { email: true, firstName: true, lastName: true },
+            },
+          },
+        },
+      },
+    });
+    const company = tr?.company;
+    if (!company) return { email: null, name: 'Entreprise' };
+    const contact = company.contacts[0];
+    const email = contact?.email?.trim() || company.email?.trim() || null;
+    const name =
+      [contact?.firstName, contact?.lastName].filter(Boolean).join(' ').trim() ||
+      company.name ||
+      'Entreprise';
+    return { email, name };
+  }
+
+  // FUNDER
+  const funding = await prisma.fundingCase.findFirst({
+    where: { sessionId },
+    orderBy: { updatedAt: 'desc' },
+    select: {
+      funderType: true,
+      provider: { select: { label: true, code: true } },
+      learnerUser: { select: { email: true, name: true, firstName: true, lastName: true } },
+    },
+  });
+  if (!funding) return { email: null, name: 'Financeur' };
+  // Pas d'e-mail financeur fiable en P0 — on crée la ligne ; envoi skip tant que recipientEmail vide.
+  return {
+    email: null,
+    name: funding.provider.label || funding.provider.code || funding.funderType,
+  };
+}
+
 /**
- * Crée (idempotent, via la contrainte unique) une ligne HOT + une ligne COLD par participant
- * confirmé de la session, si elles n'existent pas déjà.
+ * Crée (idempotent) HOT + COLD par participant confirmé, et COMPANY/TRAINER/FUNDER
+ * (une ligne par session) si destinataire résolvable ou ligne placeholder.
  */
 export async function ensureSurveysForSession(
   prisma: PrismaClient,
@@ -42,19 +145,26 @@ export async function ensureSurveysForSession(
 
   const createdHotIds: string[] = [];
   const createdColdIds: string[] = [];
+  const createdStakeholderIds: string[] = [];
 
   for (const participant of participants) {
     for (const timing of ['HOT', 'COLD'] as const) {
+      const audienceKey = audienceKeyForTiming(timing, participant.id);
       const existing = await prisma.satisfactionSurvey.findUnique({
         where: {
-          sessionId_participantId_timing: { sessionId, participantId: participant.id, timing },
+          sessionId_timing_audienceKey: { sessionId, timing, audienceKey },
         },
         select: { id: true },
       });
       if (existing) continue;
 
       const created = await prisma.satisfactionSurvey.create({
-        data: { sessionId, participantId: participant.id, timing },
+        data: {
+          sessionId,
+          participantId: participant.id,
+          audienceKey,
+          timing,
+        },
         select: { id: true },
       });
       if (timing === 'HOT') createdHotIds.push(created.id);
@@ -62,7 +172,37 @@ export async function ensureSurveysForSession(
     }
   }
 
-  return { participantsCount: participants.length, createdHotIds, createdColdIds };
+  for (const timing of STAKEHOLDER_TIMINGS) {
+    const audienceKey = audienceKeyForTiming(timing);
+    const existing = await prisma.satisfactionSurvey.findUnique({
+      where: {
+        sessionId_timing_audienceKey: { sessionId, timing, audienceKey },
+      },
+      select: { id: true },
+    });
+    if (existing) continue;
+
+    const recipient = await resolveStakeholderRecipient(prisma, sessionId, timing);
+    const created = await prisma.satisfactionSurvey.create({
+      data: {
+        sessionId,
+        participantId: null,
+        audienceKey,
+        timing,
+        recipientEmail: recipient.email,
+        recipientName: recipient.name,
+      },
+      select: { id: true },
+    });
+    createdStakeholderIds.push(created.id);
+  }
+
+  return {
+    participantsCount: participants.length,
+    createdHotIds,
+    createdColdIds,
+    createdStakeholderIds,
+  };
 }
 
 export type SendSurveyInviteResult = {
@@ -83,18 +223,37 @@ export async function sendSurveyInvite(
       participant: {
         include: { user: { select: { name: true, firstName: true, lastName: true, email: true } } },
       },
-      session: { include: { formation: { select: { name: true } } } },
+      session: {
+        include: {
+          formation: { select: { name: true } },
+        },
+        // trainerUserId is a scalar on FormationSession — available on survey.session
+      },
     },
   });
   if (!survey) throw new Error('Enquête introuvable.');
 
   if (survey.status === 'COMPLETED') {
-    return { sent: false, skippedReason: 'Le stagiaire a déjà répondu à cette enquête.' };
+    return { sent: false, skippedReason: 'Réponse déjà enregistrée pour cette enquête.' };
   }
 
-  const email = survey.participant.user.email?.trim();
+  const recipientName = isStakeholderSurveyTiming(survey.timing)
+    ? survey.recipientName?.trim() || survey.timing
+    : survey.participant
+      ? participantDisplayName(survey.participant.user)
+      : 'Destinataire';
+
+  const email = isStakeholderSurveyTiming(survey.timing)
+    ? survey.recipientEmail?.trim()
+    : survey.participant?.user.email?.trim();
+
   if (!email) {
-    return { sent: false, skippedReason: 'Participant sans adresse e-mail.' };
+    return {
+      sent: false,
+      skippedReason: isStakeholderSurveyTiming(survey.timing)
+        ? 'Destinataire stakeholder sans e-mail (renseigner recipientEmail).'
+        : 'Participant sans adresse e-mail.',
+    };
   }
   if (!isEmailConfigured()) {
     return { sent: false, skippedReason: 'Canal e-mail non configuré (RESEND_API_KEY ou SMTP_HOST).' };
@@ -105,12 +264,12 @@ export async function sendSurveyInvite(
 
   try {
     await sendSatisfactionSurveyInviteEmail({
-      recipientName: participantDisplayName(survey.participant.user),
+      recipientName,
       recipientEmail: email,
       formationName: survey.session.formation.name,
       sessionLabel: survey.session.dateDisplayLabel,
       surveyUrl,
-      timing: survey.timing === 'COLD' ? 'cold' : 'hot',
+      timing: mailTimingBucket(survey.timing),
     });
   } catch (e) {
     console.error('[satisfaction-survey] envoi invitation', e);
@@ -130,8 +289,12 @@ export async function sendSurveyInvite(
       fromStatus: survey.status,
       toStatus: 'SENT',
       sessionId: survey.sessionId,
-      learnerUserId: survey.participant.userId,
-      metadata: { timing: survey.timing },
+      learnerUserId: survey.participant?.userId ?? null,
+      metadata: {
+        timing: survey.timing,
+        audienceKey: survey.audienceKey,
+        trainerUserId: survey.session.trainerUserId,
+      },
     });
   });
 
@@ -140,9 +303,9 @@ export async function sendSurveyInvite(
 
 export class SatisfactionSurveyValidationError extends Error {}
 
-export type SubmitSurveyAnswersResult = { alreadyCompleted: boolean };
+export type SubmitSurveyAnswersResult = { alreadyCompleted: boolean; scoreAverage: number | null; scoreAlert: boolean };
 
-/** Valide les réponses requises pour le timing de l'enquête puis persiste et clôture. */
+/** Valide les réponses, calcule le score WF-32, persiste et clôture (+ Evidence si alerte). */
 export async function submitSurveyAnswers(
   prisma: PrismaClient,
   surveyId: string,
@@ -155,13 +318,15 @@ export async function submitSurveyAnswers(
       timing: true,
       status: true,
       sessionId: true,
+      audienceKey: true,
       participant: { select: { userId: true } },
+      session: { select: { trainerUserId: true } },
     },
   });
   if (!survey) throw new Error('Enquête introuvable.');
 
   if (survey.status === 'COMPLETED') {
-    return { alreadyCompleted: true };
+    return { alreadyCompleted: true, scoreAverage: null, scoreAlert: false };
   }
 
   const questions = questionsForSurveyTiming(survey.timing);
@@ -172,10 +337,20 @@ export async function submitSurveyAnswers(
     );
   }
 
+  const scoreAverage = averageScaleScore(survey.timing, answers);
+  const scoreAlert =
+    scoreAverage != null && scoreAverage < SATISFACTION_ALERT_THRESHOLD;
+
   await prisma.$transaction(async (tx) => {
     await tx.satisfactionSurvey.update({
       where: { id: surveyId },
-      data: { answers, status: 'COMPLETED', respondedAt: new Date() },
+      data: {
+        answers,
+        status: 'COMPLETED',
+        respondedAt: new Date(),
+        scoreAverage,
+        scoreAlert,
+      },
     });
     await recordStatusEvidence(tx, {
       category: 'satisfaction_survey',
@@ -185,10 +360,35 @@ export async function submitSurveyAnswers(
       fromStatus: survey.status,
       toStatus: 'COMPLETED',
       sessionId: survey.sessionId,
-      learnerUserId: survey.participant.userId,
-      metadata: { timing: survey.timing },
+      learnerUserId: survey.participant?.userId ?? null,
+      metadata: {
+        timing: survey.timing,
+        audienceKey: survey.audienceKey,
+        scoreAverage,
+        scoreAlert,
+        alertThreshold: SATISFACTION_ALERT_THRESHOLD,
+        trainerUserId: survey.session.trainerUserId,
+      },
     });
+    if (scoreAlert) {
+      await recordStatusEvidence(tx, {
+        category: 'satisfaction_survey',
+        sourceType: 'LOG',
+        sourceId: surveyId,
+        eventName: 'SATISFACTION_SCORE_ALERT',
+        fromStatus: null,
+        toStatus: 'ALERT',
+        sessionId: survey.sessionId,
+        learnerUserId: survey.participant?.userId ?? null,
+        metadata: {
+          timing: survey.timing,
+          scoreAverage,
+          threshold: SATISFACTION_ALERT_THRESHOLD,
+          trainerUserId: survey.session.trainerUserId,
+        },
+      });
+    }
   });
 
-  return { alreadyCompleted: false };
+  return { alreadyCompleted: false, scoreAverage, scoreAlert };
 }

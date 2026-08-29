@@ -18,6 +18,25 @@ function mapFunderType(connectorId: string, funder: string): FundingFunderType {
   if (label.includes('TRANSITIONS')) return 'TRANSITIONS_PRO';
   if (id.includes('OPCO') || label.includes('OPCO')) return 'OPCO';
   if (label.includes('ENTREPRISE')) return 'ENTREPRISE';
+  // WF-06 — autofinancement / apprentissage (sinon restaient repliés sur OTHER)
+  if (
+    id.includes('SELF') ||
+    label.includes('SELF') ||
+    label.includes('AUTOFINANC') ||
+    label.includes('PARTICULIER') ||
+    label.includes('STAGIAIRE')
+  ) {
+    return 'SELF_FUNDED';
+  }
+  if (
+    id.includes('APPRENT') ||
+    id.includes('CFA') ||
+    label.includes('APPRENT') ||
+    label.includes('CFA') ||
+    label.includes('ALTERNANCE')
+  ) {
+    return 'APPRENTICESHIP';
+  }
   return 'OTHER';
 }
 

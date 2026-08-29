@@ -1989,10 +1989,11 @@ enum LeadStatus {
   LOST
 }
 
-/// Cycle commercial dâun devis (module Finance).
+/// Cycle commercial d'un devis (module Finance).
 enum FinanceDevisStatus {
   DRAFT
   SENT
+  VIEWED
   ACCEPTED
   REJECTED
   EXPIRED
@@ -3119,6 +3120,12 @@ model ComplianceItemEvent {
 enum SatisfactionSurveyTiming {
   HOT
   COLD
+  /// WF-28 — commanditaire / entreprise
+  COMPANY
+  /// WF-29 — formateur de la session
+  TRAINER
+  /// WF-30 — financeur (OPCO, FT, etc.)
+  FUNDER
 }
 
 enum SatisfactionSurveyStatus {
@@ -3128,30 +3135,40 @@ enum SatisfactionSurveyStatus {
   EXPIRED
 }
 
-/// Enquête de satisfaction stagiaire — une ligne « à chaud » (J0) et une ligne
-/// « à froid » (J+45) par participant confirmé de session. Réponses en JSON libre
-/// (voir lib/of/satisfaction-survey-template.ts pour le référentiel de questions).
+/// Enquête de satisfaction — HOT/COLD par participant ; COMPANY/TRAINER/FUNDER
+/// une ligne par session (audienceKey fixe). Réponses en JSON libre.
 model SatisfactionSurvey {
-  id            String                    @id @default(uuid())
-  sessionId     String
-  participantId String
-  timing        SatisfactionSurveyTiming
-  status        SatisfactionSurveyStatus  @default(PENDING)
-  sentAt        DateTime?
-  respondedAt   DateTime?
-  answers       Json?
-  createdAt     DateTime                  @default(now())
-  updatedAt     DateTime                  @updatedAt
+  id             String                   @id @default(uuid())
+  sessionId      String
+  /// Renseigné pour HOT/COLD ; null pour COMPANY/TRAINER/FUNDER.
+  participantId  String?
+  /// Clé d'unicité : participantId (HOT/COLD) ou "COMPANY"|"TRAINER"|"FUNDER".
+  audienceKey    String
+  timing         SatisfactionSurveyTiming
+  status         SatisfactionSurveyStatus @default(PENDING)
+  sentAt         DateTime?
+  respondedAt    DateTime?
+  answers        Json?
+  /// Destinataire stakeholder (COMPANY/TRAINER/FUNDER) ou copie e-mail stagiaire.
+  recipientEmail String?
+  recipientName  String?
+  /// Score moyen 1–4 calculé à la clôture (WF-32) ; null si pas de questions scale.
+  scoreAverage   Float?
+  /// true si score < seuil (alerte Qualiopi / Evidence LOG).
+  scoreAlert     Boolean                  @default(false)
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
 
-  session     FormationSession            @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  participant FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  session     FormationSession             @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participant FormationSessionParticipant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
-  @@unique([sessionId, participantId, timing])
+  @@unique([sessionId, timing, audienceKey])
   @@index([sessionId])
   @@index([status])
+  @@index([scoreAlert])
 }
 
-// âââ FundingCase (Vague 2 / P0 â post G1-E, gate Claude 2026-08-29) âââââââââ
+// ─── FundingCase (Vague 2 / P0 — post G1-E, gate Claude 2026-08-29) ───────────
 
 enum FundingFunderType {
   CPF
@@ -3161,6 +3178,10 @@ enum FundingFunderType {
   REGION
   ENTREPRISE
   TRANSITIONS_PRO
+  /// WF-06 — financement personnel (particulier)
+  SELF_FUNDED
+  /// WF-06 — apprentissage / CFA
+  APPRENTICESHIP
   OTHER
 }
 

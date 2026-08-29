@@ -4,6 +4,29 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — WF Tranche 1 (quick wins Qualiopi) livrée
+
+### Scope livré
+
+| WF | Livrable |
+|---|---|
+| **28/29/30** | `SatisfactionSurveyTiming` += `COMPANY`/`TRAINER`/`FUNDER` ; questions + destinataires ; `audienceKey` unique `(sessionId, timing, audienceKey)` ; mails multi-audience |
+| **32** | `scoreAverage` / `scoreAlert` (seuil 3/4) ; Evidence `SATISFACTION_SCORE_ALERT` (`sourceType: LOG`) |
+| **07** | `FinanceDevisStatus.VIEWED` ; SENT→VIEWED à l’ouverture plaquette publique ; acceptation SENT\|VIEWED |
+| **06** | `FundingFunderType.SELF_FUNDED` / `APPRENTICESHIP` + mapping sync providers |
+
+### Vérifs
+
+- `pnpm test:doctype` 9/9 · `test:doctype:harden` 2/2
+- `pnpm --filter @lms-crm exec tsc --noEmit` exit 0
+- `migrate diff --exit-code` **0**
+
+### Hors tranche (attente cadrage Claude)
+
+WF-02/03, 17/18, 08, 19 — **pas touchés**. WF-11/12 inchangés (SD-06).
+
+---
+
 ## 2026-08-29 — P5/P6 Option A : doctrine only
 
 `PERMISSION_AUDIT.md` : P5 → **P5′ reporté** ; P6 → **P6′ mitigé app-layer** (`instructor-access.ts`). Pas de touche moteur.

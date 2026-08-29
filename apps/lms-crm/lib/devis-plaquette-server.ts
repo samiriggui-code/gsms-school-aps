@@ -108,13 +108,24 @@ function buildTimeline(row: {
     });
   }
 
-  if (row.status === FinanceDevisStatus.SENT) {
+  if (row.status === FinanceDevisStatus.SENT || row.status === FinanceDevisStatus.VIEWED) {
     events.push({
       id: 'sent',
       kind: 'exchange',
       title: 'Proposition transmise',
       atIso: row.updatedAt.toISOString(),
       body: 'Un e-mail récapitulatif a été envoyé au contact (horodatage approximatif).',
+      highlight: row.status === FinanceDevisStatus.SENT,
+    });
+  }
+
+  if (row.status === FinanceDevisStatus.VIEWED) {
+    events.push({
+      id: 'viewed',
+      kind: 'exchange',
+      title: 'Plaquette consultée',
+      atIso: row.updatedAt.toISOString(),
+      body: 'Le destinataire a ouvert le lien public de la plaquette.',
       highlight: true,
     });
   }
@@ -172,6 +183,15 @@ export async function getDevisPlaquetteData(
   });
 
   if (!row?.formation) return null;
+
+  // WF-07 — ouverture publique de la plaquette = devis consulté (SENT → VIEWED).
+  if (opts?.forPublicViewer && row.status === FinanceDevisStatus.SENT) {
+    await prisma.financeDevis.update({
+      where: { id: row.id },
+      data: { status: FinanceDevisStatus.VIEWED },
+    });
+    row.status = FinanceDevisStatus.VIEWED;
+  }
 
   const offer = await prisma.formationCatalogOffer.findUnique({
     where: { formationId: row.formation.id },

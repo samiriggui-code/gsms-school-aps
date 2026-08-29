@@ -9,9 +9,9 @@ import { ensureSurveysForSession, sendSurveyInvite } from '@/lib/of/satisfaction
 type Ctx = { params: Promise<{ id: string }> };
 
 /**
- * Déclenchement manuel des enquêtes de satisfaction d'une session : crée les lignes
- * HOT/COLD manquantes pour les participants confirmés, puis envoie l'invitation
- * « à chaud » pour chaque ligne nouvellement créée (les COLD partent au cron J+45).
+ * Déclenchement manuel des enquêtes d'une session : crée HOT/COLD (participants)
+ * + COMPANY/TRAINER/FUNDER (session), envoie les invitations HOT et stakeholders
+ * nouvellement créés (COLD part au cron J+45).
  */
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
@@ -33,7 +33,8 @@ export async function POST(request: NextRequest, context: Ctx) {
   let skipped = 0;
   const skippedReasons: string[] = [];
 
-  for (const surveyId of ensured.createdHotIds) {
+  const toInvite = [...ensured.createdHotIds, ...ensured.createdStakeholderIds];
+  for (const surveyId of toInvite) {
     const result = await sendSurveyInvite(prisma, surveyId, request);
     if (result.sent) {
       sent += 1;
@@ -46,7 +47,10 @@ export async function POST(request: NextRequest, context: Ctx) {
   return ok({
     sessionId,
     participantsCount: ensured.participantsCount,
-    surveysCreated: ensured.createdHotIds.length + ensured.createdColdIds.length,
+    surveysCreated:
+      ensured.createdHotIds.length +
+      ensured.createdColdIds.length +
+      ensured.createdStakeholderIds.length,
     invitesSent: sent,
     invitesSkipped: skipped,
     skippedReasons,

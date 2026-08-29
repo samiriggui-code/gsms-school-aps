@@ -601,3 +601,22 @@ Après cette mise à jour doc, ce chantier IAM/permission-audit (P1-P10) est clo
 **Suite** : rien d'urgent à enchaîner côté code pour l'instant de mon côté (le reste du backlog — WF-35-37 veille, ExternalExchange, EVE — reste volontairement hors scope, voir `SUIVI-CURSOR-CLAUDE.md` si besoin de contexte). Si tu as terminé G1-D/G1-E ou un autre chantier framework en cours de ton côté, dis où ça en est.
 
 ✅ traité — Option A : `PERMISSION_AUDIT.md` P5′/P6′ mis à jour in-place. Pas de code moteur. G1-D/G1-E déjà clos (voir HANDOFF-CURSOR). Chantier IAM P1–P6 clos pour ce soir.
+
+## 2026-08-29 — Nouveau chantier : rattrapage WF (Tranche 1, quick wins Qualiopi)
+
+L'utilisateur a demandé un audit complet des ~50 workflows de la doctrine (`GSMS SCHOOL — WORKFLOWS OF COMPLETS.md` §64), pas juste les 27 circuits n8n déjà auditée (CH-8). Résultat : **20✅ / 15🟡 / 15❌ sur 50**. Détail complet WF par WF : `docs/AUDIT-WORKFLOWS-50-COMPLET.md`. Familles B/C restent solides. Le vrai trou est la famille A (session, 34 WF) : 11 à zéro code.
+
+**Autocritique** : `SD-06-EVENT-CATALOG-DRAFT.md` (mon propre doc) avait une checklist finale trompeuse (« Famille A : LOCKED — implémenté ») qui ne reprenait pas la nuance de scope posée plus haut dans le même doc. Corrigé (§7). Retiens la leçon : un "LOCKED" sur un sous-ensemble scopé n'est pas une preuve de couverture complète — je le referai pas.
+
+**Tranche 1 — go direct, pas de design-first** (réutilise des moteurs déjà prouvés ce soir, risque faible, ROI élevé) :
+
+1. **WF-28/29/30 — Satisfaction entreprise/formateur/financeur.** Étends `SatisfactionSurveyTiming` (actuellement HOT/COLD seulement) avec `COMPANY`/`TRAINER`/`FUNDER`. Réutilise tel quel le moteur existant (modèle, service, lien public signé, cron, template e-mail) — juste de nouveaux jeux de questions par timing (voir `SATISFACTION_STAGIAIRE_QUESTIONS` pour le pattern) et le bon destinataire (commanditaire entreprise / formateur / financeur au lieu du stagiaire). 3 workflows Qualiopi en un seul chantier, quasi aucun nouveau code d'infra.
+2. **WF-32 — Analyse automatique des satisfactions.** Sur les réponses déjà stockées (`answers` Json), calcule un score, déclenche une alerte si score < seuil (seuil à définir simplement, ex. 3/5 ou équivalent à l'échelle existante), crée un signalement (log/Evidence `type: LOG`, pas besoin d'un modèle `Finding` dédié pour ça). Ferme la boucle ouverte par le point 1.
+3. **WF-07 — ajouter `VIEWED`** au cycle `FinanceDevisStatus` (DRAFT→SENT→**VIEWED**→ACCEPTED/REJECTED→EXPIRED), déclenché à l'ouverture du lien public plaquette devis (la route existe déjà, `app/p/devis/[devisId]/plaquette/`).
+4. **WF-06 — expliciter `SELF_FUNDED`/`APPRENTICESHIP`** dans `FundingFunderType` au lieu de les replier sur `OTHER`.
+
+**Ce qu'on ne fait pas dans cette tranche** (backlog Tranche 2, à enchaîner après, je détaillerai la suite une fois la Tranche 1 livrée) : WF-02/03 (analyse du besoin + positionnement — nouveau domaine de données, je cadrerai avant que tu codes), WF-17/18 (signature manquante + cycle justification absence), WF-08 (cycle convention SIGNED + relances), WF-19 (prévention rupture, plus complexe). **Ne pas toucher WF-11/12** (contrôles J-30/J-15) — c'est un choix de design déjà tranché explicitement ce soir (SD-06 §2 : pas de hard-block automatique, forçable manuellement), pas un bug à corriger.
+
+Comme d'habitude : `test:doctype` + `tsc --noEmit` après, commit séparé du reste.
+
+✅ traité — Tranche 1 livrée : WF-28/29/30 + WF-32 + WF-07 VIEWED + WF-06 SELF_FUNDED/APPRENTICESHIP ; `test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0 · migrate diff 0. Voir HANDOFF-CURSOR.
