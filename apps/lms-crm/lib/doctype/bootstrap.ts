@@ -59,11 +59,12 @@ export function bootstrapDocTypes(): DocTypeRegistry {
     registerDocumentsDocTypes(registry);
     registerQualityDocTypes(registry);
     registerRhDocTypes(registry);
-    registerLmsDocTypes(registry);
     registerQualiopiDocTypes(registry);
     registerFundingDocTypes(registry);
     registerEvidenceDocTypes(registry);
     registerAuditDocTypes(registry);
+    // LMS après domaines OF (LMS_DRIFT L1 / Phase 18) — pas avant Funding/Evidence.
+    registerLmsDocTypes(registry);
     registry.assertValid();
     registry.seal();
     globalThis.__gsmsDocTypeBootstrap = 'ready';

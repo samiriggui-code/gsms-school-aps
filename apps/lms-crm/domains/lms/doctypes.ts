@@ -50,7 +50,7 @@ export const lmsLessonDocType: DocTypeDefinition = {
   label: 'Leçon LMS',
   table: 'Chapter',
   schemaVersion: 1,
-  aliases: ['lesson'],
+  aliases: ['lmsChapter', 'lesson'],
   fields: [
     { fieldname: 'title', label: 'Titre', fieldtype: 'Data', required: true, searchable: true },
     {
@@ -95,7 +95,7 @@ export const lmsEnrollmentDocType: DocTypeDefinition = {
   label: 'Inscription LMS',
   table: 'Enrollment',
   schemaVersion: 1,
-  aliases: ['enrollment'],
+  aliases: ['lmsEnrollment'],
   fields: [
     {
       fieldname: 'userId',

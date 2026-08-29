@@ -12,14 +12,19 @@ import { EntityTable } from '@/components/framework/entity-table';
 import { EntityForm } from '@/components/framework/entity-form';
 import { Button } from '@/components/ui/button';
 
+/** Lab — ordre mental OF d’abord (LMS_DRIFT L2), noms canoniques Lms* (L3/L7). */
 const ENTITIES = [
   { id: 'user', label: 'Utilisateurs (IAM)' },
   { id: 'role', label: 'Rôles' },
-  { id: 'course', label: 'Cours LMS' },
-  { id: 'lesson', label: 'Leçons' },
-  { id: 'enrollment', label: 'Inscriptions' },
-  { id: 'leaveRequest', label: 'Absences RH' },
+  { id: 'Lead', label: 'Lead CRM' },
+  { id: 'Formation', label: 'Formation' },
+  { id: 'FundingCase', label: 'FundingCase' },
+  { id: 'Evidence', label: 'Evidence' },
   { id: 'complianceDossierItem', label: 'Qualiopi pièces' },
+  { id: 'LmsCourse', label: 'Cours LMS' },
+  { id: 'LmsLesson', label: 'Leçons LMS (Chapter)' },
+  { id: 'LmsEnrollment', label: 'Inscriptions LMS' },
+  { id: 'leaveRequest', label: 'Absences RH' },
 ] as const;
 
 /**
@@ -39,8 +44,8 @@ export default function FrameworkLabPage() {
           <ToolbarHeading>
             <ToolbarTitle>Framework entités (lab)</ToolbarTitle>
             <ToolbarDescription>
-              Lab DocType V2 (G1-E) — `/api/entities/*` shim → ResourceService /
-              PermissionEngine. Écrans CRM métier restent séparés.
+              Lab DocType V2 — OF (CRM/Training/Funding/Evidence) avant LMS. Noms
+              canoniques LmsCourse / LmsLesson / LmsEnrollment.
             </ToolbarDescription>
           </ToolbarHeading>
         </Toolbar>
@@ -92,15 +97,23 @@ export default function FrameworkLabPage() {
               ? ['name', 'email', 'status', 'role', 'createdAt']
               : entity === 'role'
                 ? ['name', 'slug', 'isDefault', 'createdAt']
-                : entity === 'course'
-                  ? ['title', 'isPublished', 'price', 'createdBy', 'createdAt']
-                  : entity === 'lesson'
-                    ? ['title', 'position', 'isPublished', 'course']
-                    : entity === 'enrollment'
-                      ? ['user', 'course', 'status', 'createdAt']
-                      : entity === 'complianceDossierItem'
-                        ? ['code', 'label', 'status']
-                      : ['user', 'type', 'status', 'startDate', 'endDate']
+                : entity === 'Lead'
+                  ? ['email', 'status', 'source', 'createdAt']
+                  : entity === 'Formation'
+                    ? ['slug', 'name', 'status', 'createdAt']
+                    : entity === 'FundingCase'
+                      ? ['reference', 'status', 'funderType', 'createdAt']
+                      : entity === 'Evidence'
+                        ? ['category', 'sourceType', 'status', 'eventName', 'createdAt']
+                        : entity === 'LmsCourse'
+                          ? ['title', 'isPublished', 'createdAt']
+                          : entity === 'LmsLesson'
+                            ? ['title', 'courseId', 'createdAt']
+                            : entity === 'LmsEnrollment'
+                              ? ['userId', 'courseId', 'createdAt']
+                              : entity === 'complianceDossierItem'
+                                ? ['code', 'label', 'status']
+                                : ['user', 'type', 'status', 'startDate', 'endDate']
           }
         />
       </Container>

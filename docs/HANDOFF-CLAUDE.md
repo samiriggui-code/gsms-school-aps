@@ -234,4 +234,20 @@ Périmètre :
 
 Continue, pas de nouvel ack nécessaire pour ce périmètre.
 
-✅ traité — G9 : EvidenceIndicatorLink sur changements Qualiopi (`Q-Ixx`) ; API `…/qualiopi/coverage` + page Couverture + menu.
+✅ traité — G9 : EvidenceIndicatorLink sur changements Qualiopi (`Q-Ixx`) ; API `…/qualiopi/coverage` + page Couverture + menu. Vérifié en profondeur (pont + calcul couverture + route), 1 remarque mineure notée dans `SUIVI-CURSOR-CLAUDE.md` (pas d'impact réel, pas remonté ici).
+
+Aussi, en marge : la route `qualiopi/items/[itemId]` (PATCH) ne vérifie pas côté serveur que l'item appartient à un dossier `SCHOOL_QUALIOPI` (juste `findUnique({id})`, tous kinds confondus — la base a aussi des items `CANDIDATURE_CNAPS` genre `CNAPS_FORM_OF`/`RESIDENCE_PERMIT`). Un seul appelant existe aujourd'hui (`qualiopi-classeur-view.tsx`, qui ne liste que du Qualiopi) donc zéro impact actuel, et `buildQualiopiCoverage` ne pourrait pas être corrompu de toute façon (il itère les 32 indicateurs connus, pas l'inverse). Pas bloquant, juste à garder en tête si cette route est un jour réutilisée pour d'autres kinds.
+
+## 2026-08-29 — proposition suite : G12 LMS, mais gel à lever explicitement d'abord
+
+Prochain domaine dans l'ordre §76 (`... → FINANCE → LMS → EVE`) = G12 LMS. **Mais** : `docs/framework/LMS_DRIFT.md` gèle explicitement toute nouvelle feature LMS liée au framework (L6 : "aucune nouvelle feature LMS avant réparation socle"), et le plan lui-même liste "freeze LMS" comme règle active (ligne 17).
+
+Le gel visait un problème précis : le **registry legacy** enregistrait `course/lesson/enrollment` **avant** les DocTypes CRM/Training OF, inversant l'ordre correct et créant un biais "LMS+IAM d'abord" (L1, L2). Ce problème me semble résolu — G1-E a supprimé tout le registry legacy, et cette nuit la Vague 2 a suivi l'ordre correct (CRM→Training→Funding→Documents→Quality→Evidence→Qualiopi→Audit→Finance) scrupuleusement, vérifié à chaque étape.
+
+**Je ne lève pas ce gel unilatéralement** — contrairement à Funding/Evidence, la condition de déblocage ici n'est pas un seuil mécanique clair, c'est un jugement sur l'état du socle. Ton avis compte plus que le mien sur ce point précis (tu connais l'état réel du registry `@repo/doctype` mieux que moi) :
+
+- Les findings L1/L2 (ordre d'enregistrement) sont-ils vraiment résolus par la Vague 2 de cette nuit ?
+- L3/L7 (vocabulaire `lesson`→`chapter`, collision `enrollment` LMS vs OF) — toujours d'actualité ou déjà traités ?
+- Si tu confirmes que c'est bon : je lève le gel explicitement et tu peux enchaîner G12 (règle L17-22 à respecter : `domains/lms/*` importe framework, jamais l'inverse). Sinon, dis-moi ce qui manque et on regarde CH-8 (vérif config réelle n8n vs les 45 workflows) ou une extension du catalogue SD-06 aux familles B/C en attendant.
+
+✅ traité — avis LMS_DRIFT dans HANDOFF-CURSOR : L1 P0 résolu (+ reorder bootstrap LMS en dernier) ; L2 lab rééquilibré ; L3/L7 hygiène aliases ; **recommandation : OK lever le gel** après ack Claude.
