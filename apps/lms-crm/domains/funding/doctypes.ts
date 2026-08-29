@@ -110,3 +110,63 @@ export const fundingCaseDocType: DocTypeDefinition = {
     docstatusField: undefined,
   },
 };
+
+/** G5 — pièce checklist d’un FundingCase (MISSING / UPLOADED / VALIDATED / REJECTED). */
+export const fundingDocumentDocType: DocTypeDefinition = {
+  name: 'FundingDocument',
+  module: 'funding',
+  label: 'Pièce financement',
+  table: 'FundingDocument',
+  schemaVersion: 1,
+  aliases: ['fundingDocument'],
+  fields: [
+    {
+      fieldname: 'caseId',
+      label: 'Dossier',
+      fieldtype: 'Link',
+      options: 'FundingCase',
+      required: true,
+      linkDisplayField: 'reference',
+    },
+    { fieldname: 'code', label: 'Code', fieldtype: 'Data', required: true, searchable: true },
+    { fieldname: 'label', label: 'Libellé', fieldtype: 'Data', required: true, searchable: true },
+    { fieldname: 'status', label: 'Statut', fieldtype: 'Select', required: true },
+    {
+      fieldname: 'fileAssetId',
+      label: 'Fichier',
+      fieldtype: 'Link',
+      options: 'FileAsset',
+      linkDisplayField: 'originalName',
+    },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  list: {
+    searchFields: ['code', 'label'],
+    defaultSort: { fieldname: 'createdAt', direction: 'desc' },
+    pageSize: 50,
+  },
+  persistence: {
+    table: 'FundingDocument',
+    delegate: 'fundingDocument',
+    nameField: 'id',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+  },
+};

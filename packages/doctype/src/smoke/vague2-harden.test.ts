@@ -127,6 +127,27 @@ function vague2Definitions(): DocTypeDefinition[] {
       aliases: ['fundingCase'],
     }),
     baseDef({
+      name: 'FundingDocument',
+      module: 'funding',
+      label: 'Pièce',
+      table: 'FundingDocument',
+      fields: [
+        { fieldname: 'code', label: 'Code', fieldtype: 'Data', required: true, searchable: true },
+        { fieldname: 'label', label: 'Libellé', fieldtype: 'Data', required: true, searchable: true },
+        { fieldname: 'status', label: 'Statut', fieldtype: 'Select', required: true },
+      ],
+      permissions: [
+        {
+          role: '*',
+          permlevel: 0,
+          read: true,
+          requires: { anyPermissionSlugs: ['crm.finance.view'] },
+        },
+      ],
+      persistence: { table: 'FundingDocument', delegate: 'fundingDocument', nameField: 'id' },
+      aliases: ['fundingDocument'],
+    }),
+    baseDef({
       name: 'FileAsset',
       module: 'documents',
       label: 'Fichier',
@@ -256,7 +277,7 @@ test('Vague 2 harden: seal CRM/Training/Funding/Documents/Quality — no tenantI
   registry.assertValid();
   registry.seal();
 
-  assert.equal(registry.listDocTypes().length, 6);
+  assert.equal(registry.listDocTypes().length, 7);
   for (const def of registry.listDocTypes()) {
     const meta = registry.getMeta(def.name);
     assert.equal(

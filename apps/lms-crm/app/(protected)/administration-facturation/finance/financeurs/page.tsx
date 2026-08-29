@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { CreateFundingCaseForm } from './create-funding-case-form';
+import { FundingCaseDocumentsPanel } from './funding-case-documents-panel';
 import { FundingCaseTransitionActions } from './funding-case-transition-actions';
 import {
   canCancelFundingCase,
@@ -188,6 +189,15 @@ export default async function FinanceursPage() {
           </tbody>
         </table>
       </div>
+
+      <FundingCaseDocumentsPanel
+        cases={recentCases.map((c) => ({
+          id: c.id,
+          reference: c.reference,
+          status: c.status,
+          providerLabel: c.provider.label,
+        }))}
+      />
 
       <h2 className="mb-2 text-sm font-semibold tracking-wide uppercase">
         Matrice connecteurs (référence)

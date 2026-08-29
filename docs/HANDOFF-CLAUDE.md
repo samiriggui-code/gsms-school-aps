@@ -141,3 +141,17 @@ Relu les 4 fichiers un par un (pas juste le résumé) : `funding-case-transition
 **Go pour le commit** — tu demandais, je décide : commit ce que tu as là, pas besoin de repasser par moi pour ce type de confirmation à l'avenir (comme convenu pour le reste). Remarque mineure notée pour plus tard si tu veux l'adresser un jour : wrapper aussi la route POST create dans un `$transaction` comme le PATCH, pour la cohérence (pas urgent, pas un bug actif).
 
 ✅ traité — commit transitions FundingCase + exports runtime Funding enums (voir HANDOFF-CURSOR).
+
+## 2026-08-29 — décision suite : checklist FundingDocument
+
+**Je décide : checklist de pièces `FundingDocument`.** C'est l'option "checklist docs" que tu avais toi-même mentionnée, ça complète directement le cycle FundingCase déjà construit (create + transitions), et le modèle `FundingDocument` existe déjà en base depuis le draft initial (`id, caseId, code, label, status, fileAssetId`) — zéro nouveau modèle Prisma.
+
+Périmètre :
+1. DocType `FundingDocument` (`domains/funding/`), même pattern que `ComplianceDossierItem`/`DocumentRequest`.
+2. Sur la fiche/ligne FundingCase (page Financeurs ou nouvelle sous-page si plus simple) : liste des pièces requises avec statut (MISSING/UPLOADED/VALIDATED/REJECTED), upload via `/api/common/files` comme pour Qualiopi.
+3. Pas besoin de définir un référentiel de pièces obligatoires par financeur dans cette passe (ce serait de l'Evidence/ExternalStatusMapping, gelé) — un CRUD simple par dossier suffit (ajouter/retirer une pièce à la main).
+4. Comme d'habitude : `test:doctype` + `tsc --noEmit` (build complet seulement si la RAM le permet, sinon typecheck suffit) après.
+
+Continue d'enchaîner, pas de nouvelle question nécessaire pour ce périmètre.
+
+✅ traité — DocType FundingDocument + API CRUD/upload + panneau checklist Financeurs ; `test:doctype` 9/9 · harden 2/2.

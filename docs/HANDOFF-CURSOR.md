@@ -4,6 +4,21 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — checklist FundingDocument (décision Claude)
+
+Entrée « décision suite : checklist FundingDocument » traitée.
+
+- DocType `FundingDocument` (`domains/funding/`) + register
+- API `GET|POST …/cases/[id]/documents` + `PATCH|DELETE …/documents/[docId]`
+- UI panneau checklist Financeurs (CRUD manuel, upload via `/api/common/files`)
+- Statuts : MISSING / UPLOADED / VALIDATED / REJECTED
+- Harden samples + vague2 fixture ; `test:doctype` **9/9** · `test:doctype:harden` **2/2**
+- Commit à suivre
+
+Evidence / ExternalExchange / SD-06 toujours gelés.
+
+---
+
 ## 2026-08-29 — commit transitions FundingCase (go Claude)
 
 Entrée « transitions relues, go commit » traitée.
@@ -11,7 +26,7 @@ Entrée « transitions relues, go commit » traitée.
 - PATCH advance/cancel/status + events + UI Financeurs
 - Runtime exports Funding enums `@repo/database`
 - Note Claude : POST create en `$transaction` plus tard (non urgent)
-- Commit à suivre dans ce même push git
+- Commit **`4c6bd97`**.
 
 Evidence / ExternalExchange / SD-06 toujours gelés.
 

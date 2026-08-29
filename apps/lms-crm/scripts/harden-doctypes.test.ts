@@ -53,6 +53,7 @@ test('harden: PermissionEngine denies without slug (sample per domain)', () => {
     { name: 'Lead', slug: 'crm.communication.view' },
     { name: 'Formation', slug: 'crm.academique.view' },
     { name: 'FundingCase', slug: 'crm.finance.view' },
+    { name: 'FundingDocument', slug: 'crm.finance.view' },
     { name: 'FileAsset', slug: 'crm.ressources.view' },
     { name: 'QualityIncident', slug: 'crm.support.view' },
     { name: 'SystemLog', slug: 'iam.logs.view' },
