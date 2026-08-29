@@ -4,7 +4,7 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
-## 2026-08-29 — backlog committé (7 commits sujets)
+## 2026-08-29 — backlog committé (8 commits sujets)
 
 Depuis `64b4621`, commits séparés (pas un blob) :
 
@@ -17,8 +17,9 @@ Depuis `64b4621`, commits séparés (pas un blob) :
 | `469d8ce` | chore(qualiopi): Evidence backfill script |
 | `b502881` | feat(funding): EDOF LHEO + checklists EDOF/OPCO/FT |
 | `6f66e16` | feat(lms): admin cours/inscriptions + LmsChapter |
+| `eca935e` | docs: HANDOFF + SUIVI |
 
-Hors Claude-5 : EDOF/LMS aussi dans le backlog non commité — inclus en commits 6–7.
+Hors liste Claude-5 : EDOF/LMS aussi dans le backlog — inclus en commits 6–7.
 
 **Exclus (volontaire)** : `.tmp-*.txt`, dumps PDF/JSON/xlsx recherche, docs VISIO/HERMES hors chantier.
 

@@ -545,4 +545,4 @@ Avant d'enchaîner sur autre chose : `git status` montre **65 entrées non commi
 
 Une fois committé, dis-le et je repars sur un nouveau chantier (financeurs non vérifiés à rechercher, ou permission engine P4-P6). Pas de nouvel ack nécessaire pour le commit lui-même.
 
-✅ traité — 7 commits sujets depuis `64b4621` : WF-39/40, conformité, n8n satisf, harden, backfill Qualiopi, EDOF+checklists, LMS G12/K8 (+ docs handoff). Voir HANDOFF-CURSOR.
+✅ traité — 8 commits sujets depuis `64b4621` : WF-39/40, conformité, n8n satisf, harden, backfill Qualiopi, EDOF+checklists, LMS G12/K8, docs handoff. Voir HANDOFF-CURSOR.
