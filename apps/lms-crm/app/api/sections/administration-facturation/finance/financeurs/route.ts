@@ -33,6 +33,13 @@ export async function GET() {
       include: { _count: { select: { cases: true } } },
     });
     const caseCount = await prisma.fundingCase.count();
+    const recentCases = await prisma.fundingCase.findMany({
+      orderBy: { updatedAt: 'desc' },
+      take: 25,
+      include: {
+        provider: { select: { code: true, label: true } },
+      },
+    });
     return ok({
       providers: providers.map((p) => ({
         id: p.id,
@@ -44,6 +51,18 @@ export async function GET() {
         caseCount: p._count.cases,
       })),
       caseCount,
+      recentCases: recentCases.map((c) => ({
+        id: c.id,
+        reference: c.reference,
+        status: c.status,
+        funderType: c.funderType,
+        transport: c.transport,
+        providerCode: c.provider.code,
+        providerLabel: c.provider.label,
+        externalReference: c.externalReference,
+        requestedAmount: c.requestedAmount?.toString() ?? null,
+        updatedAt: c.updatedAt.toISOString(),
+      })),
     });
   } catch (e) {
     console.error('[financeurs] GET', e);

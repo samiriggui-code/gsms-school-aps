@@ -56,6 +56,11 @@ export default async function FinanceursPage() {
     include: { _count: { select: { cases: true } } },
   });
   const caseCount = await prisma.fundingCase.count();
+  const recentCases = await prisma.fundingCase.findMany({
+    orderBy: { updatedAt: 'desc' },
+    take: 25,
+    include: { provider: { select: { code: true, label: true } } },
+  });
   const activeProviders = providers.filter((p) => p.isActive).length;
 
   return (
@@ -116,6 +121,50 @@ export default async function FinanceursPage() {
               <tr>
                 <td className="text-muted-foreground p-4" colSpan={6}>
                   Aucun financeur en base — lancer POST /api/sections/…/financeurs pour sync matrix.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 className="mb-2 text-sm font-semibold tracking-wide uppercase">
+        Dossiers FundingCase (récents)
+      </h2>
+      <div className="mb-8 overflow-x-auto rounded-md border">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-muted/40 border-b">
+            <tr>
+              <th className="p-2 font-medium">Réf.</th>
+              <th className="p-2 font-medium">Financeur</th>
+              <th className="p-2 font-medium">Statut</th>
+              <th className="p-2 font-medium">Transport</th>
+              <th className="p-2 font-medium">Montant demandé</th>
+              <th className="p-2 font-medium">Maj</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentCases.map((c) => (
+              <tr key={c.id} className="border-b last:border-0">
+                <td className="p-2 font-mono text-xs">{c.reference ?? c.id.slice(0, 8)}</td>
+                <td className="p-2 text-xs">
+                  {c.provider.label}
+                  <span className="text-muted-foreground ml-1">({c.provider.code})</span>
+                </td>
+                <td className="p-2 text-xs">{c.status}</td>
+                <td className="p-2 text-xs">{c.transport}</td>
+                <td className="p-2 text-xs">
+                  {c.requestedAmount != null ? String(c.requestedAmount) : '—'}
+                </td>
+                <td className="text-muted-foreground p-2 text-xs">
+                  {c.updatedAt.toISOString().slice(0, 10)}
+                </td>
+              </tr>
+            ))}
+            {recentCases.length === 0 ? (
+              <tr>
+                <td className="text-muted-foreground p-4" colSpan={6}>
+                  Aucun dossier FundingCase — création via Resource API / flux métier à venir.
                 </td>
               </tr>
             ) : null}

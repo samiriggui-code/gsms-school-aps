@@ -17,10 +17,10 @@ test('harden: bootstrap seals all domain DocTypes without tenantId', () => {
   assert.ok(registry.isSealed);
 
   const defs = registry.listDocTypes();
-  assert.ok(defs.length >= 25, `expected ≥25 DocTypes, got ${defs.length}`);
+  assert.ok(defs.length >= 26, `expected ≥26 DocTypes, got ${defs.length}`);
 
   const modules = new Set(defs.map((d) => d.module.split('.')[0]));
-  for (const required of ['crm', 'training', 'funding', 'documents', 'quality']) {
+  for (const required of ['crm', 'training', 'funding', 'documents', 'quality', 'audit']) {
     assert.ok(modules.has(required), `missing module ${required}`);
   }
 
@@ -55,6 +55,7 @@ test('harden: PermissionEngine denies without slug (sample per domain)', () => {
     { name: 'FundingCase', slug: 'crm.finance.view' },
     { name: 'FileAsset', slug: 'crm.ressources.view' },
     { name: 'QualityIncident', slug: 'crm.support.view' },
+    { name: 'SystemLog', slug: 'iam.logs.view' },
   ];
 
   const empty = {

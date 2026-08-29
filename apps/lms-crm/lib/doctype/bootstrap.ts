@@ -8,6 +8,7 @@ import { registerTrainingDocTypes } from '@/domains/training/register';
 import { registerDocumentsDocTypes } from '@/domains/documents/register';
 import { registerQualityDocTypes } from '@/domains/quality/register';
 import { registerFundingDocTypes } from '@/domains/funding/register';
+import { registerAuditDocTypes } from '@/domains/audit/register';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -60,6 +61,7 @@ export function bootstrapDocTypes(): DocTypeRegistry {
     registerLmsDocTypes(registry);
     registerQualiopiDocTypes(registry);
     registerFundingDocTypes(registry);
+    registerAuditDocTypes(registry);
     registry.assertValid();
     registry.seal();
     globalThis.__gsmsDocTypeBootstrap = 'ready';
