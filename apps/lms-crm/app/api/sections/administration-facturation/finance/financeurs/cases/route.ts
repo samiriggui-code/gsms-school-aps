@@ -52,30 +52,32 @@ export async function POST(request: NextRequest) {
       return fail('Invalid requestedAmount', 400);
     }
 
-    const created = await prisma.fundingCase.create({
-      data: {
-        providerId: provider.id,
-        funderType,
-        transport,
-        status,
-        reference: body.reference?.trim() || null,
-        notes: body.notes?.trim() || null,
-        externalReference: body.externalReference?.trim() || null,
-        requestedAmount,
-        ownerUserId: session.user?.id ?? null,
-      },
-      include: { provider: { select: { code: true, label: true } } },
-    });
-
-    await prisma.fundingCaseEvent.create({
-      data: {
-        caseId: created.id,
-        fromStatus: null,
-        toStatus: created.status,
-        source: 'ui',
-        actorUserId: session.user?.id ?? null,
-        payload: { action: 'create' },
-      },
+    const created = await prisma.$transaction(async (tx) => {
+      const row = await tx.fundingCase.create({
+        data: {
+          providerId: provider.id,
+          funderType,
+          transport,
+          status,
+          reference: body.reference?.trim() || null,
+          notes: body.notes?.trim() || null,
+          externalReference: body.externalReference?.trim() || null,
+          requestedAmount,
+          ownerUserId: session.user?.id ?? null,
+        },
+        include: { provider: { select: { code: true, label: true } } },
+      });
+      await tx.fundingCaseEvent.create({
+        data: {
+          caseId: row.id,
+          fromStatus: null,
+          toStatus: row.status,
+          source: 'ui',
+          actorUserId: session.user?.id ?? null,
+          payload: { action: 'create' },
+        },
+      });
+      return row;
     });
 
     return ok({

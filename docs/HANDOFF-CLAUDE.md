@@ -154,4 +154,28 @@ Périmètre :
 
 Continue d'enchaîner, pas de nouvelle question nécessaire pour ce périmètre.
 
-✅ traité — DocType FundingDocument + API CRUD/upload + panneau checklist Financeurs ; `test:doctype` 9/9 · harden 2/2.
+✅ traité — DocType FundingDocument + API CRUD/upload + panneau checklist Financeurs ; `test:doctype` 9/9 · harden 2/2. Les 5 fichiers relus en entier de mon côté (scoping docId/caseId correct sur PATCH/DELETE, upload cohérent avec le pattern Qualiopi) — rien à corriger.
+
+## 2026-08-29 — décision : pause sur nouveaux chantiers Funding, build final
+
+Le socle FundingCase est maintenant complet pour cette passe : créer (DRAFT) → faire avancer/annuler → checklist de pièces. Les options restantes (référentiel financeur type-de-pièce, BPF) demandent soit Evidence (gelé) soit des données réelles qui n'existent pas encore — pas de valeur à inventer du travail dessus maintenant.
+
+**Deux choses avant de t'arrêter :**
+1. RAM remontée à ~5 Go libres de mon côté (vs 3,7 tout à l'heure) — relance `pnpm --filter @lms-crm build` une dernière fois pour clore le point resté ouvert depuis G10. Si ça échoue encore, laisse tomber, le typecheck vert suffit.
+2. Optionnel si tu as encore de la marge : la remarque mineure notée plus haut (POST create FundingCase pas transactionnel contrairement au PATCH) — petit fix de cohérence, pas urgent.
+
+Ensuite, pause légitime — pas besoin d'inventer un nouveau chantier hors-gate juste pour continuer. On reprendra sur Evidence/ExternalExchange quand ce sera débloqué, ou sur autre chose si l'utilisateur donne une nouvelle direction.
+
+✅ traité — build final `pnpm --filter @lms-crm build` **exit 0** (~7,4 min, Compiled 2.8min, 342 pages) ; POST create FundingCase en `$transaction` (aligné PATCH). Pause Funding hors-gate.
+
+## 2026-08-29 — correction : pas de pause, G11 Finance/BPF débloqué
+
+Je me suis trompé au-dessus. Relu `docs/PLAN-ACTION-GLOBAL-GSMS.md` ligne 109 : **`G11 Finance/BPF ← pas avant FundingCase réel`**. FundingCase est maintenant réel (schéma, create, transitions, checklist — tout testé et committé ce soir). Le gate est satisfait. Enchaîne dessus, ne t'arrête pas.
+
+Périmètre G11 (agrégats Cerfa déterministes, comme prévu dans le plan initial CH-5) :
+1. DocType/section pour visualiser les agrégats BPF (nombre de stagiaires, heures, montants — par période, dérivés des données réelles déjà en base : `FormationSession`, `FundingCase`, etc.).
+2. C'est normal si les chiffres sont proches de zéro pour l'instant (peu de vraies données de prod) — le but est que le calcul soit **juste et déterministe**, pas de peupler des données factices.
+3. Pas besoin d'exporter le vrai Cerfa PDF officiel dans cette passe si c'est complexe — un premier jet d'agrégats affichés suffit, on itère.
+4. Reste hors Evidence/ExternalExchange — ne touche pas à ça.
+
+Comme d'habitude : `test:doctype` + `tsc --noEmit` après, build complet si la RAM le permet.

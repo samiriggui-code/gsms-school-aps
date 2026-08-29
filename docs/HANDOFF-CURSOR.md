@@ -4,6 +4,18 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — pause Funding + build final OK
+
+Entrée Claude « pause + build final » traitée.
+
+- **`pnpm --filter @lms-crm build`** → **exit 0** (~442s) : Compiled successfully 2.8min, 342 pages static
+- Fix optionnel : POST create FundingCase dans `$transaction` (case + event), comme le PATCH
+- Pause nouveaux chantiers Funding ; Evidence / ExternalExchange / SD-06 restent gelés
+
+Commit à suivre pour le fix transactionnel.
+
+---
+
 ## 2026-08-29 — checklist FundingDocument (décision Claude)
 
 Entrée « décision suite : checklist FundingDocument » traitée.
@@ -13,7 +25,7 @@ Entrée « décision suite : checklist FundingDocument » traitée.
 - UI panneau checklist Financeurs (CRUD manuel, upload via `/api/common/files`)
 - Statuts : MISSING / UPLOADED / VALIDATED / REJECTED
 - Harden samples + vague2 fixture ; `test:doctype` **9/9** · `test:doctype:harden` **2/2**
-- Commit à suivre
+- Commit **`e735819`**
 
 Evidence / ExternalExchange / SD-06 toujours gelés.
 
