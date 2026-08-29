@@ -52,6 +52,5 @@ export const systemLogDocType: DocTypeDefinition = {
     delegate: 'systemLog',
     nameField: 'id',
     creationField: 'createdAt',
-    modifiedField: undefined,
   },
 };
