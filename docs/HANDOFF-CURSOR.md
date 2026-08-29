@@ -4,6 +4,30 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — WF Tranche 2 livrée (17 / 18 / 08)
+
+### WF-17 Signature manquante
+- `fetchPedagogyDailyAlerts` : gaps = participants **confirmés sans ligne** d’émargement (matin/soir), plus seulement `!markedAt`.
+- `pedagogy-evening` : e-mails apprenant + formateur + admin ; **aucune** création d’émargement ; pas d’Evidence signature (catalog `null`).
+
+### WF-18 Justification absence
+- Enum `AbsenceJustificationStatus` + champs sur `FormationSessionEmargement`.
+- Mark ABSENT → `UNJUSTIFIED` ; evening → `JUSTIFICATION_REQUESTED` + mails + Evidence `LEARNER_ABSENT` (`RELATION`).
+- PATCH `…/emargement/[emargementId]/justification`.
+
+### WF-08 Convention
+- Modèle `FormationSessionConvention` (GENERATED→SENT→VIEWED→SIGNED→ARCHIVED).
+- Upsert `SENT` à l’envoi PDF ; cron `convention-reminders` J+2/J+5 ; n8n `GSMS — Relances convention` ; event `crm.session.convention.reminder`.
+- PATCH `…/sessions/[id]/conventions/[conventionId]`.
+
+### Vérifs
+`test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0 · `db push` sync · migrate diff **0**.
+
+### Suite attendue (cadrage)
+WF-02/03 mini-note avant code ; WF-19 reporté.
+
+---
+
 ## 2026-08-29 — WF Tranche 1 (quick wins Qualiopi) livrée
 
 ### Scope livré

@@ -121,12 +121,25 @@ export async function saveEmargementMarks(input: {
           notes: mark.notes?.trim() || null,
           markedAt: now,
           markedByUserId: input.markedByUserId,
+          justificationStatus: mark.status === 'ABSENT' ? 'UNJUSTIFIED' : null,
         },
         update: {
           status: mark.status,
           notes: mark.notes?.trim() || null,
           markedAt: now,
           markedByUserId: input.markedByUserId,
+          ...(mark.status === 'ABSENT'
+            ? {
+                justificationStatus: 'UNJUSTIFIED' as const,
+                justificationRequestedAt: null,
+                justificationResolvedAt: null,
+              }
+            : {
+                justificationStatus: null,
+                justificationRequestedAt: null,
+                justificationNote: null,
+                justificationResolvedAt: null,
+              }),
         },
       });
     }

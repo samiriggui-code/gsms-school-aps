@@ -3,6 +3,7 @@ import { fetchPedagogyEveningAlerts } from '@repo/api-core';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { assertN8nInternal, unauthorizedN8nInternal } from '../../_lib/auth';
+import { processPedagogyEveningWorkflows } from '@/lib/of/pedagogy-evening-workflows';
 
 export async function GET(request: NextRequest) {
   if (!assertN8nInternal(request)) return unauthorizedN8nInternal();
@@ -16,5 +17,12 @@ export async function GET(request: NextRequest) {
   }
 
   const alerts = await fetchPedagogyEveningAlerts(prisma, ref);
-  return ok(alerts);
+  const processed = await processPedagogyEveningWorkflows(prisma, ref);
+
+  return ok({
+    ...alerts,
+    signatureNotices: processed.signatureNotices,
+    justificationRequests: processed.justificationRequests,
+    skipped: processed.skipped,
+  });
 }

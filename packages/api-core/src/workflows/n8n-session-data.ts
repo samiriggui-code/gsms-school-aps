@@ -149,6 +149,13 @@ function endOfUtcDay(d: Date): Date {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 23, 59, 59, 999));
 }
 
+const PEDAGOGY_SLOTS = ['MORNING', 'EVENING'] as const;
+
+/**
+ * Alertes pédagogie du jour.
+ * WF-17 : participants confirmés sans ligne d'émargement pour un créneau (jamais de preuve fabriquée).
+ * WF-18 : absences ABSENT encore non justifiées.
+ */
 export async function fetchPedagogyDailyAlerts(prisma: PrismaClient, ref = new Date()) {
   const from = startOfUtcDay(ref);
   const to = endOfUtcDay(ref);
@@ -160,14 +167,23 @@ export async function fetchPedagogyDailyAlerts(prisma: PrismaClient, ref = new D
         select: {
           id: true,
           dateDisplayLabel: true,
-          trainer: { select: { id: true, name: true, email: true } },
+          location: true,
+          formation: { select: { name: true } },
+          trainer: { select: { id: true, name: true, email: true, firstName: true, lastName: true } },
+          participants: {
+            where: { enrollmentStatus: 'CONFIRMED' },
+            select: {
+              id: true,
+              user: { select: { id: true, name: true, email: true, firstName: true, lastName: true } },
+            },
+          },
         },
       },
       attendances: {
         include: {
           participant: {
             include: {
-              user: { select: { id: true, name: true, email: true } },
+              user: { select: { id: true, name: true, email: true, firstName: true, lastName: true } },
             },
           },
         },
@@ -176,25 +192,65 @@ export async function fetchPedagogyDailyAlerts(prisma: PrismaClient, ref = new D
   });
 
   const sessionsToday = days.map((day) => {
-    const unsigned = day.attendances.filter((a) => !a.markedAt);
-    const absences = day.attendances.filter((a) => a.status === 'ABSENT' && !a.notes?.trim());
+    const markedKeys = new Set(
+      day.attendances
+        .filter((a) => a.markedAt != null || ['PRESENT', 'LATE', 'EXCUSED', 'ABSENT'].includes(a.status))
+        .map((a) => `${a.participantId}:${a.slot}`),
+    );
+
+    const unsigned: Array<{
+      participantId: string;
+      slot: (typeof PEDAGOGY_SLOTS)[number];
+      name: string;
+      email: string | null;
+    }> = [];
+
+    for (const p of day.session.participants) {
+      const name =
+        p.user.name?.trim() ||
+        [p.user.firstName, p.user.lastName].filter(Boolean).join(' ').trim() ||
+        p.user.email;
+      for (const slot of PEDAGOGY_SLOTS) {
+        if (!markedKeys.has(`${p.id}:${slot}`)) {
+          unsigned.push({
+            participantId: p.id,
+            slot,
+            name,
+            email: p.user.email?.trim() || null,
+          });
+        }
+      }
+    }
+
+    const absences = day.attendances.filter(
+      (a) =>
+        a.status === 'ABSENT' &&
+        (a.justificationStatus == null ||
+          a.justificationStatus === 'UNJUSTIFIED' ||
+          a.justificationStatus === 'JUSTIFICATION_REQUESTED'),
+    );
+
     return {
       dayId: day.id,
       dayDate: day.dayDate.toISOString().slice(0, 10),
       sessionId: day.session.id,
       sessionLabel: day.session.dateDisplayLabel,
+      formationName: day.session.formation.name,
+      location: day.session.location,
       trainer: day.session.trainer,
       unsignedEmargementCount: unsigned.length,
       unjustifiedAbsenceCount: absences.length,
-      unsigned: unsigned.map((a) => ({
-        participantId: a.participantId,
-        slot: a.slot,
-        name: a.participant.user.name ?? a.participant.user.email,
-      })),
+      unsigned,
       absences: absences.map((a) => ({
+        emargementId: a.id,
         participantId: a.participantId,
         slot: a.slot,
-        name: a.participant.user.name ?? a.participant.user.email,
+        name:
+          a.participant.user.name?.trim() ||
+          [a.participant.user.firstName, a.participant.user.lastName].filter(Boolean).join(' ').trim() ||
+          a.participant.user.email,
+        email: a.participant.user.email?.trim() || null,
+        justificationStatus: a.justificationStatus,
       })),
     };
   });

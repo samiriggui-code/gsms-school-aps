@@ -873,6 +873,26 @@ exports.Prisma.FormationSessionEmargementScalarFieldEnum = {
   markedAt: 'markedAt',
   markedByUserId: 'markedByUserId',
   notes: 'notes',
+  justificationStatus: 'justificationStatus',
+  justificationRequestedAt: 'justificationRequestedAt',
+  justificationNote: 'justificationNote',
+  justificationResolvedAt: 'justificationResolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FormationSessionConventionScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  participantId: 'participantId',
+  status: 'status',
+  fileAssetId: 'fileAssetId',
+  publicToken: 'publicToken',
+  sentAt: 'sentAt',
+  viewedAt: 'viewedAt',
+  signedAt: 'signedAt',
+  lastReminderAt: 'lastReminderAt',
+  reminderCount: 'reminderCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -2146,6 +2166,21 @@ exports.FormationSessionEmargementStatus = exports.$Enums.FormationSessionEmarge
   EXCUSED: 'EXCUSED'
 };
 
+exports.AbsenceJustificationStatus = exports.$Enums.AbsenceJustificationStatus = {
+  UNJUSTIFIED: 'UNJUSTIFIED',
+  JUSTIFICATION_REQUESTED: 'JUSTIFICATION_REQUESTED',
+  JUSTIFIED: 'JUSTIFIED',
+  RESOLVED: 'RESOLVED'
+};
+
+exports.SessionConventionStatus = exports.$Enums.SessionConventionStatus = {
+  GENERATED: 'GENERATED',
+  SENT: 'SENT',
+  VIEWED: 'VIEWED',
+  SIGNED: 'SIGNED',
+  ARCHIVED: 'ARCHIVED'
+};
+
 exports.FormationExamStatus = exports.$Enums.FormationExamStatus = {
   PLANNED: 'PLANNED',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -2543,6 +2578,7 @@ exports.Prisma.ModelName = {
   FormationSessionParticipant: 'FormationSessionParticipant',
   FormationSessionDay: 'FormationSessionDay',
   FormationSessionEmargement: 'FormationSessionEmargement',
+  FormationSessionConvention: 'FormationSessionConvention',
   FormationExam: 'FormationExam',
   FormationAttestation: 'FormationAttestation',
   Course: 'Course',

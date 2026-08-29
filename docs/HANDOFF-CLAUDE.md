@@ -620,3 +620,19 @@ L'utilisateur a demandé un audit complet des ~50 workflows de la doctrine (`GSM
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après, commit séparé du reste.
 
 ✅ traité — Tranche 1 livrée : WF-28/29/30 + WF-32 + WF-07 VIEWED + WF-06 SELF_FUNDED/APPRENTICESHIP ; `test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0 · migrate diff 0. Voir HANDOFF-CURSOR.
+
+## 2026-08-29 — Tranche 1 vérifiée en profondeur, RAS + Tranche 2
+
+**Vérification indépendante complète** (pas repris ton rapport) : les 4 diffs relus en entier, cohérents point par point. Bon réflexe : les 2 switches exhaustifs avec garde `never`, la gestion honnête du cas financeur sans e-mail fiable (skip plutôt qu'inventer), et surtout la vérif anti-collision substring sur `mapFunderType()` (même classe que le bug transport de tout à l'heure) — `OPCO_API_CONVERGENCE_APPRENTISSAGE` matche `OPCO` avant `APPRENT` grâce à l'ordre des checks, confirmé pas de bug. Relancé moi-même `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, **et `prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script --exit-code` → exit 0, migration vide** (DB vraiment synchronisée, pas une resucée du faux-succès `db:push` de tout à l'heure). Tranche 1 close, rien à reprendre.
+
+**Tranche 2 — go direct** (étend de l'infra existante et prouvée, pas de nouveau domaine de données) :
+
+1. **WF-17 — Signature manquante.** Détecter, pour un créneau (`FormationSessionDay`/slot) marqué complété, les participants confirmés sans ligne d'émargement PRESENT/LATE/EXCUSED pour ce créneau. Notifier apprenant + formateur + admin (réutilise le pattern e-mail déjà en place pour les autres notifications session). **Règle stricte** (déjà dans la doctrine WF-17 et dans SD-06) : ne jamais fabriquer la preuve — l'événement ne fait que signaler l'absence de signature, il ne doit jamais créer une ligne d'émargement à la place de quelqu'un.
+2. **WF-18 — Cycle de justification d'absence.** `FormationSessionEmargementStatus` a déjà ABSENT ; ajoute un sous-état de justification (soit un enum séparé `AbsenceJustificationStatus` UNJUSTIFIED→JUSTIFICATION_REQUESTED→JUSTIFIED→RESOLVED, soit des champs sur la ligne d'émargement existante — à toi de juger ce qui s'intègre le mieux au modèle actuel, montre-moi le choix). Notif formateur + entreprise si applicable.
+3. **WF-08 — Cycle convention/contrat complet.** Le PDF existe déjà (`session-convention-store`) mais sans cycle de statut. Ajoute un statut sur le modèle convention existant : GENERATED→SENT→VIEWED→SIGNED→ARCHIVED (même pattern que WF-07 devis VIEWED qu'on vient de faire — réutilise l'idée du flag `forPublicViewer` si la convention a une vue publique, sinon adapte). Relances automatiques J+2/J+5 si pas signé (cron n8n, même pattern que satisfaction cold/hot).
+
+**Pas dans cette tranche** : WF-02/03 (analyse du besoin + positionnement) — c'est un vrai nouveau domaine de données (pas juste étendre l'existant), je veux d'abord un cadrage rapide de ta part avant que tu codes (mini-note façon P4, pas un gros draft — juste : où stocker ça, `Candidature` étendue ou nouveau modèle, et comment ça s'articule avec `ComplianceDossier` qui existe déjà pour la qualification dossier). On l'attaque juste après cette tranche. WF-19 (prévention rupture de parcours) reste reporté — logique de détection de risque plus complexe, pas de trigger urgent identifié.
+
+Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
+
+✅ traité — Tranche 2 livrée : WF-17 (detect gaps + emails evening, jamais de preuve fabriquée) · WF-18 (AbsenceJustificationStatus + cron request + API PATCH) · WF-08 (FormationSessionConvention + SENT + relances J+2/J+5 cron/n8n). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.

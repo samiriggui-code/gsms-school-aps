@@ -74,6 +74,16 @@ export {
 } from './session-flows';
 
 export {
+  sendSignatureMissingEmail,
+  sendAbsenceJustificationRequestEmail,
+  sendConventionReminderEmail,
+  slotLabelFr,
+  type SignatureMissingMailInput,
+  type AbsenceJustificationMailInput,
+  type ConventionReminderMailInput,
+} from './session-alert-flows';
+
+export {
   sendSatisfactionSurveyInviteEmail,
   type SatisfactionSurveyInviteMailContext,
   type SatisfactionInviteMailTiming,

@@ -57,6 +57,10 @@ export {
   SessionReadinessStatus,
   SubcontractorQualificationStatus,
   CrmCompanyKind,
+  AbsenceJustificationStatus,
+  SessionConventionStatus,
+  FormationSessionEmargementStatus,
+  FormationSessionDaySlot,
 } from '../generated/client';
 export {
   LandingTeamVolet,

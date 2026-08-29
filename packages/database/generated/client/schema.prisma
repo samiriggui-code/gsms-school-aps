@@ -141,6 +141,23 @@ enum FormationSessionEmargementStatus {
   EXCUSED
 }
 
+/// WF-18 — cycle de justification d'absence (uniquement si status = ABSENT).
+enum AbsenceJustificationStatus {
+  UNJUSTIFIED
+  JUSTIFICATION_REQUESTED
+  JUSTIFIED
+  RESOLVED
+}
+
+/// WF-08 — cycle convention/contrat de formation (par participant).
+enum SessionConventionStatus {
+  GENERATED
+  SENT
+  VIEWED
+  SIGNED
+  ARCHIVED
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -365,13 +382,14 @@ model FileAsset {
   updatedAt        DateTime            @updatedAt
   deletedAt        DateTime?
 
-  createdBy              User?                   @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  currentVersion         FileAssetVersion?       @relation("FileAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
-  versions               FileAssetVersion[]      @relation("FileAssetVersions")
+  createdBy              User?                        @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  currentVersion         FileAssetVersion?            @relation("FileAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
+  versions               FileAssetVersion[]           @relation("FileAssetVersions")
   reportJobs             ReportGenerationJob[]
   complianceDossierItems ComplianceDossierItem[]
   complianceItemEvents   ComplianceItemEvent[]
   ticketAttachments      TicketAttachment[]
+  sessionConventions     FormationSessionConvention[]
 
   @@index([module, entityType, entityId])
   @@index([status, visibility])
@@ -1395,6 +1413,7 @@ model FormationSession {
   fundingCases        FundingCase[]
   evidences           Evidence[]
   readinessEvents     SessionReadinessEvent[]
+  conventions         FormationSessionConvention[]
 
   candidaturesInterested   Candidature[]          @relation("CandidatureInterestedSession")
   financeDevisSessionLinks FinanceDevis[]         @relation("FinanceDevisLinkedSession")
@@ -1534,6 +1553,7 @@ model FormationSessionParticipant {
   emargements         FormationSessionEmargement[]
   satisfactionSurveys SatisfactionSurvey[]
   fundingCases        FundingCase[]
+  conventions         FormationSessionConvention[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1580,12 +1600,46 @@ model FormationSessionEmargement {
   markedBy       User?     @relation("FormationSessionEmargementMarkedBy", fields: [markedByUserId], references: [id], onDelete: SetNull)
   notes          String?   @db.Text
 
+  /// WF-18 — null sauf si status = ABSENT.
+  justificationStatus      AbsenceJustificationStatus?
+  justificationRequestedAt DateTime?
+  justificationNote        String?                     @db.Text
+  justificationResolvedAt  DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([dayId, participantId, slot])
   @@index([participantId])
   @@index([dayId])
+  @@index([justificationStatus])
+}
+
+/// WF-08 — convention de formation par participant (cycle GENERATED→…→ARCHIVED).
+model FormationSessionConvention {
+  id             String                  @id @default(uuid())
+  sessionId      String
+  participantId  String
+  status         SessionConventionStatus @default(GENERATED)
+  fileAssetId    String?
+  /// Token signé optionnel pour ouverture publique (VIEWED).
+  publicToken    String?                 @unique
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  signedAt       DateTime?
+  lastReminderAt DateTime?
+  reminderCount  Int                     @default(0)
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+
+  session     FormationSession            @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participant FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  fileAsset   FileAsset?                  @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+
+  @@unique([sessionId, participantId])
+  @@index([sessionId])
+  @@index([status])
+  @@index([sentAt])
 }
 
 /// Examen catalogue lié à une session `WITH_EXAM` (1:1).

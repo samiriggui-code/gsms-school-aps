@@ -1018,6 +1018,32 @@ return (data.items ?? []).filter((i) => i.daysOverdue >= 15).map((i) => ({ json:
     }),
   );
 
+  // ── Cron relances convention J+2 / J+5 (WF-08) ────────────────────────────
+  workflows.push(
+    wf('GSMS — Relances convention', [
+      scheduleTrigger('conv-rem-cron', 'Cron 09h15', pos(0, 0), '15 9 * * *'),
+      httpGetNode(
+        'conv-rem-fetch',
+        'Relances convention',
+        pos(240, 0),
+        ctx,
+        `${base}/api/internal/n8n/cron/convention-reminders`,
+      ),
+      dispatchNode(
+        'conv-rem-dispatch',
+        'Digest relances convention',
+        pos(480, 0),
+        ctx,
+        '"crm.session.convention.reminder"',
+        '{ remindedJ2: ($json.data ?? $json).remindedJ2 ?? 0, remindedJ5: ($json.data ?? $json).remindedJ5 ?? 0, skipped: ($json.data ?? $json).skipped ?? 0, summary: "Relances convention — J+2: " + (($json.data ?? $json).remindedJ2 ?? 0) + " · J+5: " + (($json.data ?? $json).remindedJ5 ?? 0) }',
+        ['notification', 'email'],
+      ),
+    ], {
+      'Cron 09h15': { main: [[{ node: 'Relances convention', type: 'main', index: 0 }]] },
+      'Relances convention': { main: [[{ node: 'Digest relances convention', type: 'main', index: 0 }]] },
+    }),
+  );
+
   // ── Parcours candidat (statut, conversion lead, clôture) ─────────────────
   workflows.push(
     wf('GSMS — Parcours candidat', [

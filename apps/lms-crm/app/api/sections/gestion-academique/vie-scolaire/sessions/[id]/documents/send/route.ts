@@ -14,6 +14,7 @@ import { buildSessionConvocationPdf } from '@/lib/vie-scolaire/session-convocati
 import { storeSessionConvocationPdfAsset } from '@/lib/vie-scolaire/session-convocation-store';
 import { buildSessionConventionPdf } from '@/lib/vie-scolaire/session-convention-pdf';
 import { storeSessionConventionPdfAsset } from '@/lib/vie-scolaire/session-convention-store';
+import { upsertSessionConvention } from '@/lib/vie-scolaire/session-convention-lifecycle';
 import { buildSessionCertificatePdf } from '@/lib/vie-scolaire/session-certificate-pdf';
 import { storeSessionCertificatePdfAsset } from '@/lib/vie-scolaire/session-certificate-store';
 
@@ -166,15 +167,17 @@ export async function POST(request: NextRequest, context: Ctx) {
             { participantId: participant.id, name, email, fundingMode: participant.fundingMode },
           ],
         });
+        let archivedFileAssetId: string | null = null;
         if (session.user?.id) {
           try {
-            await storeSessionConventionPdfAsset({
+            const asset = await storeSessionConventionPdfAsset({
               sessionId,
               buffer,
               filename,
               createdById: session.user.id,
               participantCount: 1,
             });
+            archivedFileAssetId = asset.id;
           } catch (archiveError) {
             console.error('[session documents send] archivage convention', archiveError);
           }
@@ -189,6 +192,16 @@ export async function POST(request: NextRequest, context: Ctx) {
           pdfBuffer: buffer,
           pdfFilename: filename,
         });
+        try {
+          await upsertSessionConvention(prisma, {
+            sessionId,
+            participantId: participant.id,
+            status: 'SENT',
+            fileAssetId: archivedFileAssetId,
+          });
+        } catch (convErr) {
+          console.error('[session documents send] convention lifecycle', convErr);
+        }
       } else {
         const { buffer, filename } = await buildSessionCertificatePdf({
           formationName: row.formation.name,

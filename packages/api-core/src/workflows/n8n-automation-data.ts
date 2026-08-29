@@ -131,17 +131,20 @@ export async function fetchPedagogyEveningAlerts(prisma: PrismaClient, ref = new
       sessionId: s.sessionId,
       sessionLabel: s.sessionLabel,
       dayDate: s.dayDate,
+      formationName: s.formationName,
     })),
   );
 
   return {
     date: daily.date,
     totalUnjustifiedAbsences: daily.totalUnjustifiedAbsences,
+    totalUnsigned: daily.totalUnsigned,
     absences,
     sessions: daily.sessions.map((s) => ({
       sessionId: s.sessionId,
       sessionLabel: s.sessionLabel,
       unjustifiedAbsenceCount: s.unjustifiedAbsenceCount,
+      unsignedEmargementCount: s.unsignedEmargementCount,
     })),
   };
 }

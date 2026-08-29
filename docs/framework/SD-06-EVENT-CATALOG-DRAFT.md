@@ -47,8 +47,8 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | `SESSION_STATUS_CHANGED` | session | manual/system | `type: HISTORIQUE` (from/to status) | Qualiopi re-eval, `SystemLog` (déjà en place, G10) |
 | `SLOT_STARTED` | session | scheduled | `null` (déclencheur, pas preuve en soi) | ouverture émargement |
 | `ATTENDANCE_CONFIRMED` | session | manual (signature) | `type: SIGNATURE` (émargement) | Qualiopi re-eval, calcul heures BPF (déjà consommé par `bpf-aggregates.ts` ce soir via `Emargement`) |
-| `SIGNATURE_MISSING` | session | system (dérivé `SLOT_COMPLETED` + `signature_missing`) | `null` | notification apprenant/formateur/admin — **la preuve ne doit jamais être fabriquée** (règle explicite WF-17) |
-| `LEARNER_ABSENT` | session | manual | `type: RELATION` (absence + justification liée) | notification, statut `UNJUSTIFIED→JUSTIFICATION_REQUESTED→JUSTIFIED→RESOLVED` |
+| `SIGNATURE_MISSING` | session | system (dérivé créneau du jour + participant sans ligne d'émargement) | `null` (jamais fabriquer la preuve) | notification apprenant/formateur/admin — implémenté Tranche 2 (pedagogy-evening) |
+| `LEARNER_ABSENT` | session | manual / evening cron | `type: RELATION` (absence + justification) | cycle `UNJUSTIFIED→JUSTIFICATION_REQUESTED→JUSTIFIED→RESOLVED` — Tranche 2 |
 | `DOCUMENT_SENT` | session | system | `type: EMAIL` ou `type: DOCUMENT` selon le canal | déjà implémenté ce soir (OF-02 : convocation/convention/attestation) |
 | `SATISFACTION_REQUESTED` | session | scheduled (J+45 pour COLD) | `type: QUESTIONNAIRE` | déjà implémenté ce soir (OF-10) |
 | `SATISFACTION_COMPLETED` | session | manual (soumission apprenant / stakeholder) | `type: QUESTIONNAIRE` | Qualiopi re-eval |

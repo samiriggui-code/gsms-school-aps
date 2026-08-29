@@ -243,6 +243,11 @@ export type FormationSessionDay = $Result.DefaultSelection<Prisma.$FormationSess
  */
 export type FormationSessionEmargement = $Result.DefaultSelection<Prisma.$FormationSessionEmargementPayload>
 /**
+ * Model FormationSessionConvention
+ * WF-08 — convention de formation par participant (cycle GENERATED→…→ARCHIVED).
+ */
+export type FormationSessionConvention = $Result.DefaultSelection<Prisma.$FormationSessionConventionPayload>
+/**
  * Model FormationExam
  * Examen catalogue lié à une session `WITH_EXAM` (1:1).
  */
@@ -816,6 +821,27 @@ export const FormationSessionEmargementStatus: {
 };
 
 export type FormationSessionEmargementStatus = (typeof FormationSessionEmargementStatus)[keyof typeof FormationSessionEmargementStatus]
+
+
+export const AbsenceJustificationStatus: {
+  UNJUSTIFIED: 'UNJUSTIFIED',
+  JUSTIFICATION_REQUESTED: 'JUSTIFICATION_REQUESTED',
+  JUSTIFIED: 'JUSTIFIED',
+  RESOLVED: 'RESOLVED'
+};
+
+export type AbsenceJustificationStatus = (typeof AbsenceJustificationStatus)[keyof typeof AbsenceJustificationStatus]
+
+
+export const SessionConventionStatus: {
+  GENERATED: 'GENERATED',
+  SENT: 'SENT',
+  VIEWED: 'VIEWED',
+  SIGNED: 'SIGNED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type SessionConventionStatus = (typeof SessionConventionStatus)[keyof typeof SessionConventionStatus]
 
 
 export const AttendanceStatus: {
@@ -1582,6 +1608,14 @@ export const FormationSessionDaySlot: typeof $Enums.FormationSessionDaySlot
 export type FormationSessionEmargementStatus = $Enums.FormationSessionEmargementStatus
 
 export const FormationSessionEmargementStatus: typeof $Enums.FormationSessionEmargementStatus
+
+export type AbsenceJustificationStatus = $Enums.AbsenceJustificationStatus
+
+export const AbsenceJustificationStatus: typeof $Enums.AbsenceJustificationStatus
+
+export type SessionConventionStatus = $Enums.SessionConventionStatus
+
+export const SessionConventionStatus: typeof $Enums.SessionConventionStatus
 
 export type AttendanceStatus = $Enums.AttendanceStatus
 
@@ -2399,6 +2433,16 @@ export class PrismaClient<
     * ```
     */
   get formationSessionEmargement(): Prisma.FormationSessionEmargementDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.formationSessionConvention`: Exposes CRUD operations for the **FormationSessionConvention** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FormationSessionConventions
+    * const formationSessionConventions = await prisma.formationSessionConvention.findMany()
+    * ```
+    */
+  get formationSessionConvention(): Prisma.FormationSessionConventionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.formationExam`: Exposes CRUD operations for the **FormationExam** model.
@@ -3657,6 +3701,7 @@ export namespace Prisma {
     FormationSessionParticipant: 'FormationSessionParticipant',
     FormationSessionDay: 'FormationSessionDay',
     FormationSessionEmargement: 'FormationSessionEmargement',
+    FormationSessionConvention: 'FormationSessionConvention',
     FormationExam: 'FormationExam',
     FormationAttestation: 'FormationAttestation',
     Course: 'Course',
@@ -3750,7 +3795,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -7007,6 +7052,80 @@ export namespace Prisma {
           count: {
             args: Prisma.FormationSessionEmargementCountArgs<ExtArgs>
             result: $Utils.Optional<FormationSessionEmargementCountAggregateOutputType> | number
+          }
+        }
+      }
+      FormationSessionConvention: {
+        payload: Prisma.$FormationSessionConventionPayload<ExtArgs>
+        fields: Prisma.FormationSessionConventionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FormationSessionConventionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FormationSessionConventionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>
+          }
+          findFirst: {
+            args: Prisma.FormationSessionConventionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FormationSessionConventionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>
+          }
+          findMany: {
+            args: Prisma.FormationSessionConventionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>[]
+          }
+          create: {
+            args: Prisma.FormationSessionConventionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>
+          }
+          createMany: {
+            args: Prisma.FormationSessionConventionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FormationSessionConventionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>[]
+          }
+          delete: {
+            args: Prisma.FormationSessionConventionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>
+          }
+          update: {
+            args: Prisma.FormationSessionConventionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>
+          }
+          deleteMany: {
+            args: Prisma.FormationSessionConventionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FormationSessionConventionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FormationSessionConventionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>[]
+          }
+          upsert: {
+            args: Prisma.FormationSessionConventionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormationSessionConventionPayload>
+          }
+          aggregate: {
+            args: Prisma.FormationSessionConventionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFormationSessionConvention>
+          }
+          groupBy: {
+            args: Prisma.FormationSessionConventionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FormationSessionConventionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FormationSessionConventionCountArgs<ExtArgs>
+            result: $Utils.Optional<FormationSessionConventionCountAggregateOutputType> | number
           }
         }
       }
@@ -12934,6 +13053,7 @@ export namespace Prisma {
     formationSessionParticipant?: FormationSessionParticipantOmit
     formationSessionDay?: FormationSessionDayOmit
     formationSessionEmargement?: FormationSessionEmargementOmit
+    formationSessionConvention?: FormationSessionConventionOmit
     formationExam?: FormationExamOmit
     formationAttestation?: FormationAttestationOmit
     course?: CourseOmit
@@ -13686,6 +13806,7 @@ export namespace Prisma {
     complianceDossierItems: number
     complianceItemEvents: number
     ticketAttachments: number
+    sessionConventions: number
   }
 
   export type FileAssetCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13694,6 +13815,7 @@ export namespace Prisma {
     complianceDossierItems?: boolean | FileAssetCountOutputTypeCountComplianceDossierItemsArgs
     complianceItemEvents?: boolean | FileAssetCountOutputTypeCountComplianceItemEventsArgs
     ticketAttachments?: boolean | FileAssetCountOutputTypeCountTicketAttachmentsArgs
+    sessionConventions?: boolean | FileAssetCountOutputTypeCountSessionConventionsArgs
   }
 
   // Custom InputTypes
@@ -13740,6 +13862,13 @@ export namespace Prisma {
    */
   export type FileAssetCountOutputTypeCountTicketAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TicketAttachmentWhereInput
+  }
+
+  /**
+   * FileAssetCountOutputType without action
+   */
+  export type FileAssetCountOutputTypeCountSessionConventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionConventionWhereInput
   }
 
 
@@ -14277,6 +14406,7 @@ export namespace Prisma {
     fundingCases: number
     evidences: number
     readinessEvents: number
+    conventions: number
     candidaturesInterested: number
     financeDevisSessionLinks: number
     automationRuns: number
@@ -14291,6 +14421,7 @@ export namespace Prisma {
     fundingCases?: boolean | FormationSessionCountOutputTypeCountFundingCasesArgs
     evidences?: boolean | FormationSessionCountOutputTypeCountEvidencesArgs
     readinessEvents?: boolean | FormationSessionCountOutputTypeCountReadinessEventsArgs
+    conventions?: boolean | FormationSessionCountOutputTypeCountConventionsArgs
     candidaturesInterested?: boolean | FormationSessionCountOutputTypeCountCandidaturesInterestedArgs
     financeDevisSessionLinks?: boolean | FormationSessionCountOutputTypeCountFinanceDevisSessionLinksArgs
     automationRuns?: boolean | FormationSessionCountOutputTypeCountAutomationRunsArgs
@@ -14361,6 +14492,13 @@ export namespace Prisma {
    */
   export type FormationSessionCountOutputTypeCountReadinessEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionReadinessEventWhereInput
+  }
+
+  /**
+   * FormationSessionCountOutputType without action
+   */
+  export type FormationSessionCountOutputTypeCountConventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionConventionWhereInput
   }
 
   /**
@@ -14451,12 +14589,14 @@ export namespace Prisma {
     emargements: number
     satisfactionSurveys: number
     fundingCases: number
+    conventions: number
   }
 
   export type FormationSessionParticipantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     emargements?: boolean | FormationSessionParticipantCountOutputTypeCountEmargementsArgs
     satisfactionSurveys?: boolean | FormationSessionParticipantCountOutputTypeCountSatisfactionSurveysArgs
     fundingCases?: boolean | FormationSessionParticipantCountOutputTypeCountFundingCasesArgs
+    conventions?: boolean | FormationSessionParticipantCountOutputTypeCountConventionsArgs
   }
 
   // Custom InputTypes
@@ -14489,6 +14629,13 @@ export namespace Prisma {
    */
   export type FormationSessionParticipantCountOutputTypeCountFundingCasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FundingCaseWhereInput
+  }
+
+  /**
+   * FormationSessionParticipantCountOutputType without action
+   */
+  export type FormationSessionParticipantCountOutputTypeCountConventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionConventionWhereInput
   }
 
 
@@ -20613,6 +20760,7 @@ export namespace Prisma {
     complianceDossierItems?: boolean | FileAsset$complianceDossierItemsArgs<ExtArgs>
     complianceItemEvents?: boolean | FileAsset$complianceItemEventsArgs<ExtArgs>
     ticketAttachments?: boolean | FileAsset$ticketAttachmentsArgs<ExtArgs>
+    sessionConventions?: boolean | FileAsset$sessionConventionsArgs<ExtArgs>
     _count?: boolean | FileAssetCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fileAsset"]>
 
@@ -20719,6 +20867,7 @@ export namespace Prisma {
     complianceDossierItems?: boolean | FileAsset$complianceDossierItemsArgs<ExtArgs>
     complianceItemEvents?: boolean | FileAsset$complianceItemEventsArgs<ExtArgs>
     ticketAttachments?: boolean | FileAsset$ticketAttachmentsArgs<ExtArgs>
+    sessionConventions?: boolean | FileAsset$sessionConventionsArgs<ExtArgs>
     _count?: boolean | FileAssetCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FileAssetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20740,6 +20889,7 @@ export namespace Prisma {
       complianceDossierItems: Prisma.$ComplianceDossierItemPayload<ExtArgs>[]
       complianceItemEvents: Prisma.$ComplianceItemEventPayload<ExtArgs>[]
       ticketAttachments: Prisma.$TicketAttachmentPayload<ExtArgs>[]
+      sessionConventions: Prisma.$FormationSessionConventionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -21170,6 +21320,7 @@ export namespace Prisma {
     complianceDossierItems<T extends FileAsset$complianceDossierItemsArgs<ExtArgs> = {}>(args?: Subset<T, FileAsset$complianceDossierItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComplianceDossierItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     complianceItemEvents<T extends FileAsset$complianceItemEventsArgs<ExtArgs> = {}>(args?: Subset<T, FileAsset$complianceItemEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComplianceItemEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ticketAttachments<T extends FileAsset$ticketAttachmentsArgs<ExtArgs> = {}>(args?: Subset<T, FileAsset$ticketAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TicketAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    sessionConventions<T extends FileAsset$sessionConventionsArgs<ExtArgs> = {}>(args?: Subset<T, FileAsset$sessionConventionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21782,6 +21933,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TicketAttachmentScalarFieldEnum | TicketAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * FileAsset.sessionConventions
+   */
+  export type FileAsset$sessionConventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    where?: FormationSessionConventionWhereInput
+    orderBy?: FormationSessionConventionOrderByWithRelationInput | FormationSessionConventionOrderByWithRelationInput[]
+    cursor?: FormationSessionConventionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormationSessionConventionScalarFieldEnum | FormationSessionConventionScalarFieldEnum[]
   }
 
   /**
@@ -63502,6 +63677,7 @@ export namespace Prisma {
     fundingCases?: boolean | FormationSession$fundingCasesArgs<ExtArgs>
     evidences?: boolean | FormationSession$evidencesArgs<ExtArgs>
     readinessEvents?: boolean | FormationSession$readinessEventsArgs<ExtArgs>
+    conventions?: boolean | FormationSession$conventionsArgs<ExtArgs>
     candidaturesInterested?: boolean | FormationSession$candidaturesInterestedArgs<ExtArgs>
     financeDevisSessionLinks?: boolean | FormationSession$financeDevisSessionLinksArgs<ExtArgs>
     automationRuns?: boolean | FormationSession$automationRunsArgs<ExtArgs>
@@ -63620,6 +63796,7 @@ export namespace Prisma {
     fundingCases?: boolean | FormationSession$fundingCasesArgs<ExtArgs>
     evidences?: boolean | FormationSession$evidencesArgs<ExtArgs>
     readinessEvents?: boolean | FormationSession$readinessEventsArgs<ExtArgs>
+    conventions?: boolean | FormationSession$conventionsArgs<ExtArgs>
     candidaturesInterested?: boolean | FormationSession$candidaturesInterestedArgs<ExtArgs>
     financeDevisSessionLinks?: boolean | FormationSession$financeDevisSessionLinksArgs<ExtArgs>
     automationRuns?: boolean | FormationSession$automationRunsArgs<ExtArgs>
@@ -63662,6 +63839,7 @@ export namespace Prisma {
       fundingCases: Prisma.$FundingCasePayload<ExtArgs>[]
       evidences: Prisma.$EvidencePayload<ExtArgs>[]
       readinessEvents: Prisma.$SessionReadinessEventPayload<ExtArgs>[]
+      conventions: Prisma.$FormationSessionConventionPayload<ExtArgs>[]
       candidaturesInterested: Prisma.$CandidaturePayload<ExtArgs>[]
       financeDevisSessionLinks: Prisma.$FinanceDevisPayload<ExtArgs>[]
       automationRuns: Prisma.$SessionAutomationRunPayload<ExtArgs>[]
@@ -64135,6 +64313,7 @@ export namespace Prisma {
     fundingCases<T extends FormationSession$fundingCasesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$fundingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     evidences<T extends FormationSession$evidencesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$evidencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     readinessEvents<T extends FormationSession$readinessEventsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$readinessEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionReadinessEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    conventions<T extends FormationSession$conventionsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$conventionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     candidaturesInterested<T extends FormationSession$candidaturesInterestedArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$candidaturesInterestedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financeDevisSessionLinks<T extends FormationSession$financeDevisSessionLinksArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$financeDevisSessionLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceDevisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     automationRuns<T extends FormationSession$automationRunsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$automationRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAutomationRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -64915,6 +65094,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SessionReadinessEventScalarFieldEnum | SessionReadinessEventScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSession.conventions
+   */
+  export type FormationSession$conventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    where?: FormationSessionConventionWhereInput
+    orderBy?: FormationSessionConventionOrderByWithRelationInput | FormationSessionConventionOrderByWithRelationInput[]
+    cursor?: FormationSessionConventionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormationSessionConventionScalarFieldEnum | FormationSessionConventionScalarFieldEnum[]
   }
 
   /**
@@ -69006,6 +69209,7 @@ export namespace Prisma {
     emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
     satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
     fundingCases?: boolean | FormationSessionParticipant$fundingCasesArgs<ExtArgs>
+    conventions?: boolean | FormationSessionParticipant$conventionsArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["formationSessionParticipant"]>
 
@@ -69074,6 +69278,7 @@ export namespace Prisma {
     emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
     satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
     fundingCases?: boolean | FormationSessionParticipant$fundingCasesArgs<ExtArgs>
+    conventions?: boolean | FormationSessionParticipant$conventionsArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FormationSessionParticipantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -69096,6 +69301,7 @@ export namespace Prisma {
       emargements: Prisma.$FormationSessionEmargementPayload<ExtArgs>[]
       satisfactionSurveys: Prisma.$SatisfactionSurveyPayload<ExtArgs>[]
       fundingCases: Prisma.$FundingCasePayload<ExtArgs>[]
+      conventions: Prisma.$FormationSessionConventionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -69515,6 +69721,7 @@ export namespace Prisma {
     emargements<T extends FormationSessionParticipant$emargementsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$emargementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     satisfactionSurveys<T extends FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     fundingCases<T extends FormationSessionParticipant$fundingCasesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$fundingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    conventions<T extends FormationSessionParticipant$conventionsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$conventionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -70047,6 +70254,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionParticipant.conventions
+   */
+  export type FormationSessionParticipant$conventionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    where?: FormationSessionConventionWhereInput
+    orderBy?: FormationSessionConventionOrderByWithRelationInput | FormationSessionConventionOrderByWithRelationInput[]
+    cursor?: FormationSessionConventionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormationSessionConventionScalarFieldEnum | FormationSessionConventionScalarFieldEnum[]
   }
 
   /**
@@ -71206,6 +71437,10 @@ export namespace Prisma {
     markedAt: Date | null
     markedByUserId: string | null
     notes: string | null
+    justificationStatus: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt: Date | null
+    justificationNote: string | null
+    justificationResolvedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -71219,6 +71454,10 @@ export namespace Prisma {
     markedAt: Date | null
     markedByUserId: string | null
     notes: string | null
+    justificationStatus: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt: Date | null
+    justificationNote: string | null
+    justificationResolvedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -71232,6 +71471,10 @@ export namespace Prisma {
     markedAt: number
     markedByUserId: number
     notes: number
+    justificationStatus: number
+    justificationRequestedAt: number
+    justificationNote: number
+    justificationResolvedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -71247,6 +71490,10 @@ export namespace Prisma {
     markedAt?: true
     markedByUserId?: true
     notes?: true
+    justificationStatus?: true
+    justificationRequestedAt?: true
+    justificationNote?: true
+    justificationResolvedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -71260,6 +71507,10 @@ export namespace Prisma {
     markedAt?: true
     markedByUserId?: true
     notes?: true
+    justificationStatus?: true
+    justificationRequestedAt?: true
+    justificationNote?: true
+    justificationResolvedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -71273,6 +71524,10 @@ export namespace Prisma {
     markedAt?: true
     markedByUserId?: true
     notes?: true
+    justificationStatus?: true
+    justificationRequestedAt?: true
+    justificationNote?: true
+    justificationResolvedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -71359,6 +71614,10 @@ export namespace Prisma {
     markedAt: Date | null
     markedByUserId: string | null
     notes: string | null
+    justificationStatus: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt: Date | null
+    justificationNote: string | null
+    justificationResolvedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: FormationSessionEmargementCountAggregateOutputType | null
@@ -71389,6 +71648,10 @@ export namespace Prisma {
     markedAt?: boolean
     markedByUserId?: boolean
     notes?: boolean
+    justificationStatus?: boolean
+    justificationRequestedAt?: boolean
+    justificationNote?: boolean
+    justificationResolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
@@ -71405,6 +71668,10 @@ export namespace Prisma {
     markedAt?: boolean
     markedByUserId?: boolean
     notes?: boolean
+    justificationStatus?: boolean
+    justificationRequestedAt?: boolean
+    justificationNote?: boolean
+    justificationResolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
@@ -71421,6 +71688,10 @@ export namespace Prisma {
     markedAt?: boolean
     markedByUserId?: boolean
     notes?: boolean
+    justificationStatus?: boolean
+    justificationRequestedAt?: boolean
+    justificationNote?: boolean
+    justificationResolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
@@ -71437,11 +71708,15 @@ export namespace Prisma {
     markedAt?: boolean
     markedByUserId?: boolean
     notes?: boolean
+    justificationStatus?: boolean
+    justificationRequestedAt?: boolean
+    justificationNote?: boolean
+    justificationResolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FormationSessionEmargementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dayId" | "participantId" | "slot" | "status" | "markedAt" | "markedByUserId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionEmargement"]>
+  export type FormationSessionEmargementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dayId" | "participantId" | "slot" | "status" | "markedAt" | "markedByUserId" | "notes" | "justificationStatus" | "justificationRequestedAt" | "justificationNote" | "justificationResolvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionEmargement"]>
   export type FormationSessionEmargementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     day?: boolean | FormationSessionDayDefaultArgs<ExtArgs>
     participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
@@ -71474,6 +71749,13 @@ export namespace Prisma {
       markedAt: Date | null
       markedByUserId: string | null
       notes: string | null
+      /**
+       * WF-18 — null sauf si status = ABSENT.
+       */
+      justificationStatus: $Enums.AbsenceJustificationStatus | null
+      justificationRequestedAt: Date | null
+      justificationNote: string | null
+      justificationResolvedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["formationSessionEmargement"]>
@@ -71910,6 +72192,10 @@ export namespace Prisma {
     readonly markedAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
     readonly markedByUserId: FieldRef<"FormationSessionEmargement", 'String'>
     readonly notes: FieldRef<"FormationSessionEmargement", 'String'>
+    readonly justificationStatus: FieldRef<"FormationSessionEmargement", 'AbsenceJustificationStatus'>
+    readonly justificationRequestedAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
+    readonly justificationNote: FieldRef<"FormationSessionEmargement", 'String'>
+    readonly justificationResolvedAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
     readonly createdAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
     readonly updatedAt: FieldRef<"FormationSessionEmargement", 'DateTime'>
   }
@@ -72347,6 +72633,1245 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FormationSessionEmargementInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FormationSessionConvention
+   */
+
+  export type AggregateFormationSessionConvention = {
+    _count: FormationSessionConventionCountAggregateOutputType | null
+    _avg: FormationSessionConventionAvgAggregateOutputType | null
+    _sum: FormationSessionConventionSumAggregateOutputType | null
+    _min: FormationSessionConventionMinAggregateOutputType | null
+    _max: FormationSessionConventionMaxAggregateOutputType | null
+  }
+
+  export type FormationSessionConventionAvgAggregateOutputType = {
+    reminderCount: number | null
+  }
+
+  export type FormationSessionConventionSumAggregateOutputType = {
+    reminderCount: number | null
+  }
+
+  export type FormationSessionConventionMinAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    participantId: string | null
+    status: $Enums.SessionConventionStatus | null
+    fileAssetId: string | null
+    publicToken: string | null
+    sentAt: Date | null
+    viewedAt: Date | null
+    signedAt: Date | null
+    lastReminderAt: Date | null
+    reminderCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormationSessionConventionMaxAggregateOutputType = {
+    id: string | null
+    sessionId: string | null
+    participantId: string | null
+    status: $Enums.SessionConventionStatus | null
+    fileAssetId: string | null
+    publicToken: string | null
+    sentAt: Date | null
+    viewedAt: Date | null
+    signedAt: Date | null
+    lastReminderAt: Date | null
+    reminderCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormationSessionConventionCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    participantId: number
+    status: number
+    fileAssetId: number
+    publicToken: number
+    sentAt: number
+    viewedAt: number
+    signedAt: number
+    lastReminderAt: number
+    reminderCount: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FormationSessionConventionAvgAggregateInputType = {
+    reminderCount?: true
+  }
+
+  export type FormationSessionConventionSumAggregateInputType = {
+    reminderCount?: true
+  }
+
+  export type FormationSessionConventionMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    participantId?: true
+    status?: true
+    fileAssetId?: true
+    publicToken?: true
+    sentAt?: true
+    viewedAt?: true
+    signedAt?: true
+    lastReminderAt?: true
+    reminderCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormationSessionConventionMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    participantId?: true
+    status?: true
+    fileAssetId?: true
+    publicToken?: true
+    sentAt?: true
+    viewedAt?: true
+    signedAt?: true
+    lastReminderAt?: true
+    reminderCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormationSessionConventionCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    participantId?: true
+    status?: true
+    fileAssetId?: true
+    publicToken?: true
+    sentAt?: true
+    viewedAt?: true
+    signedAt?: true
+    lastReminderAt?: true
+    reminderCount?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FormationSessionConventionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormationSessionConvention to aggregate.
+     */
+    where?: FormationSessionConventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionConventions to fetch.
+     */
+    orderBy?: FormationSessionConventionOrderByWithRelationInput | FormationSessionConventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FormationSessionConventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionConventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionConventions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FormationSessionConventions
+    **/
+    _count?: true | FormationSessionConventionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FormationSessionConventionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FormationSessionConventionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FormationSessionConventionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FormationSessionConventionMaxAggregateInputType
+  }
+
+  export type GetFormationSessionConventionAggregateType<T extends FormationSessionConventionAggregateArgs> = {
+        [P in keyof T & keyof AggregateFormationSessionConvention]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFormationSessionConvention[P]>
+      : GetScalarType<T[P], AggregateFormationSessionConvention[P]>
+  }
+
+
+
+
+  export type FormationSessionConventionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormationSessionConventionWhereInput
+    orderBy?: FormationSessionConventionOrderByWithAggregationInput | FormationSessionConventionOrderByWithAggregationInput[]
+    by: FormationSessionConventionScalarFieldEnum[] | FormationSessionConventionScalarFieldEnum
+    having?: FormationSessionConventionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FormationSessionConventionCountAggregateInputType | true
+    _avg?: FormationSessionConventionAvgAggregateInputType
+    _sum?: FormationSessionConventionSumAggregateInputType
+    _min?: FormationSessionConventionMinAggregateInputType
+    _max?: FormationSessionConventionMaxAggregateInputType
+  }
+
+  export type FormationSessionConventionGroupByOutputType = {
+    id: string
+    sessionId: string
+    participantId: string
+    status: $Enums.SessionConventionStatus
+    fileAssetId: string | null
+    publicToken: string | null
+    sentAt: Date | null
+    viewedAt: Date | null
+    signedAt: Date | null
+    lastReminderAt: Date | null
+    reminderCount: number
+    createdAt: Date
+    updatedAt: Date
+    _count: FormationSessionConventionCountAggregateOutputType | null
+    _avg: FormationSessionConventionAvgAggregateOutputType | null
+    _sum: FormationSessionConventionSumAggregateOutputType | null
+    _min: FormationSessionConventionMinAggregateOutputType | null
+    _max: FormationSessionConventionMaxAggregateOutputType | null
+  }
+
+  type GetFormationSessionConventionGroupByPayload<T extends FormationSessionConventionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FormationSessionConventionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FormationSessionConventionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FormationSessionConventionGroupByOutputType[P]>
+            : GetScalarType<T[P], FormationSessionConventionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FormationSessionConventionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    publicToken?: boolean
+    sentAt?: boolean
+    viewedAt?: boolean
+    signedAt?: boolean
+    lastReminderAt?: boolean
+    reminderCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    fileAsset?: boolean | FormationSessionConvention$fileAssetArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionConvention"]>
+
+  export type FormationSessionConventionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    publicToken?: boolean
+    sentAt?: boolean
+    viewedAt?: boolean
+    signedAt?: boolean
+    lastReminderAt?: boolean
+    reminderCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    fileAsset?: boolean | FormationSessionConvention$fileAssetArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionConvention"]>
+
+  export type FormationSessionConventionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    publicToken?: boolean
+    sentAt?: boolean
+    viewedAt?: boolean
+    signedAt?: boolean
+    lastReminderAt?: boolean
+    reminderCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    fileAsset?: boolean | FormationSessionConvention$fileAssetArgs<ExtArgs>
+  }, ExtArgs["result"]["formationSessionConvention"]>
+
+  export type FormationSessionConventionSelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    publicToken?: boolean
+    sentAt?: boolean
+    viewedAt?: boolean
+    signedAt?: boolean
+    lastReminderAt?: boolean
+    reminderCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FormationSessionConventionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "participantId" | "status" | "fileAssetId" | "publicToken" | "sentAt" | "viewedAt" | "signedAt" | "lastReminderAt" | "reminderCount" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionConvention"]>
+  export type FormationSessionConventionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    fileAsset?: boolean | FormationSessionConvention$fileAssetArgs<ExtArgs>
+  }
+  export type FormationSessionConventionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    fileAsset?: boolean | FormationSessionConvention$fileAssetArgs<ExtArgs>
+  }
+  export type FormationSessionConventionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    session?: boolean | FormationSessionDefaultArgs<ExtArgs>
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    fileAsset?: boolean | FormationSessionConvention$fileAssetArgs<ExtArgs>
+  }
+
+  export type $FormationSessionConventionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FormationSessionConvention"
+    objects: {
+      session: Prisma.$FormationSessionPayload<ExtArgs>
+      participant: Prisma.$FormationSessionParticipantPayload<ExtArgs>
+      fileAsset: Prisma.$FileAssetPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sessionId: string
+      participantId: string
+      status: $Enums.SessionConventionStatus
+      fileAssetId: string | null
+      /**
+       * Token signé optionnel pour ouverture publique (VIEWED).
+       */
+      publicToken: string | null
+      sentAt: Date | null
+      viewedAt: Date | null
+      signedAt: Date | null
+      lastReminderAt: Date | null
+      reminderCount: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["formationSessionConvention"]>
+    composites: {}
+  }
+
+  type FormationSessionConventionGetPayload<S extends boolean | null | undefined | FormationSessionConventionDefaultArgs> = $Result.GetResult<Prisma.$FormationSessionConventionPayload, S>
+
+  type FormationSessionConventionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FormationSessionConventionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FormationSessionConventionCountAggregateInputType | true
+    }
+
+  export interface FormationSessionConventionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FormationSessionConvention'], meta: { name: 'FormationSessionConvention' } }
+    /**
+     * Find zero or one FormationSessionConvention that matches the filter.
+     * @param {FormationSessionConventionFindUniqueArgs} args - Arguments to find a FormationSessionConvention
+     * @example
+     * // Get one FormationSessionConvention
+     * const formationSessionConvention = await prisma.formationSessionConvention.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FormationSessionConventionFindUniqueArgs>(args: SelectSubset<T, FormationSessionConventionFindUniqueArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FormationSessionConvention that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FormationSessionConventionFindUniqueOrThrowArgs} args - Arguments to find a FormationSessionConvention
+     * @example
+     * // Get one FormationSessionConvention
+     * const formationSessionConvention = await prisma.formationSessionConvention.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FormationSessionConventionFindUniqueOrThrowArgs>(args: SelectSubset<T, FormationSessionConventionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormationSessionConvention that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionConventionFindFirstArgs} args - Arguments to find a FormationSessionConvention
+     * @example
+     * // Get one FormationSessionConvention
+     * const formationSessionConvention = await prisma.formationSessionConvention.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FormationSessionConventionFindFirstArgs>(args?: SelectSubset<T, FormationSessionConventionFindFirstArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormationSessionConvention that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionConventionFindFirstOrThrowArgs} args - Arguments to find a FormationSessionConvention
+     * @example
+     * // Get one FormationSessionConvention
+     * const formationSessionConvention = await prisma.formationSessionConvention.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FormationSessionConventionFindFirstOrThrowArgs>(args?: SelectSubset<T, FormationSessionConventionFindFirstOrThrowArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FormationSessionConventions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionConventionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FormationSessionConventions
+     * const formationSessionConventions = await prisma.formationSessionConvention.findMany()
+     * 
+     * // Get first 10 FormationSessionConventions
+     * const formationSessionConventions = await prisma.formationSessionConvention.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const formationSessionConventionWithIdOnly = await prisma.formationSessionConvention.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FormationSessionConventionFindManyArgs>(args?: SelectSubset<T, FormationSessionConventionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FormationSessionConvention.
+     * @param {FormationSessionConventionCreateArgs} args - Arguments to create a FormationSessionConvention.
+     * @example
+     * // Create one FormationSessionConvention
+     * const FormationSessionConvention = await prisma.formationSessionConvention.create({
+     *   data: {
+     *     // ... data to create a FormationSessionConvention
+     *   }
+     * })
+     * 
+     */
+    create<T extends FormationSessionConventionCreateArgs>(args: SelectSubset<T, FormationSessionConventionCreateArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FormationSessionConventions.
+     * @param {FormationSessionConventionCreateManyArgs} args - Arguments to create many FormationSessionConventions.
+     * @example
+     * // Create many FormationSessionConventions
+     * const formationSessionConvention = await prisma.formationSessionConvention.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FormationSessionConventionCreateManyArgs>(args?: SelectSubset<T, FormationSessionConventionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FormationSessionConventions and returns the data saved in the database.
+     * @param {FormationSessionConventionCreateManyAndReturnArgs} args - Arguments to create many FormationSessionConventions.
+     * @example
+     * // Create many FormationSessionConventions
+     * const formationSessionConvention = await prisma.formationSessionConvention.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FormationSessionConventions and only return the `id`
+     * const formationSessionConventionWithIdOnly = await prisma.formationSessionConvention.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FormationSessionConventionCreateManyAndReturnArgs>(args?: SelectSubset<T, FormationSessionConventionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FormationSessionConvention.
+     * @param {FormationSessionConventionDeleteArgs} args - Arguments to delete one FormationSessionConvention.
+     * @example
+     * // Delete one FormationSessionConvention
+     * const FormationSessionConvention = await prisma.formationSessionConvention.delete({
+     *   where: {
+     *     // ... filter to delete one FormationSessionConvention
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FormationSessionConventionDeleteArgs>(args: SelectSubset<T, FormationSessionConventionDeleteArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FormationSessionConvention.
+     * @param {FormationSessionConventionUpdateArgs} args - Arguments to update one FormationSessionConvention.
+     * @example
+     * // Update one FormationSessionConvention
+     * const formationSessionConvention = await prisma.formationSessionConvention.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FormationSessionConventionUpdateArgs>(args: SelectSubset<T, FormationSessionConventionUpdateArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FormationSessionConventions.
+     * @param {FormationSessionConventionDeleteManyArgs} args - Arguments to filter FormationSessionConventions to delete.
+     * @example
+     * // Delete a few FormationSessionConventions
+     * const { count } = await prisma.formationSessionConvention.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FormationSessionConventionDeleteManyArgs>(args?: SelectSubset<T, FormationSessionConventionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormationSessionConventions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionConventionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FormationSessionConventions
+     * const formationSessionConvention = await prisma.formationSessionConvention.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FormationSessionConventionUpdateManyArgs>(args: SelectSubset<T, FormationSessionConventionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormationSessionConventions and returns the data updated in the database.
+     * @param {FormationSessionConventionUpdateManyAndReturnArgs} args - Arguments to update many FormationSessionConventions.
+     * @example
+     * // Update many FormationSessionConventions
+     * const formationSessionConvention = await prisma.formationSessionConvention.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FormationSessionConventions and only return the `id`
+     * const formationSessionConventionWithIdOnly = await prisma.formationSessionConvention.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FormationSessionConventionUpdateManyAndReturnArgs>(args: SelectSubset<T, FormationSessionConventionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FormationSessionConvention.
+     * @param {FormationSessionConventionUpsertArgs} args - Arguments to update or create a FormationSessionConvention.
+     * @example
+     * // Update or create a FormationSessionConvention
+     * const formationSessionConvention = await prisma.formationSessionConvention.upsert({
+     *   create: {
+     *     // ... data to create a FormationSessionConvention
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FormationSessionConvention we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FormationSessionConventionUpsertArgs>(args: SelectSubset<T, FormationSessionConventionUpsertArgs<ExtArgs>>): Prisma__FormationSessionConventionClient<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FormationSessionConventions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionConventionCountArgs} args - Arguments to filter FormationSessionConventions to count.
+     * @example
+     * // Count the number of FormationSessionConventions
+     * const count = await prisma.formationSessionConvention.count({
+     *   where: {
+     *     // ... the filter for the FormationSessionConventions we want to count
+     *   }
+     * })
+    **/
+    count<T extends FormationSessionConventionCountArgs>(
+      args?: Subset<T, FormationSessionConventionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FormationSessionConventionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FormationSessionConvention.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionConventionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FormationSessionConventionAggregateArgs>(args: Subset<T, FormationSessionConventionAggregateArgs>): Prisma.PrismaPromise<GetFormationSessionConventionAggregateType<T>>
+
+    /**
+     * Group by FormationSessionConvention.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormationSessionConventionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FormationSessionConventionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FormationSessionConventionGroupByArgs['orderBy'] }
+        : { orderBy?: FormationSessionConventionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FormationSessionConventionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFormationSessionConventionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FormationSessionConvention model
+   */
+  readonly fields: FormationSessionConventionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FormationSessionConvention.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FormationSessionConventionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    session<T extends FormationSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDefaultArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    participant<T extends FormationSessionParticipantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipantDefaultArgs<ExtArgs>>): Prisma__FormationSessionParticipantClient<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    fileAsset<T extends FormationSessionConvention$fileAssetArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionConvention$fileAssetArgs<ExtArgs>>): Prisma__FileAssetClient<$Result.GetResult<Prisma.$FileAssetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FormationSessionConvention model
+   */
+  interface FormationSessionConventionFieldRefs {
+    readonly id: FieldRef<"FormationSessionConvention", 'String'>
+    readonly sessionId: FieldRef<"FormationSessionConvention", 'String'>
+    readonly participantId: FieldRef<"FormationSessionConvention", 'String'>
+    readonly status: FieldRef<"FormationSessionConvention", 'SessionConventionStatus'>
+    readonly fileAssetId: FieldRef<"FormationSessionConvention", 'String'>
+    readonly publicToken: FieldRef<"FormationSessionConvention", 'String'>
+    readonly sentAt: FieldRef<"FormationSessionConvention", 'DateTime'>
+    readonly viewedAt: FieldRef<"FormationSessionConvention", 'DateTime'>
+    readonly signedAt: FieldRef<"FormationSessionConvention", 'DateTime'>
+    readonly lastReminderAt: FieldRef<"FormationSessionConvention", 'DateTime'>
+    readonly reminderCount: FieldRef<"FormationSessionConvention", 'Int'>
+    readonly createdAt: FieldRef<"FormationSessionConvention", 'DateTime'>
+    readonly updatedAt: FieldRef<"FormationSessionConvention", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FormationSessionConvention findUnique
+   */
+  export type FormationSessionConventionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionConvention to fetch.
+     */
+    where: FormationSessionConventionWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionConvention findUniqueOrThrow
+   */
+  export type FormationSessionConventionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionConvention to fetch.
+     */
+    where: FormationSessionConventionWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionConvention findFirst
+   */
+  export type FormationSessionConventionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionConvention to fetch.
+     */
+    where?: FormationSessionConventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionConventions to fetch.
+     */
+    orderBy?: FormationSessionConventionOrderByWithRelationInput | FormationSessionConventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormationSessionConventions.
+     */
+    cursor?: FormationSessionConventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionConventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionConventions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionConventions.
+     */
+    distinct?: FormationSessionConventionScalarFieldEnum | FormationSessionConventionScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionConvention findFirstOrThrow
+   */
+  export type FormationSessionConventionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionConvention to fetch.
+     */
+    where?: FormationSessionConventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionConventions to fetch.
+     */
+    orderBy?: FormationSessionConventionOrderByWithRelationInput | FormationSessionConventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormationSessionConventions.
+     */
+    cursor?: FormationSessionConventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionConventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionConventions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionConventions.
+     */
+    distinct?: FormationSessionConventionScalarFieldEnum | FormationSessionConventionScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionConvention findMany
+   */
+  export type FormationSessionConventionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * Filter, which FormationSessionConventions to fetch.
+     */
+    where?: FormationSessionConventionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormationSessionConventions to fetch.
+     */
+    orderBy?: FormationSessionConventionOrderByWithRelationInput | FormationSessionConventionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FormationSessionConventions.
+     */
+    cursor?: FormationSessionConventionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormationSessionConventions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormationSessionConventions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormationSessionConventions.
+     */
+    distinct?: FormationSessionConventionScalarFieldEnum | FormationSessionConventionScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionConvention create
+   */
+  export type FormationSessionConventionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FormationSessionConvention.
+     */
+    data: XOR<FormationSessionConventionCreateInput, FormationSessionConventionUncheckedCreateInput>
+  }
+
+  /**
+   * FormationSessionConvention createMany
+   */
+  export type FormationSessionConventionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FormationSessionConventions.
+     */
+    data: FormationSessionConventionCreateManyInput | FormationSessionConventionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FormationSessionConvention createManyAndReturn
+   */
+  export type FormationSessionConventionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * The data used to create many FormationSessionConventions.
+     */
+    data: FormationSessionConventionCreateManyInput | FormationSessionConventionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionConvention update
+   */
+  export type FormationSessionConventionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FormationSessionConvention.
+     */
+    data: XOR<FormationSessionConventionUpdateInput, FormationSessionConventionUncheckedUpdateInput>
+    /**
+     * Choose, which FormationSessionConvention to update.
+     */
+    where: FormationSessionConventionWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionConvention updateMany
+   */
+  export type FormationSessionConventionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FormationSessionConventions.
+     */
+    data: XOR<FormationSessionConventionUpdateManyMutationInput, FormationSessionConventionUncheckedUpdateManyInput>
+    /**
+     * Filter which FormationSessionConventions to update
+     */
+    where?: FormationSessionConventionWhereInput
+    /**
+     * Limit how many FormationSessionConventions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormationSessionConvention updateManyAndReturn
+   */
+  export type FormationSessionConventionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * The data used to update FormationSessionConventions.
+     */
+    data: XOR<FormationSessionConventionUpdateManyMutationInput, FormationSessionConventionUncheckedUpdateManyInput>
+    /**
+     * Filter which FormationSessionConventions to update
+     */
+    where?: FormationSessionConventionWhereInput
+    /**
+     * Limit how many FormationSessionConventions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormationSessionConvention upsert
+   */
+  export type FormationSessionConventionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FormationSessionConvention to update in case it exists.
+     */
+    where: FormationSessionConventionWhereUniqueInput
+    /**
+     * In case the FormationSessionConvention found by the `where` argument doesn't exist, create a new FormationSessionConvention with this data.
+     */
+    create: XOR<FormationSessionConventionCreateInput, FormationSessionConventionUncheckedCreateInput>
+    /**
+     * In case the FormationSessionConvention was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FormationSessionConventionUpdateInput, FormationSessionConventionUncheckedUpdateInput>
+  }
+
+  /**
+   * FormationSessionConvention delete
+   */
+  export type FormationSessionConventionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
+    /**
+     * Filter which FormationSessionConvention to delete.
+     */
+    where: FormationSessionConventionWhereUniqueInput
+  }
+
+  /**
+   * FormationSessionConvention deleteMany
+   */
+  export type FormationSessionConventionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormationSessionConventions to delete
+     */
+    where?: FormationSessionConventionWhereInput
+    /**
+     * Limit how many FormationSessionConventions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormationSessionConvention.fileAsset
+   */
+  export type FormationSessionConvention$fileAssetArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileAsset
+     */
+    select?: FileAssetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileAsset
+     */
+    omit?: FileAssetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileAssetInclude<ExtArgs> | null
+    where?: FileAssetWhereInput
+  }
+
+  /**
+   * FormationSessionConvention without action
+   */
+  export type FormationSessionConventionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionConvention
+     */
+    select?: FormationSessionConventionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionConvention
+     */
+    omit?: FormationSessionConventionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionConventionInclude<ExtArgs> | null
   }
 
 
@@ -164532,11 +166057,34 @@ export namespace Prisma {
     markedAt: 'markedAt',
     markedByUserId: 'markedByUserId',
     notes: 'notes',
+    justificationStatus: 'justificationStatus',
+    justificationRequestedAt: 'justificationRequestedAt',
+    justificationNote: 'justificationNote',
+    justificationResolvedAt: 'justificationResolvedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type FormationSessionEmargementScalarFieldEnum = (typeof FormationSessionEmargementScalarFieldEnum)[keyof typeof FormationSessionEmargementScalarFieldEnum]
+
+
+  export const FormationSessionConventionScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    participantId: 'participantId',
+    status: 'status',
+    fileAssetId: 'fileAssetId',
+    publicToken: 'publicToken',
+    sentAt: 'sentAt',
+    viewedAt: 'viewedAt',
+    signedAt: 'signedAt',
+    lastReminderAt: 'lastReminderAt',
+    reminderCount: 'reminderCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FormationSessionConventionScalarFieldEnum = (typeof FormationSessionConventionScalarFieldEnum)[keyof typeof FormationSessionConventionScalarFieldEnum]
 
 
   export const FormationExamScalarFieldEnum: {
@@ -166444,6 +167992,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AbsenceJustificationStatus'
+   */
+  export type EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AbsenceJustificationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AbsenceJustificationStatus[]'
+   */
+  export type ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AbsenceJustificationStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SessionConventionStatus'
+   */
+  export type EnumSessionConventionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SessionConventionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'SessionConventionStatus[]'
+   */
+  export type ListEnumSessionConventionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SessionConventionStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'FormationExamStatus'
    */
   export type EnumFormationExamStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormationExamStatus'>
@@ -167610,6 +169186,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemListRelationFilter
     complianceItemEvents?: ComplianceItemEventListRelationFilter
     ticketAttachments?: TicketAttachmentListRelationFilter
+    sessionConventions?: FormationSessionConventionListRelationFilter
   }
 
   export type FileAssetOrderByWithRelationInput = {
@@ -167647,6 +169224,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemOrderByRelationAggregateInput
     complianceItemEvents?: ComplianceItemEventOrderByRelationAggregateInput
     ticketAttachments?: TicketAttachmentOrderByRelationAggregateInput
+    sessionConventions?: FormationSessionConventionOrderByRelationAggregateInput
   }
 
   export type FileAssetWhereUniqueInput = Prisma.AtLeast<{
@@ -167687,6 +169265,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemListRelationFilter
     complianceItemEvents?: ComplianceItemEventListRelationFilter
     ticketAttachments?: TicketAttachmentListRelationFilter
+    sessionConventions?: FormationSessionConventionListRelationFilter
   }, "id" | "storageKey" | "currentVersionId">
 
   export type FileAssetOrderByWithAggregationInput = {
@@ -171216,6 +172795,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseListRelationFilter
     evidences?: EvidenceListRelationFilter
     readinessEvents?: SessionReadinessEventListRelationFilter
+    conventions?: FormationSessionConventionListRelationFilter
     candidaturesInterested?: CandidatureListRelationFilter
     financeDevisSessionLinks?: FinanceDevisListRelationFilter
     automationRuns?: SessionAutomationRunListRelationFilter
@@ -171263,6 +172843,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseOrderByRelationAggregateInput
     evidences?: EvidenceOrderByRelationAggregateInput
     readinessEvents?: SessionReadinessEventOrderByRelationAggregateInput
+    conventions?: FormationSessionConventionOrderByRelationAggregateInput
     candidaturesInterested?: CandidatureOrderByRelationAggregateInput
     financeDevisSessionLinks?: FinanceDevisOrderByRelationAggregateInput
     automationRuns?: SessionAutomationRunOrderByRelationAggregateInput
@@ -171313,6 +172894,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseListRelationFilter
     evidences?: EvidenceListRelationFilter
     readinessEvents?: SessionReadinessEventListRelationFilter
+    conventions?: FormationSessionConventionListRelationFilter
     candidaturesInterested?: CandidatureListRelationFilter
     financeDevisSessionLinks?: FinanceDevisListRelationFilter
     automationRuns?: SessionAutomationRunListRelationFilter
@@ -171730,6 +173312,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementListRelationFilter
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
     fundingCases?: FundingCaseListRelationFilter
+    conventions?: FormationSessionConventionListRelationFilter
   }
 
   export type FormationSessionParticipantOrderByWithRelationInput = {
@@ -171753,6 +173336,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementOrderByRelationAggregateInput
     satisfactionSurveys?: SatisfactionSurveyOrderByRelationAggregateInput
     fundingCases?: FundingCaseOrderByRelationAggregateInput
+    conventions?: FormationSessionConventionOrderByRelationAggregateInput
   }
 
   export type FormationSessionParticipantWhereUniqueInput = Prisma.AtLeast<{
@@ -171780,6 +173364,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementListRelationFilter
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
     fundingCases?: FundingCaseListRelationFilter
+    conventions?: FormationSessionConventionListRelationFilter
   }, "id" | "sessionId_userId">
 
   export type FormationSessionParticipantOrderByWithAggregationInput = {
@@ -171903,6 +173488,10 @@ export namespace Prisma {
     markedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
     markedByUserId?: StringNullableFilter<"FormationSessionEmargement"> | string | null
     notes?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    justificationStatus?: EnumAbsenceJustificationStatusNullableFilter<"FormationSessionEmargement"> | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
+    justificationNote?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    justificationResolvedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
     createdAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
     day?: XOR<FormationSessionDayScalarRelationFilter, FormationSessionDayWhereInput>
@@ -171919,6 +173508,10 @@ export namespace Prisma {
     markedAt?: SortOrderInput | SortOrder
     markedByUserId?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
+    justificationStatus?: SortOrderInput | SortOrder
+    justificationRequestedAt?: SortOrderInput | SortOrder
+    justificationNote?: SortOrderInput | SortOrder
+    justificationResolvedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     day?: FormationSessionDayOrderByWithRelationInput
@@ -171939,6 +173532,10 @@ export namespace Prisma {
     markedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
     markedByUserId?: StringNullableFilter<"FormationSessionEmargement"> | string | null
     notes?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    justificationStatus?: EnumAbsenceJustificationStatusNullableFilter<"FormationSessionEmargement"> | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
+    justificationNote?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    justificationResolvedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
     createdAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
     day?: XOR<FormationSessionDayScalarRelationFilter, FormationSessionDayWhereInput>
@@ -171955,6 +173552,10 @@ export namespace Prisma {
     markedAt?: SortOrderInput | SortOrder
     markedByUserId?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
+    justificationStatus?: SortOrderInput | SortOrder
+    justificationRequestedAt?: SortOrderInput | SortOrder
+    justificationNote?: SortOrderInput | SortOrder
+    justificationResolvedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FormationSessionEmargementCountOrderByAggregateInput
@@ -171974,8 +173575,116 @@ export namespace Prisma {
     markedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionEmargement"> | Date | string | null
     markedByUserId?: StringNullableWithAggregatesFilter<"FormationSessionEmargement"> | string | null
     notes?: StringNullableWithAggregatesFilter<"FormationSessionEmargement"> | string | null
+    justificationStatus?: EnumAbsenceJustificationStatusNullableWithAggregatesFilter<"FormationSessionEmargement"> | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionEmargement"> | Date | string | null
+    justificationNote?: StringNullableWithAggregatesFilter<"FormationSessionEmargement"> | string | null
+    justificationResolvedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionEmargement"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FormationSessionEmargement"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionEmargement"> | Date | string
+  }
+
+  export type FormationSessionConventionWhereInput = {
+    AND?: FormationSessionConventionWhereInput | FormationSessionConventionWhereInput[]
+    OR?: FormationSessionConventionWhereInput[]
+    NOT?: FormationSessionConventionWhereInput | FormationSessionConventionWhereInput[]
+    id?: StringFilter<"FormationSessionConvention"> | string
+    sessionId?: StringFilter<"FormationSessionConvention"> | string
+    participantId?: StringFilter<"FormationSessionConvention"> | string
+    status?: EnumSessionConventionStatusFilter<"FormationSessionConvention"> | $Enums.SessionConventionStatus
+    fileAssetId?: StringNullableFilter<"FormationSessionConvention"> | string | null
+    publicToken?: StringNullableFilter<"FormationSessionConvention"> | string | null
+    sentAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    viewedAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    signedAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    lastReminderAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    reminderCount?: IntFilter<"FormationSessionConvention"> | number
+    createdAt?: DateTimeFilter<"FormationSessionConvention"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionConvention"> | Date | string
+    session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+    fileAsset?: XOR<FileAssetNullableScalarRelationFilter, FileAssetWhereInput> | null
+  }
+
+  export type FormationSessionConventionOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrderInput | SortOrder
+    publicToken?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    viewedAt?: SortOrderInput | SortOrder
+    signedAt?: SortOrderInput | SortOrder
+    lastReminderAt?: SortOrderInput | SortOrder
+    reminderCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    session?: FormationSessionOrderByWithRelationInput
+    participant?: FormationSessionParticipantOrderByWithRelationInput
+    fileAsset?: FileAssetOrderByWithRelationInput
+  }
+
+  export type FormationSessionConventionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    publicToken?: string
+    sessionId_participantId?: FormationSessionConventionSessionIdParticipantIdCompoundUniqueInput
+    AND?: FormationSessionConventionWhereInput | FormationSessionConventionWhereInput[]
+    OR?: FormationSessionConventionWhereInput[]
+    NOT?: FormationSessionConventionWhereInput | FormationSessionConventionWhereInput[]
+    sessionId?: StringFilter<"FormationSessionConvention"> | string
+    participantId?: StringFilter<"FormationSessionConvention"> | string
+    status?: EnumSessionConventionStatusFilter<"FormationSessionConvention"> | $Enums.SessionConventionStatus
+    fileAssetId?: StringNullableFilter<"FormationSessionConvention"> | string | null
+    sentAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    viewedAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    signedAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    lastReminderAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    reminderCount?: IntFilter<"FormationSessionConvention"> | number
+    createdAt?: DateTimeFilter<"FormationSessionConvention"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionConvention"> | Date | string
+    session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+    fileAsset?: XOR<FileAssetNullableScalarRelationFilter, FileAssetWhereInput> | null
+  }, "id" | "publicToken" | "sessionId_participantId">
+
+  export type FormationSessionConventionOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrderInput | SortOrder
+    publicToken?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    viewedAt?: SortOrderInput | SortOrder
+    signedAt?: SortOrderInput | SortOrder
+    lastReminderAt?: SortOrderInput | SortOrder
+    reminderCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FormationSessionConventionCountOrderByAggregateInput
+    _avg?: FormationSessionConventionAvgOrderByAggregateInput
+    _max?: FormationSessionConventionMaxOrderByAggregateInput
+    _min?: FormationSessionConventionMinOrderByAggregateInput
+    _sum?: FormationSessionConventionSumOrderByAggregateInput
+  }
+
+  export type FormationSessionConventionScalarWhereWithAggregatesInput = {
+    AND?: FormationSessionConventionScalarWhereWithAggregatesInput | FormationSessionConventionScalarWhereWithAggregatesInput[]
+    OR?: FormationSessionConventionScalarWhereWithAggregatesInput[]
+    NOT?: FormationSessionConventionScalarWhereWithAggregatesInput | FormationSessionConventionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FormationSessionConvention"> | string
+    sessionId?: StringWithAggregatesFilter<"FormationSessionConvention"> | string
+    participantId?: StringWithAggregatesFilter<"FormationSessionConvention"> | string
+    status?: EnumSessionConventionStatusWithAggregatesFilter<"FormationSessionConvention"> | $Enums.SessionConventionStatus
+    fileAssetId?: StringNullableWithAggregatesFilter<"FormationSessionConvention"> | string | null
+    publicToken?: StringNullableWithAggregatesFilter<"FormationSessionConvention"> | string | null
+    sentAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionConvention"> | Date | string | null
+    viewedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionConvention"> | Date | string | null
+    signedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionConvention"> | Date | string | null
+    lastReminderAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionConvention"> | Date | string | null
+    reminderCount?: IntWithAggregatesFilter<"FormationSessionConvention"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"FormationSessionConvention"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionConvention"> | Date | string
   }
 
   export type FormationExamWhereInput = {
@@ -179125,6 +180834,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateInput = {
@@ -179160,6 +180870,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUpdateInput = {
@@ -179195,6 +180906,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateInput = {
@@ -179230,6 +180942,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetCreateManyInput = {
@@ -183309,6 +185022,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -183351,6 +185065,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -183393,6 +185108,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -183435,6 +185151,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -183903,6 +185620,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateInput = {
@@ -183923,6 +185641,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUpdateInput = {
@@ -183943,6 +185662,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateInput = {
@@ -183963,6 +185683,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantCreateManyInput = {
@@ -184092,6 +185813,10 @@ export namespace Prisma {
     status?: $Enums.FormationSessionEmargementStatus
     markedAt?: Date | string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     day: FormationSessionDayCreateNestedOneWithoutAttendancesInput
@@ -184108,6 +185833,10 @@ export namespace Prisma {
     markedAt?: Date | string | null
     markedByUserId?: string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -184118,6 +185847,10 @@ export namespace Prisma {
     status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     day?: FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput
@@ -184134,6 +185867,10 @@ export namespace Prisma {
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -184147,6 +185884,10 @@ export namespace Prisma {
     markedAt?: Date | string | null
     markedByUserId?: string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -184157,6 +185898,10 @@ export namespace Prisma {
     status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -184170,6 +185915,119 @@ export namespace Prisma {
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionCreateInput = {
+    id?: string
+    status?: $Enums.SessionConventionStatus
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutConventionsInput
+    participant: FormationSessionParticipantCreateNestedOneWithoutConventionsInput
+    fileAsset?: FileAssetCreateNestedOneWithoutSessionConventionsInput
+  }
+
+  export type FormationSessionConventionUncheckedCreateInput = {
+    id?: string
+    sessionId: string
+    participantId: string
+    status?: $Enums.SessionConventionStatus
+    fileAssetId?: string | null
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionConventionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutConventionsNestedInput
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutConventionsNestedInput
+    fileAsset?: FileAssetUpdateOneWithoutSessionConventionsNestedInput
+  }
+
+  export type FormationSessionConventionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionCreateManyInput = {
+    id?: string
+    sessionId: string
+    participantId: string
+    status?: $Enums.SessionConventionStatus
+    fileAssetId?: string | null
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionConventionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -192151,6 +194009,16 @@ export namespace Prisma {
     isNot?: FileAssetVersionWhereInput | null
   }
 
+  export type FormationSessionConventionListRelationFilter = {
+    every?: FormationSessionConventionWhereInput
+    some?: FormationSessionConventionWhereInput
+    none?: FormationSessionConventionWhereInput
+  }
+
+  export type FormationSessionConventionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type FileAssetCountOrderByAggregateInput = {
     id?: SortOrder
     module?: SortOrder
@@ -195405,6 +197273,13 @@ export namespace Prisma {
     not?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel> | $Enums.FormationSessionEmargementStatus
   }
 
+  export type EnumAbsenceJustificationStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAbsenceJustificationStatusNullableFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus | null
+  }
+
   export type FormationSessionDayScalarRelationFilter = {
     is?: FormationSessionDayWhereInput
     isNot?: FormationSessionDayWhereInput
@@ -195430,6 +197305,10 @@ export namespace Prisma {
     markedAt?: SortOrder
     markedByUserId?: SortOrder
     notes?: SortOrder
+    justificationStatus?: SortOrder
+    justificationRequestedAt?: SortOrder
+    justificationNote?: SortOrder
+    justificationResolvedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -195443,6 +197322,10 @@ export namespace Prisma {
     markedAt?: SortOrder
     markedByUserId?: SortOrder
     notes?: SortOrder
+    justificationStatus?: SortOrder
+    justificationRequestedAt?: SortOrder
+    justificationNote?: SortOrder
+    justificationResolvedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -195456,6 +197339,10 @@ export namespace Prisma {
     markedAt?: SortOrder
     markedByUserId?: SortOrder
     notes?: SortOrder
+    justificationStatus?: SortOrder
+    justificationRequestedAt?: SortOrder
+    justificationNote?: SortOrder
+    justificationResolvedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -195478,6 +197365,94 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
     _max?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
+  }
+
+  export type EnumAbsenceJustificationStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAbsenceJustificationStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAbsenceJustificationStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumAbsenceJustificationStatusNullableFilter<$PrismaModel>
+  }
+
+  export type EnumSessionConventionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SessionConventionStatus | EnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSessionConventionStatusFilter<$PrismaModel> | $Enums.SessionConventionStatus
+  }
+
+  export type FormationSessionConventionSessionIdParticipantIdCompoundUniqueInput = {
+    sessionId: string
+    participantId: string
+  }
+
+  export type FormationSessionConventionCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrder
+    publicToken?: SortOrder
+    sentAt?: SortOrder
+    viewedAt?: SortOrder
+    signedAt?: SortOrder
+    lastReminderAt?: SortOrder
+    reminderCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormationSessionConventionAvgOrderByAggregateInput = {
+    reminderCount?: SortOrder
+  }
+
+  export type FormationSessionConventionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrder
+    publicToken?: SortOrder
+    sentAt?: SortOrder
+    viewedAt?: SortOrder
+    signedAt?: SortOrder
+    lastReminderAt?: SortOrder
+    reminderCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormationSessionConventionMinOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrder
+    publicToken?: SortOrder
+    sentAt?: SortOrder
+    viewedAt?: SortOrder
+    signedAt?: SortOrder
+    lastReminderAt?: SortOrder
+    reminderCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormationSessionConventionSumOrderByAggregateInput = {
+    reminderCount?: SortOrder
+  }
+
+  export type EnumSessionConventionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SessionConventionStatus | EnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSessionConventionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SessionConventionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSessionConventionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSessionConventionStatusFilter<$PrismaModel>
   }
 
   export type EnumFormationExamStatusFilter<$PrismaModel = never> = {
@@ -202757,6 +204732,13 @@ export namespace Prisma {
     connect?: TicketAttachmentWhereUniqueInput | TicketAttachmentWhereUniqueInput[]
   }
 
+  export type FormationSessionConventionCreateNestedManyWithoutFileAssetInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutFileAssetInput, FormationSessionConventionUncheckedCreateWithoutFileAssetInput> | FormationSessionConventionCreateWithoutFileAssetInput[] | FormationSessionConventionUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutFileAssetInput | FormationSessionConventionCreateOrConnectWithoutFileAssetInput[]
+    createMany?: FormationSessionConventionCreateManyFileAssetInputEnvelope
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+  }
+
   export type FileAssetVersionUncheckedCreateNestedManyWithoutFileAssetInput = {
     create?: XOR<FileAssetVersionCreateWithoutFileAssetInput, FileAssetVersionUncheckedCreateWithoutFileAssetInput> | FileAssetVersionCreateWithoutFileAssetInput[] | FileAssetVersionUncheckedCreateWithoutFileAssetInput[]
     connectOrCreate?: FileAssetVersionCreateOrConnectWithoutFileAssetInput | FileAssetVersionCreateOrConnectWithoutFileAssetInput[]
@@ -202790,6 +204772,13 @@ export namespace Prisma {
     connectOrCreate?: TicketAttachmentCreateOrConnectWithoutFileAssetInput | TicketAttachmentCreateOrConnectWithoutFileAssetInput[]
     createMany?: TicketAttachmentCreateManyFileAssetInputEnvelope
     connect?: TicketAttachmentWhereUniqueInput | TicketAttachmentWhereUniqueInput[]
+  }
+
+  export type FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutFileAssetInput, FormationSessionConventionUncheckedCreateWithoutFileAssetInput> | FormationSessionConventionCreateWithoutFileAssetInput[] | FormationSessionConventionUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutFileAssetInput | FormationSessionConventionCreateOrConnectWithoutFileAssetInput[]
+    createMany?: FormationSessionConventionCreateManyFileAssetInputEnvelope
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -202898,6 +204887,20 @@ export namespace Prisma {
     deleteMany?: TicketAttachmentScalarWhereInput | TicketAttachmentScalarWhereInput[]
   }
 
+  export type FormationSessionConventionUpdateManyWithoutFileAssetNestedInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutFileAssetInput, FormationSessionConventionUncheckedCreateWithoutFileAssetInput> | FormationSessionConventionCreateWithoutFileAssetInput[] | FormationSessionConventionUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutFileAssetInput | FormationSessionConventionCreateOrConnectWithoutFileAssetInput[]
+    upsert?: FormationSessionConventionUpsertWithWhereUniqueWithoutFileAssetInput | FormationSessionConventionUpsertWithWhereUniqueWithoutFileAssetInput[]
+    createMany?: FormationSessionConventionCreateManyFileAssetInputEnvelope
+    set?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    disconnect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    delete?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    update?: FormationSessionConventionUpdateWithWhereUniqueWithoutFileAssetInput | FormationSessionConventionUpdateWithWhereUniqueWithoutFileAssetInput[]
+    updateMany?: FormationSessionConventionUpdateManyWithWhereWithoutFileAssetInput | FormationSessionConventionUpdateManyWithWhereWithoutFileAssetInput[]
+    deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
+  }
+
   export type FileAssetVersionUncheckedUpdateManyWithoutFileAssetNestedInput = {
     create?: XOR<FileAssetVersionCreateWithoutFileAssetInput, FileAssetVersionUncheckedCreateWithoutFileAssetInput> | FileAssetVersionCreateWithoutFileAssetInput[] | FileAssetVersionUncheckedCreateWithoutFileAssetInput[]
     connectOrCreate?: FileAssetVersionCreateOrConnectWithoutFileAssetInput | FileAssetVersionCreateOrConnectWithoutFileAssetInput[]
@@ -202966,6 +204969,20 @@ export namespace Prisma {
     update?: TicketAttachmentUpdateWithWhereUniqueWithoutFileAssetInput | TicketAttachmentUpdateWithWhereUniqueWithoutFileAssetInput[]
     updateMany?: TicketAttachmentUpdateManyWithWhereWithoutFileAssetInput | TicketAttachmentUpdateManyWithWhereWithoutFileAssetInput[]
     deleteMany?: TicketAttachmentScalarWhereInput | TicketAttachmentScalarWhereInput[]
+  }
+
+  export type FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutFileAssetInput, FormationSessionConventionUncheckedCreateWithoutFileAssetInput> | FormationSessionConventionCreateWithoutFileAssetInput[] | FormationSessionConventionUncheckedCreateWithoutFileAssetInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutFileAssetInput | FormationSessionConventionCreateOrConnectWithoutFileAssetInput[]
+    upsert?: FormationSessionConventionUpsertWithWhereUniqueWithoutFileAssetInput | FormationSessionConventionUpsertWithWhereUniqueWithoutFileAssetInput[]
+    createMany?: FormationSessionConventionCreateManyFileAssetInputEnvelope
+    set?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    disconnect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    delete?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    update?: FormationSessionConventionUpdateWithWhereUniqueWithoutFileAssetInput | FormationSessionConventionUpdateWithWhereUniqueWithoutFileAssetInput[]
+    updateMany?: FormationSessionConventionUpdateManyWithWhereWithoutFileAssetInput | FormationSessionConventionUpdateManyWithWhereWithoutFileAssetInput[]
+    deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
   }
 
   export type FileAssetCreateNestedOneWithoutVersionsInput = {
@@ -205237,6 +207254,13 @@ export namespace Prisma {
     connect?: SessionReadinessEventWhereUniqueInput | SessionReadinessEventWhereUniqueInput[]
   }
 
+  export type FormationSessionConventionCreateNestedManyWithoutSessionInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutSessionInput, FormationSessionConventionUncheckedCreateWithoutSessionInput> | FormationSessionConventionCreateWithoutSessionInput[] | FormationSessionConventionUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutSessionInput | FormationSessionConventionCreateOrConnectWithoutSessionInput[]
+    createMany?: FormationSessionConventionCreateManySessionInputEnvelope
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+  }
+
   export type CandidatureCreateNestedManyWithoutInterestedSessionInput = {
     create?: XOR<CandidatureCreateWithoutInterestedSessionInput, CandidatureUncheckedCreateWithoutInterestedSessionInput> | CandidatureCreateWithoutInterestedSessionInput[] | CandidatureUncheckedCreateWithoutInterestedSessionInput[]
     connectOrCreate?: CandidatureCreateOrConnectWithoutInterestedSessionInput | CandidatureCreateOrConnectWithoutInterestedSessionInput[]
@@ -205330,6 +207354,13 @@ export namespace Prisma {
     connectOrCreate?: SessionReadinessEventCreateOrConnectWithoutSessionInput | SessionReadinessEventCreateOrConnectWithoutSessionInput[]
     createMany?: SessionReadinessEventCreateManySessionInputEnvelope
     connect?: SessionReadinessEventWhereUniqueInput | SessionReadinessEventWhereUniqueInput[]
+  }
+
+  export type FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutSessionInput, FormationSessionConventionUncheckedCreateWithoutSessionInput> | FormationSessionConventionCreateWithoutSessionInput[] | FormationSessionConventionUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutSessionInput | FormationSessionConventionCreateOrConnectWithoutSessionInput[]
+    createMany?: FormationSessionConventionCreateManySessionInputEnvelope
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
   }
 
   export type CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput = {
@@ -205551,6 +207582,20 @@ export namespace Prisma {
     deleteMany?: SessionReadinessEventScalarWhereInput | SessionReadinessEventScalarWhereInput[]
   }
 
+  export type FormationSessionConventionUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutSessionInput, FormationSessionConventionUncheckedCreateWithoutSessionInput> | FormationSessionConventionCreateWithoutSessionInput[] | FormationSessionConventionUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutSessionInput | FormationSessionConventionCreateOrConnectWithoutSessionInput[]
+    upsert?: FormationSessionConventionUpsertWithWhereUniqueWithoutSessionInput | FormationSessionConventionUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: FormationSessionConventionCreateManySessionInputEnvelope
+    set?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    disconnect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    delete?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    update?: FormationSessionConventionUpdateWithWhereUniqueWithoutSessionInput | FormationSessionConventionUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: FormationSessionConventionUpdateManyWithWhereWithoutSessionInput | FormationSessionConventionUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
+  }
+
   export type CandidatureUpdateManyWithoutInterestedSessionNestedInput = {
     create?: XOR<CandidatureCreateWithoutInterestedSessionInput, CandidatureUncheckedCreateWithoutInterestedSessionInput> | CandidatureCreateWithoutInterestedSessionInput[] | CandidatureUncheckedCreateWithoutInterestedSessionInput[]
     connectOrCreate?: CandidatureCreateOrConnectWithoutInterestedSessionInput | CandidatureCreateOrConnectWithoutInterestedSessionInput[]
@@ -205733,6 +207778,20 @@ export namespace Prisma {
     update?: SessionReadinessEventUpdateWithWhereUniqueWithoutSessionInput | SessionReadinessEventUpdateWithWhereUniqueWithoutSessionInput[]
     updateMany?: SessionReadinessEventUpdateManyWithWhereWithoutSessionInput | SessionReadinessEventUpdateManyWithWhereWithoutSessionInput[]
     deleteMany?: SessionReadinessEventScalarWhereInput | SessionReadinessEventScalarWhereInput[]
+  }
+
+  export type FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutSessionInput, FormationSessionConventionUncheckedCreateWithoutSessionInput> | FormationSessionConventionCreateWithoutSessionInput[] | FormationSessionConventionUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutSessionInput | FormationSessionConventionCreateOrConnectWithoutSessionInput[]
+    upsert?: FormationSessionConventionUpsertWithWhereUniqueWithoutSessionInput | FormationSessionConventionUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: FormationSessionConventionCreateManySessionInputEnvelope
+    set?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    disconnect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    delete?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    update?: FormationSessionConventionUpdateWithWhereUniqueWithoutSessionInput | FormationSessionConventionUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: FormationSessionConventionUpdateManyWithWhereWithoutSessionInput | FormationSessionConventionUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
   }
 
   export type CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput = {
@@ -206106,6 +208165,13 @@ export namespace Prisma {
     connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
   }
 
+  export type FormationSessionConventionCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutParticipantInput, FormationSessionConventionUncheckedCreateWithoutParticipantInput> | FormationSessionConventionCreateWithoutParticipantInput[] | FormationSessionConventionUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutParticipantInput | FormationSessionConventionCreateOrConnectWithoutParticipantInput[]
+    createMany?: FormationSessionConventionCreateManyParticipantInputEnvelope
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+  }
+
   export type FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
@@ -206125,6 +208191,13 @@ export namespace Prisma {
     connectOrCreate?: FundingCaseCreateOrConnectWithoutParticipantInput | FundingCaseCreateOrConnectWithoutParticipantInput[]
     createMany?: FundingCaseCreateManyParticipantInputEnvelope
     connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+  }
+
+  export type FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutParticipantInput, FormationSessionConventionUncheckedCreateWithoutParticipantInput> | FormationSessionConventionCreateWithoutParticipantInput[] | FormationSessionConventionUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutParticipantInput | FormationSessionConventionCreateOrConnectWithoutParticipantInput[]
+    createMany?: FormationSessionConventionCreateManyParticipantInputEnvelope
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
   }
 
   export type EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput = {
@@ -206203,6 +208276,20 @@ export namespace Prisma {
     deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
   }
 
+  export type FormationSessionConventionUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutParticipantInput, FormationSessionConventionUncheckedCreateWithoutParticipantInput> | FormationSessionConventionCreateWithoutParticipantInput[] | FormationSessionConventionUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutParticipantInput | FormationSessionConventionCreateOrConnectWithoutParticipantInput[]
+    upsert?: FormationSessionConventionUpsertWithWhereUniqueWithoutParticipantInput | FormationSessionConventionUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FormationSessionConventionCreateManyParticipantInputEnvelope
+    set?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    disconnect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    delete?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    update?: FormationSessionConventionUpdateWithWhereUniqueWithoutParticipantInput | FormationSessionConventionUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FormationSessionConventionUpdateManyWithWhereWithoutParticipantInput | FormationSessionConventionUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
+  }
+
   export type FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
@@ -206243,6 +208330,20 @@ export namespace Prisma {
     update?: FundingCaseUpdateWithWhereUniqueWithoutParticipantInput | FundingCaseUpdateWithWhereUniqueWithoutParticipantInput[]
     updateMany?: FundingCaseUpdateManyWithWhereWithoutParticipantInput | FundingCaseUpdateManyWithWhereWithoutParticipantInput[]
     deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
+  }
+
+  export type FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FormationSessionConventionCreateWithoutParticipantInput, FormationSessionConventionUncheckedCreateWithoutParticipantInput> | FormationSessionConventionCreateWithoutParticipantInput[] | FormationSessionConventionUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormationSessionConventionCreateOrConnectWithoutParticipantInput | FormationSessionConventionCreateOrConnectWithoutParticipantInput[]
+    upsert?: FormationSessionConventionUpsertWithWhereUniqueWithoutParticipantInput | FormationSessionConventionUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FormationSessionConventionCreateManyParticipantInputEnvelope
+    set?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    disconnect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    delete?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
+    update?: FormationSessionConventionUpdateWithWhereUniqueWithoutParticipantInput | FormationSessionConventionUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FormationSessionConventionUpdateManyWithWhereWithoutParticipantInput | FormationSessionConventionUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
   }
 
   export type FormationSessionCreateNestedOneWithoutSuiviDaysInput = {
@@ -206327,6 +208428,10 @@ export namespace Prisma {
     set?: $Enums.FormationSessionEmargementStatus
   }
 
+  export type NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AbsenceJustificationStatus | null
+  }
+
   export type FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput = {
     create?: XOR<FormationSessionDayCreateWithoutAttendancesInput, FormationSessionDayUncheckedCreateWithoutAttendancesInput>
     connectOrCreate?: FormationSessionDayCreateOrConnectWithoutAttendancesInput
@@ -206351,6 +208456,54 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFormationSessionEmargementsMarkedInput, UserUpdateWithoutFormationSessionEmargementsMarkedInput>, UserUncheckedUpdateWithoutFormationSessionEmargementsMarkedInput>
+  }
+
+  export type FormationSessionCreateNestedOneWithoutConventionsInput = {
+    create?: XOR<FormationSessionCreateWithoutConventionsInput, FormationSessionUncheckedCreateWithoutConventionsInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutConventionsInput
+    connect?: FormationSessionWhereUniqueInput
+  }
+
+  export type FormationSessionParticipantCreateNestedOneWithoutConventionsInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutConventionsInput, FormationSessionParticipantUncheckedCreateWithoutConventionsInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutConventionsInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+  }
+
+  export type FileAssetCreateNestedOneWithoutSessionConventionsInput = {
+    create?: XOR<FileAssetCreateWithoutSessionConventionsInput, FileAssetUncheckedCreateWithoutSessionConventionsInput>
+    connectOrCreate?: FileAssetCreateOrConnectWithoutSessionConventionsInput
+    connect?: FileAssetWhereUniqueInput
+  }
+
+  export type EnumSessionConventionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.SessionConventionStatus
+  }
+
+  export type FormationSessionUpdateOneRequiredWithoutConventionsNestedInput = {
+    create?: XOR<FormationSessionCreateWithoutConventionsInput, FormationSessionUncheckedCreateWithoutConventionsInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutConventionsInput
+    upsert?: FormationSessionUpsertWithoutConventionsInput
+    connect?: FormationSessionWhereUniqueInput
+    update?: XOR<XOR<FormationSessionUpdateToOneWithWhereWithoutConventionsInput, FormationSessionUpdateWithoutConventionsInput>, FormationSessionUncheckedUpdateWithoutConventionsInput>
+  }
+
+  export type FormationSessionParticipantUpdateOneRequiredWithoutConventionsNestedInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutConventionsInput, FormationSessionParticipantUncheckedCreateWithoutConventionsInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutConventionsInput
+    upsert?: FormationSessionParticipantUpsertWithoutConventionsInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+    update?: XOR<XOR<FormationSessionParticipantUpdateToOneWithWhereWithoutConventionsInput, FormationSessionParticipantUpdateWithoutConventionsInput>, FormationSessionParticipantUncheckedUpdateWithoutConventionsInput>
+  }
+
+  export type FileAssetUpdateOneWithoutSessionConventionsNestedInput = {
+    create?: XOR<FileAssetCreateWithoutSessionConventionsInput, FileAssetUncheckedCreateWithoutSessionConventionsInput>
+    connectOrCreate?: FileAssetCreateOrConnectWithoutSessionConventionsInput
+    upsert?: FileAssetUpsertWithoutSessionConventionsInput
+    disconnect?: FileAssetWhereInput | boolean
+    delete?: FileAssetWhereInput | boolean
+    connect?: FileAssetWhereUniqueInput
+    update?: XOR<XOR<FileAssetUpdateToOneWithWhereWithoutSessionConventionsInput, FileAssetUpdateWithoutSessionConventionsInput>, FileAssetUncheckedUpdateWithoutSessionConventionsInput>
   }
 
   export type FormationSessionCreateNestedOneWithoutFormationExamInput = {
@@ -212355,6 +214508,13 @@ export namespace Prisma {
     not?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel> | $Enums.FormationSessionEmargementStatus
   }
 
+  export type NestedEnumAbsenceJustificationStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAbsenceJustificationStatusNullableFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus | null
+  }
+
   export type NestedEnumFormationSessionDaySlotWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.FormationSessionDaySlot | EnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
     in?: $Enums.FormationSessionDaySlot[] | ListEnumFormationSessionDaySlotFieldRefInput<$PrismaModel>
@@ -212373,6 +214533,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
     _max?: NestedEnumFormationSessionEmargementStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAbsenceJustificationStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AbsenceJustificationStatus | EnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AbsenceJustificationStatus[] | ListEnumAbsenceJustificationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAbsenceJustificationStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.AbsenceJustificationStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAbsenceJustificationStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumAbsenceJustificationStatusNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSessionConventionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.SessionConventionStatus | EnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSessionConventionStatusFilter<$PrismaModel> | $Enums.SessionConventionStatus
+  }
+
+  export type NestedEnumSessionConventionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SessionConventionStatus | EnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SessionConventionStatus[] | ListEnumSessionConventionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumSessionConventionStatusWithAggregatesFilter<$PrismaModel> | $Enums.SessionConventionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSessionConventionStatusFilter<$PrismaModel>
+    _max?: NestedEnumSessionConventionStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumFormationExamStatusFilter<$PrismaModel = never> = {
@@ -213880,6 +216067,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutUserInput = {
@@ -213899,6 +216087,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutUserInput = {
@@ -213917,6 +216106,10 @@ export namespace Prisma {
     status?: $Enums.FormationSessionEmargementStatus
     markedAt?: Date | string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     day: FormationSessionDayCreateNestedOneWithoutAttendancesInput
@@ -213931,6 +216124,10 @@ export namespace Prisma {
     status?: $Enums.FormationSessionEmargementStatus
     markedAt?: Date | string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -214399,6 +216596,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -214440,6 +216638,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -214491,6 +216690,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -214532,6 +216732,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -215090,6 +217291,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutCreatedByInput = {
@@ -215124,6 +217326,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutCreatedByInput = {
@@ -216636,6 +218839,10 @@ export namespace Prisma {
     markedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
     markedByUserId?: StringNullableFilter<"FormationSessionEmargement"> | string | null
     notes?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    justificationStatus?: EnumAbsenceJustificationStatusNullableFilter<"FormationSessionEmargement"> | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
+    justificationNote?: StringNullableFilter<"FormationSessionEmargement"> | string | null
+    justificationResolvedAt?: DateTimeNullableFilter<"FormationSessionEmargement"> | Date | string | null
     createdAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionEmargement"> | Date | string
   }
@@ -218744,6 +220951,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FormationSessionConventionCreateWithoutFileAssetInput = {
+    id?: string
+    status?: $Enums.SessionConventionStatus
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutConventionsInput
+    participant: FormationSessionParticipantCreateNestedOneWithoutConventionsInput
+  }
+
+  export type FormationSessionConventionUncheckedCreateWithoutFileAssetInput = {
+    id?: string
+    sessionId: string
+    participantId: string
+    status?: $Enums.SessionConventionStatus
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionConventionCreateOrConnectWithoutFileAssetInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    create: XOR<FormationSessionConventionCreateWithoutFileAssetInput, FormationSessionConventionUncheckedCreateWithoutFileAssetInput>
+  }
+
+  export type FormationSessionConventionCreateManyFileAssetInputEnvelope = {
+    data: FormationSessionConventionCreateManyFileAssetInput | FormationSessionConventionCreateManyFileAssetInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutCreatedFileAssetsInput = {
     update: XOR<UserUpdateWithoutCreatedFileAssetsInput, UserUncheckedUpdateWithoutCreatedFileAssetsInput>
     create: XOR<UserCreateWithoutCreatedFileAssetsInput, UserUncheckedCreateWithoutCreatedFileAssetsInput>
@@ -219110,6 +221357,41 @@ export namespace Prisma {
     data: XOR<TicketAttachmentUpdateManyMutationInput, TicketAttachmentUncheckedUpdateManyWithoutFileAssetInput>
   }
 
+  export type FormationSessionConventionUpsertWithWhereUniqueWithoutFileAssetInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    update: XOR<FormationSessionConventionUpdateWithoutFileAssetInput, FormationSessionConventionUncheckedUpdateWithoutFileAssetInput>
+    create: XOR<FormationSessionConventionCreateWithoutFileAssetInput, FormationSessionConventionUncheckedCreateWithoutFileAssetInput>
+  }
+
+  export type FormationSessionConventionUpdateWithWhereUniqueWithoutFileAssetInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    data: XOR<FormationSessionConventionUpdateWithoutFileAssetInput, FormationSessionConventionUncheckedUpdateWithoutFileAssetInput>
+  }
+
+  export type FormationSessionConventionUpdateManyWithWhereWithoutFileAssetInput = {
+    where: FormationSessionConventionScalarWhereInput
+    data: XOR<FormationSessionConventionUpdateManyMutationInput, FormationSessionConventionUncheckedUpdateManyWithoutFileAssetInput>
+  }
+
+  export type FormationSessionConventionScalarWhereInput = {
+    AND?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
+    OR?: FormationSessionConventionScalarWhereInput[]
+    NOT?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
+    id?: StringFilter<"FormationSessionConvention"> | string
+    sessionId?: StringFilter<"FormationSessionConvention"> | string
+    participantId?: StringFilter<"FormationSessionConvention"> | string
+    status?: EnumSessionConventionStatusFilter<"FormationSessionConvention"> | $Enums.SessionConventionStatus
+    fileAssetId?: StringNullableFilter<"FormationSessionConvention"> | string | null
+    publicToken?: StringNullableFilter<"FormationSessionConvention"> | string | null
+    sentAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    viewedAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    signedAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    lastReminderAt?: DateTimeNullableFilter<"FormationSessionConvention"> | Date | string | null
+    reminderCount?: IntFilter<"FormationSessionConvention"> | number
+    createdAt?: DateTimeFilter<"FormationSessionConvention"> | Date | string
+    updatedAt?: DateTimeFilter<"FormationSessionConvention"> | Date | string
+  }
+
   export type FileAssetCreateWithoutVersionsInput = {
     id?: string
     module: string
@@ -219142,6 +221424,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutVersionsInput = {
@@ -219176,6 +221459,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutVersionsInput = {
@@ -219215,6 +221499,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutCurrentVersionInput = {
@@ -219249,6 +221534,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutCurrentVersionInput = {
@@ -219538,6 +221824,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutVersionsInput = {
@@ -219572,6 +221859,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUpsertWithoutCurrentVersionInput = {
@@ -219617,6 +221905,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutCurrentVersionInput = {
@@ -219651,6 +221940,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type UserUpsertWithoutCreatedFileAssetVersionsInput = {
@@ -220169,6 +222459,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutReportJobsInput = {
@@ -220203,6 +222494,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutReportJobsInput = {
@@ -220498,6 +222790,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutReportJobsInput = {
@@ -220532,6 +222825,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type UserCreateWithoutRequestedAiRunsInput = {
@@ -226833,6 +229127,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -226874,6 +229169,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -227304,6 +229600,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -227345,6 +229642,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -229869,6 +232167,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -229910,6 +232209,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -231511,6 +233811,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -231552,6 +233853,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -231603,6 +233905,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -231644,6 +233947,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -233347,6 +235651,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSessionInput = {
@@ -233366,6 +235671,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSessionInput = {
@@ -233723,6 +236029,46 @@ export namespace Prisma {
 
   export type SessionReadinessEventCreateManySessionInputEnvelope = {
     data: SessionReadinessEventCreateManySessionInput | SessionReadinessEventCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FormationSessionConventionCreateWithoutSessionInput = {
+    id?: string
+    status?: $Enums.SessionConventionStatus
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participant: FormationSessionParticipantCreateNestedOneWithoutConventionsInput
+    fileAsset?: FileAssetCreateNestedOneWithoutSessionConventionsInput
+  }
+
+  export type FormationSessionConventionUncheckedCreateWithoutSessionInput = {
+    id?: string
+    participantId: string
+    status?: $Enums.SessionConventionStatus
+    fileAssetId?: string | null
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionConventionCreateOrConnectWithoutSessionInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    create: XOR<FormationSessionConventionCreateWithoutSessionInput, FormationSessionConventionUncheckedCreateWithoutSessionInput>
+  }
+
+  export type FormationSessionConventionCreateManySessionInputEnvelope = {
+    data: FormationSessionConventionCreateManySessionInput | FormationSessionConventionCreateManySessionInput[]
     skipDuplicates?: boolean
   }
 
@@ -234915,6 +237261,22 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SessionReadinessEvent"> | Date | string
   }
 
+  export type FormationSessionConventionUpsertWithWhereUniqueWithoutSessionInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    update: XOR<FormationSessionConventionUpdateWithoutSessionInput, FormationSessionConventionUncheckedUpdateWithoutSessionInput>
+    create: XOR<FormationSessionConventionCreateWithoutSessionInput, FormationSessionConventionUncheckedCreateWithoutSessionInput>
+  }
+
+  export type FormationSessionConventionUpdateWithWhereUniqueWithoutSessionInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    data: XOR<FormationSessionConventionUpdateWithoutSessionInput, FormationSessionConventionUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type FormationSessionConventionUpdateManyWithWhereWithoutSessionInput = {
+    where: FormationSessionConventionScalarWhereInput
+    data: XOR<FormationSessionConventionUpdateManyMutationInput, FormationSessionConventionUncheckedUpdateManyWithoutSessionInput>
+  }
+
   export type CandidatureUpsertWithWhereUniqueWithoutInterestedSessionInput = {
     where: CandidatureWhereUniqueInput
     update: XOR<CandidatureUpdateWithoutInterestedSessionInput, CandidatureUncheckedUpdateWithoutInterestedSessionInput>
@@ -235020,6 +237382,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
   }
@@ -235061,6 +237424,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
   }
@@ -235118,6 +237482,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
   }
@@ -235159,6 +237524,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
   }
@@ -235336,6 +237702,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -235377,6 +237744,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -235577,6 +237945,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -235618,6 +237987,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -236036,6 +238406,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
   }
@@ -236077,6 +238448,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -236194,6 +238566,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutCandidatureInput = {
@@ -236213,6 +238586,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutCandidatureInput = {
@@ -236767,6 +239141,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
   }
@@ -236808,6 +239183,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -236959,6 +239335,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -237000,6 +239377,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -237310,6 +239688,10 @@ export namespace Prisma {
     status?: $Enums.FormationSessionEmargementStatus
     markedAt?: Date | string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     day: FormationSessionDayCreateNestedOneWithoutAttendancesInput
@@ -237324,6 +239706,10 @@ export namespace Prisma {
     markedAt?: Date | string | null
     markedByUserId?: string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -237434,6 +239820,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FormationSessionConventionCreateWithoutParticipantInput = {
+    id?: string
+    status?: $Enums.SessionConventionStatus
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutConventionsInput
+    fileAsset?: FileAssetCreateNestedOneWithoutSessionConventionsInput
+  }
+
+  export type FormationSessionConventionUncheckedCreateWithoutParticipantInput = {
+    id?: string
+    sessionId: string
+    status?: $Enums.SessionConventionStatus
+    fileAssetId?: string | null
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormationSessionConventionCreateOrConnectWithoutParticipantInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    create: XOR<FormationSessionConventionCreateWithoutParticipantInput, FormationSessionConventionUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FormationSessionConventionCreateManyParticipantInputEnvelope = {
+    data: FormationSessionConventionCreateManyParticipantInput | FormationSessionConventionCreateManyParticipantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FormationSessionUpsertWithoutParticipantsInput = {
     update: XOR<FormationSessionUpdateWithoutParticipantsInput, FormationSessionUncheckedUpdateWithoutParticipantsInput>
     create: XOR<FormationSessionCreateWithoutParticipantsInput, FormationSessionUncheckedCreateWithoutParticipantsInput>
@@ -237481,6 +239907,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -237522,6 +239949,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -237881,6 +240309,22 @@ export namespace Prisma {
     data: XOR<FundingCaseUpdateManyMutationInput, FundingCaseUncheckedUpdateManyWithoutParticipantInput>
   }
 
+  export type FormationSessionConventionUpsertWithWhereUniqueWithoutParticipantInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    update: XOR<FormationSessionConventionUpdateWithoutParticipantInput, FormationSessionConventionUncheckedUpdateWithoutParticipantInput>
+    create: XOR<FormationSessionConventionCreateWithoutParticipantInput, FormationSessionConventionUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FormationSessionConventionUpdateWithWhereUniqueWithoutParticipantInput = {
+    where: FormationSessionConventionWhereUniqueInput
+    data: XOR<FormationSessionConventionUpdateWithoutParticipantInput, FormationSessionConventionUncheckedUpdateWithoutParticipantInput>
+  }
+
+  export type FormationSessionConventionUpdateManyWithWhereWithoutParticipantInput = {
+    where: FormationSessionConventionScalarWhereInput
+    data: XOR<FormationSessionConventionUpdateManyMutationInput, FormationSessionConventionUncheckedUpdateManyWithoutParticipantInput>
+  }
+
   export type FormationSessionCreateWithoutSuiviDaysInput = {
     id?: string
     startDate?: Date | string | null
@@ -237917,6 +240361,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -237958,6 +240403,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -237974,6 +240420,10 @@ export namespace Prisma {
     status?: $Enums.FormationSessionEmargementStatus
     markedAt?: Date | string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     participant: FormationSessionParticipantCreateNestedOneWithoutEmargementsInput
@@ -237988,6 +240438,10 @@ export namespace Prisma {
     markedAt?: Date | string | null
     markedByUserId?: string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -238049,6 +240503,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -238090,6 +240545,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -238153,6 +240609,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutEmargementsInput = {
@@ -238172,6 +240629,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutEmargementsInput = {
@@ -238477,6 +240935,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput = {
@@ -238496,6 +240955,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type UserUpsertWithoutFormationSessionEmargementsMarkedInput = {
@@ -238743,6 +241203,442 @@ export namespace Prisma {
     venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
   }
 
+  export type FormationSessionCreateWithoutConventionsInput = {
+    id?: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: number | null
+    traineesMax?: number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    readinessStatus?: $Enums.SessionReadinessStatus
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    formation: FormationCreateNestedOneWithoutSessionsInput
+    examVenueRoom?: FormationVenueRoomCreateNestedOneWithoutExamSessionsInput
+    trainer?: UserCreateNestedOneWithoutFormationSessionsTrainedInput
+    moderator?: UserCreateNestedOneWithoutFormationSessionsModeratedInput
+    chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
+    venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
+    participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
+    formationExam?: FormationExamCreateNestedOneWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
+    evidences?: EvidenceCreateNestedManyWithoutSessionInput
+    readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
+    automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
+  }
+
+  export type FormationSessionUncheckedCreateWithoutConventionsInput = {
+    id?: string
+    formationId: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    examVenueRoomId?: string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: number | null
+    traineesMax?: number | null
+    trainerUserId?: string | null
+    moderatorUserId?: string | null
+    venueRoomId?: string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    readinessStatus?: $Enums.SessionReadinessStatus
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
+    participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
+    formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
+    evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
+    readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
+    automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type FormationSessionCreateOrConnectWithoutConventionsInput = {
+    where: FormationSessionWhereUniqueInput
+    create: XOR<FormationSessionCreateWithoutConventionsInput, FormationSessionUncheckedCreateWithoutConventionsInput>
+  }
+
+  export type FormationSessionParticipantCreateWithoutConventionsInput = {
+    id?: string
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutParticipantsInput
+    user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
+    candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantUncheckedCreateWithoutConventionsInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    candidatureId?: string | null
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantCreateOrConnectWithoutConventionsInput = {
+    where: FormationSessionParticipantWhereUniqueInput
+    create: XOR<FormationSessionParticipantCreateWithoutConventionsInput, FormationSessionParticipantUncheckedCreateWithoutConventionsInput>
+  }
+
+  export type FileAssetCreateWithoutSessionConventionsInput = {
+    id?: string
+    module: string
+    entityType: string
+    entityId?: string | null
+    category?: string | null
+    originalName: string
+    mimeType: string
+    size: number
+    issuedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    issuedBy?: string | null
+    documentRef?: string | null
+    storageKey: string
+    url: string
+    visibility?: $Enums.FileAssetVisibility
+    status?: $Enums.FileAssetStatus
+    provider?: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    archivedAt?: Date | string | null
+    archiveReason?: string | null
+    legalHold?: boolean
+    retentionUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    createdBy?: UserCreateNestedOneWithoutCreatedFileAssetsInput
+    currentVersion?: FileAssetVersionCreateNestedOneWithoutCurrentForInput
+    versions?: FileAssetVersionCreateNestedManyWithoutFileAssetInput
+    reportJobs?: ReportGenerationJobCreateNestedManyWithoutFileAssetInput
+    complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
+    complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
+    ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+  }
+
+  export type FileAssetUncheckedCreateWithoutSessionConventionsInput = {
+    id?: string
+    module: string
+    entityType: string
+    entityId?: string | null
+    category?: string | null
+    originalName: string
+    mimeType: string
+    size: number
+    issuedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    issuedBy?: string | null
+    documentRef?: string | null
+    storageKey: string
+    url: string
+    visibility?: $Enums.FileAssetVisibility
+    status?: $Enums.FileAssetStatus
+    provider?: string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: string | null
+    currentVersionId?: string | null
+    archivedAt?: Date | string | null
+    archiveReason?: string | null
+    legalHold?: boolean
+    retentionUntil?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
+    versions?: FileAssetVersionUncheckedCreateNestedManyWithoutFileAssetInput
+    reportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutFileAssetInput
+    complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
+    complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
+    ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+  }
+
+  export type FileAssetCreateOrConnectWithoutSessionConventionsInput = {
+    where: FileAssetWhereUniqueInput
+    create: XOR<FileAssetCreateWithoutSessionConventionsInput, FileAssetUncheckedCreateWithoutSessionConventionsInput>
+  }
+
+  export type FormationSessionUpsertWithoutConventionsInput = {
+    update: XOR<FormationSessionUpdateWithoutConventionsInput, FormationSessionUncheckedUpdateWithoutConventionsInput>
+    create: XOR<FormationSessionCreateWithoutConventionsInput, FormationSessionUncheckedCreateWithoutConventionsInput>
+    where?: FormationSessionWhereInput
+  }
+
+  export type FormationSessionUpdateToOneWithWhereWithoutConventionsInput = {
+    where?: FormationSessionWhereInput
+    data: XOR<FormationSessionUpdateWithoutConventionsInput, FormationSessionUncheckedUpdateWithoutConventionsInput>
+  }
+
+  export type FormationSessionUpdateWithoutConventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    readinessStatus?: EnumSessionReadinessStatusFieldUpdateOperationsInput | $Enums.SessionReadinessStatus
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    formation?: FormationUpdateOneRequiredWithoutSessionsNestedInput
+    examVenueRoom?: FormationVenueRoomUpdateOneWithoutExamSessionsNestedInput
+    trainer?: UserUpdateOneWithoutFormationSessionsTrainedNestedInput
+    moderator?: UserUpdateOneWithoutFormationSessionsModeratedNestedInput
+    chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
+    venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
+    participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
+    formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
+    evidences?: EvidenceUpdateManyWithoutSessionNestedInput
+    readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
+    automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
+  }
+
+  export type FormationSessionUncheckedUpdateWithoutConventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formationId?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examVenueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    readinessStatus?: EnumSessionReadinessStatusFieldUpdateOperationsInput | $Enums.SessionReadinessStatus
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
+    participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
+    formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
+    evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
+    readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
+    automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type FormationSessionParticipantUpsertWithoutConventionsInput = {
+    update: XOR<FormationSessionParticipantUpdateWithoutConventionsInput, FormationSessionParticipantUncheckedUpdateWithoutConventionsInput>
+    create: XOR<FormationSessionParticipantCreateWithoutConventionsInput, FormationSessionParticipantUncheckedCreateWithoutConventionsInput>
+    where?: FormationSessionParticipantWhereInput
+  }
+
+  export type FormationSessionParticipantUpdateToOneWithWhereWithoutConventionsInput = {
+    where?: FormationSessionParticipantWhereInput
+    data: XOR<FormationSessionParticipantUpdateWithoutConventionsInput, FormationSessionParticipantUncheckedUpdateWithoutConventionsInput>
+  }
+
+  export type FormationSessionParticipantUpdateWithoutConventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
+    user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
+    candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FormationSessionParticipantUncheckedUpdateWithoutConventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    candidatureId?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FileAssetUpsertWithoutSessionConventionsInput = {
+    update: XOR<FileAssetUpdateWithoutSessionConventionsInput, FileAssetUncheckedUpdateWithoutSessionConventionsInput>
+    create: XOR<FileAssetCreateWithoutSessionConventionsInput, FileAssetUncheckedCreateWithoutSessionConventionsInput>
+    where?: FileAssetWhereInput
+  }
+
+  export type FileAssetUpdateToOneWithWhereWithoutSessionConventionsInput = {
+    where?: FileAssetWhereInput
+    data: XOR<FileAssetUpdateWithoutSessionConventionsInput, FileAssetUncheckedUpdateWithoutSessionConventionsInput>
+  }
+
+  export type FileAssetUpdateWithoutSessionConventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    issuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    issuedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    documentRef?: NullableStringFieldUpdateOperationsInput | string | null
+    storageKey?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    visibility?: EnumFileAssetVisibilityFieldUpdateOperationsInput | $Enums.FileAssetVisibility
+    status?: EnumFileAssetStatusFieldUpdateOperationsInput | $Enums.FileAssetStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveReason?: NullableStringFieldUpdateOperationsInput | string | null
+    legalHold?: BoolFieldUpdateOperationsInput | boolean
+    retentionUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdBy?: UserUpdateOneWithoutCreatedFileAssetsNestedInput
+    currentVersion?: FileAssetVersionUpdateOneWithoutCurrentForNestedInput
+    versions?: FileAssetVersionUpdateManyWithoutFileAssetNestedInput
+    reportJobs?: ReportGenerationJobUpdateManyWithoutFileAssetNestedInput
+    complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
+    complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
+    ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+  }
+
+  export type FileAssetUncheckedUpdateWithoutSessionConventionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    module?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    originalName?: StringFieldUpdateOperationsInput | string
+    mimeType?: StringFieldUpdateOperationsInput | string
+    size?: IntFieldUpdateOperationsInput | number
+    issuedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    issuedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    documentRef?: NullableStringFieldUpdateOperationsInput | string | null
+    storageKey?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    visibility?: EnumFileAssetVisibilityFieldUpdateOperationsInput | $Enums.FileAssetVisibility
+    status?: EnumFileAssetStatusFieldUpdateOperationsInput | $Enums.FileAssetStatus
+    provider?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    currentVersionId?: NullableStringFieldUpdateOperationsInput | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archiveReason?: NullableStringFieldUpdateOperationsInput | string | null
+    legalHold?: BoolFieldUpdateOperationsInput | boolean
+    retentionUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    versions?: FileAssetVersionUncheckedUpdateManyWithoutFileAssetNestedInput
+    reportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput
+    complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
+    complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
+    ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+  }
+
   export type FormationSessionCreateWithoutFormationExamInput = {
     id?: string
     startDate?: Date | string | null
@@ -238779,6 +241675,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -238820,6 +241717,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -238916,6 +241814,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -238957,6 +241856,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -239474,6 +242374,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -239515,6 +242416,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -240021,6 +242923,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -240062,6 +242965,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -250837,6 +253741,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
   }
@@ -250878,6 +253783,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -251248,6 +254154,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
   }
@@ -251289,6 +254196,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -260384,6 +263292,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobCreateNestedManyWithoutFileAssetInput
     complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutTicketAttachmentsInput = {
@@ -260418,6 +263327,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutFileAssetInput
     complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutTicketAttachmentsInput = {
@@ -260787,6 +263697,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUpdateManyWithoutFileAssetNestedInput
     complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutTicketAttachmentsInput = {
@@ -260821,6 +263732,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type UserUpsertWithoutTicketAttachmentsInput = {
@@ -263873,6 +266785,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -263914,6 +266827,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -264102,6 +267016,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -264143,6 +267058,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -267473,6 +270389,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutComplianceDossierItemsInput = {
@@ -267507,6 +270424,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutFileAssetInput
     complianceItemEvents?: ComplianceItemEventUncheckedCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutComplianceDossierItemsInput = {
@@ -267954,6 +270872,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutComplianceDossierItemsInput = {
@@ -267988,6 +270907,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type UserUpsertWithoutComplianceItemsValidatedInput = {
@@ -269316,6 +272236,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobCreateNestedManyWithoutFileAssetInput
     complianceDossierItems?: ComplianceDossierItemCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetUncheckedCreateWithoutComplianceItemEventsInput = {
@@ -269350,6 +272271,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutFileAssetInput
     complianceDossierItems?: ComplianceDossierItemUncheckedCreateNestedManyWithoutFileAssetInput
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutFileAssetInput
+    sessionConventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutFileAssetInput
   }
 
   export type FileAssetCreateOrConnectWithoutComplianceItemEventsInput = {
@@ -269751,6 +272673,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUpdateManyWithoutFileAssetNestedInput
     complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutComplianceItemEventsInput = {
@@ -269785,6 +272708,7 @@ export namespace Prisma {
     reportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FormationSessionCreateWithoutSatisfactionSurveysInput = {
@@ -269823,6 +272747,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -269864,6 +272789,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -269891,6 +272817,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput = {
@@ -269910,6 +272837,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSatisfactionSurveysInput = {
@@ -269964,6 +272892,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -270005,6 +272934,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -270038,6 +272968,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput = {
@@ -270057,6 +272988,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FundingCaseCreateWithoutProviderInput = {
@@ -270431,6 +273363,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -270472,6 +273405,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -270499,6 +273433,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutFundingCasesInput = {
@@ -270518,6 +273453,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutFundingCasesInput = {
@@ -270912,6 +273848,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -270953,6 +273890,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -270986,6 +273924,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutFundingCasesInput = {
@@ -271005,6 +273944,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FundingCaseEventUpsertWithWhereUniqueWithoutCaseInput = {
@@ -272519,6 +275459,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -272560,6 +275501,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     readinessEvents?: SessionReadinessEventUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -273293,6 +276235,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -273334,6 +276277,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -274171,6 +277115,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
     fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     evidences?: EvidenceCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -274212,6 +277157,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     evidences?: EvidenceUncheckedCreateNestedManyWithoutSessionInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -274269,6 +277215,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -274310,6 +277257,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -274524,6 +277472,10 @@ export namespace Prisma {
     status?: $Enums.FormationSessionEmargementStatus
     markedAt?: Date | string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -275801,6 +278753,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutUserInput = {
@@ -275820,6 +278773,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutUserInput = {
@@ -275844,6 +278798,10 @@ export namespace Prisma {
     status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     day?: FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput
@@ -275858,6 +278816,10 @@ export namespace Prisma {
     status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -275870,6 +278832,10 @@ export namespace Prisma {
     status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -276388,6 +279354,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -276429,6 +279396,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -276497,6 +279465,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -276538,6 +279507,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -276976,6 +279946,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateWithoutCreatedByInput = {
@@ -277010,6 +279981,7 @@ export namespace Prisma {
     complianceDossierItems?: ComplianceDossierItemUncheckedUpdateManyWithoutFileAssetNestedInput
     complianceItemEvents?: ComplianceItemEventUncheckedUpdateManyWithoutFileAssetNestedInput
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutFileAssetNestedInput
+    sessionConventions?: FormationSessionConventionUncheckedUpdateManyWithoutFileAssetNestedInput
   }
 
   export type FileAssetUncheckedUpdateManyWithoutCreatedByInput = {
@@ -278021,6 +280993,21 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type FormationSessionConventionCreateManyFileAssetInput = {
+    id?: string
+    sessionId: string
+    participantId: string
+    status?: $Enums.SessionConventionStatus
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type FileAssetVersionUpdateWithoutFileAssetInput = {
     id?: StringFieldUpdateOperationsInput | string
     versionNumber?: IntFieldUpdateOperationsInput | number
@@ -278259,6 +281246,51 @@ export namespace Prisma {
     mimeType?: NullableStringFieldUpdateOperationsInput | string | null
     sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionUpdateWithoutFileAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutConventionsNestedInput
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutConventionsNestedInput
+  }
+
+  export type FormationSessionConventionUncheckedUpdateWithoutFileAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionUncheckedUpdateManyWithoutFileAssetInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AiArtifactCreateManyRunInput = {
@@ -279794,6 +282826,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -279835,6 +282868,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -280398,6 +283432,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -280439,6 +283474,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -280507,6 +283543,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -280548,6 +283585,7 @@ export namespace Prisma {
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     evidences?: EvidenceUncheckedUpdateManyWithoutSessionNestedInput
     readinessEvents?: SessionReadinessEventUncheckedUpdateManyWithoutSessionNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -280803,6 +283841,21 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type FormationSessionConventionCreateManySessionInput = {
+    id?: string
+    participantId: string
+    status?: $Enums.SessionConventionStatus
+    fileAssetId?: string | null
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type CandidatureCreateManyInterestedSessionInput = {
     id?: string
     userId: string
@@ -280884,6 +283937,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSessionInput = {
@@ -280903,6 +283957,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutSessionInput = {
@@ -281224,6 +284279,51 @@ export namespace Prisma {
     actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     payload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutConventionsNestedInput
+    fileAsset?: FileAssetUpdateOneWithoutSessionConventionsNestedInput
+  }
+
+  export type FormationSessionConventionUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionUncheckedUpdateManyWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CandidatureUpdateWithoutInterestedSessionInput = {
@@ -281576,6 +284676,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutCandidatureInput = {
@@ -281595,6 +284696,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureInput = {
@@ -281748,6 +284850,10 @@ export namespace Prisma {
     markedAt?: Date | string | null
     markedByUserId?: string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -281788,12 +284894,31 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type FormationSessionConventionCreateManyParticipantInput = {
+    id?: string
+    sessionId: string
+    status?: $Enums.SessionConventionStatus
+    fileAssetId?: string | null
+    publicToken?: string | null
+    sentAt?: Date | string | null
+    viewedAt?: Date | string | null
+    signedAt?: Date | string | null
+    lastReminderAt?: Date | string | null
+    reminderCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type FormationSessionEmargementUpdateWithoutParticipantInput = {
     id?: StringFieldUpdateOperationsInput | string
     slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
     status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     day?: FormationSessionDayUpdateOneRequiredWithoutAttendancesNestedInput
@@ -281808,6 +284933,10 @@ export namespace Prisma {
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -281820,6 +284949,10 @@ export namespace Prisma {
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -281936,6 +285069,51 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FormationSessionConventionUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutConventionsNestedInput
+    fileAsset?: FileAssetUpdateOneWithoutSessionConventionsNestedInput
+  }
+
+  export type FormationSessionConventionUncheckedUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormationSessionConventionUncheckedUpdateManyWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    status?: EnumSessionConventionStatusFieldUpdateOperationsInput | $Enums.SessionConventionStatus
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    publicToken?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastReminderAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    reminderCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FormationSessionEmargementCreateManyDayInput = {
     id?: string
     participantId: string
@@ -281944,6 +285122,10 @@ export namespace Prisma {
     markedAt?: Date | string | null
     markedByUserId?: string | null
     notes?: string | null
+    justificationStatus?: $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: Date | string | null
+    justificationNote?: string | null
+    justificationResolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -281954,6 +285136,10 @@ export namespace Prisma {
     status?: EnumFormationSessionEmargementStatusFieldUpdateOperationsInput | $Enums.FormationSessionEmargementStatus
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     participant?: FormationSessionParticipantUpdateOneRequiredWithoutEmargementsNestedInput
@@ -281968,6 +285154,10 @@ export namespace Prisma {
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -281980,6 +285170,10 @@ export namespace Prisma {
     markedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     markedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationStatus?: NullableEnumAbsenceJustificationStatusFieldUpdateOperationsInput | $Enums.AbsenceJustificationStatus | null
+    justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
+    justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
