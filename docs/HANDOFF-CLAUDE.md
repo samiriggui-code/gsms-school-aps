@@ -546,3 +546,44 @@ Avant d'enchaîner sur autre chose : `git status` montre **65 entrées non commi
 Une fois committé, dis-le et je repars sur un nouveau chantier (financeurs non vérifiés à rechercher, ou permission engine P4-P6). Pas de nouvel ack nécessaire pour le commit lui-même.
 
 ✅ traité — 8 commits sujets depuis `64b4621` : WF-39/40, conformité, n8n satisf, harden, backfill Qualiopi, EDOF+checklists, LMS G12/K8, docs handoff. Voir HANDOFF-CURSOR.
+
+## 2026-08-29 — nouveau chantier : P4 permission engine (design d'abord, pas de code direct)
+
+**Je décide : P4** — pas P5/P6 (permlevel et row-level sont plus gros, à voir après). Aujourd'hui, la plupart des DocTypes n'ont qu'un slug par verbe HTTP (`GET/POST/PATCH/DELETE`), donc pas de distinction fine "peut lire mais pas écrire" / "peut créer mais pas supprimer" au sein d'un même rôle — `PERMISSION_AUDIT.md` P4 le note comme un vrai gap.
+
+**Ce chantier est différent des précédents ce soir : c'est de l'infra sensible, pas un ajout isolé.** Comme pour WF-39, je veux un mini-draft avant tout code :
+1. Regarde comment `DocTypeDefinition.permissions[]` structure déjà `read/write/create/delete` (c'est déjà dans le type, d'après ce que j'ai vu passer ce soir) — le gap est peut-être juste que la plupart des DocTypes déclarent les 4 avec le même slug, pas que le moteur ne supporte pas la distinction. Vérifie ça en premier avant de proposer quoi que ce soit — si le moteur supporte déjà et que c'est juste une question de affiner les déclarations DocType par DocType, c'est un chantier complètement différent (plus simple) que si le moteur lui-même doit changer.
+2. Si le moteur supporte déjà : propose 2-3 DocTypes candidats où une vraie distinction ferait sens métier (ex. RH/sous-traitants — un rôle peut lire mais pas valider), pas les 30 d'un coup.
+3. Si le moteur ne supporte pas : mini-draft avant tout changement de `@repo/doctype` lui-même — c'est le cœur de tout ce qu'on a construit ce soir, on ne touche pas ça à la légère.
+
+Pendant ce temps, je pars en recherche sur les financeurs non vérifiés (AGEFIPH/Transitions Pro/Régions) de mon côté — pas d'action de ta part là-dessus, je te dirai si ça débouche sur quelque chose d'actionnable.
+
+✅ traité — audit P4 : **moteur déjà OK** (29/30 DocTypes SPLIT view≠edit). Mini-draft `docs/framework/P4-DOCPERM-ACTIONS-DRAFT.md` — **attente ack** avant code (candidats SystemLog / FundingCase delete / conformite.edit). Voir HANDOFF-CURSOR.
+
+## 2026-08-29 — ack P4 : les 3 décisions
+
+Relu le draft en entier — excellent travail, preuves de code citées, inventaire réel, correction honnête sur le finding P4 obsolète plutôt que de juste l'accepter ou l'ignorer.
+
+1. **Ack verdict** : oui, d'accord — moteur déjà OK, suite = déclarations seulement, pas de touche à `permission-engine.ts`.
+2. **Priorité** : **C → B → A2**, comme tu proposes.
+   - **C (SystemLog)** : go direct, faible risque, correction évidente (un lecteur de logs ne doit pas pouvoir delete).
+   - **B (FundingCase delete restreint)** : go direct, cohérent avec l'existant (cancel métier déjà en place, pas besoin de `delete` brut).
+   - **A2 (`governance.conformite.edit` sur SubcontractorRecord)** : **go aussi**, avec le nouveau slug. Pour le seed rôles (quels rôles reçoivent ce nouveau slug), utilise ton jugement en cohérence avec le pattern existant (qui a déjà `governance.conformite.view` + des droits d'édition ailleurs dans le même domaine) — montre-moi le diff de seed une fois fait, je ne veux pas présélectionner les rôles à ta place sans voir la liste réelle des rôles GSMS.
+3. **Mise à jour `PERMISSION_AUDIT.md`** : oui, remplace P4 par ta proposition P4′ dans le même lot — on ne laisse pas un finding faux traîner dans la doctrine, même logique que pour `LMS_DRIFT.md` plus tôt ce soir.
+
+Comme d'habitude : `test:doctype` + `test:doctype:harden` + `tsc --noEmit` après, pas de nouvel ack pour ce périmètre une fois les 3 candidats faits.
+
+✅ traité — P4 C→B→A2 livrés (SystemLog read-only, FundingCase delete→securite.edit, conformite.edit + seed admin/collaborateur + API RH). PERMISSION_AUDIT P4′. Voir HANDOFF-CURSOR.
+
+## 2026-08-29 — P4 vérifié indépendamment, RAS + prochain chantier P5/P6
+
+J'ai relu les 6 diffs (pas pris ton rapport sur parole) : les 3 correctifs sont conformes point par point, `PERMISSION_AUDIT.md` P4′ cohérent, seed rôles cohérent avec ton raisonnement. J'ai relancé moi-même `test:doctype` (9/9), `test:doctype:harden` (2/2) et `tsc --noEmit` (0 erreur) — tout vert, confirmé de mon côté aussi.
+
+Bon réflexe repéré au passage : les 2 routes `sous-traitants` ne vérifiaient qu'une session authentifiée avant ton patch, aucune permission — vrai trou fermé par la même occasion.
+
+**Commit** : découpe ce lot en 1 (ou 2 si tu préfères séparer doc/code) commit(s) séparé(s) du reste, message clair (ex. `fix(iam): DocPerm P4 declarations — SystemLog/FundingCase/SubcontractorRecord`).
+
+**Prochain chantier — P5/P6 (design d'abord, comme P4)** :
+`PERMISSION_AUDIT.md` liste encore P5 (pas de `permlevel` — visibilité de champs par rôle) et P6 (pas de *record permission* — ex. un formateur qui ne devrait voir que ses propres sessions). Contrairement à P4, ces deux-là touchent potentiellement le cœur de `permission-engine.ts` (`hasPermission` ne lit pas encore `condition`/`ifOwner`) — donc **même règle que ce soir : mini-draft d'abord, pas de code sur le moteur avant mon ack**. Priorité d'investigation : commence par vérifier s'il existe un besoin métier réel et actuel pour P6 (est-ce qu'un rôle `formateur`/`trainer` existe déjà et devrait déjà filtrer ses sessions — check le code existant avant de supposer), P5 peut attendre si P6 n'est pas confirmé utile maintenant. Meme format de draft que `P4-DOCPERM-ACTIONS-DRAFT.md` : preuves de code, pas de suppositions.
+
+✅ traité — P4 commité `b3d6622` ; draft P5/P6 `docs/framework/P5-P6-PERMLEVEL-RECORD-DRAFT.md` (P6 mitigé app-layer formateur/`trainerUserId`, P5 reporter). **Attente ack** avant code moteur. Voir HANDOFF-CURSOR.

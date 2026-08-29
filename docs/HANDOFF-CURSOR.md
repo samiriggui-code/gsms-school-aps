@@ -4,6 +4,72 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — P4 commité + draft P5/P6 (attente ack)
+
+### Commit P4
+
+`b3d6622` — `fix(iam): DocPerm P4 declarations for SystemLog, FundingCase, SubcontractorRecord`
+
+### Draft P5/P6
+
+[`docs/framework/P5-P6-PERMLEVEL-RECORD-DRAFT.md`](framework/P5-P6-PERMLEVEL-RECORD-DRAFT.md)
+
+**Verdict :**
+- **P6** besoin formateur/session **réel** mais **déjà mitigé** : rôle `formateur` → `/formateur` + `assertInstructorOwnsSession` / `trainerUserId` (pas `crm.academique.*`). `ifOwner`/`condition` typés, **non lus** par `hasPermission`. `ownerField` = set-on-create only.
+- **P5** : `permlevel` partiellement runtime (`buildMetaResponse`) ; **aucun** usage métier déclaré → reporter.
+
+Reco Cursor : **option A reporter** (évent. note doctrine) ; option B = brancher `condition` FormationSession après ack.
+
+Pas de code sur `permission-engine.ts`.
+
+---
+
+## 2026-08-29 — P4 C→B→A2 livrés (ack)
+
+Pas de touche `permission-engine.ts`. Déclarations + IAM + API RH.
+
+| Item | Détail |
+|---|---|
+| **C** SystemLog | `read` seul (`iam.logs.view`) |
+| **B** FundingCase | create/write = `crm.finance.edit` ; **delete** = `crm.securite.edit` |
+| **A2** SubcontractorRecord | read = conformite.view ; create/delete = ressources.edit ; **write** = `governance.conformite.edit` |
+| API | GET view · POST ressources.edit · PATCH conformite.edit |
+| Doctrine | `PERMISSION_AUDIT.md` P4 → P4′ · draft §7 |
+
+### Seed `governance.conformite.edit` (jugement)
+
+| Rôle | Motif |
+|---|---|
+| **admin** | a déjà conformite.view + édition large |
+| **collaborateur** | a conformite.view sans ressources.edit → valide ST / pièces sans créer la fiche |
+| manager | ressources.edit sans conformite.view → crée, ne valide pas (volontaire) |
+| superadmin | `*` inchangé |
+
+**Vérifs :** `test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` **0**
+
+Fichiers clés : `domains/audit|funding|organisation/doctypes.ts`, `crm-permissions.ts`, `permission-domains.ts`, `permissions.js`, `crm-role-permissions.js`, routes `sous-traitants`.
+
+---
+
+## 2026-08-29 — P4 DocPerm : design (pas de code engine)
+
+**Verdict :** `PermissionEngine` + `DocPermission` gèrent déjà read/write/create/delete avec slugs distincts. `protectRoute` mappe HTTP → `DocAction` + `hasPermission`.
+
+Inventaire bootstrap : **29/30 SPLIT** view≠mutate ; seul `SystemLog` SAME (`iam.logs.view` aussi sur mutate).
+
+`PERMISSION_AUDIT.md` P4 est **périmé** (ère ENTITY_REGISTRY).
+
+Draft : [`docs/framework/P4-DOCPERM-ACTIONS-DRAFT.md`](framework/P4-DOCPERM-ACTIONS-DRAFT.md)
+
+Candidats (déclarations, pas engine) :
+1. **SystemLog** — retirer write/delete sous `logs.view`
+2. **FundingCase** — restreindre `delete` (cancel métier suffit)
+3. **SubcontractorRecord** — optionnel `governance.conformite.edit` (ack IAM)
+
+**Attente ack Claude** sur les 3 décisions §6 du draft avant tout code.
+
+---
+
 ## 2026-08-29 — backlog committé (8 commits sujets)
 
 Depuis `64b4621`, commits séparés (pas un blob) :
