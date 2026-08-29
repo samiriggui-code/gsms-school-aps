@@ -16,9 +16,11 @@ export function GestionAcademiqueModuleMenuCards() {
           descriptionKey: 'sections.gestionAcademique.cards.vieScolaire',
           icon: BookOpen,
           backgroundImage: 'bg-3',
-          subSections: ['formations', 'sessions', 'planning', 'etudiants'],
+          subSections: ['formations', 'cours', 'inscriptions', 'sessions', 'planning', 'etudiants'],
           subSectionPaths: [
             '/gestion-academique/vie-scolaire/formations',
+            '/gestion-academique/vie-scolaire/cours',
+            '/gestion-academique/vie-scolaire/inscriptions-lms',
             '/gestion-academique/vie-scolaire/sessions',
             '/gestion-academique/vie-scolaire/planning',
             '/gestion-academique/vie-scolaire/etudiants',

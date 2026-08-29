@@ -1,5 +1,5 @@
 import type { DocControllerHooks, DocTypeRegistry } from '@repo/doctype';
-import { lmsCourseDocType, lmsEnrollmentDocType, lmsLessonDocType } from './doctypes';
+import { lmsChapterDocType, lmsCourseDocType, lmsEnrollmentDocType } from './doctypes';
 
 const lmsCourseController: DocControllerHooks = {
   beforeInsert: async ({ principal, data }) => ({
@@ -10,6 +10,6 @@ const lmsCourseController: DocControllerHooks = {
 
 export function registerLmsDocTypes(registry: DocTypeRegistry): void {
   registry.registerDefinition({ definition: lmsCourseDocType, controller: lmsCourseController });
-  registry.registerDefinition({ definition: lmsLessonDocType });
+  registry.registerDefinition({ definition: lmsChapterDocType });
   registry.registerDefinition({ definition: lmsEnrollmentDocType });
 }

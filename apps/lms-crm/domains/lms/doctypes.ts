@@ -44,13 +44,14 @@ export const lmsCourseDocType: DocTypeDefinition = {
   },
 };
 
-export const lmsLessonDocType: DocTypeDefinition = {
-  name: 'LmsLesson',
+export const lmsChapterDocType: DocTypeDefinition = {
+  name: 'LmsChapter',
   module: 'lms',
-  label: 'Leçon LMS',
+  label: 'Chapitre LMS',
   table: 'Chapter',
   schemaVersion: 1,
-  aliases: ['lmsChapter', 'lesson'],
+  /** Compat: ancien nom DocType + alias lesson legacy. */
+  aliases: ['LmsLesson', 'lmsChapter', 'lesson'],
   fields: [
     { fieldname: 'title', label: 'Titre', fieldtype: 'Data', required: true, searchable: true },
     {
@@ -88,6 +89,9 @@ export const lmsLessonDocType: DocTypeDefinition = {
     modifiedField: 'updatedAt',
   },
 };
+
+/** @deprecated Prefer `lmsChapterDocType` (K8). */
+export const lmsLessonDocType = lmsChapterDocType;
 
 export const lmsEnrollmentDocType: DocTypeDefinition = {
   name: 'LmsEnrollment',

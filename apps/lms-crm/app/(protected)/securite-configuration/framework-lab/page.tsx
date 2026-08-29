@@ -22,7 +22,7 @@ const ENTITIES = [
   { id: 'Evidence', label: 'Evidence' },
   { id: 'complianceDossierItem', label: 'Qualiopi pièces' },
   { id: 'LmsCourse', label: 'Cours LMS' },
-  { id: 'LmsLesson', label: 'Leçons LMS (Chapter)' },
+  { id: 'LmsChapter', label: 'Chapitres LMS' },
   { id: 'LmsEnrollment', label: 'Inscriptions LMS' },
   { id: 'leaveRequest', label: 'Absences RH' },
 ] as const;
@@ -45,7 +45,7 @@ export default function FrameworkLabPage() {
             <ToolbarTitle>Framework entités (lab)</ToolbarTitle>
             <ToolbarDescription>
               Lab DocType V2 — OF (CRM/Training/Funding/Evidence) avant LMS. Noms
-              canoniques LmsCourse / LmsLesson / LmsEnrollment.
+              canoniques LmsCourse / LmsChapter / LmsEnrollment.
             </ToolbarDescription>
           </ToolbarHeading>
         </Toolbar>
@@ -107,7 +107,7 @@ export default function FrameworkLabPage() {
                         ? ['category', 'sourceType', 'status', 'eventName', 'createdAt']
                         : entity === 'LmsCourse'
                           ? ['title', 'isPublished', 'createdAt']
-                          : entity === 'LmsLesson'
+                          : entity === 'LmsChapter'
                             ? ['title', 'courseId', 'createdAt']
                             : entity === 'LmsEnrollment'
                               ? ['userId', 'courseId', 'createdAt']

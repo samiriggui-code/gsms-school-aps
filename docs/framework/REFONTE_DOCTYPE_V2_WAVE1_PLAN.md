@@ -156,7 +156,7 @@ Smoke **hors prod** avant Phase E :
 | `role` | `Role` | core.iam |
 | `leaveRequest` | `LeaveRequest` | rh |
 | `course` | `LmsCourse` | lms |
-| `lesson` | `LmsLesson` | lms |
+| `lesson` | `LmsChapter` (alias `LmsLesson`) | lms |
 | `enrollment` | `LmsEnrollment` | lms |
 | `complianceDossierItem` | `ComplianceDossierItem` | qualiopi |
 

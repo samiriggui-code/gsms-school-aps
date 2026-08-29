@@ -90,12 +90,12 @@ function wave1Definitions(): DocTypeDefinition[] {
       persistence: { table: 'Course', delegate: 'course', nameField: 'id' },
     },
     {
-      name: 'LmsLesson',
+      name: 'LmsChapter',
       module: 'lms',
-      label: 'Leçon',
+      label: 'Chapitre',
       table: 'Chapter',
       schemaVersion: 1,
-      aliases: ['lesson'],
+      aliases: ['LmsLesson', 'lmsChapter', 'lesson'],
       fields: [
         { fieldname: 'title', label: 'Titre', fieldtype: 'Data', required: true },
         { fieldname: 'courseId', label: 'Cours', fieldtype: 'Link', options: 'LmsCourse', required: true },
@@ -157,7 +157,9 @@ test('G1-D: wave1 registry seals with 7 entities and legacy aliases', () => {
     ['role', 'Role'],
     ['leaveRequest', 'LeaveRequest'],
     ['course', 'LmsCourse'],
-    ['lesson', 'LmsLesson'],
+    ['lesson', 'LmsChapter'],
+    ['LmsLesson', 'LmsChapter'],
+    ['lmsChapter', 'LmsChapter'],
     ['enrollment', 'LmsEnrollment'],
     ['complianceDossierItem', 'ComplianceDossierItem'],
   ] as const;

@@ -28,3 +28,13 @@ Les DocTypes Course/Lesson restent **clients** déclarés **après** CRM/Trainin
 - Freeze features LMS liées framework.  
 - Ne plus ajouter d’entités LMS dans `registry.ts` jusqu’à Phase 18.  
 - Renommer conceptuellement dans la doc : `LmsCourse` / `LmsEnrollment` pour éviter collision avec OF Enrollment.
+
+## ✅ Gel levé (29/08/2026, Claude + Cursor)
+
+- **L1 résolu** : `registerLmsDocTypes` déplacé en dernier dans `bootstrap.ts` (commit `ae14261`), après CRM/Training/Documents/Quality/RH/Qualiopi/Funding/Evidence/Audit — ordre §44 respecté.
+- **L2 atténué** : `framework-lab` réordonné, domaines OF avant Lms*.
+- **L3 résolu (K8)** : DocType canonique `LmsChapter` → Prisma `Chapter` ; aliases `LmsLesson` / `lmsChapter` / `lesson` pour compat.
+- **L7 résolu** : alias DocType `enrollment` nu retiré, seul `lmsEnrollment` reste — plus de collision possible avec `FormationSessionParticipant` (OF).
+- **L5** : toujours OK, inchangé.
+
+Vérifié indépendamment par Claude : ordre bootstrap confirmé (grep), alias `lmsEnrollment` confirmé (aucun alias `enrollment` nu résiduel), `test:doctype` 9/9. **Phase 18 / G12 LMS peut démarrer**, règle à respecter : `domains/lms/*` importe le framework, jamais l’inverse.
