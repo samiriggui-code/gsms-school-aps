@@ -334,3 +334,61 @@ test('Vague 2 harden: ResourceService search + pagination on Lead', async () => 
   assert.equal(searched.pagination.total, 1);
   assert.equal(searched.data[0]?.lastName, 'Beta');
 });
+
+test('Vague 2 harden: ResourceService soft-delete hides rows from default list', async () => {
+  const softRole: DocTypeDefinition = {
+    name: 'SoftRole',
+    module: 'core.iam',
+    label: 'Soft role',
+    table: 'UserRole',
+    schemaVersion: 1,
+    fields: [
+      { fieldname: 'slug', label: 'Slug', fieldtype: 'Data', required: true, searchable: true },
+      { fieldname: 'name', label: 'Nom', fieldtype: 'Data', required: true },
+    ],
+    permissions: [
+      {
+        role: '*',
+        permlevel: 0,
+        read: true,
+        create: true,
+        write: true,
+        delete: true,
+        requires: { anyPermissionSlugs: ['iam.roles.edit'] },
+      },
+    ],
+    naming: { strategy: 'UUID_INTERNAL' },
+    flags: {
+      isChild: false,
+      isSingle: false,
+      isVirtual: false,
+      isSubmittable: false,
+      softDelete: true,
+    },
+    persistence: {
+      table: 'UserRole',
+      delegate: 'softRole',
+      nameField: 'id',
+      softDeleteField: 'isTrashed',
+    },
+  };
+
+  const registry = new DocTypeRegistry();
+  registry.registerDefinition({ definition: softRole });
+  registry.seal();
+  const service = new ResourceService({ registry, adapter: new MemoryAdapter() });
+  const principal = {
+    id: 'u1',
+    roleSlug: 'admin',
+    permissionSlugs: new Set(['iam.roles.edit']),
+    isSystemManager: false,
+  };
+
+  const created = await service.create('SoftRole', { slug: 'tmp', name: 'Tmp' }, principal);
+  assert.equal((await service.list('SoftRole', principal)).pagination.total, 1);
+
+  await service.delete('SoftRole', String(created.id), principal);
+  assert.equal((await service.list('SoftRole', principal)).pagination.total, 0);
+  assert.equal((await service.list('SoftRole', principal, { trashed: true })).pagination.total, 1);
+  assert.equal((await service.get('SoftRole', String(created.id), principal))?.isTrashed, true);
+});

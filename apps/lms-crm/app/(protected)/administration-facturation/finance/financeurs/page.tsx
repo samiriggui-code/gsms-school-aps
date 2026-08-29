@@ -10,6 +10,7 @@ import {
 } from '@/components/common/toolbar';
 import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
+import { CreateFundingCaseForm } from './create-funding-case-form';
 import { syncFundingProvidersFromConnectors } from '@/lib/funding/sync-providers-from-matrix';
 
 type ConnectorRow = {
@@ -131,6 +132,9 @@ export default async function FinanceursPage() {
       <h2 className="mb-2 text-sm font-semibold tracking-wide uppercase">
         Dossiers FundingCase (récents)
       </h2>
+      <CreateFundingCaseForm
+        providers={providers.map((p) => ({ id: p.id, code: p.code, label: p.label }))}
+      />
       <div className="mb-8 overflow-x-auto rounded-md border">
         <table className="w-full text-left text-sm">
           <thead className="bg-muted/40 border-b">
