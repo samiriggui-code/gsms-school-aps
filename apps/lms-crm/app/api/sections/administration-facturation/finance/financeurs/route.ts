@@ -63,6 +63,7 @@ export async function POST() {
       funder: String(c.funder ?? ''),
       transport: Array.isArray(c.transport) ? (c.transport as string[]) : [],
       api_available: Boolean(c.api_available),
+      verification_level: c.verification_level ? String(c.verification_level) : undefined,
     }));
     const result = await syncFundingProvidersFromConnectors(prisma, connectors);
     const providers = await prisma.fundingProvider.findMany({ orderBy: { label: 'asc' } });

@@ -13,6 +13,7 @@ async function main() {
       funder: string;
       transport?: string[];
       api_available?: boolean;
+      verification_level?: string;
     }>;
   };
   const result = await syncFundingProvidersFromConnectors(prisma, data.connectors);

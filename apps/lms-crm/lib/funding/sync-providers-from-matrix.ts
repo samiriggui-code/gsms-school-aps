@@ -5,6 +5,7 @@ type ConnectorRow = {
   funder: string;
   transport?: string[];
   api_available?: boolean;
+  verification_level?: string;
 };
 
 function mapFunderType(connectorId: string, funder: string): FundingFunderType {
@@ -20,10 +21,20 @@ function mapFunderType(connectorId: string, funder: string): FundingFunderType {
   return 'OTHER';
 }
 
+/** Vrais transports API (REST/SOAP/webhook) — distincts des transports fichier (XML_FILE/CSV_FILE/SFTP) et du portail manuel. */
+const API_TRANSPORTS = ['REST_JSON', 'SOAP_XML', 'WEBHOOK'];
+
 function mapTransport(row: ConnectorRow): FundingTransport {
   const transports = (row.transport ?? []).map((t) => t.toUpperCase());
-  if (row.api_available && transports.some((t) => t.includes('API'))) return 'VERIFIED_API';
-  if (transports.some((t) => t.includes('API'))) return 'PARTIAL_API';
+  const hasApiTransport = transports.some(
+    (t) => API_TRANSPORTS.includes(t) || t.includes('API'),
+  );
+  if (hasApiTransport && row.api_available) {
+    // verification_level "PARTIAL" (cf. connector-capabilities.json) = existence confirmée
+    // mais schémas/scopes non entièrement vérifiés → ne pas afficher comme pleinement fiabilisé.
+    return row.verification_level === 'PARTIAL' ? 'PARTIAL_API' : 'VERIFIED_API';
+  }
+  if (hasApiTransport) return 'PARTIAL_API';
   if (transports.some((t) => t.includes('INTERNAL'))) return 'INTERNAL';
   return 'MANUAL_PORTAL';
 }
