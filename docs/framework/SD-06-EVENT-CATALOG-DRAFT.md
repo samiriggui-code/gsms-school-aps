@@ -1,4 +1,4 @@
-# SD-06 — Catalogue d'événements (draft) — **PAS verrouillé**
+# SD-06 — Catalogue d'événements (draft) — **✅ LOCKED (famille A) / extension B+C**
 
 > Auteur : Claude, papier, comme assigné dans `PLAN-ACTION-GLOBAL-GSMS.md` ligne 118/190 ("Draft Funding/Evidence + SD-06 — Claude, maintenant, ∥ papier").
 > Gate : ce doc doit être **verrouillé** (relu, ajusté si besoin, puis marqué LOCKED) avant que Cursor ne code quoi que ce soit touchant readiness de session, doc states, ou events runtime (règle §2 "Freeze" du plan).
@@ -38,7 +38,7 @@ Contrôles de transition connus (WF-11 à WF-14, J-30/J-15/J-10/J-5) :
 
 **Gardes de transition — tranché en review (Cursor, 29/08) :** les transitions restent **forçables manuellement** (rôle `ressourcesEdit`/`financeEdit`, ou système) même avec un `CREATE_FINDING` ouvert. Le finding **reste ouvert** (pas de résolution automatique), un événement d'audit est écrit (`SESSION_STATUS_CHANGED`, payload `{ forced: true, findingIds: [...] }`, même pattern que `FundingCaseEvent`). **Pas de hard-block automatique** — cohérent avec la doctrine WF-11 qui parle de "signalement", pas de blocage ; un hard-block bloquerait des opérations OF réelles. Accepté.
 
-## 3. Catalogue P0 — événements du cycle de vie session (famille A)
+## 3. Catalogue famille A — cycle de vie session (implémenté)
 
 Scope volontairement resserré aux événements déjà couverts par du code existant ce soir (OF-02, OF-08, émargement, satisfaction, FundingCase) — pas les 45 WF au complet. Extension en Vague 2+ quand un domaine y touche vraiment.
 
@@ -55,19 +55,44 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | `FUNDING_CASE_STATUS_CHANGED` | financeur | manual/system | `type: HISTORIQUE` | déjà implémenté ce soir — c'est littéralement `FundingCaseEvent`, déjà en base et fonctionnel. **Ce draft ne fait que documenter ce qui existe déjà**, pas ajouter de code. |
 | `FUNDING_DOCUMENT_STATUS_CHANGED` | financeur | manual | `type: DOCUMENT` | déjà implémenté ce soir (`FundingDocument`) |
 
-## 4. Ce que ce catalogue NE couvre PAS (hors scope P0, explicite)
+## 4. Catalogue famille C — financeurs (WF-41 à WF-45)
 
-- Les 45 workflows dans leur intégralité (familles B organisation et C financeur au-delà de FundingCase — ex. veille réglementaire, sous-traitance, amélioration continue).
-- `ExternalExchange` (échanges avec connecteurs externes EDOF/OPCO/France Travail) — dépend de la matrice connecteurs, pas traité ici.
-- L'implémentation technique (table Prisma `SystemEvent`, event bus, outbox pattern) — c'est du code, pas ce draft papier.
+**Déjà largement implémenté ce soir**, sans attendre cette extension formelle — les checklists MANUAL_PORTAL (EDOF/OPCO/FT Kairos) livrées par Cursor sont l'implémentation concrète de WF-42/43/44. Ce tableau documente ce qui existe et ce qui reste hors scope.
 
-## 5. Checklist review (utilisateur / Claude / Cursor)
+| WF | event_name | Statut | Note |
+|---|---|---|---|
+| WF-41 Entreprise/B2B | `FUNDING_CASE_STATUS_CHANGED` (`funderType: ENTREPRISE`) | ✅ Déjà couvert | Le cycle "devis→validation→convention→session→réalisation→attestation→facture→paiement" suit exactement la state machine `FundingCaseStatus` générique déjà en place — pas de checklist dédiée nécessaire, c'est un flux interne, pas un portail externe. |
+| WF-42 OPCO | `OPCO_*` (checklist) | ✅ Implémenté (AFDAS/ATLAS, `verified: true`) | Voir `lib/connectors/opco/opco-dossier-checklist.ts`. Les 9 autres OPCO : `verified: false`, pas de checklist tant que non confirmé. |
+| WF-43 CPF/EDOF | `EDOF_*` (checklist + export catalogue XML) | ✅ Implémenté | Voir `lib/connectors/edof/`. |
+| WF-44 France Travail | `FT_*` (checklist) | ✅ Implémenté | Voir `lib/connectors/france-travail/kairos-dossier-checklist.ts`. Rappel Qualiopi inclus dans le hint. |
+| WF-45 Autres financeurs | — | ❌ Non couvert | AGEFIPH, Transitions Pro, Régions — tous `verified: false` dans `connector-capabilities.json`. Pas d'invention tant qu'aucune source officielle n'est vérifiée (règle du soir : "aucune API/process n'est déclaré sans source officielle vérifiable"). |
 
-- [x] Pattern EVENT→CONDITIONS→ACTIONS→RESULTS→EVIDENCE→QUALIOPI accepté tel quel — Cursor OK, pas d'objection.
-- [x] Session readiness state machine (§2) accepté pour lock. Note d'implémentation (Cursor) : `FormationSession` n'a pas encore de champ readiness — le lock fige le contrat, le champ (`SessionReadinessStatus` ou équivalent) arrive au code post-lock, aucune collision avec un enum existant.
-- [x] Catalogue P0 (§3) jugé suffisant pour démarrer (Cursor) — bon ancrage sur l'existant, pas besoin d'étendre familles B/C avant lock.
-- [x] Gardes de transition — tranché ci-dessus (§2), accepté par les deux parties.
+## 5. Catalogue famille B — organisme (WF-35 à WF-40, **nouveau, non implémenté**)
 
-## ✅ SD-06 LOCKED (29/08/2026)
+Ces indicateurs Qualiopi ne sont pas liés à une session mais à l'organisme dans son ensemble. Contrairement à la famille A/C, **rien n'est encore codé** pour cette famille — c'est un vrai chantier futur, pas une simple checklist réutilisant l'existant.
 
-Accord Claude ↔ Cursor sur les 4 points ci-dessus. Cursor peut coder session readiness / doc states / events runtime à partir de ce contrat.
+| event_name | domain | trigger_source | Cycle (dérivé WF) | evidence_generated |
+|---|---|---|---|---|
+| `VEILLE_ITEM_CREATED` | organisation | scheduled (périodique) | WF-35 réglementaire / WF-36 métiers-compétences / WF-37 pédagogique-techno : `collect sources → detect change → qualify relevance → create item → assign owner → analyse impact → record action` | `type: LOG` ou `type: DOCUMENT` selon la source |
+| `TRAINER_DOCUMENT_EXPIRING` | organisation | scheduled | WF-38 : `document_expiring → request update` | `type: LOG` |
+| `TRAINER_ANNUAL_REVIEW` | organisation | scheduled | WF-38 : `annual review → competency gap → development action` | `type: EVALUATION` |
+| `SUBCONTRACTOR_STATUS_CHANGED` | organisation | manual | WF-39 : state machine `PENDING_VALIDATION → APPROVED → ACTIVE → REVIEW_REQUIRED → SUSPENDED` | `type: VALIDATION` |
+| `DISABILITY_REFERENT_ACTION_RECORDED` | organisation | manual | WF-40 : maintenance référent/partenaires/ressources/procédures/actions | `type: LOG` |
+
+**Ce catalogue B est formalisé mais PAS un feu vert de code.** Contrairement à Evidence/readiness (déjà implémentés ce soir), la famille B n'a aucune UI/API/modèle existant à documenter — un futur chantier devra d'abord décider : nouveau modèle Prisma (`OrganisationWatchItem`, `SubcontractorRecord`, etc.) ou réutilisation d'un modèle existant type `ComplianceDossierItem`. Ce draft pose juste le nommage des événements pour que, le jour où ce chantier démarre, il s'aligne sur SD-06 dès le départ plutôt que de dériver.
+
+## 6. Ce que ce catalogue NE couvre PAS (hors scope explicite)
+
+- `ExternalExchange` (échanges programmatiques avec connecteurs API — Zéro Saisie, Parcours Formation, API Convergence OPCO apprentissage) — dépend de comptes/clés externes non obtenus, hors scope tant que non demandé.
+- L'implémentation technique de la famille B (table Prisma, UI) — c'est un futur chantier, pas ce draft.
+- L'implémentation technique globale (table Prisma `SystemEvent`, event bus, outbox pattern) — c'est du code, pas ce draft papier.
+
+## 7. Checklist review
+
+- [x] Famille A (session) : **LOCKED** — accord Claude ↔ Cursor du 29/08, implémenté (readiness + Evidence branchés partout).
+- [x] Famille C (financeurs) : **implémentée** via les checklists EDOF/OPCO/FT — ce document formalise a posteriori ce qui existe déjà, rien à coder en plus pour clore ce point.
+- [x] Famille B (organisme) : **catalogué mais pas implémenté** — nommage posé pour un futur chantier, pas un go de code immédiat.
+
+## ✅ SD-06 LOCKED (29/08/2026) — extension B/C documentée
+
+Le lock initial (famille A) reste valable. Cette extension ajoute la doctrine cataloguée pour B et C sans rouvrir de code non désiré — C est déjà fait, B attend une décision de chantier future (modèle Prisma à trancher le jour venu).

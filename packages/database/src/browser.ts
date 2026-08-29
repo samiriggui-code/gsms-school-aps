@@ -5,10 +5,12 @@
 export {
   CandidatureStatus,
   CandidatureSource,
+  EnrollmentStatus,
   FormationSessionEnrollmentStatus,
   FinanceDevisStatus,
   LeadStatus,
   ComplianceItemStatus,
+  SubcontractorQualificationStatus,
 } from '../generated/client';
 export { LandingTeamVolet, RhTeamType } from './prisma-enums';
 export {

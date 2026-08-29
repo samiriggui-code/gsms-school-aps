@@ -74,6 +74,7 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Classeur', path: '/gestion-ressources/qualiopi/classeur' },
           { title: 'Couverture', path: '/gestion-ressources/qualiopi/couverture' },
           { title: 'Historique', path: '/gestion-ressources/qualiopi/historique' },
+          { title: 'Tableau conformité', path: '/gestion-ressources/conformite' },
         ],
       },
       {
@@ -83,6 +84,8 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Collaborateurs', path: '/gestion-ressources/rh/collaborateurs' },
           { title: 'Équipes', path: '/gestion-ressources/rh/equipes' },
           { title: 'Formateurs', path: '/gestion-ressources/rh/formateurs' },
+          { title: 'Sous-traitants', path: '/gestion-ressources/rh/sous-traitants' },
+          { title: 'Référent handicap', path: '/gestion-ressources/rh/referent-handicap' },
           { title: 'Absences', path: '/gestion-ressources/rh/absences' },
         ],
       },
@@ -124,6 +127,14 @@ export const MENU_SIDEBAR: MenuConfig = [
           {
             title: 'Formations',
             path: '/gestion-academique/vie-scolaire/formations',
+          },
+          {
+            title: 'Cours LMS',
+            path: '/gestion-academique/vie-scolaire/cours',
+          },
+          {
+            title: 'Inscriptions LMS',
+            path: '/gestion-academique/vie-scolaire/inscriptions-lms',
           },
           {
             title: 'Sessions',
@@ -175,6 +186,7 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Paiements', path: '/administration-facturation/finance/paiements' },
           { title: 'Financeurs', path: '/administration-facturation/finance/financeurs' },
           { title: 'BPF', path: '/administration-facturation/finance/bpf' },
+          { title: 'Export EDOF', path: '/administration-facturation/finance/edof-catalog' },
           { title: 'Rapports', path: '/administration-facturation/finance/rapports' },
         ],
       },

@@ -55,6 +55,8 @@ export {
   EvidenceSourceType,
   EvidenceStatus,
   SessionReadinessStatus,
+  SubcontractorQualificationStatus,
+  CrmCompanyKind,
 } from '../generated/client';
 export {
   LandingTeamVolet,

@@ -234,6 +234,95 @@ const TEMPLATES = [
     ],
   },
   QUALIOPI_SCHOOL_TEMPLATE,
+  {
+    kind: 'SUBCONTRACTOR_QUALIFICATION',
+    label: 'Qualification sous-traitant (WF-39)',
+    description:
+      'Pièces de qualification prestataire / sous-traitant. Le cycle PENDING_VALIDATION→SUSPENDED vit sur SubcontractorRecord, pas sur ce dossier.',
+    moduleKey: 'gestion-ressources',
+    items: [
+      {
+        code: 'KBIS',
+        label: 'Extrait Kbis',
+        fileCategory: 'KBIS',
+        uploadedBy: 'SUBJECT',
+        sortOrder: 10,
+      },
+      {
+        code: 'ASSURANCE_RC',
+        label: 'Assurance RC professionnelle',
+        fileCategory: 'ASSURANCE_RC',
+        uploadedBy: 'SUBJECT',
+        sortOrder: 20,
+      },
+      {
+        code: 'CONTRAT',
+        label: 'Contrat de sous-traitance',
+        fileCategory: 'CONTRAT',
+        uploadedBy: 'SCHOOL',
+        sortOrder: 30,
+      },
+      {
+        code: 'QUALIOPI_ATTEST',
+        label: 'Attestation conformité Qualiopi (si applicable)',
+        fileCategory: 'QUALIOPI_ATTEST',
+        uploadedBy: 'SUBJECT',
+        required: false,
+        sortOrder: 40,
+      },
+      {
+        code: 'COMPETENCES',
+        label: 'Preuves compétences / habilitations',
+        fileCategory: 'COMPETENCES',
+        uploadedBy: 'SUBJECT',
+        sortOrder: 50,
+},
+  ],
+  },
+  {
+    kind: 'DISABILITY_REFERENT',
+    label: 'Référent handicap — maintenance (WF-40)',
+    description:
+      'Checklist Qualiopi référent handicap : procédures, ressources, formations du référent, actions. Le contact référent vit dans SystemSetting (disabilityReferent*).',
+    moduleKey: 'gestion-ressources',
+    items: [
+      {
+        code: 'PROCEDURE_ACCUEIL',
+        label: 'Procédure d’accueil / orientation PSH à jour',
+        fileCategory: 'DISABILITY_PROCEDURE',
+        uploadedBy: 'ADMIN',
+        sortOrder: 10,
+      },
+      {
+        code: 'RESSOURCES_OUTILS',
+        label: 'Ressources / outils d’adaptation recensés',
+        fileCategory: 'DISABILITY_RESOURCES',
+        uploadedBy: 'ADMIN',
+        sortOrder: 20,
+      },
+      {
+        code: 'PARTENAIRES_RESEAU',
+        label: 'Réseau partenaires (Cap emploi, AGEFIPH…) identifié',
+        fileCategory: 'DISABILITY_PARTNERS',
+        uploadedBy: 'ADMIN',
+        sortOrder: 30,
+      },
+      {
+        code: 'FORMATION_REFERENT',
+        label: 'Formation / sensibilisation du référent handicap',
+        fileCategory: 'DISABILITY_TRAINING',
+        uploadedBy: 'ADMIN',
+        sortOrder: 40,
+      },
+      {
+        code: 'ACTION_LOG',
+        label: 'Actions d’accompagnement réalisées (preuve / compte-rendu)',
+        fileCategory: 'DISABILITY_ACTION',
+        uploadedBy: 'ADMIN',
+        sortOrder: 50,
+      },
+    ],
+  },
 ];
 
 async function upsertTemplate(prisma, tpl) {

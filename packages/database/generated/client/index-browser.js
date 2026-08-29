@@ -276,6 +276,21 @@ exports.Prisma.AiArtifactScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AgentConversationScalarFieldEnum = {
+  id: 'id',
+  targetEntityType: 'targetEntityType',
+  targetEntityId: 'targetEntityId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AgentMessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  role: 'role',
+  content: 'content',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ReportGenerationScheduleScalarFieldEnum = {
   id: 'id',
   templateKey: 'templateKey',
@@ -468,6 +483,9 @@ exports.Prisma.SystemSettingScalarFieldEnum = {
   websiteURL: 'websiteURL',
   supportEmail: 'supportEmail',
   supportPhone: 'supportPhone',
+  disabilityReferentName: 'disabilityReferentName',
+  disabilityReferentEmail: 'disabilityReferentEmail',
+  disabilityReferentPhone: 'disabilityReferentPhone',
   language: 'language',
   timezone: 'timezone',
   currency: 'currency',
@@ -758,6 +776,7 @@ exports.Prisma.FormationSessionScalarFieldEnum = {
   dateDisplayLabel: 'dateDisplayLabel',
   location: 'location',
   sessionKind: 'sessionKind',
+  readinessStatus: 'readinessStatus',
   venueBrandPrefix: 'venueBrandPrefix',
   sessionSubtitle: 'sessionSubtitle',
   sortOrder: 'sortOrder',
@@ -1730,6 +1749,29 @@ exports.Prisma.CompanyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SubcontractorRecordScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  label: 'label',
+  siret: 'siret',
+  status: 'status',
+  notes: 'notes',
+  complianceDossierId: 'complianceDossierId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SubcontractorStatusEventScalarFieldEnum = {
+  id: 'id',
+  subcontractorId: 'subcontractorId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  source: 'source',
+  actorUserId: 'actorUserId',
+  payload: 'payload',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ContactScalarFieldEnum = {
   id: 'id',
   companyId: 'companyId',
@@ -1756,6 +1798,44 @@ exports.Prisma.TrainingRequestScalarFieldEnum = {
   ownerUserId: 'ownerUserId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EvidenceScalarFieldEnum = {
+  id: 'id',
+  category: 'category',
+  sourceType: 'sourceType',
+  sourceId: 'sourceId',
+  status: 'status',
+  validUntil: 'validUntil',
+  immutableReference: 'immutableReference',
+  sessionId: 'sessionId',
+  formationId: 'formationId',
+  learnerUserId: 'learnerUserId',
+  trainerUserId: 'trainerUserId',
+  companyId: 'companyId',
+  eventName: 'eventName',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EvidenceIndicatorLinkScalarFieldEnum = {
+  id: 'id',
+  evidenceId: 'evidenceId',
+  indicatorCode: 'indicatorCode',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SessionReadinessEventScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  forced: 'forced',
+  source: 'source',
+  actorUserId: 'actorUserId',
+  payload: 'payload',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -1858,6 +1938,11 @@ exports.AiArtifactStatus = exports.$Enums.AiArtifactStatus = {
   APPROVED: 'APPROVED',
   APPLIED: 'APPLIED',
   REJECTED: 'REJECTED'
+};
+
+exports.AgentMessageRole = exports.$Enums.AgentMessageRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT'
 };
 
 exports.ReportScheduleFrequency = exports.$Enums.ReportScheduleFrequency = {
@@ -1991,6 +2076,17 @@ exports.FormationVitrineSessionKind = exports.$Enums.FormationVitrineSessionKind
   INITIAL: 'INITIAL',
   WITH_EXAM: 'WITH_EXAM',
   OTHER: 'OTHER'
+};
+
+exports.SessionReadinessStatus = exports.$Enums.SessionReadinessStatus = {
+  DRAFT: 'DRAFT',
+  PLANNED: 'PLANNED',
+  CONFIRMED: 'CONFIRMED',
+  READY: 'READY',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  CLOSED: 'CLOSED',
+  ARCHIVED: 'ARCHIVED'
 };
 
 exports.SessionAutomationStatus = exports.$Enums.SessionAutomationStatus = {
@@ -2237,7 +2333,9 @@ exports.ComplianceDossierKind = exports.$Enums.ComplianceDossierKind = {
   FORMATEUR_HABILITATION: 'FORMATEUR_HABILITATION',
   SCHOOL_QUALIOPI: 'SCHOOL_QUALIOPI',
   SCHOOL_CNAPS_AGREMENT: 'SCHOOL_CNAPS_AGREMENT',
-  SCHOOL_NDA: 'SCHOOL_NDA'
+  SCHOOL_NDA: 'SCHOOL_NDA',
+  SUBCONTRACTOR_QUALIFICATION: 'SUBCONTRACTOR_QUALIFICATION',
+  DISABILITY_REFERENT: 'DISABILITY_REFERENT'
 };
 
 exports.ComplianceUploader = exports.$Enums.ComplianceUploader = {
@@ -2256,7 +2354,8 @@ exports.ComplianceSubjectType = exports.$Enums.ComplianceSubjectType = {
   SCHOOL: 'SCHOOL',
   FORMATION: 'FORMATION',
   SESSION: 'SESSION',
-  E_FORMATION_ENROLLMENT: 'E_FORMATION_ENROLLMENT'
+  E_FORMATION_ENROLLMENT: 'E_FORMATION_ENROLLMENT',
+  SUBCONTRACTOR: 'SUBCONTRACTOR'
 };
 
 exports.ComplianceDossierStatus = exports.$Enums.ComplianceDossierStatus = {
@@ -2347,6 +2446,14 @@ exports.CrmCompanyKind = exports.$Enums.CrmCompanyKind = {
   OTHER: 'OTHER'
 };
 
+exports.SubcontractorQualificationStatus = exports.$Enums.SubcontractorQualificationStatus = {
+  PENDING_VALIDATION: 'PENDING_VALIDATION',
+  APPROVED: 'APPROVED',
+  ACTIVE: 'ACTIVE',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED',
+  SUSPENDED: 'SUSPENDED'
+};
+
 exports.TrainingRequestStatus = exports.$Enums.TrainingRequestStatus = {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
@@ -2354,6 +2461,30 @@ exports.TrainingRequestStatus = exports.$Enums.TrainingRequestStatus = {
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   CANCELLED: 'CANCELLED'
+};
+
+exports.EvidenceSourceType = exports.$Enums.EvidenceSourceType = {
+  DOCUMENT: 'DOCUMENT',
+  EVENT: 'EVENT',
+  SIGNATURE: 'SIGNATURE',
+  DATABASE_RECORD: 'DATABASE_RECORD',
+  EMAIL: 'EMAIL',
+  QUESTIONNAIRE: 'QUESTIONNAIRE',
+  EVALUATION: 'EVALUATION',
+  MESSAGE: 'MESSAGE',
+  LOG: 'LOG',
+  STATISTIQUE: 'STATISTIQUE',
+  HISTORIQUE: 'HISTORIQUE',
+  VALIDATION: 'VALIDATION',
+  RELATION: 'RELATION'
+};
+
+exports.EvidenceStatus = exports.$Enums.EvidenceStatus = {
+  PENDING: 'PENDING',
+  VALID: 'VALID',
+  EXPIRED: 'EXPIRED',
+  DISPUTED: 'DISPUTED',
+  SUPERSEDED: 'SUPERSEDED'
 };
 
 exports.Prisma.ModelName = {
@@ -2364,6 +2495,8 @@ exports.Prisma.ModelName = {
   ReportGenerationJob: 'ReportGenerationJob',
   AiRun: 'AiRun',
   AiArtifact: 'AiArtifact',
+  AgentConversation: 'AgentConversation',
+  AgentMessage: 'AgentMessage',
   ReportGenerationSchedule: 'ReportGenerationSchedule',
   UserBusinessRole: 'UserBusinessRole',
   CollaborateurProfile: 'CollaborateurProfile',
@@ -2470,8 +2603,13 @@ exports.Prisma.ModelName = {
   FundingCaseEvent: 'FundingCaseEvent',
   FundingDocument: 'FundingDocument',
   Company: 'Company',
+  SubcontractorRecord: 'SubcontractorRecord',
+  SubcontractorStatusEvent: 'SubcontractorStatusEvent',
   Contact: 'Contact',
-  TrainingRequest: 'TrainingRequest'
+  TrainingRequest: 'TrainingRequest',
+  Evidence: 'Evidence',
+  EvidenceIndicatorLink: 'EvidenceIndicatorLink',
+  SessionReadinessEvent: 'SessionReadinessEvent'
 };
 
 /**

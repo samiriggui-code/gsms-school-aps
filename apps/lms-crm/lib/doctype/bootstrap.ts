@@ -10,6 +10,7 @@ import { registerQualityDocTypes } from '@/domains/quality/register';
 import { registerFundingDocTypes } from '@/domains/funding/register';
 import { registerEvidenceDocTypes } from '@/domains/evidence/register';
 import { registerAuditDocTypes } from '@/domains/audit/register';
+import { registerOrganisationDocTypes } from '@/domains/organisation/register';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -63,6 +64,7 @@ export function bootstrapDocTypes(): DocTypeRegistry {
     registerFundingDocTypes(registry);
     registerEvidenceDocTypes(registry);
     registerAuditDocTypes(registry);
+    registerOrganisationDocTypes(registry);
     // LMS après domaines OF (LMS_DRIFT L1 / Phase 18) — pas avant Funding/Evidence.
     registerLmsDocTypes(registry);
     registry.assertValid();
