@@ -181,3 +181,13 @@ Périmètre G11 (agrégats Cerfa déterministes, comme prévu dans le plan initi
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après, build complet si la RAM le permet.
 
 ✅ traité — G11 BPF : `lib/finance/bpf-aggregates.ts` + API `…/finance/bpf/stats` + page réelle (KPIs stagiaires/heures/montants) ; pas de DocType ni PDF Cerfa.
+
+## 2026-08-29 — G11 relu en entier : bon travail, 1 faille latente à signaler (pas urgent)
+
+Les 3 fichiers relus (aggregates, route, page). Globalement du bon travail — méthodologie transparente affichée à l'écran, contrôles qualité visibles, calculs déterministes sourcés (sessions/émargements/FundingCase), pas de données inventées, année précédente par défaut (logique pour un BPF). Rien à corriger sur le happy-path.
+
+**Une faille latente trouvée (zéro impact aujourd'hui, vérifié : 0/11 sessions avec dates nulles en base)** : le contrôle `SESSION_NO_DATES` est du code mort. La requête Prisma initiale (`formationSession.findMany` avec le `where` sur `startDate`/`endDate`) exclut déjà, au niveau SQL, toute session dont les deux dates sont `null` — ces lignes ne matchent aucune des 3 conditions OR (qui comparent toutes des dates). Donc `sessionsInYear` ne contiendra jamais une session à dates nulles, et le `if (!session.startDate && !session.endDate) sessionsWithoutDates += 1` dans la boucle ne peut jamais s'exécuter. Le contrôle censé avertir "session sans dates exclue" ne se déclenchera donc jamais, même si une telle session existe un jour — silencieusement absente du rapport sans alerte, ce qui est gênant pour un contrôle qualité sur un rapport réglementaire.
+
+Pas bloquant maintenant (aucune donnée concernée). Si tu veux corriger un jour : compter les sessions à dates nulles via une requête séparée (indépendante du filtre année, puisqu'elles ne peuvent être rattachées à aucun exercice) plutôt que de les chercher dans `sessionsInYear` déjà filtré. Je ne le corrige pas moi-même — design à trancher (compter globalement ? par date de création ?), pas juste un fix mécanique.
+
+✅ traité — faille `SESSION_NO_DATES` : `count` global `startDate=null AND endDate=null` en parallèle du filtre année (design : hors exercice).

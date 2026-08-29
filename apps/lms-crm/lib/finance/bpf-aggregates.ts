@@ -84,37 +84,43 @@ export async function buildBpfAggregates(
 ): Promise<BpfAggregates> {
   const { start: yearStart, end: yearEnd } = yearBounds(year);
 
-  const sessions = await prisma.formationSession.findMany({
-    where: {
-      OR: [
-        { startDate: { gte: yearStart, lte: yearEnd } },
-        { endDate: { gte: yearStart, lte: yearEnd } },
-        {
-          AND: [{ startDate: { lte: yearStart } }, { endDate: { gte: yearEnd } }],
-        },
-      ],
-    },
-    select: {
-      id: true,
-      startDate: true,
-      endDate: true,
-      formation: { select: { hoursMin: true, hoursMax: true } },
-      participants: {
-        where: { enrollmentStatus: { not: 'CANCELLED' } },
-        select: {
-          id: true,
-          userId: true,
-          emargements: {
-            where: {
-              status: { in: ['PRESENT', 'LATE'] },
-              day: { dayDate: { gte: yearStart, lte: yearEnd } },
+  const [sessions, sessionsWithoutDates] = await Promise.all([
+    prisma.formationSession.findMany({
+      where: {
+        OR: [
+          { startDate: { gte: yearStart, lte: yearEnd } },
+          { endDate: { gte: yearStart, lte: yearEnd } },
+          {
+            AND: [{ startDate: { lte: yearStart } }, { endDate: { gte: yearEnd } }],
+          },
+        ],
+      },
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+        formation: { select: { hoursMin: true, hoursMax: true } },
+        participants: {
+          where: { enrollmentStatus: { not: 'CANCELLED' } },
+          select: {
+            id: true,
+            userId: true,
+            emargements: {
+              where: {
+                status: { in: ['PRESENT', 'LATE'] },
+                day: { dayDate: { gte: yearStart, lte: yearEnd } },
+              },
+              select: { id: true },
             },
-            select: { id: true },
           },
         },
       },
-    },
-  });
+    }),
+    // Contrôle qualité : hors filtre année (dates nulles ne matchent aucun exercice).
+    prisma.formationSession.count({
+      where: { startDate: null, endDate: null },
+    }),
+  ]);
 
   const sessionsInYear = sessions.filter((s) =>
     sessionOverlapsYear(s.startDate, s.endDate, yearStart, yearEnd),
@@ -123,10 +129,8 @@ export async function buildBpfAggregates(
   const stagiaireIds = new Set<string>();
   let hoursCatalog = 0;
   let attendedSlots = 0;
-  let sessionsWithoutDates = 0;
 
   for (const session of sessionsInYear) {
-    if (!session.startDate && !session.endDate) sessionsWithoutDates += 1;
     const hours =
       session.formation.hoursMin ??
       session.formation.hoursMax ??
@@ -201,7 +205,7 @@ export async function buildBpfAggregates(
     controls.push({
       code: 'SESSION_NO_DATES',
       severity: 'warn',
-      message: `${sessionsWithoutDates} session(s) sans dates (exclues du filtre année si absentes).`,
+      message: `${sessionsWithoutDates} session(s) sans startDate ni endDate — exclues de tout exercice BPF (comptage global, hors filtre année).`,
     });
   }
   if (hoursCatalog > 0 && hoursAttendedProxy === 0 && stagiaireIds.size > 0) {

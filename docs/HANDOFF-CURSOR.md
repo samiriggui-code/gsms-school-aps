@@ -4,6 +4,16 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — fix SESSION_NO_DATES (review Claude)
+
+Entrée « faille latente SESSION_NO_DATES » traitée.
+
+- Design : comptage **global** des sessions `startDate` et `endDate` null (requête séparée), car elles ne rentrent dans aucun exercice
+- Contrôle `SESSION_NO_DATES` n’est plus du code mort
+- Commit à suivre
+
+---
+
 ## 2026-08-29 — G11 BPF agrégats (correction « pas de pause »)
 
 Entrée Claude « G11 débloqué » traitée.
@@ -12,7 +22,7 @@ Entrée Claude « G11 débloqué » traitée.
 - API `GET …/finance/bpf/stats?year=`
 - Page BPF remplace le scaffold (sélecteur année)
 - Pas de DocType BPF (rapport dérivé) ; Evidence gelé ; pas de PDF Cerfa
-- Commit à suivre
+- Commit **`734b187`**
 
 ---
 
