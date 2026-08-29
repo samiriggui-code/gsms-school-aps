@@ -19,6 +19,7 @@ const ENTITIES = [
   { id: 'lesson', label: 'Leçons' },
   { id: 'enrollment', label: 'Inscriptions' },
   { id: 'leaveRequest', label: 'Absences RH' },
+  { id: 'complianceDossierItem', label: 'Qualiopi pièces' },
 ] as const;
 
 /**
@@ -38,8 +39,8 @@ export default function FrameworkLabPage() {
           <ToolbarHeading>
             <ToolbarTitle>Framework entités (lab)</ToolbarTitle>
             <ToolbarDescription>
-              Socle DocType-like GSMS — API `/api/entities/*`, fail-closed permissions.
-              Les écrans CRM existants restent en place ; ce lab valide le moteur.
+              Lab DocType V2 (G1-E) — `/api/entities/*` shim → ResourceService /
+              PermissionEngine. Écrans CRM métier restent séparés.
             </ToolbarDescription>
           </ToolbarHeading>
         </Toolbar>
@@ -97,6 +98,8 @@ export default function FrameworkLabPage() {
                     ? ['title', 'position', 'isPublished', 'course']
                     : entity === 'enrollment'
                       ? ['user', 'course', 'status', 'createdAt']
+                      : entity === 'complianceDossierItem'
+                        ? ['code', 'label', 'status']
                       : ['user', 'type', 'status', 'startDate', 'endDate']
           }
         />

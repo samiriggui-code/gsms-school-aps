@@ -178,16 +178,16 @@ Pas seulement « idempotent si égal » — le cas réel = définition qui chang
 
 ## Zone gelée pendant exécution Cursor
 
-Tant que la vague tourne, **ne pas modifier en parallèle** :
+**G1-E terminé (2026-08-29)** — freeze levée sur :
 
-- `apps/lms-crm/lib/framework/**`
-- `apps/lms-crm/lib/auth/entity-registry.ts`
-- `apps/lms-crm/lib/auth/protect-route.ts`
-- `apps/lms-crm/app/api/entities/**`
-- routes `sections/.../acces/users|roles` listEntity
-- `apps/lms-crm/lib/of/qualiopi-compliance-item-entity.ts`
+- ~~`apps/lms-crm/lib/framework/**`~~ (supprimé)
+- ~~`apps/lms-crm/lib/auth/entity-registry.ts`~~ (supprimé)
+- `apps/lms-crm/lib/auth/protect-route.ts` — désormais PermissionEngine only (modifiable)
+- `apps/lms-crm/app/api/entities/**` — shim ResourceService (modifiable)
+- routes `sections/.../acces/users|roles` — ResourceService (modifiable)
+- ~~`apps/lms-crm/lib/of/qualiopi-compliance-item-entity.ts`~~ (supprimé)
 
-Sinon collision réelle avec le cutover.
+**Nouveau gate :** pas de merge `FundingCase` dans `schema.prisma` sans `✅ gate Funding ouvert` Claude (draft : `docs/framework/FUNDING_CASE_PRISMA_DRAFT.md`).
 
 ---
 

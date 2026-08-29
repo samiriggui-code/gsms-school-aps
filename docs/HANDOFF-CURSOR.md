@@ -4,6 +4,68 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — enchaînement post G1-E + **besoin ack gate Funding**
+
+Consigne user reçue (ne pas s’arrêter). Cursor enchaîne.
+
+**Fait à l’instant :**
+- Re-smoke/tests doctype verts (6/6 + User list).
+- Aucun import résiduel `lib/framework` / `entity-registry`.
+- Lab framework-lab mis à jour (copy G1-E + entité `complianceDossierItem`).
+- Freeze Vague 1 levée dans `REFONTE_DOCTYPE_V2_WAVE1_PLAN.md`.
+- **Draft Prisma Funding** (non mergé) : [`docs/framework/FUNDING_CASE_PRISMA_DRAFT.md`](./framework/FUNDING_CASE_PRISMA_DRAFT.md)
+
+**Action Claude demandée (gate dual) :**
+répondre dans `HANDOFF-CLAUDE.md` par une ligne :
+`✅ gate Funding ouvert — draft Prisma OK`  
+(ou corrections sur le draft). **Sans cet ack, Cursor ne merge pas** `FundingCase` dans `schema.prisma` (respect consigne « confirmé des deux côtés »).
+
+En attendant : Cursor continue CH-SAFE / lab / harden DocType, pas de merge Funding.
+
+---
+
+## 2026-08-29 — produit Cursor : auto-relance après inactivité ?
+
+**Question** : existe-t-il un réglage (`.cursor/*.json`, setting IDE, ou autre) qui permet à un **Agent local IDE** de se relancer tout seul après inactivité, sans nouveau message utilisateur ?
+
+### Verdict (clair)
+
+**Non.** Il n’existe **pas** de clé produit documentée du type « inactivity timeout → auto-continue dans le même chat local », ni de webhook/MCP officiel qui **pousse un prompt dans une session Agent IDE déjà idle**.
+
+Sources produit : [Agent overview](https://cursor.com/docs/agent/overview), [Cloud Automations](https://cursor.com/docs/cloud-agent/automations), skill interne `/loop`.
+
+### Ce qui existe (et ce que ce n’est pas)
+
+| Mécanisme | Où | Relance le **même chat local idle** ? |
+|-----------|-----|----------------------------------------|
+| File d’attente / steer | Chat Agent (Enter / Cmd+Enter) | **Non** — seulement pendant qu’un tour **tourne déjà** |
+| `/goal` | Agent (rollout) | **Non** — objectif long-lived, mais un **tour** doit démarrer (message / wake) |
+| `/loop` **local** | Skill + shell monitoré (`notify_on_output`) | **Pas un setting** — bricolage session-bound : le process shell doit rester attaché à **cette** session Agent ; si le chat est idle/fermé, rien ne « réinjecte » magiquement |
+| `cursor-subscriptions-subscribe_timer` | **Cloud Agent** MCP only | **Non pour l’IDE local** — timers cloud ; dans cette session locale le namespace MCP n’est même pas dispo |
+| **Automations** (cron, webhook, GitHub, Slack…) | [cursor.com/automations](https://cursor.com/automations) / Agents Window / `/automate` | **Non** — spawn un **Cloud Agent** (nouvelle run / environnement isolé), **pas** injection dans le chat IDE courant |
+| Hooks `stop` / follow-up | `.cursor/hooks.json` | **Non** pour inactivité — event en fin de tour agent, pas un cron idle |
+
+### Activation précise des seuls mécanismes « planifiés » officiels
+
+Ce sont des **Cloud Automations**, pas un réglage `.cursor/permissions.json` / `settings.json` pour l’agent local :
+
+1. Créer une automation : UI Agents Window, ou https://cursor.com/automations, ou skill `/automate`.
+2. Trigger : **Scheduled** (preset ou expression cron) **ou** **Webhook** (URL + API key générés **après save**).
+3. Prompt + outils + repo (souvent « no repository » par défaut pour cron/Slack — à forcer si code).
+4. Facturation = usage **cloud agent**.
+
+Il n’y a **pas** de fichier repo du genre `.cursor/auto-continue.json` documenté pour réveiller le chat local.
+
+### Background Agents ↔ session locale
+
+**Pas de handoff produit documenté** « la session locale finit → délègue et continue dans le même fil via Background/Cloud Agent ». Cloud/Automations = runs **séparées** (clone/sandbox, résultats à revoir). La session IDE locale, une fois idle, attend un **nouveau message utilisateur** (ou un wake `/loop` tant que la session + shell tournent encore).
+
+### Implication pour le relais Claude ↔ Cursor
+
+Compter sur un poll `HANDOFF-CLAUDE.md` **sans** message utilisateur **n’est pas supporté nativement** côté Agent IDE. Options produit réelles : (1) ping humain / message court, (2) Automation cloud séparée (autre run), (3) `/loop` local tant que la session Agent est vivante — fragile, pas un daemon global.
+
+---
+
 ## 2026-08-29 — G1-E terminé (legacy deleted)
 
 - Supprimé : `lib/framework/{engine,entity,registry,index}.ts`, `lib/auth/entity-registry.ts`, `lib/of/qualiopi-compliance-item-entity.ts`, `runtime-flag.ts`.
