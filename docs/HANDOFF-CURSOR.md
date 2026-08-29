@@ -4,6 +4,28 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — WF Tranche 3 livrée (04 / 14)
+
+### WF-04 Accessibilité candidat
+- Enum `AdaptationStatus` sur `CandidatureAssessment` (PAS de modèle séparé) : `NO_ADAPTATION_REQUIRED` / `ADAPTATION_PENDING` / `ADAPTATION_APPROVED` / `ADAPTATION_IMPLEMENTED`.
+- Submit WF-02 `adaptationRequired=true` → status `ADAPTATION_PENDING` + Evidence `SPECIAL_NEED_DECLARED` (Q-I20/Q-I26) + e-mail référent handicap (`SystemSetting.disabilityReferentEmail`).
+- Submit `false` → `NO_ADAPTATION_REQUIRED`.
+- PATCH staff `…/assessments/[id]/adaptation` : PENDING→APPROVED→IMPLEMENTED + Evidence `ADAPTATION_STATUS_CHANGED` (IMPLEMENTED → Q-I20/Q-I26).
+
+### WF-14 J-5 (valeur distincte de WF-03)
+- **Pas de 3e questionnaire** : WF-03 reste le seul positionnement.
+- Cron `…/cron/j5-prep-reminders` + n8n `GSMS — J-5 préparation` + event `crm.session.j5.prep.reminder`.
+- Participants CONFIRMED dont session démarre dans 5 j, idempotent via `j5PrepReminderSentAt`.
+- Actions : mail stagiaire (horaires/matériel) + relance invite POSITIONING si incomplet + re-notif référent si `ADAPTATION_PENDING` + Evidence `PREFORM_J5_REMINDER`.
+
+### Vérifs
+`test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0 · migrate diff **0**
+
+### Hors scope
+WF-19, rebranchement UI fiche candidature (flags exposés GET CRM seulement).
+
+---
+
 ## 2026-08-30 — WF-02/03 CandidatureAssessment livré
 
 ### Modèle

@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server';
-import type { CandidatureAssessmentKind, PrismaClient } from '@repo/database';
+import type { AdaptationStatus, CandidatureAssessmentKind, PrismaClient } from '@repo/database';
 import { isEmailConfigured, sendEmail, getSupportEmail } from '@repo/mail';
 import { signCandidatureAssessmentPublicToken } from '@/lib/of/candidature-assessment-public-token';
 import { absolutePublicCandidatureAssessmentUrl } from '@/lib/of/candidature-assessment-public-url';
@@ -7,6 +7,7 @@ import {
   parseAdaptationRequired,
   questionsForAssessmentKind,
 } from '@/lib/of/candidature-assessment-template';
+import { notifyDisabilityReferentOfAdaptation } from '@/lib/of/candidature-adaptation';
 import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 
 const LINK_TTL_MS = 90 * 24 * 60 * 60 * 1000;
@@ -105,7 +106,9 @@ export async function bootstrapNeedsAnalysisForCandidature(
 export type SubmitAssessmentResult = {
   alreadyCompleted: boolean;
   adaptationRequired: boolean | null;
+  adaptationStatus: AdaptationStatus | null;
   positioningStarted?: boolean;
+  adaptationNotified?: boolean;
 };
 
 export async function submitAssessmentAnswers(
@@ -126,7 +129,7 @@ export async function submitAssessmentAnswers(
   });
   if (!row) throw new Error('Assessment introuvable.');
   if (row.status === 'COMPLETED') {
-    return { alreadyCompleted: true, adaptationRequired: null };
+    return { alreadyCompleted: true, adaptationRequired: null, adaptationStatus: null };
   }
 
   const questions = questionsForAssessmentKind(row.kind);
@@ -139,6 +142,12 @@ export async function submitAssessmentAnswers(
 
   const adaptationRequired =
     row.kind === 'NEEDS_ANALYSIS' ? parseAdaptationRequired(answers) : null;
+  let adaptationStatus: AdaptationStatus | null = null;
+  if (row.kind === 'NEEDS_ANALYSIS' && adaptationRequired === true) {
+    adaptationStatus = 'ADAPTATION_PENDING';
+  } else if (row.kind === 'NEEDS_ANALYSIS' && adaptationRequired === false) {
+    adaptationStatus = 'NO_ADAPTATION_REQUIRED';
+  }
   const level = row.kind === 'POSITIONING' ? answers['PO-LEVEL']?.trim() || null : null;
   const prerequisitesStatus =
     row.kind === 'POSITIONING' ? answers['PO-PREREQ']?.trim() || null : null;
@@ -154,6 +163,7 @@ export async function submitAssessmentAnswers(
         status: 'COMPLETED',
         completedAt: new Date(),
         adaptationRequired: adaptationRequired ?? undefined,
+        adaptationStatus: adaptationStatus ?? undefined,
         level,
         prerequisitesStatus,
       },
@@ -170,11 +180,31 @@ export async function submitAssessmentAnswers(
         kind: row.kind,
         candidatureId: row.candidatureId,
         adaptationRequired,
+        adaptationStatus,
         level,
         prerequisitesStatus,
       },
     });
+    if (adaptationRequired === true) {
+      await recordStatusEvidence(tx, {
+        category: 'candidature_assessment',
+        sourceType: 'LOG',
+        sourceId: assessmentId,
+        eventName: 'SPECIAL_NEED_DECLARED',
+        fromStatus: null,
+        toStatus: 'ADAPTATION_PENDING',
+        learnerUserId: row.candidature.userId,
+        indicatorCodes: ['Q-I20', 'Q-I26'],
+        metadata: { candidatureId: row.candidatureId },
+      });
+    }
   });
+
+  let adaptationNotified = false;
+  if (adaptationRequired === true) {
+    const notify = await notifyDisabilityReferentOfAdaptation(prisma, assessmentId);
+    adaptationNotified = notify.notified;
+  }
 
   let positioningStarted = false;
   if (row.kind === 'NEEDS_ANALYSIS') {
@@ -183,5 +213,11 @@ export async function submitAssessmentAnswers(
     positioningStarted = true;
   }
 
-  return { alreadyCompleted: false, adaptationRequired, positioningStarted };
+  return {
+    alreadyCompleted: false,
+    adaptationRequired,
+    adaptationStatus,
+    positioningStarted,
+    adaptationNotified,
+  };
 }

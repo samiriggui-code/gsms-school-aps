@@ -77,10 +77,14 @@ export {
   sendSignatureMissingEmail,
   sendAbsenceJustificationRequestEmail,
   sendConventionReminderEmail,
+  sendAdaptationRequiredStaffEmail,
+  sendJ5PrepReminderEmail,
   slotLabelFr,
   type SignatureMissingMailInput,
   type AbsenceJustificationMailInput,
   type ConventionReminderMailInput,
+  type AdaptationRequiredStaffMailInput,
+  type J5PrepReminderMailInput,
 } from './session-alert-flows';
 
 export {

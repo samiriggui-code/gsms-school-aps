@@ -1044,6 +1044,32 @@ return (data.items ?? []).filter((i) => i.daysOverdue >= 15).map((i) => ({ json:
     }),
   );
 
+  // ── Cron J-5 préparation pédagogique (WF-14) ──────────────────────────────
+  workflows.push(
+    wf('GSMS — J-5 préparation', [
+      scheduleTrigger('j5-prep-cron', 'Cron 09h45', pos(0, 0), '45 9 * * *'),
+      httpGetNode(
+        'j5-prep-fetch',
+        'Rappels J-5',
+        pos(240, 0),
+        ctx,
+        `${base}/api/internal/n8n/cron/j5-prep-reminders`,
+      ),
+      dispatchNode(
+        'j5-prep-dispatch',
+        'Digest J-5 préparation',
+        pos(480, 0),
+        ctx,
+        '"crm.session.j5.prep.reminder"',
+        '{ sessionsConsidered: ($json.data ?? $json).sessionsConsidered ?? 0, remindersSent: ($json.data ?? $json).remindersSent ?? 0, positioningRelanced: ($json.data ?? $json).positioningRelanced ?? 0, adaptationReminded: ($json.data ?? $json).adaptationReminded ?? 0, skipped: ($json.data ?? $json).skipped ?? 0, summary: "J-5 préparation — " + (($json.data ?? $json).remindersSent ?? 0) + " rappel(s) / " + (($json.data ?? $json).sessionsConsidered ?? 0) + " session(s)" }',
+        ['notification', 'email'],
+      ),
+    ], {
+      'Cron 09h45': { main: [[{ node: 'Rappels J-5', type: 'main', index: 0 }]] },
+      'Rappels J-5': { main: [[{ node: 'Digest J-5 préparation', type: 'main', index: 0 }]] },
+    }),
+  );
+
   // ── Parcours candidat (statut, conversion lead, clôture) ─────────────────
   workflows.push(
     wf('GSMS — Parcours candidat', [

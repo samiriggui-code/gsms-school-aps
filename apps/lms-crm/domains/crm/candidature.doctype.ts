@@ -100,6 +100,9 @@ export const candidatureAssessmentDocType: DocTypeDefinition = {
     { fieldname: 'level', label: 'Niveau', fieldtype: 'Data' },
     { fieldname: 'prerequisitesStatus', label: 'Prérequis', fieldtype: 'Data' },
     { fieldname: 'adaptationRequired', label: 'Adaptation requise', fieldtype: 'Boolean' },
+    { fieldname: 'adaptationStatus', label: 'Statut adaptation', fieldtype: 'Select' },
+    { fieldname: 'adaptationNotifiedAt', label: 'Référent notifié', fieldtype: 'Datetime' },
+    { fieldname: 'adaptationNotes', label: 'Notes adaptation', fieldtype: 'Text' },
   ],
   permissions: [
     {

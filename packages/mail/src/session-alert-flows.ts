@@ -79,3 +79,58 @@ export async function sendConventionReminderEmail(input: ConventionReminderMailI
     text: `Relance convention J+${input.reminderDay} — ${input.formationName}`,
   });
 }
+
+export type AdaptationRequiredStaffMailInput = {
+  to: string;
+  referentName: string;
+  learnerName: string;
+  learnerEmail: string | null;
+  formationName: string;
+  detail: string | null;
+  candidatureId: string;
+};
+
+/** WF-04 — alerte référent handicap organisme (besoin déclaré par le candidat). */
+export async function sendAdaptationRequiredStaffEmail(
+  input: AdaptationRequiredStaffMailInput,
+): Promise<void> {
+  if (!isEmailConfigured()) return;
+  const subject = `[FORM'SSI] Besoin d’adaptation — ${input.learnerName}`;
+  const detail = input.detail
+    ? `<p><strong>Précisions candidat :</strong> ${input.detail}</p>`
+    : '<p>Aucune précision complémentaire fournie.</p>';
+  await sendEmail({
+    to: input.to,
+    subject,
+    html: `<p>Bonjour ${input.referentName},</p><p>${input.learnerName}${input.learnerEmail ? ` (${input.learnerEmail})` : ''} a déclaré un besoin d’aménagement pour « ${input.formationName} ».</p>${detail}<p>Candidature : ${input.candidatureId}</p><p>Merci d’évaluer l’adaptation (WF-04) dans le CRM.</p><p>Contact : ${getSupportEmail()}</p>`,
+    text: `Besoin d’adaptation — ${input.learnerName} — ${input.formationName} — candidature ${input.candidatureId}`,
+  });
+}
+
+export type J5PrepReminderMailInput = {
+  to: string;
+  learnerName: string;
+  formationName: string;
+  sessionLabel: string;
+  startDateLabel: string;
+  positioningUrl?: string | null;
+  adaptationPending?: boolean;
+};
+
+/** WF-14 — rappel J-5 préparation (horaires, matériel, positionnement si manquant). */
+export async function sendJ5PrepReminderEmail(input: J5PrepReminderMailInput): Promise<void> {
+  if (!isEmailConfigured()) return;
+  const subject = `[FORM'SSI] J-5 préparation — ${input.formationName}`;
+  const positioning = input.positioningUrl
+    ? `<p>Votre positionnement n’est pas encore complété : <a href="${input.positioningUrl}">ouvrir le questionnaire</a>.</p>`
+    : '';
+  const adaptation = input.adaptationPending
+    ? `<p>Un besoin d’aménagement est en cours d’instruction — le référent handicap vous recontactera si besoin.</p>`
+    : '';
+  await sendEmail({
+    to: input.to,
+    subject,
+    html: `<p>Bonjour ${input.learnerName},</p><p>Votre entrée en formation « ${input.formationName} » est prévue le <strong>${input.startDateLabel}</strong> (${input.sessionLabel}).</p><p>Merci de vérifier : horaires, plan d’accès, matériel demandé, et tout besoin spécifique déjà signalé.</p>${positioning}${adaptation}<p>Contact : ${getSupportEmail()}</p>`,
+    text: `J-5 préparation — ${input.formationName} — début ${input.startDateLabel}`,
+  });
+}

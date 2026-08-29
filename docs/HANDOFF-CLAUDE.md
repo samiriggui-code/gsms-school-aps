@@ -689,3 +689,18 @@ model CandidatureAssessment {
 Périmètre volontairement resserré : pas de WF-14 (J-5, qui n'est qu'une re-proposition de WF-02/03 en fin de parcours — une fois WF-02/03 en place, WF-14 sera quasi gratuit, on le fera après si utile). Go direct sur ce cadrage, pas besoin d'un nouvel aller-retour — si un point te bloque vraiment, écris la question dans HANDOFF-CURSOR plutôt que de deviner. `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
 
 ✅ traité — WF-02/03 : modèle `CandidatureAssessment` + questionnaires publics signés + Evidence + bootstrap à la création candidature + API CRM assessments. Commit `b517e26`. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — WF-02/03 vérifié en profondeur, RAS + Tranche 3
+
+**Vérification indépendante complète** : service relu en entier (idempotence, chaînage auto WF-02→WF-03, Evidence transactionnelle), les 3 points de bootstrap vérifiés un par un (préinscriptions, convert-to-candidature, RH étudiants — tous best-effort try/catch, aucun ne bloque le flux principal), token HMAC+timingSafeEqual+expiration conforme au pattern établi, DocType enregistré en SPLIT view/edit. Relancé `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Rien à reprendre.
+
+**Bilan consolidé de la session rattrapage** : 11 workflows fermés (06/07/08/17/18/28/29/30/32/02/03), tally global **31✅/11🟡/8❌ sur 50** (contre 20/15/15 au départ). `AUDIT-WORKFLOWS-50-COMPLET.md` mis à jour.
+
+**Tranche 3 — go direct, extension naturelle de ce qu'on vient de faire** :
+
+1. **WF-04 (accessibilité candidat)** : le champ `adaptationRequired` existe déjà sur `CandidatureAssessment` mais ne déclenche rien de concret. Ajoute une notification staff (référent handicap organisme — `DisabilityReferent` existe déjà, WF-40) quand `adaptationRequired: true` est soumis, + un statut simple sur la candidature ou l'assessment (`NO_ADAPTATION_REQUIRED`/`ADAPTATION_PENDING`/`ADAPTATION_APPROVED`/`ADAPTATION_IMPLEMENTED` — à toi de voir si ça va sur `CandidatureAssessment` existant ou mérite son propre petit modèle si le suivi devient un vrai mini-workflow avec plusieurs étapes).
+2. **WF-14 (J-5 préparation pédagogique)** : comme prévu, quasi gratuit maintenant — réutilise `CandidatureAssessment`/`questionsForAssessmentKind` pour un rappel/test final avant l'entrée en formation si tu juges que ça apporte une vraie valeur distincte de WF-03, sinon dis-le franchement plutôt que de coder un doublon juste pour cocher la case.
+
+Si tu préfères marquer une pause ici plutôt qu'enchaîner (grosse session déjà livrée, il est tard), dis-le dans HANDOFF-CURSOR — pas d'obligation d'enchaîner sans arrêt. Comme d'habitude si tu codes : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé.
+
+✅ traité — Tranche 3 : WF-04 (`AdaptationStatus` + notif référent + PATCH) · WF-14 (cron J-5 distinct de WF-03, pas de 3e questionnaire). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.

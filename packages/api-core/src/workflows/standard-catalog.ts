@@ -27,6 +27,7 @@ export type StandardWebhookEventType =
   | 'crm.satisfaction.cold.followup'
   | 'crm.satisfaction.hot.followup'
   | 'crm.session.convention.reminder'
+  | 'crm.session.j5.prep.reminder'
   | 'crm.candidature.dossier.relance'
   | 'crm.qualiopi.checklist.due'
   | 'crm.automation.ops.weekly'
@@ -214,6 +215,12 @@ export const STANDARD_WEBHOOK_EVENT_META: Record<StandardWebhookEventType, Stand
     domain: 'vie-scolaire',
     action: 'convention_reminder',
     label: 'Relance convention non signée',
+  },
+  'crm.session.j5.prep.reminder': {
+    app: 'crm',
+    domain: 'vie-scolaire',
+    action: 'j5_prep_reminder',
+    label: 'J-5 préparation pédagogique',
   },
   'crm.candidature.dossier.relance': {
     app: 'crm',
@@ -772,6 +779,21 @@ export const STANDARD_WEBHOOK_CRM: Record<StandardWebhookEventType, WorkflowEven
       return typeof p.summary === 'string'
         ? p.summary
         : `J+2 : ${j2} · J+5 : ${j5}`;
+    },
+    buildHref: () => '/gestion-academique/vie-scolaire/sessions',
+  },
+  'crm.session.j5.prep.reminder': {
+    crmEventType: 'crm.session.j5.prep.reminder',
+    moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    buildTitle: () => 'J-5 préparation pédagogique',
+    buildBody: (p) => {
+      const sent = typeof p.remindersSent === 'number' ? p.remindersSent : 0;
+      const sessions = typeof p.sessionsConsidered === 'number' ? p.sessionsConsidered : 0;
+      return typeof p.summary === 'string'
+        ? p.summary
+        : `${sent} rappel(s) — ${sessions} session(s)`;
     },
     buildHref: () => '/gestion-academique/vie-scolaire/sessions',
   },

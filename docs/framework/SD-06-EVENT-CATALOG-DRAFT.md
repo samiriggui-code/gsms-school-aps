@@ -51,6 +51,9 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | `LEARNER_ABSENT` | session | manual / evening cron | `type: RELATION` (absence + justification) | cycle `UNJUSTIFIED→JUSTIFICATION_REQUESTED→JUSTIFIED→RESOLVED` — Tranche 2 |
 | `NEEDS_ANALYSIS_COMPLETED` | candidature | manual (soumission questionnaire WF-02) | `type: QUESTIONNAIRE` | déclenche WF-03 positionnement |
 | `POSITIONING_COMPLETED` | candidature | manual (soumission questionnaire WF-03) | `type: QUESTIONNAIRE` | prérequis / niveau / suite parcours |
+| `SPECIAL_NEED_DECLARED` | candidature | system (WF-02 `adaptationRequired=true`) | `type: LOG` | notif référent handicap + cycle WF-04 |
+| `ADAPTATION_STATUS_CHANGED` | candidature | manual staff (PENDING→APPROVED→IMPLEMENTED) | `type: LOG` | suivi aménagement Q-I20/Q-I26 |
+| `PREFORMATION_J5_REMINDER` | session | cron J-5 (WF-14) | `type: LOG` | rappel horaires/matériel + relance positionnement si incomplet |
 | `DOCUMENT_SENT` | session | system | `type: EMAIL` ou `type: DOCUMENT` selon le canal | déjà implémenté ce soir (OF-02 : convocation/convention/attestation) |
 | `SATISFACTION_REQUESTED` | session | scheduled (J+45 pour COLD) | `type: QUESTIONNAIRE` | déjà implémenté ce soir (OF-10) |
 | `SATISFACTION_COMPLETED` | session | manual (soumission apprenant / stakeholder) | `type: QUESTIONNAIRE` | Qualiopi re-eval |

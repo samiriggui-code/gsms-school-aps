@@ -30,6 +30,9 @@ export async function GET(_request: NextRequest, context: Ctx) {
       sentAt: true,
       completedAt: true,
       adaptationRequired: true,
+      adaptationStatus: true,
+      adaptationNotifiedAt: true,
+      adaptationNotes: true,
       level: true,
       prerequisitesStatus: true,
     },
@@ -40,8 +43,10 @@ export async function GET(_request: NextRequest, context: Ctx) {
       ...i,
       sentAt: i.sentAt?.toISOString() ?? null,
       completedAt: i.completedAt?.toISOString() ?? null,
+      adaptationNotifiedAt: i.adaptationNotifiedAt?.toISOString() ?? null,
     })),
     adaptationRequired: items.some((i) => i.adaptationRequired === true),
+    adaptationPending: items.some((i) => i.adaptationStatus === 'ADAPTATION_PENDING'),
   });
 }
 
