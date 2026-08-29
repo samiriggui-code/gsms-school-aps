@@ -1716,6 +1716,48 @@ exports.Prisma.FundingDocumentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CompanyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  siret: 'siret',
+  kind: 'kind',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  isActive: 'isActive',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ContactScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  jobTitle: 'jobTitle',
+  leadId: 'leadId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TrainingRequestScalarFieldEnum = {
+  id: 'id',
+  reference: 'reference',
+  companyId: 'companyId',
+  contactId: 'contactId',
+  formationId: 'formationId',
+  status: 'status',
+  headcount: 'headcount',
+  notes: 'notes',
+  ownerUserId: 'ownerUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2298,6 +2340,22 @@ exports.FundingCaseStatus = exports.$Enums.FundingCaseStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.CrmCompanyKind = exports.$Enums.CrmCompanyKind = {
+  EMPLOYER: 'EMPLOYER',
+  OPCO_CLIENT: 'OPCO_CLIENT',
+  PARTNER: 'PARTNER',
+  OTHER: 'OTHER'
+};
+
+exports.TrainingRequestStatus = exports.$Enums.TrainingRequestStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  QUALIFIED: 'QUALIFIED',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   LandingConfig: 'LandingConfig',
   User: 'User',
@@ -2410,7 +2468,10 @@ exports.Prisma.ModelName = {
   FundingProvider: 'FundingProvider',
   FundingCase: 'FundingCase',
   FundingCaseEvent: 'FundingCaseEvent',
-  FundingDocument: 'FundingDocument'
+  FundingDocument: 'FundingDocument',
+  Company: 'Company',
+  Contact: 'Contact',
+  TrainingRequest: 'TrainingRequest'
 };
 
 /**

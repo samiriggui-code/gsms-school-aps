@@ -1142,11 +1142,12 @@ model Formation {
   /// Ligne catalogue finance (prestations / tarifs devis), synchronisée depuis l’offre catalogue.
   financeCatalogLine FinanceCatalogLine?
 
-  candidatures Candidature[]
-  attestations FormationAttestation[]
+  candidatures     Candidature[]
+  attestations     FormationAttestation[]
   /// Demandes de devis landing (Lead.source = Landing demande de devis).
-  quoteLeads   Lead[]                 @relation("LeadQuoteFormation")
-  financeDevis FinanceDevis[]
+  quoteLeads       Lead[]                 @relation("LeadQuoteFormation")
+  financeDevis     FinanceDevis[]
+  trainingRequests TrainingRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1990,6 +1991,7 @@ model Lead {
   candidature    Candidature?
   financeDevis   FinanceDevis[]
   supportTickets SupportTicket[]
+  contact        Contact?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -3215,4 +3217,83 @@ model FundingDocument {
 
   @@unique([caseId, code])
   @@index([caseId])
+}
+
+// --- CRM OF G3 � Company / Contact / TrainingRequest (Claude gate 2026-08-29) ---
+
+enum CrmCompanyKind {
+  EMPLOYER
+  OPCO_CLIENT
+  PARTNER
+  OTHER
+}
+
+enum TrainingRequestStatus {
+  DRAFT
+  SUBMITTED
+  QUALIFIED
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+model Company {
+  id               String            @id @default(uuid())
+  name             String
+  siret            String?
+  kind             CrmCompanyKind    @default(EMPLOYER)
+  email            String?
+  phone            String?
+  address          String?           @db.Text
+  isActive         Boolean           @default(true)
+  notes            String?           @db.Text
+  contacts         Contact[]
+  trainingRequests TrainingRequest[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([name])
+  @@index([siret])
+}
+
+model Contact {
+  id               String            @id @default(uuid())
+  companyId        String?
+  company          Company?          @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  firstName        String
+  lastName         String
+  email            String?
+  phone            String?
+  jobTitle         String?
+  leadId           String?           @unique
+  lead             Lead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  notes            String?           @db.Text
+  trainingRequests TrainingRequest[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([email])
+  @@index([companyId])
+}
+
+/// Demande de formation B2B / employeur � distincte du Lead individuel landing.
+model TrainingRequest {
+  id          String                @id @default(uuid())
+  reference   String?               @unique
+  companyId   String?
+  company     Company?              @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  contactId   String?
+  contact     Contact?              @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  formationId String?
+  formation   Formation?            @relation(fields: [formationId], references: [id], onDelete: SetNull)
+  status      TrainingRequestStatus @default(DRAFT)
+  headcount   Int?
+  notes       String?               @db.Text
+  ownerUserId String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([status])
+  @@index([companyId])
+  @@index([formationId])
 }
