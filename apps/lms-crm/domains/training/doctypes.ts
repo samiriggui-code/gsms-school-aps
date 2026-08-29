@@ -1,0 +1,250 @@
+import type { DocTypeDefinition } from '@repo/doctype';
+import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
+
+/** G4 Training — catalogue formation (Prisma `Formation`). */
+export const formationDocType: DocTypeDefinition = {
+  name: 'Formation',
+  module: 'training',
+  label: 'Formation',
+  table: 'Formation',
+  schemaVersion: 1,
+  aliases: ['formation', 'program'],
+  fields: [
+    { fieldname: 'slug', label: 'Slug', fieldtype: 'Data', required: true, unique: true, searchable: true },
+    { fieldname: 'name', label: 'Nom', fieldtype: 'Data', required: true, searchable: true },
+    { fieldname: 'description', label: 'Description', fieldtype: 'Text' },
+    { fieldname: 'track', label: 'Filière', fieldtype: 'Select', required: true },
+    { fieldname: 'tag', label: 'Tag', fieldtype: 'Data' },
+    { fieldname: 'duration', label: 'Durée', fieldtype: 'Text', required: true },
+    { fieldname: 'status', label: 'Statut', fieldtype: 'Select', required: true },
+    { fieldname: 'featured', label: 'À la une', fieldtype: 'Boolean' },
+    { fieldname: 'cpfEligible', label: 'Éligible CPF', fieldtype: 'Boolean' },
+    { fieldname: 'qualiopiCertified', label: 'Qualiopi', fieldtype: 'Boolean' },
+    {
+      fieldname: 'courseId',
+      label: 'Cours LMS',
+      fieldtype: 'Link',
+      options: 'LmsCourse',
+      linkDisplayField: 'title',
+    },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  list: {
+    searchFields: ['slug', 'name', 'tag'],
+    defaultSort: { fieldname: 'name', direction: 'asc' },
+    pageSize: 25,
+  },
+  persistence: {
+    table: 'Formation',
+    delegate: 'formation',
+    nameField: 'id',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+  },
+};
+
+/** G4 — salle / plateau. */
+export const formationVenueRoomDocType: DocTypeDefinition = {
+  name: 'FormationVenueRoom',
+  module: 'training',
+  label: 'Salle',
+  table: 'FormationVenueRoom',
+  schemaVersion: 1,
+  aliases: ['formationVenueRoom', 'room'],
+  fields: [
+    { fieldname: 'name', label: 'Nom', fieldtype: 'Data', required: true, searchable: true },
+    { fieldname: 'shortCode', label: 'Code', fieldtype: 'Data', unique: true, searchable: true },
+    { fieldname: 'capacity', label: 'Capacité', fieldtype: 'Integer' },
+    { fieldname: 'floorLabel', label: 'Étage', fieldtype: 'Data' },
+    { fieldname: 'isActive', label: 'Active', fieldtype: 'Boolean' },
+    { fieldname: 'sortOrder', label: 'Ordre', fieldtype: 'Integer' },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  list: {
+    searchFields: ['name', 'shortCode'],
+    defaultSort: { fieldname: 'sortOrder', direction: 'asc' },
+    pageSize: 25,
+  },
+  persistence: {
+    table: 'FormationVenueRoom',
+    delegate: 'formationVenueRoom',
+    nameField: 'id',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+  },
+};
+
+/** G4 — session catalogue OF. */
+export const formationSessionDocType: DocTypeDefinition = {
+  name: 'FormationSession',
+  module: 'training',
+  label: 'Session',
+  table: 'FormationSession',
+  schemaVersion: 1,
+  aliases: ['formationSession', 'session'],
+  fields: [
+    {
+      fieldname: 'formationId',
+      label: 'Formation',
+      fieldtype: 'Link',
+      options: 'Formation',
+      required: true,
+      linkDisplayField: 'name',
+    },
+    { fieldname: 'startDate', label: 'Début', fieldtype: 'Datetime' },
+    { fieldname: 'endDate', label: 'Fin', fieldtype: 'Datetime' },
+    { fieldname: 'dateDisplayLabel', label: 'Libellé dates', fieldtype: 'Text', required: true },
+    { fieldname: 'location', label: 'Lieu', fieldtype: 'Data', required: true, searchable: true },
+    { fieldname: 'sessionKind', label: 'Type', fieldtype: 'Select', required: true },
+    { fieldname: 'traineesMin', label: 'Effectif min', fieldtype: 'Integer' },
+    { fieldname: 'traineesMax', label: 'Effectif max', fieldtype: 'Integer' },
+    {
+      fieldname: 'trainerUserId',
+      label: 'Formateur',
+      fieldtype: 'Link',
+      options: 'User',
+      linkDisplayField: 'name',
+    },
+    {
+      fieldname: 'venueRoomId',
+      label: 'Salle',
+      fieldtype: 'Link',
+      options: 'FormationVenueRoom',
+      linkDisplayField: 'name',
+    },
+    { fieldname: 'bookingEnabled', label: 'Réservation ouverte', fieldtype: 'Boolean' },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  list: {
+    searchFields: ['dateDisplayLabel', 'location'],
+    defaultSort: { fieldname: 'startDate', direction: 'desc' },
+    pageSize: 25,
+  },
+  persistence: {
+    table: 'FormationSession',
+    delegate: 'formationSession',
+    nameField: 'id',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+  },
+};
+
+/** G4 — inscription session (OF), distincte de `LmsEnrollment`. */
+export const formationSessionParticipantDocType: DocTypeDefinition = {
+  name: 'FormationSessionParticipant',
+  module: 'training',
+  label: 'Participant session',
+  table: 'FormationSessionParticipant',
+  schemaVersion: 1,
+  aliases: ['formationSessionParticipant', 'sessionEnrollment'],
+  fields: [
+    {
+      fieldname: 'sessionId',
+      label: 'Session',
+      fieldtype: 'Link',
+      options: 'FormationSession',
+      required: true,
+      linkDisplayField: 'dateDisplayLabel',
+    },
+    {
+      fieldname: 'userId',
+      label: 'Apprenant',
+      fieldtype: 'Link',
+      options: 'User',
+      required: true,
+      linkDisplayField: 'name',
+    },
+    {
+      fieldname: 'candidatureId',
+      label: 'Candidature',
+      fieldtype: 'Link',
+      options: 'Candidature',
+      linkDisplayField: 'id',
+    },
+    { fieldname: 'enrollmentStatus', label: 'Inscription', fieldtype: 'Select', required: true },
+    { fieldname: 'examOutcome', label: 'Examen', fieldtype: 'Select', required: true },
+    { fieldname: 'fundingMode', label: 'Mode financement', fieldtype: 'Data' },
+    { fieldname: 'fundingReference', label: 'Réf. financement', fieldtype: 'Data' },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.academiqueEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  list: {
+    searchFields: ['fundingReference'],
+    defaultSort: { fieldname: 'createdAt', direction: 'desc' },
+    pageSize: 25,
+  },
+  persistence: {
+    table: 'FormationSessionParticipant',
+    delegate: 'formationSessionParticipant',
+    nameField: 'id',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+  },
+};
