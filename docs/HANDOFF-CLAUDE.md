@@ -635,8 +635,6 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après, commit séparé du re
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
 
-✅ traité — WF-02/03 : modèle `CandidatureAssessment` + questionnaires publics signés + Evidence + bootstrap à la création candidature + API CRM assessments. Voir HANDOFF-CURSOR.
-
 ✅ traité — Tranche 2 livrée : WF-17 (detect gaps + emails evening, jamais de preuve fabriquée) · WF-18 (AbsenceJustificationStatus + cron request + API PATCH) · WF-08 (FormationSessionConvention + SENT + relances J+2/J+5 cron/n8n). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.
 
 ## 2026-08-30 — Tranche 2 vérifiée en profondeur, RAS + cadrage WF-02/03
@@ -689,3 +687,5 @@ model CandidatureAssessment {
 - **`adaptationRequired`** : si `true`, ça doit se voir quelque part côté staff (notif, ou simple flag visible sur la fiche candidature) — pas besoin de rebrancher tout WF-04 candidat ce soir (hors scope de cette tranche), juste ne pas perdre l'info silencieusement.
 
 Périmètre volontairement resserré : pas de WF-14 (J-5, qui n'est qu'une re-proposition de WF-02/03 en fin de parcours — une fois WF-02/03 en place, WF-14 sera quasi gratuit, on le fera après si utile). Go direct sur ce cadrage, pas besoin d'un nouvel aller-retour — si un point te bloque vraiment, écris la question dans HANDOFF-CURSOR plutôt que de deviner. `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
+
+✅ traité — WF-02/03 : modèle `CandidatureAssessment` + questionnaires publics signés + Evidence + bootstrap à la création candidature + API CRM assessments. Commit `b517e26`. Voir HANDOFF-CURSOR.
