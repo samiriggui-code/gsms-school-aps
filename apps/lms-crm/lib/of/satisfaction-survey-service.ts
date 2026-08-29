@@ -4,6 +4,7 @@ import { isEmailConfigured, sendSatisfactionSurveyInviteEmail } from '@repo/mail
 import { signSatisfactionSurveyPublicToken } from '@/lib/of/satisfaction-survey-public-token';
 import { absolutePublicSatisfactionSurveyUrl } from '@/lib/of/satisfaction-survey-public-url';
 import { questionsForSurveyTiming } from '@/lib/of/satisfaction-survey-template';
+import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 
 /** Durée de validité du lien public — assez large pour couvrir l'enquête à froid (J+45). */
 const SURVEY_LINK_TTL_MS = 90 * 24 * 60 * 60 * 1000;
@@ -116,9 +117,22 @@ export async function sendSurveyInvite(
     return { sent: false, skippedReason: 'Échec d’envoi de l’e-mail.' };
   }
 
-  await prisma.satisfactionSurvey.update({
-    where: { id: surveyId },
-    data: { status: 'SENT', sentAt: new Date() },
+  await prisma.$transaction(async (tx) => {
+    await tx.satisfactionSurvey.update({
+      where: { id: surveyId },
+      data: { status: 'SENT', sentAt: new Date() },
+    });
+    await recordStatusEvidence(tx, {
+      category: 'satisfaction_survey',
+      sourceType: 'QUESTIONNAIRE',
+      sourceId: surveyId,
+      eventName: 'SATISFACTION_REQUESTED',
+      fromStatus: survey.status,
+      toStatus: 'SENT',
+      sessionId: survey.sessionId,
+      learnerUserId: survey.participant.userId,
+      metadata: { timing: survey.timing },
+    });
   });
 
   return { sent: true, surveyUrl };
@@ -136,7 +150,13 @@ export async function submitSurveyAnswers(
 ): Promise<SubmitSurveyAnswersResult> {
   const survey = await prisma.satisfactionSurvey.findUnique({
     where: { id: surveyId },
-    select: { id: true, timing: true, status: true },
+    select: {
+      id: true,
+      timing: true,
+      status: true,
+      sessionId: true,
+      participant: { select: { userId: true } },
+    },
   });
   if (!survey) throw new Error('Enquête introuvable.');
 
@@ -152,9 +172,22 @@ export async function submitSurveyAnswers(
     );
   }
 
-  await prisma.satisfactionSurvey.update({
-    where: { id: surveyId },
-    data: { answers, status: 'COMPLETED', respondedAt: new Date() },
+  await prisma.$transaction(async (tx) => {
+    await tx.satisfactionSurvey.update({
+      where: { id: surveyId },
+      data: { answers, status: 'COMPLETED', respondedAt: new Date() },
+    });
+    await recordStatusEvidence(tx, {
+      category: 'satisfaction_survey',
+      sourceType: 'QUESTIONNAIRE',
+      sourceId: surveyId,
+      eventName: 'SATISFACTION_COMPLETED',
+      fromStatus: survey.status,
+      toStatus: 'COMPLETED',
+      sessionId: survey.sessionId,
+      learnerUserId: survey.participant.userId,
+      metadata: { timing: survey.timing },
+    });
   });
 
   return { alreadyCompleted: false };

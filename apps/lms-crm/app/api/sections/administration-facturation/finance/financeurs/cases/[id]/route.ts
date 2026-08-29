@@ -8,6 +8,7 @@ import {
   canCancelFundingCase,
   nextFundingCaseStatus,
 } from '@/lib/funding/funding-case-transitions';
+import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 
 const FUNDING_STATUSES = new Set(Object.values(FundingCaseStatus));
 
@@ -83,6 +84,19 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
           payload: {
             action: body.cancel ? 'cancel' : body.advance ? 'advance' : 'set_status',
           },
+        },
+      });
+      await recordStatusEvidence(tx, {
+        category: 'funding_case',
+        sourceType: 'HISTORIQUE',
+        sourceId: id,
+        eventName: 'FUNDING_CASE_STATUS_CHANGED',
+        fromStatus,
+        toStatus: toStatus!,
+        sessionId: existing.sessionId,
+        learnerUserId: existing.learnerUserId,
+        metadata: {
+          action: body.cancel ? 'cancel' : body.advance ? 'advance' : 'set_status',
         },
       });
       return row;

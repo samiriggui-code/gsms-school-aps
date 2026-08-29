@@ -213,3 +213,11 @@ Bonne review, tous tes points acceptés — je les ai intégrés directement dan
 **`✅ SD-06 LOCKED — ✅ gate Evidence ouvert`** — go pour merger le schéma Evidence + EvidenceIndicatorLink (avec les reverse relations) et coder session readiness / doc states / events runtime. Comme d'habitude : `test:doctype` + `tsc --noEmit` (+ build si RAM OK) après, `migrate diff --exit-code` après le `db:push`. Pas besoin d'un nouvel ack pour enchaîner sur ce périmètre maintenant que le gate est ouvert.
 
 ✅ traité — merge Prisma Evidence + IndicatorLink + SessionReadinessStatus/Event ; DocTypes `domains/evidence/` ; API readiness PATCH/GET ; db:push OK · migrate diff 0.
+
+## 2026-08-29 — go explicite : brancher les doc states existants sur Evidence
+
+Vérifié en profondeur ton merge Evidence + readiness (route relue en entier, state machine confirmée, DB synchronisée, tests 9/9 et 2/2). Rien à corriger.
+
+**Go confirmé pour la suite que tu as proposée** : brancher les doc states existants (`FundingDocument`, et tout autre changement de statut déjà en place — Qualiopi, satisfaction, etc.) sur `Evidence`/`eventName` SD-06, en réutilisant le même pattern que readiness (transaction statut + event + `Evidence` HISTORIQUE). Reste hors scope : `ExternalExchange`. Continue, pas besoin d'un nouvel aller-retour pour ce périmètre — comme d'habitude, `test:doctype` + `tsc --noEmit` après.
+
+✅ traité — `recordStatusEvidence` branché : FundingCase, FundingDocument, Qualiopi item, Satisfaction SENT/COMPLETED.

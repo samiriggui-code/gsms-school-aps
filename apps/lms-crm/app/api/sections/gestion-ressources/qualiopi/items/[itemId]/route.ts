@@ -3,6 +3,7 @@ import type { ComplianceItemStatus } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { requireGestionRessourcesEdit } from '../../../_lib/require-gestion-ressources-auth';
+import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 
 type Ctx = { params: Promise<{ itemId: string }> };
 
@@ -70,31 +71,52 @@ export async function PATCH(request: NextRequest, context: Ctx) {
 
     if (Object.keys(data).length === 0) return fail('Aucune modification', 400);
 
-    const updated = await prisma.complianceDossierItem.update({
-      where: { id: itemId },
-      data,
-      select: {
-        id: true,
-        code: true,
-        label: true,
-        status: true,
-        fileCategory: true,
-        fileAssetId: true,
-        rejectionReason: true,
-        dossierId: true,
-        fileAsset: { select: { id: true, url: true, originalName: true } },
-      },
+    const fromStatus = existing.status;
+    const updated = await prisma.$transaction(async (tx) => {
+      const row = await tx.complianceDossierItem.update({
+        where: { id: itemId },
+        data,
+        select: {
+          id: true,
+          code: true,
+          label: true,
+          status: true,
+          fileCategory: true,
+          fileAssetId: true,
+          rejectionReason: true,
+          dossierId: true,
+          fileAsset: { select: { id: true, url: true, originalName: true } },
+        },
+      });
+
+      await tx.complianceItemEvent.create({
+        data: {
+          dossierId: row.dossierId,
+          dossierItemId: row.id,
+          eventType: 'ITEM_UPDATED',
+          actorId: auth.userId,
+          payload: { status: row.status, fileAssetId: row.fileAssetId },
+        },
+      });
+
+      if (data.status && row.status !== fromStatus) {
+        await recordStatusEvidence(tx, {
+          category: 'qualiopi_item',
+          sourceType: row.fileAssetId ? 'DOCUMENT' : 'VALIDATION',
+          sourceId: row.id,
+          eventName: 'COMPLIANCE_ITEM_STATUS_CHANGED',
+          fromStatus,
+          toStatus: row.status,
+          metadata: {
+            indicatorCode: row.code,
+            dossierId: row.dossierId,
+          },
+        });
+      }
+
+      return row;
     });
 
-    await prisma.complianceItemEvent.create({
-      data: {
-        dossierId: updated.dossierId,
-        dossierItemId: updated.id,
-        eventType: 'ITEM_UPDATED',
-        actorId: auth.userId,
-        payload: { status: updated.status, fileAssetId: updated.fileAssetId },
-      },
-    });
     await recompute(updated.dossierId);
 
     return ok({ item: updated });

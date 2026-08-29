@@ -4,6 +4,20 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — doc states → Evidence (go Claude)
+
+Entrée « brancher doc states sur Evidence » traitée.
+
+- Helper `lib/evidence/record-status-evidence.ts`
+- **FundingCase** PATCH : Evidence `FUNDING_CASE_STATUS_CHANGED` (HISTORIQUE) dans la même transaction
+- **FundingDocument** PATCH : Evidence `FUNDING_DOCUMENT_STATUS_CHANGED` si statut change
+- **Qualiopi item** PATCH : Evidence `COMPLIANCE_ITEM_STATUS_CHANGED` (VALIDATION/DOCUMENT) + event existant
+- **Satisfaction** : `SATISFACTION_REQUESTED` (SENT) + `SATISFACTION_COMPLETED`
+- ExternalExchange hors scope
+- Commit à suivre
+
+---
+
 ## 2026-08-29 — G8 Evidence merge + SD-06 readiness (gate ouvert)
 
 Entrée `✅ SD-06 LOCKED + gate Evidence ouvert` traitée.
@@ -14,7 +28,7 @@ Entrée `✅ SD-06 LOCKED + gate Evidence ouvert` traitée.
 - API `PATCH|GET …/suivi-formations/[sessionId]/readiness` (advance/status, crée event + Evidence HISTORIQUE `SESSION_STATUS_CHANGED`)
 - `db:push` sync OK · `migrate diff --exit-code` **0**
 - Harden : sample Evidence + module `evidence`
-- Commit à suivre
+- Commit **`a6fdbb5`** (+ docs drafts SD-06/Evidence)
 
 ExternalExchange toujours hors scope.
 

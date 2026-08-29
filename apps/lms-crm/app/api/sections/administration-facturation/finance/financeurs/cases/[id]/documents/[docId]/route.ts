@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 
 const DOC_STATUSES = new Set(['MISSING', 'UPLOADED', 'VALIDATED', 'REJECTED']);
 
@@ -17,6 +18,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const existing = await prisma.fundingDocument.findFirst({
       where: { id: docId, caseId },
+      include: { case: { select: { sessionId: true, learnerUserId: true } } },
     });
     if (!existing) return fail('FundingDocument not found', 404);
 
@@ -41,9 +43,30 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     if (Object.keys(data).length === 0) return fail('No fields to update', 400);
 
-    const updated = await prisma.fundingDocument.update({
-      where: { id: docId },
-      data,
+    const fromStatus = existing.status;
+    const updated = await prisma.$transaction(async (tx) => {
+      const row = await tx.fundingDocument.update({
+        where: { id: docId },
+        data,
+      });
+      if (data.status && data.status !== fromStatus) {
+        await recordStatusEvidence(tx, {
+          category: 'funding_document',
+          sourceType: data.status === 'UPLOADED' || data.fileAssetId ? 'DOCUMENT' : 'HISTORIQUE',
+          sourceId: docId,
+          eventName: 'FUNDING_DOCUMENT_STATUS_CHANGED',
+          fromStatus,
+          toStatus: data.status,
+          sessionId: existing.case.sessionId,
+          learnerUserId: existing.case.learnerUserId,
+          metadata: {
+            caseId,
+            code: existing.code,
+            fileAssetId: row.fileAssetId,
+          },
+        });
+      }
+      return row;
     });
     return ok(updated);
   } catch (e) {
