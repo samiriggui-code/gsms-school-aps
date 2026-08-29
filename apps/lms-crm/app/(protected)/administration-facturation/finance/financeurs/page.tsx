@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { CreateFundingCaseForm } from './create-funding-case-form';
 import { FundingCaseDocumentsPanel } from './funding-case-documents-panel';
+import { FundingCaseAgentPanel } from './funding-case-agent-panel';
 import { FundingCaseTransitionActions } from './funding-case-transition-actions';
 import {
   canCancelFundingCase,
@@ -191,6 +192,15 @@ export default async function FinanceursPage() {
       </div>
 
       <FundingCaseDocumentsPanel
+        cases={recentCases.map((c) => ({
+          id: c.id,
+          reference: c.reference,
+          status: c.status,
+          providerLabel: c.provider.label,
+        }))}
+      />
+
+      <FundingCaseAgentPanel
         cases={recentCases.map((c) => ({
           id: c.id,
           reference: c.reference,
