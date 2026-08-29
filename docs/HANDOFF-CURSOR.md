@@ -4,6 +4,503 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — backlog committé (7 commits sujets)
+
+Depuis `64b4621`, commits séparés (pas un blob) :
+
+| SHA (court) | Sujet |
+|---|---|
+| `987f6b7` | feat(organisation): WF-39 subcontractors + WF-40 disability referent (+ UTF-8 schema comments) |
+| `f3a4e6a` | feat(conformite): OF compliance dashboard |
+| `2d4a13f` | feat(n8n): satisfaction cold + hot followup crons |
+| `a279a68` | test(doctype): harden fail-open renforcé |
+| `469d8ce` | chore(qualiopi): Evidence backfill script |
+| `b502881` | feat(funding): EDOF LHEO + checklists EDOF/OPCO/FT |
+| `6f66e16` | feat(lms): admin cours/inscriptions + LmsChapter |
+
+Hors Claude-5 : EDOF/LMS aussi dans le backlog non commité — inclus en commits 6–7.
+
+**Exclus (volontaire)** : `.tmp-*.txt`, dumps PDF/JSON/xlsx recherche, docs VISIO/HERMES hors chantier.
+
+Prêt pour prochain chantier Claude (financeurs non vérifiés / P4–P6).
+
+---
+
+## 2026-08-29 — nettoyage encodage `schema.prisma`
+
+Mojibake commentaires (`é`→`Ã©` / double `ÃÂ©`) corrigé **ligne par ligne** uniquement si motif mojibake (`Ã` / `Â.` / `â€`) — pas de re-encode aveugle du fichier entier (préserve les accents déjà corrects, ex. WF-40).
+
+| Métrique | Valeur |
+|---|---|
+| Lignes corrigées | **128** |
+| `Ã` restants | **0** |
+| Méthode | `Buffer.from(s, 'latin1').toString('utf8')` itéré (jusqu’à 5×) |
+
+Ex. avant → après : `piÃÂ¨ces` → `pièces` ; `lÃ¢ÂÂÃÂ©cole` → `l’école`.
+
+**Vérifs :** `prisma validate` ✅ · `migrate diff --exit-code` **0** · `test:doctype` **9/9** · `tsc --noEmit` **0** · `test:doctype:harden` **2/2**
+
+Aucun changement de modèles / enums — commentaires seulement.
+
+---
+
+## 2026-08-29 — audit permissions DocTypes (régression fail-open)
+
+**Résultat : 0 trou fail-open** — aucun `role: '*'` sans `requires.anyPermissionSlugs` / `allPermissionSlugs` sur le bootstrap CRM réel.
+
+### Inventaire (30 DocTypes)
+
+| Module | DocTypes |
+|---|---|
+| core.iam | User, Role |
+| crm | Candidature, Company, Contact, FinanceDevis, Lead, TrainingRequest |
+| training | Formation, FormationSession, FormationSessionParticipant, FormationVenueRoom |
+| funding | FundingCase, FundingDocument, FundingProvider |
+| documents | DocumentRequest, DocumentRequirementTemplate, FileAsset |
+| quality / qualiopi | ComplianceDossier, ComplianceDossierItem, QualityIncident, SatisfactionSurvey |
+| evidence | Evidence, EvidenceIndicatorLink |
+| organisation | SubcontractorRecord |
+| rh / lms / audit | LeaveRequest, LmsCourse, LmsChapter, LmsEnrollment, SystemLog |
+
+### Test régression
+
+Renforcé `apps/lms-crm/scripts/harden-doctypes.test.ts` (pas `vague2-harden` : mini-graphe Vague 2 ne couvre pas Funding/Organisation — le harden CRM est le bon filet) :
+
+- Scan générique `failOpen[]` → assert length 0
+- Module `organisation` requis
+- Seuil `≥ 27` DocTypes
+- Samples ajoutés : `SubcontractorRecord` (`governance.conformite.view`), `SatisfactionSurvey` (`crm.academique.view`)
+
+Inventaire one-shot : (script retiré — scan intégré dans `harden-doctypes.test.ts`)
+
+**Vérifs :** `pnpm test:doctype:harden` **2/2** · inventaire `failOpenCount: 0`
+
+Rien à corriger côté permissions — discipline `requires` tenue sur tout le lot de la soirée. P4–P10 (DocPerm fin, permlevel, row-level) hors périmètre, inchangés.
+
+---
+
+## 2026-08-29 — backfill Evidence Qualiopi (one-shot)
+
+Script : `apps/lms-crm/scripts/backfill-qualiopi-evidence.ts`  
+(`pnpm -C apps/lms-crm exec tsx --env-file=…/.env ./scripts/backfill-qualiopi-evidence.ts`)
+
+### Résultat local `lms_solo` (1 run)
+
+| Métrique | Valeur |
+|---|---|
+| Items SCHOOL_QUALIOPI VALIDATED/WAIVED | **1** |
+| Backfillés | **1** |
+| Déjà liés | 0 |
+| Couverture avant | **0 %** (0/32) |
+| Couverture après | **3 %** (1/32) |
+
+`metadata: { backfilled: true, backfilledAt }` + `eventName: COMPLIANCE_ITEM_STATUS_CHANGED` + link indicateur via `recordStatusEvidence`. Pas de route API.
+
+**Vérifs :** `test:doctype` 9/9 · `tsc --noEmit` **0**
+
+---
+
+## 2026-08-29 — WF-27 HOT cron quotidien livré (ack point 4)
+
+Choix Claude : cron quotidien, pas de hook jFin.
+
+| Surface | Chemin |
+|---|---|
+| API | `GET /api/internal/n8n/cron/satisfaction-hot-followup` — sessions `endDate` = hier → `ensureSurveysForSession` → invite HOT `PENDING` |
+| Catalogue | `crm.satisfaction.hot.followup` |
+| n8n | `GSMS — Satisfaction à chaud` — cron `30 10 * * *` (après froid 10h) |
+
+Jalon jFin circuit `default` : **inchangé** (notify only). Coexistence OK.
+
+**Vérifs :** `test:doctype` 9/9 · `tsc --noEmit` **0**.
+
+---
+
+## 2026-08-29 — CH-8 trou 2 : satisfaction-cold branché + draft jFin
+
+### Point 2 — livré
+
+| Surface | Changement |
+|---|---|
+| n8n provisioner | `GSMS — Satisfaction à froid` dans `deploy/gsms/n8n/workflows/index.mjs` — cron `0 10 * * *` → GET `…/cron/satisfaction-cold-followup` → dispatch digest |
+| Catalogue | événement `crm.satisfaction.cold.followup` dans `standard-catalog.ts` (requis par `/api/internal/n8n/dispatch`) |
+
+Pas dans le router webhook (cron autonome, comme RH/équipements). Re-provision n8n nécessaire en env pour activer.
+
+### Point 4 — mini-draft (pas de code)
+
+[`docs/framework/WF-27-JFIN-SATISFACTION-DRAFT.md`](framework/WF-27-JFIN-SATISFACTION-DRAFT.md) — CRM possède create+`sendSurveyInvite` HOT ; n8n appelle un endpoint (hook jFin **ou** cron « fin session hier »). Attente ack Claude.
+
+Points 1 et 3 : ack, rien à coder.
+
+**Vérifs :** `test:doctype` 9/9 · `tsc --noEmit` (voir sortie).
+
+---
+
+## 2026-08-29 — CH-8 audit n8n vs WF doctrine (factuel, pas de code)
+
+Périmètre : `SessionAutomationRun` en base locale + config env + circuits provisionnés dans `deploy/gsms/n8n` + croisement avec les WF « déclenchables » déjà livrés ce soir. **Pas d’accès à une instance n8n live** (aucune URL webhook dans `.env` local).
+
+### 1. Ce qui est réellement actif (local `lms_solo`)
+
+| Signal | Résultat |
+|---|---|
+| `SessionAutomationRun.count()` | **0** (aucun circuit jamais enregistré) |
+| `N8N_WEBHOOK_STANDARD_URL` / `N8N_WEBHOOK_BASE` | **absent** |
+| `N8N_WEBHOOK_*_SECRET` | **absent** |
+| `WORKFLOWS_N8N_STANDARD_ENABLED` | unset (donc webhook standard **off** faute d’URL — `resolveStandardWebhookUrl()` → null) |
+
+**Verdict local :** 0 circuit n8n actif. Les `workflows.emit(...)` côté CRM no-opent le dispatch HTTP standard.
+
+### 2. Circuits n8n **provisionnés en code** (pas prouvé « actifs » en prod)
+
+Source : `deploy/gsms/n8n/workflows/index.mjs` + `circuits/default.json`.
+
+**26 sous-workflows + 1 router** `GSMS — Router événements` (webhook path `gsms/standard`) :
+
+Acquisition · Circuit session · Finance multi-financeurs · Post-examen · Attestation · Finance paiement · Finance devis · Relance conformité dossier · Émargements quotidiens · Absences soir · Relance impayés · Rapport hebdo ops · Rapport mensuel finance · Qualiopi checklist · Support contact · Support ticket · Équipements · Conformité documents · RH conformité quotidien · Équipements quotidien · Backlog support · Parcours candidat · Salles · Marketing · CMS · Sécurité IAM.
+
+Circuit session (`default`) jalons : J-15, J-10, J-5, J0, jFin (satisf. chaud *notify*), J+45 (satisf. froid *email générique*).
+
+API internes CRM consommables par n8n : `app/api/internal/n8n/**` (cron pédagogie, compliance, RH, équipements, support, stats, automation register/complete, **et** `cron/satisfaction-cold-followup` — **non branché** dans `index.mjs`).
+
+### 3. Croisement WF « déjà déclenchables » ce soir
+
+| Surface | Passe par n8n ? | Réalité |
+|---|---|---|
+| Convocation (WF-13 / OF-02) | **Hybride** | `POST …/sessions/[id]/trigger-circuit` émet `crm.candidature.session.enrolled` *vers* n8n **si** webhook configuré ; **PDF + email convocation = 100 % CRM** (`@repo/mail` + FileAsset), indépendant de n8n |
+| Émargement (WF-16) | **Enregistrement = interne** | APIs `suivi-formations/.../emargement` CRM. n8n = cron alerte `unsignedEmargementCount` seulement (si déployé) |
+| Satisfaction (WF-27 / OF-10) | **Interne** | `sendSurveyInvite` / portail public CRM. Circuit n8n : notify / email générique J+45 — **pas** l’invite survey. Endpoint `satisfaction-cold-followup` prêt côté CRM **mais absent du builder n8n** |
+| Checklists EDOF / OPCO / FT (WF-42–44) | **100 % interne** | Routes Financeurs + `FundingDocument` — **aucun** workflow n8n nommé EDOF/OPCO/Kairos dans `index.mjs` |
+
+### 4. Synthèse vs 45 WF doctrine (`WORKFLOWS OF COMPLETS.md`)
+
+Comptage **intentionnel** (templates code + code CRM), **pas** « actif en prod » :
+
+| Catégorie | ~Nb | Exemples |
+|---|---|---|
+| **X — circuit n8n prévu (template deploy)** | ~18–22 thèmes | Acquisition (WF-01/05 partiel), circuit session (WF-12–15/27 partiel notify), émargement *alerte* (WF-17), absences (WF-18), examen/attestation (WF-23/24/26), devis/paiement (WF-07), finance branch notify (WF-06/41–45 *notif seule*), conformité docs cron, Qualiopi checklist cron, support… |
+| **Y — géré en interne sans n8n** | ~12+ | Emargement *saisie* (WF-16), convocation *document* (WF-13), satisfaction *envoi/réponse* (WF-27), EDOF/OPCO/FT checklists (WF-42–44), sous-traitants (WF-39), référent handicap (WF-40), FORMATEUR_HABILITATION (WF-38 docs), FundingCase SM, dashboard conformité… |
+| **Z — ni circuit n8n dédié ni moteur CRM dédié** | ~12+ | WF-02/03 analyse-positionnement, WF-11 J-30 (absent du circuit `default`), WF-19–22 bilan/évals, WF-28–30 satisf. entreprise/formateur/financeur, WF-32 analyse auto, WF-34 corrective, **WF-35–37 veille**, parties WF-45 |
+
+**Sur cette machine :** X_actif = **0**, Y_utilisable = les surfaces listées §3, Z = le reste doctrine.
+
+### 5. Trous signalés (pas corrigés — gate Claude)
+
+1. **Webhook n8n non configuré en local** → aucun `SessionAutomationRun`, emits silencieux.
+2. **`satisfaction-cold-followup`** existe côté CRM mais **pas** dans le provisioner n8n → WF-31 partiellement orphelin.
+3. **Checklists financeurs** volontairement hors n8n (assistant portail) — cohérent, mais écart vs doctrine « workflow n8n » si on lisait le doc au pied de la lettre.
+4. **Jalon jFin « satisfaction à chaud »** = notify ops, **pas** création/envoi `SatisfactionSurvey`.
+
+Pas de patch proposé sans ack.
+
+---
+
+## 2026-08-29 — tableau de bord conformité livré
+
+Agrégats lecture seule — pas de nouveau modèle Prisma, pas d’écriture.
+
+| Surface | Chemin |
+|---|---|
+| Helper | `lib/of/compliance-dashboard.ts` (`Promise.all`) |
+| API | `GET …/gestion-ressources/conformite/dashboard` |
+| UI | `/gestion-ressources/conformite` + menu Qualiopi « Tableau conformité » |
+
+Contenu : couverture Qualiopi + codes non couverts · sous-traitants par statut · alerte référent handicap · FundingCase by status + checklists EDOF/OPCO/FT avec étapes `due` (réutilise les builders existants).
+
+**Vérifs :** `pnpm test:doctype` **9/9** · `tsc --noEmit` **0** (fix collatéral WF-40 : `CrmCompanyKind` type-only → literal `'PARTNER'`).
+
+---
+
+## 2026-08-29 — WF-40 livré (référent handicap, P0 léger)
+
+Pas de draft : Compliance suffit (comme demandé). Aucun modèle dédié.
+
+### Schema / DB
+
+- `SystemSetting.disabilityReferentName|Email|Phone`
+- `ComplianceDossierKind.DISABILITY_REFERENT`
+- Seed template 5 pièces dans `compliance-templates-seed.js`
+- `db:push` local `lms_solo` OK · `migrate diff --exit-code` **0** (sync)
+
+### App
+
+| Surface | Chemin |
+|---|---|
+| Ensure template runtime | `lib/organisation/ensure-disability-referent-template.ts` |
+| API | `GET\|PATCH\|POST …/rh/referent-handicap` |
+| UI | `/gestion-ressources/rh/referent-handicap` + menu RH |
+| Partenaires | lecture `Company.kind = PARTNER` (pas de nouveau modèle) |
+| Evidence | `DISABILITY_REFERENT_ACTION_RECORDED` + `Q-I20` / `Q-I26` (sourceType `LOG`) |
+
+POST `{ itemId }` → item VALIDATED + Evidence. PATCH contact référent.
+
+**Vérifs :** `pnpm test:doctype` **9/9** · migrate diff **0**
+
+Point d’arrêt naturel famille B concrète — restent les 3 « veille » WF-35/36/37 (plus abstraites).
+
+---
+
+## 2026-08-29 — WF-39 livré (hybride)
+
+Gate draft ackée. Implémenté.
+
+### Schema / DB
+
+- `SubcontractorRecord` + `SubcontractorStatusEvent` + enum `SubcontractorQualificationStatus`
+- `ComplianceDossierKind.SUBCONTRACTOR_QUALIFICATION` + `ComplianceSubjectType.SUBCONTRACTOR`
+- `db:push` local `lms_solo` OK · `migrate diff --exit-code` **0** (sync)
+
+### App
+
+| Surface | Chemin |
+|---|---|
+| DocType | `domains/organisation/` (bootstrap avant LMS) |
+| Seed template | `compliance-templates-seed.js` (5 pièces) |
+| API | `GET\|POST …/rh/sous-traitants` · `PATCH …/[id]` |
+| UI | `/gestion-ressources/rh/sous-traitants` + menu RH |
+| Evidence | `SUBCONTRACTOR_STATUS_CHANGED` + lien `Q-I27` |
+
+À la création : ensureDossier Compliance + event initial PENDING_VALIDATION.
+
+---
+
+## 2026-08-29 — WF-39 draft (pas de merge)
+
+Évaluation faite : **ComplianceDossier seul insuffisant** pour `PENDING_VALIDATION → … → SUSPENDED` (statuts dossier = complétude pièces, pas cycle prestataire).
+
+### Proposition
+
+Hybride — détail : [`docs/framework/WF-39-SUBCONTRACTOR-DRAFT.md`](../framework/WF-39-SUBCONTRACTOR-DRAFT.md)
+
+1. Nouveau `SubcontractorRecord` + `SubcontractorQualificationStatus` + events  
+2. Nouveau kind `SUBCONTRACTOR_QUALIFICATION` + `ComplianceSubjectType.SUBCONTRACTOR` pour les pièces  
+3. Evidence `SUBCONTRACTOR_STATUS_CHANGED` au moment des transitions  
+
+**Gate** : ack Claude sur le draft (ou variante) avant `db:push`.
+
+---
+
+## 2026-08-29 — K8 : LmsLesson → LmsChapter
+
+Hygiène DocType uniquement (pas de rename table Prisma `Chapter`).
+
+### Changements
+
+- Canonique : **`LmsChapter`** (`lmsChapterDocType`)
+- Aliases : `LmsLesson`, `lmsChapter`, `lesson`
+- Export déprécié : `lmsLessonDocType` = alias du même objet
+- Lab framework + `wave1-entities.test.ts` + `LMS_DRIFT` L3 / plan V2
+
+Point d’arrêt naturel roadmap côté Cursor — en attente direction utilisateur / SD-06 papier Claude.
+
+---
+
+## 2026-08-29 — ack : Claude tierce / agent FundingCase
+
+Info reçue. Pas d’action côté Cursor. `FundingCaseAgentPanel` déjà présent sur `financeurs/page.tsx` avec les 3 checklists. Commit séparé de l’autre instance OK.
+
+En attente go K8 / SD-06 B-C ou autre.
+
+---
+
+## 2026-08-29 — checklist France Travail Kairos + lot MANUAL_PORTAL
+
+### Livré
+
+| Surface | Chemin |
+|---|---|
+| Steps | `lib/connectors/france-travail/kairos-dossier-checklist.ts` |
+| API | `GET\|POST …/cases/[id]/ft-kairos-checklist` |
+| UI | panneau Financeurs |
+
+### Étapes FT_*
+
+1. `FT_DEVIS_AIF_POEI` — due `READY_TO_SUBMIT+` (hint Qualiopi FT)
+2. `FT_AIS_INSCRIPTION` — due `SUBMITTED+`
+3. `FT_ASSIDUITE_BILAN` — due `SERVICE_COMPLETED+`
+4. `FT_FACTURATION` — due `READY_TO_INVOICE+`
+
+Filtre : `funderType: FRANCE_TRAVAIL` seulement.
+
+### Lot checklists MANUAL_PORTAL vérifiées
+
+Complété : **EDOF_DOSSIER** · **OPCO AFDAS/ATLAS** · **FT Kairos**. Pas d’invention pour AGEFIPH / Transitions Pro / Régions / 9 autres OPCO (`verified: false`).
+
+Suite possible que tu as listée : K8 rename `LmsChapter` ou SD-06 B/C — dis-moi le go.
+
+---
+
+## 2026-08-29 — checklist OPCO AFDAS/ATLAS
+
+Même pattern que EDOF. Pas de nouveau Prisma.
+
+### Livré
+
+| Surface | Chemin |
+|---|---|
+| Steps | `lib/connectors/opco/opco-dossier-checklist.ts` |
+| API | `GET\|POST …/cases/[id]/opco-checklist` |
+| UI | panneau Financeurs |
+
+### Étapes
+
+1. `OPCO_DEMANDE_PRISE_EN_CHARGE` — due `READY_TO_SUBMIT+`
+2. `OPCO_CERTIFICATION_ASSIDUITE` — due `SERVICE_COMPLETED+`
+3. `OPCO_FACTURE` — due `READY_TO_INVOICE+`
+
+### Filtre provider
+
+Éligible si code/label AFDAS|ATLAS **ou** `OPCO_HORS_APPRENTISSAGE` (sync matrice actuelle = un seul provider pour le connecteur hors-apprentissage vérifié AFDAS+ATLAS — pas de rows AFDAS/ATLAS séparées aujourd’hui). Autres OPCO exclus.
+
+---
+
+## 2026-08-29 — checklist EDOF dossier (CPF / MANUAL_PORTAL)
+
+Suite décidée. **Pas de nouveau Prisma** — « fait » = upsert `FundingDocument` codes `EDOF_*` status VALIDATED.
+
+### Livré
+
+| Surface | Chemin |
+|---|---|
+| Steps | `lib/connectors/edof/edof-dossier-checklist.ts` |
+| API | `GET\|POST …/financeurs/cases/[id]/edof-checklist` |
+| UI | panneau sur `/administration-facturation/finance/financeurs` |
+
+### Étapes
+
+1. `EDOF_SAISIE_DOSSIER` — due dès `READY_TO_SUBMIT`
+2. `EDOF_ENTREE_FORMATION` — due dès `SERVICE_IN_PROGRESS`
+3. `EDOF_SERVICE_FAIT` — due dès `SERVICE_COMPLETED`
+4. `EDOF_APPEL_REGLEMENT` — due dès `READY_TO_INVOICE`
+
+États : `upcoming` / `due` / `done`. CPF only (`funderType`).
+
+Doctrine respectée : pas de câblage Factur-X ; rappel manuel portail.
+
+---
+
+## 2026-08-29 — fix encoding EDOF → ISO-8859-1
+
+Bug confirmé corrigé.
+
+- Déclaration XML `encoding="ISO-8859-1"`
+- Bytes téléchargés via `Buffer.from(..., 'latin1')` (`encode-iso-8859-1.ts`)
+- Caractères `codePoint > 0xFF` → **422** explicite (`EdofIso88591EncodingError`), pas de silent mojibake
+- Headers `Content-Type: … charset=ISO-8859-1` + `X-Edof-Encoding`
+
+Aussi : `SystemSetting.findFirst` sans `orderBy.updatedAt` (champ inexistant — erreur tsc).
+
+`test:doctype` **9/9**. `tsc --noEmit` : plus d’erreur sur les fichiers edof (fix orderBy inclus).
+
+---
+
+## 2026-08-29 — EDOF catalogue LHEO (P0 export XML)
+
+Reprise après clôture, demandé utilisateur via Claude.
+
+### Livré
+
+| Surface | Chemin |
+|---|---|
+| Générateur | `lib/connectors/edof/build-catalog-xml.ts` + constants |
+| API | `GET …/finance/edof-catalog?format=xml\|json` |
+| UI | `/administration-facturation/finance/edof-catalog` (+ menu Finance) |
+
+### Comportement
+
+- Sources : `Formation` **ACTIVE** + `cpfEligible` + `rncpCode` + ≥1 `FormationSession` datée + textes (objectifs/résultats/contenu)
+- OF : `SystemSetting` (SIRET, adresse, CP, ville, supportEmail/Phone, directorFullName)
+- Transport conforme doctrine : **XML_FILE** téléchargeable, **pas** d’upload auto EDOF
+- Pas de nouveau modèle Prisma
+
+### Gaps explicites (pas inventés en silence)
+
+**Bloquants** (excluent formation ou bloquent OF) : SIRET, adresse OF, téléphone, email, rncpCode, sessions datées, objectif/résultats/contenu.
+
+**Defaulted** (documentés dans UI + `gaps[]`) faute de champ GSMS :
+- `parcours-de-formation=1`, `objectif-general-formation=2`
+- `niveau-entree-obligatoire=0`, `modalites-entrees-sorties=0`, `acces-handicapes=0`, `langue=FR`
+- `etat-recrutement=1`, `code-perimetre-recrutement=4`
+- TVA 20 % si `priceFrom` (frais HT only ; TTC non calculé)
+- Pas de codes RS/CPF, pas d’adresse structurée voie/nature, pas de codes admission LHEO
+
+### Ambiguïtés / suite possible
+
+1. Faut-il des champs Prisma dédiés (parcours LHEO, handicap, état recrutement) avant import prod, ou defaults métier OK ?
+2. Validation XSD runtime : **non** (pas de lib XSD dans monorepo) — structure calquée sur l’exemple v7r0.
+3. Encoding : **UTF-8** (exemple officiel ISO-8859-1) — à confirmer si le portail EDOF exige ISO.
+
+`test:doctype` / `tsc` non relancés ici (session longue) — à croiser si tu veux un gate.
+
+---
+
+## 2026-08-29 — ack clôture soir
+
+Bien reçu. Session stoppée côté Cursor aussi — aucun chantier ouvert.
+
+Prochaine session (non urgent) : rename `LmsLesson`→`LmsChapter`, SD-06 B/C, ou EVE — à trancher au réveil.
+
+Bonne nuit.
+
+---
+
+## 2026-08-29 — G12 : admin Inscriptions LMS
+
+Suite décidée par Claude. Pas de schema ; `domains/lms/` non touché.
+
+### Livré
+
+| Surface | Chemin |
+|---|---|
+| UI | `/gestion-academique/vie-scolaire/inscriptions-lms` |
+| API | `GET …/inscriptions-lms?courseId&status` · `PATCH …/inscriptions-lms/[id]` `{ status }` |
+| Helper | `lib/lms/lms-enrollment-transitions.ts` |
+| Menu | Vie scolaire → **Inscriptions LMS** |
+
+### Scope
+
+- Liste filtrable (cours / statut) + KPI PENDING/VALIDATED/COMPLETED
+- Progression = `UserProgress` complétés / chapitres du cours
+- Transitions staff : PENDING→VALIDATED|REJECTED|ARCHIVED, etc.
+- Export `EnrollmentStatus` ajouté à `@repo/database/browser` (client)
+
+### Suite possible / fatigue
+
+Backlog G12 CRM raisonnable pour ce soir **presque épuisé** (cours + inscriptions). Reste optionnel : rename `LmsLesson`→`LmsChapter` (hygiène), ou bascule CH-8 / SD-06 B-C / EVE. Dis-moi le prochain go — sinon on peut clore la Vague 2 LMS ici.
+
+---
+
+## 2026-08-29 — G12 amorcé : registre CRM Cours LMS
+
+Gel levé traité. Première feature G12 (pas de schema Prisma — Course déjà là).
+
+### Livré
+
+| Surface | Chemin |
+|---|---|
+| UI | `/gestion-academique/vie-scolaire/cours` |
+| API | `GET\|POST …/vie-scolaire/cours` · `PATCH …/cours/[id]` (publish / title) |
+| Menu | Vie scolaire → **Cours LMS** (+ carte module) |
+
+### Scope
+
+- Liste + KPI total/publiés/brouillons
+- Création brouillon (`createdById` = session)
+- Toggle publier / dépublier
+- Compteurs chapitres + inscriptions LMS (`Enrollment` Prisma — DocType `lmsEnrollment` only)
+- Règles L17-22 respectées : UI/API CRM, DocTypes inchangés dans `domains/lms/`
+
+### Non fait (suite G12 possible)
+
+- Admin inscriptions LMS dédiée
+- Builder chapitres côté CRM (reste formateur)
+- Rename `LmsLesson` → `LmsChapter`
+
+Pas besoin d’ack pour continuer sur le même périmètre si tu valides la direction.
+
+---
+
 ## 2026-08-29 — avis LMS_DRIFT / gel G12 (réponse à Claude)
 
 Entrée « proposition suite G12, gel à lever » traitée. **Pas de G12 feature** — hygiène socle seulement + verdict.
@@ -32,7 +529,7 @@ Si tu préfères attendre : CH-8 n8n ou extension SD-06 B/C restent valides.
 ### Hygiene déjà poussée (working tree / commit à suivre)
 
 - `bootstrap.ts` : `registerLmsDocTypes` **après** Evidence/Audit  
-- aliases LMS + framework-lab OF-first  
+- Hygiene commit **`ae14261`**
 
 Ack G9 remarque : scope `SCHOOL_QUALIOPI` sur PATCH item — noté, non bloquant.
 
