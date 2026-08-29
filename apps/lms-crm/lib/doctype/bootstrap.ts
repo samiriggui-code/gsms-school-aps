@@ -8,6 +8,7 @@ import { registerTrainingDocTypes } from '@/domains/training/register';
 import { registerDocumentsDocTypes } from '@/domains/documents/register';
 import { registerQualityDocTypes } from '@/domains/quality/register';
 import { registerFundingDocTypes } from '@/domains/funding/register';
+import { registerEvidenceDocTypes } from '@/domains/evidence/register';
 import { registerAuditDocTypes } from '@/domains/audit/register';
 
 declare global {
@@ -61,6 +62,7 @@ export function bootstrapDocTypes(): DocTypeRegistry {
     registerLmsDocTypes(registry);
     registerQualiopiDocTypes(registry);
     registerFundingDocTypes(registry);
+    registerEvidenceDocTypes(registry);
     registerAuditDocTypes(registry);
     registry.assertValid();
     registry.seal();

@@ -52,6 +52,9 @@ export {
   FundingFunderType,
   FundingTransport,
   FundingCaseStatus,
+  EvidenceSourceType,
+  EvidenceStatus,
+  SessionReadinessStatus,
 } from '../generated/client';
 export {
   LandingTeamVolet,

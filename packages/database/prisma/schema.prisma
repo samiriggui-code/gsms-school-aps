@@ -84,19 +84,19 @@ enum EnrollmentStatus {
 
 /// Vue CRM formations catalogue (hors Enrollment LMS cours).
 enum CandidatureStatus {
-  /// Dossier en saisie, pièces incomplètes possibles.
+  /// Dossier en saisie, piÃ¨ces incomplÃ¨tes possibles.
   DRAFT
-  /// Envoyé aux services / prêt pour instruction.
+  /// EnvoyÃ© aux services / prÃªt pour instruction.
   SUBMITTED
-  /// Retour instructeur pièces manquantes ou invalides.
+  /// Retour instructeur piÃ¨ces manquantes ou invalides.
   MISSING_DOCUMENTS
   VALIDATION_PENDING
   PENDING_CNAPS
   CNAPS_APPROVED
   CNAPS_REJECTED
-  /// Dossier administratif conforme : apte à être placé sur une session.
+  /// Dossier administratif conforme : apte Ã  Ãªtre placÃ© sur une session.
   VALIDATED
-  /// Formation suivie, examen réussi et attestation délivrée.
+  /// Formation suivie, examen rÃ©ussi et attestation dÃ©livrÃ©e.
   COMPLETED
   REJECTED
   ARCHIVED
@@ -128,7 +128,7 @@ enum FormationSessionEnrollmentStatus {
   CANCELLED
 }
 
-/// Créneau journalier suivi formation (émargement matin / soir).
+/// CrÃ©neau journalier suivi formation (Ã©margement matin / soir).
 enum FormationSessionDaySlot {
   MORNING
   EVENING
@@ -152,15 +152,15 @@ enum UserBusinessLabel {
   FORMATEUR
 }
 
-/// Service / équipe interne à l’école de formation (pas une entité juridique ni une « unité » multi-tenant GSMS).
+/// Service / Ã©quipe interne Ã  lâÃ©cole de formation (pas une entitÃ© juridique ni une Â« unitÃ© Â» multi-tenant GSMS).
 enum SchoolInternalService {
   /// Pool formateurs et intervenants.
   TRAINER_POOL
-  /// Coordination pédagogique, programmes, qualité.
+  /// Coordination pÃ©dagogique, programmes, qualitÃ©.
   PEDAGOGICAL
   /// RH, administration, support.
   HR_ADMIN
-  /// Direction de l'établissement (gérant, directeur, équipe de pilotage).
+  /// Direction de l'Ã©tablissement (gÃ©rant, directeur, Ã©quipe de pilotage).
   DIRECTION
 }
 
@@ -236,7 +236,7 @@ model User {
   carteProNumber        String?
   carteProExpiry        DateTime?
   isSchedulable         Boolean   @default(true)
-  /// Présentation courte affichée sur le landing (#trainers) et fiches publiques équipe.
+  /// PrÃ©sentation courte affichÃ©e sur le landing (#trainers) et fiches publiques Ã©quipe.
   landingPresentation   String?   @db.Text
   documentCni           String?
   documentAssurance     String?
@@ -275,11 +275,13 @@ model User {
   complianceDossiers             ComplianceDossier[]       @relation("ComplianceDossierUser")
   complianceItemsValidated       ComplianceDossierItem[]   @relation("ComplianceItemValidator")
   fundingCasesAsLearner          FundingCase[]             @relation("FundingCaseLearner")
+  evidenceAsLearner              Evidence[]                @relation("EvidenceLearner")
+  evidenceAsTrainer              Evidence[]                @relation("EvidenceTrainer")
   documentRequestsRequested      DocumentRequest[]         @relation("DocumentRequestRequester")
   complianceEventsActed          ComplianceItemEvent[]     @relation("ComplianceEventActor")
-  /** Sessions formation CRM dont cet utilisateur est le formateur référent. */
+  /** Sessions formation CRM dont cet utilisateur est le formateur rÃ©fÃ©rent. */
   formationSessionsTrained FormationSession[] @relation("FormationSessionTrainer")
-  /** Sessions dont cet utilisateur modère le chat pédagogique. */
+  /** Sessions dont cet utilisateur modÃ¨re le chat pÃ©dagogique. */
   formationSessionsModerated FormationSession[] @relation("FormationSessionModerator")
 
   certificates    UserCertificate[]
@@ -395,7 +397,7 @@ model FileAssetVersion {
   @@index([fileAssetId, status])
 }
 
-/// Job asynchrone de génération document (PDF / Excel / CSV) — traité par @repo/workers.
+/// Job asynchrone de gÃ©nÃ©ration document (PDF / Excel / CSV) â traitÃ© par @repo/workers.
 model ReportGenerationJob {
   id            String             @id @default(uuid())
   templateKey   String
@@ -439,10 +441,10 @@ enum AiArtifactStatus {
   REJECTED
 }
 
-/// Exécution d'une tâche IA (génération de programme, déroulé, preuves Qualiopi...).
-/// Le modèle ne touche jamais la base directement : il produit un ou plusieurs
-/// AiArtifact que la fonction déterministe `apply*` correspondante valide et applique
-/// après revue humaine — jamais d'écriture directe par le LLM (GSMS-AI-01).
+/// ExÃ©cution d'une tÃ¢che IA (gÃ©nÃ©ration de programme, dÃ©roulÃ©, preuves Qualiopi...).
+/// Le modÃ¨le ne touche jamais la base directement : il produit un ou plusieurs
+/// AiArtifact que la fonction dÃ©terministe `apply*` correspondante valide et applique
+/// aprÃ¨s revue humaine â jamais d'Ã©criture directe par le LLM (GSMS-AI-01).
 model AiRun {
   id                String      @id @default(uuid())
   useCase           String
@@ -467,9 +469,9 @@ model AiRun {
   @@index([requestedById])
 }
 
-/// Sortie structurée proposée par un AiRun. Reste à l'état PROPOSED tant qu'un humain
+/// Sortie structurÃ©e proposÃ©e par un AiRun. Reste Ã  l'Ã©tat PROPOSED tant qu'un humain
 /// ne l'a pas revue (reviewedById/reviewedAt) ; l'application effective (appliedAt) est
-/// faite par du code déterministe, jamais par le modèle lui-même.
+/// faite par du code dÃ©terministe, jamais par le modÃ¨le lui-mÃªme.
 model AiArtifact {
   id               String           @id @default(uuid())
   runId            String
@@ -569,12 +571,12 @@ model FormateurProfile {
   id                    String   @id @default(uuid())
   userId                String   @unique
   companyId             String?
-  /// Équipe interne rattachée (formateurs salariés / pool maison).
+  /// Ãquipe interne rattachÃ©e (formateurs salariÃ©s / pool maison).
   schoolInternalService SchoolInternalService?
   trainingCenterId      String?
-  /// Première spécialité (doublon de confort avec `specialties[0]`).
+  /// PremiÃ¨re spÃ©cialitÃ© (doublon de confort avec `specialties[0]`).
   speciality            String?
-  /** Domaines dispensés au catalogue (JSON string[]): SST, TFPAPS, SSIAP, etc. */
+  /** Domaines dispensÃ©s au catalogue (JSON string[]): SST, TFPAPS, SSIAP, etc. */
   specialties           Json     @default("[]")
   pedagogicalReferences Json?    @default("[]")
   certifications        Json?    @default("[]")
@@ -689,20 +691,20 @@ model SystemSetting {
   address        String?
   companyCity    String?
   companyPostalCode String?
-  /// Identifiant légal entreprise (école / organisme).
+  /// Identifiant lÃ©gal entreprise (Ã©cole / organisme).
   siret          String?
-  /// Agrément CNAPS ou équivalent, si applicable.
+  /// AgrÃ©ment CNAPS ou Ã©quivalent, si applicable.
   cnaps          String?
-  /// Représentant / responsable légal affiché sur documents et profil école.
+  /// ReprÃ©sentant / responsable lÃ©gal affichÃ© sur documents et profil Ã©cole.
   directorFullName String?
-  /// Photo / avatar dirigeant (URL publique, preset `/compagnie-avatars/...` ou fichier uploadé).
+  /// Photo / avatar dirigeant (URL publique, preset `/compagnie-avatars/...` ou fichier uploadÃ©).
   directorAvatar   String?
   industry         String?
   companyType      String?
   companySize      String?
   companyRegion    String?
 
-  /// Numéro Déclaration Activité (NDA) et informations réglementaires formation.
+  /// NumÃ©ro DÃ©claration ActivitÃ© (NDA) et informations rÃ©glementaires formation.
   ndaNumber               String?
   ndaSpecialty            String?   @db.Text
   ndaDeclaredAt           DateTime?
@@ -710,7 +712,7 @@ model SystemSetting {
   ndaTrainingActions      String?   @db.Text
   qualiopiCertifications  String?   @db.Text
 
-  /// Registre national des entreprises / données publiques INPI–INSEE (référence).
+  /// Registre national des entreprises / donnÃ©es publiques INPIâINSEE (rÃ©fÃ©rence).
   siren                     String?
   establishmentNic          String?
   vatIntracommunityNumber   String?
@@ -729,7 +731,7 @@ model SystemSetting {
   collectiveAgreementNote   String?   @db.Text
   inpiCompanySummary        String?   @db.Text
 
-  /// Capital social (€), mention réglementaire.
+  /// Capital social (â¬), mention rÃ©glementaire.
   shareCapitalEuros    Int?
   /// Ex. greffe du tribunal de commerce (ville).
   rcsRegistryCity      String?
@@ -770,7 +772,7 @@ model SystemSetting {
   notifySystemErrorWeb           Boolean  @default(true)
   notifySystemErrorRoleIds       String[]
 
-  /// Fiches du dossier administratif de l’école (références, dates, id de pièce jointe `FileAsset`).
+  /// Fiches du dossier administratif de lâÃ©cole (rÃ©fÃ©rences, dates, id de piÃ¨ce jointe `FileAsset`).
   administrativeDossier Json? @default("{}")
 }
 
@@ -812,14 +814,14 @@ enum RhTeamSector {
   EXTERNAL
 }
 
-/// Cycle de vie d'une équipe liée à une session catalogue.
+/// Cycle de vie d'une Ã©quipe liÃ©e Ã  une session catalogue.
 enum RhTeamLifecycleStatus {
   ACTIVE
   POST_EXAM
   ARCHIVED
 }
 
-/// Unité organisationnelle RH (direction, pôle, campus…)
+/// UnitÃ© organisationnelle RH (direction, pÃ´le, campusâ¦)
 model RhOrgUnit {
   id         String        @id @default(uuid())
   name       String
@@ -841,7 +843,7 @@ model RhOrgUnit {
   @@index([positionId])
 }
 
-/// Équipe opérationnelle RH (pôles pédagogiques, formateurs, qualité…)
+/// Ãquipe opÃ©rationnelle RH (pÃ´les pÃ©dagogiques, formateurs, qualitÃ©â¦)
 model RhTeam {
   id          String       @id @default(uuid())
   name        String
@@ -852,7 +854,7 @@ model RhTeam {
   siteId      String?
   orgUnitId   String?
   leaderId    String?
-  /// Équipe auto-provisionnée pour une session formation (1:1).
+  /// Ãquipe auto-provisionnÃ©e pour une session formation (1:1).
   formationSessionId String?              @unique
   lifecycleStatus    RhTeamLifecycleStatus @default(ACTIVE)
   lifecycleClosedAt  DateTime?
@@ -899,7 +901,7 @@ enum RhAbsenceStatus {
   REJECTED
 }
 
-/// Demande d'absence / congé collaborateur
+/// Demande d'absence / congÃ© collaborateur
 model RhAbsence {
   id            String          @id @default(uuid())
   userId        String
@@ -920,7 +922,7 @@ model RhAbsence {
   @@index([startDate])
 }
 
-/// Référentiel postes / fonctions métier école
+/// RÃ©fÃ©rentiel postes / fonctions mÃ©tier Ã©cole
 model RhPosition {
   id                    String                 @id @default(uuid())
   label                 String
@@ -937,7 +939,7 @@ model RhPosition {
   @@index([schoolInternalService, sortOrder])
 }
 
-/// Référentiel qualifications par pôle interne (CFA).
+/// RÃ©fÃ©rentiel qualifications par pÃ´le interne (CFA).
 model RhQualification {
   id                    String                @id @default(uuid())
   label                 String
@@ -981,7 +983,7 @@ model EquipmentMaintenance {
   notes           String?
   scheduledDate   DateTime?
   completedDate   DateTime?
-  /// Coût intervention / pièces (€) — charge budget EQUIPEMENT.
+  /// CoÃ»t intervention / piÃ¨ces (â¬) â charge budget EQUIPEMENT.
   costAmount      Decimal?                   @db.Decimal(12, 2)
   createdAt       DateTime                   @default(now())
   updatedAt       DateTime                   @updatedAt
@@ -1008,8 +1010,8 @@ model StockMovement {
   @@index([movementDate])
 }
 
-// --- CRM: catalogue formations (fiches vitrine + sessions commerciales ; aligné sheets Formations CRM / landing) ---
-// Distinct du LMS `TrainingSession` (instances liées à `Course`).
+// --- CRM: catalogue formations (fiches vitrine + sessions commerciales ; alignÃ© sheets Formations CRM / landing) ---
+// Distinct du LMS `TrainingSession` (instances liÃ©es Ã  `Course`).
 
 enum FormationLifecycleStatus {
   DRAFT
@@ -1040,9 +1042,9 @@ enum FormationDeliveryMode {
   ENTREPRISE_SUR_SITE
 }
 
-/// Sessions vitrine CRM. `sessionKind` est **dérivé du parcours** de la formation :
-/// parcours Initial → `WITH_EXAM` (examen en fin de parcours) ; MAC / RAN / Autre → `INITIAL`.
-/// Valeur `OTHER` réservée aux cas exceptionnels. Le CRM ne propose pas un interrupteur « avec/sans examen » séparé.
+/// Sessions vitrine CRM. `sessionKind` est **dÃ©rivÃ© du parcours** de la formation :
+/// parcours Initial â `WITH_EXAM` (examen en fin de parcours) ; MAC / RAN / Autre â `INITIAL`.
+/// Valeur `OTHER` rÃ©servÃ©e aux cas exceptionnels. Le CRM ne propose pas un interrupteur Â« avec/sans examen Â» sÃ©parÃ©.
 enum FormationVitrineSessionKind {
   INITIAL
   WITH_EXAM
@@ -1053,7 +1055,7 @@ model Formation {
   id     String @id @default(uuid())
   slug   String @unique
   name   String
-  /// Résumé carte liste / SEO (catalogue vitrine).
+  /// RÃ©sumÃ© carte liste / SEO (catalogue vitrine).
   description String? @db.Text
 
   track               FormationTrack
@@ -1064,13 +1066,13 @@ model Formation {
   status   FormationLifecycleStatus @default(DRAFT)
   featured Boolean                  @default(false)
 
-  /// Sidebar : logo formation (URL ou clé média).
+  /// Sidebar : logo formation (URL ou clÃ© mÃ©dia).
   logoUrl         String? @db.Text
   providerName    String?
   providerEmail   String?
   providerPhone   String?
   providerAddress String? @db.Text
-  /// Libellé rapide type « Dès le 04 Mai 2026 » (sidebar upload).
+  /// LibellÃ© rapide type Â« DÃ¨s le 04 Mai 2026 Â» (sidebar upload).
   nextSessionLabel String?
 
   cpfEligible       Boolean @default(false)
@@ -1080,7 +1082,7 @@ model Formation {
 
   deliveryMode FormationDeliveryMode?
 
-  /// KPI vue d’ensemble (statistics1) — scalaires pour filtres / tri ; détails dans overviewMetrics si besoin.
+  /// KPI vue dâensemble (statistics1) â scalaires pour filtres / tri ; dÃ©tails dans overviewMetrics si besoin.
   hoursMin       Int?
   hoursMax       Int?
   traineesMin    Int?
@@ -1096,17 +1098,17 @@ model Formation {
   theoryPercent     Int?
   practicePercent   Int?
 
-  /// Bandeau Prérequis (statistics4).
+  /// Bandeau PrÃ©requis (statistics4).
   minAgeLabel               String?
   frenchLevel               String?
   authorizationSummary      String?
   criminalRecordRequirement String?
 
-  /// Carte « Présentation » (resent-order).
+  /// Carte Â« PrÃ©sentation Â» (resent-order).
   presentationTitle String?
   longDescription   String? @db.Text
 
-  /// listes / tableaux riches (structure libre, consommée par les sheets CRM).
+  /// listes / tableaux riches (structure libre, consommÃ©e par les sheets CRM).
   modules              Json @default("[]")
   outcomes             Json @default("[]")
   presentationBullets  Json @default("[]")
@@ -1116,10 +1118,10 @@ model Formation {
   fundingChannels      Json @default("[]")
   overviewMetrics      Json @default("[]")
   certificationSteps   Json @default("[]")
-  /// Résumés carte « Détails complémentaires » + métadonnées UI (axes, version commerciale…).
+  /// RÃ©sumÃ©s carte Â« DÃ©tails complÃ©mentaires Â» + mÃ©tadonnÃ©es UI (axes, version commercialeâ¦).
   complementaryDetails Json @default("{}")
 
-  /// Routage type sheet landing (`FORMATION_CATALOG_PROGRAM_BY_SLUG`) sérialisé en JSON.
+  /// Routage type sheet landing (`FORMATION_CATALOG_PROGRAM_BY_SLUG`) sÃ©rialisÃ© en JSON.
   catalogProgramConfig Json @default("{}")
 
   /// Pont optionnel vers un cours LMS (sync progression / TrainingSession).
@@ -1133,7 +1135,7 @@ model Formation {
   /// Offre catalogue CRM
   catalogOffer FormationCatalogOffer?
 
-  /// Ligne catalogue finance (prestations / tarifs devis), synchronisée depuis l’offre catalogue.
+  /// Ligne catalogue finance (prestations / tarifs devis), synchronisÃ©e depuis lâoffre catalogue.
   financeCatalogLine FinanceCatalogLine?
 
   candidatures Candidature[]
@@ -1142,6 +1144,7 @@ model Formation {
   quoteLeads Lead[] @relation("LeadQuoteFormation")
   financeDevis FinanceDevis[]
   trainingRequests TrainingRequest[]
+  evidences Evidence[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1152,19 +1155,19 @@ model Formation {
   @@index([featured])
 }
 
-/// Inclusion d'une fiche référence dans le catalogue école — pas de duplication métier, surcharges optionnelles.
+/// Inclusion d'une fiche rÃ©fÃ©rence dans le catalogue Ã©cole â pas de duplication mÃ©tier, surcharges optionnelles.
 model FormationCatalogOffer {
   id          String    @id @default(uuid())
   formationId String    @unique
   formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
 
-  /// Visible catalogue / brouillon / suspendu (archivé). La ligne référence `Formation` n'est jamais supprimée.
+  /// Visible catalogue / brouillon / suspendu (archivÃ©). La ligne rÃ©fÃ©rence `Formation` n'est jamais supprimÃ©e.
   catalogStatus FormationLifecycleStatus @default(ACTIVE)
 
   priceFromOverride Decimal? @db.Decimal(10, 2)
   currencyOverride  String?
 
-  /// Affichage catalogue : initial / MAC / RAN… si null, reprend `Formation.parcoursSpecialite`.
+  /// Affichage catalogue : initial / MAC / RANâ¦ si null, reprend `Formation.parcoursSpecialite`.
   parcoursSpecialiteOverride FormationParcoursSpecialite?
 
   fundingBlocksOverride       Json?
@@ -1177,7 +1180,7 @@ model FormationCatalogOffer {
   @@index([catalogStatus])
 }
 
-/// Volet affiché sur la section #trainers du landing.
+/// Volet affichÃ© sur la section #trainers du landing.
 enum LandingTeamVolet {
   direction
   formateur
@@ -1185,7 +1188,7 @@ enum LandingTeamVolet {
   rh
 }
 
-/// Membre de l'équipe publiée sur le landing (#trainers) — lié à un compte RH / formateur.
+/// Membre de l'Ã©quipe publiÃ©e sur le landing (#trainers) â liÃ© Ã  un compte RH / formateur.
 model LandingTeamOffer {
   id     String @id @default(uuid())
   userId String @unique
@@ -1212,7 +1215,7 @@ model LandingTeamOffer {
   @@index([catalogStatus, volet, sortOrder])
 }
 
-/// Salle ou espace pédagogique réservable pour les sessions catalogue CRM (libellés métier : « Salle Aurore », etc.).
+/// Salle ou espace pÃ©dagogique rÃ©servable pour les sessions catalogue CRM (libellÃ©s mÃ©tier : Â« Salle Aurore Â», etc.).
 model FormationVenueRoom {
   id         String   @id @default(uuid())
   name       String
@@ -1235,8 +1238,8 @@ model FormationVenueRoom {
   @@index([sortOrder])
 }
 
-/// Mobilier / matériel permanent installé dans une salle (chaises, vidéoprojecteur…).
-/// Distinct des `FormationSession.reservedEquipmentIds` (réservation ponctuelle session).
+/// Mobilier / matÃ©riel permanent installÃ© dans une salle (chaises, vidÃ©oprojecteurâ¦).
+/// Distinct des `FormationSession.reservedEquipmentIds` (rÃ©servation ponctuelle session).
 model VenueRoomFixedEquipment {
   id          String   @id @default(uuid())
   venueRoomId String
@@ -1263,7 +1266,7 @@ enum VenueRoomBookingStatus {
   CANCELLED
 }
 
-/// Réservation ponctuelle de salle (réunion staff, réunion info, etc.) — hors session catalogue.
+/// RÃ©servation ponctuelle de salle (rÃ©union staff, rÃ©union info, etc.) â hors session catalogue.
 model VenueRoomBooking {
   id              String                 @id @default(uuid())
   venueRoomId     String
@@ -1293,42 +1296,45 @@ model FormationSession {
   startDate DateTime?
   endDate   DateTime?
 
-  /// Clôture des inscriptions (horodatage).
+  /// ClÃ´ture des inscriptions (horodatage).
   registrationClosesAt DateTime?
-  /// Date / heure d’examen prévue (optionnel).
+  /// Date / heure dâexamen prÃ©vue (optionnel).
   examDate             DateTime?
-  /// Salle d’examen (PCS, plateau incendie…) si différente de la salle de cours.
+  /// Salle dâexamen (PCS, plateau incendieâ¦) si diffÃ©rente de la salle de cours.
   examVenueRoomId      String?
   examVenueRoom        FormationVenueRoom? @relation("FormationSessionExamRoom", fields: [examVenueRoomId], references: [id], onDelete: SetNull)
-  /// Matériel mobile réservé pour le jour d’examen (magnétomètre, fumigènes…).
+  /// MatÃ©riel mobile rÃ©servÃ© pour le jour dâexamen (magnÃ©tomÃ¨tre, fumigÃ¨nesâ¦).
   examReservedEquipmentIds Json @default("[]")
 
-  /// Effectif cible pour cette session (distinct de la fourchette « fiche formation »).
+  /// Effectif cible pour cette session (distinct de la fourchette Â« fiche formation Â»).
   traineesMin Int?
   traineesMax Int?
 
-  /// Formateur référent (compte rôle formateur).
+  /// Formateur rÃ©fÃ©rent (compte rÃ´le formateur).
   trainerUserId String?
   trainer       User?   @relation("FormationSessionTrainer", fields: [trainerUserId], references: [id], onDelete: SetNull)
 
-  /// Référent pédagogique modérateur du chat de session.
+  /// RÃ©fÃ©rent pÃ©dagogique modÃ©rateur du chat de session.
   moderatorUserId String?
   moderator       User?   @relation("FormationSessionModerator", fields: [moderatorUserId], references: [id], onDelete: SetNull)
 
-  /// Groupe chat lié (formateur + élèves + modérateur) — relation inverse.
+  /// Groupe chat liÃ© (formateur + Ã©lÃ¨ves + modÃ©rateur) â relation inverse.
   chatConversation ChatConversation?
 
-  /// Salle allouée (disponibilité = pas de autre session même salle sur dates qui se chevauchent).
+  /// Salle allouÃ©e (disponibilitÃ© = pas de autre session mÃªme salle sur dates qui se chevauchent).
   venueRoomId String?
   venueRoom   FormationVenueRoom? @relation(fields: [venueRoomId], references: [id], onDelete: SetNull)
 
-  /// Identifiants `Equipment` réservés pour la session (JSON : tableau d’UUID).
+  /// Identifiants `Equipment` rÃ©servÃ©s pour la session (JSON : tableau dâUUID).
   reservedEquipmentIds Json @default("[]")
 
-  /// Libellé affiché (ex. « 04 Mai au 12 Juin 2026 ») tant que les dates ne sont pas renseignées partout.
+  /// LibellÃ© affichÃ© (ex. Â« 04 Mai au 12 Juin 2026 Â») tant que les dates ne sont pas renseignÃ©es partout.
   dateDisplayLabel String @db.Text
   location         String
   sessionKind      FormationVitrineSessionKind @default(INITIAL)
+
+  /// SD-06 session readiness (WF-10)
+  readinessStatus SessionReadinessStatus @default(DRAFT)
 
   venueBrandPrefix String? @db.Text
   sessionSubtitle  String?
@@ -1345,6 +1351,8 @@ model FormationSession {
   rhTeam               RhTeam?
   satisfactionSurveys   SatisfactionSurvey[]
   fundingCases          FundingCase[]
+  evidences             Evidence[]
+  readinessEvents       SessionReadinessEvent[]
 
   candidaturesInterested Candidature[] @relation("CandidatureInterestedSession")
   financeDevisSessionLinks FinanceDevis[] @relation("FinanceDevisLinkedSession")
@@ -1357,6 +1365,7 @@ model FormationSession {
   @@index([startDate])
   @@index([venueRoomId])
   @@index([examVenueRoomId])
+  @@index([readinessStatus])
 }
 
 enum SessionAutomationStatus {
@@ -1366,7 +1375,7 @@ enum SessionAutomationStatus {
   FAILED
 }
 
-/// Exécution circuit n8n (jalons J-15 → J+45) — suivi / annulation si session reportée.
+/// ExÃ©cution circuit n8n (jalons J-15 â J+45) â suivi / annulation si session reportÃ©e.
 model SessionAutomationRun {
   id              String                  @id @default(uuid())
   sessionId       String
@@ -1390,7 +1399,7 @@ model SessionAutomationRun {
   @@index([n8nExecutionId])
 }
 
-/// Annonce portail candidat — cible une session ou toute la formation (sessionId null).
+/// Annonce portail candidat â cible une session ou toute la formation (sessionId null).
 model PortalSessionAnnouncement {
   id          String   @id @default(uuid())
   formationId String
@@ -1409,7 +1418,7 @@ model PortalSessionAnnouncement {
   @@index([publishedAt])
 }
 
-/// Dossier d’entrée CRM
+/// Dossier dâentrÃ©e CRM
 model Candidature {
   id String @id @default(uuid())
 
@@ -1419,7 +1428,7 @@ model Candidature {
   formationId String?
   formation   Formation? @relation(fields: [formationId], references: [id], onDelete: SetNull)
 
-  /// Session précise visée depuis le landing (optionnel ; doit appartenir à `formationId` lorsque les deux sont renseignés).
+  /// Session prÃ©cise visÃ©e depuis le landing (optionnel ; doit appartenir Ã  `formationId` lorsque les deux sont renseignÃ©s).
   interestedSessionId String?
   interestedSession    FormationSession? @relation("CandidatureInterestedSession", fields: [interestedSessionId], references: [id], onDelete: SetNull)
 
@@ -1432,7 +1441,7 @@ model Candidature {
   cnapsSubmittedAt DateTime?
   cnapsReference   String?
   cnapsDecisionAt  DateTime?
-  /// Réponse PN/CNAPS lorsque suivie manuellement (null = encore en cours).
+  /// RÃ©ponse PN/CNAPS lorsque suivie manuellement (null = encore en cours).
   cnapsPrefavorable Boolean?
 
   validatedAt DateTime?
@@ -1457,7 +1466,7 @@ model Candidature {
   @@index([interestedSessionId])
 }
 
-/// Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.
+/// Participation Ã  une session vitrine CRM. `candidatureId` rattache au dossier validÃ© lorsquâexistant.
 model FormationSessionParticipant {
   id        String @id @default(uuid())
   sessionId String
@@ -1475,7 +1484,7 @@ model FormationSessionParticipant {
   certifiedAt         DateTime?
   trainingCompletedAt DateTime?
 
-  /// Financeur / modalité de prise en charge (CPF, France Travail, OPCO…).
+  /// Financeur / modalitÃ© de prise en charge (CPF, France Travail, OPCOâ¦).
   fundingMode      String?
   fundingReference String?
   fundingNotes     String? @db.Text
@@ -1493,7 +1502,7 @@ model FormationSessionParticipant {
   @@index([examOutcome])
 }
 
-/// Jour de formation dans le suivi quotidien CRM (dates dérivées de la session ou ajout manuel).
+/// Jour de formation dans le suivi quotidien CRM (dates dÃ©rivÃ©es de la session ou ajout manuel).
 model FormationSessionDay {
   id        String           @id @default(uuid())
   sessionId String
@@ -1513,7 +1522,7 @@ model FormationSessionDay {
   @@index([sessionId])
 }
 
-/// Émargement nominatif par stagiaire et créneau (matin / soir).
+/// Ãmargement nominatif par stagiaire et crÃ©neau (matin / soir).
 model FormationSessionEmargement {
   id            String @id @default(uuid())
   dayId         String
@@ -1537,7 +1546,7 @@ model FormationSessionEmargement {
   @@index([dayId])
 }
 
-/// Examen catalogue lié à une session `WITH_EXAM` (1:1).
+/// Examen catalogue liÃ© Ã  une session `WITH_EXAM` (1:1).
 model FormationExam {
   id        String           @id @default(uuid())
   sessionId String           @unique
@@ -1563,7 +1572,7 @@ model FormationExam {
   @@index([venueRoomId])
 }
 
-/// Attestation / certification délivrée après parcours catalogue CRM (distinct du LMS `UserCertificate`).
+/// Attestation / certification dÃ©livrÃ©e aprÃ¨s parcours catalogue CRM (distinct du LMS `UserCertificate`).
 model FormationAttestation {
   id String @id @default(uuid())
 
@@ -1699,7 +1708,7 @@ enum ActivitySubType {
   QUIZ_MULTIPLE_CHOICE
 }
 
-/// Workflow brouillon → validation admin (optionnel via LMS_CONTENT_REVIEW_REQUIRED).
+/// Workflow brouillon â validation admin (optionnel via LMS_CONTENT_REVIEW_REQUIRED).
 enum LmsContentReviewStatus {
   DRAFT
   PENDING_REVIEW
@@ -1750,7 +1759,7 @@ model MuxData {
   chapterId String  @unique
 }
 
-/// Banque de questions QCM réutilisable (par formation ou cours LMS).
+/// Banque de questions QCM rÃ©utilisable (par formation ou cours LMS).
 model QuizQuestionBank {
   id          String  @id @default(uuid())
   title       String
@@ -1776,11 +1785,11 @@ model QuizQuestionBankItem {
   bank         QuizQuestionBank @relation(fields: [bankId], references: [id], onDelete: Cascade)
   position     Int              @default(0)
   prompt       String           @db.Text
-  /// Liste de réponses proposées (JSON string[]).
+  /// Liste de rÃ©ponses proposÃ©es (JSON string[]).
   choices      Json             @default("[]")
   correctIndex Int              @default(0)
   tags         String[]         @default([])
-  /// UV LMS (chapitre) — banque QCM par unité de valeur.
+  /// UV LMS (chapitre) â banque QCM par unitÃ© de valeur.
   chapterId    String?
   chapter      Chapter?         @relation(fields: [chapterId], references: [id], onDelete: SetNull)
 
@@ -1858,7 +1867,7 @@ model TrainingSession {
   description  String?  @db.Text
   startDate    DateTime
   endDate      DateTime
-  location     String? // Salle de classe ou URL visioconférence
+  location     String? // Salle de classe ou URL visioconfÃ©rence
   instructorId String?
   instructor   User?    @relation("Instructor", fields: [instructorId], references: [id])
 
@@ -1944,7 +1953,7 @@ enum LeadStatus {
   LOST
 }
 
-/// Cycle commercial d’un devis (module Finance).
+/// Cycle commercial dâun devis (module Finance).
 enum FinanceDevisStatus {
   DRAFT
   SENT
@@ -1953,7 +1962,7 @@ enum FinanceDevisStatus {
   EXPIRED
 }
 
-/// Cycle e-facture (émission Factur-X / PDP) — distinct du statut commercial.
+/// Cycle e-facture (Ã©mission Factur-X / PDP) â distinct du statut commercial.
 enum FinanceEinvoiceStatus {
   NOT_READY
   READY
@@ -1978,7 +1987,7 @@ model Lead {
   courseId String? // Formation qui l'interesse
   course   Course? @relation(fields: [courseId], references: [id])
 
-  /// Fiche catalogue CRM (`Formation`) pour les devis landing — distinct du cours LMS (`courseId`).
+  /// Fiche catalogue CRM (`Formation`) pour les devis landing â distinct du cours LMS (`courseId`).
   formationId String?
   formation   Formation? @relation("LeadQuoteFormation", fields: [formationId], references: [id], onDelete: SetNull)
 
@@ -1995,7 +2004,7 @@ model Lead {
   @@index([formationId])
 }
 
-/// Devis / proposition commerciale (Finance), souvent rattaché à un lead landing devis.
+/// Devis / proposition commerciale (Finance), souvent rattachÃ© Ã  un lead landing devis.
 model FinanceDevis {
   id            String @id @default(uuid())
   referenceCode String @unique
@@ -2008,15 +2017,15 @@ model FinanceDevis {
   formationId String?
   formation   Formation? @relation(fields: [formationId], references: [id], onDelete: SetNull)
 
-  /// Dossier candidature CRM (optionnel) — ex. après conversion lead.
+  /// Dossier candidature CRM (optionnel) â ex. aprÃ¨s conversion lead.
   candidatureId String?
   candidature   Candidature? @relation(fields: [candidatureId], references: [id], onDelete: SetNull)
 
-  /// Session catalogue visée (optionnel).
+  /// Session catalogue visÃ©e (optionnel).
   formationSessionId String?
   formationSession   FormationSession? @relation("FinanceDevisLinkedSession", fields: [formationSessionId], references: [id], onDelete: SetNull)
 
-  /// Contexte client figé (entreprise, effectifs, modalité… — aligné formulaire landing).
+  /// Contexte client figÃ© (entreprise, effectifs, modalitÃ©â¦ â alignÃ© formulaire landing).
   clientSnapshot Json @default("{}")
   /// Lignes [{ label, quantity, unitPriceHt, vatRate }]
   lines          Json @default("[]")
@@ -2030,15 +2039,15 @@ model FinanceDevis {
   notes         String? @db.Text
   internalNotes String? @db.Text
 
-  /// Facturation électronique (réforme FR 2026) — export Factur-X / envoi PDP.
+  /// Facturation Ã©lectronique (rÃ©forme FR 2026) â export Factur-X / envoi PDP.
   einvoiceStatus       FinanceEinvoiceStatus @default(NOT_READY)
   /// MINIMUM | BASIC | EN16931 (profil Factur-X).
   einvoiceProfile      String                @default("BASIC")
   einvoiceGeneratedAt  DateTime?
-  /// Identifiant retour PDP / plateforme (quand branchée).
+  /// Identifiant retour PDP / plateforme (quand branchÃ©e).
   einvoicePdpMessageId String?
   einvoiceLastError    String?               @db.Text
-  /// Snapshot XML Factur-X (CII) généré — FileAsset key optionnelle côté storage.
+  /// Snapshot XML Factur-X (CII) gÃ©nÃ©rÃ© â FileAsset key optionnelle cÃ´tÃ© storage.
   einvoiceXmlAssetKey  String?
 
   createdAt DateTime @default(now())
@@ -2055,12 +2064,12 @@ model FinanceDevis {
   @@index([einvoiceStatus])
 }
 
-/// Message laissé par le client depuis la plaquette publique (lien signé) — consultable côté CRM.
+/// Message laissÃ© par le client depuis la plaquette publique (lien signÃ©) â consultable cÃ´tÃ© CRM.
 model FinanceDevisPlaquetteMessage {
   id          String       @id @default(uuid())
   devisId     String
   devis       FinanceDevis @relation(fields: [devisId], references: [id], onDelete: Cascade)
-  /// CLIENT | STAFF (réponses internes futures).
+  /// CLIENT | STAFF (rÃ©ponses internes futures).
   authorKind  String       @default("CLIENT")
   body        String       @db.Text
   authorLabel String?
@@ -2069,14 +2078,14 @@ model FinanceDevisPlaquetteMessage {
   @@index([devisId, createdAt])
 }
 
-/// Lignes préremplies pour les devis : formations catalogue + prestations / frais saisis en base.
+/// Lignes prÃ©remplies pour les devis : formations catalogue + prestations / frais saisis en base.
 model FinanceCatalogLine {
   id String @id @default(uuid())
 
   /// FORMATION | PRESTATION | FRAIS | AUTRE
   category String @default("FORMATION")
 
-  /// Renseigné et unique pour les lignes synchronisées avec une offre catalogue formation.
+  /// RenseignÃ© et unique pour les lignes synchronisÃ©es avec une offre catalogue formation.
   formationId String? @unique
   formation   Formation? @relation(fields: [formationId], references: [id], onDelete: Cascade)
 
@@ -2174,7 +2183,7 @@ model Comment {
   content      String  @db.Text
   discussionId String
   authorId     String
-  parentId     String? // Pour les réponses imbriquées
+  parentId     String? // Pour les rÃ©ponses imbriquÃ©es
 
   discussion Discussion    @relation(fields: [discussionId], references: [id], onDelete: Cascade)
   author     User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -2239,7 +2248,7 @@ model Assignment {
 model AssignmentSubmission {
   id       String  @id @default(uuid())
   content  String? @db.Text // Texte du rendu ou lien
-  fileUrl  String? // URL du fichier déposé
+  fileUrl  String? // URL du fichier dÃ©posÃ©
   grade    Float?
   feedback String? @db.Text
 
@@ -2278,7 +2287,7 @@ model UsageEvent {
   id         String @id @default(uuid())
   feature    String // ex: "members", "courses", "ai_tokens"
   eventType  String // ex: "add", "remove", "consume"
-  usageAfter Int // Total après l'événement
+  usageAfter Int // Total aprÃ¨s l'Ã©vÃ©nement
 
   createdAt DateTime @default(now())
 
@@ -2290,7 +2299,7 @@ model Trail {
   id          String  @id @default(uuid())
   title       String
   description String? @db.Text
-  userId      String // Créateur du parcours
+  userId      String // CrÃ©ateur du parcours
 
   user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   steps TrailStep[]
@@ -2365,7 +2374,7 @@ model WebhookEndpoint {
   url         String
   secret      String
   description String?
-  events      Json    @default("[]") // Liste des événements écoutés
+  events      Json    @default("[]") // Liste des Ã©vÃ©nements Ã©coutÃ©s
   isActive    Boolean @default(true)
   createdById String
 
@@ -2401,7 +2410,7 @@ model CourseEmbedding {
   courseId   String
   activityId String?
   chunkText  String  @db.Text
-  embedding  Json? // Remplacé Unsupported("vector") par Json pour compatibilité locale
+  embedding  Json? // RemplacÃ© Unsupported("vector") par Json pour compatibilitÃ© locale
 
   course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   activity Activity? @relation(fields: [activityId], references: [id], onDelete: Cascade)
@@ -2417,13 +2426,13 @@ model CourseEmbedding {
 model CollaborationDocument {
   id   String @id @default(uuid())
   name String @unique // Identifiant unique du document (ex: "chapter-xxx")
-  data Bytes  @db.ByteA // Le document Yjs sérialisé (State vector)
+  data Bytes  @db.ByteA // Le document Yjs sÃ©rialisÃ© (State vector)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-// --- Support, marketing, SEO, finance (modules CRM opérationnels) ---
+// --- Support, marketing, SEO, finance (modules CRM opÃ©rationnels) ---
 
 enum SupportTicketStatus {
   OPEN
@@ -2701,14 +2710,14 @@ enum InAppNotificationCategory {
   TEAM
 }
 
-/// Canal UX simplifié — dossier apprenant, pédagogie, établissement CRM.
+/// Canal UX simplifiÃ© â dossier apprenant, pÃ©dagogie, Ã©tablissement CRM.
 enum InAppNotificationChannel {
   DOSSIER
   PEDAGOGIE
   ETABLISSEMENT
 }
 
-/// File d'événements métier — traitée par `@repo/workers` → `InAppNotification` (+ widgets landing).
+/// File d'Ã©vÃ©nements mÃ©tier â traitÃ©e par `@repo/workers` â `InAppNotification` (+ widgets landing).
 enum CrmEventOutboxStatus {
   PENDING
   PROCESSING
@@ -2859,7 +2868,7 @@ model ChatMessage {
   @@index([senderId])
 }
 
-// ─── Conformité documentaire (gouvernance) ───────────────────────────────────
+// âââ ConformitÃ© documentaire (gouvernance) âââââââââââââââââââââââââââââââââââ
 
 enum ComplianceSubjectType {
   USER
@@ -2924,7 +2933,7 @@ enum DocumentRequestChannel {
   SMS
 }
 
-/// Catalogue : modèle de dossier par situation métier (admission, CNAPS, onboarding RH…).
+/// Catalogue : modÃ¨le de dossier par situation mÃ©tier (admission, CNAPS, onboarding RHâ¦).
 model DocumentRequirementTemplate {
   id          String                @id @default(uuid())
   kind        ComplianceDossierKind @unique
@@ -2959,7 +2968,7 @@ model DocumentRequirementTemplateItem {
   @@index([templateId, sortOrder])
 }
 
-/// Instance de dossier pour un sujet (candidature, user, école…).
+/// Instance de dossier pour un sujet (candidature, user, Ã©coleâ¦).
 model ComplianceDossier {
   id              String                  @id @default(uuid())
   kind            ComplianceDossierKind
@@ -3062,7 +3071,7 @@ model ComplianceItemEvent {
   @@index([dossierItemId])
 }
 
-// ─── Enquête satisfaction stagiaire (GSMS-OF-10) ──────────────────────────────
+// âââ EnquÃªte satisfaction stagiaire (GSMS-OF-10) ââââââââââââââââââââââââââââââ
 
 enum SatisfactionSurveyTiming {
   HOT
@@ -3076,9 +3085,9 @@ enum SatisfactionSurveyStatus {
   EXPIRED
 }
 
-/// Enquête de satisfaction stagiaire — une ligne « à chaud » (J0) et une ligne
-/// « à froid » (J+45) par participant confirmé de session. Réponses en JSON libre
-/// (voir lib/of/satisfaction-survey-template.ts pour le référentiel de questions).
+/// EnquÃªte de satisfaction stagiaire â une ligne Â« Ã  chaud Â» (J0) et une ligne
+/// Â« Ã  froid Â» (J+45) par participant confirmÃ© de session. RÃ©ponses en JSON libre
+/// (voir lib/of/satisfaction-survey-template.ts pour le rÃ©fÃ©rentiel de questions).
 model SatisfactionSurvey {
   id            String                    @id @default(uuid())
   sessionId     String
@@ -3099,7 +3108,7 @@ model SatisfactionSurvey {
   @@index([status])
 }
 
-// ─── FundingCase (Vague 2 / P0 — post G1-E, gate Claude 2026-08-29) ─────────
+// âââ FundingCase (Vague 2 / P0 â post G1-E, gate Claude 2026-08-29) âââââââââ
 
 enum FundingFunderType {
   CPF
@@ -3213,7 +3222,7 @@ model FundingDocument {
   @@index([caseId])
 }
 
-// --- CRM OF G3 � Company / Contact / TrainingRequest (Claude gate 2026-08-29) ---
+// --- CRM OF G3  Company / Contact / TrainingRequest (Claude gate 2026-08-29) ---
 
 enum CrmCompanyKind {
   EMPLOYER
@@ -3243,6 +3252,7 @@ model Company {
   notes            String?           @db.Text
   contacts         Contact[]
   trainingRequests TrainingRequest[]
+  evidences        Evidence[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
@@ -3270,7 +3280,7 @@ model Contact {
   @@index([companyId])
 }
 
-/// Demande de formation B2B / employeur � distincte du Lead individuel landing.
+/// Demande de formation B2B / employeur  distincte du Lead individuel landing.
 model TrainingRequest {
   id          String                @id @default(uuid())
   reference   String?               @unique
@@ -3290,4 +3300,104 @@ model TrainingRequest {
   @@index([status])
   @@index([companyId])
   @@index([formationId])
+}
+
+// --- G8 Evidence Engine + SD-06 session readiness (gate Claude 2026-08-29) ---
+
+enum EvidenceSourceType {
+  DOCUMENT
+  EVENT
+  SIGNATURE
+  DATABASE_RECORD
+  EMAIL
+  QUESTIONNAIRE
+  EVALUATION
+  MESSAGE
+  LOG
+  STATISTIQUE
+  HISTORIQUE
+  VALIDATION
+  RELATION
+}
+
+enum EvidenceStatus {
+  PENDING
+  VALID
+  EXPIRED
+  DISPUTED
+  SUPERSEDED
+}
+
+enum SessionReadinessStatus {
+  DRAFT
+  PLANNED
+  CONFIRMED
+  READY
+  RUNNING
+  COMPLETED
+  CLOSED
+  ARCHIVED
+}
+
+model Evidence {
+  id                 String             @id @default(uuid())
+  category           String
+  sourceType         EvidenceSourceType
+  sourceId           String
+  status             EvidenceStatus     @default(PENDING)
+  validUntil         DateTime?
+  immutableReference String?            @unique
+
+  sessionId     String?
+  session       FormationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  formationId   String?
+  formation     Formation?        @relation(fields: [formationId], references: [id], onDelete: SetNull)
+  learnerUserId String?
+  learner       User?             @relation("EvidenceLearner", fields: [learnerUserId], references: [id], onDelete: SetNull)
+  trainerUserId String?
+  trainer       User?             @relation("EvidenceTrainer", fields: [trainerUserId], references: [id], onDelete: SetNull)
+  companyId     String?
+  company       Company?          @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  eventName String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  indicatorLinks EvidenceIndicatorLink[]
+
+  @@index([sessionId])
+  @@index([formationId])
+  @@index([learnerUserId])
+  @@index([companyId])
+  @@index([category])
+  @@index([status])
+  @@index([sourceType, sourceId])
+}
+
+model EvidenceIndicatorLink {
+  id            String   @id @default(uuid())
+  evidenceId    String
+  evidence      Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  indicatorCode String
+  createdAt     DateTime @default(now())
+
+  @@unique([evidenceId, indicatorCode])
+  @@index([indicatorCode])
+}
+
+/// Audit trail transitions readiness (SD-06) — forçable + findingIds dans payload.
+model SessionReadinessEvent {
+  id          String                  @id @default(uuid())
+  sessionId   String
+  session     FormationSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  fromStatus  SessionReadinessStatus?
+  toStatus    SessionReadinessStatus
+  forced      Boolean                 @default(false)
+  source      String
+  actorUserId String?
+  payload     Json?
+  createdAt   DateTime                @default(now())
+
+  @@index([sessionId, createdAt])
 }

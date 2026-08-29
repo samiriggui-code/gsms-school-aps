@@ -20,7 +20,7 @@ test('harden: bootstrap seals all domain DocTypes without tenantId', () => {
   assert.ok(defs.length >= 26, `expected ≥26 DocTypes, got ${defs.length}`);
 
   const modules = new Set(defs.map((d) => d.module.split('.')[0]));
-  for (const required of ['crm', 'training', 'funding', 'documents', 'quality', 'audit']) {
+  for (const required of ['crm', 'training', 'funding', 'documents', 'quality', 'audit', 'evidence']) {
     assert.ok(modules.has(required), `missing module ${required}`);
   }
 
@@ -54,6 +54,7 @@ test('harden: PermissionEngine denies without slug (sample per domain)', () => {
     { name: 'Formation', slug: 'crm.academique.view' },
     { name: 'FundingCase', slug: 'crm.finance.view' },
     { name: 'FundingDocument', slug: 'crm.finance.view' },
+    { name: 'Evidence', slug: 'governance.conformite.view' },
     { name: 'FileAsset', slug: 'crm.ressources.view' },
     { name: 'QualityIncident', slug: 'crm.support.view' },
     { name: 'SystemLog', slug: 'iam.logs.view' },
