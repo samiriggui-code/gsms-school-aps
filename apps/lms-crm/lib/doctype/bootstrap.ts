@@ -3,6 +3,7 @@ import { registerCoreIamDocTypes } from '@/domains/core/iam/register';
 import { registerRhDocTypes } from '@/domains/rh/register';
 import { registerLmsDocTypes } from '@/domains/lms/register';
 import { registerQualiopiDocTypes } from '@/domains/qualiopi/register';
+import { registerCrmDocTypes } from '@/domains/crm/register';
 import { registerFundingDocTypes } from '@/domains/funding/register';
 
 declare global {
@@ -48,6 +49,7 @@ export function bootstrapDocTypes(): DocTypeRegistry {
   try {
     const registry = getDocTypeRegistry();
     registerCoreIamDocTypes(registry);
+    registerCrmDocTypes(registry);
     registerRhDocTypes(registry);
     registerLmsDocTypes(registry);
     registerQualiopiDocTypes(registry);
