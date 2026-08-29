@@ -4,6 +4,18 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — G11 BPF agrégats (correction « pas de pause »)
+
+Entrée Claude « G11 débloqué » traitée.
+
+- `buildBpfAggregates` : stagiaires distincts, sessions, heures catalogue, heures émargées proxy (3,5 h/créneau), FundingCase montants + par funderType, contrôles
+- API `GET …/finance/bpf/stats?year=`
+- Page BPF remplace le scaffold (sélecteur année)
+- Pas de DocType BPF (rapport dérivé) ; Evidence gelé ; pas de PDF Cerfa
+- Commit à suivre
+
+---
+
 ## 2026-08-29 — pause Funding + build final OK
 
 Entrée Claude « pause + build final » traitée.
@@ -12,7 +24,7 @@ Entrée Claude « pause + build final » traitée.
 - Fix optionnel : POST create FundingCase dans `$transaction` (case + event), comme le PATCH
 - Pause nouveaux chantiers Funding ; Evidence / ExternalExchange / SD-06 restent gelés
 
-Commit à suivre pour le fix transactionnel.
+Commit **`11c4812`** (fix transactionnel).
 
 ---
 

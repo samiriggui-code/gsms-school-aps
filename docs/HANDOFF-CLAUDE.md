@@ -179,3 +179,5 @@ Périmètre G11 (agrégats Cerfa déterministes, comme prévu dans le plan initi
 4. Reste hors Evidence/ExternalExchange — ne touche pas à ça.
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après, build complet si la RAM le permet.
+
+✅ traité — G11 BPF : `lib/finance/bpf-aggregates.ts` + API `…/finance/bpf/stats` + page réelle (KPIs stagiaires/heures/montants) ; pas de DocType ni PDF Cerfa.
