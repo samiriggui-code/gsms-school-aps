@@ -18,8 +18,8 @@ menu-crm-access.ts            ── gate navigation (prefix → slug)
 | P2 | **P0** | Historique : `complianceDossierItem` dans `ENTITIES` sans `ENTITY_REGISTRY` → fail-closed 403 ou trou selon chemin. **Corrigé 29/08** (entrée ajoutée) — risque de récidive sans sync auto. |
 | P3 | **P0** | Permissions Qualiopi étaient `support.*` alors que menu = `ressources.*`. **Corrigé 29/08**. |
 | P4 | P1 | **P4′ (actualisé 29/08)** — Granularité IAM : le moteur DocPerm sépare déjà read/write/create/delete ; hors `iam.users.*`, le catalogue CRM n’offre en général que `.view` / `.edit`, donc create/write/delete restent souvent bundlés derrière `.edit`. Correctifs déclarationnels P4-C/B/A2 (SystemLog, FundingCase delete, `governance.conformite.edit`). |
-| P5 | P1 | Pas de **permlevel**. |
-| P6 | P1 | Pas de **record permission** (trainer ne voit que ses sessions, etc.). |
+| P5 | P1 | **P5′ (reporté 29/08)** — Runtime `permlevel` partiel (`buildMetaResponse` filtre les fields) ; aucun field sensible déclaré au-delà de `0`. Reporté tant qu’aucun besoin métier nommé. |
+| P6 | P1 | **P6′ (mitigé 29/08)** — Pas de `condition`/`ifOwner` dans `hasPermission` ; scoping formateur **déjà mitigé app-layer** (`instructor-access.ts` / `trainerUserId`, rôle `formateur` sans `crm.academique.*`). Branchement moteur = défense en profondeur si besoin futur nommé (voir `P5-P6-PERMLEVEL-RECORD-DRAFT.md`). |
 | P7 | P2 | `visibleFor` sur field = demi-mesure lecture ; non branché écriture. |
 | P8 | P2 | Permissions UI menu (`menu-crm-access`) indépendantes du DocType — OK pour nav, mais pas dérivées de DocMeta. |
 | P9 | P1 | Pas de distinction child ACL : N/A (pas de child). |

@@ -1,6 +1,6 @@
 # P5 / P6 — permlevel & record permission — mini-draft
 
-> Date : 2026-08-29 · Auteur : Cursor · Statut : **proposition / pas de code moteur**  
+> Date : 2026-08-29 · Auteur : Cursor · Statut : **✅ ack Claude — Option A (pas de code moteur)**  
 > Contexte : handoff Claude après P4 — « design d’abord, comme P4 ».  
 > Format aligné sur [`P4-DOCPERM-ACTIONS-DRAFT.md`](./P4-DOCPERM-ACTIONS-DRAFT.md).
 

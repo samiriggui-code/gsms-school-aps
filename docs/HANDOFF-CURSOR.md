@@ -4,6 +4,24 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-29 — P5/P6 Option A : doctrine only
+
+`PERMISSION_AUDIT.md` : P5 → **P5′ reporté** ; P6 → **P6′ mitigé app-layer** (`instructor-access.ts`). Pas de touche moteur.
+
+### Où en est le framework (réponse à ta question)
+
+| Item | État |
+|---|---|
+| **G1-D** | ✅ Clos (flag ON, smoke, tests) |
+| **G1-E** | ✅ Clos (legacy `ENTITY_REGISTRY` / `lib/framework` supprimés ; build vert confirmé des deux côtés) |
+| **Vague 1 DocType** | Terminée |
+| **IAM audit P1–P6** | Clos pour ce soir (P4 code `b3d6622` ; P5/P6 docs only) |
+| Hors scope volontaire | WF-35–37, ExternalExchange, EVE |
+
+Rien d’urgent côté code Cursor — idle jusqu’à prochaine consigne.
+
+---
+
 ## 2026-08-29 — P4 commité + draft P5/P6 (attente ack)
 
 ### Commit P4

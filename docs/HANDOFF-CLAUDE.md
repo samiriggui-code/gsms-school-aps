@@ -587,3 +587,17 @@ Bon réflexe repéré au passage : les 2 routes `sous-traitants` ne vérifiaient
 `PERMISSION_AUDIT.md` liste encore P5 (pas de `permlevel` — visibilité de champs par rôle) et P6 (pas de *record permission* — ex. un formateur qui ne devrait voir que ses propres sessions). Contrairement à P4, ces deux-là touchent potentiellement le cœur de `permission-engine.ts` (`hasPermission` ne lit pas encore `condition`/`ifOwner`) — donc **même règle que ce soir : mini-draft d'abord, pas de code sur le moteur avant mon ack**. Priorité d'investigation : commence par vérifier s'il existe un besoin métier réel et actuel pour P6 (est-ce qu'un rôle `formateur`/`trainer` existe déjà et devrait déjà filtrer ses sessions — check le code existant avant de supposer), P5 peut attendre si P6 n'est pas confirmé utile maintenant. Meme format de draft que `P4-DOCPERM-ACTIONS-DRAFT.md` : preuves de code, pas de suppositions.
 
 ✅ traité — P4 commité `b3d6622` ; draft P5/P6 `docs/framework/P5-P6-PERMLEVEL-RECORD-DRAFT.md` (P6 mitigé app-layer formateur/`trainerUserId`, P5 reporter). **Attente ack** avant code moteur. Voir HANDOFF-CURSOR.
+
+## 2026-08-29 — ack P5/P6 : Option A, on ne touche pas le moteur ce soir
+
+Vérifié moi-même avant d'ack (pas sur parole) : `formateur` (seed `crm-role-permissions.js`) n'a **aucun** slug `crm.academique.*` — il ne passe donc jamais le gate DocType `FormationSession` (read = `crm.academique.view`), tout son accès passe par `instructor-access.ts` (`listInstructorSessionIds`/`assertInstructorOwnsSession`, filtrés sur `trainerUserId`), lu en entier et conforme à ce que le draft décrit. Le verdict "P6 = besoin réel mais déjà mitigé hors moteur" est confirmé par le code, pas juste plausible.
+
+1. **Ack verdict P6** : oui — mitigé, pas un trou ouvert aujourd'hui, juste un risque latent si un futur rôle hybride recevait `academique.view` sans scoping (peu probable, pas de demande produit).
+2. **P5** : reporté, d'accord — pas de besoin métier nommé, `permlevel` reste à `0` partout.
+3. **Option A** — ne touche pas `permission-engine.ts`/`resource-service.ts` ce soir. Documente juste dans `PERMISSION_AUDIT.md` : P6 → "mitigé app-layer (`instructor-access.ts`), branchement moteur (`condition`/`ifOwner`) en défense en profondeur si besoin futur nommé" ; P5 → "reporté, aucun field sensible identifié". Même règle que P4′ : remplacer in-place, ne pas laisser trainer un finding qui ne dit plus l'état réel.
+
+Après cette mise à jour doc, ce chantier IAM/permission-audit (P1-P10) est clos pour ce soir — bon travail sur toute la série P1→P6, rigueur et discipline "pas de code moteur sans ack" tenue de bout en bout.
+
+**Suite** : rien d'urgent à enchaîner côté code pour l'instant de mon côté (le reste du backlog — WF-35-37 veille, ExternalExchange, EVE — reste volontairement hors scope, voir `SUIVI-CURSOR-CLAUDE.md` si besoin de contexte). Si tu as terminé G1-D/G1-E ou un autre chantier framework en cours de ton côté, dis où ça en est.
+
+✅ traité — Option A : `PERMISSION_AUDIT.md` P5′/P6′ mis à jour in-place. Pas de code moteur. G1-D/G1-E déjà clos (voir HANDOFF-CURSOR). Chantier IAM P1–P6 clos pour ce soir.
