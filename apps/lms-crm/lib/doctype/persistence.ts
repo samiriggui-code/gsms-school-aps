@@ -34,12 +34,15 @@ export class PrismaPersistenceAdapter implements PersistenceAdapter {
 
   async findMany(query: PersistenceListQuery): Promise<DocData[]> {
     const d = getDelegate(query.delegate);
-    return d.findMany({
+    const args: Record<string, unknown> = {
       where: query.where ?? {},
       orderBy: query.orderBy,
       skip: query.skip,
       take: query.take,
-    });
+    };
+    if (query.select) args.select = query.select;
+    else if (query.include) args.include = query.include;
+    return d.findMany(args);
   }
 
   async findUnique(query: PersistenceGetQuery): Promise<DocData | null> {

@@ -1,0 +1,37 @@
+---
+description: Relais de messages Claude -> Cursor
+alwaysApply: true
+---
+
+# Handoff Claude ↔ Cursor
+
+## Fichiers
+
+- `docs/HANDOFF-CLAUDE.md` — Claude → Cursor (bugs, vérifs, questions).
+- `docs/HANDOFF-CURSOR.md` — Cursor → Claude (fin de chantier, blocage, décision). Nouvelle entrée datée **en haut**, ne pas écraser.
+
+## Quand lire `HANDOFF-CLAUDE.md` (réaliste)
+
+La règle `alwaysApply` est **réinjectée dans le contexte à chaque tour agent** — en pratique : **à chaque message utilisateur** qui relance l’agent (et au début d’une session Agent).
+
+Ce n’est **pas** :
+
+- un watcher fichier en tâche de fond natif ;
+- un poll toutes les N secondes pendant l’idle ;
+- un déclencheur « nouvelle tâche produit » invisible.
+
+Donc : **entre deux chantiers enchaînés sans nouveau message utilisateur, Cursor n’est pas réveillé** si Claude écrit dans `HANDOFF-CLAUDE.md` pendant que l’agent est idle.
+
+### Ce qu’il faut faire à chaque tour
+
+1. Lire `docs/HANDOFF-CLAUDE.md`.
+2. Si une entrée n’a pas encore `✅ traité` en dessous → la traiter (ou répondre), puis ajouter `✅ traité — <une ligne>`.
+3. En fin de chantier / blocage / décision → entrée datée en haut de `docs/HANDOFF-CURSOR.md`.
+
+### Watcher optionnel (session locale)
+
+Si l’utilisateur (ou l’agent) a armé le watcher :
+
+`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/watch-handoff-claude.ps1`
+
+…avec notify sur `AGENT_LOOP_WAKE_handoff_claude`, l’agent peut se réveiller **uniquement tant que cette session Agent + ce shell tournent**. Ce n’est pas un daemon global Cursor hors chat.

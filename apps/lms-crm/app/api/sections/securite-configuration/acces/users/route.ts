@@ -13,7 +13,8 @@ import { UserStatus } from '@/app/models/user';
 import { ensureUserStoragePrefix, provisionStoragePrefixSafe } from '@/lib/entity-storage';
 import { createWorkflowEngine } from '@repo/api-core';
 import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
-import { listEntity } from '@/lib/framework/engine';
+import { principalFromSession } from '@/lib/doctype/principal';
+import { getResourceService, listParamsFromRequest } from '@/lib/doctype/resource';
 
 export async function GET(req: NextRequest) {
   try {
@@ -33,11 +34,11 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Bascule liste → moteur générique (parité via déclaration `user` dans ENTITIES).
-    const result = await listEntity('user', {
-      searchParams: new URL(req.url).searchParams,
-      headers: req.headers,
-    });
+    const result = await getResourceService().list(
+      'user',
+      principalFromSession(session),
+      listParamsFromRequest(req),
+    );
 
     return NextResponse.json({
       data: result.data,
@@ -46,7 +47,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     const message =
       error instanceof Error ? error.message : 'Oops! Something went wrong. Please try again in a moment.';
-    const status = message.includes('inconnue') || message.includes('refus') ? 403 : 500;
+    const status = message.includes('inconnue') || message.includes('refus') || message.startsWith('Permission denied') ? 403 : 500;
     return NextResponse.json({ message }, { status });
   }
 }

@@ -12,9 +12,10 @@ import {
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { createWorkflowEngine } from '@repo/api-core';
 import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
-import { listEntity } from '@/lib/framework/engine';
+import { principalFromSession } from '@/lib/doctype/principal';
+import { getResourceService, listParamsFromRequest } from '@/lib/doctype/resource';
 
-// GET: Fetch all roles with permissions (moteur générique + forme legacy UI)
+// GET: Fetch all roles with permissions (ResourceService + forme legacy UI)
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -33,13 +34,10 @@ export async function GET(request: Request) {
       );
     }
 
-    const result = await listEntity(
+    const result = await getResourceService().list(
       'role',
-      {
-        searchParams: new URL(request.url).searchParams,
-        headers: request.headers,
-      },
-      session.user.roleSlug,
+      principalFromSession(session),
+      listParamsFromRequest(request),
     );
 
     const formattedRoles = result.data.map((role) => {

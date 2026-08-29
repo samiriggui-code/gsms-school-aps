@@ -28,5 +28,14 @@ export function listParamsFromSearchParams(searchParams: URLSearchParams) {
     dir: (searchParams.get('dir') === 'desc' ? 'desc' : 'asc') as 'asc' | 'desc',
     trashed: searchParams.get('trashed') === '1',
     filters,
+    searchParams,
+  };
+}
+
+export function listParamsFromRequest(req: { url: string; headers: Headers }) {
+  const searchParams = new URL(req.url).searchParams;
+  return {
+    ...listParamsFromSearchParams(searchParams),
+    headers: req.headers,
   };
 }

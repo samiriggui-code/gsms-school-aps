@@ -10,6 +10,20 @@ export type DocLifecycleContext = {
   record?: DocData | null;
 };
 
+export type DocListQueryContext = {
+  meta: DocMeta;
+  principal: PermissionPrincipal;
+  searchParams: URLSearchParams;
+  headers?: Headers;
+};
+
+export type DocListQueryOverride = {
+  where?: Record<string, unknown>;
+  include?: Record<string, unknown>;
+  select?: Record<string, unknown>;
+  orderBy?: Record<string, unknown>;
+};
+
 export type DocControllerHooks = {
   beforeInsert?: (ctx: DocLifecycleContext) => Promise<DocData | void>;
   afterInsert?: (ctx: DocLifecycleContext) => Promise<void>;
@@ -17,6 +31,10 @@ export type DocControllerHooks = {
   afterSave?: (ctx: DocLifecycleContext) => Promise<void>;
   beforeDelete?: (ctx: DocLifecycleContext) => Promise<void>;
   afterDelete?: (ctx: DocLifecycleContext) => Promise<void>;
+  /** Optional list shaping (filters / include) — domain-owned. */
+  buildListQuery?: (
+    ctx: DocListQueryContext,
+  ) => DocListQueryOverride | void | Promise<DocListQueryOverride | void>;
 };
 
 export type DocumentOptions = {

@@ -8,7 +8,7 @@ import {
   getDocTypeBootstrapStatus,
 } from '@/lib/doctype/bootstrap';
 import { principalFromSession } from '@/lib/doctype/principal';
-import { getResourceService, listParamsFromSearchParams } from '@/lib/doctype/resource';
+import { getResourceService, listParamsFromRequest } from '@/lib/doctype/resource';
 
 type Params = { params: Promise<{ doctype: string }> };
 
@@ -29,7 +29,7 @@ async function gated(doctype: string) {
   return { session, registry };
 }
 
-/** Canonical resource list + create (G1-B Document runtime). */
+/** Canonical resource list + create (G1-E). */
 export async function GET(req: NextRequest, context: Params) {
   const { doctype } = await context.params;
   const gate = await gated(doctype);
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest, context: Params) {
     const result = await getResourceService().list(
       doctype,
       principalFromSession(gate.session),
-      listParamsFromSearchParams(new URL(req.url).searchParams),
+      listParamsFromRequest(req),
     );
     return ok({ doctype: gate.registry.resolveName(doctype), ...result });
   } catch (error) {

@@ -13,6 +13,8 @@ export type ResourceListParams = {
   trashed?: boolean;
   /** Equality filters for declared DocFields (and common extras). */
   filters?: Record<string, string>;
+  searchParams?: URLSearchParams;
+  headers?: Headers;
 };
 
 export type ResourceListResult = {
@@ -85,7 +87,20 @@ export class ResourceService {
       }
     }
 
-    const where = mergeWhere([soft, buildSearchWhere(meta, params.query ?? ''), filterWhere]);
+    const searchParams = params.searchParams ?? new URLSearchParams();
+    const listOverride = await this.controller(doctype)?.buildListQuery?.({
+      meta,
+      principal,
+      searchParams,
+      headers: params.headers,
+    });
+
+    const where = mergeWhere([
+      soft,
+      buildSearchWhere(meta, params.query ?? ''),
+      filterWhere,
+      listOverride?.where,
+    ]);
 
     const sortField =
       params.sort ||
@@ -93,16 +108,23 @@ export class ResourceService {
       meta.persistence.creationField ||
       meta.persistence.nameField;
     const sortDir = params.dir || meta.list.defaultSort?.direction || 'asc';
-    const orderBy: PersistenceOrderBy = { [sortField]: sortDir };
+    const orderBy = (listOverride?.orderBy as PersistenceOrderBy | undefined) ?? {
+      [sortField]: sortDir,
+    };
 
     const baseQuery = {
       delegate: meta.persistence.delegate,
       where,
       orderBy,
+      include: listOverride?.include,
+      select: listOverride?.select,
     };
 
     const [total, data] = await Promise.all([
-      this.adapter.count(baseQuery),
+      this.adapter.count({
+        delegate: baseQuery.delegate,
+        where: baseQuery.where,
+      }),
       this.adapter.findMany({
         ...baseQuery,
         skip: (page - 1) * limit,

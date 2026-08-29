@@ -38,6 +38,10 @@
 
     "dev:deploy:terminal": "node -e \"console.error('\\nCockpit deploy : cd ../gsms-deploy puis pnpm dev:deploy:terminal\\n');process.exit(1)\"",
 
+    "test:doctype": "pnpm -C packages/doctype test",
+
+    "smoke:doctype": "pnpm -C apps/lms-crm exec -- tsx --env-file=../../.env ./scripts/smoke-doctype-g1d.ts",
+
     "db:push": "pnpm -C packages/database run db:push",
     "db:push:accept": "pnpm -C packages/database run db:push:accept",
     "db:backfill-file-versions": "pnpm -C packages/database run db:backfill-file-versions",

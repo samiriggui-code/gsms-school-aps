@@ -1,0 +1,50 @@
+{
+  // GSMS School — compromis Auto-run (PAS Run Everything / YOLO).
+  // Prérequis UI: Settings → Agents → Approvals & Execution → mode "Auto-review"
+  // (ou "Allowlist"). Ne pas choisir "Run Everything".
+  //
+  // Les entrées terminalAllowlist s'exécutent SANS confirmation ni classifier.
+  // Donc: pas de `git` / `rm` / `ssh` / `docker` larges ici.
+  "terminalAllowlist": [
+    "pnpm",
+    "npm",
+    "npx",
+    "node",
+    "cd",
+    "dir",
+    "ls",
+    "Get-ChildItem",
+    "Get-Content",
+    "Select-String",
+    "Test-Path",
+    "Write-Host",
+    "git status",
+    "git diff",
+    "git log",
+    "git show",
+    "git branch",
+    "git remote",
+    "git rev-parse",
+    "git add",
+    "git commit",
+    "git stash",
+    "git fetch",
+    "git pull",
+    "git switch",
+    "git checkout",
+    "tsc",
+    "eslint"
+  ],
+  "autoRun": {
+    "allow_instructions": [
+      "Allow read-only inspections: list files, read files, git status/diff/log, typecheck, tests, and local pnpm/npm scripts that do not delete data or talk to production.",
+      "Allow local build and smoke commands under this monorepo (pnpm test:doctype, smoke:doctype, db:generate) when they do not target production hosts."
+    ],
+    "block_instructions": [
+      "Block destructive filesystem commands: rm -rf, del /s, Remove-Item -Recurse -Force, rimraf on wide paths, format, disk wipe.",
+      "Block destructive git: push --force, reset --hard, clean -fd, rebase -i, branch -D on main/master, filter-branch.",
+      "Block production or external network mutations: ssh to VPS/hostinger deploy, scp overwrite, docker prune, DROP/TRUNCATE SQL, db push against non-local DATABASE_URL, curl/wget that POSTs or uploads secrets.",
+      "Prefer asking for approval on any command that deletes files, force-pushes, or changes remote/production state."
+    ]
+  }
+}

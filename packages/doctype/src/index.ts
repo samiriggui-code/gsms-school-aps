@@ -13,6 +13,8 @@ export {
   Document,
   type DocControllerHooks,
   type DocLifecycleContext,
+  type DocListQueryContext,
+  type DocListQueryOverride,
   type DocumentOptions,
 } from './document/document';
 export {

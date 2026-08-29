@@ -1,6 +1,6 @@
 import type { DocData } from '../types';
 
-export type PersistenceOrderBy = Record<string, 'asc' | 'desc' | PersistenceOrderBy>;
+export type PersistenceOrderBy = Record<string, 'asc' | 'desc' | Record<string, 'asc' | 'desc'>>;
 
 export type PersistenceListQuery = {
   delegate: string;
@@ -8,6 +8,8 @@ export type PersistenceListQuery = {
   orderBy?: PersistenceOrderBy | PersistenceOrderBy[];
   skip?: number;
   take?: number;
+  include?: Record<string, unknown>;
+  select?: Record<string, unknown>;
 };
 
 export type PersistenceGetQuery = {
