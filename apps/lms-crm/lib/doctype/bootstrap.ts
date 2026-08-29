@@ -6,6 +6,7 @@ import { registerQualiopiDocTypes } from '@/domains/qualiopi/register';
 import { registerCrmDocTypes } from '@/domains/crm/register';
 import { registerTrainingDocTypes } from '@/domains/training/register';
 import { registerDocumentsDocTypes } from '@/domains/documents/register';
+import { registerQualityDocTypes } from '@/domains/quality/register';
 import { registerFundingDocTypes } from '@/domains/funding/register';
 
 declare global {
@@ -54,6 +55,7 @@ export function bootstrapDocTypes(): DocTypeRegistry {
     registerCrmDocTypes(registry);
     registerTrainingDocTypes(registry);
     registerDocumentsDocTypes(registry);
+    registerQualityDocTypes(registry);
     registerRhDocTypes(registry);
     registerLmsDocTypes(registry);
     registerQualiopiDocTypes(registry);
