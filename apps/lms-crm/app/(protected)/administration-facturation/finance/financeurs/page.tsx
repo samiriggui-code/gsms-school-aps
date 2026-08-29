@@ -11,6 +11,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { CreateFundingCaseForm } from './create-funding-case-form';
+import { FundingCaseTransitionActions } from './funding-case-transition-actions';
+import {
+  canCancelFundingCase,
+  nextFundingCaseStatus,
+} from '@/lib/funding/funding-case-transitions';
 import { syncFundingProvidersFromConnectors } from '@/lib/funding/sync-providers-from-matrix';
 
 type ConnectorRow = {
@@ -145,6 +150,7 @@ export default async function FinanceursPage() {
               <th className="p-2 font-medium">Transport</th>
               <th className="p-2 font-medium">Montant demandé</th>
               <th className="p-2 font-medium">Maj</th>
+              <th className="p-2 font-medium">Transition</th>
             </tr>
           </thead>
           <tbody>
@@ -163,11 +169,18 @@ export default async function FinanceursPage() {
                 <td className="text-muted-foreground p-2 text-xs">
                   {c.updatedAt.toISOString().slice(0, 10)}
                 </td>
+                <td className="p-2">
+                  <FundingCaseTransitionActions
+                    caseId={c.id}
+                    nextStatus={nextFundingCaseStatus(c.status)}
+                    canCancel={canCancelFundingCase(c.status)}
+                  />
+                </td>
               </tr>
             ))}
             {recentCases.length === 0 ? (
               <tr>
-                <td className="text-muted-foreground p-4" colSpan={6}>
+                <td className="text-muted-foreground p-4" colSpan={7}>
                   Aucun dossier FundingCase — création via Resource API / flux métier à venir.
                 </td>
               </tr>

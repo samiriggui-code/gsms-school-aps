@@ -49,6 +49,9 @@ export {
   RhTeamLifecycleStatus,
   SatisfactionSurveyTiming,
   SatisfactionSurveyStatus,
+  FundingFunderType,
+  FundingTransport,
+  FundingCaseStatus,
 } from '../generated/client';
 export {
   LandingTeamVolet,
