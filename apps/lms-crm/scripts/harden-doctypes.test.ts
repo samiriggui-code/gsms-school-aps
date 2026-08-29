@@ -1,6 +1,7 @@
 /**
- * Harden DocTypes — bootstrap réel apps/lms-crm (25 DocTypes).
+ * Harden DocTypes — bootstrap réel apps/lms-crm (≥27 DocTypes, fail-open scan).
  * Run: pnpm exec tsx --test ./scripts/harden-doctypes.test.ts
+ *     (ou `pnpm test:doctype:harden` depuis la racine)
  */
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
@@ -17,12 +18,23 @@ test('harden: bootstrap seals all domain DocTypes without tenantId', () => {
   assert.ok(registry.isSealed);
 
   const defs = registry.listDocTypes();
-  assert.ok(defs.length >= 26, `expected ≥26 DocTypes, got ${defs.length}`);
+  assert.ok(defs.length >= 27, `expected ≥27 DocTypes, got ${defs.length}`);
 
   const modules = new Set(defs.map((d) => d.module.split('.')[0]));
-  for (const required of ['crm', 'training', 'funding', 'documents', 'quality', 'audit', 'evidence']) {
+  for (const required of [
+    'crm',
+    'training',
+    'funding',
+    'documents',
+    'quality',
+    'audit',
+    'evidence',
+    'organisation',
+  ]) {
     assert.ok(modules.has(required), `missing module ${required}`);
   }
+
+  const failOpen: string[] = [];
 
   for (const def of defs) {
     const meta = registry.getMeta(def.name);
@@ -38,9 +50,17 @@ test('harden: bootstrap seals all domain DocTypes without tenantId', () => {
       const hasRequires =
         (perm.requires?.anyPermissionSlugs?.length ?? 0) > 0 ||
         (perm.requires?.allPermissionSlugs?.length ?? 0) > 0;
-      assert.ok(hasRequires, `${def.name}: role '*' without requires.permissionSlugs`);
+      if (!hasRequires) {
+        failOpen.push(`${def.name} @ ${meta.module} (permlevel=${perm.permlevel})`);
+      }
     }
   }
+
+  assert.equal(
+    failOpen.length,
+    0,
+    `role '*' without requires.permissionSlugs:\n${failOpen.join('\n')}`,
+  );
 });
 
 test('harden: PermissionEngine denies without slug (sample per domain)', () => {
@@ -58,6 +78,8 @@ test('harden: PermissionEngine denies without slug (sample per domain)', () => {
     { name: 'FileAsset', slug: 'crm.ressources.view' },
     { name: 'QualityIncident', slug: 'crm.support.view' },
     { name: 'SystemLog', slug: 'iam.logs.view' },
+    { name: 'SubcontractorRecord', slug: 'governance.conformite.view' },
+    { name: 'SatisfactionSurvey', slug: 'crm.academique.view' },
   ];
 
   const empty = {
