@@ -32,6 +32,7 @@ export const IAM_PERMISSION = {
 export const GOVERNANCE_PERMISSION = {
   storageAdmin: 'governance.storage.admin',
   conformiteView: 'governance.conformite.view',
+  conformiteEdit: 'governance.conformite.edit',
   auditView: 'governance.audit.view',
 } as const;
 

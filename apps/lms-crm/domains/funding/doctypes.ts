@@ -89,8 +89,14 @@ export const fundingCaseDocType: DocTypeDefinition = {
       permlevel: 0,
       create: true,
       write: true,
-      delete: true,
       requires: { anyPermissionSlugs: [CRM_PERMISSION.financeEdit] },
+    },
+    // Hard delete réservé sécu — annulation métier = transition CANCELLED (P4-B).
+    {
+      role: '*',
+      permlevel: 0,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.securiteEdit] },
     },
   ],
   naming: { strategy: 'UUID_INTERNAL' },

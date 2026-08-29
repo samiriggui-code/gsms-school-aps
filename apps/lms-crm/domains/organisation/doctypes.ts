@@ -33,9 +33,15 @@ export const subcontractorRecordDocType: DocTypeDefinition = {
       role: '*',
       permlevel: 0,
       create: true,
-      write: true,
       delete: true,
       requires: { anyPermissionSlugs: [CRM_PERMISSION.ressourcesEdit] },
+    },
+    // Transitions de qualification (validation) — Qualité / conformité (P4-A2).
+    {
+      role: '*',
+      permlevel: 0,
+      write: true,
+      requires: { anyPermissionSlugs: [GOVERNANCE_PERMISSION.conformiteEdit] },
     },
   ],
   naming: { strategy: 'UUID_INTERNAL' },

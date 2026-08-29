@@ -142,6 +142,11 @@ const permissions = [
     description: 'Dossiers conformité et CNAPS.',
   },
   {
+    slug: 'governance.conformite.edit',
+    name: 'Gouvernance — Conformité (édition)',
+    description: 'Valider / mettre à jour les dossiers conformité (ex. qualification sous-traitant).',
+  },
+  {
     slug: 'governance.audit.view',
     name: 'Gouvernance — Audit documentaire',
     description: 'Piste d’audit documentaire.',

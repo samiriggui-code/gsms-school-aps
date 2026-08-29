@@ -31,14 +31,7 @@ export const systemLogDocType: DocTypeDefinition = {
       read: true,
       requires: { anyPermissionSlugs: [IAM_PERMISSION.logsView] },
     },
-    {
-      role: '*',
-      permlevel: 0,
-      create: true,
-      write: true,
-      delete: true,
-      requires: { anyPermissionSlugs: [IAM_PERMISSION.logsView] },
-    },
+    // Append-only via Prisma/audit writers — pas de mutate CRUD sous logs.view (P4-C).
   ],
   naming: { strategy: 'UUID_INTERNAL' },
   flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },

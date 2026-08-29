@@ -53,7 +53,8 @@ export const PERMISSION_DOMAINS: PermissionDomain[] = [
     label: 'Gouvernance données',
     permissions: [
       { slug: 'governance.storage.admin', label: 'Coffre documentaire' },
-      { slug: 'governance.conformite.view', label: 'Conformité' },
+      { slug: 'governance.conformite.view', label: 'Conformité — lecture' },
+      { slug: 'governance.conformite.edit', label: 'Conformité — édition' },
       { slug: 'governance.audit.view', label: 'Audit documentaire' },
     ],
   },

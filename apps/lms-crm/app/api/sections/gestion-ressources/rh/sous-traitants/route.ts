@@ -1,20 +1,20 @@
-import { getServerSession } from 'next-auth/next';
 import {
   ComplianceDossierKind,
   ComplianceSubjectType,
   SubcontractorQualificationStatus,
 } from '@repo/database';
 import { ComplianceService } from '@repo/api-core';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, GOVERNANCE_PERMISSION } from '@/lib/auth/crm-permissions';
+import { requirePermission } from '@/lib/auth/require-permission';
 import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 import { canSetSubcontractorStatus } from '@/lib/organisation/subcontractor-transitions';
 
 /** WF-39 — liste + création sous-traitants. */
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session) return fail('Unauthorized request', 401);
+  const auth = await requirePermission(GOVERNANCE_PERMISSION.conformiteView);
+  if ('error' in auth) return auth.error;
 
   try {
     const rows = await prisma.subcontractorRecord.findMany({
@@ -53,8 +53,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return fail('Unauthorized request', 401);
+  const auth = await requirePermission(CRM_PERMISSION.ressourcesEdit);
+  if ('error' in auth) return auth.error;
 
   let body: { label?: string; siret?: string; companyId?: string; notes?: string };
   try {
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
         fromStatus: null,
         toStatus: SubcontractorQualificationStatus.PENDING_VALIDATION,
         source: 'manual',
-        actorUserId: session.user.id,
+        actorUserId: auth.userId,
       },
     });
 

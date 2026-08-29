@@ -17,7 +17,7 @@ menu-crm-access.ts            ── gate navigation (prefix → slug)
 | P1 | **P0** | **Double source** : `def.permissions` ≠ source runtime (`ENTITY_REGISTRY`). Non Frappe-like. |
 | P2 | **P0** | Historique : `complianceDossierItem` dans `ENTITIES` sans `ENTITY_REGISTRY` → fail-closed 403 ou trou selon chemin. **Corrigé 29/08** (entrée ajoutée) — risque de récidive sans sync auto. |
 | P3 | **P0** | Permissions Qualiopi étaient `support.*` alors que menu = `ressources.*`. **Corrigé 29/08**. |
-| P4 | P1 | Pas de **DocPerm** par rôle (read/write/create/delete/submit…). Seulement 4 verbes HTTP → 1 slug. |
+| P4 | P1 | **P4′ (actualisé 29/08)** — Granularité IAM : le moteur DocPerm sépare déjà read/write/create/delete ; hors `iam.users.*`, le catalogue CRM n’offre en général que `.view` / `.edit`, donc create/write/delete restent souvent bundlés derrière `.edit`. Correctifs déclarationnels P4-C/B/A2 (SystemLog, FundingCase delete, `governance.conformite.edit`). |
 | P5 | P1 | Pas de **permlevel**. |
 | P6 | P1 | Pas de **record permission** (trainer ne voit que ses sessions, etc.). |
 | P7 | P2 | `visibleFor` sur field = demi-mesure lecture ; non branché écriture. |

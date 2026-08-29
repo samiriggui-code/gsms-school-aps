@@ -1,8 +1,8 @@
-import { getServerSession } from 'next-auth/next';
 import { SubcontractorQualificationStatus } from '@repo/database';
-import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { GOVERNANCE_PERMISSION } from '@/lib/auth/crm-permissions';
+import { requirePermission } from '@/lib/auth/require-permission';
 import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
 import {
   canSetSubcontractorStatus,
@@ -13,8 +13,8 @@ type Ctx = { params: Promise<{ id: string }> };
 
 /** PATCH — transition statut WF-39. Body: `{ status }` */
 export async function PATCH(request: Request, context: Ctx) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return fail('Unauthorized request', 401);
+  const auth = await requirePermission(GOVERNANCE_PERMISSION.conformiteEdit);
+  if ('error' in auth) return auth.error;
 
   const { id } = await context.params;
   let body: { status?: string; notes?: string | null };
@@ -56,7 +56,7 @@ export async function PATCH(request: Request, context: Ctx) {
           fromStatus: existing.status,
           toStatus: next,
           source: 'manual',
-          actorUserId: session.user.id,
+          actorUserId: auth.userId,
         },
       });
       await recordStatusEvidence(tx, {

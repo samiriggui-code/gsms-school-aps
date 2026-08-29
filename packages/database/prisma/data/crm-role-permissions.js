@@ -29,6 +29,7 @@ const CRM_PERMISSIONS = {
     'iam.logs.view',
     'governance.storage.admin',
     'governance.conformite.view',
+    'governance.conformite.edit',
     'governance.audit.view',
     'lms.catalog.manage',
     'lms.content.review',
@@ -60,6 +61,8 @@ const CRM_PERMISSIONS = {
     'portal.documents.own',
     'portal.settings.own',
     'governance.conformite.view',
+    // P4-A2 : lecteur conformité qui peut valider ST / pièces (sans crm.ressources.edit).
+    'governance.conformite.edit',
   ],
 
   manager: [
