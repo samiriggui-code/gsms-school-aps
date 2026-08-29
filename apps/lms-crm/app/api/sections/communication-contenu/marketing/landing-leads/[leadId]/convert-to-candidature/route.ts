@@ -9,6 +9,7 @@ import {
 } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { createWorkflowEngine } from '@repo/api-core';
+import { afterCandidatureCreated } from '@/lib/of/candidature-assessment-bootstrap';
 
 type Ctx = { params: Promise<{ leadId: string }> };
 
@@ -16,7 +17,7 @@ type Ctx = { params: Promise<{ leadId: string }> };
  * Cas rare : lead préinscription sans candidature (import partiel, données anciennes).
  * Rattache une candidature au compte utilisateur correspondant à l’email du lead.
  */
-export async function POST(_request: NextRequest, context: Ctx) {
+export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
 
@@ -94,6 +95,8 @@ export async function POST(_request: NextRequest, context: Ctx) {
     } catch (e) {
       console.error('[convert-to-candidature] workflow', e);
     }
+
+    await afterCandidatureCreated(prisma, candidature.id, request);
 
     return ok({
       candidatureId: candidature.id,

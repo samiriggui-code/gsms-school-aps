@@ -228,6 +228,11 @@ export type PortalSessionAnnouncement = $Result.DefaultSelection<Prisma.$PortalS
  */
 export type Candidature = $Result.DefaultSelection<Prisma.$CandidaturePayload>
 /**
+ * Model CandidatureAssessment
+ * 
+ */
+export type CandidatureAssessment = $Result.DefaultSelection<Prisma.$CandidatureAssessmentPayload>
+/**
  * Model FormationSessionParticipant
  * Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.
  */
@@ -1074,6 +1079,23 @@ export const SessionAutomationStatus: {
 export type SessionAutomationStatus = (typeof SessionAutomationStatus)[keyof typeof SessionAutomationStatus]
 
 
+export const CandidatureAssessmentKind: {
+  NEEDS_ANALYSIS: 'NEEDS_ANALYSIS',
+  POSITIONING: 'POSITIONING'
+};
+
+export type CandidatureAssessmentKind = (typeof CandidatureAssessmentKind)[keyof typeof CandidatureAssessmentKind]
+
+
+export const CandidatureAssessmentStatus: {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  COMPLETED: 'COMPLETED'
+};
+
+export type CandidatureAssessmentStatus = (typeof CandidatureAssessmentStatus)[keyof typeof CandidatureAssessmentStatus]
+
+
 export const ActivityType: {
   VIDEO: 'VIDEO',
   DOCUMENT: 'DOCUMENT',
@@ -1712,6 +1734,14 @@ export const VenueRoomBookingStatus: typeof $Enums.VenueRoomBookingStatus
 export type SessionAutomationStatus = $Enums.SessionAutomationStatus
 
 export const SessionAutomationStatus: typeof $Enums.SessionAutomationStatus
+
+export type CandidatureAssessmentKind = $Enums.CandidatureAssessmentKind
+
+export const CandidatureAssessmentKind: typeof $Enums.CandidatureAssessmentKind
+
+export type CandidatureAssessmentStatus = $Enums.CandidatureAssessmentStatus
+
+export const CandidatureAssessmentStatus: typeof $Enums.CandidatureAssessmentStatus
 
 export type ActivityType = $Enums.ActivityType
 
@@ -2403,6 +2433,16 @@ export class PrismaClient<
     * ```
     */
   get candidature(): Prisma.CandidatureDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.candidatureAssessment`: Exposes CRUD operations for the **CandidatureAssessment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CandidatureAssessments
+    * const candidatureAssessments = await prisma.candidatureAssessment.findMany()
+    * ```
+    */
+  get candidatureAssessment(): Prisma.CandidatureAssessmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.formationSessionParticipant`: Exposes CRUD operations for the **FormationSessionParticipant** model.
@@ -3698,6 +3738,7 @@ export namespace Prisma {
     SessionAutomationRun: 'SessionAutomationRun',
     PortalSessionAnnouncement: 'PortalSessionAnnouncement',
     Candidature: 'Candidature',
+    CandidatureAssessment: 'CandidatureAssessment',
     FormationSessionParticipant: 'FormationSessionParticipant',
     FormationSessionDay: 'FormationSessionDay',
     FormationSessionEmargement: 'FormationSessionEmargement',
@@ -3795,7 +3836,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "candidatureAssessment" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -6830,6 +6871,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CandidatureCountArgs<ExtArgs>
             result: $Utils.Optional<CandidatureCountAggregateOutputType> | number
+          }
+        }
+      }
+      CandidatureAssessment: {
+        payload: Prisma.$CandidatureAssessmentPayload<ExtArgs>
+        fields: Prisma.CandidatureAssessmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CandidatureAssessmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CandidatureAssessmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>
+          }
+          findFirst: {
+            args: Prisma.CandidatureAssessmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CandidatureAssessmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>
+          }
+          findMany: {
+            args: Prisma.CandidatureAssessmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>[]
+          }
+          create: {
+            args: Prisma.CandidatureAssessmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>
+          }
+          createMany: {
+            args: Prisma.CandidatureAssessmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CandidatureAssessmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>[]
+          }
+          delete: {
+            args: Prisma.CandidatureAssessmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>
+          }
+          update: {
+            args: Prisma.CandidatureAssessmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.CandidatureAssessmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CandidatureAssessmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CandidatureAssessmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.CandidatureAssessmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CandidatureAssessmentPayload>
+          }
+          aggregate: {
+            args: Prisma.CandidatureAssessmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCandidatureAssessment>
+          }
+          groupBy: {
+            args: Prisma.CandidatureAssessmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CandidatureAssessmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CandidatureAssessmentCountArgs<ExtArgs>
+            result: $Utils.Optional<CandidatureAssessmentCountAggregateOutputType> | number
           }
         }
       }
@@ -13050,6 +13165,7 @@ export namespace Prisma {
     sessionAutomationRun?: SessionAutomationRunOmit
     portalSessionAnnouncement?: PortalSessionAnnouncementOmit
     candidature?: CandidatureOmit
+    candidatureAssessment?: CandidatureAssessmentOmit
     formationSessionParticipant?: FormationSessionParticipantOmit
     formationSessionDay?: FormationSessionDayOmit
     formationSessionEmargement?: FormationSessionEmargementOmit
@@ -14532,6 +14648,7 @@ export namespace Prisma {
     sessionEnrollments: number
     attestations: number
     financeDevis: number
+    assessments: number
   }
 
   export type CandidatureCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14539,6 +14656,7 @@ export namespace Prisma {
     sessionEnrollments?: boolean | CandidatureCountOutputTypeCountSessionEnrollmentsArgs
     attestations?: boolean | CandidatureCountOutputTypeCountAttestationsArgs
     financeDevis?: boolean | CandidatureCountOutputTypeCountFinanceDevisArgs
+    assessments?: boolean | CandidatureCountOutputTypeCountAssessmentsArgs
   }
 
   // Custom InputTypes
@@ -14578,6 +14696,13 @@ export namespace Prisma {
    */
   export type CandidatureCountOutputTypeCountFinanceDevisArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FinanceDevisWhereInput
+  }
+
+  /**
+   * CandidatureCountOutputType without action
+   */
+  export type CandidatureCountOutputTypeCountAssessmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidatureAssessmentWhereInput
   }
 
 
@@ -67805,6 +67930,7 @@ export namespace Prisma {
     sessionEnrollments?: boolean | Candidature$sessionEnrollmentsArgs<ExtArgs>
     attestations?: boolean | Candidature$attestationsArgs<ExtArgs>
     financeDevis?: boolean | Candidature$financeDevisArgs<ExtArgs>
+    assessments?: boolean | Candidature$assessmentsArgs<ExtArgs>
     _count?: boolean | CandidatureCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["candidature"]>
 
@@ -67892,6 +68018,7 @@ export namespace Prisma {
     sessionEnrollments?: boolean | Candidature$sessionEnrollmentsArgs<ExtArgs>
     attestations?: boolean | Candidature$attestationsArgs<ExtArgs>
     financeDevis?: boolean | Candidature$financeDevisArgs<ExtArgs>
+    assessments?: boolean | Candidature$assessmentsArgs<ExtArgs>
     _count?: boolean | CandidatureCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CandidatureIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -67918,6 +68045,7 @@ export namespace Prisma {
       sessionEnrollments: Prisma.$FormationSessionParticipantPayload<ExtArgs>[]
       attestations: Prisma.$FormationAttestationPayload<ExtArgs>[]
       financeDevis: Prisma.$FinanceDevisPayload<ExtArgs>[]
+      assessments: Prisma.$CandidatureAssessmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -68347,6 +68475,7 @@ export namespace Prisma {
     sessionEnrollments<T extends Candidature$sessionEnrollmentsArgs<ExtArgs> = {}>(args?: Subset<T, Candidature$sessionEnrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     attestations<T extends Candidature$attestationsArgs<ExtArgs> = {}>(args?: Subset<T, Candidature$attestationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationAttestationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financeDevis<T extends Candidature$financeDevisArgs<ExtArgs> = {}>(args?: Subset<T, Candidature$financeDevisArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceDevisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    assessments<T extends Candidature$assessmentsArgs<ExtArgs> = {}>(args?: Subset<T, Candidature$assessmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -68949,6 +69078,30 @@ export namespace Prisma {
   }
 
   /**
+   * Candidature.assessments
+   */
+  export type Candidature$assessmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    where?: CandidatureAssessmentWhereInput
+    orderBy?: CandidatureAssessmentOrderByWithRelationInput | CandidatureAssessmentOrderByWithRelationInput[]
+    cursor?: CandidatureAssessmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CandidatureAssessmentScalarFieldEnum | CandidatureAssessmentScalarFieldEnum[]
+  }
+
+  /**
    * Candidature without action
    */
   export type CandidatureDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -68964,6 +69117,1168 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CandidatureInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CandidatureAssessment
+   */
+
+  export type AggregateCandidatureAssessment = {
+    _count: CandidatureAssessmentCountAggregateOutputType | null
+    _min: CandidatureAssessmentMinAggregateOutputType | null
+    _max: CandidatureAssessmentMaxAggregateOutputType | null
+  }
+
+  export type CandidatureAssessmentMinAggregateOutputType = {
+    id: string | null
+    candidatureId: string | null
+    kind: $Enums.CandidatureAssessmentKind | null
+    status: $Enums.CandidatureAssessmentStatus | null
+    sentAt: Date | null
+    completedAt: Date | null
+    level: string | null
+    prerequisitesStatus: string | null
+    adaptationRequired: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CandidatureAssessmentMaxAggregateOutputType = {
+    id: string | null
+    candidatureId: string | null
+    kind: $Enums.CandidatureAssessmentKind | null
+    status: $Enums.CandidatureAssessmentStatus | null
+    sentAt: Date | null
+    completedAt: Date | null
+    level: string | null
+    prerequisitesStatus: string | null
+    adaptationRequired: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CandidatureAssessmentCountAggregateOutputType = {
+    id: number
+    candidatureId: number
+    kind: number
+    status: number
+    sentAt: number
+    completedAt: number
+    answers: number
+    level: number
+    prerequisitesStatus: number
+    adaptationRequired: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CandidatureAssessmentMinAggregateInputType = {
+    id?: true
+    candidatureId?: true
+    kind?: true
+    status?: true
+    sentAt?: true
+    completedAt?: true
+    level?: true
+    prerequisitesStatus?: true
+    adaptationRequired?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CandidatureAssessmentMaxAggregateInputType = {
+    id?: true
+    candidatureId?: true
+    kind?: true
+    status?: true
+    sentAt?: true
+    completedAt?: true
+    level?: true
+    prerequisitesStatus?: true
+    adaptationRequired?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CandidatureAssessmentCountAggregateInputType = {
+    id?: true
+    candidatureId?: true
+    kind?: true
+    status?: true
+    sentAt?: true
+    completedAt?: true
+    answers?: true
+    level?: true
+    prerequisitesStatus?: true
+    adaptationRequired?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CandidatureAssessmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidatureAssessment to aggregate.
+     */
+    where?: CandidatureAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidatureAssessments to fetch.
+     */
+    orderBy?: CandidatureAssessmentOrderByWithRelationInput | CandidatureAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CandidatureAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidatureAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidatureAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CandidatureAssessments
+    **/
+    _count?: true | CandidatureAssessmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CandidatureAssessmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CandidatureAssessmentMaxAggregateInputType
+  }
+
+  export type GetCandidatureAssessmentAggregateType<T extends CandidatureAssessmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateCandidatureAssessment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCandidatureAssessment[P]>
+      : GetScalarType<T[P], AggregateCandidatureAssessment[P]>
+  }
+
+
+
+
+  export type CandidatureAssessmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CandidatureAssessmentWhereInput
+    orderBy?: CandidatureAssessmentOrderByWithAggregationInput | CandidatureAssessmentOrderByWithAggregationInput[]
+    by: CandidatureAssessmentScalarFieldEnum[] | CandidatureAssessmentScalarFieldEnum
+    having?: CandidatureAssessmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CandidatureAssessmentCountAggregateInputType | true
+    _min?: CandidatureAssessmentMinAggregateInputType
+    _max?: CandidatureAssessmentMaxAggregateInputType
+  }
+
+  export type CandidatureAssessmentGroupByOutputType = {
+    id: string
+    candidatureId: string
+    kind: $Enums.CandidatureAssessmentKind
+    status: $Enums.CandidatureAssessmentStatus
+    sentAt: Date | null
+    completedAt: Date | null
+    answers: JsonValue | null
+    level: string | null
+    prerequisitesStatus: string | null
+    adaptationRequired: boolean | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CandidatureAssessmentCountAggregateOutputType | null
+    _min: CandidatureAssessmentMinAggregateOutputType | null
+    _max: CandidatureAssessmentMaxAggregateOutputType | null
+  }
+
+  type GetCandidatureAssessmentGroupByPayload<T extends CandidatureAssessmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CandidatureAssessmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CandidatureAssessmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CandidatureAssessmentGroupByOutputType[P]>
+            : GetScalarType<T[P], CandidatureAssessmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CandidatureAssessmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidatureId?: boolean
+    kind?: boolean
+    status?: boolean
+    sentAt?: boolean
+    completedAt?: boolean
+    answers?: boolean
+    level?: boolean
+    prerequisitesStatus?: boolean
+    adaptationRequired?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidatureAssessment"]>
+
+  export type CandidatureAssessmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidatureId?: boolean
+    kind?: boolean
+    status?: boolean
+    sentAt?: boolean
+    completedAt?: boolean
+    answers?: boolean
+    level?: boolean
+    prerequisitesStatus?: boolean
+    adaptationRequired?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidatureAssessment"]>
+
+  export type CandidatureAssessmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    candidatureId?: boolean
+    kind?: boolean
+    status?: boolean
+    sentAt?: boolean
+    completedAt?: boolean
+    answers?: boolean
+    level?: boolean
+    prerequisitesStatus?: boolean
+    adaptationRequired?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["candidatureAssessment"]>
+
+  export type CandidatureAssessmentSelectScalar = {
+    id?: boolean
+    candidatureId?: boolean
+    kind?: boolean
+    status?: boolean
+    sentAt?: boolean
+    completedAt?: boolean
+    answers?: boolean
+    level?: boolean
+    prerequisitesStatus?: boolean
+    adaptationRequired?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CandidatureAssessmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "candidatureId" | "kind" | "status" | "sentAt" | "completedAt" | "answers" | "level" | "prerequisitesStatus" | "adaptationRequired" | "createdAt" | "updatedAt", ExtArgs["result"]["candidatureAssessment"]>
+  export type CandidatureAssessmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
+  }
+  export type CandidatureAssessmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
+  }
+  export type CandidatureAssessmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
+  }
+
+  export type $CandidatureAssessmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CandidatureAssessment"
+    objects: {
+      candidature: Prisma.$CandidaturePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      candidatureId: string
+      kind: $Enums.CandidatureAssessmentKind
+      status: $Enums.CandidatureAssessmentStatus
+      sentAt: Date | null
+      completedAt: Date | null
+      /**
+       * Réponses questionnaire (Json libre).
+       */
+      answers: Prisma.JsonValue | null
+      /**
+       * WF-03 — niveau constaté (libre).
+       */
+      level: string | null
+      /**
+       * WF-03 — OK / PARTIAL / MISSING (ou texte libre).
+       */
+      prerequisitesStatus: string | null
+      /**
+       * Signal adaptation (lien WF-04 organisme, info staff).
+       */
+      adaptationRequired: boolean | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["candidatureAssessment"]>
+    composites: {}
+  }
+
+  type CandidatureAssessmentGetPayload<S extends boolean | null | undefined | CandidatureAssessmentDefaultArgs> = $Result.GetResult<Prisma.$CandidatureAssessmentPayload, S>
+
+  type CandidatureAssessmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CandidatureAssessmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CandidatureAssessmentCountAggregateInputType | true
+    }
+
+  export interface CandidatureAssessmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CandidatureAssessment'], meta: { name: 'CandidatureAssessment' } }
+    /**
+     * Find zero or one CandidatureAssessment that matches the filter.
+     * @param {CandidatureAssessmentFindUniqueArgs} args - Arguments to find a CandidatureAssessment
+     * @example
+     * // Get one CandidatureAssessment
+     * const candidatureAssessment = await prisma.candidatureAssessment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CandidatureAssessmentFindUniqueArgs>(args: SelectSubset<T, CandidatureAssessmentFindUniqueArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CandidatureAssessment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CandidatureAssessmentFindUniqueOrThrowArgs} args - Arguments to find a CandidatureAssessment
+     * @example
+     * // Get one CandidatureAssessment
+     * const candidatureAssessment = await prisma.candidatureAssessment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CandidatureAssessmentFindUniqueOrThrowArgs>(args: SelectSubset<T, CandidatureAssessmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CandidatureAssessment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidatureAssessmentFindFirstArgs} args - Arguments to find a CandidatureAssessment
+     * @example
+     * // Get one CandidatureAssessment
+     * const candidatureAssessment = await prisma.candidatureAssessment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CandidatureAssessmentFindFirstArgs>(args?: SelectSubset<T, CandidatureAssessmentFindFirstArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CandidatureAssessment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidatureAssessmentFindFirstOrThrowArgs} args - Arguments to find a CandidatureAssessment
+     * @example
+     * // Get one CandidatureAssessment
+     * const candidatureAssessment = await prisma.candidatureAssessment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CandidatureAssessmentFindFirstOrThrowArgs>(args?: SelectSubset<T, CandidatureAssessmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CandidatureAssessments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidatureAssessmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CandidatureAssessments
+     * const candidatureAssessments = await prisma.candidatureAssessment.findMany()
+     * 
+     * // Get first 10 CandidatureAssessments
+     * const candidatureAssessments = await prisma.candidatureAssessment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const candidatureAssessmentWithIdOnly = await prisma.candidatureAssessment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CandidatureAssessmentFindManyArgs>(args?: SelectSubset<T, CandidatureAssessmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CandidatureAssessment.
+     * @param {CandidatureAssessmentCreateArgs} args - Arguments to create a CandidatureAssessment.
+     * @example
+     * // Create one CandidatureAssessment
+     * const CandidatureAssessment = await prisma.candidatureAssessment.create({
+     *   data: {
+     *     // ... data to create a CandidatureAssessment
+     *   }
+     * })
+     * 
+     */
+    create<T extends CandidatureAssessmentCreateArgs>(args: SelectSubset<T, CandidatureAssessmentCreateArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CandidatureAssessments.
+     * @param {CandidatureAssessmentCreateManyArgs} args - Arguments to create many CandidatureAssessments.
+     * @example
+     * // Create many CandidatureAssessments
+     * const candidatureAssessment = await prisma.candidatureAssessment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CandidatureAssessmentCreateManyArgs>(args?: SelectSubset<T, CandidatureAssessmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CandidatureAssessments and returns the data saved in the database.
+     * @param {CandidatureAssessmentCreateManyAndReturnArgs} args - Arguments to create many CandidatureAssessments.
+     * @example
+     * // Create many CandidatureAssessments
+     * const candidatureAssessment = await prisma.candidatureAssessment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CandidatureAssessments and only return the `id`
+     * const candidatureAssessmentWithIdOnly = await prisma.candidatureAssessment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CandidatureAssessmentCreateManyAndReturnArgs>(args?: SelectSubset<T, CandidatureAssessmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CandidatureAssessment.
+     * @param {CandidatureAssessmentDeleteArgs} args - Arguments to delete one CandidatureAssessment.
+     * @example
+     * // Delete one CandidatureAssessment
+     * const CandidatureAssessment = await prisma.candidatureAssessment.delete({
+     *   where: {
+     *     // ... filter to delete one CandidatureAssessment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CandidatureAssessmentDeleteArgs>(args: SelectSubset<T, CandidatureAssessmentDeleteArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CandidatureAssessment.
+     * @param {CandidatureAssessmentUpdateArgs} args - Arguments to update one CandidatureAssessment.
+     * @example
+     * // Update one CandidatureAssessment
+     * const candidatureAssessment = await prisma.candidatureAssessment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CandidatureAssessmentUpdateArgs>(args: SelectSubset<T, CandidatureAssessmentUpdateArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CandidatureAssessments.
+     * @param {CandidatureAssessmentDeleteManyArgs} args - Arguments to filter CandidatureAssessments to delete.
+     * @example
+     * // Delete a few CandidatureAssessments
+     * const { count } = await prisma.candidatureAssessment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CandidatureAssessmentDeleteManyArgs>(args?: SelectSubset<T, CandidatureAssessmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidatureAssessments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidatureAssessmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CandidatureAssessments
+     * const candidatureAssessment = await prisma.candidatureAssessment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CandidatureAssessmentUpdateManyArgs>(args: SelectSubset<T, CandidatureAssessmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CandidatureAssessments and returns the data updated in the database.
+     * @param {CandidatureAssessmentUpdateManyAndReturnArgs} args - Arguments to update many CandidatureAssessments.
+     * @example
+     * // Update many CandidatureAssessments
+     * const candidatureAssessment = await prisma.candidatureAssessment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CandidatureAssessments and only return the `id`
+     * const candidatureAssessmentWithIdOnly = await prisma.candidatureAssessment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CandidatureAssessmentUpdateManyAndReturnArgs>(args: SelectSubset<T, CandidatureAssessmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CandidatureAssessment.
+     * @param {CandidatureAssessmentUpsertArgs} args - Arguments to update or create a CandidatureAssessment.
+     * @example
+     * // Update or create a CandidatureAssessment
+     * const candidatureAssessment = await prisma.candidatureAssessment.upsert({
+     *   create: {
+     *     // ... data to create a CandidatureAssessment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CandidatureAssessment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CandidatureAssessmentUpsertArgs>(args: SelectSubset<T, CandidatureAssessmentUpsertArgs<ExtArgs>>): Prisma__CandidatureAssessmentClient<$Result.GetResult<Prisma.$CandidatureAssessmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CandidatureAssessments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidatureAssessmentCountArgs} args - Arguments to filter CandidatureAssessments to count.
+     * @example
+     * // Count the number of CandidatureAssessments
+     * const count = await prisma.candidatureAssessment.count({
+     *   where: {
+     *     // ... the filter for the CandidatureAssessments we want to count
+     *   }
+     * })
+    **/
+    count<T extends CandidatureAssessmentCountArgs>(
+      args?: Subset<T, CandidatureAssessmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CandidatureAssessmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CandidatureAssessment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidatureAssessmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CandidatureAssessmentAggregateArgs>(args: Subset<T, CandidatureAssessmentAggregateArgs>): Prisma.PrismaPromise<GetCandidatureAssessmentAggregateType<T>>
+
+    /**
+     * Group by CandidatureAssessment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CandidatureAssessmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CandidatureAssessmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CandidatureAssessmentGroupByArgs['orderBy'] }
+        : { orderBy?: CandidatureAssessmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CandidatureAssessmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCandidatureAssessmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CandidatureAssessment model
+   */
+  readonly fields: CandidatureAssessmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CandidatureAssessment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CandidatureAssessmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidature<T extends CandidatureDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidatureDefaultArgs<ExtArgs>>): Prisma__CandidatureClient<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CandidatureAssessment model
+   */
+  interface CandidatureAssessmentFieldRefs {
+    readonly id: FieldRef<"CandidatureAssessment", 'String'>
+    readonly candidatureId: FieldRef<"CandidatureAssessment", 'String'>
+    readonly kind: FieldRef<"CandidatureAssessment", 'CandidatureAssessmentKind'>
+    readonly status: FieldRef<"CandidatureAssessment", 'CandidatureAssessmentStatus'>
+    readonly sentAt: FieldRef<"CandidatureAssessment", 'DateTime'>
+    readonly completedAt: FieldRef<"CandidatureAssessment", 'DateTime'>
+    readonly answers: FieldRef<"CandidatureAssessment", 'Json'>
+    readonly level: FieldRef<"CandidatureAssessment", 'String'>
+    readonly prerequisitesStatus: FieldRef<"CandidatureAssessment", 'String'>
+    readonly adaptationRequired: FieldRef<"CandidatureAssessment", 'Boolean'>
+    readonly createdAt: FieldRef<"CandidatureAssessment", 'DateTime'>
+    readonly updatedAt: FieldRef<"CandidatureAssessment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CandidatureAssessment findUnique
+   */
+  export type CandidatureAssessmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidatureAssessment to fetch.
+     */
+    where: CandidatureAssessmentWhereUniqueInput
+  }
+
+  /**
+   * CandidatureAssessment findUniqueOrThrow
+   */
+  export type CandidatureAssessmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidatureAssessment to fetch.
+     */
+    where: CandidatureAssessmentWhereUniqueInput
+  }
+
+  /**
+   * CandidatureAssessment findFirst
+   */
+  export type CandidatureAssessmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidatureAssessment to fetch.
+     */
+    where?: CandidatureAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidatureAssessments to fetch.
+     */
+    orderBy?: CandidatureAssessmentOrderByWithRelationInput | CandidatureAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidatureAssessments.
+     */
+    cursor?: CandidatureAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidatureAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidatureAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidatureAssessments.
+     */
+    distinct?: CandidatureAssessmentScalarFieldEnum | CandidatureAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * CandidatureAssessment findFirstOrThrow
+   */
+  export type CandidatureAssessmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidatureAssessment to fetch.
+     */
+    where?: CandidatureAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidatureAssessments to fetch.
+     */
+    orderBy?: CandidatureAssessmentOrderByWithRelationInput | CandidatureAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CandidatureAssessments.
+     */
+    cursor?: CandidatureAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidatureAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidatureAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidatureAssessments.
+     */
+    distinct?: CandidatureAssessmentScalarFieldEnum | CandidatureAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * CandidatureAssessment findMany
+   */
+  export type CandidatureAssessmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which CandidatureAssessments to fetch.
+     */
+    where?: CandidatureAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CandidatureAssessments to fetch.
+     */
+    orderBy?: CandidatureAssessmentOrderByWithRelationInput | CandidatureAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CandidatureAssessments.
+     */
+    cursor?: CandidatureAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CandidatureAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CandidatureAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CandidatureAssessments.
+     */
+    distinct?: CandidatureAssessmentScalarFieldEnum | CandidatureAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * CandidatureAssessment create
+   */
+  export type CandidatureAssessmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a CandidatureAssessment.
+     */
+    data: XOR<CandidatureAssessmentCreateInput, CandidatureAssessmentUncheckedCreateInput>
+  }
+
+  /**
+   * CandidatureAssessment createMany
+   */
+  export type CandidatureAssessmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CandidatureAssessments.
+     */
+    data: CandidatureAssessmentCreateManyInput | CandidatureAssessmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CandidatureAssessment createManyAndReturn
+   */
+  export type CandidatureAssessmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many CandidatureAssessments.
+     */
+    data: CandidatureAssessmentCreateManyInput | CandidatureAssessmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidatureAssessment update
+   */
+  export type CandidatureAssessmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a CandidatureAssessment.
+     */
+    data: XOR<CandidatureAssessmentUpdateInput, CandidatureAssessmentUncheckedUpdateInput>
+    /**
+     * Choose, which CandidatureAssessment to update.
+     */
+    where: CandidatureAssessmentWhereUniqueInput
+  }
+
+  /**
+   * CandidatureAssessment updateMany
+   */
+  export type CandidatureAssessmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CandidatureAssessments.
+     */
+    data: XOR<CandidatureAssessmentUpdateManyMutationInput, CandidatureAssessmentUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidatureAssessments to update
+     */
+    where?: CandidatureAssessmentWhereInput
+    /**
+     * Limit how many CandidatureAssessments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CandidatureAssessment updateManyAndReturn
+   */
+  export type CandidatureAssessmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * The data used to update CandidatureAssessments.
+     */
+    data: XOR<CandidatureAssessmentUpdateManyMutationInput, CandidatureAssessmentUncheckedUpdateManyInput>
+    /**
+     * Filter which CandidatureAssessments to update
+     */
+    where?: CandidatureAssessmentWhereInput
+    /**
+     * Limit how many CandidatureAssessments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * CandidatureAssessment upsert
+   */
+  export type CandidatureAssessmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the CandidatureAssessment to update in case it exists.
+     */
+    where: CandidatureAssessmentWhereUniqueInput
+    /**
+     * In case the CandidatureAssessment found by the `where` argument doesn't exist, create a new CandidatureAssessment with this data.
+     */
+    create: XOR<CandidatureAssessmentCreateInput, CandidatureAssessmentUncheckedCreateInput>
+    /**
+     * In case the CandidatureAssessment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CandidatureAssessmentUpdateInput, CandidatureAssessmentUncheckedUpdateInput>
+  }
+
+  /**
+   * CandidatureAssessment delete
+   */
+  export type CandidatureAssessmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter which CandidatureAssessment to delete.
+     */
+    where: CandidatureAssessmentWhereUniqueInput
+  }
+
+  /**
+   * CandidatureAssessment deleteMany
+   */
+  export type CandidatureAssessmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CandidatureAssessments to delete
+     */
+    where?: CandidatureAssessmentWhereInput
+    /**
+     * Limit how many CandidatureAssessments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CandidatureAssessment without action
+   */
+  export type CandidatureAssessmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CandidatureAssessment
+     */
+    select?: CandidatureAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CandidatureAssessment
+     */
+    omit?: CandidatureAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidatureAssessmentInclude<ExtArgs> | null
   }
 
 
@@ -166015,6 +167330,24 @@ export namespace Prisma {
   export type CandidatureScalarFieldEnum = (typeof CandidatureScalarFieldEnum)[keyof typeof CandidatureScalarFieldEnum]
 
 
+  export const CandidatureAssessmentScalarFieldEnum: {
+    id: 'id',
+    candidatureId: 'candidatureId',
+    kind: 'kind',
+    status: 'status',
+    sentAt: 'sentAt',
+    completedAt: 'completedAt',
+    answers: 'answers',
+    level: 'level',
+    prerequisitesStatus: 'prerequisitesStatus',
+    adaptationRequired: 'adaptationRequired',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CandidatureAssessmentScalarFieldEnum = (typeof CandidatureAssessmentScalarFieldEnum)[keyof typeof CandidatureAssessmentScalarFieldEnum]
+
+
   export const FormationSessionParticipantScalarFieldEnum: {
     id: 'id',
     sessionId: 'sessionId',
@@ -167932,6 +169265,34 @@ export namespace Prisma {
    * Reference to a field of type 'CandidatureStatus[]'
    */
   export type ListEnumCandidatureStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CandidatureStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CandidatureAssessmentKind'
+   */
+  export type EnumCandidatureAssessmentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CandidatureAssessmentKind'>
+    
+
+
+  /**
+   * Reference to a field of type 'CandidatureAssessmentKind[]'
+   */
+  export type ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CandidatureAssessmentKind[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'CandidatureAssessmentStatus'
+   */
+  export type EnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CandidatureAssessmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'CandidatureAssessmentStatus[]'
+   */
+  export type ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CandidatureAssessmentStatus[]'>
     
 
 
@@ -173173,6 +174534,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantListRelationFilter
     attestations?: FormationAttestationListRelationFilter
     financeDevis?: FinanceDevisListRelationFilter
+    assessments?: CandidatureAssessmentListRelationFilter
   }
 
   export type CandidatureOrderByWithRelationInput = {
@@ -173203,6 +174565,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantOrderByRelationAggregateInput
     attestations?: FormationAttestationOrderByRelationAggregateInput
     financeDevis?: FinanceDevisOrderByRelationAggregateInput
+    assessments?: CandidatureAssessmentOrderByRelationAggregateInput
   }
 
   export type CandidatureWhereUniqueInput = Prisma.AtLeast<{
@@ -173236,6 +174599,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantListRelationFilter
     attestations?: FormationAttestationListRelationFilter
     financeDevis?: FinanceDevisListRelationFilter
+    assessments?: CandidatureAssessmentListRelationFilter
   }, "id" | "leadId">
 
   export type CandidatureOrderByWithAggregationInput = {
@@ -173286,6 +174650,97 @@ export namespace Prisma {
     documentsCompleteAt?: DateTimeNullableWithAggregatesFilter<"Candidature"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Candidature"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Candidature"> | Date | string
+  }
+
+  export type CandidatureAssessmentWhereInput = {
+    AND?: CandidatureAssessmentWhereInput | CandidatureAssessmentWhereInput[]
+    OR?: CandidatureAssessmentWhereInput[]
+    NOT?: CandidatureAssessmentWhereInput | CandidatureAssessmentWhereInput[]
+    id?: StringFilter<"CandidatureAssessment"> | string
+    candidatureId?: StringFilter<"CandidatureAssessment"> | string
+    kind?: EnumCandidatureAssessmentKindFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentStatus
+    sentAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    answers?: JsonNullableFilter<"CandidatureAssessment">
+    level?: StringNullableFilter<"CandidatureAssessment"> | string | null
+    prerequisitesStatus?: StringNullableFilter<"CandidatureAssessment"> | string | null
+    adaptationRequired?: BoolNullableFilter<"CandidatureAssessment"> | boolean | null
+    createdAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
+    candidature?: XOR<CandidatureScalarRelationFilter, CandidatureWhereInput>
+  }
+
+  export type CandidatureAssessmentOrderByWithRelationInput = {
+    id?: SortOrder
+    candidatureId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    answers?: SortOrderInput | SortOrder
+    level?: SortOrderInput | SortOrder
+    prerequisitesStatus?: SortOrderInput | SortOrder
+    adaptationRequired?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    candidature?: CandidatureOrderByWithRelationInput
+  }
+
+  export type CandidatureAssessmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    candidatureId_kind?: CandidatureAssessmentCandidatureIdKindCompoundUniqueInput
+    AND?: CandidatureAssessmentWhereInput | CandidatureAssessmentWhereInput[]
+    OR?: CandidatureAssessmentWhereInput[]
+    NOT?: CandidatureAssessmentWhereInput | CandidatureAssessmentWhereInput[]
+    candidatureId?: StringFilter<"CandidatureAssessment"> | string
+    kind?: EnumCandidatureAssessmentKindFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentStatus
+    sentAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    answers?: JsonNullableFilter<"CandidatureAssessment">
+    level?: StringNullableFilter<"CandidatureAssessment"> | string | null
+    prerequisitesStatus?: StringNullableFilter<"CandidatureAssessment"> | string | null
+    adaptationRequired?: BoolNullableFilter<"CandidatureAssessment"> | boolean | null
+    createdAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
+    candidature?: XOR<CandidatureScalarRelationFilter, CandidatureWhereInput>
+  }, "id" | "candidatureId_kind">
+
+  export type CandidatureAssessmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    candidatureId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    answers?: SortOrderInput | SortOrder
+    level?: SortOrderInput | SortOrder
+    prerequisitesStatus?: SortOrderInput | SortOrder
+    adaptationRequired?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CandidatureAssessmentCountOrderByAggregateInput
+    _max?: CandidatureAssessmentMaxOrderByAggregateInput
+    _min?: CandidatureAssessmentMinOrderByAggregateInput
+  }
+
+  export type CandidatureAssessmentScalarWhereWithAggregatesInput = {
+    AND?: CandidatureAssessmentScalarWhereWithAggregatesInput | CandidatureAssessmentScalarWhereWithAggregatesInput[]
+    OR?: CandidatureAssessmentScalarWhereWithAggregatesInput[]
+    NOT?: CandidatureAssessmentScalarWhereWithAggregatesInput | CandidatureAssessmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CandidatureAssessment"> | string
+    candidatureId?: StringWithAggregatesFilter<"CandidatureAssessment"> | string
+    kind?: EnumCandidatureAssessmentKindWithAggregatesFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusWithAggregatesFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentStatus
+    sentAt?: DateTimeNullableWithAggregatesFilter<"CandidatureAssessment"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"CandidatureAssessment"> | Date | string | null
+    answers?: JsonNullableWithAggregatesFilter<"CandidatureAssessment">
+    level?: StringNullableWithAggregatesFilter<"CandidatureAssessment"> | string | null
+    prerequisitesStatus?: StringNullableWithAggregatesFilter<"CandidatureAssessment"> | string | null
+    adaptationRequired?: BoolNullableWithAggregatesFilter<"CandidatureAssessment"> | boolean | null
+    createdAt?: DateTimeWithAggregatesFilter<"CandidatureAssessment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CandidatureAssessment"> | Date | string
   }
 
   export type FormationSessionParticipantWhereInput = {
@@ -185460,6 +186915,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateInput = {
@@ -185486,6 +186942,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUpdateInput = {
@@ -185512,6 +186969,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateInput = {
@@ -185538,6 +186996,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureCreateManyInput = {
@@ -185598,6 +187057,110 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     metadata?: JsonNullValueInput | InputJsonValue
     documentsCompleteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidatureAssessmentCreateInput = {
+    id?: string
+    kind: $Enums.CandidatureAssessmentKind
+    status?: $Enums.CandidatureAssessmentStatus
+    sentAt?: Date | string | null
+    completedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: string | null
+    prerequisitesStatus?: string | null
+    adaptationRequired?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    candidature: CandidatureCreateNestedOneWithoutAssessmentsInput
+  }
+
+  export type CandidatureAssessmentUncheckedCreateInput = {
+    id?: string
+    candidatureId: string
+    kind: $Enums.CandidatureAssessmentKind
+    status?: $Enums.CandidatureAssessmentStatus
+    sentAt?: Date | string | null
+    completedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: string | null
+    prerequisitesStatus?: string | null
+    adaptationRequired?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidatureAssessmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: EnumCandidatureAssessmentKindFieldUpdateOperationsInput | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFieldUpdateOperationsInput | $Enums.CandidatureAssessmentStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidature?: CandidatureUpdateOneRequiredWithoutAssessmentsNestedInput
+  }
+
+  export type CandidatureAssessmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidatureId?: StringFieldUpdateOperationsInput | string
+    kind?: EnumCandidatureAssessmentKindFieldUpdateOperationsInput | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFieldUpdateOperationsInput | $Enums.CandidatureAssessmentStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidatureAssessmentCreateManyInput = {
+    id?: string
+    candidatureId: string
+    kind: $Enums.CandidatureAssessmentKind
+    status?: $Enums.CandidatureAssessmentStatus
+    sentAt?: Date | string | null
+    completedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: string | null
+    prerequisitesStatus?: string | null
+    adaptationRequired?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidatureAssessmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: EnumCandidatureAssessmentKindFieldUpdateOperationsInput | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFieldUpdateOperationsInput | $Enums.CandidatureAssessmentStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidatureAssessmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    candidatureId?: StringFieldUpdateOperationsInput | string
+    kind?: EnumCandidatureAssessmentKindFieldUpdateOperationsInput | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFieldUpdateOperationsInput | $Enums.CandidatureAssessmentStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -197037,6 +198600,16 @@ export namespace Prisma {
     isNot?: LeadWhereInput | null
   }
 
+  export type CandidatureAssessmentListRelationFilter = {
+    every?: CandidatureAssessmentWhereInput
+    some?: CandidatureAssessmentWhereInput
+    none?: CandidatureAssessmentWhereInput
+  }
+
+  export type CandidatureAssessmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type CandidatureCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -197127,6 +198700,93 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type EnumCandidatureAssessmentKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentKind | EnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentKindFilter<$PrismaModel> | $Enums.CandidatureAssessmentKind
+  }
+
+  export type EnumCandidatureAssessmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentStatus | EnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel> | $Enums.CandidatureAssessmentStatus
+  }
+
+  export type CandidatureScalarRelationFilter = {
+    is?: CandidatureWhereInput
+    isNot?: CandidatureWhereInput
+  }
+
+  export type CandidatureAssessmentCandidatureIdKindCompoundUniqueInput = {
+    candidatureId: string
+    kind: $Enums.CandidatureAssessmentKind
+  }
+
+  export type CandidatureAssessmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    candidatureId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    completedAt?: SortOrder
+    answers?: SortOrder
+    level?: SortOrder
+    prerequisitesStatus?: SortOrder
+    adaptationRequired?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidatureAssessmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    candidatureId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    completedAt?: SortOrder
+    level?: SortOrder
+    prerequisitesStatus?: SortOrder
+    adaptationRequired?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CandidatureAssessmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    candidatureId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    completedAt?: SortOrder
+    level?: SortOrder
+    prerequisitesStatus?: SortOrder
+    adaptationRequired?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumCandidatureAssessmentKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentKind | EnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentKindWithAggregatesFilter<$PrismaModel> | $Enums.CandidatureAssessmentKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCandidatureAssessmentKindFilter<$PrismaModel>
+    _max?: NestedEnumCandidatureAssessmentKindFilter<$PrismaModel>
+  }
+
+  export type EnumCandidatureAssessmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentStatus | EnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.CandidatureAssessmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
   }
 
   export type EnumFormationSessionEnrollmentStatusFilter<$PrismaModel = never> = {
@@ -207936,6 +209596,13 @@ export namespace Prisma {
     connect?: FinanceDevisWhereUniqueInput | FinanceDevisWhereUniqueInput[]
   }
 
+  export type CandidatureAssessmentCreateNestedManyWithoutCandidatureInput = {
+    create?: XOR<CandidatureAssessmentCreateWithoutCandidatureInput, CandidatureAssessmentUncheckedCreateWithoutCandidatureInput> | CandidatureAssessmentCreateWithoutCandidatureInput[] | CandidatureAssessmentUncheckedCreateWithoutCandidatureInput[]
+    connectOrCreate?: CandidatureAssessmentCreateOrConnectWithoutCandidatureInput | CandidatureAssessmentCreateOrConnectWithoutCandidatureInput[]
+    createMany?: CandidatureAssessmentCreateManyCandidatureInputEnvelope
+    connect?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+  }
+
   export type ComplianceDossierUncheckedCreateNestedManyWithoutCandidatureInput = {
     create?: XOR<ComplianceDossierCreateWithoutCandidatureInput, ComplianceDossierUncheckedCreateWithoutCandidatureInput> | ComplianceDossierCreateWithoutCandidatureInput[] | ComplianceDossierUncheckedCreateWithoutCandidatureInput[]
     connectOrCreate?: ComplianceDossierCreateOrConnectWithoutCandidatureInput | ComplianceDossierCreateOrConnectWithoutCandidatureInput[]
@@ -207962,6 +209629,13 @@ export namespace Prisma {
     connectOrCreate?: FinanceDevisCreateOrConnectWithoutCandidatureInput | FinanceDevisCreateOrConnectWithoutCandidatureInput[]
     createMany?: FinanceDevisCreateManyCandidatureInputEnvelope
     connect?: FinanceDevisWhereUniqueInput | FinanceDevisWhereUniqueInput[]
+  }
+
+  export type CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput = {
+    create?: XOR<CandidatureAssessmentCreateWithoutCandidatureInput, CandidatureAssessmentUncheckedCreateWithoutCandidatureInput> | CandidatureAssessmentCreateWithoutCandidatureInput[] | CandidatureAssessmentUncheckedCreateWithoutCandidatureInput[]
+    connectOrCreate?: CandidatureAssessmentCreateOrConnectWithoutCandidatureInput | CandidatureAssessmentCreateOrConnectWithoutCandidatureInput[]
+    createMany?: CandidatureAssessmentCreateManyCandidatureInputEnvelope
+    connect?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
   }
 
   export type EnumCandidatureSourceFieldUpdateOperationsInput = {
@@ -208070,6 +209744,20 @@ export namespace Prisma {
     deleteMany?: FinanceDevisScalarWhereInput | FinanceDevisScalarWhereInput[]
   }
 
+  export type CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput = {
+    create?: XOR<CandidatureAssessmentCreateWithoutCandidatureInput, CandidatureAssessmentUncheckedCreateWithoutCandidatureInput> | CandidatureAssessmentCreateWithoutCandidatureInput[] | CandidatureAssessmentUncheckedCreateWithoutCandidatureInput[]
+    connectOrCreate?: CandidatureAssessmentCreateOrConnectWithoutCandidatureInput | CandidatureAssessmentCreateOrConnectWithoutCandidatureInput[]
+    upsert?: CandidatureAssessmentUpsertWithWhereUniqueWithoutCandidatureInput | CandidatureAssessmentUpsertWithWhereUniqueWithoutCandidatureInput[]
+    createMany?: CandidatureAssessmentCreateManyCandidatureInputEnvelope
+    set?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    disconnect?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    delete?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    connect?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    update?: CandidatureAssessmentUpdateWithWhereUniqueWithoutCandidatureInput | CandidatureAssessmentUpdateWithWhereUniqueWithoutCandidatureInput[]
+    updateMany?: CandidatureAssessmentUpdateManyWithWhereWithoutCandidatureInput | CandidatureAssessmentUpdateManyWithWhereWithoutCandidatureInput[]
+    deleteMany?: CandidatureAssessmentScalarWhereInput | CandidatureAssessmentScalarWhereInput[]
+  }
+
   export type ComplianceDossierUncheckedUpdateManyWithoutCandidatureNestedInput = {
     create?: XOR<ComplianceDossierCreateWithoutCandidatureInput, ComplianceDossierUncheckedCreateWithoutCandidatureInput> | ComplianceDossierCreateWithoutCandidatureInput[] | ComplianceDossierUncheckedCreateWithoutCandidatureInput[]
     connectOrCreate?: ComplianceDossierCreateOrConnectWithoutCandidatureInput | ComplianceDossierCreateOrConnectWithoutCandidatureInput[]
@@ -208124,6 +209812,42 @@ export namespace Prisma {
     update?: FinanceDevisUpdateWithWhereUniqueWithoutCandidatureInput | FinanceDevisUpdateWithWhereUniqueWithoutCandidatureInput[]
     updateMany?: FinanceDevisUpdateManyWithWhereWithoutCandidatureInput | FinanceDevisUpdateManyWithWhereWithoutCandidatureInput[]
     deleteMany?: FinanceDevisScalarWhereInput | FinanceDevisScalarWhereInput[]
+  }
+
+  export type CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput = {
+    create?: XOR<CandidatureAssessmentCreateWithoutCandidatureInput, CandidatureAssessmentUncheckedCreateWithoutCandidatureInput> | CandidatureAssessmentCreateWithoutCandidatureInput[] | CandidatureAssessmentUncheckedCreateWithoutCandidatureInput[]
+    connectOrCreate?: CandidatureAssessmentCreateOrConnectWithoutCandidatureInput | CandidatureAssessmentCreateOrConnectWithoutCandidatureInput[]
+    upsert?: CandidatureAssessmentUpsertWithWhereUniqueWithoutCandidatureInput | CandidatureAssessmentUpsertWithWhereUniqueWithoutCandidatureInput[]
+    createMany?: CandidatureAssessmentCreateManyCandidatureInputEnvelope
+    set?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    disconnect?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    delete?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    connect?: CandidatureAssessmentWhereUniqueInput | CandidatureAssessmentWhereUniqueInput[]
+    update?: CandidatureAssessmentUpdateWithWhereUniqueWithoutCandidatureInput | CandidatureAssessmentUpdateWithWhereUniqueWithoutCandidatureInput[]
+    updateMany?: CandidatureAssessmentUpdateManyWithWhereWithoutCandidatureInput | CandidatureAssessmentUpdateManyWithWhereWithoutCandidatureInput[]
+    deleteMany?: CandidatureAssessmentScalarWhereInput | CandidatureAssessmentScalarWhereInput[]
+  }
+
+  export type CandidatureCreateNestedOneWithoutAssessmentsInput = {
+    create?: XOR<CandidatureCreateWithoutAssessmentsInput, CandidatureUncheckedCreateWithoutAssessmentsInput>
+    connectOrCreate?: CandidatureCreateOrConnectWithoutAssessmentsInput
+    connect?: CandidatureWhereUniqueInput
+  }
+
+  export type EnumCandidatureAssessmentKindFieldUpdateOperationsInput = {
+    set?: $Enums.CandidatureAssessmentKind
+  }
+
+  export type EnumCandidatureAssessmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.CandidatureAssessmentStatus
+  }
+
+  export type CandidatureUpdateOneRequiredWithoutAssessmentsNestedInput = {
+    create?: XOR<CandidatureCreateWithoutAssessmentsInput, CandidatureUncheckedCreateWithoutAssessmentsInput>
+    connectOrCreate?: CandidatureCreateOrConnectWithoutAssessmentsInput
+    upsert?: CandidatureUpsertWithoutAssessmentsInput
+    connect?: CandidatureWhereUniqueInput
+    update?: XOR<XOR<CandidatureUpdateToOneWithWhereWithoutAssessmentsInput, CandidatureUpdateWithoutAssessmentsInput>, CandidatureUncheckedUpdateWithoutAssessmentsInput>
   }
 
   export type FormationSessionCreateNestedOneWithoutParticipantsInput = {
@@ -214460,6 +216184,40 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumCandidatureAssessmentKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentKind | EnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentKindFilter<$PrismaModel> | $Enums.CandidatureAssessmentKind
+  }
+
+  export type NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentStatus | EnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel> | $Enums.CandidatureAssessmentStatus
+  }
+
+  export type NestedEnumCandidatureAssessmentKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentKind | EnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentKindWithAggregatesFilter<$PrismaModel> | $Enums.CandidatureAssessmentKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCandidatureAssessmentKindFilter<$PrismaModel>
+    _max?: NestedEnumCandidatureAssessmentKindFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCandidatureAssessmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CandidatureAssessmentStatus | EnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CandidatureAssessmentStatus[] | ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumCandidatureAssessmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.CandidatureAssessmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumFormationSessionEnrollmentStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.FormationSessionEnrollmentStatus | EnumFormationSessionEnrollmentStatusFieldRefInput<$PrismaModel>
     in?: $Enums.FormationSessionEnrollmentStatus[] | ListEnumFormationSessionEnrollmentStatusFieldRefInput<$PrismaModel>
@@ -216203,6 +217961,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutUserInput = {
@@ -216228,6 +217987,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutUserInput = {
@@ -232374,6 +234134,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutFormationInput = {
@@ -232399,6 +234160,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutFormationInput = {
@@ -236095,6 +237857,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutInterestedSessionInput = {
@@ -236120,6 +237883,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutInterestedSessionInput = {
@@ -238705,6 +240469,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CandidatureAssessmentCreateWithoutCandidatureInput = {
+    id?: string
+    kind: $Enums.CandidatureAssessmentKind
+    status?: $Enums.CandidatureAssessmentStatus
+    sentAt?: Date | string | null
+    completedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: string | null
+    prerequisitesStatus?: string | null
+    adaptationRequired?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidatureAssessmentUncheckedCreateWithoutCandidatureInput = {
+    id?: string
+    kind: $Enums.CandidatureAssessmentKind
+    status?: $Enums.CandidatureAssessmentStatus
+    sentAt?: Date | string | null
+    completedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: string | null
+    prerequisitesStatus?: string | null
+    adaptationRequired?: boolean | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidatureAssessmentCreateOrConnectWithoutCandidatureInput = {
+    where: CandidatureAssessmentWhereUniqueInput
+    create: XOR<CandidatureAssessmentCreateWithoutCandidatureInput, CandidatureAssessmentUncheckedCreateWithoutCandidatureInput>
+  }
+
+  export type CandidatureAssessmentCreateManyCandidatureInputEnvelope = {
+    data: CandidatureAssessmentCreateManyCandidatureInput | CandidatureAssessmentCreateManyCandidatureInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutCandidaturesInput = {
     update: XOR<UserUpdateWithoutCandidaturesInput, UserUncheckedUpdateWithoutCandidaturesInput>
     create: XOR<UserCreateWithoutCandidaturesInput, UserUncheckedCreateWithoutCandidaturesInput>
@@ -239299,6 +241101,160 @@ export namespace Prisma {
     data: XOR<FinanceDevisUpdateManyMutationInput, FinanceDevisUncheckedUpdateManyWithoutCandidatureInput>
   }
 
+  export type CandidatureAssessmentUpsertWithWhereUniqueWithoutCandidatureInput = {
+    where: CandidatureAssessmentWhereUniqueInput
+    update: XOR<CandidatureAssessmentUpdateWithoutCandidatureInput, CandidatureAssessmentUncheckedUpdateWithoutCandidatureInput>
+    create: XOR<CandidatureAssessmentCreateWithoutCandidatureInput, CandidatureAssessmentUncheckedCreateWithoutCandidatureInput>
+  }
+
+  export type CandidatureAssessmentUpdateWithWhereUniqueWithoutCandidatureInput = {
+    where: CandidatureAssessmentWhereUniqueInput
+    data: XOR<CandidatureAssessmentUpdateWithoutCandidatureInput, CandidatureAssessmentUncheckedUpdateWithoutCandidatureInput>
+  }
+
+  export type CandidatureAssessmentUpdateManyWithWhereWithoutCandidatureInput = {
+    where: CandidatureAssessmentScalarWhereInput
+    data: XOR<CandidatureAssessmentUpdateManyMutationInput, CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureInput>
+  }
+
+  export type CandidatureAssessmentScalarWhereInput = {
+    AND?: CandidatureAssessmentScalarWhereInput | CandidatureAssessmentScalarWhereInput[]
+    OR?: CandidatureAssessmentScalarWhereInput[]
+    NOT?: CandidatureAssessmentScalarWhereInput | CandidatureAssessmentScalarWhereInput[]
+    id?: StringFilter<"CandidatureAssessment"> | string
+    candidatureId?: StringFilter<"CandidatureAssessment"> | string
+    kind?: EnumCandidatureAssessmentKindFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFilter<"CandidatureAssessment"> | $Enums.CandidatureAssessmentStatus
+    sentAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    answers?: JsonNullableFilter<"CandidatureAssessment">
+    level?: StringNullableFilter<"CandidatureAssessment"> | string | null
+    prerequisitesStatus?: StringNullableFilter<"CandidatureAssessment"> | string | null
+    adaptationRequired?: BoolNullableFilter<"CandidatureAssessment"> | boolean | null
+    createdAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
+  }
+
+  export type CandidatureCreateWithoutAssessmentsInput = {
+    id?: string
+    source?: $Enums.CandidatureSource
+    status?: $Enums.CandidatureStatus
+    cnapsSubmittedAt?: Date | string | null
+    cnapsReference?: string | null
+    cnapsDecisionAt?: Date | string | null
+    cnapsPrefavorable?: boolean | null
+    validatedAt?: Date | string | null
+    completedAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+    documentsCompleteAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutCandidaturesInput
+    formation?: FormationCreateNestedOneWithoutCandidaturesInput
+    interestedSession?: FormationSessionCreateNestedOneWithoutCandidaturesInterestedInput
+    lead?: LeadCreateNestedOneWithoutCandidatureInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutCandidatureInput
+    sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
+    attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
+    financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+  }
+
+  export type CandidatureUncheckedCreateWithoutAssessmentsInput = {
+    id?: string
+    userId: string
+    formationId?: string | null
+    interestedSessionId?: string | null
+    leadId?: string | null
+    source?: $Enums.CandidatureSource
+    status?: $Enums.CandidatureStatus
+    cnapsSubmittedAt?: Date | string | null
+    cnapsReference?: string | null
+    cnapsDecisionAt?: Date | string | null
+    cnapsPrefavorable?: boolean | null
+    validatedAt?: Date | string | null
+    completedAt?: Date | string | null
+    archivedAt?: Date | string | null
+    notes?: string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+    documentsCompleteAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutCandidatureInput
+    sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
+    attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
+    financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+  }
+
+  export type CandidatureCreateOrConnectWithoutAssessmentsInput = {
+    where: CandidatureWhereUniqueInput
+    create: XOR<CandidatureCreateWithoutAssessmentsInput, CandidatureUncheckedCreateWithoutAssessmentsInput>
+  }
+
+  export type CandidatureUpsertWithoutAssessmentsInput = {
+    update: XOR<CandidatureUpdateWithoutAssessmentsInput, CandidatureUncheckedUpdateWithoutAssessmentsInput>
+    create: XOR<CandidatureCreateWithoutAssessmentsInput, CandidatureUncheckedCreateWithoutAssessmentsInput>
+    where?: CandidatureWhereInput
+  }
+
+  export type CandidatureUpdateToOneWithWhereWithoutAssessmentsInput = {
+    where?: CandidatureWhereInput
+    data: XOR<CandidatureUpdateWithoutAssessmentsInput, CandidatureUncheckedUpdateWithoutAssessmentsInput>
+  }
+
+  export type CandidatureUpdateWithoutAssessmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumCandidatureSourceFieldUpdateOperationsInput | $Enums.CandidatureSource
+    status?: EnumCandidatureStatusFieldUpdateOperationsInput | $Enums.CandidatureStatus
+    cnapsSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cnapsReference?: NullableStringFieldUpdateOperationsInput | string | null
+    cnapsDecisionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cnapsPrefavorable?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+    documentsCompleteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCandidaturesNestedInput
+    formation?: FormationUpdateOneWithoutCandidaturesNestedInput
+    interestedSession?: FormationSessionUpdateOneWithoutCandidaturesInterestedNestedInput
+    lead?: LeadUpdateOneWithoutCandidatureNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutCandidatureNestedInput
+    sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
+    attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
+    financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+  }
+
+  export type CandidatureUncheckedUpdateWithoutAssessmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    formationId?: NullableStringFieldUpdateOperationsInput | string | null
+    interestedSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumCandidatureSourceFieldUpdateOperationsInput | $Enums.CandidatureSource
+    status?: EnumCandidatureStatusFieldUpdateOperationsInput | $Enums.CandidatureStatus
+    cnapsSubmittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cnapsReference?: NullableStringFieldUpdateOperationsInput | string | null
+    cnapsDecisionAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cnapsPrefavorable?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    validatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: JsonNullValueInput | InputJsonValue
+    documentsCompleteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutCandidatureNestedInput
+    sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
+    attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
+    financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+  }
+
   export type FormationSessionCreateWithoutParticipantsInput = {
     id?: string
     startDate?: Date | string | null
@@ -239650,6 +241606,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutSessionEnrollmentsInput = {
@@ -239675,6 +241632,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutSessionEnrollmentsInput = {
@@ -240234,6 +242192,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutSessionEnrollmentsInput = {
@@ -240259,6 +242218,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type FormationSessionEmargementUpsertWithWhereUniqueWithoutParticipantInput = {
@@ -242169,6 +244129,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutCandidatureInput
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutAttestationsInput = {
@@ -242194,6 +244155,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutCandidatureInput
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutAttestationsInput = {
@@ -242706,6 +244668,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUpdateManyWithoutCandidatureNestedInput
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutAttestationsInput = {
@@ -242731,6 +244694,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutCandidatureNestedInput
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type FormationUpsertWithoutAttestationsInput = {
@@ -252952,6 +254916,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutLeadInput = {
@@ -252977,6 +254942,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutLeadInput = {
@@ -253373,6 +255339,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutLeadInput = {
@@ -253398,6 +255365,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type FinanceDevisUpsertWithWhereUniqueWithoutLeadInput = {
@@ -253672,6 +255640,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutCandidatureInput
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutFinanceDevisInput = {
@@ -253697,6 +255666,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutCandidatureInput
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutFinanceDevisInput = {
@@ -254079,6 +256049,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUpdateManyWithoutCandidatureNestedInput
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutFinanceDevisInput = {
@@ -254104,6 +256075,7 @@ export namespace Prisma {
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutCandidatureNestedInput
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type FormationSessionUpsertWithoutFinanceDevisSessionLinksInput = {
@@ -269707,6 +271679,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureUncheckedCreateWithoutComplianceDossiersInput = {
@@ -269732,6 +271705,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedCreateNestedManyWithoutCandidatureInput
     attestations?: FormationAttestationUncheckedCreateNestedManyWithoutCandidatureInput
     financeDevis?: FinanceDevisUncheckedCreateNestedManyWithoutCandidatureInput
+    assessments?: CandidatureAssessmentUncheckedCreateNestedManyWithoutCandidatureInput
   }
 
   export type CandidatureCreateOrConnectWithoutComplianceDossiersInput = {
@@ -270169,6 +272143,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutComplianceDossiersInput = {
@@ -270194,6 +272169,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type ComplianceDossierItemUpsertWithWhereUniqueWithoutDossierInput = {
@@ -278905,6 +280881,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutUserInput = {
@@ -278930,6 +280907,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateManyWithoutUserInput = {
@@ -282986,6 +284964,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutFormationInput = {
@@ -283011,6 +284990,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateManyWithoutFormationInput = {
@@ -284349,6 +286329,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateWithoutInterestedSessionInput = {
@@ -284374,6 +286355,7 @@ export namespace Prisma {
     sessionEnrollments?: FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureNestedInput
     attestations?: FormationAttestationUncheckedUpdateManyWithoutCandidatureNestedInput
     financeDevis?: FinanceDevisUncheckedUpdateManyWithoutCandidatureNestedInput
+    assessments?: CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureNestedInput
   }
 
   export type CandidatureUncheckedUpdateManyWithoutInterestedSessionInput = {
@@ -284599,6 +286581,20 @@ export namespace Prisma {
     einvoicePdpMessageId?: string | null
     einvoiceLastError?: string | null
     einvoiceXmlAssetKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CandidatureAssessmentCreateManyCandidatureInput = {
+    id?: string
+    kind: $Enums.CandidatureAssessmentKind
+    status?: $Enums.CandidatureAssessmentStatus
+    sentAt?: Date | string | null
+    completedAt?: Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: string | null
+    prerequisitesStatus?: string | null
+    adaptationRequired?: boolean | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -284838,6 +286834,48 @@ export namespace Prisma {
     einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
     einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidatureAssessmentUpdateWithoutCandidatureInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: EnumCandidatureAssessmentKindFieldUpdateOperationsInput | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFieldUpdateOperationsInput | $Enums.CandidatureAssessmentStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidatureAssessmentUncheckedUpdateWithoutCandidatureInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: EnumCandidatureAssessmentKindFieldUpdateOperationsInput | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFieldUpdateOperationsInput | $Enums.CandidatureAssessmentStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CandidatureAssessmentUncheckedUpdateManyWithoutCandidatureInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: EnumCandidatureAssessmentKindFieldUpdateOperationsInput | $Enums.CandidatureAssessmentKind
+    status?: EnumCandidatureAssessmentStatusFieldUpdateOperationsInput | $Enums.CandidatureAssessmentStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    answers?: NullableJsonNullValueInput | InputJsonValue
+    level?: NullableStringFieldUpdateOperationsInput | string | null
+    prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

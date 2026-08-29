@@ -49,6 +49,8 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | `ATTENDANCE_CONFIRMED` | session | manual (signature) | `type: SIGNATURE` (émargement) | Qualiopi re-eval, calcul heures BPF (déjà consommé par `bpf-aggregates.ts` ce soir via `Emargement`) |
 | `SIGNATURE_MISSING` | session | system (dérivé créneau du jour + participant sans ligne d'émargement) | `null` (jamais fabriquer la preuve) | notification apprenant/formateur/admin — implémenté Tranche 2 (pedagogy-evening) |
 | `LEARNER_ABSENT` | session | manual / evening cron | `type: RELATION` (absence + justification) | cycle `UNJUSTIFIED→JUSTIFICATION_REQUESTED→JUSTIFIED→RESOLVED` — Tranche 2 |
+| `NEEDS_ANALYSIS_COMPLETED` | candidature | manual (soumission questionnaire WF-02) | `type: QUESTIONNAIRE` | déclenche WF-03 positionnement |
+| `POSITIONING_COMPLETED` | candidature | manual (soumission questionnaire WF-03) | `type: QUESTIONNAIRE` | prérequis / niveau / suite parcours |
 | `DOCUMENT_SENT` | session | system | `type: EMAIL` ou `type: DOCUMENT` selon le canal | déjà implémenté ce soir (OF-02 : convocation/convention/attestation) |
 | `SATISFACTION_REQUESTED` | session | scheduled (J+45 pour COLD) | `type: QUESTIONNAIRE` | déjà implémenté ce soir (OF-10) |
 | `SATISFACTION_COMPLETED` | session | manual (soumission apprenant / stakeholder) | `type: QUESTIONNAIRE` | Qualiopi re-eval |

@@ -19,6 +19,7 @@ import { qualificationMetierLabel } from '@/lib/rh-qualification-metier';
 import { UserStatus } from '@/app/models/user';
 import { fail } from '@/app/api/_shared/http/response';
 import { attachActiveAbsencesToUsers } from '@repo/api-core';
+import { afterCandidatureCreated } from '@/lib/of/candidature-assessment-bootstrap';
 import {
   getLearnerScopedWhere,
   mapFormEtudiantUserCategory,
@@ -237,6 +238,15 @@ export async function POST(request: NextRequest) {
 
     return u;
   });
+
+  if (slug === 'candidat') {
+    const draft = await prisma.candidature.findFirst({
+      where: { userId: user.id, source: CandidatureSource.MANUAL, status: CandidatureStatus.DRAFT },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    });
+    if (draft) await afterCandidatureCreated(prisma, draft.id, request);
+  }
 
   return NextResponse.json(
     {

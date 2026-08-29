@@ -15,6 +15,7 @@ import {
 } from '@/lib/cnaps/cnaps-onboarding-fields';
 import prisma from '@/lib/prisma';
 import { allocateUniqueProEmail } from '@/lib/user-email-routing';
+import { afterCandidatureCreated } from '@/lib/of/candidature-assessment-bootstrap';
 
 type PreinscriptionPayload = {
   firstName?: string;
@@ -411,6 +412,8 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     console.error('[preinscription] e-mail non envoyé', e);
   }
+
+  await afterCandidatureCreated(prisma, candidature.id, request);
 
   try {
     const workflows = createWorkflowEngine(prisma);

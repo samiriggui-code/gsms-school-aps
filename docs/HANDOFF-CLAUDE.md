@@ -635,4 +635,57 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après, commit séparé du re
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
 
+✅ traité — WF-02/03 : modèle `CandidatureAssessment` + questionnaires publics signés + Evidence + bootstrap à la création candidature + API CRM assessments. Voir HANDOFF-CURSOR.
+
 ✅ traité — Tranche 2 livrée : WF-17 (detect gaps + emails evening, jamais de preuve fabriquée) · WF-18 (AbsenceJustificationStatus + cron request + API PATCH) · WF-08 (FormationSessionConvention + SENT + relances J+2/J+5 cron/n8n). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — Tranche 2 vérifiée en profondeur, RAS + cadrage WF-02/03
+
+**Vérification indépendante complète**, comme d'hab : `fetchPedagogyDailyAlerts` relu en entier — confirmé aucun `.create()` sur `formationSessionEmargement` nulle part dans le chemin WF-17, uniquement des envois d'e-mail (règle "jamais fabriquer la preuve" respectée à la lettre). Guard de rang anti-régression sur `upsertSessionConvention` vérifié (`rank[input.status] >= rank[existing.status]`). Une nuance à noter, pas un bug : `VIEWED` sur la convention n'est déclenché que par un PATCH staff manuel (pas de portail public convention existant, contrairement au devis WF-07) — adaptation honnête, bien signalée dans ton rapport plutôt que masquée. Relancé moi-même `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Tranche 2 close, rien à reprendre.
+
+**Cadrage WF-02/03 (analyse du besoin + positionnement)** — comme demandé, voici la conception avant que tu codes :
+
+- **Pas dans `ComplianceDossier`** : ce moteur sert à la complétude documentaire (pièces requises/reçues), pas à des réponses de questionnaire/évaluation. Domaine différent, ne pas mélanger.
+- **Pas dans `Candidature.metadata` (Json)** : ces données sont de vrais artefacts Qualiopi auditables (faut pouvoir lister "candidatures sans analyse du besoin", filtrer, etc.) — un Json non typé sur `Candidature` serait invérifiable et pas requêtable proprement.
+- **Un seul nouveau modèle, pattern `SatisfactionSurvey`** (déjà prouvé 2x ce soir — réutilise la même forme plutôt que d'inventer un 3e pattern) :
+
+```prisma
+enum CandidatureAssessmentKind {
+  NEEDS_ANALYSIS   // WF-02
+  POSITIONING      // WF-03
+}
+
+enum CandidatureAssessmentStatus {
+  PENDING
+  SENT
+  COMPLETED
+}
+
+model CandidatureAssessment {
+  id            String                       @id @default(uuid())
+  candidatureId String
+  kind          CandidatureAssessmentKind
+  status        CandidatureAssessmentStatus  @default(PENDING)
+  sentAt        DateTime?
+  completedAt   DateTime?
+  /// Réponses libres (contexte pro, objectifs, contraintes, attentes pour NEEDS_ANALYSIS ;
+  /// questionnaire préformation/test niveau/auto-évaluation pour POSITIONING).
+  answers       Json?
+  /// WF-03 uniquement : niveau constaté (libre, pas d'enum fermé — trop variable selon la formation).
+  level              String?
+  /// WF-03 uniquement.
+  prerequisitesStatus String?   // ex. "OK" / "PARTIAL" / "MISSING" — à toi de voir si Select ou enum
+  /// Déclenche WF-04 (déjà existant côté DisabilityReferent organisme — ceci c'est le signal côté candidat).
+  adaptationRequired Boolean?
+
+  candidature Candidature @relation(fields: [candidatureId], references: [id], onDelete: Cascade)
+
+  @@unique([candidatureId, kind])
+}
+```
+
+- **Déclenchement** : WF-02 dès `Candidature` créée (ou passage à un statut proche — regarde le cycle `CandidatureStatus` existant et cale-toi dessus, ne réinvente pas un statut candidature) ; WF-03 dès WF-02 `COMPLETED`. Réutilise le pattern lien public signé + e-mail déjà fait 2x ce soir (satisfaction, plaquette devis) pour l'envoi du questionnaire au candidat.
+- **Evidence** : `NEEDS_ANALYSIS_COMPLETED` / `POSITIONING_COMPLETED` (déjà nommés dans la doctrine WF-02/03 et dans `GSMS SCHOOL — WORKFLOWS OF COMPLETS.md`), `sourceType: QUESTIONNAIRE`, même pattern `recordStatusEvidence` que partout ce soir.
+- **`adaptationRequired`** : si `true`, ça doit se voir quelque part côté staff (notif, ou simple flag visible sur la fiche candidature) — pas besoin de rebrancher tout WF-04 candidat ce soir (hors scope de cette tranche), juste ne pas perdre l'info silencieusement.
+
+Périmètre volontairement resserré : pas de WF-14 (J-5, qui n'est qu'une re-proposition de WF-02/03 en fin de parcours — une fois WF-02/03 en place, WF-14 sera quasi gratuit, on le fera après si utile). Go direct sur ce cadrage, pas besoin d'un nouvel aller-retour — si un point te bloque vraiment, écris la question dans HANDOFF-CURSOR plutôt que de deviner. `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.

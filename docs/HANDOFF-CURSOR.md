@@ -4,6 +4,25 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — WF-02/03 CandidatureAssessment livré
+
+### Modèle
+`CandidatureAssessment` (kinds `NEEDS_ANALYSIS` / `POSITIONING`, unique candidature+kind) — pattern SatisfactionSurvey.
+
+### Flux
+- Création candidature (préinscription, convert lead, RH candidat) → bootstrap WF-02 + e-mail lien signé `/p/assessment/[id]?t=…`
+- Submit NEEDS_ANALYSIS → Evidence `NEEDS_ANALYSIS_COMPLETED` + auto-création/invite WF-03
+- Submit POSITIONING → Evidence `POSITIONING_COMPLETED` + `level` / `prerequisitesStatus`
+- `adaptationRequired` stocké + exposé GET CRM `…/candidatures/[id]/assessments` (`adaptationRequired` agrégé)
+
+### Vérifs
+`tsc --noEmit` 0 · `test:doctype` 9/9 · harden 2/2 · migrate diff **0**
+
+### Hors scope (comme demandé)
+WF-14, WF-19, rebranchement WF-04 handicap candidat.
+
+---
+
 ## 2026-08-30 — WF Tranche 2 livrée (17 / 18 / 08)
 
 ### WF-17 Signature manquante

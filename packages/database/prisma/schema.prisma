@@ -1511,6 +1511,7 @@ model Candidature {
   sessionEnrollments FormationSessionParticipant[]
   attestations       FormationAttestation[]
   financeDevis       FinanceDevis[]
+  assessments        CandidatureAssessment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1519,6 +1520,45 @@ model Candidature {
   @@index([formationId])
   @@index([status])
   @@index([interestedSessionId])
+}
+
+/// WF-02 / WF-03 — analyse du besoin + positionnement (pattern SatisfactionSurvey).
+enum CandidatureAssessmentKind {
+  NEEDS_ANALYSIS
+  POSITIONING
+}
+
+enum CandidatureAssessmentStatus {
+  PENDING
+  SENT
+  COMPLETED
+}
+
+model CandidatureAssessment {
+  id            String                      @id @default(uuid())
+  candidatureId String
+  kind          CandidatureAssessmentKind
+  status        CandidatureAssessmentStatus @default(PENDING)
+  sentAt        DateTime?
+  completedAt   DateTime?
+  /// Réponses questionnaire (Json libre).
+  answers       Json?
+  /// WF-03 — niveau constaté (libre).
+  level         String?
+  /// WF-03 — OK / PARTIAL / MISSING (ou texte libre).
+  prerequisitesStatus String?
+  /// Signal adaptation (lien WF-04 organisme, info staff).
+  adaptationRequired Boolean?
+
+  candidature Candidature @relation(fields: [candidatureId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([candidatureId, kind])
+  @@index([candidatureId])
+  @@index([status])
+  @@index([adaptationRequired])
 }
 
 /// Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.

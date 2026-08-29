@@ -61,6 +61,8 @@ export {
   SessionConventionStatus,
   FormationSessionEmargementStatus,
   FormationSessionDaySlot,
+  CandidatureAssessmentKind,
+  CandidatureAssessmentStatus,
 } from '../generated/client';
 export {
   LandingTeamVolet,

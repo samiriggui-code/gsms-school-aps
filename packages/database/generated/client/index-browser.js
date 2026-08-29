@@ -837,6 +837,21 @@ exports.Prisma.CandidatureScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CandidatureAssessmentScalarFieldEnum = {
+  id: 'id',
+  candidatureId: 'candidatureId',
+  kind: 'kind',
+  status: 'status',
+  sentAt: 'sentAt',
+  completedAt: 'completedAt',
+  answers: 'answers',
+  level: 'level',
+  prerequisitesStatus: 'prerequisitesStatus',
+  adaptationRequired: 'adaptationRequired',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.FormationSessionParticipantScalarFieldEnum = {
   id: 'id',
   sessionId: 'sessionId',
@@ -2141,6 +2156,17 @@ exports.CandidatureStatus = exports.$Enums.CandidatureStatus = {
   ARCHIVED: 'ARCHIVED'
 };
 
+exports.CandidatureAssessmentKind = exports.$Enums.CandidatureAssessmentKind = {
+  NEEDS_ANALYSIS: 'NEEDS_ANALYSIS',
+  POSITIONING: 'POSITIONING'
+};
+
+exports.CandidatureAssessmentStatus = exports.$Enums.CandidatureAssessmentStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  COMPLETED: 'COMPLETED'
+};
+
 exports.FormationSessionEnrollmentStatus = exports.$Enums.FormationSessionEnrollmentStatus = {
   CONFIRMED: 'CONFIRMED',
   WAITLIST: 'WAITLIST',
@@ -2575,6 +2601,7 @@ exports.Prisma.ModelName = {
   SessionAutomationRun: 'SessionAutomationRun',
   PortalSessionAnnouncement: 'PortalSessionAnnouncement',
   Candidature: 'Candidature',
+  CandidatureAssessment: 'CandidatureAssessment',
   FormationSessionParticipant: 'FormationSessionParticipant',
   FormationSessionDay: 'FormationSessionDay',
   FormationSessionEmargement: 'FormationSessionEmargement',
