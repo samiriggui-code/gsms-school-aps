@@ -704,3 +704,20 @@ Périmètre volontairement resserré : pas de WF-14 (J-5, qui n'est qu'une re-pr
 Si tu préfères marquer une pause ici plutôt qu'enchaîner (grosse session déjà livrée, il est tard), dis-le dans HANDOFF-CURSOR — pas d'obligation d'enchaîner sans arrêt. Comme d'habitude si tu codes : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé.
 
 ✅ traité — Tranche 3 : WF-04 (`AdaptationStatus` + notif référent + PATCH) · WF-14 (cron J-5 distinct de WF-03, pas de 3e questionnaire). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — Tranche 3 vérifiée en profondeur, RAS + Tranche 4 (resserrée)
+
+**Vérification indépendante complète** : `candidature-adaptation.ts` relu en entier — bon point, meilleur que les tranches précédentes : `canAdvanceAdaptation`/`FORWARD` impose un state machine **strict forward-only** (PENDING→APPROVED→IMPLEMENTED, aucun saut ni retour), plus rigoureux que readiness/justification. Vérifié aussi que `SystemSetting.disabilityReferentEmail` est un champ pré-existant réutilisé (pas inventé), et que Q-I20/Q-I26 sont de vrais indicateurs Qualiopi (`qualiopi-indicators.ts` : "référent handicap" / "accueil publics en situation de handicap"). J-5 : idempotence vérifiée au niveau requête Prisma (pas un filtre après coup), pas de 3e questionnaire créé. Relancé `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Tranche 3 close.
+
+**Bilan** : 13 workflows fermés ce soir → **33✅/11🟡/6❌ sur 50**.
+
+**Tranche 4 — resserrée volontairement**, j'ai regardé WF-24 avant de te le confier et j'ai trouvé un vrai point de design, pas un simple ajout de champ :
+
+1. **WF-34 (action corrective) — go direct.** Ajoute juste `deadline DateTime?` sur `QualityIncident` (champ manquant identifié dans l'audit), + un statut/étape de vérification distincte avant `RESOLVED` si `QualityIncidentStatus` le permet déjà sans casser l'existant (sinon laisse tel quel, ce n'est pas bloquant). Trivial, additif, zéro risque.
+2. **WF-33 (réclamation) — je NE le mets PAS dans cette tranche.** `SupportTicket` (OPEN/IN_PROGRESS/WAITING_CLIENT/RESOLVED/CLOSED) couvre déjà fonctionnellement le cycle doctrine (ACKNOWLEDGED/INVESTIGATING/ACTION_REQUIRED) avec un nommage différent — renommer/étendre l'enum toucherait potentiellement tous les usages de `SupportTicket` au-delà des réclamations. Pas assez de valeur pour le risque ce soir, on laisse tel quel.
+3. **WF-24 (rattrapage examen) — PAS de code, cadrage à venir.** `FormationExam` est 1:1 par session, pas par participant — un "rattrapage" pose une vraie question : nouvelle session dédiée, ou champ retry sur le participant ? Je trancherai ça moi-même avant de te le confier, pas envie de deviner à cette heure sur un sujet qui touche à la certification.
+4. **WF-19 (prévention rupture) et WF-21 (évaluation formative rattachée au parcours CNAPS)** restent hors scope — les deux demandent un vrai choix produit (seuils de risque pour WF-19 ; comment brancher l'infra Quiz LMS existante sur le parcours présentiel pour WF-21), pas des extensions mécaniques comme ce qu'on vient de faire.
+
+Comme d'habitude sur le point 1 : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé.
+
+✅ traité — Tranche 4 (WF-34 seul) : `deadline` + `verifiedAt` + statut additif `AWAITING_VERIFICATION` sur `QualityIncident` ; UI/API. WF-33/24/19/21 hors scope comme demandé. Voir HANDOFF-CURSOR.

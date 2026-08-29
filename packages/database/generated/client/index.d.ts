@@ -1211,6 +1211,7 @@ export const QualityIncidentStatus: {
   REPORTED: 'REPORTED',
   UNDER_ANALYSIS: 'UNDER_ANALYSIS',
   ACTION_IN_PROGRESS: 'ACTION_IN_PROGRESS',
+  AWAITING_VERIFICATION: 'AWAITING_VERIFICATION',
   RESOLVED: 'RESOLVED',
   CLOSED: 'CLOSED'
 };
@@ -127639,6 +127640,8 @@ export namespace Prisma {
     reportedById: string | null
     rootCause: string | null
     correctiveAction: string | null
+    deadline: Date | null
+    verifiedAt: Date | null
     resolvedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -127658,6 +127661,8 @@ export namespace Prisma {
     reportedById: string | null
     rootCause: string | null
     correctiveAction: string | null
+    deadline: Date | null
+    verifiedAt: Date | null
     resolvedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -127677,6 +127682,8 @@ export namespace Prisma {
     reportedById: number
     rootCause: number
     correctiveAction: number
+    deadline: number
+    verifiedAt: number
     resolvedAt: number
     createdAt: number
     updatedAt: number
@@ -127698,6 +127705,8 @@ export namespace Prisma {
     reportedById?: true
     rootCause?: true
     correctiveAction?: true
+    deadline?: true
+    verifiedAt?: true
     resolvedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -127717,6 +127726,8 @@ export namespace Prisma {
     reportedById?: true
     rootCause?: true
     correctiveAction?: true
+    deadline?: true
+    verifiedAt?: true
     resolvedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -127736,6 +127747,8 @@ export namespace Prisma {
     reportedById?: true
     rootCause?: true
     correctiveAction?: true
+    deadline?: true
+    verifiedAt?: true
     resolvedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -127828,6 +127841,8 @@ export namespace Prisma {
     reportedById: string | null
     rootCause: string | null
     correctiveAction: string | null
+    deadline: Date | null
+    verifiedAt: Date | null
     resolvedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -127864,6 +127879,8 @@ export namespace Prisma {
     reportedById?: boolean
     rootCause?: boolean
     correctiveAction?: boolean
+    deadline?: boolean
+    verifiedAt?: boolean
     resolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -127887,6 +127904,8 @@ export namespace Prisma {
     reportedById?: boolean
     rootCause?: boolean
     correctiveAction?: boolean
+    deadline?: boolean
+    verifiedAt?: boolean
     resolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -127910,6 +127929,8 @@ export namespace Prisma {
     reportedById?: boolean
     rootCause?: boolean
     correctiveAction?: boolean
+    deadline?: boolean
+    verifiedAt?: boolean
     resolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -127933,12 +127954,14 @@ export namespace Prisma {
     reportedById?: boolean
     rootCause?: boolean
     correctiveAction?: boolean
+    deadline?: boolean
+    verifiedAt?: boolean
     resolvedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type QualityIncidentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referenceCode" | "title" | "description" | "severity" | "status" | "category" | "ticketId" | "equipmentId" | "assignedToId" | "reportedById" | "rootCause" | "correctiveAction" | "resolvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["qualityIncident"]>
+  export type QualityIncidentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referenceCode" | "title" | "description" | "severity" | "status" | "category" | "ticketId" | "equipmentId" | "assignedToId" | "reportedById" | "rootCause" | "correctiveAction" | "deadline" | "verifiedAt" | "resolvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["qualityIncident"]>
   export type QualityIncidentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     ticket?: boolean | QualityIncident$ticketArgs<ExtArgs>
     equipment?: boolean | QualityIncident$equipmentArgs<ExtArgs>
@@ -127980,6 +128003,11 @@ export namespace Prisma {
       reportedById: string | null
       rootCause: string | null
       correctiveAction: string | null
+      /**
+       * WF-34 — échéance de l'action corrective.
+       */
+      deadline: Date | null
+      verifiedAt: Date | null
       resolvedAt: Date | null
       createdAt: Date
       updatedAt: Date
@@ -128423,6 +128451,8 @@ export namespace Prisma {
     readonly reportedById: FieldRef<"QualityIncident", 'String'>
     readonly rootCause: FieldRef<"QualityIncident", 'String'>
     readonly correctiveAction: FieldRef<"QualityIncident", 'String'>
+    readonly deadline: FieldRef<"QualityIncident", 'DateTime'>
+    readonly verifiedAt: FieldRef<"QualityIncident", 'DateTime'>
     readonly resolvedAt: FieldRef<"QualityIncident", 'DateTime'>
     readonly createdAt: FieldRef<"QualityIncident", 'DateTime'>
     readonly updatedAt: FieldRef<"QualityIncident", 'DateTime'>
@@ -168156,6 +168186,8 @@ export namespace Prisma {
     reportedById: 'reportedById',
     rootCause: 'rootCause',
     correctiveAction: 'correctiveAction',
+    deadline: 'deadline',
+    verifiedAt: 'verifiedAt',
     resolvedAt: 'resolvedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -178784,6 +178816,8 @@ export namespace Prisma {
     reportedById?: StringNullableFilter<"QualityIncident"> | string | null
     rootCause?: StringNullableFilter<"QualityIncident"> | string | null
     correctiveAction?: StringNullableFilter<"QualityIncident"> | string | null
+    deadline?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
+    verifiedAt?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
     resolvedAt?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
     createdAt?: DateTimeFilter<"QualityIncident"> | Date | string
     updatedAt?: DateTimeFilter<"QualityIncident"> | Date | string
@@ -178807,6 +178841,8 @@ export namespace Prisma {
     reportedById?: SortOrderInput | SortOrder
     rootCause?: SortOrderInput | SortOrder
     correctiveAction?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
     resolvedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -178833,6 +178869,8 @@ export namespace Prisma {
     reportedById?: StringNullableFilter<"QualityIncident"> | string | null
     rootCause?: StringNullableFilter<"QualityIncident"> | string | null
     correctiveAction?: StringNullableFilter<"QualityIncident"> | string | null
+    deadline?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
+    verifiedAt?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
     resolvedAt?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
     createdAt?: DateTimeFilter<"QualityIncident"> | Date | string
     updatedAt?: DateTimeFilter<"QualityIncident"> | Date | string
@@ -178856,6 +178894,8 @@ export namespace Prisma {
     reportedById?: SortOrderInput | SortOrder
     rootCause?: SortOrderInput | SortOrder
     correctiveAction?: SortOrderInput | SortOrder
+    deadline?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
     resolvedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -178881,6 +178921,8 @@ export namespace Prisma {
     reportedById?: StringNullableWithAggregatesFilter<"QualityIncident"> | string | null
     rootCause?: StringNullableWithAggregatesFilter<"QualityIncident"> | string | null
     correctiveAction?: StringNullableWithAggregatesFilter<"QualityIncident"> | string | null
+    deadline?: DateTimeNullableWithAggregatesFilter<"QualityIncident"> | Date | string | null
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"QualityIncident"> | Date | string | null
     resolvedAt?: DateTimeNullableWithAggregatesFilter<"QualityIncident"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"QualityIncident"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"QualityIncident"> | Date | string
@@ -191429,6 +191471,8 @@ export namespace Prisma {
     category?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -191452,6 +191496,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -191467,6 +191513,8 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -191490,6 +191538,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -191509,6 +191559,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -191524,6 +191576,8 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -191543,6 +191597,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -201485,6 +201541,8 @@ export namespace Prisma {
     reportedById?: SortOrder
     rootCause?: SortOrder
     correctiveAction?: SortOrder
+    deadline?: SortOrder
+    verifiedAt?: SortOrder
     resolvedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -201504,6 +201562,8 @@ export namespace Prisma {
     reportedById?: SortOrder
     rootCause?: SortOrder
     correctiveAction?: SortOrder
+    deadline?: SortOrder
+    verifiedAt?: SortOrder
     resolvedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -201523,6 +201583,8 @@ export namespace Prisma {
     reportedById?: SortOrder
     rootCause?: SortOrder
     correctiveAction?: SortOrder
+    deadline?: SortOrder
+    verifiedAt?: SortOrder
     resolvedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -219677,6 +219739,8 @@ export namespace Prisma {
     category?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -219698,6 +219762,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -219723,6 +219789,8 @@ export namespace Prisma {
     category?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -219744,6 +219812,8 @@ export namespace Prisma {
     assignedToId?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -222051,6 +222121,8 @@ export namespace Prisma {
     reportedById?: StringNullableFilter<"QualityIncident"> | string | null
     rootCause?: StringNullableFilter<"QualityIncident"> | string | null
     correctiveAction?: StringNullableFilter<"QualityIncident"> | string | null
+    deadline?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
+    verifiedAt?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
     resolvedAt?: DateTimeNullableFilter<"QualityIncident"> | Date | string | null
     createdAt?: DateTimeFilter<"QualityIncident"> | Date | string
     updatedAt?: DateTimeFilter<"QualityIncident"> | Date | string
@@ -233659,6 +233731,8 @@ export namespace Prisma {
     category?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -233680,6 +233754,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -264127,6 +264203,8 @@ export namespace Prisma {
     category?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -264148,6 +264226,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -280178,6 +280258,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -280196,6 +280278,8 @@ export namespace Prisma {
     assignedToId?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -282648,6 +282732,8 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -282669,6 +282755,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -282687,6 +282775,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -282702,6 +282792,8 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -282723,6 +282815,8 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -282741,6 +282835,8 @@ export namespace Prisma {
     assignedToId?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -284670,6 +284766,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -284794,6 +284892,8 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -284815,6 +284915,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -284833,6 +284935,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -289176,6 +289280,8 @@ export namespace Prisma {
     reportedById?: string | null
     rootCause?: string | null
     correctiveAction?: string | null
+    deadline?: Date | string | null
+    verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -289259,6 +289365,8 @@ export namespace Prisma {
     category?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -289280,6 +289388,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -289298,6 +289408,8 @@ export namespace Prisma {
     reportedById?: NullableStringFieldUpdateOperationsInput | string | null
     rootCause?: NullableStringFieldUpdateOperationsInput | string | null
     correctiveAction?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

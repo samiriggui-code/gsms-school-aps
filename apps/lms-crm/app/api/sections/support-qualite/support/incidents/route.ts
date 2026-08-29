@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       prisma.qualityIncident.count({ where }),
       prisma.qualityIncident.count({ where: { status: 'REPORTED' } }),
       prisma.qualityIncident.count({
-        where: { status: { in: ['UNDER_ANALYSIS', 'ACTION_IN_PROGRESS'] } },
+        where: { status: { in: ['UNDER_ANALYSIS', 'ACTION_IN_PROGRESS', 'AWAITING_VERIFICATION'] } },
       }),
       prisma.qualityIncident.count({ where: { status: { in: ['RESOLVED', 'CLOSED'] } } }),
       prisma.qualityIncident.count({
@@ -73,6 +73,8 @@ export async function GET(request: NextRequest) {
         ...r,
         createdAt: r.createdAt.toISOString(),
         updatedAt: r.updatedAt.toISOString(),
+        deadline: r.deadline?.toISOString() ?? null,
+        verifiedAt: r.verifiedAt?.toISOString() ?? null,
         resolvedAt: r.resolvedAt?.toISOString() ?? null,
       })),
       pagination: { page, limit, total },
@@ -133,6 +135,8 @@ export async function POST(request: NextRequest) {
         ...row,
         createdAt: row.createdAt.toISOString(),
         updatedAt: row.updatedAt.toISOString(),
+        deadline: row.deadline?.toISOString() ?? null,
+        verifiedAt: row.verifiedAt?.toISOString() ?? null,
         resolvedAt: row.resolvedAt?.toISOString() ?? null,
       },
       201,

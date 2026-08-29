@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -28,6 +29,7 @@ const STATUS_LABEL: Record<string, string> = {
   REPORTED: 'Signalé',
   UNDER_ANALYSIS: 'Analyse',
   ACTION_IN_PROGRESS: 'Action en cours',
+  AWAITING_VERIFICATION: 'Vérification',
   RESOLVED: 'Résolu',
   CLOSED: 'Clôturé',
 };
@@ -49,6 +51,8 @@ type IncidentDetail = {
   category: string | null;
   rootCause: string | null;
   correctiveAction: string | null;
+  deadline: string | null;
+  verifiedAt: string | null;
   ticket: { id: string; referenceCode: string; subject: string } | null;
   equipment: { id: string; label: string; serialNumber: string } | null;
 };
@@ -65,6 +69,7 @@ export function IncidentDetailSheet({ incidentId, open, onOpenChange, onUpdated 
   const [severity, setSeverity] = useState('');
   const [rootCause, setRootCause] = useState('');
   const [correctiveAction, setCorrectiveAction] = useState('');
+  const [deadline, setDeadline] = useState('');
   const [ticketId, setTicketId] = useState('');
   const [equipmentId, setEquipmentId] = useState('');
   const [saving, setSaving] = useState(false);
@@ -86,6 +91,7 @@ export function IncidentDetailSheet({ incidentId, open, onOpenChange, onUpdated 
       setSeverity(data.severity);
       setRootCause(data.rootCause ?? '');
       setCorrectiveAction(data.correctiveAction ?? '');
+      setDeadline(data.deadline ? data.deadline.slice(0, 10) : '');
       setTicketId(data.ticket?.id ?? '');
       setEquipmentId(data.equipment?.id ?? '');
     }
@@ -102,6 +108,7 @@ export function IncidentDetailSheet({ incidentId, open, onOpenChange, onUpdated 
         severity,
         rootCause,
         correctiveAction,
+        deadline: deadline ? `${deadline}T12:00:00.000Z` : null,
         ticketId: ticketId || null,
         equipmentId: equipmentId || null,
       }),
@@ -179,6 +186,19 @@ export function IncidentDetailSheet({ incidentId, open, onOpenChange, onUpdated 
             <div>
               <Label>Action corrective</Label>
               <Textarea value={correctiveAction} onChange={(e) => setCorrectiveAction(e.target.value)} rows={2} />
+            </div>
+            <div>
+              <Label>Échéance action corrective</Label>
+              <Input
+                type="date"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+              />
+              {data.verifiedAt ? (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Vérifié le {new Date(data.verifiedAt).toLocaleDateString('fr-FR')}
+                </p>
+              ) : null}
             </div>
           </div>
         )}

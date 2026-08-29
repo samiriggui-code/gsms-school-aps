@@ -2674,6 +2674,8 @@ enum QualityIncidentStatus {
   REPORTED
   UNDER_ANALYSIS
   ACTION_IN_PROGRESS
+  /// WF-34 — vérification de l'action corrective avant résolution.
+  AWAITING_VERIFICATION
   RESOLVED
   CLOSED
 }
@@ -2696,6 +2698,9 @@ model QualityIncident {
   reportedBy         User?                   @relation("QualityIncidentReporter", fields: [reportedById], references: [id], onDelete: SetNull)
   rootCause          String?                 @db.Text
   correctiveAction   String?                 @db.Text
+  /// WF-34 — échéance de l'action corrective.
+  deadline           DateTime?
+  verifiedAt         DateTime?
   resolvedAt         DateTime?
   createdAt          DateTime                @default(now())
   updatedAt          DateTime                @updatedAt
@@ -2705,6 +2710,7 @@ model QualityIncident {
   @@index([ticketId])
   @@index([equipmentId])
   @@index([assignedToId])
+  @@index([deadline])
 }
 
 enum HelpArticleStatus {

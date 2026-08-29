@@ -4,6 +4,23 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — WF Tranche 4 livrée (WF-34 seul)
+
+### Scope (comme demandé)
+- **WF-34** only. WF-33 / 24 / 19 / 21 non touchés.
+
+### Livrable
+- `QualityIncident.deadline` + `verifiedAt`
+- Enum additif `AWAITING_VERIFICATION` (entre ACTION_IN_PROGRESS et RESOLVED) — existant inchangé
+- PATCH/GET API + sheet UI (échéance date + labels statut)
+- DocType champs deadline/verifiedAt
+- Stats « en cours » incluent `AWAITING_VERIFICATION`
+
+### Vérifs
+`test:doctype` 9/9 · harden 2/2 · migrate diff **0** · `tsc --noEmit` exit 0
+
+---
+
 ## 2026-08-30 — WF Tranche 3 livrée (04 / 14)
 
 ### WF-04 Accessibilité candidat

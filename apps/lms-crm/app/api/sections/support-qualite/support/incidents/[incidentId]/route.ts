@@ -27,6 +27,8 @@ export async function GET(_request: NextRequest, context: Ctx) {
     ...row,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
+    deadline: row.deadline?.toISOString() ?? null,
+    verifiedAt: row.verifiedAt?.toISOString() ?? null,
     resolvedAt: row.resolvedAt?.toISOString() ?? null,
   });
 }
@@ -53,6 +55,15 @@ export async function PATCH(request: NextRequest, context: Ctx) {
   if (body.correctiveAction !== undefined) {
     data.correctiveAction = String(body.correctiveAction).trim() || null;
   }
+  if (body.deadline !== undefined) {
+    if (body.deadline === null || body.deadline === '') {
+      data.deadline = null;
+    } else {
+      const d = new Date(String(body.deadline));
+      if (Number.isNaN(d.getTime())) return fail('deadline invalide.', 400);
+      data.deadline = d;
+    }
+  }
   if (body.ticketId !== undefined) {
     data.ticketId = String(body.ticketId).trim() || null;
   }
@@ -75,8 +86,12 @@ export async function PATCH(request: NextRequest, context: Ctx) {
       return fail('Statut invalide.', 400);
     }
     data.status = status;
+    if (status === 'AWAITING_VERIFICATION') {
+      data.verifiedAt = null;
+    }
     if (status === 'RESOLVED' || status === 'CLOSED') {
       data.resolvedAt = new Date();
+      if (!data.verifiedAt) data.verifiedAt = new Date();
     }
   }
 
@@ -95,6 +110,8 @@ export async function PATCH(request: NextRequest, context: Ctx) {
       ...row,
       createdAt: row.createdAt.toISOString(),
       updatedAt: row.updatedAt.toISOString(),
+      deadline: row.deadline?.toISOString() ?? null,
+      verifiedAt: row.verifiedAt?.toISOString() ?? null,
       resolvedAt: row.resolvedAt?.toISOString() ?? null,
     });
   } catch (e) {

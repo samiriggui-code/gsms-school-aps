@@ -160,6 +160,8 @@ export const qualityIncidentDocType: DocTypeDefinition = {
     },
     { fieldname: 'rootCause', label: 'Cause', fieldtype: 'Text' },
     { fieldname: 'correctiveAction', label: 'Action corrective', fieldtype: 'Text' },
+    { fieldname: 'deadline', label: 'Échéance action', fieldtype: 'Datetime' },
+    { fieldname: 'verifiedAt', label: 'Vérifié le', fieldtype: 'Datetime' },
   ],
   permissions: [
     {

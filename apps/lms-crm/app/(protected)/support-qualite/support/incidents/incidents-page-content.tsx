@@ -56,6 +56,7 @@ const STATUS_LABEL: Record<string, string> = {
   REPORTED: 'Signalé',
   UNDER_ANALYSIS: 'Analyse',
   ACTION_IN_PROGRESS: 'Action en cours',
+  AWAITING_VERIFICATION: 'Vérification',
   RESOLVED: 'Résolu',
   CLOSED: 'Clôturé',
 };

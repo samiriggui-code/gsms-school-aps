@@ -1441,6 +1441,8 @@ exports.Prisma.QualityIncidentScalarFieldEnum = {
   reportedById: 'reportedById',
   rootCause: 'rootCause',
   correctiveAction: 'correctiveAction',
+  deadline: 'deadline',
+  verifiedAt: 'verifiedAt',
   resolvedAt: 'resolvedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2317,6 +2319,7 @@ exports.QualityIncidentStatus = exports.$Enums.QualityIncidentStatus = {
   REPORTED: 'REPORTED',
   UNDER_ANALYSIS: 'UNDER_ANALYSIS',
   ACTION_IN_PROGRESS: 'ACTION_IN_PROGRESS',
+  AWAITING_VERIFICATION: 'AWAITING_VERIFICATION',
   RESOLVED: 'RESOLVED',
   CLOSED: 'CLOSED'
 };
