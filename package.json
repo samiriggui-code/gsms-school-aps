@@ -40,6 +40,8 @@
 
     "test:doctype": "pnpm -C packages/doctype test",
 
+    "test:doctype:harden": "pnpm -C apps/lms-crm exec -- tsx --test ./scripts/harden-doctypes.test.ts",
+
     "smoke:doctype": "pnpm -C apps/lms-crm exec -- tsx --env-file=../../.env ./scripts/smoke-doctype-g1d.ts",
 
     "db:push": "pnpm -C packages/database run db:push",
