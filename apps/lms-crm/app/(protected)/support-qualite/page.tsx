@@ -38,24 +38,16 @@ export default function SectionBLandingPage() {
             {isVisible('stats') ? (
               <div className="flex min-w-0 flex-col gap-3 rounded-xl border border-dashed border-border bg-muted/20 p-5 lg:col-span-1">
                 <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                  3 modules
+                  1 module
                 </p>
                 <p className="text-sm leading-relaxed text-secondary-foreground">
-                  Helpdesk, classeur Qualiopi et surface organisme (satisfaction / circuits) —
-                  même arborescence que les autres sections CRM.
+                  Helpdesk uniquement — tickets et incidents. Qualiopi et le suivi session sont dans
+                  leurs sections métier.
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li>
                     · <span className="font-medium text-foreground">Support</span> — tickets &amp;
                     incidents
-                  </li>
-                  <li>
-                    · <span className="font-medium text-foreground">Qualiopi</span> — 32 indicateurs
-                    V.9
-                  </li>
-                  <li>
-                    · <span className="font-medium text-foreground">Docs &amp; circuits</span> —
-                    enquêtes &amp; n8n
                   </li>
                 </ul>
               </div>

@@ -11,6 +11,11 @@ const items = [
     icon: LayoutTemplate,
     backgroundImage: 'bg-3',
     subSections: ['pages-landing', 'equipe-landing', 'contenus'],
+    subSectionPaths: [
+      '/communication-contenu/cms/pages-landing',
+      '/communication-contenu/cms/equipe-landing',
+      '/communication-contenu/cms/contenus',
+    ],
     tone: 'violet' as const,
   },
   {
@@ -20,6 +25,10 @@ const items = [
     icon: Megaphone,
     backgroundImage: 'bg-3',
     subSections: ['formulaires-leads', 'campagnes'],
+    subSectionPaths: [
+      '/communication-contenu/marketing/formulaires-leads',
+      '/communication-contenu/marketing/campagnes',
+    ],
     tone: 'fuchsia' as const,
   },
   {
@@ -29,6 +38,10 @@ const items = [
     icon: Search,
     backgroundImage: 'bg-3',
     subSections: ['meta-indexation', 'redirections'],
+    subSectionPaths: [
+      '/communication-contenu/seo/meta-indexation',
+      '/communication-contenu/seo/redirections',
+    ],
     tone: 'teal' as const,
   },
 ];

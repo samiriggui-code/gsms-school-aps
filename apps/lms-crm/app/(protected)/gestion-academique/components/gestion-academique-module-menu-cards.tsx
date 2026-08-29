@@ -1,9 +1,9 @@
 'use client';
 
-import { BookOpen, CalendarDays, CalendarRange, ClipboardList, Users } from 'lucide-react';
+import { BookOpen, ClipboardList } from 'lucide-react';
 import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
-/** Accès rapide aux 5 espaces Vie scolaire (ordre = menu latéral). */
+/** Cartes modules de la section — Accéder vers hubs ; puces = pages (liens). */
 export function GestionAcademiqueModuleMenuCards() {
   return (
     <SectionMenuCardsShell
@@ -11,48 +11,32 @@ export function GestionAcademiqueModuleMenuCards() {
       subtitleKey="sections.gestionAcademique.menuCardsSubtitle"
       items={[
         {
-          moduleKey: 'vie-scolaire-formations',
-          path: '/gestion-academique/vie-scolaire/formations',
-          descriptionKey: 'sections.gestionAcademique.cards.formations',
+          moduleKey: 'gestion-academique-vie-scolaire',
+          path: '/gestion-academique/vie-scolaire',
+          descriptionKey: 'sections.gestionAcademique.cards.vieScolaire',
           icon: BookOpen,
           backgroundImage: 'bg-3',
-          subSections: ['catalogue', 'programmes'],
+          subSections: ['formations', 'sessions', 'planning', 'etudiants'],
+          subSectionPaths: [
+            '/gestion-academique/vie-scolaire/formations',
+            '/gestion-academique/vie-scolaire/sessions',
+            '/gestion-academique/vie-scolaire/planning',
+            '/gestion-academique/vie-scolaire/etudiants',
+          ],
           tone: 'violet',
         },
         {
-          moduleKey: 'vie-scolaire-sessions',
-          path: '/gestion-academique/vie-scolaire/sessions',
-          descriptionKey: 'sections.gestionAcademique.cards.sessions',
-          icon: CalendarDays,
-          backgroundImage: 'bg-3',
-          subSections: ['planification', 'inscriptions'],
-          tone: 'sky',
-        },
-        {
-          moduleKey: 'vie-scolaire-planning',
-          path: '/gestion-academique/vie-scolaire/planning',
-          descriptionKey: 'sections.gestionAcademique.cards.planning',
-          icon: CalendarRange,
-          backgroundImage: 'bg-3',
-          subSections: ['calendrier'],
-          tone: 'amber',
-        },
-        {
-          moduleKey: 'vie-scolaire-etudiants',
-          path: '/gestion-academique/vie-scolaire/etudiants',
-          descriptionKey: 'sections.gestionAcademique.cards.etudiants',
-          icon: Users,
-          backgroundImage: 'bg-3',
-          subSections: ['candidatures', 'dossiers'],
-          tone: 'rose',
-        },
-        {
-          moduleKey: 'vie-scolaire-suivi-formations',
-          path: '/gestion-academique/vie-scolaire/suivi-formations',
+          moduleKey: 'gestion-academique-suivi-formations',
+          path: '/gestion-academique/suivi-formations',
           descriptionKey: 'sections.gestionAcademique.cards.suiviFormations',
           icon: ClipboardList,
           backgroundImage: 'bg-3',
-          subSections: ['stagiaires', 'examens', 'certifications', 'e-learning'],
+          subSections: ['tableau', 'satisfaction', 'circuits'],
+          subSectionPaths: [
+            '/gestion-academique/suivi-formations/tableau',
+            '/gestion-academique/suivi-formations/satisfaction',
+            '/gestion-academique/suivi-formations/circuits',
+          ],
           tone: 'emerald',
         },
       ]}

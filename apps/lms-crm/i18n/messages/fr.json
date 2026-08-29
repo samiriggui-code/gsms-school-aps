@@ -1,13 +1,36 @@
 {
   "menu": {
     "byPath": {
-      "support-qualite": {
-        "qualiopi": "Qualiopi",
-        "docs-circuits": {
-          "_self": "Docs & circuits",
+      "gestion-ressources": {
+        "qualiopi": {
+          "_self": "Qualiopi",
+          "classeur": "Classeur",
+          "historique": "Historique"
+        }
+      },
+      "gestion-academique": {
+        "suivi-formations": {
+          "_self": "Suivi formations",
+          "tableau": "Tableau de suivi",
           "satisfaction": "Satisfaction",
           "circuits": "Circuits"
         }
+      },
+      "pilotage-supervision": {
+        "ia": {
+          "_self": "IA",
+          "brouillons": "Brouillons à valider",
+          "historique": "Historique"
+        }
+      },
+      "administration-facturation": {
+        "finance": {
+          "financeurs": "Financeurs",
+          "bpf": "BPF"
+        }
+      },
+      "support-qualite": {
+        "_self": "Support"
       }
     }
   },
@@ -49,13 +72,36 @@
   },
   "pages": {
     "descriptions": {
-      "support-qualite": {
-        "qualiopi": "Classeur des 32 indicateurs Qualiopi V.9 — statut d'audit, preuves et complétude.",
-        "docs-circuits": {
-          "_self": "Enquêtes satisfaction et circuits n8n de session.",
+      "gestion-ressources": {
+        "qualiopi": {
+          "_self": "Module Qualiopi — complétude du dossier école et indicateurs à traiter.",
+          "classeur": "Détail des 32 indicateurs — statut d'audit, commentaire et preuve par indicateur.",
+          "historique": "Timeline des écarts Qualiopi — KO, à réparer, preuves rejetées (OF-11)."
+        }
+      },
+      "gestion-academique": {
+        "suivi-formations": {
+          "_self": "Tableau de suivi, enquêtes satisfaction et circuits n8n de session.",
+          "tableau": "Suivi session : présence, documents, examens, attestations et e-learning.",
           "satisfaction": "Enquêtes HOT (J0) et COLD (J+45) — suivi transverse des retours stagiaires.",
           "circuits": "Exécutions des circuits session (jalons J-N → J+N) enregistrées via n8n."
         }
+      },
+      "pilotage-supervision": {
+        "ia": {
+          "_self": "Revue des artefacts IA et journal des exécutions.",
+          "brouillons": "Brouillons AiArtifact PROPOSED à valider avant écriture métier.",
+          "historique": "Historique AiRun — provider, modèle, statut, artefacts."
+        }
+      },
+      "administration-facturation": {
+        "finance": {
+          "financeurs": "Registre financeurs OPCO / CPF / entreprise (OF-04).",
+          "bpf": "Bilan pédagogique et financier Cerfa — garde-fous (OF-07)."
+        }
+      },
+      "support-qualite": {
+        "_self": "Helpdesk — tickets et incidents."
       }
     },
     "home": {
@@ -1237,27 +1283,29 @@
   },
   "sections": {
     "gestionRessources": {
-      "welcomeDescription": "Centralisez compagnie, RH et équipements — structure interne, personnel et matériel pédagogique au même endroit.",
+      "welcomeDescription": "Centralisez compagnie, Qualiopi, RH et équipements — structure interne, conformité OF, personnel et matériel.",
       "menuCardsTitle": "Accès rapide — Gestion ressources",
-      "menuCardsSubtitle": "3 modules : 10 pages au menu latéral (compagnie 3, RH 5, équipements 4)",
+      "menuCardsSubtitle": "4 modules : Compagnie, Qualiopi, RH, Équipements",
       "securityHighlightsTitle": "Indicateurs clés — Gestion ressources",
       "cards": {
         "compagnie": "Profil entreprise, structure interne et documents administratifs.",
+        "qualiopi": "Classeur des 32 indicateurs Qualiopi V.9 — statut d'audit et preuves.",
         "rh": "Collaborateurs, formateurs, absences et conformité au menu latéral.",
         "equipements": "Inventaire, affectations, maintenance atelier et salles de formation."
       }
     },
     "gestionAcademique": {
-      "welcomeDescription": "Formations, sessions, planning, étudiants puis suivi de parcours — le flux métier de la vie scolaire.",
-      "menuCardsTitle": "Vie scolaire — accès rapide aux espaces",
-      "menuCardsSubtitle": "Cinq espaces dans le même ordre que le menu latéral",
+      "welcomeDescription": "Vie scolaire (catalogue, sessions, étudiants) et suivi formations (tableau, satisfaction, circuits).",
+      "menuCardsTitle": "Accès rapide — Gestion académique",
+      "menuCardsSubtitle": "2 modules : Vie scolaire et Suivi formations",
       "securityHighlightsTitle": "Indicateurs clés — Gestion académique",
       "cards": {
+        "vieScolaire": "Formations, sessions, planning et étudiants.",
         "formations": "Catalogue et pilotage des parcours de formation.",
         "sessions": "Sessions planifiées, inscriptions et organisation pédagogique.",
         "planning": "Calendrier hebdomadaire des sessions, salles et formateurs.",
         "etudiants": "Candidatures, dossiers apprenants et rattachement aux sessions.",
-        "suiviFormations": "Suivi session : présence, examens, attestations et e-learning."
+        "suiviFormations": "Tableau de suivi, enquêtes satisfaction et circuits n8n."
       }
     },
     "communicationContenu": {
@@ -1274,12 +1322,12 @@
     "supportQualite": {
       "docsCircuitsTitle": "Docs & circuits",
       "docsCircuitsSubtitle": "Enquêtes satisfaction et circuits n8n — module organisme",
-      "welcomeDescription": "Tickets support, classeur Qualiopi et surface organisme (satisfaction / circuits).",
-      "menuCardsTitle": "Accès rapide — Support et qualité",
-      "menuCardsSubtitle": "{{modules}} modules et {{pages}} pages principales selon le menu CRM",
-      "securityHighlightsTitle": "Indicateurs clés — Support & qualité",
+      "welcomeDescription": "Helpdesk : tickets et incidents. Qualiopi et suivi session sont ailleurs.",
+      "menuCardsTitle": "Accès rapide — Support",
+      "menuCardsSubtitle": "{{modules}} module et {{pages}} pages principales selon le menu CRM",
+      "securityHighlightsTitle": "Indicateurs clés — Support",
       "cards": {
-        "support": "Gestion des tickets, FAQ et accompagnement utilisateurs.",
+        "support": "Gestion des tickets et incidents.",
         "qualiopi": "Classeur des 32 indicateurs Qualiopi — statut d'audit et preuves.",
         "docsCircuits": "Enquêtes satisfaction et circuits n8n de session.",
         "satisfaction": "Enquêtes à chaud / à froid — réponses et statut d'envoi.",
@@ -1300,11 +1348,13 @@
       }
     },
     "pilotageSupervision": {
-      "welcomeDescription": "Alertes, indicateurs, rapports et registre des risques pour superviser l'établissement.",
-      "menuCardsTitle": "Pilotage — accès rapide aux espaces",
-      "menuCardsSubtitle": "Quatre espaces dans le même ordre que le menu latéral",
+      "welcomeDescription": "Pilotage opérationnel et revue IA — alertes, KPI, rapports, risques, brouillons à valider.",
+      "menuCardsTitle": "Accès rapide — Pilotage supervision",
+      "menuCardsSubtitle": "2 modules : Pilotage et IA",
       "securityHighlightsTitle": "Indicateurs clés — Pilotage & supervision",
       "cards": {
+        "pilotage": "Alertes, indicateurs, rapports et registre des risques.",
+        "ia": "Brouillons AiArtifact à valider et historique des AiRun.",
         "alertes": "Registre central des alertes CRM — synchronisé avec la cloche header.",
         "indicateurs": "KPI consolidés par module : ressources, vie scolaire, finance, support.",
         "rapports": "Exports CSV/PDF, historique et planifications automatiques (worker).",
@@ -1312,15 +1362,17 @@
       }
     },
     "administrationFacturation": {
-      "welcomeDescription": "Budget, devis, factures, paiements et rapports financiers consolidés.",
+      "welcomeDescription": "Budget, devis, factures, paiements, financeurs, BPF et rapports financiers.",
       "menuCardsTitle": "Accès rapide — Administration & facturation",
-      "menuCardsSubtitle": "5 modules et {{pages}} pages principales selon le menu CRM",
+      "menuCardsSubtitle": "{{pages}} pages Finance selon le menu CRM",
       "securityHighlightsTitle": "Indicateurs clés — Administration & facturation",
       "cards": {
         "budget": "Suivi budgétaire, lignes de dépenses et pilotage des enveloppes formation.",
         "devis": "Pipeline commercial, devis candidats et plaquettes partagées.",
         "factures": "Émission, suivi et relances des factures liées aux dossiers.",
         "paiements": "Encaissements, réconciliation et statuts de règlement.",
+        "financeurs": "Registre OPCO / CPF / entreprise — source unique pour sessions et BPF.",
+        "bpf": "Bilan pédagogique et financier (Cerfa) — garde-fous déterministes.",
         "rapports": "Tableaux de bord finance, exports et indicateurs consolidés."
       }
     }
@@ -1380,17 +1432,17 @@
     "title": "Accueil",
     "description": "Vue d'ensemble de votre école de formation",
     "menuCardsTitle": "Accès rapide aux sections",
-    "menuCardsSubtitle": "Chaque carte ouvre une section ; les puces listent les modules de cette section (les pages sont dans chaque module).",
+    "menuCardsSubtitle": "Chaque carte ouvre une section ; les puces sont des liens vers les hubs modules (pages dans chaque module).",
     "noModulesTitle": "Aucun module accessible",
     "noModulesDescription": "Contactez votre administrateur pour obtenir les permissions nécessaires.",
     "cards": {
-      "gestion-ressources": "Section établissement : structure organisationnelle, ressources humaines et moyens avant le pilotage pédagogique.",
-      "gestion-academique": "Section pédagogique : regroupe les modules liés au parcours apprenants (dont la vie scolaire).",
-      "administration-facturation": "Section financière et administrative : suivi budgétaire, commercial et comptable.",
-      "communication-contenu": "Section communication : site, campagnes et visibilité.",
-      "support-qualite": "Section assistance utilisateurs et suivi qualité.",
-      "securite-configuration": "Section sécurité CRM, réglages et conformité documentaire.",
-      "pilotage-supervision": "Section pilotage : alertes, indicateurs, rapports CSV et registre des risques."
+      "gestion-ressources": "Compagnie, Qualiopi, RH et équipements — structure OF, conformité et moyens.",
+      "gestion-academique": "Vie scolaire (catalogue, sessions) et suivi formations (tableau, satisfaction, circuits).",
+      "administration-facturation": "Finance : budget, devis, factures, paiements, financeurs, BPF et rapports.",
+      "communication-contenu": "CMS landing, marketing leads et SEO.",
+      "support-qualite": "Helpdesk : tickets et incidents.",
+      "securite-configuration": "Accès, paramètres et gouvernance documentaire.",
+      "pilotage-supervision": "Pilotage opérationnel (alertes, KPI, rapports, risques) et gouvernance IA."
     }
   },
   "datagrid": {

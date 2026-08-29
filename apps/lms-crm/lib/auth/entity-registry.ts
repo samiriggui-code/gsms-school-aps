@@ -47,6 +47,12 @@ export const ENTITY_REGISTRY: Record<string, Partial<Record<EntityMethod, string
     PATCH: CRM_PERMISSION.ressourcesEdit,
     DELETE: CRM_PERMISSION.ressourcesEdit,
   },
+  complianceDossierItem: {
+    GET: CRM_PERMISSION.ressourcesView,
+    POST: CRM_PERMISSION.ressourcesEdit,
+    PATCH: CRM_PERMISSION.ressourcesEdit,
+    DELETE: CRM_PERMISSION.ressourcesEdit,
+  },
 };
 
 export function permissionForEntityMethod(

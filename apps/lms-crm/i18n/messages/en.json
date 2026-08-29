@@ -1,13 +1,22 @@
 {
   "menu": {
     "byPath": {
-      "support-qualite": {
-        "qualiopi": "Qualiopi",
-        "docs-circuits": {
-          "_self": "Docs & circuits",
+      "gestion-ressources": {
+        "qualiopi": {
+          "_self": "Qualiopi",
+          "classeur": "Binder"
+        }
+      },
+      "gestion-academique": {
+        "suivi-formations": {
+          "_self": "Training follow-up",
+          "tableau": "Follow-up board",
           "satisfaction": "Satisfaction",
           "circuits": "Circuits"
         }
+      },
+      "support-qualite": {
+        "_self": "Support"
       }
     }
   },
@@ -49,13 +58,22 @@
   },
   "pages": {
     "descriptions": {
-      "support-qualite": {
-        "qualiopi": "Qualiopi V.9 32-indicator binder — audit status, evidence and completeness.",
-        "docs-circuits": {
-          "_self": "OF hub: Qualiopi, satisfaction surveys, n8n circuits and session documents.",
+      "gestion-ressources": {
+        "qualiopi": {
+          "_self": "Qualiopi module — school dossier completeness and open indicators.",
+          "classeur": "Indicator detail — audit status, comment and evidence per indicator."
+        }
+      },
+      "gestion-academique": {
+        "suivi-formations": {
+          "_self": "Follow-up board, satisfaction surveys and session n8n circuits.",
+          "tableau": "Session follow-up: attendance, documents, exams, certificates and e-learning.",
           "satisfaction": "HOT (D0) and COLD (D+45) surveys — cross-session trainee feedback.",
           "circuits": "Session circuit runs (D-N → D+N milestones) recorded via n8n."
         }
+      },
+      "support-qualite": {
+        "_self": "Helpdesk — tickets and incidents."
       }
     },
     "home": {
@@ -1237,27 +1255,29 @@
   },
   "sections": {
     "gestionRessources": {
-      "welcomeDescription": "Centralize company, HR and equipment — internal structure, staff and teaching resources in one place.",
+      "welcomeDescription": "Centralize company, Qualiopi, HR and equipment — structure, OF compliance, staff and teaching resources.",
       "menuCardsTitle": "Quick access — Resource management",
-      "menuCardsSubtitle": "3 modules: 12 sidebar pages (company 3, HR 5, equipment 4)",
+      "menuCardsSubtitle": "4 modules: Company, Qualiopi, HR, Equipment",
       "securityHighlightsTitle": "Key metrics — Resource management",
       "cards": {
         "compagnie": "Company profile, internal structure and administrative documents.",
+        "qualiopi": "Qualiopi V.9 32-indicator binder — audit status and evidence.",
         "rh": "Staff, trainers, absences and compliance from the sidebar menu.",
         "equipements": "Inventory, session assignments, workshop maintenance and training rooms."
       }
     },
     "gestionAcademique": {
-      "welcomeDescription": "Training programs, sessions, scheduling, students, then pathway follow-up — the student life workflow.",
-      "menuCardsTitle": "Student life — quick access to workspaces",
-      "menuCardsSubtitle": "Five workspaces in the same order as the sidebar menu",
+      "welcomeDescription": "Student life (catalog, sessions, learners) and training follow-up (board, satisfaction, circuits).",
+      "menuCardsTitle": "Quick access — Academic management",
+      "menuCardsSubtitle": "2 modules: Student life and Training follow-up",
       "securityHighlightsTitle": "Key metrics — Academic management",
       "cards": {
+        "vieScolaire": "Programs, sessions, scheduling and students.",
         "formations": "Catalog and training pathway management.",
         "sessions": "Planned sessions, enrollments and teaching organization.",
         "planning": "Weekly session calendar, rooms and trainers.",
         "etudiants": "Applications, learner files and session enrollment.",
-        "suiviFormations": "Session follow-up: attendance, exams, certificates and e-learning."
+        "suiviFormations": "Follow-up board, satisfaction surveys and n8n circuits."
       }
     },
     "communicationContenu": {
@@ -1272,14 +1292,14 @@
       }
     },
     "supportQualite": {
-      "welcomeDescription": "Support tickets, self-service help base and quality / incident tracking.",
-      "menuCardsTitle": "Quick access — Support & quality",
-      "menuCardsSubtitle": "{{modules}} modules and {{pages}} main pages per CRM menu",
-      "securityHighlightsTitle": "Key metrics — Support & quality",
+      "welcomeDescription": "Helpdesk: tickets and incidents. Qualiopi and session follow-up live elsewhere.",
+      "menuCardsTitle": "Quick access — Support",
+      "menuCardsSubtitle": "{{modules}} module and {{pages}} main pages per CRM menu",
+      "securityHighlightsTitle": "Key metrics — Support",
       "docsCircuitsTitle": "Docs & circuits — training organization surface",
       "docsCircuitsSubtitle": "{{modules}} entries: Qualiopi, satisfaction, circuits and session documents",
       "cards": {
-        "support": "Tickets, FAQ and user assistance.",
+        "support": "Tickets and incidents.",
         "qualiopi": "32-indicator Qualiopi binder — audit status and evidence.",
         "docsCircuits": "OF hub: satisfaction, n8n circuits and session documents.",
         "satisfaction": "HOT / COLD surveys — responses and send status.",
@@ -1300,11 +1320,13 @@
       }
     },
     "pilotageSupervision": {
-      "welcomeDescription": "Alerts, metrics, reports and risk register to supervise the organization.",
+      "welcomeDescription": "Alerts, metrics, reports, risks and AI draft governance.",
       "menuCardsTitle": "Operations — quick access to workspaces",
-      "menuCardsSubtitle": "Four workspaces in the same order as the sidebar menu",
+      "menuCardsSubtitle": "Two modules — Pilotage and AI — same order as the sidebar",
       "securityHighlightsTitle": "Key metrics — Operations & supervision",
       "cards": {
+        "pilotage": "Alerts, KPIs, reports and operational risk register.",
+        "ia": "AI draft review and run history.",
         "alertes": "Central CRM alert register — synced with the header bell.",
         "indicateurs": "Consolidated KPIs per module: resources, student life, finance, support.",
         "rapports": "CSV/PDF exports, history and scheduled reports (worker).",
@@ -1312,15 +1334,17 @@
       }
     },
     "administrationFacturation": {
-      "welcomeDescription": "Budget, quotes, invoices, payments and consolidated financial reports.",
+      "welcomeDescription": "Budget, quotes, invoices, payments, funders, BPF and consolidated reports.",
       "menuCardsTitle": "Quick access — Administration & billing",
-      "menuCardsSubtitle": "5 modules and {{pages}} main pages per CRM menu",
+      "menuCardsSubtitle": "One Finance module — pages follow the CRM menu order",
       "securityHighlightsTitle": "Key metrics — Administration & billing",
       "cards": {
         "budget": "Budget tracking, expense lines and training envelope management.",
         "devis": "Sales pipeline, candidate quotes and shared brochures.",
         "factures": "Invoice issuance, tracking and follow-ups on candidate files.",
         "paiements": "Collections, reconciliation and payment status.",
+        "financeurs": "Funder and OPCO directory linked to invoices and BPF.",
+        "bpf": "Annual Pedagogical & Financial Balance Sheet (BPF).",
         "rapports": "Finance dashboards, exports and consolidated metrics."
       }
     }
@@ -1380,17 +1404,17 @@
     "title": "Home",
     "description": "Overview of your training organization",
     "menuCardsTitle": "Quick access to sections",
-    "menuCardsSubtitle": "Each card opens a section; bullets list that section's modules (pages live inside each module).",
+    "menuCardsSubtitle": "Each card opens a section; bullets link to module hubs (pages live inside each module).",
     "noModulesTitle": "No accessible modules",
     "noModulesDescription": "Contact your administrator for the required permissions.",
     "cards": {
-      "gestion-ressources": "Organization section: structure, human resources and assets before academic operations.",
-      "gestion-academique": "Academic section: modules for the learner journey (including student life).",
-      "administration-facturation": "Finance and admin section: budget, sales and accounting follow-up.",
-      "communication-contenu": "Communication section: website, campaigns and visibility.",
-      "support-qualite": "User support and quality tracking section.",
-      "securite-configuration": "CRM security, settings and document compliance section.",
-      "pilotage-supervision": "Operations section: alerts, metrics, CSV reports and risk register."
+      "gestion-ressources": "Company, Qualiopi, HR and equipment — OF structure, compliance and assets.",
+      "gestion-academique": "Student life (catalog, sessions) and training follow-up (board, satisfaction, circuits).",
+      "administration-facturation": "Finance: budget, quotes, invoices, payments, funders, BPF and reports.",
+      "communication-contenu": "Landing CMS, lead marketing and SEO.",
+      "support-qualite": "Helpdesk: tickets and incidents.",
+      "securite-configuration": "Access, settings and document governance.",
+      "pilotage-supervision": "Operations (alerts, KPIs, reports, risks) and AI governance."
     }
   },
   "datagrid": {

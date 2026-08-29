@@ -109,6 +109,8 @@ interface MenuCardProps {
   subSections?: string[];
   /** Libellés affichés pour chaque puce (même ordre que `subSections`). */
   subSectionLabels?: string[];
+  /** Liens optionnels par puce (même ordre que `subSections`) — sinon texte seul. */
+  subSectionPaths?: string[];
   backgroundImage?: string;
   moduleKey?: string;
   /** Couleur icône + badge (+ puces). Sans ton, style primaire existant. */
@@ -136,6 +138,7 @@ export const MenuCard = ({
   badge,
   subSections,
   subSectionLabels,
+  subSectionPaths,
   backgroundImage = 'bg-3',
   moduleKey,
   tone,
@@ -186,17 +189,30 @@ export const MenuCard = ({
             <p className="text-sm text-muted-foreground leading-relaxed mb-3">{description}</p>
             {subSections && subSections.length > 0 && (
               <div className="space-y-1">
-                {subSections.slice(0, 4).map((section, index) => (
-                  <div key={index} className="flex items-center text-xs text-muted-foreground">
-                    <div
-                      className={cn(
-                        'size-1 rounded-full mr-2 flex-shrink-0',
-                        toneStyles ? toneStyles.dot : 'bg-muted-foreground',
+                {subSections.slice(0, 4).map((section, index) => {
+                  const label = subSectionLabels?.[index] ?? formatSectionName(section);
+                  const href = subSectionPaths?.[index];
+                  return (
+                    <div key={href ?? `${section}-${index}`} className="flex items-center text-xs text-muted-foreground">
+                      <div
+                        className={cn(
+                          'size-1 rounded-full mr-2 flex-shrink-0',
+                          toneStyles ? toneStyles.dot : 'bg-muted-foreground',
+                        )}
+                      />
+                      {href ? (
+                        <Link
+                          href={href}
+                          className="truncate hover:text-foreground hover:underline underline-offset-2"
+                        >
+                          {label}
+                        </Link>
+                      ) : (
+                        <span>{label}</span>
                       )}
-                    />
-                    <span>{subSectionLabels?.[index] ?? formatSectionName(section)}</span>
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
                 {subSections.length > 4 && (
                   <div className="flex items-center text-xs text-muted-foreground">
                     <div

@@ -19,7 +19,7 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "communication-contenu.seo.meta-indexation": "Balises title/description landing et liens sitemap / robots.",
   "communication-contenu.seo": "Pilotage SEO, indexation et redirections.",
   "communication-contenu.seo.redirections": "Règles 301/302 et ancres du site landing.",
-  "gestion-academique": "Section regroupant le module Vie scolaire : formations, sessions, planning, étudiants et suivi de parcours (cinq espaces dans le menu).",
+  "gestion-academique": "Vie scolaire et suivi formations — catalogue, sessions, tableau de suivi, satisfaction et circuits.",
   "gestion-academique.vie-scolaire.certifications": "Délivrance des attestations CRM après examen réussi (avant clôture du dossier).",
   "gestion-academique.vie-scolaire.etudiants": "Dossiers apprenants, pipeline CRM et rattachement aux sessions.",
   "gestion-academique.vie-scolaire.examens": "Saisie des résultats pour les candidats inscrits à une session (parcours catalogue CRM).",
@@ -28,14 +28,38 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "gestion-academique.vie-scolaire.planning": "Planning hebdomadaire des sessions catalogue : formations, formateurs, salles et effectifs inscrits (calendrier scolaire lun.–sam.).",
   "gestion-academique.vie-scolaire.sessions": "Planning des sessions, inscriptions et suivi pédagogique par formation.",
   "gestion-academique.vie-scolaire.suivi-formations":
+    "Redirection vers Suivi formations → Tableau de suivi.",
+  "gestion-academique.suivi-formations":
+    "Tableau de suivi, enquêtes satisfaction et circuits n8n de session.",
+  "gestion-academique.suivi-formations.tableau":
     "Suivi quotidien par session : stagiaires inscrits, progression e-learning, quiz et préparation émargement / conformité.",
+  "gestion-academique.suivi-formations.satisfaction":
+    "Enquêtes HOT (J0) et COLD (J+45) — suivi transverse des retours stagiaires.",
+  "gestion-academique.suivi-formations.circuits":
+    "Exécutions des circuits session (jalons J-N → J+N) enregistrées via n8n.",
   "gestion-ressources.compagnie": "Gérez le profil de la compagnie, sa structure et ses documents administratifs.",
+  "gestion-ressources.qualiopi":
+    "Module Qualiopi — complétude du dossier école et indicateurs à traiter.",
+  "gestion-ressources.qualiopi.classeur":
+    "Détail des 32 indicateurs — statut d'audit, commentaire et preuve par indicateur.",
+  "gestion-ressources.qualiopi.historique":
+    "Timeline des écarts Qualiopi (événements ComplianceItem) — passages OK→KO et preuves.",
   "gestion-ressources.compagnie.profil": "Identité légale, coordonnées et référents administratifs de l&apos;établissement.",
+  "administration-facturation.finance.financeurs":
+    "Registre OPCO / CPF / entreprise — source unique pour sessions, devis et BPF.",
+  "administration-facturation.finance.bpf":
+    "Bilan pédagogique et financier annuel (Cerfa) — agrégats et garde-fous.",
+  "pilotage-supervision.ia":
+    "Gouvernance des brouillons IA (AiArtifact) et historique des exécutions (AiRun).",
+  "pilotage-supervision.ia.brouillons":
+    "File d&apos;attente des artefacts PROPOSED à valider avant écriture métier.",
+  "pilotage-supervision.ia.historique":
+    "Journal des AiRun — succès, échecs, provider et modèle.",
   "gestion-ressources.equipements.affectations": "Réservations et mobilisation du matériel par session (formateur ou collaborateur).",
   "gestion-ressources.equipements.inventaire": "Catalogue matériel par catégorie — stock, affectations et maintenance par ligne.",
   "gestion-ressources.equipements.maintenance": "Suivi des unités en atelier et interventions techniques.",
   "gestion-ressources.equipements": "Gérez votre parc et votre inventaire en temps réel.",
-  "gestion-ressources": "Paramétrez la compagnie, les équipes RH et les équipements avant le métier formation.",
+  "gestion-ressources": "Paramétrez la compagnie, Qualiopi, les équipes RH et les équipements avant le métier formation.",
   "gestion-ressources.rh.absences": "Déclarations, validations et export des absences du personnel.",
   "gestion-ressources.rh.collaborateurs": "Liste, export et dossiers RH des collaborateurs du groupe.",
   "gestion-ressources.rh.equipes": "Gérez vos équipes et l&apos;affectation de vos collaborateurs.",
@@ -70,7 +94,7 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "securite-configuration": "Administrez les accès, la traçabilité et les paramètres de la plateforme.",
   "securite-configuration.parametres": "Configurez les réglages généraux, notifications et options globales de la plateforme.",
   "securite-configuration.parametres.sante-systeme": "Aperçu en temps réel de la consommation des ressources (Postgres, Redis, Node.js)",
-  "support-qualite": "Suivez le support utilisateur et les incidents qualité.",
+  "support-qualite": "Helpdesk — tickets et incidents.",
   "support-qualite.support": "Helpdesk : tickets entrants et suivi des incidents (matériel, processus).",
   "support-qualite.support.tickets": "Création, affectation et suivi des demandes support.",
   "support-qualite.support.incidents":

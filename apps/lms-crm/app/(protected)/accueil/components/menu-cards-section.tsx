@@ -31,15 +31,16 @@ type AccueilCardDef = {
   tone: MenuCardTone;
 };
 
+/** Aligné sur `MENU_SIDEBAR` — une carte = une section, puces = modules (liens hub). */
 const ACCUEIL_CARDS: AccueilCardDef[] = [
   {
     moduleKey: 'pilotage-supervision',
     path: '/pilotage-supervision',
     descriptionKey: 'accueil.cards.pilotage-supervision',
     icon: TrendingUp,
-    moduleCount: 1,
-    subSections: ['pilotage'],
-    subSectionPaths: ['/pilotage-supervision/pilotage'],
+    moduleCount: 2,
+    subSections: ['pilotage', 'ia'],
+    subSectionPaths: ['/pilotage-supervision/pilotage', '/pilotage-supervision/ia'],
     tone: 'cyan',
   },
   {
@@ -47,10 +48,11 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
     path: '/gestion-ressources',
     descriptionKey: 'accueil.cards.gestion-ressources',
     icon: Users,
-    moduleCount: 3,
-    subSections: ['compagnie', 'rh', 'equipements'],
+    moduleCount: 4,
+    subSections: ['compagnie', 'qualiopi', 'rh', 'equipements'],
     subSectionPaths: [
       '/gestion-ressources/compagnie',
+      '/gestion-ressources/qualiopi',
       '/gestion-ressources/rh',
       '/gestion-ressources/equipements',
     ],
@@ -61,9 +63,12 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
     path: '/gestion-academique',
     descriptionKey: 'accueil.cards.gestion-academique',
     icon: GraduationCap,
-    moduleCount: 1,
-    subSections: ['vie-scolaire'],
-    subSectionPaths: ['/gestion-academique/vie-scolaire'],
+    moduleCount: 2,
+    subSections: ['vie-scolaire', 'suivi-formations'],
+    subSectionPaths: [
+      '/gestion-academique/vie-scolaire',
+      '/gestion-academique/suivi-formations',
+    ],
     tone: 'violet',
   },
   {
@@ -195,6 +200,7 @@ export const MenuCardsSection = () => {
                 subSectionLabels={item.subSectionPaths.map((subPath) =>
                   translateMenuTitle({ path: subPath, title: '' }, t),
                 )}
+                subSectionPaths={item.subSectionPaths}
                 tone={item.tone}
               />
             ))

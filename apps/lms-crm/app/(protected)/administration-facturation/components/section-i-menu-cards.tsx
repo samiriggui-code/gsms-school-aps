@@ -2,13 +2,16 @@
 
 import {
   BarChart3,
+  Building2,
   CreditCard,
   FileSpreadsheet,
   FileText,
+  ScrollText,
   Wallet,
 } from 'lucide-react';
 import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
+/** Accès rapide feuilles Finance (ordre = menu latéral). */
 const items = [
   {
     moduleKey: 'administration-facturation-budget',
@@ -45,6 +48,24 @@ const items = [
     backgroundImage: 'bg-3',
     subSections: ['encaissements', 'reconciliation'],
     tone: 'amber' as const,
+  },
+  {
+    moduleKey: 'administration-facturation-financeurs',
+    path: '/administration-facturation/finance/financeurs',
+    descriptionKey: 'sections.administrationFacturation.cards.financeurs',
+    icon: Building2,
+    backgroundImage: 'bg-3',
+    subSections: ['opco', 'cpf'],
+    tone: 'cyan' as const,
+  },
+  {
+    moduleKey: 'administration-facturation-bpf',
+    path: '/administration-facturation/finance/bpf',
+    descriptionKey: 'sections.administrationFacturation.cards.bpf',
+    icon: ScrollText,
+    backgroundImage: 'bg-3',
+    subSections: ['cerfa', 'pilote'],
+    tone: 'indigo' as const,
   },
   {
     moduleKey: 'administration-facturation-rapports',

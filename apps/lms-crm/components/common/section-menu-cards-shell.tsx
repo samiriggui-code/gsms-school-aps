@@ -13,6 +13,8 @@ export type SectionMenuCardItem = {
   backgroundImage: string;
   subSections: string[];
   subSectionLabels?: string[];
+  /** Liens réels vers les feuilles (sinon puces non cliquables). */
+  subSectionPaths?: string[];
   tone: MenuCardTone;
   badgeCount?: number;
 };
@@ -40,21 +42,32 @@ export function SectionMenuCardsShell({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8">
-        {items.map((item) => (
-          <MenuCard
-            key={item.moduleKey}
-            moduleKey={item.moduleKey}
-            title={translateMenuTitle({ path: item.path, title: '' }, t)}
-            description={t(item.descriptionKey)}
-            icon={item.icon}
-            path={item.path}
-            badge={menuCardPagesBadge(item.badgeCount ?? item.subSections.length)}
-            backgroundImage={item.backgroundImage}
-            subSections={item.subSections}
-            subSectionLabels={item.subSectionLabels}
-            tone={item.tone}
-          />
-        ))}
+        {items.map((item) => {
+          const subSectionLabels =
+            item.subSectionLabels ??
+            (item.subSectionPaths
+              ? item.subSectionPaths.map((subPath) =>
+                  translateMenuTitle({ path: subPath, title: '' }, t),
+                )
+              : undefined);
+
+          return (
+            <MenuCard
+              key={item.moduleKey}
+              moduleKey={item.moduleKey}
+              title={translateMenuTitle({ path: item.path, title: '' }, t)}
+              description={t(item.descriptionKey)}
+              icon={item.icon}
+              path={item.path}
+              badge={menuCardPagesBadge(item.badgeCount ?? item.subSections.length)}
+              backgroundImage={item.backgroundImage}
+              subSections={item.subSections}
+              subSectionLabels={subSectionLabels}
+              subSectionPaths={item.subSectionPaths}
+              tone={item.tone}
+            />
+          );
+        })}
       </div>
     </div>
   );

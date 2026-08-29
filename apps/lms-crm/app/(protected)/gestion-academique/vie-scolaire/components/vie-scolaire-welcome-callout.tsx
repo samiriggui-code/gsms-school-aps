@@ -88,7 +88,7 @@ export function VieScolaireWelcomeCallout() {
             </Link>
           </Button>
           <Button variant="outline" size="sm" className="min-w-0 shrink" asChild>
-            <Link href="/gestion-academique/vie-scolaire/suivi-formations">
+            <Link href="/gestion-academique/suivi-formations/tableau">
               <ClipboardList className="size-4 shrink-0" />
               Suivi formations
             </Link>

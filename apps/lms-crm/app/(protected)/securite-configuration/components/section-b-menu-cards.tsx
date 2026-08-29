@@ -11,6 +11,12 @@ const items = [
     icon: KeyRound,
     backgroundImage: 'bg-3',
     subSections: ['users', 'roles', 'permissions', 'logs'],
+    subSectionPaths: [
+      '/securite-configuration/acces/users',
+      '/securite-configuration/acces/roles',
+      '/securite-configuration/acces/permissions',
+      '/securite-configuration/acces/logs',
+    ],
     tone: 'rose' as const,
   },
   {
@@ -20,6 +26,10 @@ const items = [
     icon: Settings,
     backgroundImage: 'bg-3',
     subSections: ['settings', 'sante-systeme'],
+    subSectionPaths: [
+      '/securite-configuration/parametres/settings',
+      '/securite-configuration/parametres/sante-systeme',
+    ],
     tone: 'sky' as const,
   },
   {
@@ -34,6 +44,13 @@ const items = [
       'demandes-documents',
       'corbeille-archivage',
       'audit-documentaire',
+    ],
+    subSectionPaths: [
+      '/securite-configuration/gouvernance-donnees/conformite',
+      '/securite-configuration/gouvernance-donnees/storage',
+      '/securite-configuration/gouvernance-donnees/demandes-documents',
+      '/securite-configuration/gouvernance-donnees/corbeille-archivage',
+      '/securite-configuration/gouvernance-donnees/audit-documentaire',
     ],
     tone: 'indigo' as const,
   },

@@ -7,12 +7,19 @@ import {
   MessageSquare,
   PackagePlus,
   Shield,
+  ShieldCheck,
   Theater,
   TrendingUp,
   Users,
+  ClipboardList,
 } from 'lucide-react';
 import { type MenuConfig } from './types';
 
+/**
+ * Hiérarchie CRM (3 niveaux) — alignée sur `.cursor/rules/gestion-ressources-layout.mdc` :
+ * Section (landing Accéder) → Module (dashboard) → Feuille.
+ * Scaffolds « En construction » autorisés pour figer l’arbre (IA, Financeurs, BPF, Historique).
+ */
 export const MENU_SIDEBAR: MenuConfig = [
   {
     title: 'Accueil',
@@ -34,6 +41,14 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Risques', path: '/pilotage-supervision/pilotage/risques' },
         ],
       },
+      {
+        title: 'IA',
+        path: '/pilotage-supervision/ia',
+        children: [
+          { title: 'Brouillons à valider', path: '/pilotage-supervision/ia/brouillons' },
+          { title: 'Historique', path: '/pilotage-supervision/ia/historique' },
+        ],
+      },
     ],
   },
   {
@@ -49,6 +64,15 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Profil', path: '/gestion-ressources/compagnie/profil' },
           { title: 'Structure', path: '/gestion-ressources/compagnie/structure' },
           { title: 'Documents', path: '/gestion-ressources/compagnie/documents' },
+        ],
+      },
+      {
+        title: 'Qualiopi',
+        path: '/gestion-ressources/qualiopi',
+        icon: ShieldCheck,
+        children: [
+          { title: 'Classeur', path: '/gestion-ressources/qualiopi/classeur' },
+          { title: 'Historique', path: '/gestion-ressources/qualiopi/historique' },
         ],
       },
       {
@@ -112,9 +136,24 @@ export const MENU_SIDEBAR: MenuConfig = [
             title: 'Étudiants',
             path: '/gestion-academique/vie-scolaire/etudiants',
           },
+        ],
+      },
+      {
+        title: 'Suivi formations',
+        path: '/gestion-academique/suivi-formations',
+        icon: ClipboardList,
+        children: [
           {
-            title: 'Suivi formations',
-            path: '/gestion-academique/vie-scolaire/suivi-formations',
+            title: 'Tableau de suivi',
+            path: '/gestion-academique/suivi-formations/tableau',
+          },
+          {
+            title: 'Satisfaction',
+            path: '/gestion-academique/suivi-formations/satisfaction',
+          },
+          {
+            title: 'Circuits',
+            path: '/gestion-academique/suivi-formations/circuits',
           },
         ],
       },
@@ -133,6 +172,8 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Devis', path: '/administration-facturation/finance/devis' },
           { title: 'Factures', path: '/administration-facturation/finance/factures' },
           { title: 'Paiements', path: '/administration-facturation/finance/paiements' },
+          { title: 'Financeurs', path: '/administration-facturation/finance/financeurs' },
+          { title: 'BPF', path: '/administration-facturation/finance/bpf' },
           { title: 'Rapports', path: '/administration-facturation/finance/rapports' },
         ],
       },
@@ -171,7 +212,7 @@ export const MENU_SIDEBAR: MenuConfig = [
     ],
   },
   {
-    title: 'Support qualité',
+    title: 'Support',
     icon: LifeBuoy,
     path: '/support-qualite',
     children: [
@@ -181,18 +222,6 @@ export const MENU_SIDEBAR: MenuConfig = [
         children: [
           { title: 'Tickets', path: '/support-qualite/support/tickets' },
           { title: 'Incidents', path: '/support-qualite/support/incidents' },
-        ],
-      },
-      {
-        title: 'Qualiopi',
-        path: '/support-qualite/qualiopi',
-      },
-      {
-        title: 'Docs & circuits',
-        path: '/support-qualite/docs-circuits',
-        children: [
-          { title: 'Satisfaction', path: '/support-qualite/docs-circuits/satisfaction' },
-          { title: 'Circuits', path: '/support-qualite/docs-circuits/circuits' },
         ],
       },
     ],

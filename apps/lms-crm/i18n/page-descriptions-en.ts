@@ -31,7 +31,7 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
   'communication-contenu.seo': 'SEO management, indexing and redirects.',
   'communication-contenu.seo.redirections': '301/302 rules and landing site anchors.',
   'gestion-academique':
-    'Section grouping the Student life module: programs, sessions, scheduling, students and training follow-up (five menu workspaces).',
+    'Student life and training follow-up — catalog, sessions, follow-up board, satisfaction and circuits.',
   'gestion-academique.vie-scolaire.certifications':
     'CRM certificate issuance after a passed exam (before closing the file).',
   'gestion-academique.vie-scolaire.etudiants':
@@ -47,11 +47,43 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
   'gestion-academique.vie-scolaire.sessions':
     'Session planning, enrollments and training follow-up.',
   'gestion-academique.vie-scolaire.suivi-formations':
+    'Redirects to Training follow-up → Follow-up board.',
+  'gestion-academique.suivi-formations':
+    'Follow-up board, satisfaction surveys and session n8n circuits.',
+  'gestion-academique.suivi-formations.tableau':
     'Daily session tracking: enrolled trainees, e-learning progress, quizzes and attendance / compliance preparation.',
+  'gestion-academique.suivi-formations.satisfaction':
+    'HOT (D0) and COLD (D+45) surveys — cross-session trainee feedback.',
+  'gestion-academique.suivi-formations.circuits':
+    'Session circuit runs (D-N → D+N milestones) recorded via n8n.',
   'gestion-ressources.compagnie':
     'Manage company profile, structure and administrative documents.',
+  'gestion-ressources.qualiopi':
+    'Qualiopi module — school dossier completeness and open indicators.',
+  'gestion-ressources.qualiopi.classeur':
+    'Indicator detail — audit status, comment and evidence per indicator.',
+  'gestion-ressources.qualiopi.historique':
+    'Qualiopi gap timeline (ComplianceItem events) — OK→KO transitions and evidence.',
   'gestion-ressources.compagnie.profil':
     'Legal identity, contact details and administrative contacts.',
+  'administration-facturation.finance.financeurs':
+    'OPCO / CPF / company funder registry — single source for sessions, quotes and BPF.',
+  'administration-facturation.finance.bpf':
+    'Annual Pedagogical & Financial Balance Sheet (Cerfa) — aggregates and guards.',
+  'pilotage-supervision.ia':
+    'AI draft governance (AiArtifact) and run history (AiRun).',
+  'pilotage-supervision.ia.brouillons':
+    'Queue of PROPOSED artifacts to approve before business writes.',
+  'pilotage-supervision.ia.historique':
+    'AiRun journal — success, failures, provider and model.',
+  'pilotage-supervision.pilotage.alertes':
+    'Central CRM alert register — in-app notifications synced with the header bell.',
+  'pilotage-supervision.pilotage.indicateurs':
+    'Consolidated KPIs and charts per module — trends, breakdowns and shortcuts.',
+  'pilotage-supervision.pilotage.rapports':
+    'CSV exports, report templates and activity history for the selected period.',
+  'pilotage-supervision.pilotage.risques':
+    'Risk register: severity, exposure and recommendations to keep operations healthy.',
   'gestion-ressources.equipements.affectations':
     'Equipment reservations and mobilization per session (trainer or staff).',
   'gestion-ressources.equipements.inventaire':
@@ -60,7 +92,7 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'Workshop units and technical interventions tracking.',
   'gestion-ressources.equipements': 'Manage your fleet and inventory in real time.',
   'gestion-ressources':
-    'Configure company, HR teams and equipment before academic operations.',
+    'Configure company, Qualiopi, HR teams and equipment before academic operations.',
   'gestion-ressources.rh.absences': 'Absence requests, approvals and staff export.',
   'gestion-ressources.rh.collaborateurs':
     'List, export and HR files for group staff.',
@@ -107,7 +139,7 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'Configure general settings, notifications and global platform options.',
   'securite-configuration.parametres.sante-systeme':
     'Real-time resource usage overview (Postgres, Redis, Node.js).',
-  'support-qualite': 'Track user support and quality incidents.',
+  'support-qualite': 'Helpdesk — tickets and incidents.',
   'support-qualite.support': 'Helpdesk: incoming tickets and incident tracking (equipment, process).',
   'support-qualite.support.tickets': 'Create, assign and track support requests.',
   'support-qualite.support.incidents':

@@ -1,5 +1,5 @@
-import type { SuiviEmargementStatus } from '@/app/(protected)/gestion-academique/vie-scolaire/suivi-formations/types/suivi-formations-api';
-import { SUIVI_EMARGEMENT_STATUS_LABELS } from '@/app/(protected)/gestion-academique/vie-scolaire/suivi-formations/types/suivi-formations-api';
+import type { SuiviEmargementStatus } from '@/app/(protected)/gestion-academique/suivi-formations/tableau/types/suivi-formations-api';
+import { SUIVI_EMARGEMENT_STATUS_LABELS } from '@/app/(protected)/gestion-academique/suivi-formations/tableau/types/suivi-formations-api';
 
 export type EmargementReportBrand = {
   companyName: string;

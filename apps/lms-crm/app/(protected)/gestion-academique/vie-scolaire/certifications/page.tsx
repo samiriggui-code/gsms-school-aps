@@ -12,5 +12,5 @@ export default async function CertificationsRedirectPage({ searchParams }: PageP
   if (typeof sessionId === 'string' && sessionId.trim()) {
     qs.set('sessionId', sessionId.trim());
   }
-  redirect(`/gestion-academique/vie-scolaire/suivi-formations?${qs.toString()}`);
+  redirect(`/gestion-academique/suivi-formations/tableau?${qs.toString()}`);
 }

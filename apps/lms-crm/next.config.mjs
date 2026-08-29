@@ -114,6 +114,30 @@ const nextConfig = {
         source: '/api/sections/gestion-ressources/rh/Etudiants',
         destination: '/api/sections/gestion-ressources/rh/etudiants',
       },
+      {
+        source: '/api/sections/support-qualite/qualiopi',
+        destination: '/api/sections/gestion-ressources/qualiopi',
+      },
+      {
+        source: '/api/sections/support-qualite/qualiopi/:path*',
+        destination: '/api/sections/gestion-ressources/qualiopi/:path*',
+      },
+      {
+        source: '/api/sections/support-qualite/docs-circuits/:path*',
+        destination: '/api/sections/gestion-academique/suivi-formations/:path*',
+      },
+      {
+        source: '/api/sections/qualite-organisme/qualiopi',
+        destination: '/api/sections/gestion-ressources/qualiopi',
+      },
+      {
+        source: '/api/sections/qualite-organisme/qualiopi/:path*',
+        destination: '/api/sections/gestion-ressources/qualiopi/:path*',
+      },
+      {
+        source: '/api/sections/qualite-organisme/docs-circuits/:path*',
+        destination: '/api/sections/gestion-academique/suivi-formations/:path*',
+      },
     ];
   },
   async redirects() {
@@ -127,6 +151,22 @@ const nextConfig = {
       '/support-qualite/qualite/incidents': '/support-qualite/support/incidents',
       '/support-qualite/qualite/incidents/sessions': '/support-qualite/support/incidents',
       '/support-qualite/qualite/incidents/resultats': '/support-qualite/support/incidents',
+      '/support-qualite/qualiopi': '/gestion-ressources/qualiopi',
+      '/support-qualite/qualiopi/classeur': '/gestion-ressources/qualiopi/classeur',
+      '/support-qualite/docs-circuits': '/gestion-academique/suivi-formations',
+      '/support-qualite/docs-circuits/satisfaction':
+        '/gestion-academique/suivi-formations/satisfaction',
+      '/support-qualite/docs-circuits/circuits':
+        '/gestion-academique/suivi-formations/circuits',
+      '/qualite-organisme/qualiopi': '/gestion-ressources/qualiopi',
+      '/qualite-organisme/qualiopi/classeur': '/gestion-ressources/qualiopi/classeur',
+      '/qualite-organisme/docs-circuits': '/gestion-academique/suivi-formations',
+      '/qualite-organisme/docs-circuits/satisfaction':
+        '/gestion-academique/suivi-formations/satisfaction',
+      '/qualite-organisme/docs-circuits/circuits':
+        '/gestion-academique/suivi-formations/circuits',
+      '/gestion-academique/vie-scolaire/suivi-formations':
+        '/gestion-academique/suivi-formations/tableau',
       '/securite-configuration/acces/security-log': '/securite-configuration/acces/logs',
       '/pilotage-supervision/performance': '/pilotage-supervision/pilotage',
       '/pilotage-supervision/performance/kpi': '/pilotage-supervision/pilotage/indicateurs',

@@ -38,7 +38,7 @@ export const PILOTAGE_MODULE_TABS: PilotageModuleTab[] = [
   },
   {
     id: 'support-qualite',
-    label: 'Support qualité',
+    label: 'Support',
     moduleKeyPrefix: 'support-qualite',
     enabled: true,
   },
@@ -72,7 +72,7 @@ export function moduleLabelFromKey(moduleKey: string | null | undefined): string
   if (moduleKey.startsWith('gestion-academique')) return 'Gestion académique';
   if (moduleKey.startsWith('administration-facturation')) return 'Admin facturation';
   if (moduleKey.startsWith('pilotage-supervision')) return 'Pilotage';
-  if (moduleKey.startsWith('support-qualite')) return 'Support qualité';
+  if (moduleKey.startsWith('support-qualite')) return 'Support';
   if (moduleKey.startsWith('communication-contenu')) return 'Communication & contenu';
   if (moduleKey.startsWith('securite-configuration')) return 'Sécurité & configuration';
   return moduleKey;
@@ -80,11 +80,16 @@ export function moduleLabelFromKey(moduleKey: string | null | undefined): string
 
 export function moduleHrefFromKey(moduleKey: string | null | undefined): string {
   if (!moduleKey) return '/accueil';
+  if (moduleKey.startsWith('gestion-ressources.qualiopi')) return '/gestion-ressources/qualiopi';
   if (moduleKey.startsWith('gestion-ressources.rh')) return '/gestion-ressources/rh';
   if (moduleKey.startsWith('gestion-ressources.equipements')) return '/gestion-ressources/equipements';
   if (moduleKey.startsWith('gestion-ressources')) return '/gestion-ressources';
+  if (moduleKey.startsWith('gestion-academique.suivi-formations'))
+    return '/gestion-academique/suivi-formations';
   if (moduleKey.startsWith('gestion-academique')) return '/gestion-academique';
   if (moduleKey.startsWith('administration-facturation')) return '/administration-facturation';
+  if (moduleKey.startsWith('pilotage-supervision.ia')) return '/pilotage-supervision/ia';
+  if (moduleKey.startsWith('pilotage-supervision')) return '/pilotage-supervision';
   if (moduleKey.startsWith('support-qualite')) return '/support-qualite';
   if (moduleKey.startsWith('communication-contenu')) return '/communication-contenu';
   if (moduleKey.startsWith('securite-configuration')) return '/securite-configuration';
