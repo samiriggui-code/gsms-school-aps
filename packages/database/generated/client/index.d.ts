@@ -561,6 +561,26 @@ export type ComplianceItemEvent = $Result.DefaultSelection<Prisma.$ComplianceIte
  * (voir lib/of/satisfaction-survey-template.ts pour le référentiel de questions).
  */
 export type SatisfactionSurvey = $Result.DefaultSelection<Prisma.$SatisfactionSurveyPayload>
+/**
+ * Model FundingProvider
+ * 
+ */
+export type FundingProvider = $Result.DefaultSelection<Prisma.$FundingProviderPayload>
+/**
+ * Model FundingCase
+ * 
+ */
+export type FundingCase = $Result.DefaultSelection<Prisma.$FundingCasePayload>
+/**
+ * Model FundingCaseEvent
+ * 
+ */
+export type FundingCaseEvent = $Result.DefaultSelection<Prisma.$FundingCaseEventPayload>
+/**
+ * Model FundingDocument
+ * 
+ */
+export type FundingDocument = $Result.DefaultSelection<Prisma.$FundingDocumentPayload>
 
 /**
  * Enums
@@ -1296,6 +1316,53 @@ export const SatisfactionSurveyStatus: {
 
 export type SatisfactionSurveyStatus = (typeof SatisfactionSurveyStatus)[keyof typeof SatisfactionSurveyStatus]
 
+
+export const FundingFunderType: {
+  CPF: 'CPF',
+  OPCO: 'OPCO',
+  FRANCE_TRAVAIL: 'FRANCE_TRAVAIL',
+  AGEFIPH: 'AGEFIPH',
+  REGION: 'REGION',
+  ENTREPRISE: 'ENTREPRISE',
+  TRANSITIONS_PRO: 'TRANSITIONS_PRO',
+  OTHER: 'OTHER'
+};
+
+export type FundingFunderType = (typeof FundingFunderType)[keyof typeof FundingFunderType]
+
+
+export const FundingTransport: {
+  MANUAL_PORTAL: 'MANUAL_PORTAL',
+  PARTIAL_API: 'PARTIAL_API',
+  VERIFIED_API: 'VERIFIED_API',
+  INTERNAL: 'INTERNAL'
+};
+
+export type FundingTransport = (typeof FundingTransport)[keyof typeof FundingTransport]
+
+
+export const FundingCaseStatus: {
+  DRAFT: 'DRAFT',
+  DOCUMENTS_REQUIRED: 'DOCUMENTS_REQUIRED',
+  READY_TO_SUBMIT: 'READY_TO_SUBMIT',
+  SUBMITTED: 'SUBMITTED',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  PARTIALLY_APPROVED: 'PARTIALLY_APPROVED',
+  REJECTED: 'REJECTED',
+  SERVICE_IN_PROGRESS: 'SERVICE_IN_PROGRESS',
+  SERVICE_COMPLETED: 'SERVICE_COMPLETED',
+  JUSTIFICATION_REQUIRED: 'JUSTIFICATION_REQUIRED',
+  READY_TO_INVOICE: 'READY_TO_INVOICE',
+  INVOICED: 'INVOICED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  PAID: 'PAID',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type FundingCaseStatus = (typeof FundingCaseStatus)[keyof typeof FundingCaseStatus]
+
 }
 
 export type UserStatus = $Enums.UserStatus
@@ -1585,6 +1652,18 @@ export const SatisfactionSurveyTiming: typeof $Enums.SatisfactionSurveyTiming
 export type SatisfactionSurveyStatus = $Enums.SatisfactionSurveyStatus
 
 export const SatisfactionSurveyStatus: typeof $Enums.SatisfactionSurveyStatus
+
+export type FundingFunderType = $Enums.FundingFunderType
+
+export const FundingFunderType: typeof $Enums.FundingFunderType
+
+export type FundingTransport = $Enums.FundingTransport
+
+export const FundingTransport: typeof $Enums.FundingTransport
+
+export type FundingCaseStatus = $Enums.FundingCaseStatus
+
+export const FundingCaseStatus: typeof $Enums.FundingCaseStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -2786,6 +2865,46 @@ export class PrismaClient<
     * ```
     */
   get satisfactionSurvey(): Prisma.SatisfactionSurveyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.fundingProvider`: Exposes CRUD operations for the **FundingProvider** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FundingProviders
+    * const fundingProviders = await prisma.fundingProvider.findMany()
+    * ```
+    */
+  get fundingProvider(): Prisma.FundingProviderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.fundingCase`: Exposes CRUD operations for the **FundingCase** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FundingCases
+    * const fundingCases = await prisma.fundingCase.findMany()
+    * ```
+    */
+  get fundingCase(): Prisma.FundingCaseDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.fundingCaseEvent`: Exposes CRUD operations for the **FundingCaseEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FundingCaseEvents
+    * const fundingCaseEvents = await prisma.fundingCaseEvent.findMany()
+    * ```
+    */
+  get fundingCaseEvent(): Prisma.FundingCaseEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.fundingDocument`: Exposes CRUD operations for the **FundingDocument** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FundingDocuments
+    * const fundingDocuments = await prisma.fundingDocument.findMany()
+    * ```
+    */
+  get fundingDocument(): Prisma.FundingDocumentDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -3327,7 +3446,11 @@ export namespace Prisma {
     ComplianceDossierItem: 'ComplianceDossierItem',
     DocumentRequest: 'DocumentRequest',
     ComplianceItemEvent: 'ComplianceItemEvent',
-    SatisfactionSurvey: 'SatisfactionSurvey'
+    SatisfactionSurvey: 'SatisfactionSurvey',
+    FundingProvider: 'FundingProvider',
+    FundingCase: 'FundingCase',
+    FundingCaseEvent: 'FundingCaseEvent',
+    FundingDocument: 'FundingDocument'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -3343,7 +3466,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -11339,6 +11462,302 @@ export namespace Prisma {
           }
         }
       }
+      FundingProvider: {
+        payload: Prisma.$FundingProviderPayload<ExtArgs>
+        fields: Prisma.FundingProviderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FundingProviderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FundingProviderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>
+          }
+          findFirst: {
+            args: Prisma.FundingProviderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FundingProviderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>
+          }
+          findMany: {
+            args: Prisma.FundingProviderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>[]
+          }
+          create: {
+            args: Prisma.FundingProviderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>
+          }
+          createMany: {
+            args: Prisma.FundingProviderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FundingProviderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>[]
+          }
+          delete: {
+            args: Prisma.FundingProviderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>
+          }
+          update: {
+            args: Prisma.FundingProviderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>
+          }
+          deleteMany: {
+            args: Prisma.FundingProviderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FundingProviderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FundingProviderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>[]
+          }
+          upsert: {
+            args: Prisma.FundingProviderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingProviderPayload>
+          }
+          aggregate: {
+            args: Prisma.FundingProviderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFundingProvider>
+          }
+          groupBy: {
+            args: Prisma.FundingProviderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FundingProviderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FundingProviderCountArgs<ExtArgs>
+            result: $Utils.Optional<FundingProviderCountAggregateOutputType> | number
+          }
+        }
+      }
+      FundingCase: {
+        payload: Prisma.$FundingCasePayload<ExtArgs>
+        fields: Prisma.FundingCaseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FundingCaseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FundingCaseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>
+          }
+          findFirst: {
+            args: Prisma.FundingCaseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FundingCaseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>
+          }
+          findMany: {
+            args: Prisma.FundingCaseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>[]
+          }
+          create: {
+            args: Prisma.FundingCaseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>
+          }
+          createMany: {
+            args: Prisma.FundingCaseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FundingCaseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>[]
+          }
+          delete: {
+            args: Prisma.FundingCaseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>
+          }
+          update: {
+            args: Prisma.FundingCaseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>
+          }
+          deleteMany: {
+            args: Prisma.FundingCaseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FundingCaseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FundingCaseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>[]
+          }
+          upsert: {
+            args: Prisma.FundingCaseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCasePayload>
+          }
+          aggregate: {
+            args: Prisma.FundingCaseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFundingCase>
+          }
+          groupBy: {
+            args: Prisma.FundingCaseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FundingCaseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FundingCaseCountArgs<ExtArgs>
+            result: $Utils.Optional<FundingCaseCountAggregateOutputType> | number
+          }
+        }
+      }
+      FundingCaseEvent: {
+        payload: Prisma.$FundingCaseEventPayload<ExtArgs>
+        fields: Prisma.FundingCaseEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FundingCaseEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FundingCaseEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>
+          }
+          findFirst: {
+            args: Prisma.FundingCaseEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FundingCaseEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>
+          }
+          findMany: {
+            args: Prisma.FundingCaseEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>[]
+          }
+          create: {
+            args: Prisma.FundingCaseEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>
+          }
+          createMany: {
+            args: Prisma.FundingCaseEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FundingCaseEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>[]
+          }
+          delete: {
+            args: Prisma.FundingCaseEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>
+          }
+          update: {
+            args: Prisma.FundingCaseEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.FundingCaseEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FundingCaseEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FundingCaseEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.FundingCaseEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingCaseEventPayload>
+          }
+          aggregate: {
+            args: Prisma.FundingCaseEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFundingCaseEvent>
+          }
+          groupBy: {
+            args: Prisma.FundingCaseEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FundingCaseEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FundingCaseEventCountArgs<ExtArgs>
+            result: $Utils.Optional<FundingCaseEventCountAggregateOutputType> | number
+          }
+        }
+      }
+      FundingDocument: {
+        payload: Prisma.$FundingDocumentPayload<ExtArgs>
+        fields: Prisma.FundingDocumentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FundingDocumentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FundingDocumentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>
+          }
+          findFirst: {
+            args: Prisma.FundingDocumentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FundingDocumentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>
+          }
+          findMany: {
+            args: Prisma.FundingDocumentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>[]
+          }
+          create: {
+            args: Prisma.FundingDocumentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>
+          }
+          createMany: {
+            args: Prisma.FundingDocumentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FundingDocumentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>[]
+          }
+          delete: {
+            args: Prisma.FundingDocumentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>
+          }
+          update: {
+            args: Prisma.FundingDocumentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>
+          }
+          deleteMany: {
+            args: Prisma.FundingDocumentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FundingDocumentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FundingDocumentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>[]
+          }
+          upsert: {
+            args: Prisma.FundingDocumentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FundingDocumentPayload>
+          }
+          aggregate: {
+            args: Prisma.FundingDocumentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFundingDocument>
+          }
+          groupBy: {
+            args: Prisma.FundingDocumentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FundingDocumentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FundingDocumentCountArgs<ExtArgs>
+            result: $Utils.Optional<FundingDocumentCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -11555,6 +11974,10 @@ export namespace Prisma {
     documentRequest?: DocumentRequestOmit
     complianceItemEvent?: ComplianceItemEventOmit
     satisfactionSurvey?: SatisfactionSurveyOmit
+    fundingProvider?: FundingProviderOmit
+    fundingCase?: FundingCaseOmit
+    fundingCaseEvent?: FundingCaseEventOmit
+    fundingDocument?: FundingDocumentOmit
   }
 
   /* Types for Logging */
@@ -11657,6 +12080,7 @@ export namespace Prisma {
     candidatures: number
     complianceDossiers: number
     complianceItemsValidated: number
+    fundingCasesAsLearner: number
     documentRequestsRequested: number
     complianceEventsActed: number
     formationSessionsTrained: number
@@ -11720,6 +12144,7 @@ export namespace Prisma {
     candidatures?: boolean | UserCountOutputTypeCountCandidaturesArgs
     complianceDossiers?: boolean | UserCountOutputTypeCountComplianceDossiersArgs
     complianceItemsValidated?: boolean | UserCountOutputTypeCountComplianceItemsValidatedArgs
+    fundingCasesAsLearner?: boolean | UserCountOutputTypeCountFundingCasesAsLearnerArgs
     documentRequestsRequested?: boolean | UserCountOutputTypeCountDocumentRequestsRequestedArgs
     complianceEventsActed?: boolean | UserCountOutputTypeCountComplianceEventsActedArgs
     formationSessionsTrained?: boolean | UserCountOutputTypeCountFormationSessionsTrainedArgs
@@ -11923,6 +12348,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountComplianceItemsValidatedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ComplianceDossierItemWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFundingCasesAsLearnerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingCaseWhereInput
   }
 
   /**
@@ -12741,6 +13173,7 @@ export namespace Prisma {
     attestations: number
     portalAnnouncements: number
     satisfactionSurveys: number
+    fundingCases: number
     candidaturesInterested: number
     financeDevisSessionLinks: number
     automationRuns: number
@@ -12752,6 +13185,7 @@ export namespace Prisma {
     attestations?: boolean | FormationSessionCountOutputTypeCountAttestationsArgs
     portalAnnouncements?: boolean | FormationSessionCountOutputTypeCountPortalAnnouncementsArgs
     satisfactionSurveys?: boolean | FormationSessionCountOutputTypeCountSatisfactionSurveysArgs
+    fundingCases?: boolean | FormationSessionCountOutputTypeCountFundingCasesArgs
     candidaturesInterested?: boolean | FormationSessionCountOutputTypeCountCandidaturesInterestedArgs
     financeDevisSessionLinks?: boolean | FormationSessionCountOutputTypeCountFinanceDevisSessionLinksArgs
     automationRuns?: boolean | FormationSessionCountOutputTypeCountAutomationRunsArgs
@@ -12801,6 +13235,13 @@ export namespace Prisma {
    */
   export type FormationSessionCountOutputTypeCountSatisfactionSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SatisfactionSurveyWhereInput
+  }
+
+  /**
+   * FormationSessionCountOutputType without action
+   */
+  export type FormationSessionCountOutputTypeCountFundingCasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingCaseWhereInput
   }
 
   /**
@@ -12890,11 +13331,13 @@ export namespace Prisma {
   export type FormationSessionParticipantCountOutputType = {
     emargements: number
     satisfactionSurveys: number
+    fundingCases: number
   }
 
   export type FormationSessionParticipantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     emargements?: boolean | FormationSessionParticipantCountOutputTypeCountEmargementsArgs
     satisfactionSurveys?: boolean | FormationSessionParticipantCountOutputTypeCountSatisfactionSurveysArgs
+    fundingCases?: boolean | FormationSessionParticipantCountOutputTypeCountFundingCasesArgs
   }
 
   // Custom InputTypes
@@ -12920,6 +13363,13 @@ export namespace Prisma {
    */
   export type FormationSessionParticipantCountOutputTypeCountSatisfactionSurveysArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SatisfactionSurveyWhereInput
+  }
+
+  /**
+   * FormationSessionParticipantCountOutputType without action
+   */
+  export type FormationSessionParticipantCountOutputTypeCountFundingCasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingCaseWhereInput
   }
 
 
@@ -13916,6 +14366,77 @@ export namespace Prisma {
    */
   export type ComplianceDossierItemCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ComplianceItemEventWhereInput
+  }
+
+
+  /**
+   * Count Type FundingProviderCountOutputType
+   */
+
+  export type FundingProviderCountOutputType = {
+    cases: number
+  }
+
+  export type FundingProviderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cases?: boolean | FundingProviderCountOutputTypeCountCasesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FundingProviderCountOutputType without action
+   */
+  export type FundingProviderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProviderCountOutputType
+     */
+    select?: FundingProviderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FundingProviderCountOutputType without action
+   */
+  export type FundingProviderCountOutputTypeCountCasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingCaseWhereInput
+  }
+
+
+  /**
+   * Count Type FundingCaseCountOutputType
+   */
+
+  export type FundingCaseCountOutputType = {
+    events: number
+    documents: number
+  }
+
+  export type FundingCaseCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    events?: boolean | FundingCaseCountOutputTypeCountEventsArgs
+    documents?: boolean | FundingCaseCountOutputTypeCountDocumentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FundingCaseCountOutputType without action
+   */
+  export type FundingCaseCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseCountOutputType
+     */
+    select?: FundingCaseCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FundingCaseCountOutputType without action
+   */
+  export type FundingCaseCountOutputTypeCountEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingCaseEventWhereInput
+  }
+
+  /**
+   * FundingCaseCountOutputType without action
+   */
+  export type FundingCaseCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingDocumentWhereInput
   }
 
 
@@ -15444,6 +15965,7 @@ export namespace Prisma {
     candidatures?: boolean | User$candidaturesArgs<ExtArgs>
     complianceDossiers?: boolean | User$complianceDossiersArgs<ExtArgs>
     complianceItemsValidated?: boolean | User$complianceItemsValidatedArgs<ExtArgs>
+    fundingCasesAsLearner?: boolean | User$fundingCasesAsLearnerArgs<ExtArgs>
     documentRequestsRequested?: boolean | User$documentRequestsRequestedArgs<ExtArgs>
     complianceEventsActed?: boolean | User$complianceEventsActedArgs<ExtArgs>
     formationSessionsTrained?: boolean | User$formationSessionsTrainedArgs<ExtArgs>
@@ -15670,6 +16192,7 @@ export namespace Prisma {
     candidatures?: boolean | User$candidaturesArgs<ExtArgs>
     complianceDossiers?: boolean | User$complianceDossiersArgs<ExtArgs>
     complianceItemsValidated?: boolean | User$complianceItemsValidatedArgs<ExtArgs>
+    fundingCasesAsLearner?: boolean | User$fundingCasesAsLearnerArgs<ExtArgs>
     documentRequestsRequested?: boolean | User$documentRequestsRequestedArgs<ExtArgs>
     complianceEventsActed?: boolean | User$complianceEventsActedArgs<ExtArgs>
     formationSessionsTrained?: boolean | User$formationSessionsTrainedArgs<ExtArgs>
@@ -15751,6 +16274,7 @@ export namespace Prisma {
       candidatures: Prisma.$CandidaturePayload<ExtArgs>[]
       complianceDossiers: Prisma.$ComplianceDossierPayload<ExtArgs>[]
       complianceItemsValidated: Prisma.$ComplianceDossierItemPayload<ExtArgs>[]
+      fundingCasesAsLearner: Prisma.$FundingCasePayload<ExtArgs>[]
       documentRequestsRequested: Prisma.$DocumentRequestPayload<ExtArgs>[]
       complianceEventsActed: Prisma.$ComplianceItemEventPayload<ExtArgs>[]
       /**
@@ -16270,6 +16794,7 @@ export namespace Prisma {
     candidatures<T extends User$candidaturesArgs<ExtArgs> = {}>(args?: Subset<T, User$candidaturesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     complianceDossiers<T extends User$complianceDossiersArgs<ExtArgs> = {}>(args?: Subset<T, User$complianceDossiersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComplianceDossierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     complianceItemsValidated<T extends User$complianceItemsValidatedArgs<ExtArgs> = {}>(args?: Subset<T, User$complianceItemsValidatedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComplianceDossierItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fundingCasesAsLearner<T extends User$fundingCasesAsLearnerArgs<ExtArgs> = {}>(args?: Subset<T, User$fundingCasesAsLearnerArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     documentRequestsRequested<T extends User$documentRequestsRequestedArgs<ExtArgs> = {}>(args?: Subset<T, User$documentRequestsRequestedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     complianceEventsActed<T extends User$complianceEventsActedArgs<ExtArgs> = {}>(args?: Subset<T, User$complianceEventsActedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ComplianceItemEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     formationSessionsTrained<T extends User$formationSessionsTrainedArgs<ExtArgs> = {}>(args?: Subset<T, User$formationSessionsTrainedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -17352,6 +17877,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ComplianceDossierItemScalarFieldEnum | ComplianceDossierItemScalarFieldEnum[]
+  }
+
+  /**
+   * User.fundingCasesAsLearner
+   */
+  export type User$fundingCasesAsLearnerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    where?: FundingCaseWhereInput
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    cursor?: FundingCaseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
   }
 
   /**
@@ -59393,6 +59942,7 @@ export namespace Prisma {
     portalAnnouncements?: boolean | FormationSession$portalAnnouncementsArgs<ExtArgs>
     rhTeam?: boolean | FormationSession$rhTeamArgs<ExtArgs>
     satisfactionSurveys?: boolean | FormationSession$satisfactionSurveysArgs<ExtArgs>
+    fundingCases?: boolean | FormationSession$fundingCasesArgs<ExtArgs>
     candidaturesInterested?: boolean | FormationSession$candidaturesInterestedArgs<ExtArgs>
     financeDevisSessionLinks?: boolean | FormationSession$financeDevisSessionLinksArgs<ExtArgs>
     automationRuns?: boolean | FormationSession$automationRunsArgs<ExtArgs>
@@ -59505,6 +60055,7 @@ export namespace Prisma {
     portalAnnouncements?: boolean | FormationSession$portalAnnouncementsArgs<ExtArgs>
     rhTeam?: boolean | FormationSession$rhTeamArgs<ExtArgs>
     satisfactionSurveys?: boolean | FormationSession$satisfactionSurveysArgs<ExtArgs>
+    fundingCases?: boolean | FormationSession$fundingCasesArgs<ExtArgs>
     candidaturesInterested?: boolean | FormationSession$candidaturesInterestedArgs<ExtArgs>
     financeDevisSessionLinks?: boolean | FormationSession$financeDevisSessionLinksArgs<ExtArgs>
     automationRuns?: boolean | FormationSession$automationRunsArgs<ExtArgs>
@@ -59544,6 +60095,7 @@ export namespace Prisma {
       portalAnnouncements: Prisma.$PortalSessionAnnouncementPayload<ExtArgs>[]
       rhTeam: Prisma.$RhTeamPayload<ExtArgs> | null
       satisfactionSurveys: Prisma.$SatisfactionSurveyPayload<ExtArgs>[]
+      fundingCases: Prisma.$FundingCasePayload<ExtArgs>[]
       candidaturesInterested: Prisma.$CandidaturePayload<ExtArgs>[]
       financeDevisSessionLinks: Prisma.$FinanceDevisPayload<ExtArgs>[]
       automationRuns: Prisma.$SessionAutomationRunPayload<ExtArgs>[]
@@ -60010,6 +60562,7 @@ export namespace Prisma {
     portalAnnouncements<T extends FormationSession$portalAnnouncementsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$portalAnnouncementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PortalSessionAnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rhTeam<T extends FormationSession$rhTeamArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$rhTeamArgs<ExtArgs>>): Prisma__RhTeamClient<$Result.GetResult<Prisma.$RhTeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     satisfactionSurveys<T extends FormationSession$satisfactionSurveysArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$satisfactionSurveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fundingCases<T extends FormationSession$fundingCasesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$fundingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     candidaturesInterested<T extends FormationSession$candidaturesInterestedArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$candidaturesInterestedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     financeDevisSessionLinks<T extends FormationSession$financeDevisSessionLinksArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$financeDevisSessionLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceDevisPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     automationRuns<T extends FormationSession$automationRunsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSession$automationRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionAutomationRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -60717,6 +61270,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SatisfactionSurveyScalarFieldEnum | SatisfactionSurveyScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSession.fundingCases
+   */
+  export type FormationSession$fundingCasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    where?: FundingCaseWhereInput
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    cursor?: FundingCaseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
   }
 
   /**
@@ -64807,6 +65384,7 @@ export namespace Prisma {
     candidature?: boolean | FormationSessionParticipant$candidatureArgs<ExtArgs>
     emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
     satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
+    fundingCases?: boolean | FormationSessionParticipant$fundingCasesArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["formationSessionParticipant"]>
 
@@ -64874,6 +65452,7 @@ export namespace Prisma {
     candidature?: boolean | FormationSessionParticipant$candidatureArgs<ExtArgs>
     emargements?: boolean | FormationSessionParticipant$emargementsArgs<ExtArgs>
     satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
+    fundingCases?: boolean | FormationSessionParticipant$fundingCasesArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FormationSessionParticipantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -64895,6 +65474,7 @@ export namespace Prisma {
       candidature: Prisma.$CandidaturePayload<ExtArgs> | null
       emargements: Prisma.$FormationSessionEmargementPayload<ExtArgs>[]
       satisfactionSurveys: Prisma.$SatisfactionSurveyPayload<ExtArgs>[]
+      fundingCases: Prisma.$FundingCasePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -65313,6 +65893,7 @@ export namespace Prisma {
     candidature<T extends FormationSessionParticipant$candidatureArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$candidatureArgs<ExtArgs>>): Prisma__CandidatureClient<$Result.GetResult<Prisma.$CandidaturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     emargements<T extends FormationSessionParticipant$emargementsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$emargementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     satisfactionSurveys<T extends FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    fundingCases<T extends FormationSessionParticipant$fundingCasesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$fundingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -65821,6 +66402,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SatisfactionSurveyScalarFieldEnum | SatisfactionSurveyScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionParticipant.fundingCases
+   */
+  export type FormationSessionParticipant$fundingCasesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    where?: FundingCaseWhereInput
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    cursor?: FundingCaseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
   }
 
   /**
@@ -144999,6 +145604,4728 @@ export namespace Prisma {
 
 
   /**
+   * Model FundingProvider
+   */
+
+  export type AggregateFundingProvider = {
+    _count: FundingProviderCountAggregateOutputType | null
+    _min: FundingProviderMinAggregateOutputType | null
+    _max: FundingProviderMaxAggregateOutputType | null
+  }
+
+  export type FundingProviderMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    label: string | null
+    funderType: $Enums.FundingFunderType | null
+    transport: $Enums.FundingTransport | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingProviderMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    label: string | null
+    funderType: $Enums.FundingFunderType | null
+    transport: $Enums.FundingTransport | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingProviderCountAggregateOutputType = {
+    id: number
+    code: number
+    label: number
+    funderType: number
+    transport: number
+    isActive: number
+    metadata: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FundingProviderMinAggregateInputType = {
+    id?: true
+    code?: true
+    label?: true
+    funderType?: true
+    transport?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingProviderMaxAggregateInputType = {
+    id?: true
+    code?: true
+    label?: true
+    funderType?: true
+    transport?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingProviderCountAggregateInputType = {
+    id?: true
+    code?: true
+    label?: true
+    funderType?: true
+    transport?: true
+    isActive?: true
+    metadata?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FundingProviderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingProvider to aggregate.
+     */
+    where?: FundingProviderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingProviders to fetch.
+     */
+    orderBy?: FundingProviderOrderByWithRelationInput | FundingProviderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FundingProviderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingProviders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingProviders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FundingProviders
+    **/
+    _count?: true | FundingProviderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FundingProviderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FundingProviderMaxAggregateInputType
+  }
+
+  export type GetFundingProviderAggregateType<T extends FundingProviderAggregateArgs> = {
+        [P in keyof T & keyof AggregateFundingProvider]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFundingProvider[P]>
+      : GetScalarType<T[P], AggregateFundingProvider[P]>
+  }
+
+
+
+
+  export type FundingProviderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingProviderWhereInput
+    orderBy?: FundingProviderOrderByWithAggregationInput | FundingProviderOrderByWithAggregationInput[]
+    by: FundingProviderScalarFieldEnum[] | FundingProviderScalarFieldEnum
+    having?: FundingProviderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FundingProviderCountAggregateInputType | true
+    _min?: FundingProviderMinAggregateInputType
+    _max?: FundingProviderMaxAggregateInputType
+  }
+
+  export type FundingProviderGroupByOutputType = {
+    id: string
+    code: string
+    label: string
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    isActive: boolean
+    metadata: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FundingProviderCountAggregateOutputType | null
+    _min: FundingProviderMinAggregateOutputType | null
+    _max: FundingProviderMaxAggregateOutputType | null
+  }
+
+  type GetFundingProviderGroupByPayload<T extends FundingProviderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FundingProviderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FundingProviderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FundingProviderGroupByOutputType[P]>
+            : GetScalarType<T[P], FundingProviderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FundingProviderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    label?: boolean
+    funderType?: boolean
+    transport?: boolean
+    isActive?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    cases?: boolean | FundingProvider$casesArgs<ExtArgs>
+    _count?: boolean | FundingProviderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingProvider"]>
+
+  export type FundingProviderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    label?: boolean
+    funderType?: boolean
+    transport?: boolean
+    isActive?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["fundingProvider"]>
+
+  export type FundingProviderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    label?: boolean
+    funderType?: boolean
+    transport?: boolean
+    isActive?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["fundingProvider"]>
+
+  export type FundingProviderSelectScalar = {
+    id?: boolean
+    code?: boolean
+    label?: boolean
+    funderType?: boolean
+    transport?: boolean
+    isActive?: boolean
+    metadata?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FundingProviderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "label" | "funderType" | "transport" | "isActive" | "metadata" | "createdAt" | "updatedAt", ExtArgs["result"]["fundingProvider"]>
+  export type FundingProviderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cases?: boolean | FundingProvider$casesArgs<ExtArgs>
+    _count?: boolean | FundingProviderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FundingProviderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type FundingProviderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $FundingProviderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FundingProvider"
+    objects: {
+      cases: Prisma.$FundingCasePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      code: string
+      label: string
+      funderType: $Enums.FundingFunderType
+      transport: $Enums.FundingTransport
+      isActive: boolean
+      metadata: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["fundingProvider"]>
+    composites: {}
+  }
+
+  type FundingProviderGetPayload<S extends boolean | null | undefined | FundingProviderDefaultArgs> = $Result.GetResult<Prisma.$FundingProviderPayload, S>
+
+  type FundingProviderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FundingProviderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FundingProviderCountAggregateInputType | true
+    }
+
+  export interface FundingProviderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FundingProvider'], meta: { name: 'FundingProvider' } }
+    /**
+     * Find zero or one FundingProvider that matches the filter.
+     * @param {FundingProviderFindUniqueArgs} args - Arguments to find a FundingProvider
+     * @example
+     * // Get one FundingProvider
+     * const fundingProvider = await prisma.fundingProvider.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FundingProviderFindUniqueArgs>(args: SelectSubset<T, FundingProviderFindUniqueArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FundingProvider that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FundingProviderFindUniqueOrThrowArgs} args - Arguments to find a FundingProvider
+     * @example
+     * // Get one FundingProvider
+     * const fundingProvider = await prisma.fundingProvider.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FundingProviderFindUniqueOrThrowArgs>(args: SelectSubset<T, FundingProviderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingProvider that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingProviderFindFirstArgs} args - Arguments to find a FundingProvider
+     * @example
+     * // Get one FundingProvider
+     * const fundingProvider = await prisma.fundingProvider.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FundingProviderFindFirstArgs>(args?: SelectSubset<T, FundingProviderFindFirstArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingProvider that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingProviderFindFirstOrThrowArgs} args - Arguments to find a FundingProvider
+     * @example
+     * // Get one FundingProvider
+     * const fundingProvider = await prisma.fundingProvider.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FundingProviderFindFirstOrThrowArgs>(args?: SelectSubset<T, FundingProviderFindFirstOrThrowArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FundingProviders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingProviderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FundingProviders
+     * const fundingProviders = await prisma.fundingProvider.findMany()
+     * 
+     * // Get first 10 FundingProviders
+     * const fundingProviders = await prisma.fundingProvider.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fundingProviderWithIdOnly = await prisma.fundingProvider.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FundingProviderFindManyArgs>(args?: SelectSubset<T, FundingProviderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FundingProvider.
+     * @param {FundingProviderCreateArgs} args - Arguments to create a FundingProvider.
+     * @example
+     * // Create one FundingProvider
+     * const FundingProvider = await prisma.fundingProvider.create({
+     *   data: {
+     *     // ... data to create a FundingProvider
+     *   }
+     * })
+     * 
+     */
+    create<T extends FundingProviderCreateArgs>(args: SelectSubset<T, FundingProviderCreateArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FundingProviders.
+     * @param {FundingProviderCreateManyArgs} args - Arguments to create many FundingProviders.
+     * @example
+     * // Create many FundingProviders
+     * const fundingProvider = await prisma.fundingProvider.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FundingProviderCreateManyArgs>(args?: SelectSubset<T, FundingProviderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FundingProviders and returns the data saved in the database.
+     * @param {FundingProviderCreateManyAndReturnArgs} args - Arguments to create many FundingProviders.
+     * @example
+     * // Create many FundingProviders
+     * const fundingProvider = await prisma.fundingProvider.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FundingProviders and only return the `id`
+     * const fundingProviderWithIdOnly = await prisma.fundingProvider.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FundingProviderCreateManyAndReturnArgs>(args?: SelectSubset<T, FundingProviderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FundingProvider.
+     * @param {FundingProviderDeleteArgs} args - Arguments to delete one FundingProvider.
+     * @example
+     * // Delete one FundingProvider
+     * const FundingProvider = await prisma.fundingProvider.delete({
+     *   where: {
+     *     // ... filter to delete one FundingProvider
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FundingProviderDeleteArgs>(args: SelectSubset<T, FundingProviderDeleteArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FundingProvider.
+     * @param {FundingProviderUpdateArgs} args - Arguments to update one FundingProvider.
+     * @example
+     * // Update one FundingProvider
+     * const fundingProvider = await prisma.fundingProvider.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FundingProviderUpdateArgs>(args: SelectSubset<T, FundingProviderUpdateArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FundingProviders.
+     * @param {FundingProviderDeleteManyArgs} args - Arguments to filter FundingProviders to delete.
+     * @example
+     * // Delete a few FundingProviders
+     * const { count } = await prisma.fundingProvider.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FundingProviderDeleteManyArgs>(args?: SelectSubset<T, FundingProviderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingProviders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingProviderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FundingProviders
+     * const fundingProvider = await prisma.fundingProvider.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FundingProviderUpdateManyArgs>(args: SelectSubset<T, FundingProviderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingProviders and returns the data updated in the database.
+     * @param {FundingProviderUpdateManyAndReturnArgs} args - Arguments to update many FundingProviders.
+     * @example
+     * // Update many FundingProviders
+     * const fundingProvider = await prisma.fundingProvider.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FundingProviders and only return the `id`
+     * const fundingProviderWithIdOnly = await prisma.fundingProvider.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FundingProviderUpdateManyAndReturnArgs>(args: SelectSubset<T, FundingProviderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FundingProvider.
+     * @param {FundingProviderUpsertArgs} args - Arguments to update or create a FundingProvider.
+     * @example
+     * // Update or create a FundingProvider
+     * const fundingProvider = await prisma.fundingProvider.upsert({
+     *   create: {
+     *     // ... data to create a FundingProvider
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FundingProvider we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FundingProviderUpsertArgs>(args: SelectSubset<T, FundingProviderUpsertArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FundingProviders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingProviderCountArgs} args - Arguments to filter FundingProviders to count.
+     * @example
+     * // Count the number of FundingProviders
+     * const count = await prisma.fundingProvider.count({
+     *   where: {
+     *     // ... the filter for the FundingProviders we want to count
+     *   }
+     * })
+    **/
+    count<T extends FundingProviderCountArgs>(
+      args?: Subset<T, FundingProviderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FundingProviderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FundingProvider.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingProviderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FundingProviderAggregateArgs>(args: Subset<T, FundingProviderAggregateArgs>): Prisma.PrismaPromise<GetFundingProviderAggregateType<T>>
+
+    /**
+     * Group by FundingProvider.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingProviderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FundingProviderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FundingProviderGroupByArgs['orderBy'] }
+        : { orderBy?: FundingProviderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FundingProviderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFundingProviderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FundingProvider model
+   */
+  readonly fields: FundingProviderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FundingProvider.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FundingProviderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    cases<T extends FundingProvider$casesArgs<ExtArgs> = {}>(args?: Subset<T, FundingProvider$casesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FundingProvider model
+   */
+  interface FundingProviderFieldRefs {
+    readonly id: FieldRef<"FundingProvider", 'String'>
+    readonly code: FieldRef<"FundingProvider", 'String'>
+    readonly label: FieldRef<"FundingProvider", 'String'>
+    readonly funderType: FieldRef<"FundingProvider", 'FundingFunderType'>
+    readonly transport: FieldRef<"FundingProvider", 'FundingTransport'>
+    readonly isActive: FieldRef<"FundingProvider", 'Boolean'>
+    readonly metadata: FieldRef<"FundingProvider", 'Json'>
+    readonly createdAt: FieldRef<"FundingProvider", 'DateTime'>
+    readonly updatedAt: FieldRef<"FundingProvider", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FundingProvider findUnique
+   */
+  export type FundingProviderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingProvider to fetch.
+     */
+    where: FundingProviderWhereUniqueInput
+  }
+
+  /**
+   * FundingProvider findUniqueOrThrow
+   */
+  export type FundingProviderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingProvider to fetch.
+     */
+    where: FundingProviderWhereUniqueInput
+  }
+
+  /**
+   * FundingProvider findFirst
+   */
+  export type FundingProviderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingProvider to fetch.
+     */
+    where?: FundingProviderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingProviders to fetch.
+     */
+    orderBy?: FundingProviderOrderByWithRelationInput | FundingProviderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingProviders.
+     */
+    cursor?: FundingProviderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingProviders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingProviders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingProviders.
+     */
+    distinct?: FundingProviderScalarFieldEnum | FundingProviderScalarFieldEnum[]
+  }
+
+  /**
+   * FundingProvider findFirstOrThrow
+   */
+  export type FundingProviderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingProvider to fetch.
+     */
+    where?: FundingProviderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingProviders to fetch.
+     */
+    orderBy?: FundingProviderOrderByWithRelationInput | FundingProviderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingProviders.
+     */
+    cursor?: FundingProviderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingProviders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingProviders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingProviders.
+     */
+    distinct?: FundingProviderScalarFieldEnum | FundingProviderScalarFieldEnum[]
+  }
+
+  /**
+   * FundingProvider findMany
+   */
+  export type FundingProviderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingProviders to fetch.
+     */
+    where?: FundingProviderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingProviders to fetch.
+     */
+    orderBy?: FundingProviderOrderByWithRelationInput | FundingProviderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FundingProviders.
+     */
+    cursor?: FundingProviderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingProviders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingProviders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingProviders.
+     */
+    distinct?: FundingProviderScalarFieldEnum | FundingProviderScalarFieldEnum[]
+  }
+
+  /**
+   * FundingProvider create
+   */
+  export type FundingProviderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FundingProvider.
+     */
+    data: XOR<FundingProviderCreateInput, FundingProviderUncheckedCreateInput>
+  }
+
+  /**
+   * FundingProvider createMany
+   */
+  export type FundingProviderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FundingProviders.
+     */
+    data: FundingProviderCreateManyInput | FundingProviderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FundingProvider createManyAndReturn
+   */
+  export type FundingProviderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * The data used to create many FundingProviders.
+     */
+    data: FundingProviderCreateManyInput | FundingProviderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FundingProvider update
+   */
+  export type FundingProviderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FundingProvider.
+     */
+    data: XOR<FundingProviderUpdateInput, FundingProviderUncheckedUpdateInput>
+    /**
+     * Choose, which FundingProvider to update.
+     */
+    where: FundingProviderWhereUniqueInput
+  }
+
+  /**
+   * FundingProvider updateMany
+   */
+  export type FundingProviderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FundingProviders.
+     */
+    data: XOR<FundingProviderUpdateManyMutationInput, FundingProviderUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingProviders to update
+     */
+    where?: FundingProviderWhereInput
+    /**
+     * Limit how many FundingProviders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingProvider updateManyAndReturn
+   */
+  export type FundingProviderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * The data used to update FundingProviders.
+     */
+    data: XOR<FundingProviderUpdateManyMutationInput, FundingProviderUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingProviders to update
+     */
+    where?: FundingProviderWhereInput
+    /**
+     * Limit how many FundingProviders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingProvider upsert
+   */
+  export type FundingProviderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FundingProvider to update in case it exists.
+     */
+    where: FundingProviderWhereUniqueInput
+    /**
+     * In case the FundingProvider found by the `where` argument doesn't exist, create a new FundingProvider with this data.
+     */
+    create: XOR<FundingProviderCreateInput, FundingProviderUncheckedCreateInput>
+    /**
+     * In case the FundingProvider was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FundingProviderUpdateInput, FundingProviderUncheckedUpdateInput>
+  }
+
+  /**
+   * FundingProvider delete
+   */
+  export type FundingProviderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+    /**
+     * Filter which FundingProvider to delete.
+     */
+    where: FundingProviderWhereUniqueInput
+  }
+
+  /**
+   * FundingProvider deleteMany
+   */
+  export type FundingProviderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingProviders to delete
+     */
+    where?: FundingProviderWhereInput
+    /**
+     * Limit how many FundingProviders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingProvider.cases
+   */
+  export type FundingProvider$casesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    where?: FundingCaseWhereInput
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    cursor?: FundingCaseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
+  }
+
+  /**
+   * FundingProvider without action
+   */
+  export type FundingProviderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingProvider
+     */
+    select?: FundingProviderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingProvider
+     */
+    omit?: FundingProviderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingProviderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FundingCase
+   */
+
+  export type AggregateFundingCase = {
+    _count: FundingCaseCountAggregateOutputType | null
+    _avg: FundingCaseAvgAggregateOutputType | null
+    _sum: FundingCaseSumAggregateOutputType | null
+    _min: FundingCaseMinAggregateOutputType | null
+    _max: FundingCaseMaxAggregateOutputType | null
+  }
+
+  export type FundingCaseAvgAggregateOutputType = {
+    requestedAmount: Decimal | null
+    approvedAmount: Decimal | null
+  }
+
+  export type FundingCaseSumAggregateOutputType = {
+    requestedAmount: Decimal | null
+    approvedAmount: Decimal | null
+  }
+
+  export type FundingCaseMinAggregateOutputType = {
+    id: string | null
+    reference: string | null
+    providerId: string | null
+    learnerUserId: string | null
+    sessionId: string | null
+    participantId: string | null
+    funderType: $Enums.FundingFunderType | null
+    transport: $Enums.FundingTransport | null
+    status: $Enums.FundingCaseStatus | null
+    externalReference: string | null
+    requestedAmount: Decimal | null
+    approvedAmount: Decimal | null
+    currency: string | null
+    notes: string | null
+    ownerUserId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingCaseMaxAggregateOutputType = {
+    id: string | null
+    reference: string | null
+    providerId: string | null
+    learnerUserId: string | null
+    sessionId: string | null
+    participantId: string | null
+    funderType: $Enums.FundingFunderType | null
+    transport: $Enums.FundingTransport | null
+    status: $Enums.FundingCaseStatus | null
+    externalReference: string | null
+    requestedAmount: Decimal | null
+    approvedAmount: Decimal | null
+    currency: string | null
+    notes: string | null
+    ownerUserId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingCaseCountAggregateOutputType = {
+    id: number
+    reference: number
+    providerId: number
+    learnerUserId: number
+    sessionId: number
+    participantId: number
+    funderType: number
+    transport: number
+    status: number
+    externalReference: number
+    requestedAmount: number
+    approvedAmount: number
+    currency: number
+    notes: number
+    ownerUserId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FundingCaseAvgAggregateInputType = {
+    requestedAmount?: true
+    approvedAmount?: true
+  }
+
+  export type FundingCaseSumAggregateInputType = {
+    requestedAmount?: true
+    approvedAmount?: true
+  }
+
+  export type FundingCaseMinAggregateInputType = {
+    id?: true
+    reference?: true
+    providerId?: true
+    learnerUserId?: true
+    sessionId?: true
+    participantId?: true
+    funderType?: true
+    transport?: true
+    status?: true
+    externalReference?: true
+    requestedAmount?: true
+    approvedAmount?: true
+    currency?: true
+    notes?: true
+    ownerUserId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingCaseMaxAggregateInputType = {
+    id?: true
+    reference?: true
+    providerId?: true
+    learnerUserId?: true
+    sessionId?: true
+    participantId?: true
+    funderType?: true
+    transport?: true
+    status?: true
+    externalReference?: true
+    requestedAmount?: true
+    approvedAmount?: true
+    currency?: true
+    notes?: true
+    ownerUserId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingCaseCountAggregateInputType = {
+    id?: true
+    reference?: true
+    providerId?: true
+    learnerUserId?: true
+    sessionId?: true
+    participantId?: true
+    funderType?: true
+    transport?: true
+    status?: true
+    externalReference?: true
+    requestedAmount?: true
+    approvedAmount?: true
+    currency?: true
+    notes?: true
+    ownerUserId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FundingCaseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingCase to aggregate.
+     */
+    where?: FundingCaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCases to fetch.
+     */
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FundingCaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FundingCases
+    **/
+    _count?: true | FundingCaseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FundingCaseAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FundingCaseSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FundingCaseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FundingCaseMaxAggregateInputType
+  }
+
+  export type GetFundingCaseAggregateType<T extends FundingCaseAggregateArgs> = {
+        [P in keyof T & keyof AggregateFundingCase]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFundingCase[P]>
+      : GetScalarType<T[P], AggregateFundingCase[P]>
+  }
+
+
+
+
+  export type FundingCaseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingCaseWhereInput
+    orderBy?: FundingCaseOrderByWithAggregationInput | FundingCaseOrderByWithAggregationInput[]
+    by: FundingCaseScalarFieldEnum[] | FundingCaseScalarFieldEnum
+    having?: FundingCaseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FundingCaseCountAggregateInputType | true
+    _avg?: FundingCaseAvgAggregateInputType
+    _sum?: FundingCaseSumAggregateInputType
+    _min?: FundingCaseMinAggregateInputType
+    _max?: FundingCaseMaxAggregateInputType
+  }
+
+  export type FundingCaseGroupByOutputType = {
+    id: string
+    reference: string | null
+    providerId: string
+    learnerUserId: string | null
+    sessionId: string | null
+    participantId: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status: $Enums.FundingCaseStatus
+    externalReference: string | null
+    requestedAmount: Decimal | null
+    approvedAmount: Decimal | null
+    currency: string
+    notes: string | null
+    ownerUserId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FundingCaseCountAggregateOutputType | null
+    _avg: FundingCaseAvgAggregateOutputType | null
+    _sum: FundingCaseSumAggregateOutputType | null
+    _min: FundingCaseMinAggregateOutputType | null
+    _max: FundingCaseMaxAggregateOutputType | null
+  }
+
+  type GetFundingCaseGroupByPayload<T extends FundingCaseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FundingCaseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FundingCaseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FundingCaseGroupByOutputType[P]>
+            : GetScalarType<T[P], FundingCaseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FundingCaseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reference?: boolean
+    providerId?: boolean
+    learnerUserId?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    funderType?: boolean
+    transport?: boolean
+    status?: boolean
+    externalReference?: boolean
+    requestedAmount?: boolean
+    approvedAmount?: boolean
+    currency?: boolean
+    notes?: boolean
+    ownerUserId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    provider?: boolean | FundingProviderDefaultArgs<ExtArgs>
+    learnerUser?: boolean | FundingCase$learnerUserArgs<ExtArgs>
+    session?: boolean | FundingCase$sessionArgs<ExtArgs>
+    participant?: boolean | FundingCase$participantArgs<ExtArgs>
+    events?: boolean | FundingCase$eventsArgs<ExtArgs>
+    documents?: boolean | FundingCase$documentsArgs<ExtArgs>
+    _count?: boolean | FundingCaseCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingCase"]>
+
+  export type FundingCaseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reference?: boolean
+    providerId?: boolean
+    learnerUserId?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    funderType?: boolean
+    transport?: boolean
+    status?: boolean
+    externalReference?: boolean
+    requestedAmount?: boolean
+    approvedAmount?: boolean
+    currency?: boolean
+    notes?: boolean
+    ownerUserId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    provider?: boolean | FundingProviderDefaultArgs<ExtArgs>
+    learnerUser?: boolean | FundingCase$learnerUserArgs<ExtArgs>
+    session?: boolean | FundingCase$sessionArgs<ExtArgs>
+    participant?: boolean | FundingCase$participantArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingCase"]>
+
+  export type FundingCaseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reference?: boolean
+    providerId?: boolean
+    learnerUserId?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    funderType?: boolean
+    transport?: boolean
+    status?: boolean
+    externalReference?: boolean
+    requestedAmount?: boolean
+    approvedAmount?: boolean
+    currency?: boolean
+    notes?: boolean
+    ownerUserId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    provider?: boolean | FundingProviderDefaultArgs<ExtArgs>
+    learnerUser?: boolean | FundingCase$learnerUserArgs<ExtArgs>
+    session?: boolean | FundingCase$sessionArgs<ExtArgs>
+    participant?: boolean | FundingCase$participantArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingCase"]>
+
+  export type FundingCaseSelectScalar = {
+    id?: boolean
+    reference?: boolean
+    providerId?: boolean
+    learnerUserId?: boolean
+    sessionId?: boolean
+    participantId?: boolean
+    funderType?: boolean
+    transport?: boolean
+    status?: boolean
+    externalReference?: boolean
+    requestedAmount?: boolean
+    approvedAmount?: boolean
+    currency?: boolean
+    notes?: boolean
+    ownerUserId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FundingCaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reference" | "providerId" | "learnerUserId" | "sessionId" | "participantId" | "funderType" | "transport" | "status" | "externalReference" | "requestedAmount" | "approvedAmount" | "currency" | "notes" | "ownerUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["fundingCase"]>
+  export type FundingCaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    provider?: boolean | FundingProviderDefaultArgs<ExtArgs>
+    learnerUser?: boolean | FundingCase$learnerUserArgs<ExtArgs>
+    session?: boolean | FundingCase$sessionArgs<ExtArgs>
+    participant?: boolean | FundingCase$participantArgs<ExtArgs>
+    events?: boolean | FundingCase$eventsArgs<ExtArgs>
+    documents?: boolean | FundingCase$documentsArgs<ExtArgs>
+    _count?: boolean | FundingCaseCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FundingCaseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    provider?: boolean | FundingProviderDefaultArgs<ExtArgs>
+    learnerUser?: boolean | FundingCase$learnerUserArgs<ExtArgs>
+    session?: boolean | FundingCase$sessionArgs<ExtArgs>
+    participant?: boolean | FundingCase$participantArgs<ExtArgs>
+  }
+  export type FundingCaseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    provider?: boolean | FundingProviderDefaultArgs<ExtArgs>
+    learnerUser?: boolean | FundingCase$learnerUserArgs<ExtArgs>
+    session?: boolean | FundingCase$sessionArgs<ExtArgs>
+    participant?: boolean | FundingCase$participantArgs<ExtArgs>
+  }
+
+  export type $FundingCasePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FundingCase"
+    objects: {
+      provider: Prisma.$FundingProviderPayload<ExtArgs>
+      learnerUser: Prisma.$UserPayload<ExtArgs> | null
+      session: Prisma.$FormationSessionPayload<ExtArgs> | null
+      participant: Prisma.$FormationSessionParticipantPayload<ExtArgs> | null
+      events: Prisma.$FundingCaseEventPayload<ExtArgs>[]
+      documents: Prisma.$FundingDocumentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * Affichage type FUND-000882 (SERIES naming DocType plus tard)
+       */
+      reference: string | null
+      providerId: string
+      learnerUserId: string | null
+      sessionId: string | null
+      participantId: string | null
+      funderType: $Enums.FundingFunderType
+      transport: $Enums.FundingTransport
+      status: $Enums.FundingCaseStatus
+      externalReference: string | null
+      requestedAmount: Prisma.Decimal | null
+      approvedAmount: Prisma.Decimal | null
+      currency: string
+      notes: string | null
+      ownerUserId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["fundingCase"]>
+    composites: {}
+  }
+
+  type FundingCaseGetPayload<S extends boolean | null | undefined | FundingCaseDefaultArgs> = $Result.GetResult<Prisma.$FundingCasePayload, S>
+
+  type FundingCaseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FundingCaseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FundingCaseCountAggregateInputType | true
+    }
+
+  export interface FundingCaseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FundingCase'], meta: { name: 'FundingCase' } }
+    /**
+     * Find zero or one FundingCase that matches the filter.
+     * @param {FundingCaseFindUniqueArgs} args - Arguments to find a FundingCase
+     * @example
+     * // Get one FundingCase
+     * const fundingCase = await prisma.fundingCase.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FundingCaseFindUniqueArgs>(args: SelectSubset<T, FundingCaseFindUniqueArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FundingCase that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FundingCaseFindUniqueOrThrowArgs} args - Arguments to find a FundingCase
+     * @example
+     * // Get one FundingCase
+     * const fundingCase = await prisma.fundingCase.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FundingCaseFindUniqueOrThrowArgs>(args: SelectSubset<T, FundingCaseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingCase that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseFindFirstArgs} args - Arguments to find a FundingCase
+     * @example
+     * // Get one FundingCase
+     * const fundingCase = await prisma.fundingCase.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FundingCaseFindFirstArgs>(args?: SelectSubset<T, FundingCaseFindFirstArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingCase that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseFindFirstOrThrowArgs} args - Arguments to find a FundingCase
+     * @example
+     * // Get one FundingCase
+     * const fundingCase = await prisma.fundingCase.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FundingCaseFindFirstOrThrowArgs>(args?: SelectSubset<T, FundingCaseFindFirstOrThrowArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FundingCases that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FundingCases
+     * const fundingCases = await prisma.fundingCase.findMany()
+     * 
+     * // Get first 10 FundingCases
+     * const fundingCases = await prisma.fundingCase.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fundingCaseWithIdOnly = await prisma.fundingCase.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FundingCaseFindManyArgs>(args?: SelectSubset<T, FundingCaseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FundingCase.
+     * @param {FundingCaseCreateArgs} args - Arguments to create a FundingCase.
+     * @example
+     * // Create one FundingCase
+     * const FundingCase = await prisma.fundingCase.create({
+     *   data: {
+     *     // ... data to create a FundingCase
+     *   }
+     * })
+     * 
+     */
+    create<T extends FundingCaseCreateArgs>(args: SelectSubset<T, FundingCaseCreateArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FundingCases.
+     * @param {FundingCaseCreateManyArgs} args - Arguments to create many FundingCases.
+     * @example
+     * // Create many FundingCases
+     * const fundingCase = await prisma.fundingCase.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FundingCaseCreateManyArgs>(args?: SelectSubset<T, FundingCaseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FundingCases and returns the data saved in the database.
+     * @param {FundingCaseCreateManyAndReturnArgs} args - Arguments to create many FundingCases.
+     * @example
+     * // Create many FundingCases
+     * const fundingCase = await prisma.fundingCase.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FundingCases and only return the `id`
+     * const fundingCaseWithIdOnly = await prisma.fundingCase.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FundingCaseCreateManyAndReturnArgs>(args?: SelectSubset<T, FundingCaseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FundingCase.
+     * @param {FundingCaseDeleteArgs} args - Arguments to delete one FundingCase.
+     * @example
+     * // Delete one FundingCase
+     * const FundingCase = await prisma.fundingCase.delete({
+     *   where: {
+     *     // ... filter to delete one FundingCase
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FundingCaseDeleteArgs>(args: SelectSubset<T, FundingCaseDeleteArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FundingCase.
+     * @param {FundingCaseUpdateArgs} args - Arguments to update one FundingCase.
+     * @example
+     * // Update one FundingCase
+     * const fundingCase = await prisma.fundingCase.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FundingCaseUpdateArgs>(args: SelectSubset<T, FundingCaseUpdateArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FundingCases.
+     * @param {FundingCaseDeleteManyArgs} args - Arguments to filter FundingCases to delete.
+     * @example
+     * // Delete a few FundingCases
+     * const { count } = await prisma.fundingCase.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FundingCaseDeleteManyArgs>(args?: SelectSubset<T, FundingCaseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingCases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FundingCases
+     * const fundingCase = await prisma.fundingCase.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FundingCaseUpdateManyArgs>(args: SelectSubset<T, FundingCaseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingCases and returns the data updated in the database.
+     * @param {FundingCaseUpdateManyAndReturnArgs} args - Arguments to update many FundingCases.
+     * @example
+     * // Update many FundingCases
+     * const fundingCase = await prisma.fundingCase.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FundingCases and only return the `id`
+     * const fundingCaseWithIdOnly = await prisma.fundingCase.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FundingCaseUpdateManyAndReturnArgs>(args: SelectSubset<T, FundingCaseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FundingCase.
+     * @param {FundingCaseUpsertArgs} args - Arguments to update or create a FundingCase.
+     * @example
+     * // Update or create a FundingCase
+     * const fundingCase = await prisma.fundingCase.upsert({
+     *   create: {
+     *     // ... data to create a FundingCase
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FundingCase we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FundingCaseUpsertArgs>(args: SelectSubset<T, FundingCaseUpsertArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FundingCases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseCountArgs} args - Arguments to filter FundingCases to count.
+     * @example
+     * // Count the number of FundingCases
+     * const count = await prisma.fundingCase.count({
+     *   where: {
+     *     // ... the filter for the FundingCases we want to count
+     *   }
+     * })
+    **/
+    count<T extends FundingCaseCountArgs>(
+      args?: Subset<T, FundingCaseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FundingCaseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FundingCase.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FundingCaseAggregateArgs>(args: Subset<T, FundingCaseAggregateArgs>): Prisma.PrismaPromise<GetFundingCaseAggregateType<T>>
+
+    /**
+     * Group by FundingCase.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FundingCaseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FundingCaseGroupByArgs['orderBy'] }
+        : { orderBy?: FundingCaseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FundingCaseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFundingCaseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FundingCase model
+   */
+  readonly fields: FundingCaseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FundingCase.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FundingCaseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    provider<T extends FundingProviderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FundingProviderDefaultArgs<ExtArgs>>): Prisma__FundingProviderClient<$Result.GetResult<Prisma.$FundingProviderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    learnerUser<T extends FundingCase$learnerUserArgs<ExtArgs> = {}>(args?: Subset<T, FundingCase$learnerUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    session<T extends FundingCase$sessionArgs<ExtArgs> = {}>(args?: Subset<T, FundingCase$sessionArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    participant<T extends FundingCase$participantArgs<ExtArgs> = {}>(args?: Subset<T, FundingCase$participantArgs<ExtArgs>>): Prisma__FormationSessionParticipantClient<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    events<T extends FundingCase$eventsArgs<ExtArgs> = {}>(args?: Subset<T, FundingCase$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    documents<T extends FundingCase$documentsArgs<ExtArgs> = {}>(args?: Subset<T, FundingCase$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FundingCase model
+   */
+  interface FundingCaseFieldRefs {
+    readonly id: FieldRef<"FundingCase", 'String'>
+    readonly reference: FieldRef<"FundingCase", 'String'>
+    readonly providerId: FieldRef<"FundingCase", 'String'>
+    readonly learnerUserId: FieldRef<"FundingCase", 'String'>
+    readonly sessionId: FieldRef<"FundingCase", 'String'>
+    readonly participantId: FieldRef<"FundingCase", 'String'>
+    readonly funderType: FieldRef<"FundingCase", 'FundingFunderType'>
+    readonly transport: FieldRef<"FundingCase", 'FundingTransport'>
+    readonly status: FieldRef<"FundingCase", 'FundingCaseStatus'>
+    readonly externalReference: FieldRef<"FundingCase", 'String'>
+    readonly requestedAmount: FieldRef<"FundingCase", 'Decimal'>
+    readonly approvedAmount: FieldRef<"FundingCase", 'Decimal'>
+    readonly currency: FieldRef<"FundingCase", 'String'>
+    readonly notes: FieldRef<"FundingCase", 'String'>
+    readonly ownerUserId: FieldRef<"FundingCase", 'String'>
+    readonly createdAt: FieldRef<"FundingCase", 'DateTime'>
+    readonly updatedAt: FieldRef<"FundingCase", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FundingCase findUnique
+   */
+  export type FundingCaseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCase to fetch.
+     */
+    where: FundingCaseWhereUniqueInput
+  }
+
+  /**
+   * FundingCase findUniqueOrThrow
+   */
+  export type FundingCaseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCase to fetch.
+     */
+    where: FundingCaseWhereUniqueInput
+  }
+
+  /**
+   * FundingCase findFirst
+   */
+  export type FundingCaseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCase to fetch.
+     */
+    where?: FundingCaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCases to fetch.
+     */
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingCases.
+     */
+    cursor?: FundingCaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingCases.
+     */
+    distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCase findFirstOrThrow
+   */
+  export type FundingCaseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCase to fetch.
+     */
+    where?: FundingCaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCases to fetch.
+     */
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingCases.
+     */
+    cursor?: FundingCaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingCases.
+     */
+    distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCase findMany
+   */
+  export type FundingCaseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCases to fetch.
+     */
+    where?: FundingCaseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCases to fetch.
+     */
+    orderBy?: FundingCaseOrderByWithRelationInput | FundingCaseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FundingCases.
+     */
+    cursor?: FundingCaseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingCases.
+     */
+    distinct?: FundingCaseScalarFieldEnum | FundingCaseScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCase create
+   */
+  export type FundingCaseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FundingCase.
+     */
+    data: XOR<FundingCaseCreateInput, FundingCaseUncheckedCreateInput>
+  }
+
+  /**
+   * FundingCase createMany
+   */
+  export type FundingCaseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FundingCases.
+     */
+    data: FundingCaseCreateManyInput | FundingCaseCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FundingCase createManyAndReturn
+   */
+  export type FundingCaseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * The data used to create many FundingCases.
+     */
+    data: FundingCaseCreateManyInput | FundingCaseCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingCase update
+   */
+  export type FundingCaseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FundingCase.
+     */
+    data: XOR<FundingCaseUpdateInput, FundingCaseUncheckedUpdateInput>
+    /**
+     * Choose, which FundingCase to update.
+     */
+    where: FundingCaseWhereUniqueInput
+  }
+
+  /**
+   * FundingCase updateMany
+   */
+  export type FundingCaseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FundingCases.
+     */
+    data: XOR<FundingCaseUpdateManyMutationInput, FundingCaseUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingCases to update
+     */
+    where?: FundingCaseWhereInput
+    /**
+     * Limit how many FundingCases to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingCase updateManyAndReturn
+   */
+  export type FundingCaseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * The data used to update FundingCases.
+     */
+    data: XOR<FundingCaseUpdateManyMutationInput, FundingCaseUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingCases to update
+     */
+    where?: FundingCaseWhereInput
+    /**
+     * Limit how many FundingCases to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingCase upsert
+   */
+  export type FundingCaseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FundingCase to update in case it exists.
+     */
+    where: FundingCaseWhereUniqueInput
+    /**
+     * In case the FundingCase found by the `where` argument doesn't exist, create a new FundingCase with this data.
+     */
+    create: XOR<FundingCaseCreateInput, FundingCaseUncheckedCreateInput>
+    /**
+     * In case the FundingCase was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FundingCaseUpdateInput, FundingCaseUncheckedUpdateInput>
+  }
+
+  /**
+   * FundingCase delete
+   */
+  export type FundingCaseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+    /**
+     * Filter which FundingCase to delete.
+     */
+    where: FundingCaseWhereUniqueInput
+  }
+
+  /**
+   * FundingCase deleteMany
+   */
+  export type FundingCaseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingCases to delete
+     */
+    where?: FundingCaseWhereInput
+    /**
+     * Limit how many FundingCases to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingCase.learnerUser
+   */
+  export type FundingCase$learnerUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * FundingCase.session
+   */
+  export type FundingCase$sessionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSession
+     */
+    select?: FormationSessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSession
+     */
+    omit?: FormationSessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionInclude<ExtArgs> | null
+    where?: FormationSessionWhereInput
+  }
+
+  /**
+   * FundingCase.participant
+   */
+  export type FundingCase$participantArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionParticipant
+     */
+    select?: FormationSessionParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionParticipant
+     */
+    omit?: FormationSessionParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionParticipantInclude<ExtArgs> | null
+    where?: FormationSessionParticipantWhereInput
+  }
+
+  /**
+   * FundingCase.events
+   */
+  export type FundingCase$eventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    where?: FundingCaseEventWhereInput
+    orderBy?: FundingCaseEventOrderByWithRelationInput | FundingCaseEventOrderByWithRelationInput[]
+    cursor?: FundingCaseEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FundingCaseEventScalarFieldEnum | FundingCaseEventScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCase.documents
+   */
+  export type FundingCase$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    where?: FundingDocumentWhereInput
+    orderBy?: FundingDocumentOrderByWithRelationInput | FundingDocumentOrderByWithRelationInput[]
+    cursor?: FundingDocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FundingDocumentScalarFieldEnum | FundingDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCase without action
+   */
+  export type FundingCaseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCase
+     */
+    select?: FundingCaseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCase
+     */
+    omit?: FundingCaseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FundingCaseEvent
+   */
+
+  export type AggregateFundingCaseEvent = {
+    _count: FundingCaseEventCountAggregateOutputType | null
+    _min: FundingCaseEventMinAggregateOutputType | null
+    _max: FundingCaseEventMaxAggregateOutputType | null
+  }
+
+  export type FundingCaseEventMinAggregateOutputType = {
+    id: string | null
+    caseId: string | null
+    fromStatus: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus | null
+    source: string | null
+    actorUserId: string | null
+    createdAt: Date | null
+  }
+
+  export type FundingCaseEventMaxAggregateOutputType = {
+    id: string | null
+    caseId: string | null
+    fromStatus: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus | null
+    source: string | null
+    actorUserId: string | null
+    createdAt: Date | null
+  }
+
+  export type FundingCaseEventCountAggregateOutputType = {
+    id: number
+    caseId: number
+    fromStatus: number
+    toStatus: number
+    source: number
+    payload: number
+    actorUserId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FundingCaseEventMinAggregateInputType = {
+    id?: true
+    caseId?: true
+    fromStatus?: true
+    toStatus?: true
+    source?: true
+    actorUserId?: true
+    createdAt?: true
+  }
+
+  export type FundingCaseEventMaxAggregateInputType = {
+    id?: true
+    caseId?: true
+    fromStatus?: true
+    toStatus?: true
+    source?: true
+    actorUserId?: true
+    createdAt?: true
+  }
+
+  export type FundingCaseEventCountAggregateInputType = {
+    id?: true
+    caseId?: true
+    fromStatus?: true
+    toStatus?: true
+    source?: true
+    payload?: true
+    actorUserId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FundingCaseEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingCaseEvent to aggregate.
+     */
+    where?: FundingCaseEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCaseEvents to fetch.
+     */
+    orderBy?: FundingCaseEventOrderByWithRelationInput | FundingCaseEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FundingCaseEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCaseEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCaseEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FundingCaseEvents
+    **/
+    _count?: true | FundingCaseEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FundingCaseEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FundingCaseEventMaxAggregateInputType
+  }
+
+  export type GetFundingCaseEventAggregateType<T extends FundingCaseEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateFundingCaseEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFundingCaseEvent[P]>
+      : GetScalarType<T[P], AggregateFundingCaseEvent[P]>
+  }
+
+
+
+
+  export type FundingCaseEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingCaseEventWhereInput
+    orderBy?: FundingCaseEventOrderByWithAggregationInput | FundingCaseEventOrderByWithAggregationInput[]
+    by: FundingCaseEventScalarFieldEnum[] | FundingCaseEventScalarFieldEnum
+    having?: FundingCaseEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FundingCaseEventCountAggregateInputType | true
+    _min?: FundingCaseEventMinAggregateInputType
+    _max?: FundingCaseEventMaxAggregateInputType
+  }
+
+  export type FundingCaseEventGroupByOutputType = {
+    id: string
+    caseId: string
+    fromStatus: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus
+    source: string
+    payload: JsonValue | null
+    actorUserId: string | null
+    createdAt: Date
+    _count: FundingCaseEventCountAggregateOutputType | null
+    _min: FundingCaseEventMinAggregateOutputType | null
+    _max: FundingCaseEventMaxAggregateOutputType | null
+  }
+
+  type GetFundingCaseEventGroupByPayload<T extends FundingCaseEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FundingCaseEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FundingCaseEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FundingCaseEventGroupByOutputType[P]>
+            : GetScalarType<T[P], FundingCaseEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FundingCaseEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    caseId?: boolean
+    fromStatus?: boolean
+    toStatus?: boolean
+    source?: boolean
+    payload?: boolean
+    actorUserId?: boolean
+    createdAt?: boolean
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingCaseEvent"]>
+
+  export type FundingCaseEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    caseId?: boolean
+    fromStatus?: boolean
+    toStatus?: boolean
+    source?: boolean
+    payload?: boolean
+    actorUserId?: boolean
+    createdAt?: boolean
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingCaseEvent"]>
+
+  export type FundingCaseEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    caseId?: boolean
+    fromStatus?: boolean
+    toStatus?: boolean
+    source?: boolean
+    payload?: boolean
+    actorUserId?: boolean
+    createdAt?: boolean
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingCaseEvent"]>
+
+  export type FundingCaseEventSelectScalar = {
+    id?: boolean
+    caseId?: boolean
+    fromStatus?: boolean
+    toStatus?: boolean
+    source?: boolean
+    payload?: boolean
+    actorUserId?: boolean
+    createdAt?: boolean
+  }
+
+  export type FundingCaseEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "caseId" | "fromStatus" | "toStatus" | "source" | "payload" | "actorUserId" | "createdAt", ExtArgs["result"]["fundingCaseEvent"]>
+  export type FundingCaseEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }
+  export type FundingCaseEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }
+  export type FundingCaseEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }
+
+  export type $FundingCaseEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FundingCaseEvent"
+    objects: {
+      case: Prisma.$FundingCasePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      caseId: string
+      fromStatus: $Enums.FundingCaseStatus | null
+      toStatus: $Enums.FundingCaseStatus
+      source: string
+      payload: Prisma.JsonValue | null
+      actorUserId: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["fundingCaseEvent"]>
+    composites: {}
+  }
+
+  type FundingCaseEventGetPayload<S extends boolean | null | undefined | FundingCaseEventDefaultArgs> = $Result.GetResult<Prisma.$FundingCaseEventPayload, S>
+
+  type FundingCaseEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FundingCaseEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FundingCaseEventCountAggregateInputType | true
+    }
+
+  export interface FundingCaseEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FundingCaseEvent'], meta: { name: 'FundingCaseEvent' } }
+    /**
+     * Find zero or one FundingCaseEvent that matches the filter.
+     * @param {FundingCaseEventFindUniqueArgs} args - Arguments to find a FundingCaseEvent
+     * @example
+     * // Get one FundingCaseEvent
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FundingCaseEventFindUniqueArgs>(args: SelectSubset<T, FundingCaseEventFindUniqueArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FundingCaseEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FundingCaseEventFindUniqueOrThrowArgs} args - Arguments to find a FundingCaseEvent
+     * @example
+     * // Get one FundingCaseEvent
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FundingCaseEventFindUniqueOrThrowArgs>(args: SelectSubset<T, FundingCaseEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingCaseEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseEventFindFirstArgs} args - Arguments to find a FundingCaseEvent
+     * @example
+     * // Get one FundingCaseEvent
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FundingCaseEventFindFirstArgs>(args?: SelectSubset<T, FundingCaseEventFindFirstArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingCaseEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseEventFindFirstOrThrowArgs} args - Arguments to find a FundingCaseEvent
+     * @example
+     * // Get one FundingCaseEvent
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FundingCaseEventFindFirstOrThrowArgs>(args?: SelectSubset<T, FundingCaseEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FundingCaseEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FundingCaseEvents
+     * const fundingCaseEvents = await prisma.fundingCaseEvent.findMany()
+     * 
+     * // Get first 10 FundingCaseEvents
+     * const fundingCaseEvents = await prisma.fundingCaseEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fundingCaseEventWithIdOnly = await prisma.fundingCaseEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FundingCaseEventFindManyArgs>(args?: SelectSubset<T, FundingCaseEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FundingCaseEvent.
+     * @param {FundingCaseEventCreateArgs} args - Arguments to create a FundingCaseEvent.
+     * @example
+     * // Create one FundingCaseEvent
+     * const FundingCaseEvent = await prisma.fundingCaseEvent.create({
+     *   data: {
+     *     // ... data to create a FundingCaseEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends FundingCaseEventCreateArgs>(args: SelectSubset<T, FundingCaseEventCreateArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FundingCaseEvents.
+     * @param {FundingCaseEventCreateManyArgs} args - Arguments to create many FundingCaseEvents.
+     * @example
+     * // Create many FundingCaseEvents
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FundingCaseEventCreateManyArgs>(args?: SelectSubset<T, FundingCaseEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FundingCaseEvents and returns the data saved in the database.
+     * @param {FundingCaseEventCreateManyAndReturnArgs} args - Arguments to create many FundingCaseEvents.
+     * @example
+     * // Create many FundingCaseEvents
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FundingCaseEvents and only return the `id`
+     * const fundingCaseEventWithIdOnly = await prisma.fundingCaseEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FundingCaseEventCreateManyAndReturnArgs>(args?: SelectSubset<T, FundingCaseEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FundingCaseEvent.
+     * @param {FundingCaseEventDeleteArgs} args - Arguments to delete one FundingCaseEvent.
+     * @example
+     * // Delete one FundingCaseEvent
+     * const FundingCaseEvent = await prisma.fundingCaseEvent.delete({
+     *   where: {
+     *     // ... filter to delete one FundingCaseEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FundingCaseEventDeleteArgs>(args: SelectSubset<T, FundingCaseEventDeleteArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FundingCaseEvent.
+     * @param {FundingCaseEventUpdateArgs} args - Arguments to update one FundingCaseEvent.
+     * @example
+     * // Update one FundingCaseEvent
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FundingCaseEventUpdateArgs>(args: SelectSubset<T, FundingCaseEventUpdateArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FundingCaseEvents.
+     * @param {FundingCaseEventDeleteManyArgs} args - Arguments to filter FundingCaseEvents to delete.
+     * @example
+     * // Delete a few FundingCaseEvents
+     * const { count } = await prisma.fundingCaseEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FundingCaseEventDeleteManyArgs>(args?: SelectSubset<T, FundingCaseEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingCaseEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FundingCaseEvents
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FundingCaseEventUpdateManyArgs>(args: SelectSubset<T, FundingCaseEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingCaseEvents and returns the data updated in the database.
+     * @param {FundingCaseEventUpdateManyAndReturnArgs} args - Arguments to update many FundingCaseEvents.
+     * @example
+     * // Update many FundingCaseEvents
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FundingCaseEvents and only return the `id`
+     * const fundingCaseEventWithIdOnly = await prisma.fundingCaseEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FundingCaseEventUpdateManyAndReturnArgs>(args: SelectSubset<T, FundingCaseEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FundingCaseEvent.
+     * @param {FundingCaseEventUpsertArgs} args - Arguments to update or create a FundingCaseEvent.
+     * @example
+     * // Update or create a FundingCaseEvent
+     * const fundingCaseEvent = await prisma.fundingCaseEvent.upsert({
+     *   create: {
+     *     // ... data to create a FundingCaseEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FundingCaseEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FundingCaseEventUpsertArgs>(args: SelectSubset<T, FundingCaseEventUpsertArgs<ExtArgs>>): Prisma__FundingCaseEventClient<$Result.GetResult<Prisma.$FundingCaseEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FundingCaseEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseEventCountArgs} args - Arguments to filter FundingCaseEvents to count.
+     * @example
+     * // Count the number of FundingCaseEvents
+     * const count = await prisma.fundingCaseEvent.count({
+     *   where: {
+     *     // ... the filter for the FundingCaseEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends FundingCaseEventCountArgs>(
+      args?: Subset<T, FundingCaseEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FundingCaseEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FundingCaseEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FundingCaseEventAggregateArgs>(args: Subset<T, FundingCaseEventAggregateArgs>): Prisma.PrismaPromise<GetFundingCaseEventAggregateType<T>>
+
+    /**
+     * Group by FundingCaseEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingCaseEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FundingCaseEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FundingCaseEventGroupByArgs['orderBy'] }
+        : { orderBy?: FundingCaseEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FundingCaseEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFundingCaseEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FundingCaseEvent model
+   */
+  readonly fields: FundingCaseEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FundingCaseEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FundingCaseEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    case<T extends FundingCaseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FundingCaseDefaultArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FundingCaseEvent model
+   */
+  interface FundingCaseEventFieldRefs {
+    readonly id: FieldRef<"FundingCaseEvent", 'String'>
+    readonly caseId: FieldRef<"FundingCaseEvent", 'String'>
+    readonly fromStatus: FieldRef<"FundingCaseEvent", 'FundingCaseStatus'>
+    readonly toStatus: FieldRef<"FundingCaseEvent", 'FundingCaseStatus'>
+    readonly source: FieldRef<"FundingCaseEvent", 'String'>
+    readonly payload: FieldRef<"FundingCaseEvent", 'Json'>
+    readonly actorUserId: FieldRef<"FundingCaseEvent", 'String'>
+    readonly createdAt: FieldRef<"FundingCaseEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FundingCaseEvent findUnique
+   */
+  export type FundingCaseEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCaseEvent to fetch.
+     */
+    where: FundingCaseEventWhereUniqueInput
+  }
+
+  /**
+   * FundingCaseEvent findUniqueOrThrow
+   */
+  export type FundingCaseEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCaseEvent to fetch.
+     */
+    where: FundingCaseEventWhereUniqueInput
+  }
+
+  /**
+   * FundingCaseEvent findFirst
+   */
+  export type FundingCaseEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCaseEvent to fetch.
+     */
+    where?: FundingCaseEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCaseEvents to fetch.
+     */
+    orderBy?: FundingCaseEventOrderByWithRelationInput | FundingCaseEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingCaseEvents.
+     */
+    cursor?: FundingCaseEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCaseEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCaseEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingCaseEvents.
+     */
+    distinct?: FundingCaseEventScalarFieldEnum | FundingCaseEventScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCaseEvent findFirstOrThrow
+   */
+  export type FundingCaseEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCaseEvent to fetch.
+     */
+    where?: FundingCaseEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCaseEvents to fetch.
+     */
+    orderBy?: FundingCaseEventOrderByWithRelationInput | FundingCaseEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingCaseEvents.
+     */
+    cursor?: FundingCaseEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCaseEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCaseEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingCaseEvents.
+     */
+    distinct?: FundingCaseEventScalarFieldEnum | FundingCaseEventScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCaseEvent findMany
+   */
+  export type FundingCaseEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingCaseEvents to fetch.
+     */
+    where?: FundingCaseEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingCaseEvents to fetch.
+     */
+    orderBy?: FundingCaseEventOrderByWithRelationInput | FundingCaseEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FundingCaseEvents.
+     */
+    cursor?: FundingCaseEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingCaseEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingCaseEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingCaseEvents.
+     */
+    distinct?: FundingCaseEventScalarFieldEnum | FundingCaseEventScalarFieldEnum[]
+  }
+
+  /**
+   * FundingCaseEvent create
+   */
+  export type FundingCaseEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FundingCaseEvent.
+     */
+    data: XOR<FundingCaseEventCreateInput, FundingCaseEventUncheckedCreateInput>
+  }
+
+  /**
+   * FundingCaseEvent createMany
+   */
+  export type FundingCaseEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FundingCaseEvents.
+     */
+    data: FundingCaseEventCreateManyInput | FundingCaseEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FundingCaseEvent createManyAndReturn
+   */
+  export type FundingCaseEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many FundingCaseEvents.
+     */
+    data: FundingCaseEventCreateManyInput | FundingCaseEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingCaseEvent update
+   */
+  export type FundingCaseEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FundingCaseEvent.
+     */
+    data: XOR<FundingCaseEventUpdateInput, FundingCaseEventUncheckedUpdateInput>
+    /**
+     * Choose, which FundingCaseEvent to update.
+     */
+    where: FundingCaseEventWhereUniqueInput
+  }
+
+  /**
+   * FundingCaseEvent updateMany
+   */
+  export type FundingCaseEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FundingCaseEvents.
+     */
+    data: XOR<FundingCaseEventUpdateManyMutationInput, FundingCaseEventUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingCaseEvents to update
+     */
+    where?: FundingCaseEventWhereInput
+    /**
+     * Limit how many FundingCaseEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingCaseEvent updateManyAndReturn
+   */
+  export type FundingCaseEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * The data used to update FundingCaseEvents.
+     */
+    data: XOR<FundingCaseEventUpdateManyMutationInput, FundingCaseEventUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingCaseEvents to update
+     */
+    where?: FundingCaseEventWhereInput
+    /**
+     * Limit how many FundingCaseEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingCaseEvent upsert
+   */
+  export type FundingCaseEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FundingCaseEvent to update in case it exists.
+     */
+    where: FundingCaseEventWhereUniqueInput
+    /**
+     * In case the FundingCaseEvent found by the `where` argument doesn't exist, create a new FundingCaseEvent with this data.
+     */
+    create: XOR<FundingCaseEventCreateInput, FundingCaseEventUncheckedCreateInput>
+    /**
+     * In case the FundingCaseEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FundingCaseEventUpdateInput, FundingCaseEventUncheckedUpdateInput>
+  }
+
+  /**
+   * FundingCaseEvent delete
+   */
+  export type FundingCaseEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+    /**
+     * Filter which FundingCaseEvent to delete.
+     */
+    where: FundingCaseEventWhereUniqueInput
+  }
+
+  /**
+   * FundingCaseEvent deleteMany
+   */
+  export type FundingCaseEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingCaseEvents to delete
+     */
+    where?: FundingCaseEventWhereInput
+    /**
+     * Limit how many FundingCaseEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingCaseEvent without action
+   */
+  export type FundingCaseEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingCaseEvent
+     */
+    select?: FundingCaseEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingCaseEvent
+     */
+    omit?: FundingCaseEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingCaseEventInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FundingDocument
+   */
+
+  export type AggregateFundingDocument = {
+    _count: FundingDocumentCountAggregateOutputType | null
+    _min: FundingDocumentMinAggregateOutputType | null
+    _max: FundingDocumentMaxAggregateOutputType | null
+  }
+
+  export type FundingDocumentMinAggregateOutputType = {
+    id: string | null
+    caseId: string | null
+    code: string | null
+    label: string | null
+    status: string | null
+    fileAssetId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingDocumentMaxAggregateOutputType = {
+    id: string | null
+    caseId: string | null
+    code: string | null
+    label: string | null
+    status: string | null
+    fileAssetId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FundingDocumentCountAggregateOutputType = {
+    id: number
+    caseId: number
+    code: number
+    label: number
+    status: number
+    fileAssetId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FundingDocumentMinAggregateInputType = {
+    id?: true
+    caseId?: true
+    code?: true
+    label?: true
+    status?: true
+    fileAssetId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingDocumentMaxAggregateInputType = {
+    id?: true
+    caseId?: true
+    code?: true
+    label?: true
+    status?: true
+    fileAssetId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FundingDocumentCountAggregateInputType = {
+    id?: true
+    caseId?: true
+    code?: true
+    label?: true
+    status?: true
+    fileAssetId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FundingDocumentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingDocument to aggregate.
+     */
+    where?: FundingDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingDocuments to fetch.
+     */
+    orderBy?: FundingDocumentOrderByWithRelationInput | FundingDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FundingDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FundingDocuments
+    **/
+    _count?: true | FundingDocumentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FundingDocumentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FundingDocumentMaxAggregateInputType
+  }
+
+  export type GetFundingDocumentAggregateType<T extends FundingDocumentAggregateArgs> = {
+        [P in keyof T & keyof AggregateFundingDocument]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFundingDocument[P]>
+      : GetScalarType<T[P], AggregateFundingDocument[P]>
+  }
+
+
+
+
+  export type FundingDocumentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FundingDocumentWhereInput
+    orderBy?: FundingDocumentOrderByWithAggregationInput | FundingDocumentOrderByWithAggregationInput[]
+    by: FundingDocumentScalarFieldEnum[] | FundingDocumentScalarFieldEnum
+    having?: FundingDocumentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FundingDocumentCountAggregateInputType | true
+    _min?: FundingDocumentMinAggregateInputType
+    _max?: FundingDocumentMaxAggregateInputType
+  }
+
+  export type FundingDocumentGroupByOutputType = {
+    id: string
+    caseId: string
+    code: string
+    label: string
+    status: string
+    fileAssetId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FundingDocumentCountAggregateOutputType | null
+    _min: FundingDocumentMinAggregateOutputType | null
+    _max: FundingDocumentMaxAggregateOutputType | null
+  }
+
+  type GetFundingDocumentGroupByPayload<T extends FundingDocumentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FundingDocumentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FundingDocumentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FundingDocumentGroupByOutputType[P]>
+            : GetScalarType<T[P], FundingDocumentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FundingDocumentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    caseId?: boolean
+    code?: boolean
+    label?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingDocument"]>
+
+  export type FundingDocumentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    caseId?: boolean
+    code?: boolean
+    label?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingDocument"]>
+
+  export type FundingDocumentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    caseId?: boolean
+    code?: boolean
+    label?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fundingDocument"]>
+
+  export type FundingDocumentSelectScalar = {
+    id?: boolean
+    caseId?: boolean
+    code?: boolean
+    label?: boolean
+    status?: boolean
+    fileAssetId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FundingDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "caseId" | "code" | "label" | "status" | "fileAssetId" | "createdAt" | "updatedAt", ExtArgs["result"]["fundingDocument"]>
+  export type FundingDocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }
+  export type FundingDocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }
+  export type FundingDocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    case?: boolean | FundingCaseDefaultArgs<ExtArgs>
+  }
+
+  export type $FundingDocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FundingDocument"
+    objects: {
+      case: Prisma.$FundingCasePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      caseId: string
+      code: string
+      label: string
+      status: string
+      fileAssetId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["fundingDocument"]>
+    composites: {}
+  }
+
+  type FundingDocumentGetPayload<S extends boolean | null | undefined | FundingDocumentDefaultArgs> = $Result.GetResult<Prisma.$FundingDocumentPayload, S>
+
+  type FundingDocumentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FundingDocumentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FundingDocumentCountAggregateInputType | true
+    }
+
+  export interface FundingDocumentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FundingDocument'], meta: { name: 'FundingDocument' } }
+    /**
+     * Find zero or one FundingDocument that matches the filter.
+     * @param {FundingDocumentFindUniqueArgs} args - Arguments to find a FundingDocument
+     * @example
+     * // Get one FundingDocument
+     * const fundingDocument = await prisma.fundingDocument.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FundingDocumentFindUniqueArgs>(args: SelectSubset<T, FundingDocumentFindUniqueArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FundingDocument that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FundingDocumentFindUniqueOrThrowArgs} args - Arguments to find a FundingDocument
+     * @example
+     * // Get one FundingDocument
+     * const fundingDocument = await prisma.fundingDocument.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FundingDocumentFindUniqueOrThrowArgs>(args: SelectSubset<T, FundingDocumentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingDocument that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingDocumentFindFirstArgs} args - Arguments to find a FundingDocument
+     * @example
+     * // Get one FundingDocument
+     * const fundingDocument = await prisma.fundingDocument.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FundingDocumentFindFirstArgs>(args?: SelectSubset<T, FundingDocumentFindFirstArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FundingDocument that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingDocumentFindFirstOrThrowArgs} args - Arguments to find a FundingDocument
+     * @example
+     * // Get one FundingDocument
+     * const fundingDocument = await prisma.fundingDocument.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FundingDocumentFindFirstOrThrowArgs>(args?: SelectSubset<T, FundingDocumentFindFirstOrThrowArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FundingDocuments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingDocumentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FundingDocuments
+     * const fundingDocuments = await prisma.fundingDocument.findMany()
+     * 
+     * // Get first 10 FundingDocuments
+     * const fundingDocuments = await prisma.fundingDocument.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fundingDocumentWithIdOnly = await prisma.fundingDocument.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FundingDocumentFindManyArgs>(args?: SelectSubset<T, FundingDocumentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FundingDocument.
+     * @param {FundingDocumentCreateArgs} args - Arguments to create a FundingDocument.
+     * @example
+     * // Create one FundingDocument
+     * const FundingDocument = await prisma.fundingDocument.create({
+     *   data: {
+     *     // ... data to create a FundingDocument
+     *   }
+     * })
+     * 
+     */
+    create<T extends FundingDocumentCreateArgs>(args: SelectSubset<T, FundingDocumentCreateArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FundingDocuments.
+     * @param {FundingDocumentCreateManyArgs} args - Arguments to create many FundingDocuments.
+     * @example
+     * // Create many FundingDocuments
+     * const fundingDocument = await prisma.fundingDocument.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FundingDocumentCreateManyArgs>(args?: SelectSubset<T, FundingDocumentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FundingDocuments and returns the data saved in the database.
+     * @param {FundingDocumentCreateManyAndReturnArgs} args - Arguments to create many FundingDocuments.
+     * @example
+     * // Create many FundingDocuments
+     * const fundingDocument = await prisma.fundingDocument.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FundingDocuments and only return the `id`
+     * const fundingDocumentWithIdOnly = await prisma.fundingDocument.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FundingDocumentCreateManyAndReturnArgs>(args?: SelectSubset<T, FundingDocumentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FundingDocument.
+     * @param {FundingDocumentDeleteArgs} args - Arguments to delete one FundingDocument.
+     * @example
+     * // Delete one FundingDocument
+     * const FundingDocument = await prisma.fundingDocument.delete({
+     *   where: {
+     *     // ... filter to delete one FundingDocument
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FundingDocumentDeleteArgs>(args: SelectSubset<T, FundingDocumentDeleteArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FundingDocument.
+     * @param {FundingDocumentUpdateArgs} args - Arguments to update one FundingDocument.
+     * @example
+     * // Update one FundingDocument
+     * const fundingDocument = await prisma.fundingDocument.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FundingDocumentUpdateArgs>(args: SelectSubset<T, FundingDocumentUpdateArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FundingDocuments.
+     * @param {FundingDocumentDeleteManyArgs} args - Arguments to filter FundingDocuments to delete.
+     * @example
+     * // Delete a few FundingDocuments
+     * const { count } = await prisma.fundingDocument.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FundingDocumentDeleteManyArgs>(args?: SelectSubset<T, FundingDocumentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingDocumentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FundingDocuments
+     * const fundingDocument = await prisma.fundingDocument.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FundingDocumentUpdateManyArgs>(args: SelectSubset<T, FundingDocumentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FundingDocuments and returns the data updated in the database.
+     * @param {FundingDocumentUpdateManyAndReturnArgs} args - Arguments to update many FundingDocuments.
+     * @example
+     * // Update many FundingDocuments
+     * const fundingDocument = await prisma.fundingDocument.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FundingDocuments and only return the `id`
+     * const fundingDocumentWithIdOnly = await prisma.fundingDocument.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FundingDocumentUpdateManyAndReturnArgs>(args: SelectSubset<T, FundingDocumentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FundingDocument.
+     * @param {FundingDocumentUpsertArgs} args - Arguments to update or create a FundingDocument.
+     * @example
+     * // Update or create a FundingDocument
+     * const fundingDocument = await prisma.fundingDocument.upsert({
+     *   create: {
+     *     // ... data to create a FundingDocument
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FundingDocument we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FundingDocumentUpsertArgs>(args: SelectSubset<T, FundingDocumentUpsertArgs<ExtArgs>>): Prisma__FundingDocumentClient<$Result.GetResult<Prisma.$FundingDocumentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FundingDocuments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingDocumentCountArgs} args - Arguments to filter FundingDocuments to count.
+     * @example
+     * // Count the number of FundingDocuments
+     * const count = await prisma.fundingDocument.count({
+     *   where: {
+     *     // ... the filter for the FundingDocuments we want to count
+     *   }
+     * })
+    **/
+    count<T extends FundingDocumentCountArgs>(
+      args?: Subset<T, FundingDocumentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FundingDocumentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FundingDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingDocumentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FundingDocumentAggregateArgs>(args: Subset<T, FundingDocumentAggregateArgs>): Prisma.PrismaPromise<GetFundingDocumentAggregateType<T>>
+
+    /**
+     * Group by FundingDocument.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FundingDocumentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FundingDocumentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FundingDocumentGroupByArgs['orderBy'] }
+        : { orderBy?: FundingDocumentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FundingDocumentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFundingDocumentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FundingDocument model
+   */
+  readonly fields: FundingDocumentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FundingDocument.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FundingDocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    case<T extends FundingCaseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FundingCaseDefaultArgs<ExtArgs>>): Prisma__FundingCaseClient<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FundingDocument model
+   */
+  interface FundingDocumentFieldRefs {
+    readonly id: FieldRef<"FundingDocument", 'String'>
+    readonly caseId: FieldRef<"FundingDocument", 'String'>
+    readonly code: FieldRef<"FundingDocument", 'String'>
+    readonly label: FieldRef<"FundingDocument", 'String'>
+    readonly status: FieldRef<"FundingDocument", 'String'>
+    readonly fileAssetId: FieldRef<"FundingDocument", 'String'>
+    readonly createdAt: FieldRef<"FundingDocument", 'DateTime'>
+    readonly updatedAt: FieldRef<"FundingDocument", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FundingDocument findUnique
+   */
+  export type FundingDocumentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingDocument to fetch.
+     */
+    where: FundingDocumentWhereUniqueInput
+  }
+
+  /**
+   * FundingDocument findUniqueOrThrow
+   */
+  export type FundingDocumentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingDocument to fetch.
+     */
+    where: FundingDocumentWhereUniqueInput
+  }
+
+  /**
+   * FundingDocument findFirst
+   */
+  export type FundingDocumentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingDocument to fetch.
+     */
+    where?: FundingDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingDocuments to fetch.
+     */
+    orderBy?: FundingDocumentOrderByWithRelationInput | FundingDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingDocuments.
+     */
+    cursor?: FundingDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingDocuments.
+     */
+    distinct?: FundingDocumentScalarFieldEnum | FundingDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * FundingDocument findFirstOrThrow
+   */
+  export type FundingDocumentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingDocument to fetch.
+     */
+    where?: FundingDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingDocuments to fetch.
+     */
+    orderBy?: FundingDocumentOrderByWithRelationInput | FundingDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FundingDocuments.
+     */
+    cursor?: FundingDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingDocuments.
+     */
+    distinct?: FundingDocumentScalarFieldEnum | FundingDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * FundingDocument findMany
+   */
+  export type FundingDocumentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which FundingDocuments to fetch.
+     */
+    where?: FundingDocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FundingDocuments to fetch.
+     */
+    orderBy?: FundingDocumentOrderByWithRelationInput | FundingDocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FundingDocuments.
+     */
+    cursor?: FundingDocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FundingDocuments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FundingDocuments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FundingDocuments.
+     */
+    distinct?: FundingDocumentScalarFieldEnum | FundingDocumentScalarFieldEnum[]
+  }
+
+  /**
+   * FundingDocument create
+   */
+  export type FundingDocumentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FundingDocument.
+     */
+    data: XOR<FundingDocumentCreateInput, FundingDocumentUncheckedCreateInput>
+  }
+
+  /**
+   * FundingDocument createMany
+   */
+  export type FundingDocumentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FundingDocuments.
+     */
+    data: FundingDocumentCreateManyInput | FundingDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FundingDocument createManyAndReturn
+   */
+  export type FundingDocumentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * The data used to create many FundingDocuments.
+     */
+    data: FundingDocumentCreateManyInput | FundingDocumentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingDocument update
+   */
+  export type FundingDocumentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FundingDocument.
+     */
+    data: XOR<FundingDocumentUpdateInput, FundingDocumentUncheckedUpdateInput>
+    /**
+     * Choose, which FundingDocument to update.
+     */
+    where: FundingDocumentWhereUniqueInput
+  }
+
+  /**
+   * FundingDocument updateMany
+   */
+  export type FundingDocumentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FundingDocuments.
+     */
+    data: XOR<FundingDocumentUpdateManyMutationInput, FundingDocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingDocuments to update
+     */
+    where?: FundingDocumentWhereInput
+    /**
+     * Limit how many FundingDocuments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingDocument updateManyAndReturn
+   */
+  export type FundingDocumentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * The data used to update FundingDocuments.
+     */
+    data: XOR<FundingDocumentUpdateManyMutationInput, FundingDocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which FundingDocuments to update
+     */
+    where?: FundingDocumentWhereInput
+    /**
+     * Limit how many FundingDocuments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FundingDocument upsert
+   */
+  export type FundingDocumentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FundingDocument to update in case it exists.
+     */
+    where: FundingDocumentWhereUniqueInput
+    /**
+     * In case the FundingDocument found by the `where` argument doesn't exist, create a new FundingDocument with this data.
+     */
+    create: XOR<FundingDocumentCreateInput, FundingDocumentUncheckedCreateInput>
+    /**
+     * In case the FundingDocument was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FundingDocumentUpdateInput, FundingDocumentUncheckedUpdateInput>
+  }
+
+  /**
+   * FundingDocument delete
+   */
+  export type FundingDocumentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+    /**
+     * Filter which FundingDocument to delete.
+     */
+    where: FundingDocumentWhereUniqueInput
+  }
+
+  /**
+   * FundingDocument deleteMany
+   */
+  export type FundingDocumentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FundingDocuments to delete
+     */
+    where?: FundingDocumentWhereInput
+    /**
+     * Limit how many FundingDocuments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FundingDocument without action
+   */
+  export type FundingDocumentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FundingDocument
+     */
+    select?: FundingDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FundingDocument
+     */
+    omit?: FundingDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FundingDocumentInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -146878,6 +152205,72 @@ export namespace Prisma {
   export type SatisfactionSurveyScalarFieldEnum = (typeof SatisfactionSurveyScalarFieldEnum)[keyof typeof SatisfactionSurveyScalarFieldEnum]
 
 
+  export const FundingProviderScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    label: 'label',
+    funderType: 'funderType',
+    transport: 'transport',
+    isActive: 'isActive',
+    metadata: 'metadata',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FundingProviderScalarFieldEnum = (typeof FundingProviderScalarFieldEnum)[keyof typeof FundingProviderScalarFieldEnum]
+
+
+  export const FundingCaseScalarFieldEnum: {
+    id: 'id',
+    reference: 'reference',
+    providerId: 'providerId',
+    learnerUserId: 'learnerUserId',
+    sessionId: 'sessionId',
+    participantId: 'participantId',
+    funderType: 'funderType',
+    transport: 'transport',
+    status: 'status',
+    externalReference: 'externalReference',
+    requestedAmount: 'requestedAmount',
+    approvedAmount: 'approvedAmount',
+    currency: 'currency',
+    notes: 'notes',
+    ownerUserId: 'ownerUserId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FundingCaseScalarFieldEnum = (typeof FundingCaseScalarFieldEnum)[keyof typeof FundingCaseScalarFieldEnum]
+
+
+  export const FundingCaseEventScalarFieldEnum: {
+    id: 'id',
+    caseId: 'caseId',
+    fromStatus: 'fromStatus',
+    toStatus: 'toStatus',
+    source: 'source',
+    payload: 'payload',
+    actorUserId: 'actorUserId',
+    createdAt: 'createdAt'
+  };
+
+  export type FundingCaseEventScalarFieldEnum = (typeof FundingCaseEventScalarFieldEnum)[keyof typeof FundingCaseEventScalarFieldEnum]
+
+
+  export const FundingDocumentScalarFieldEnum: {
+    id: 'id',
+    caseId: 'caseId',
+    code: 'code',
+    label: 'label',
+    status: 'status',
+    fileAssetId: 'fileAssetId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FundingDocumentScalarFieldEnum = (typeof FundingDocumentScalarFieldEnum)[keyof typeof FundingDocumentScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -148042,6 +153435,48 @@ export namespace Prisma {
    */
   export type ListEnumSatisfactionSurveyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SatisfactionSurveyStatus[]'>
     
+
+
+  /**
+   * Reference to a field of type 'FundingFunderType'
+   */
+  export type EnumFundingFunderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingFunderType'>
+    
+
+
+  /**
+   * Reference to a field of type 'FundingFunderType[]'
+   */
+  export type ListEnumFundingFunderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingFunderType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FundingTransport'
+   */
+  export type EnumFundingTransportFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingTransport'>
+    
+
+
+  /**
+   * Reference to a field of type 'FundingTransport[]'
+   */
+  export type ListEnumFundingTransportFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingTransport[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FundingCaseStatus'
+   */
+  export type EnumFundingCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingCaseStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'FundingCaseStatus[]'
+   */
+  export type ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FundingCaseStatus[]'>
+    
   /**
    * Deep Input Types
    */
@@ -148175,6 +153610,7 @@ export namespace Prisma {
     candidatures?: CandidatureListRelationFilter
     complianceDossiers?: ComplianceDossierListRelationFilter
     complianceItemsValidated?: ComplianceDossierItemListRelationFilter
+    fundingCasesAsLearner?: FundingCaseListRelationFilter
     documentRequestsRequested?: DocumentRequestListRelationFilter
     complianceEventsActed?: ComplianceItemEventListRelationFilter
     formationSessionsTrained?: FormationSessionListRelationFilter
@@ -148292,6 +153728,7 @@ export namespace Prisma {
     candidatures?: CandidatureOrderByRelationAggregateInput
     complianceDossiers?: ComplianceDossierOrderByRelationAggregateInput
     complianceItemsValidated?: ComplianceDossierItemOrderByRelationAggregateInput
+    fundingCasesAsLearner?: FundingCaseOrderByRelationAggregateInput
     documentRequestsRequested?: DocumentRequestOrderByRelationAggregateInput
     complianceEventsActed?: ComplianceItemEventOrderByRelationAggregateInput
     formationSessionsTrained?: FormationSessionOrderByRelationAggregateInput
@@ -148412,6 +153849,7 @@ export namespace Prisma {
     candidatures?: CandidatureListRelationFilter
     complianceDossiers?: ComplianceDossierListRelationFilter
     complianceItemsValidated?: ComplianceDossierItemListRelationFilter
+    fundingCasesAsLearner?: FundingCaseListRelationFilter
     documentRequestsRequested?: DocumentRequestListRelationFilter
     complianceEventsActed?: ComplianceItemEventListRelationFilter
     formationSessionsTrained?: FormationSessionListRelationFilter
@@ -152075,6 +157513,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementListRelationFilter
     rhTeam?: XOR<RhTeamNullableScalarRelationFilter, RhTeamWhereInput> | null
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
+    fundingCases?: FundingCaseListRelationFilter
     candidaturesInterested?: CandidatureListRelationFilter
     financeDevisSessionLinks?: FinanceDevisListRelationFilter
     automationRuns?: SessionAutomationRunListRelationFilter
@@ -152118,6 +157557,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementOrderByRelationAggregateInput
     rhTeam?: RhTeamOrderByWithRelationInput
     satisfactionSurveys?: SatisfactionSurveyOrderByRelationAggregateInput
+    fundingCases?: FundingCaseOrderByRelationAggregateInput
     candidaturesInterested?: CandidatureOrderByRelationAggregateInput
     financeDevisSessionLinks?: FinanceDevisOrderByRelationAggregateInput
     automationRuns?: SessionAutomationRunOrderByRelationAggregateInput
@@ -152164,6 +157604,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementListRelationFilter
     rhTeam?: XOR<RhTeamNullableScalarRelationFilter, RhTeamWhereInput> | null
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
+    fundingCases?: FundingCaseListRelationFilter
     candidaturesInterested?: CandidatureListRelationFilter
     financeDevisSessionLinks?: FinanceDevisListRelationFilter
     automationRuns?: SessionAutomationRunListRelationFilter
@@ -152578,6 +158019,7 @@ export namespace Prisma {
     candidature?: XOR<CandidatureNullableScalarRelationFilter, CandidatureWhereInput> | null
     emargements?: FormationSessionEmargementListRelationFilter
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
+    fundingCases?: FundingCaseListRelationFilter
   }
 
   export type FormationSessionParticipantOrderByWithRelationInput = {
@@ -152600,6 +158042,7 @@ export namespace Prisma {
     candidature?: CandidatureOrderByWithRelationInput
     emargements?: FormationSessionEmargementOrderByRelationAggregateInput
     satisfactionSurveys?: SatisfactionSurveyOrderByRelationAggregateInput
+    fundingCases?: FundingCaseOrderByRelationAggregateInput
   }
 
   export type FormationSessionParticipantWhereUniqueInput = Prisma.AtLeast<{
@@ -152626,6 +158069,7 @@ export namespace Prisma {
     candidature?: XOR<CandidatureNullableScalarRelationFilter, CandidatureWhereInput> | null
     emargements?: FormationSessionEmargementListRelationFilter
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
+    fundingCases?: FundingCaseListRelationFilter
   }, "id" | "sessionId_userId">
 
   export type FormationSessionParticipantOrderByWithAggregationInput = {
@@ -158201,6 +163645,354 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"SatisfactionSurvey"> | Date | string
   }
 
+  export type FundingProviderWhereInput = {
+    AND?: FundingProviderWhereInput | FundingProviderWhereInput[]
+    OR?: FundingProviderWhereInput[]
+    NOT?: FundingProviderWhereInput | FundingProviderWhereInput[]
+    id?: StringFilter<"FundingProvider"> | string
+    code?: StringFilter<"FundingProvider"> | string
+    label?: StringFilter<"FundingProvider"> | string
+    funderType?: EnumFundingFunderTypeFilter<"FundingProvider"> | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFilter<"FundingProvider"> | $Enums.FundingTransport
+    isActive?: BoolFilter<"FundingProvider"> | boolean
+    metadata?: JsonNullableFilter<"FundingProvider">
+    createdAt?: DateTimeFilter<"FundingProvider"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingProvider"> | Date | string
+    cases?: FundingCaseListRelationFilter
+  }
+
+  export type FundingProviderOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    isActive?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    cases?: FundingCaseOrderByRelationAggregateInput
+  }
+
+  export type FundingProviderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: FundingProviderWhereInput | FundingProviderWhereInput[]
+    OR?: FundingProviderWhereInput[]
+    NOT?: FundingProviderWhereInput | FundingProviderWhereInput[]
+    label?: StringFilter<"FundingProvider"> | string
+    funderType?: EnumFundingFunderTypeFilter<"FundingProvider"> | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFilter<"FundingProvider"> | $Enums.FundingTransport
+    isActive?: BoolFilter<"FundingProvider"> | boolean
+    metadata?: JsonNullableFilter<"FundingProvider">
+    createdAt?: DateTimeFilter<"FundingProvider"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingProvider"> | Date | string
+    cases?: FundingCaseListRelationFilter
+  }, "id" | "code">
+
+  export type FundingProviderOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    isActive?: SortOrder
+    metadata?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FundingProviderCountOrderByAggregateInput
+    _max?: FundingProviderMaxOrderByAggregateInput
+    _min?: FundingProviderMinOrderByAggregateInput
+  }
+
+  export type FundingProviderScalarWhereWithAggregatesInput = {
+    AND?: FundingProviderScalarWhereWithAggregatesInput | FundingProviderScalarWhereWithAggregatesInput[]
+    OR?: FundingProviderScalarWhereWithAggregatesInput[]
+    NOT?: FundingProviderScalarWhereWithAggregatesInput | FundingProviderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FundingProvider"> | string
+    code?: StringWithAggregatesFilter<"FundingProvider"> | string
+    label?: StringWithAggregatesFilter<"FundingProvider"> | string
+    funderType?: EnumFundingFunderTypeWithAggregatesFilter<"FundingProvider"> | $Enums.FundingFunderType
+    transport?: EnumFundingTransportWithAggregatesFilter<"FundingProvider"> | $Enums.FundingTransport
+    isActive?: BoolWithAggregatesFilter<"FundingProvider"> | boolean
+    metadata?: JsonNullableWithAggregatesFilter<"FundingProvider">
+    createdAt?: DateTimeWithAggregatesFilter<"FundingProvider"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FundingProvider"> | Date | string
+  }
+
+  export type FundingCaseWhereInput = {
+    AND?: FundingCaseWhereInput | FundingCaseWhereInput[]
+    OR?: FundingCaseWhereInput[]
+    NOT?: FundingCaseWhereInput | FundingCaseWhereInput[]
+    id?: StringFilter<"FundingCase"> | string
+    reference?: StringNullableFilter<"FundingCase"> | string | null
+    providerId?: StringFilter<"FundingCase"> | string
+    learnerUserId?: StringNullableFilter<"FundingCase"> | string | null
+    sessionId?: StringNullableFilter<"FundingCase"> | string | null
+    participantId?: StringNullableFilter<"FundingCase"> | string | null
+    funderType?: EnumFundingFunderTypeFilter<"FundingCase"> | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFilter<"FundingCase"> | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFilter<"FundingCase"> | $Enums.FundingCaseStatus
+    externalReference?: StringNullableFilter<"FundingCase"> | string | null
+    requestedAmount?: DecimalNullableFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: DecimalNullableFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFilter<"FundingCase"> | string
+    notes?: StringNullableFilter<"FundingCase"> | string | null
+    ownerUserId?: StringNullableFilter<"FundingCase"> | string | null
+    createdAt?: DateTimeFilter<"FundingCase"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingCase"> | Date | string
+    provider?: XOR<FundingProviderScalarRelationFilter, FundingProviderWhereInput>
+    learnerUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    session?: XOR<FormationSessionNullableScalarRelationFilter, FormationSessionWhereInput> | null
+    participant?: XOR<FormationSessionParticipantNullableScalarRelationFilter, FormationSessionParticipantWhereInput> | null
+    events?: FundingCaseEventListRelationFilter
+    documents?: FundingDocumentListRelationFilter
+  }
+
+  export type FundingCaseOrderByWithRelationInput = {
+    id?: SortOrder
+    reference?: SortOrderInput | SortOrder
+    providerId?: SortOrder
+    learnerUserId?: SortOrderInput | SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    participantId?: SortOrderInput | SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    status?: SortOrder
+    externalReference?: SortOrderInput | SortOrder
+    requestedAmount?: SortOrderInput | SortOrder
+    approvedAmount?: SortOrderInput | SortOrder
+    currency?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    ownerUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    provider?: FundingProviderOrderByWithRelationInput
+    learnerUser?: UserOrderByWithRelationInput
+    session?: FormationSessionOrderByWithRelationInput
+    participant?: FormationSessionParticipantOrderByWithRelationInput
+    events?: FundingCaseEventOrderByRelationAggregateInput
+    documents?: FundingDocumentOrderByRelationAggregateInput
+  }
+
+  export type FundingCaseWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    reference?: string
+    AND?: FundingCaseWhereInput | FundingCaseWhereInput[]
+    OR?: FundingCaseWhereInput[]
+    NOT?: FundingCaseWhereInput | FundingCaseWhereInput[]
+    providerId?: StringFilter<"FundingCase"> | string
+    learnerUserId?: StringNullableFilter<"FundingCase"> | string | null
+    sessionId?: StringNullableFilter<"FundingCase"> | string | null
+    participantId?: StringNullableFilter<"FundingCase"> | string | null
+    funderType?: EnumFundingFunderTypeFilter<"FundingCase"> | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFilter<"FundingCase"> | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFilter<"FundingCase"> | $Enums.FundingCaseStatus
+    externalReference?: StringNullableFilter<"FundingCase"> | string | null
+    requestedAmount?: DecimalNullableFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: DecimalNullableFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFilter<"FundingCase"> | string
+    notes?: StringNullableFilter<"FundingCase"> | string | null
+    ownerUserId?: StringNullableFilter<"FundingCase"> | string | null
+    createdAt?: DateTimeFilter<"FundingCase"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingCase"> | Date | string
+    provider?: XOR<FundingProviderScalarRelationFilter, FundingProviderWhereInput>
+    learnerUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    session?: XOR<FormationSessionNullableScalarRelationFilter, FormationSessionWhereInput> | null
+    participant?: XOR<FormationSessionParticipantNullableScalarRelationFilter, FormationSessionParticipantWhereInput> | null
+    events?: FundingCaseEventListRelationFilter
+    documents?: FundingDocumentListRelationFilter
+  }, "id" | "reference">
+
+  export type FundingCaseOrderByWithAggregationInput = {
+    id?: SortOrder
+    reference?: SortOrderInput | SortOrder
+    providerId?: SortOrder
+    learnerUserId?: SortOrderInput | SortOrder
+    sessionId?: SortOrderInput | SortOrder
+    participantId?: SortOrderInput | SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    status?: SortOrder
+    externalReference?: SortOrderInput | SortOrder
+    requestedAmount?: SortOrderInput | SortOrder
+    approvedAmount?: SortOrderInput | SortOrder
+    currency?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    ownerUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FundingCaseCountOrderByAggregateInput
+    _avg?: FundingCaseAvgOrderByAggregateInput
+    _max?: FundingCaseMaxOrderByAggregateInput
+    _min?: FundingCaseMinOrderByAggregateInput
+    _sum?: FundingCaseSumOrderByAggregateInput
+  }
+
+  export type FundingCaseScalarWhereWithAggregatesInput = {
+    AND?: FundingCaseScalarWhereWithAggregatesInput | FundingCaseScalarWhereWithAggregatesInput[]
+    OR?: FundingCaseScalarWhereWithAggregatesInput[]
+    NOT?: FundingCaseScalarWhereWithAggregatesInput | FundingCaseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FundingCase"> | string
+    reference?: StringNullableWithAggregatesFilter<"FundingCase"> | string | null
+    providerId?: StringWithAggregatesFilter<"FundingCase"> | string
+    learnerUserId?: StringNullableWithAggregatesFilter<"FundingCase"> | string | null
+    sessionId?: StringNullableWithAggregatesFilter<"FundingCase"> | string | null
+    participantId?: StringNullableWithAggregatesFilter<"FundingCase"> | string | null
+    funderType?: EnumFundingFunderTypeWithAggregatesFilter<"FundingCase"> | $Enums.FundingFunderType
+    transport?: EnumFundingTransportWithAggregatesFilter<"FundingCase"> | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusWithAggregatesFilter<"FundingCase"> | $Enums.FundingCaseStatus
+    externalReference?: StringNullableWithAggregatesFilter<"FundingCase"> | string | null
+    requestedAmount?: DecimalNullableWithAggregatesFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: DecimalNullableWithAggregatesFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringWithAggregatesFilter<"FundingCase"> | string
+    notes?: StringNullableWithAggregatesFilter<"FundingCase"> | string | null
+    ownerUserId?: StringNullableWithAggregatesFilter<"FundingCase"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FundingCase"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FundingCase"> | Date | string
+  }
+
+  export type FundingCaseEventWhereInput = {
+    AND?: FundingCaseEventWhereInput | FundingCaseEventWhereInput[]
+    OR?: FundingCaseEventWhereInput[]
+    NOT?: FundingCaseEventWhereInput | FundingCaseEventWhereInput[]
+    id?: StringFilter<"FundingCaseEvent"> | string
+    caseId?: StringFilter<"FundingCaseEvent"> | string
+    fromStatus?: EnumFundingCaseStatusNullableFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus
+    source?: StringFilter<"FundingCaseEvent"> | string
+    payload?: JsonNullableFilter<"FundingCaseEvent">
+    actorUserId?: StringNullableFilter<"FundingCaseEvent"> | string | null
+    createdAt?: DateTimeFilter<"FundingCaseEvent"> | Date | string
+    case?: XOR<FundingCaseScalarRelationFilter, FundingCaseWhereInput>
+  }
+
+  export type FundingCaseEventOrderByWithRelationInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    fromStatus?: SortOrderInput | SortOrder
+    toStatus?: SortOrder
+    source?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    actorUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    case?: FundingCaseOrderByWithRelationInput
+  }
+
+  export type FundingCaseEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FundingCaseEventWhereInput | FundingCaseEventWhereInput[]
+    OR?: FundingCaseEventWhereInput[]
+    NOT?: FundingCaseEventWhereInput | FundingCaseEventWhereInput[]
+    caseId?: StringFilter<"FundingCaseEvent"> | string
+    fromStatus?: EnumFundingCaseStatusNullableFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus
+    source?: StringFilter<"FundingCaseEvent"> | string
+    payload?: JsonNullableFilter<"FundingCaseEvent">
+    actorUserId?: StringNullableFilter<"FundingCaseEvent"> | string | null
+    createdAt?: DateTimeFilter<"FundingCaseEvent"> | Date | string
+    case?: XOR<FundingCaseScalarRelationFilter, FundingCaseWhereInput>
+  }, "id">
+
+  export type FundingCaseEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    fromStatus?: SortOrderInput | SortOrder
+    toStatus?: SortOrder
+    source?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    actorUserId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: FundingCaseEventCountOrderByAggregateInput
+    _max?: FundingCaseEventMaxOrderByAggregateInput
+    _min?: FundingCaseEventMinOrderByAggregateInput
+  }
+
+  export type FundingCaseEventScalarWhereWithAggregatesInput = {
+    AND?: FundingCaseEventScalarWhereWithAggregatesInput | FundingCaseEventScalarWhereWithAggregatesInput[]
+    OR?: FundingCaseEventScalarWhereWithAggregatesInput[]
+    NOT?: FundingCaseEventScalarWhereWithAggregatesInput | FundingCaseEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FundingCaseEvent"> | string
+    caseId?: StringWithAggregatesFilter<"FundingCaseEvent"> | string
+    fromStatus?: EnumFundingCaseStatusNullableWithAggregatesFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusWithAggregatesFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus
+    source?: StringWithAggregatesFilter<"FundingCaseEvent"> | string
+    payload?: JsonNullableWithAggregatesFilter<"FundingCaseEvent">
+    actorUserId?: StringNullableWithAggregatesFilter<"FundingCaseEvent"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FundingCaseEvent"> | Date | string
+  }
+
+  export type FundingDocumentWhereInput = {
+    AND?: FundingDocumentWhereInput | FundingDocumentWhereInput[]
+    OR?: FundingDocumentWhereInput[]
+    NOT?: FundingDocumentWhereInput | FundingDocumentWhereInput[]
+    id?: StringFilter<"FundingDocument"> | string
+    caseId?: StringFilter<"FundingDocument"> | string
+    code?: StringFilter<"FundingDocument"> | string
+    label?: StringFilter<"FundingDocument"> | string
+    status?: StringFilter<"FundingDocument"> | string
+    fileAssetId?: StringNullableFilter<"FundingDocument"> | string | null
+    createdAt?: DateTimeFilter<"FundingDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingDocument"> | Date | string
+    case?: XOR<FundingCaseScalarRelationFilter, FundingCaseWhereInput>
+  }
+
+  export type FundingDocumentOrderByWithRelationInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    case?: FundingCaseOrderByWithRelationInput
+  }
+
+  export type FundingDocumentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    caseId_code?: FundingDocumentCaseIdCodeCompoundUniqueInput
+    AND?: FundingDocumentWhereInput | FundingDocumentWhereInput[]
+    OR?: FundingDocumentWhereInput[]
+    NOT?: FundingDocumentWhereInput | FundingDocumentWhereInput[]
+    caseId?: StringFilter<"FundingDocument"> | string
+    code?: StringFilter<"FundingDocument"> | string
+    label?: StringFilter<"FundingDocument"> | string
+    status?: StringFilter<"FundingDocument"> | string
+    fileAssetId?: StringNullableFilter<"FundingDocument"> | string | null
+    createdAt?: DateTimeFilter<"FundingDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingDocument"> | Date | string
+    case?: XOR<FundingCaseScalarRelationFilter, FundingCaseWhereInput>
+  }, "id" | "caseId_code">
+
+  export type FundingDocumentOrderByWithAggregationInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FundingDocumentCountOrderByAggregateInput
+    _max?: FundingDocumentMaxOrderByAggregateInput
+    _min?: FundingDocumentMinOrderByAggregateInput
+  }
+
+  export type FundingDocumentScalarWhereWithAggregatesInput = {
+    AND?: FundingDocumentScalarWhereWithAggregatesInput | FundingDocumentScalarWhereWithAggregatesInput[]
+    OR?: FundingDocumentScalarWhereWithAggregatesInput[]
+    NOT?: FundingDocumentScalarWhereWithAggregatesInput | FundingDocumentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FundingDocument"> | string
+    caseId?: StringWithAggregatesFilter<"FundingDocument"> | string
+    code?: StringWithAggregatesFilter<"FundingDocument"> | string
+    label?: StringWithAggregatesFilter<"FundingDocument"> | string
+    status?: StringWithAggregatesFilter<"FundingDocument"> | string
+    fileAssetId?: StringNullableWithAggregatesFilter<"FundingDocument"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FundingDocument"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FundingDocument"> | Date | string
+  }
+
   export type LandingConfigCreateInput = {
     id?: string
     sections?: JsonNullValueInput | InputJsonValue
@@ -158328,6 +164120,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -158443,6 +164236,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -158558,6 +164352,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -158673,6 +164468,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -162941,6 +168737,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -162979,6 +168776,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -163017,6 +168815,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -163055,6 +168854,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -163519,6 +169319,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateInput = {
@@ -163538,6 +169339,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUpdateInput = {
@@ -163557,6 +169359,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateInput = {
@@ -163576,6 +169379,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantCreateManyInput = {
@@ -169527,6 +175331,390 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FundingProviderCreateInput = {
+    id?: string
+    code: string
+    label: string
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    isActive?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cases?: FundingCaseCreateNestedManyWithoutProviderInput
+  }
+
+  export type FundingProviderUncheckedCreateInput = {
+    id?: string
+    code: string
+    label: string
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    isActive?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    cases?: FundingCaseUncheckedCreateNestedManyWithoutProviderInput
+  }
+
+  export type FundingProviderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cases?: FundingCaseUpdateManyWithoutProviderNestedInput
+  }
+
+  export type FundingProviderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cases?: FundingCaseUncheckedUpdateManyWithoutProviderNestedInput
+  }
+
+  export type FundingProviderCreateManyInput = {
+    id?: string
+    code: string
+    label: string
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    isActive?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingProviderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingProviderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseCreateInput = {
+    id?: string
+    reference?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    provider: FundingProviderCreateNestedOneWithoutCasesInput
+    learnerUser?: UserCreateNestedOneWithoutFundingCasesAsLearnerInput
+    session?: FormationSessionCreateNestedOneWithoutFundingCasesInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutFundingCasesInput
+    events?: FundingCaseEventCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUncheckedCreateInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: FundingCaseEventUncheckedCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentUncheckedCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: FundingProviderUpdateOneRequiredWithoutCasesNestedInput
+    learnerUser?: UserUpdateOneWithoutFundingCasesAsLearnerNestedInput
+    session?: FormationSessionUpdateOneWithoutFundingCasesNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutFundingCasesNestedInput
+    events?: FundingCaseEventUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: FundingCaseEventUncheckedUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUncheckedUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseCreateManyInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingCaseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseEventCreateInput = {
+    id?: string
+    fromStatus?: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus
+    source: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: string | null
+    createdAt?: Date | string
+    case: FundingCaseCreateNestedOneWithoutEventsInput
+  }
+
+  export type FundingCaseEventUncheckedCreateInput = {
+    id?: string
+    caseId: string
+    fromStatus?: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus
+    source: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FundingCaseEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromStatus?: NullableEnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    source?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    case?: FundingCaseUpdateOneRequiredWithoutEventsNestedInput
+  }
+
+  export type FundingCaseEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    caseId?: StringFieldUpdateOperationsInput | string
+    fromStatus?: NullableEnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    source?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseEventCreateManyInput = {
+    id?: string
+    caseId: string
+    fromStatus?: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus
+    source: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FundingCaseEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromStatus?: NullableEnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    source?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    caseId?: StringFieldUpdateOperationsInput | string
+    fromStatus?: NullableEnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    source?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingDocumentCreateInput = {
+    id?: string
+    code: string
+    label: string
+    status: string
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    case: FundingCaseCreateNestedOneWithoutDocumentsInput
+  }
+
+  export type FundingDocumentUncheckedCreateInput = {
+    id?: string
+    caseId: string
+    code: string
+    label: string
+    status: string
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingDocumentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    case?: FundingCaseUpdateOneRequiredWithoutDocumentsNestedInput
+  }
+
+  export type FundingDocumentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    caseId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingDocumentCreateManyInput = {
+    id?: string
+    caseId: string
+    code: string
+    label: string
+    status: string
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingDocumentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingDocumentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    caseId?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -169864,6 +176052,12 @@ export namespace Prisma {
     none?: ComplianceDossierItemWhereInput
   }
 
+  export type FundingCaseListRelationFilter = {
+    every?: FundingCaseWhereInput
+    some?: FundingCaseWhereInput
+    none?: FundingCaseWhereInput
+  }
+
   export type DocumentRequestListRelationFilter = {
     every?: DocumentRequestWhereInput
     some?: DocumentRequestWhereInput
@@ -170168,6 +176362,10 @@ export namespace Prisma {
   }
 
   export type ComplianceDossierItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FundingCaseOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -177335,6 +183533,282 @@ export namespace Prisma {
     _max?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel>
   }
 
+  export type EnumFundingFunderTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingFunderType | EnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingFunderTypeFilter<$PrismaModel> | $Enums.FundingFunderType
+  }
+
+  export type EnumFundingTransportFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingTransport | EnumFundingTransportFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingTransportFilter<$PrismaModel> | $Enums.FundingTransport
+  }
+
+  export type FundingProviderCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    isActive?: SortOrder
+    metadata?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingProviderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingProviderMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumFundingFunderTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingFunderType | EnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingFunderTypeWithAggregatesFilter<$PrismaModel> | $Enums.FundingFunderType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingFunderTypeFilter<$PrismaModel>
+    _max?: NestedEnumFundingFunderTypeFilter<$PrismaModel>
+  }
+
+  export type EnumFundingTransportWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingTransport | EnumFundingTransportFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingTransportWithAggregatesFilter<$PrismaModel> | $Enums.FundingTransport
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingTransportFilter<$PrismaModel>
+    _max?: NestedEnumFundingTransportFilter<$PrismaModel>
+  }
+
+  export type EnumFundingCaseStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingCaseStatusFilter<$PrismaModel> | $Enums.FundingCaseStatus
+  }
+
+  export type FundingProviderScalarRelationFilter = {
+    is?: FundingProviderWhereInput
+    isNot?: FundingProviderWhereInput
+  }
+
+  export type FormationSessionParticipantNullableScalarRelationFilter = {
+    is?: FormationSessionParticipantWhereInput | null
+    isNot?: FormationSessionParticipantWhereInput | null
+  }
+
+  export type FundingCaseEventListRelationFilter = {
+    every?: FundingCaseEventWhereInput
+    some?: FundingCaseEventWhereInput
+    none?: FundingCaseEventWhereInput
+  }
+
+  export type FundingDocumentListRelationFilter = {
+    every?: FundingDocumentWhereInput
+    some?: FundingDocumentWhereInput
+    none?: FundingDocumentWhereInput
+  }
+
+  export type FundingCaseEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FundingDocumentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FundingCaseCountOrderByAggregateInput = {
+    id?: SortOrder
+    reference?: SortOrder
+    providerId?: SortOrder
+    learnerUserId?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    status?: SortOrder
+    externalReference?: SortOrder
+    requestedAmount?: SortOrder
+    approvedAmount?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrder
+    ownerUserId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingCaseAvgOrderByAggregateInput = {
+    requestedAmount?: SortOrder
+    approvedAmount?: SortOrder
+  }
+
+  export type FundingCaseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    reference?: SortOrder
+    providerId?: SortOrder
+    learnerUserId?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    status?: SortOrder
+    externalReference?: SortOrder
+    requestedAmount?: SortOrder
+    approvedAmount?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrder
+    ownerUserId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingCaseMinOrderByAggregateInput = {
+    id?: SortOrder
+    reference?: SortOrder
+    providerId?: SortOrder
+    learnerUserId?: SortOrder
+    sessionId?: SortOrder
+    participantId?: SortOrder
+    funderType?: SortOrder
+    transport?: SortOrder
+    status?: SortOrder
+    externalReference?: SortOrder
+    requestedAmount?: SortOrder
+    approvedAmount?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrder
+    ownerUserId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingCaseSumOrderByAggregateInput = {
+    requestedAmount?: SortOrder
+    approvedAmount?: SortOrder
+  }
+
+  export type EnumFundingCaseStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingCaseStatusWithAggregatesFilter<$PrismaModel> | $Enums.FundingCaseStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingCaseStatusFilter<$PrismaModel>
+    _max?: NestedEnumFundingCaseStatusFilter<$PrismaModel>
+  }
+
+  export type EnumFundingCaseStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFundingCaseStatusNullableFilter<$PrismaModel> | $Enums.FundingCaseStatus | null
+  }
+
+  export type FundingCaseScalarRelationFilter = {
+    is?: FundingCaseWhereInput
+    isNot?: FundingCaseWhereInput
+  }
+
+  export type FundingCaseEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    fromStatus?: SortOrder
+    toStatus?: SortOrder
+    source?: SortOrder
+    payload?: SortOrder
+    actorUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FundingCaseEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    fromStatus?: SortOrder
+    toStatus?: SortOrder
+    source?: SortOrder
+    actorUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FundingCaseEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    fromStatus?: SortOrder
+    toStatus?: SortOrder
+    source?: SortOrder
+    actorUserId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumFundingCaseStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFundingCaseStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.FundingCaseStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumFundingCaseStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumFundingCaseStatusNullableFilter<$PrismaModel>
+  }
+
+  export type FundingDocumentCaseIdCodeCompoundUniqueInput = {
+    caseId: string
+    code: string
+  }
+
+  export type FundingDocumentCountOrderByAggregateInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingDocumentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FundingDocumentMinOrderByAggregateInput = {
+    id?: SortOrder
+    caseId?: SortOrder
+    code?: SortOrder
+    label?: SortOrder
+    status?: SortOrder
+    fileAssetId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -177517,6 +183991,13 @@ export namespace Prisma {
     connectOrCreate?: ComplianceDossierItemCreateOrConnectWithoutValidatedByInput | ComplianceDossierItemCreateOrConnectWithoutValidatedByInput[]
     createMany?: ComplianceDossierItemCreateManyValidatedByInputEnvelope
     connect?: ComplianceDossierItemWhereUniqueInput | ComplianceDossierItemWhereUniqueInput[]
+  }
+
+  export type FundingCaseCreateNestedManyWithoutLearnerUserInput = {
+    create?: XOR<FundingCaseCreateWithoutLearnerUserInput, FundingCaseUncheckedCreateWithoutLearnerUserInput> | FundingCaseCreateWithoutLearnerUserInput[] | FundingCaseUncheckedCreateWithoutLearnerUserInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutLearnerUserInput | FundingCaseCreateOrConnectWithoutLearnerUserInput[]
+    createMany?: FundingCaseCreateManyLearnerUserInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
   }
 
   export type DocumentRequestCreateNestedManyWithoutRequestedByInput = {
@@ -177967,6 +184448,13 @@ export namespace Prisma {
     connectOrCreate?: ComplianceDossierItemCreateOrConnectWithoutValidatedByInput | ComplianceDossierItemCreateOrConnectWithoutValidatedByInput[]
     createMany?: ComplianceDossierItemCreateManyValidatedByInputEnvelope
     connect?: ComplianceDossierItemWhereUniqueInput | ComplianceDossierItemWhereUniqueInput[]
+  }
+
+  export type FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput = {
+    create?: XOR<FundingCaseCreateWithoutLearnerUserInput, FundingCaseUncheckedCreateWithoutLearnerUserInput> | FundingCaseCreateWithoutLearnerUserInput[] | FundingCaseUncheckedCreateWithoutLearnerUserInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutLearnerUserInput | FundingCaseCreateOrConnectWithoutLearnerUserInput[]
+    createMany?: FundingCaseCreateManyLearnerUserInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
   }
 
   export type DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput = {
@@ -178617,6 +185105,20 @@ export namespace Prisma {
     update?: ComplianceDossierItemUpdateWithWhereUniqueWithoutValidatedByInput | ComplianceDossierItemUpdateWithWhereUniqueWithoutValidatedByInput[]
     updateMany?: ComplianceDossierItemUpdateManyWithWhereWithoutValidatedByInput | ComplianceDossierItemUpdateManyWithWhereWithoutValidatedByInput[]
     deleteMany?: ComplianceDossierItemScalarWhereInput | ComplianceDossierItemScalarWhereInput[]
+  }
+
+  export type FundingCaseUpdateManyWithoutLearnerUserNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutLearnerUserInput, FundingCaseUncheckedCreateWithoutLearnerUserInput> | FundingCaseCreateWithoutLearnerUserInput[] | FundingCaseUncheckedCreateWithoutLearnerUserInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutLearnerUserInput | FundingCaseCreateOrConnectWithoutLearnerUserInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutLearnerUserInput | FundingCaseUpsertWithWhereUniqueWithoutLearnerUserInput[]
+    createMany?: FundingCaseCreateManyLearnerUserInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutLearnerUserInput | FundingCaseUpdateWithWhereUniqueWithoutLearnerUserInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutLearnerUserInput | FundingCaseUpdateManyWithWhereWithoutLearnerUserInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
   }
 
   export type DocumentRequestUpdateManyWithoutRequestedByNestedInput = {
@@ -179507,6 +186009,20 @@ export namespace Prisma {
     update?: ComplianceDossierItemUpdateWithWhereUniqueWithoutValidatedByInput | ComplianceDossierItemUpdateWithWhereUniqueWithoutValidatedByInput[]
     updateMany?: ComplianceDossierItemUpdateManyWithWhereWithoutValidatedByInput | ComplianceDossierItemUpdateManyWithWhereWithoutValidatedByInput[]
     deleteMany?: ComplianceDossierItemScalarWhereInput | ComplianceDossierItemScalarWhereInput[]
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutLearnerUserInput, FundingCaseUncheckedCreateWithoutLearnerUserInput> | FundingCaseCreateWithoutLearnerUserInput[] | FundingCaseUncheckedCreateWithoutLearnerUserInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutLearnerUserInput | FundingCaseCreateOrConnectWithoutLearnerUserInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutLearnerUserInput | FundingCaseUpsertWithWhereUniqueWithoutLearnerUserInput[]
+    createMany?: FundingCaseCreateManyLearnerUserInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutLearnerUserInput | FundingCaseUpdateWithWhereUniqueWithoutLearnerUserInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutLearnerUserInput | FundingCaseUpdateManyWithWhereWithoutLearnerUserInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
   }
 
   export type DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput = {
@@ -182443,6 +188959,13 @@ export namespace Prisma {
     connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
   }
 
+  export type FundingCaseCreateNestedManyWithoutSessionInput = {
+    create?: XOR<FundingCaseCreateWithoutSessionInput, FundingCaseUncheckedCreateWithoutSessionInput> | FundingCaseCreateWithoutSessionInput[] | FundingCaseUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutSessionInput | FundingCaseCreateOrConnectWithoutSessionInput[]
+    createMany?: FundingCaseCreateManySessionInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+  }
+
   export type CandidatureCreateNestedManyWithoutInterestedSessionInput = {
     create?: XOR<CandidatureCreateWithoutInterestedSessionInput, CandidatureUncheckedCreateWithoutInterestedSessionInput> | CandidatureCreateWithoutInterestedSessionInput[] | CandidatureUncheckedCreateWithoutInterestedSessionInput[]
     connectOrCreate?: CandidatureCreateOrConnectWithoutInterestedSessionInput | CandidatureCreateOrConnectWithoutInterestedSessionInput[]
@@ -182515,6 +189038,13 @@ export namespace Prisma {
     connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutSessionInput | SatisfactionSurveyCreateOrConnectWithoutSessionInput[]
     createMany?: SatisfactionSurveyCreateManySessionInputEnvelope
     connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+  }
+
+  export type FundingCaseUncheckedCreateNestedManyWithoutSessionInput = {
+    create?: XOR<FundingCaseCreateWithoutSessionInput, FundingCaseUncheckedCreateWithoutSessionInput> | FundingCaseCreateWithoutSessionInput[] | FundingCaseUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutSessionInput | FundingCaseCreateOrConnectWithoutSessionInput[]
+    createMany?: FundingCaseCreateManySessionInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
   }
 
   export type CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput = {
@@ -182690,6 +189220,20 @@ export namespace Prisma {
     deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
   }
 
+  export type FundingCaseUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutSessionInput, FundingCaseUncheckedCreateWithoutSessionInput> | FundingCaseCreateWithoutSessionInput[] | FundingCaseUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutSessionInput | FundingCaseCreateOrConnectWithoutSessionInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutSessionInput | FundingCaseUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: FundingCaseCreateManySessionInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutSessionInput | FundingCaseUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutSessionInput | FundingCaseUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
+  }
+
   export type CandidatureUpdateManyWithoutInterestedSessionNestedInput = {
     create?: XOR<CandidatureCreateWithoutInterestedSessionInput, CandidatureUncheckedCreateWithoutInterestedSessionInput> | CandidatureCreateWithoutInterestedSessionInput[] | CandidatureUncheckedCreateWithoutInterestedSessionInput[]
     connectOrCreate?: CandidatureCreateOrConnectWithoutInterestedSessionInput | CandidatureCreateOrConnectWithoutInterestedSessionInput[]
@@ -182830,6 +189374,20 @@ export namespace Prisma {
     update?: SatisfactionSurveyUpdateWithWhereUniqueWithoutSessionInput | SatisfactionSurveyUpdateWithWhereUniqueWithoutSessionInput[]
     updateMany?: SatisfactionSurveyUpdateManyWithWhereWithoutSessionInput | SatisfactionSurveyUpdateManyWithWhereWithoutSessionInput[]
     deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutSessionNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutSessionInput, FundingCaseUncheckedCreateWithoutSessionInput> | FundingCaseCreateWithoutSessionInput[] | FundingCaseUncheckedCreateWithoutSessionInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutSessionInput | FundingCaseCreateOrConnectWithoutSessionInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutSessionInput | FundingCaseUpsertWithWhereUniqueWithoutSessionInput[]
+    createMany?: FundingCaseCreateManySessionInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutSessionInput | FundingCaseUpdateWithWhereUniqueWithoutSessionInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutSessionInput | FundingCaseUpdateManyWithWhereWithoutSessionInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
   }
 
   export type CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput = {
@@ -183196,6 +189754,13 @@ export namespace Prisma {
     connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
   }
 
+  export type FundingCaseCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FundingCaseCreateWithoutParticipantInput, FundingCaseUncheckedCreateWithoutParticipantInput> | FundingCaseCreateWithoutParticipantInput[] | FundingCaseUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutParticipantInput | FundingCaseCreateOrConnectWithoutParticipantInput[]
+    createMany?: FundingCaseCreateManyParticipantInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+  }
+
   export type FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
@@ -183208,6 +189773,13 @@ export namespace Prisma {
     connectOrCreate?: SatisfactionSurveyCreateOrConnectWithoutParticipantInput | SatisfactionSurveyCreateOrConnectWithoutParticipantInput[]
     createMany?: SatisfactionSurveyCreateManyParticipantInputEnvelope
     connect?: SatisfactionSurveyWhereUniqueInput | SatisfactionSurveyWhereUniqueInput[]
+  }
+
+  export type FundingCaseUncheckedCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FundingCaseCreateWithoutParticipantInput, FundingCaseUncheckedCreateWithoutParticipantInput> | FundingCaseCreateWithoutParticipantInput[] | FundingCaseUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutParticipantInput | FundingCaseCreateOrConnectWithoutParticipantInput[]
+    createMany?: FundingCaseCreateManyParticipantInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
   }
 
   export type EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput = {
@@ -183272,6 +189844,20 @@ export namespace Prisma {
     deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
   }
 
+  export type FundingCaseUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutParticipantInput, FundingCaseUncheckedCreateWithoutParticipantInput> | FundingCaseCreateWithoutParticipantInput[] | FundingCaseUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutParticipantInput | FundingCaseCreateOrConnectWithoutParticipantInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutParticipantInput | FundingCaseUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FundingCaseCreateManyParticipantInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutParticipantInput | FundingCaseUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutParticipantInput | FundingCaseUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
+  }
+
   export type FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
@@ -183298,6 +189884,20 @@ export namespace Prisma {
     update?: SatisfactionSurveyUpdateWithWhereUniqueWithoutParticipantInput | SatisfactionSurveyUpdateWithWhereUniqueWithoutParticipantInput[]
     updateMany?: SatisfactionSurveyUpdateManyWithWhereWithoutParticipantInput | SatisfactionSurveyUpdateManyWithWhereWithoutParticipantInput[]
     deleteMany?: SatisfactionSurveyScalarWhereInput | SatisfactionSurveyScalarWhereInput[]
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutParticipantInput, FundingCaseUncheckedCreateWithoutParticipantInput> | FundingCaseCreateWithoutParticipantInput[] | FundingCaseUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutParticipantInput | FundingCaseCreateOrConnectWithoutParticipantInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutParticipantInput | FundingCaseUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FundingCaseCreateManyParticipantInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutParticipantInput | FundingCaseUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutParticipantInput | FundingCaseUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
   }
 
   export type FormationSessionCreateNestedOneWithoutSuiviDaysInput = {
@@ -187559,6 +194159,238 @@ export namespace Prisma {
     update?: XOR<XOR<FormationSessionParticipantUpdateToOneWithWhereWithoutSatisfactionSurveysInput, FormationSessionParticipantUpdateWithoutSatisfactionSurveysInput>, FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput>
   }
 
+  export type FundingCaseCreateNestedManyWithoutProviderInput = {
+    create?: XOR<FundingCaseCreateWithoutProviderInput, FundingCaseUncheckedCreateWithoutProviderInput> | FundingCaseCreateWithoutProviderInput[] | FundingCaseUncheckedCreateWithoutProviderInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutProviderInput | FundingCaseCreateOrConnectWithoutProviderInput[]
+    createMany?: FundingCaseCreateManyProviderInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+  }
+
+  export type FundingCaseUncheckedCreateNestedManyWithoutProviderInput = {
+    create?: XOR<FundingCaseCreateWithoutProviderInput, FundingCaseUncheckedCreateWithoutProviderInput> | FundingCaseCreateWithoutProviderInput[] | FundingCaseUncheckedCreateWithoutProviderInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutProviderInput | FundingCaseCreateOrConnectWithoutProviderInput[]
+    createMany?: FundingCaseCreateManyProviderInputEnvelope
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+  }
+
+  export type EnumFundingFunderTypeFieldUpdateOperationsInput = {
+    set?: $Enums.FundingFunderType
+  }
+
+  export type EnumFundingTransportFieldUpdateOperationsInput = {
+    set?: $Enums.FundingTransport
+  }
+
+  export type FundingCaseUpdateManyWithoutProviderNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutProviderInput, FundingCaseUncheckedCreateWithoutProviderInput> | FundingCaseCreateWithoutProviderInput[] | FundingCaseUncheckedCreateWithoutProviderInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutProviderInput | FundingCaseCreateOrConnectWithoutProviderInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutProviderInput | FundingCaseUpsertWithWhereUniqueWithoutProviderInput[]
+    createMany?: FundingCaseCreateManyProviderInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutProviderInput | FundingCaseUpdateWithWhereUniqueWithoutProviderInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutProviderInput | FundingCaseUpdateManyWithWhereWithoutProviderInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutProviderNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutProviderInput, FundingCaseUncheckedCreateWithoutProviderInput> | FundingCaseCreateWithoutProviderInput[] | FundingCaseUncheckedCreateWithoutProviderInput[]
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutProviderInput | FundingCaseCreateOrConnectWithoutProviderInput[]
+    upsert?: FundingCaseUpsertWithWhereUniqueWithoutProviderInput | FundingCaseUpsertWithWhereUniqueWithoutProviderInput[]
+    createMany?: FundingCaseCreateManyProviderInputEnvelope
+    set?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    disconnect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    delete?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    connect?: FundingCaseWhereUniqueInput | FundingCaseWhereUniqueInput[]
+    update?: FundingCaseUpdateWithWhereUniqueWithoutProviderInput | FundingCaseUpdateWithWhereUniqueWithoutProviderInput[]
+    updateMany?: FundingCaseUpdateManyWithWhereWithoutProviderInput | FundingCaseUpdateManyWithWhereWithoutProviderInput[]
+    deleteMany?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
+  }
+
+  export type FundingProviderCreateNestedOneWithoutCasesInput = {
+    create?: XOR<FundingProviderCreateWithoutCasesInput, FundingProviderUncheckedCreateWithoutCasesInput>
+    connectOrCreate?: FundingProviderCreateOrConnectWithoutCasesInput
+    connect?: FundingProviderWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutFundingCasesAsLearnerInput = {
+    create?: XOR<UserCreateWithoutFundingCasesAsLearnerInput, UserUncheckedCreateWithoutFundingCasesAsLearnerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFundingCasesAsLearnerInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type FormationSessionCreateNestedOneWithoutFundingCasesInput = {
+    create?: XOR<FormationSessionCreateWithoutFundingCasesInput, FormationSessionUncheckedCreateWithoutFundingCasesInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutFundingCasesInput
+    connect?: FormationSessionWhereUniqueInput
+  }
+
+  export type FormationSessionParticipantCreateNestedOneWithoutFundingCasesInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutFundingCasesInput, FormationSessionParticipantUncheckedCreateWithoutFundingCasesInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutFundingCasesInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+  }
+
+  export type FundingCaseEventCreateNestedManyWithoutCaseInput = {
+    create?: XOR<FundingCaseEventCreateWithoutCaseInput, FundingCaseEventUncheckedCreateWithoutCaseInput> | FundingCaseEventCreateWithoutCaseInput[] | FundingCaseEventUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingCaseEventCreateOrConnectWithoutCaseInput | FundingCaseEventCreateOrConnectWithoutCaseInput[]
+    createMany?: FundingCaseEventCreateManyCaseInputEnvelope
+    connect?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+  }
+
+  export type FundingDocumentCreateNestedManyWithoutCaseInput = {
+    create?: XOR<FundingDocumentCreateWithoutCaseInput, FundingDocumentUncheckedCreateWithoutCaseInput> | FundingDocumentCreateWithoutCaseInput[] | FundingDocumentUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingDocumentCreateOrConnectWithoutCaseInput | FundingDocumentCreateOrConnectWithoutCaseInput[]
+    createMany?: FundingDocumentCreateManyCaseInputEnvelope
+    connect?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+  }
+
+  export type FundingCaseEventUncheckedCreateNestedManyWithoutCaseInput = {
+    create?: XOR<FundingCaseEventCreateWithoutCaseInput, FundingCaseEventUncheckedCreateWithoutCaseInput> | FundingCaseEventCreateWithoutCaseInput[] | FundingCaseEventUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingCaseEventCreateOrConnectWithoutCaseInput | FundingCaseEventCreateOrConnectWithoutCaseInput[]
+    createMany?: FundingCaseEventCreateManyCaseInputEnvelope
+    connect?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+  }
+
+  export type FundingDocumentUncheckedCreateNestedManyWithoutCaseInput = {
+    create?: XOR<FundingDocumentCreateWithoutCaseInput, FundingDocumentUncheckedCreateWithoutCaseInput> | FundingDocumentCreateWithoutCaseInput[] | FundingDocumentUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingDocumentCreateOrConnectWithoutCaseInput | FundingDocumentCreateOrConnectWithoutCaseInput[]
+    createMany?: FundingDocumentCreateManyCaseInputEnvelope
+    connect?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+  }
+
+  export type EnumFundingCaseStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FundingCaseStatus
+  }
+
+  export type FundingProviderUpdateOneRequiredWithoutCasesNestedInput = {
+    create?: XOR<FundingProviderCreateWithoutCasesInput, FundingProviderUncheckedCreateWithoutCasesInput>
+    connectOrCreate?: FundingProviderCreateOrConnectWithoutCasesInput
+    upsert?: FundingProviderUpsertWithoutCasesInput
+    connect?: FundingProviderWhereUniqueInput
+    update?: XOR<XOR<FundingProviderUpdateToOneWithWhereWithoutCasesInput, FundingProviderUpdateWithoutCasesInput>, FundingProviderUncheckedUpdateWithoutCasesInput>
+  }
+
+  export type UserUpdateOneWithoutFundingCasesAsLearnerNestedInput = {
+    create?: XOR<UserCreateWithoutFundingCasesAsLearnerInput, UserUncheckedCreateWithoutFundingCasesAsLearnerInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFundingCasesAsLearnerInput
+    upsert?: UserUpsertWithoutFundingCasesAsLearnerInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFundingCasesAsLearnerInput, UserUpdateWithoutFundingCasesAsLearnerInput>, UserUncheckedUpdateWithoutFundingCasesAsLearnerInput>
+  }
+
+  export type FormationSessionUpdateOneWithoutFundingCasesNestedInput = {
+    create?: XOR<FormationSessionCreateWithoutFundingCasesInput, FormationSessionUncheckedCreateWithoutFundingCasesInput>
+    connectOrCreate?: FormationSessionCreateOrConnectWithoutFundingCasesInput
+    upsert?: FormationSessionUpsertWithoutFundingCasesInput
+    disconnect?: FormationSessionWhereInput | boolean
+    delete?: FormationSessionWhereInput | boolean
+    connect?: FormationSessionWhereUniqueInput
+    update?: XOR<XOR<FormationSessionUpdateToOneWithWhereWithoutFundingCasesInput, FormationSessionUpdateWithoutFundingCasesInput>, FormationSessionUncheckedUpdateWithoutFundingCasesInput>
+  }
+
+  export type FormationSessionParticipantUpdateOneWithoutFundingCasesNestedInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutFundingCasesInput, FormationSessionParticipantUncheckedCreateWithoutFundingCasesInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutFundingCasesInput
+    upsert?: FormationSessionParticipantUpsertWithoutFundingCasesInput
+    disconnect?: FormationSessionParticipantWhereInput | boolean
+    delete?: FormationSessionParticipantWhereInput | boolean
+    connect?: FormationSessionParticipantWhereUniqueInput
+    update?: XOR<XOR<FormationSessionParticipantUpdateToOneWithWhereWithoutFundingCasesInput, FormationSessionParticipantUpdateWithoutFundingCasesInput>, FormationSessionParticipantUncheckedUpdateWithoutFundingCasesInput>
+  }
+
+  export type FundingCaseEventUpdateManyWithoutCaseNestedInput = {
+    create?: XOR<FundingCaseEventCreateWithoutCaseInput, FundingCaseEventUncheckedCreateWithoutCaseInput> | FundingCaseEventCreateWithoutCaseInput[] | FundingCaseEventUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingCaseEventCreateOrConnectWithoutCaseInput | FundingCaseEventCreateOrConnectWithoutCaseInput[]
+    upsert?: FundingCaseEventUpsertWithWhereUniqueWithoutCaseInput | FundingCaseEventUpsertWithWhereUniqueWithoutCaseInput[]
+    createMany?: FundingCaseEventCreateManyCaseInputEnvelope
+    set?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    disconnect?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    delete?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    connect?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    update?: FundingCaseEventUpdateWithWhereUniqueWithoutCaseInput | FundingCaseEventUpdateWithWhereUniqueWithoutCaseInput[]
+    updateMany?: FundingCaseEventUpdateManyWithWhereWithoutCaseInput | FundingCaseEventUpdateManyWithWhereWithoutCaseInput[]
+    deleteMany?: FundingCaseEventScalarWhereInput | FundingCaseEventScalarWhereInput[]
+  }
+
+  export type FundingDocumentUpdateManyWithoutCaseNestedInput = {
+    create?: XOR<FundingDocumentCreateWithoutCaseInput, FundingDocumentUncheckedCreateWithoutCaseInput> | FundingDocumentCreateWithoutCaseInput[] | FundingDocumentUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingDocumentCreateOrConnectWithoutCaseInput | FundingDocumentCreateOrConnectWithoutCaseInput[]
+    upsert?: FundingDocumentUpsertWithWhereUniqueWithoutCaseInput | FundingDocumentUpsertWithWhereUniqueWithoutCaseInput[]
+    createMany?: FundingDocumentCreateManyCaseInputEnvelope
+    set?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    disconnect?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    delete?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    connect?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    update?: FundingDocumentUpdateWithWhereUniqueWithoutCaseInput | FundingDocumentUpdateWithWhereUniqueWithoutCaseInput[]
+    updateMany?: FundingDocumentUpdateManyWithWhereWithoutCaseInput | FundingDocumentUpdateManyWithWhereWithoutCaseInput[]
+    deleteMany?: FundingDocumentScalarWhereInput | FundingDocumentScalarWhereInput[]
+  }
+
+  export type FundingCaseEventUncheckedUpdateManyWithoutCaseNestedInput = {
+    create?: XOR<FundingCaseEventCreateWithoutCaseInput, FundingCaseEventUncheckedCreateWithoutCaseInput> | FundingCaseEventCreateWithoutCaseInput[] | FundingCaseEventUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingCaseEventCreateOrConnectWithoutCaseInput | FundingCaseEventCreateOrConnectWithoutCaseInput[]
+    upsert?: FundingCaseEventUpsertWithWhereUniqueWithoutCaseInput | FundingCaseEventUpsertWithWhereUniqueWithoutCaseInput[]
+    createMany?: FundingCaseEventCreateManyCaseInputEnvelope
+    set?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    disconnect?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    delete?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    connect?: FundingCaseEventWhereUniqueInput | FundingCaseEventWhereUniqueInput[]
+    update?: FundingCaseEventUpdateWithWhereUniqueWithoutCaseInput | FundingCaseEventUpdateWithWhereUniqueWithoutCaseInput[]
+    updateMany?: FundingCaseEventUpdateManyWithWhereWithoutCaseInput | FundingCaseEventUpdateManyWithWhereWithoutCaseInput[]
+    deleteMany?: FundingCaseEventScalarWhereInput | FundingCaseEventScalarWhereInput[]
+  }
+
+  export type FundingDocumentUncheckedUpdateManyWithoutCaseNestedInput = {
+    create?: XOR<FundingDocumentCreateWithoutCaseInput, FundingDocumentUncheckedCreateWithoutCaseInput> | FundingDocumentCreateWithoutCaseInput[] | FundingDocumentUncheckedCreateWithoutCaseInput[]
+    connectOrCreate?: FundingDocumentCreateOrConnectWithoutCaseInput | FundingDocumentCreateOrConnectWithoutCaseInput[]
+    upsert?: FundingDocumentUpsertWithWhereUniqueWithoutCaseInput | FundingDocumentUpsertWithWhereUniqueWithoutCaseInput[]
+    createMany?: FundingDocumentCreateManyCaseInputEnvelope
+    set?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    disconnect?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    delete?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    connect?: FundingDocumentWhereUniqueInput | FundingDocumentWhereUniqueInput[]
+    update?: FundingDocumentUpdateWithWhereUniqueWithoutCaseInput | FundingDocumentUpdateWithWhereUniqueWithoutCaseInput[]
+    updateMany?: FundingDocumentUpdateManyWithWhereWithoutCaseInput | FundingDocumentUpdateManyWithWhereWithoutCaseInput[]
+    deleteMany?: FundingDocumentScalarWhereInput | FundingDocumentScalarWhereInput[]
+  }
+
+  export type FundingCaseCreateNestedOneWithoutEventsInput = {
+    create?: XOR<FundingCaseCreateWithoutEventsInput, FundingCaseUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutEventsInput
+    connect?: FundingCaseWhereUniqueInput
+  }
+
+  export type NullableEnumFundingCaseStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FundingCaseStatus | null
+  }
+
+  export type FundingCaseUpdateOneRequiredWithoutEventsNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutEventsInput, FundingCaseUncheckedCreateWithoutEventsInput>
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutEventsInput
+    upsert?: FundingCaseUpsertWithoutEventsInput
+    connect?: FundingCaseWhereUniqueInput
+    update?: XOR<XOR<FundingCaseUpdateToOneWithWhereWithoutEventsInput, FundingCaseUpdateWithoutEventsInput>, FundingCaseUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type FundingCaseCreateNestedOneWithoutDocumentsInput = {
+    create?: XOR<FundingCaseCreateWithoutDocumentsInput, FundingCaseUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutDocumentsInput
+    connect?: FundingCaseWhereUniqueInput
+  }
+
+  export type FundingCaseUpdateOneRequiredWithoutDocumentsNestedInput = {
+    create?: XOR<FundingCaseCreateWithoutDocumentsInput, FundingCaseUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: FundingCaseCreateOrConnectWithoutDocumentsInput
+    upsert?: FundingCaseUpsertWithoutDocumentsInput
+    connect?: FundingCaseWhereUniqueInput
+    update?: XOR<XOR<FundingCaseUpdateToOneWithWhereWithoutDocumentsInput, FundingCaseUpdateWithoutDocumentsInput>, FundingCaseUncheckedUpdateWithoutDocumentsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -189180,6 +196012,74 @@ export namespace Prisma {
     _max?: NestedEnumSatisfactionSurveyStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumFundingFunderTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingFunderType | EnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingFunderTypeFilter<$PrismaModel> | $Enums.FundingFunderType
+  }
+
+  export type NestedEnumFundingTransportFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingTransport | EnumFundingTransportFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingTransportFilter<$PrismaModel> | $Enums.FundingTransport
+  }
+
+  export type NestedEnumFundingFunderTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingFunderType | EnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingFunderType[] | ListEnumFundingFunderTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingFunderTypeWithAggregatesFilter<$PrismaModel> | $Enums.FundingFunderType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingFunderTypeFilter<$PrismaModel>
+    _max?: NestedEnumFundingFunderTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFundingTransportWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingTransport | EnumFundingTransportFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingTransport[] | ListEnumFundingTransportFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingTransportWithAggregatesFilter<$PrismaModel> | $Enums.FundingTransport
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingTransportFilter<$PrismaModel>
+    _max?: NestedEnumFundingTransportFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFundingCaseStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingCaseStatusFilter<$PrismaModel> | $Enums.FundingCaseStatus
+  }
+
+  export type NestedEnumFundingCaseStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFundingCaseStatusWithAggregatesFilter<$PrismaModel> | $Enums.FundingCaseStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFundingCaseStatusFilter<$PrismaModel>
+    _max?: NestedEnumFundingCaseStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFundingCaseStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFundingCaseStatusNullableFilter<$PrismaModel> | $Enums.FundingCaseStatus | null
+  }
+
+  export type NestedEnumFundingCaseStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FundingCaseStatus | EnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FundingCaseStatus[] | ListEnumFundingCaseStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFundingCaseStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.FundingCaseStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumFundingCaseStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumFundingCaseStatusNullableFilter<$PrismaModel>
+  }
+
   export type UserRoleCreateWithoutUsersInput = {
     id?: string
     slug: string
@@ -189859,6 +196759,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutUserInput = {
@@ -189877,6 +196778,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutUserInput = {
@@ -190123,6 +197025,58 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FundingCaseCreateWithoutLearnerUserInput = {
+    id?: string
+    reference?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    provider: FundingProviderCreateNestedOneWithoutCasesInput
+    session?: FormationSessionCreateNestedOneWithoutFundingCasesInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutFundingCasesInput
+    events?: FundingCaseEventCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUncheckedCreateWithoutLearnerUserInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: FundingCaseEventUncheckedCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentUncheckedCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseCreateOrConnectWithoutLearnerUserInput = {
+    where: FundingCaseWhereUniqueInput
+    create: XOR<FundingCaseCreateWithoutLearnerUserInput, FundingCaseUncheckedCreateWithoutLearnerUserInput>
+  }
+
+  export type FundingCaseCreateManyLearnerUserInputEnvelope = {
+    data: FundingCaseCreateManyLearnerUserInput | FundingCaseCreateManyLearnerUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DocumentRequestCreateWithoutRequestedByInput = {
     id?: string
     status?: $Enums.DocumentRequestStatus
@@ -190223,6 +197177,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -190260,6 +197215,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -190307,6 +197263,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -190344,6 +197301,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -192603,6 +199561,45 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ComplianceDossierItem"> | Date | string
   }
 
+  export type FundingCaseUpsertWithWhereUniqueWithoutLearnerUserInput = {
+    where: FundingCaseWhereUniqueInput
+    update: XOR<FundingCaseUpdateWithoutLearnerUserInput, FundingCaseUncheckedUpdateWithoutLearnerUserInput>
+    create: XOR<FundingCaseCreateWithoutLearnerUserInput, FundingCaseUncheckedCreateWithoutLearnerUserInput>
+  }
+
+  export type FundingCaseUpdateWithWhereUniqueWithoutLearnerUserInput = {
+    where: FundingCaseWhereUniqueInput
+    data: XOR<FundingCaseUpdateWithoutLearnerUserInput, FundingCaseUncheckedUpdateWithoutLearnerUserInput>
+  }
+
+  export type FundingCaseUpdateManyWithWhereWithoutLearnerUserInput = {
+    where: FundingCaseScalarWhereInput
+    data: XOR<FundingCaseUpdateManyMutationInput, FundingCaseUncheckedUpdateManyWithoutLearnerUserInput>
+  }
+
+  export type FundingCaseScalarWhereInput = {
+    AND?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
+    OR?: FundingCaseScalarWhereInput[]
+    NOT?: FundingCaseScalarWhereInput | FundingCaseScalarWhereInput[]
+    id?: StringFilter<"FundingCase"> | string
+    reference?: StringNullableFilter<"FundingCase"> | string | null
+    providerId?: StringFilter<"FundingCase"> | string
+    learnerUserId?: StringNullableFilter<"FundingCase"> | string | null
+    sessionId?: StringNullableFilter<"FundingCase"> | string | null
+    participantId?: StringNullableFilter<"FundingCase"> | string | null
+    funderType?: EnumFundingFunderTypeFilter<"FundingCase"> | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFilter<"FundingCase"> | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFilter<"FundingCase"> | $Enums.FundingCaseStatus
+    externalReference?: StringNullableFilter<"FundingCase"> | string | null
+    requestedAmount?: DecimalNullableFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: DecimalNullableFilter<"FundingCase"> | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFilter<"FundingCase"> | string
+    notes?: StringNullableFilter<"FundingCase"> | string | null
+    ownerUserId?: StringNullableFilter<"FundingCase"> | string | null
+    createdAt?: DateTimeFilter<"FundingCase"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingCase"> | Date | string
+  }
+
   export type DocumentRequestUpsertWithWhereUniqueWithoutRequestedByInput = {
     where: DocumentRequestWhereUniqueInput
     update: XOR<DocumentRequestUpdateWithoutRequestedByInput, DocumentRequestUncheckedUpdateWithoutRequestedByInput>
@@ -194047,6 +201044,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -194161,6 +201159,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -194538,6 +201537,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -194652,6 +201652,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -195033,6 +202034,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -195147,6 +202149,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -195435,6 +202438,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -195549,6 +202553,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -195663,6 +202668,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -195777,6 +202783,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -195980,6 +202987,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -196094,6 +203102,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -196287,6 +203296,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -196401,6 +203411,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -196567,6 +203578,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -196681,6 +203693,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -196850,6 +203863,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -196964,6 +203978,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -197139,6 +204154,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -197253,6 +204269,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -197367,6 +204384,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -197481,6 +204499,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -197611,6 +204630,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -197725,6 +204745,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -197839,6 +204860,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -197953,6 +204975,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -198072,6 +205095,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -198186,6 +205210,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -198316,6 +205341,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -198430,6 +205456,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -198555,6 +205582,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -198669,6 +205697,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -198783,6 +205812,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -198897,6 +205927,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -199027,6 +206058,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -199141,6 +206173,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -199254,6 +206287,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -199368,6 +206402,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -199767,6 +206802,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -199881,6 +206917,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -200011,6 +207048,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -200125,6 +207163,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -200239,6 +207278,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -200353,6 +207393,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -200483,6 +207524,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -200597,6 +207639,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -200711,6 +207754,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -200825,6 +207869,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -200955,6 +208000,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -201069,6 +208115,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -201385,6 +208432,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -201499,6 +208547,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -201753,6 +208802,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -201867,6 +208917,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -202090,6 +209141,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -202204,6 +209256,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -202284,6 +209337,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -202321,6 +209375,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -202541,6 +209596,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -202655,6 +209711,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -202741,6 +209798,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -202778,6 +209836,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -202940,6 +209999,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -203054,6 +210114,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -203231,6 +210292,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -203345,6 +210407,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -203459,6 +210522,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -203573,6 +210637,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -203692,6 +210757,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -203806,6 +210872,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -203936,6 +211003,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -204050,6 +211118,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -204175,6 +211244,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -204289,6 +211359,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -204402,6 +211473,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -204516,6 +211588,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -205256,6 +212329,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -205293,6 +212367,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -206302,6 +213377,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -206416,6 +213492,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -206546,6 +213623,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -206660,6 +213738,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -206735,6 +213814,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -206772,6 +213852,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -206819,6 +213900,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -206856,6 +213938,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -207362,6 +214445,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -207476,6 +214560,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -207651,6 +214736,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -207765,6 +214851,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -208051,6 +215138,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
@@ -208165,6 +215253,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
@@ -208284,6 +215373,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -208398,6 +215488,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -208530,6 +215621,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSessionInput = {
@@ -208548,6 +215640,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSessionInput = {
@@ -208763,6 +215856,58 @@ export namespace Prisma {
 
   export type SatisfactionSurveyCreateManySessionInputEnvelope = {
     data: SatisfactionSurveyCreateManySessionInput | SatisfactionSurveyCreateManySessionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FundingCaseCreateWithoutSessionInput = {
+    id?: string
+    reference?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    provider: FundingProviderCreateNestedOneWithoutCasesInput
+    learnerUser?: UserCreateNestedOneWithoutFundingCasesAsLearnerInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutFundingCasesInput
+    events?: FundingCaseEventCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUncheckedCreateWithoutSessionInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: FundingCaseEventUncheckedCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentUncheckedCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseCreateOrConnectWithoutSessionInput = {
+    where: FundingCaseWhereUniqueInput
+    create: XOR<FundingCaseCreateWithoutSessionInput, FundingCaseUncheckedCreateWithoutSessionInput>
+  }
+
+  export type FundingCaseCreateManySessionInputEnvelope = {
+    data: FundingCaseCreateManySessionInput | FundingCaseCreateManySessionInput[]
     skipDuplicates?: boolean
   }
 
@@ -209202,6 +216347,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
@@ -209316,6 +216462,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
@@ -209441,6 +216588,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -209555,6 +216703,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -209871,6 +217020,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"SatisfactionSurvey"> | Date | string
   }
 
+  export type FundingCaseUpsertWithWhereUniqueWithoutSessionInput = {
+    where: FundingCaseWhereUniqueInput
+    update: XOR<FundingCaseUpdateWithoutSessionInput, FundingCaseUncheckedUpdateWithoutSessionInput>
+    create: XOR<FundingCaseCreateWithoutSessionInput, FundingCaseUncheckedCreateWithoutSessionInput>
+  }
+
+  export type FundingCaseUpdateWithWhereUniqueWithoutSessionInput = {
+    where: FundingCaseWhereUniqueInput
+    data: XOR<FundingCaseUpdateWithoutSessionInput, FundingCaseUncheckedUpdateWithoutSessionInput>
+  }
+
+  export type FundingCaseUpdateManyWithWhereWithoutSessionInput = {
+    where: FundingCaseScalarWhereInput
+    data: XOR<FundingCaseUpdateManyMutationInput, FundingCaseUncheckedUpdateManyWithoutSessionInput>
+  }
+
   export type CandidatureUpsertWithWhereUniqueWithoutInterestedSessionInput = {
     where: CandidatureWhereUniqueInput
     update: XOR<CandidatureUpdateWithoutInterestedSessionInput, CandidatureUncheckedUpdateWithoutInterestedSessionInput>
@@ -209972,6 +217137,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
   }
@@ -210009,6 +217175,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
   }
@@ -210062,6 +217229,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
   }
@@ -210099,6 +217267,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
   }
@@ -210268,6 +217437,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -210305,6 +217475,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -210497,6 +217668,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -210534,6 +217706,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -210609,6 +217782,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -210723,6 +217897,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -210938,6 +218113,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
   }
@@ -210975,6 +218151,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -211087,6 +218264,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutCandidatureInput = {
@@ -211105,6 +218283,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutCandidatureInput = {
@@ -211304,6 +218483,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -211418,6 +218598,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -211645,6 +218826,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
   }
@@ -211682,6 +218864,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -211827,6 +219010,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -211864,6 +219048,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -211944,6 +219129,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -212058,6 +219244,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -212230,6 +219417,58 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FundingCaseCreateWithoutParticipantInput = {
+    id?: string
+    reference?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    provider: FundingProviderCreateNestedOneWithoutCasesInput
+    learnerUser?: UserCreateNestedOneWithoutFundingCasesAsLearnerInput
+    session?: FormationSessionCreateNestedOneWithoutFundingCasesInput
+    events?: FundingCaseEventCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUncheckedCreateWithoutParticipantInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    sessionId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: FundingCaseEventUncheckedCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentUncheckedCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseCreateOrConnectWithoutParticipantInput = {
+    where: FundingCaseWhereUniqueInput
+    create: XOR<FundingCaseCreateWithoutParticipantInput, FundingCaseUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FundingCaseCreateManyParticipantInputEnvelope = {
+    data: FundingCaseCreateManyParticipantInput | FundingCaseCreateManyParticipantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FormationSessionUpsertWithoutParticipantsInput = {
     update: XOR<FormationSessionUpdateWithoutParticipantsInput, FormationSessionUncheckedUpdateWithoutParticipantsInput>
     create: XOR<FormationSessionCreateWithoutParticipantsInput, FormationSessionUncheckedCreateWithoutParticipantsInput>
@@ -212273,6 +219512,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -212310,6 +219550,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -212396,6 +219637,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -212510,6 +219752,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -212647,6 +219890,22 @@ export namespace Prisma {
     data: XOR<SatisfactionSurveyUpdateManyMutationInput, SatisfactionSurveyUncheckedUpdateManyWithoutParticipantInput>
   }
 
+  export type FundingCaseUpsertWithWhereUniqueWithoutParticipantInput = {
+    where: FundingCaseWhereUniqueInput
+    update: XOR<FundingCaseUpdateWithoutParticipantInput, FundingCaseUncheckedUpdateWithoutParticipantInput>
+    create: XOR<FundingCaseCreateWithoutParticipantInput, FundingCaseUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FundingCaseUpdateWithWhereUniqueWithoutParticipantInput = {
+    where: FundingCaseWhereUniqueInput
+    data: XOR<FundingCaseUpdateWithoutParticipantInput, FundingCaseUncheckedUpdateWithoutParticipantInput>
+  }
+
+  export type FundingCaseUpdateManyWithWhereWithoutParticipantInput = {
+    where: FundingCaseScalarWhereInput
+    data: XOR<FundingCaseUpdateManyMutationInput, FundingCaseUncheckedUpdateManyWithoutParticipantInput>
+  }
+
   export type FormationSessionCreateWithoutSuiviDaysInput = {
     id?: string
     startDate?: Date | string | null
@@ -212679,6 +219938,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -212716,6 +219976,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -212803,6 +220064,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -212840,6 +220102,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -212902,6 +220165,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutEmargementsInput = {
@@ -212920,6 +220184,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutEmargementsInput = {
@@ -212997,6 +220262,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -213111,6 +220377,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -213218,6 +220485,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput = {
@@ -213236,6 +220504,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type UserUpsertWithoutFormationSessionEmargementsMarkedInput = {
@@ -213319,6 +220588,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -213433,6 +220703,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -213509,6 +220780,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -213546,6 +220818,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -213638,6 +220911,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -213675,6 +220949,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -213795,6 +221070,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -213909,6 +221185,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -214178,6 +221455,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -214215,6 +221493,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -214306,6 +221585,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -214420,6 +221700,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -214707,6 +221988,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -214744,6 +222026,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -214936,6 +222219,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -215050,6 +222334,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -215694,6 +222979,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -215808,6 +223094,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -216478,6 +223765,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -216592,6 +223880,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -216910,6 +224199,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -217024,6 +224314,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -217288,6 +224579,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -217402,6 +224694,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -217651,6 +224944,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -217765,6 +225059,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -217895,6 +225190,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -218009,6 +225305,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -218252,6 +225549,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -218366,6 +225664,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -218770,6 +226069,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -218884,6 +226184,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -219250,6 +226551,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -219364,6 +226666,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -219697,6 +227000,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -219811,6 +227115,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -219994,6 +227299,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -220108,6 +227414,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -220222,6 +227529,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -220336,6 +227644,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -220515,6 +227824,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -220629,6 +227939,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -220855,6 +228166,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -220969,6 +228281,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -221162,6 +228475,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -221276,6 +228590,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -221390,6 +228705,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -221504,6 +228820,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -221634,6 +228951,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -221748,6 +229066,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -221862,6 +229181,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -221976,6 +229296,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -222262,6 +229583,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -222376,6 +229698,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -222601,6 +229924,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -222715,6 +230039,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -222937,6 +230262,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -223051,6 +230377,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -223269,6 +230596,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -223383,6 +230711,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -223548,6 +230877,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -223662,6 +230992,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -223817,6 +231148,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -223931,6 +231263,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -224118,6 +231451,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -224232,6 +231566,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -225255,6 +232590,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
   }
@@ -225292,6 +232628,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
   }
@@ -225652,6 +232989,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
   }
@@ -225689,6 +233027,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
   }
@@ -226395,6 +233734,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -226509,6 +233849,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -226660,6 +234001,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -226774,6 +234116,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -227091,6 +234434,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -227205,6 +234549,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -227412,6 +234757,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -227526,6 +234872,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -227736,6 +235083,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -227850,6 +235198,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -228102,6 +235451,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -228216,6 +235566,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -228430,6 +235781,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -228544,6 +235896,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -228715,6 +236068,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -228829,6 +236183,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -228970,6 +236325,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -229084,6 +236440,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -229247,6 +236604,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -229361,6 +236719,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -229653,6 +237012,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -229767,6 +237127,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -229930,6 +237291,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -230044,6 +237406,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -230159,6 +237522,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -230273,6 +237637,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -230451,6 +237816,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -230565,6 +237931,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -230912,6 +238279,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -231026,6 +238394,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -231187,6 +238556,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -231301,6 +238671,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -231488,6 +238859,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -231602,6 +238974,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -231732,6 +239105,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -231846,6 +239220,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -231960,6 +239335,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -232074,6 +239450,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -232236,6 +239613,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -232350,6 +239728,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -232822,6 +240201,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -232936,6 +240316,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -233055,6 +240436,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -233169,6 +240551,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -233456,6 +240839,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -233570,6 +240954,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -233695,6 +241080,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -233809,6 +241195,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -234014,6 +241401,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -234128,6 +241516,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -234343,6 +241732,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -234457,6 +241847,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -234728,6 +242119,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -234842,6 +242234,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -235131,6 +242524,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -235245,6 +242639,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -235441,6 +242836,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -235555,6 +242951,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -235674,6 +243071,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -235788,6 +243186,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -236012,6 +243411,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -236126,6 +243526,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -236251,6 +243652,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -236365,6 +243767,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -236479,6 +243882,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -236593,6 +243997,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -236723,6 +244128,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -236837,6 +244243,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -236951,6 +244358,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -237065,6 +244473,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -237195,6 +244604,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -237309,6 +244719,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -237555,6 +244966,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -237669,6 +245081,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -237799,6 +245212,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -237913,6 +245327,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -238029,6 +245444,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -238066,6 +245482,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -238250,6 +245667,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -238287,6 +245705,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -238440,6 +245859,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -238554,6 +245974,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -238673,6 +246094,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -238787,6 +246209,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -238952,6 +246375,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -239066,6 +246490,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -239191,6 +246616,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -239305,6 +246731,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -239448,6 +246875,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -239562,6 +246990,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -239727,6 +247156,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -239841,6 +247271,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -239984,6 +247415,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -240098,6 +247530,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -240263,6 +247696,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -240377,6 +247811,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -240695,6 +248130,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -240809,6 +248245,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -241116,6 +248553,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -241230,6 +248668,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -241602,6 +249041,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
@@ -241716,6 +249156,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
@@ -242081,6 +249522,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -242195,6 +249637,7 @@ export namespace Prisma {
     formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -242434,6 +249877,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
     formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
@@ -242548,6 +249992,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
     formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
@@ -242782,6 +250227,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
     formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
@@ -242896,6 +250342,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
     formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
@@ -243102,6 +250549,7 @@ export namespace Prisma {
     candidatures?: CandidatureCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
     formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
     formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
@@ -243216,6 +250664,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
     complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
     documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
     formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
     formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
@@ -243523,6 +250972,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
     formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
@@ -243637,6 +251087,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
     formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
@@ -243791,6 +251242,7 @@ export namespace Prisma {
     formationExam?: FormationExamCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
@@ -243828,6 +251280,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
     rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutSessionInput
     candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
     financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
     automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
@@ -243854,6 +251307,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
     candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput = {
@@ -243872,6 +251326,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSatisfactionSurveysInput = {
@@ -243922,6 +251377,7 @@ export namespace Prisma {
     formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -243959,6 +251415,7 @@ export namespace Prisma {
     formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -243991,6 +251448,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput = {
@@ -244009,6 +251467,1195 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FundingCaseCreateWithoutProviderInput = {
+    id?: string
+    reference?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    learnerUser?: UserCreateNestedOneWithoutFundingCasesAsLearnerInput
+    session?: FormationSessionCreateNestedOneWithoutFundingCasesInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutFundingCasesInput
+    events?: FundingCaseEventCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUncheckedCreateWithoutProviderInput = {
+    id?: string
+    reference?: string | null
+    learnerUserId?: string | null
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: FundingCaseEventUncheckedCreateNestedManyWithoutCaseInput
+    documents?: FundingDocumentUncheckedCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseCreateOrConnectWithoutProviderInput = {
+    where: FundingCaseWhereUniqueInput
+    create: XOR<FundingCaseCreateWithoutProviderInput, FundingCaseUncheckedCreateWithoutProviderInput>
+  }
+
+  export type FundingCaseCreateManyProviderInputEnvelope = {
+    data: FundingCaseCreateManyProviderInput | FundingCaseCreateManyProviderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FundingCaseUpsertWithWhereUniqueWithoutProviderInput = {
+    where: FundingCaseWhereUniqueInput
+    update: XOR<FundingCaseUpdateWithoutProviderInput, FundingCaseUncheckedUpdateWithoutProviderInput>
+    create: XOR<FundingCaseCreateWithoutProviderInput, FundingCaseUncheckedCreateWithoutProviderInput>
+  }
+
+  export type FundingCaseUpdateWithWhereUniqueWithoutProviderInput = {
+    where: FundingCaseWhereUniqueInput
+    data: XOR<FundingCaseUpdateWithoutProviderInput, FundingCaseUncheckedUpdateWithoutProviderInput>
+  }
+
+  export type FundingCaseUpdateManyWithWhereWithoutProviderInput = {
+    where: FundingCaseScalarWhereInput
+    data: XOR<FundingCaseUpdateManyMutationInput, FundingCaseUncheckedUpdateManyWithoutProviderInput>
+  }
+
+  export type FundingProviderCreateWithoutCasesInput = {
+    id?: string
+    code: string
+    label: string
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    isActive?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingProviderUncheckedCreateWithoutCasesInput = {
+    id?: string
+    code: string
+    label: string
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    isActive?: boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingProviderCreateOrConnectWithoutCasesInput = {
+    where: FundingProviderWhereUniqueInput
+    create: XOR<FundingProviderCreateWithoutCasesInput, FundingProviderUncheckedCreateWithoutCasesInput>
+  }
+
+  export type UserCreateWithoutFundingCasesAsLearnerInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    jobPosition?: RhPositionCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserUncheckedCreateWithoutFundingCasesAsLearnerInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    jobPositionId?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationUncheckedCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserCreateOrConnectWithoutFundingCasesAsLearnerInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFundingCasesAsLearnerInput, UserUncheckedCreateWithoutFundingCasesAsLearnerInput>
+  }
+
+  export type FormationSessionCreateWithoutFundingCasesInput = {
+    id?: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: number | null
+    traineesMax?: number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    formation: FormationCreateNestedOneWithoutSessionsInput
+    examVenueRoom?: FormationVenueRoomCreateNestedOneWithoutExamSessionsInput
+    trainer?: UserCreateNestedOneWithoutFormationSessionsTrainedInput
+    moderator?: UserCreateNestedOneWithoutFormationSessionsModeratedInput
+    chatConversation?: ChatConversationCreateNestedOneWithoutFormationSessionInput
+    venueRoom?: FormationVenueRoomCreateNestedOneWithoutSessionsInput
+    participants?: FormationSessionParticipantCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationCreateNestedManyWithoutSessionInput
+    formationExam?: FormationExamCreateNestedOneWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutSessionInput
+    candidaturesInterested?: CandidatureCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisCreateNestedManyWithoutFormationSessionInput
+    automationRuns?: SessionAutomationRunCreateNestedManyWithoutSessionInput
+  }
+
+  export type FormationSessionUncheckedCreateWithoutFundingCasesInput = {
+    id?: string
+    formationId: string
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    registrationClosesAt?: Date | string | null
+    examDate?: Date | string | null
+    examVenueRoomId?: string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: number | null
+    traineesMax?: number | null
+    trainerUserId?: string | null
+    moderatorUserId?: string | null
+    venueRoomId?: string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel: string
+    location: string
+    sessionKind?: $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: string | null
+    sessionSubtitle?: string | null
+    sortOrder?: number
+    bookingEnabled?: boolean
+    bookingUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatConversation?: ChatConversationUncheckedCreateNestedOneWithoutFormationSessionInput
+    participants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutSessionInput
+    suiviDays?: FormationSessionDayUncheckedCreateNestedManyWithoutSessionInput
+    attestations?: FormationAttestationUncheckedCreateNestedManyWithoutSessionInput
+    formationExam?: FormationExamUncheckedCreateNestedOneWithoutSessionInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedCreateNestedManyWithoutSessionInput
+    rhTeam?: RhTeamUncheckedCreateNestedOneWithoutFormationSessionInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutSessionInput
+    candidaturesInterested?: CandidatureUncheckedCreateNestedManyWithoutInterestedSessionInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedCreateNestedManyWithoutFormationSessionInput
+    automationRuns?: SessionAutomationRunUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type FormationSessionCreateOrConnectWithoutFundingCasesInput = {
+    where: FormationSessionWhereUniqueInput
+    create: XOR<FormationSessionCreateWithoutFundingCasesInput, FormationSessionUncheckedCreateWithoutFundingCasesInput>
+  }
+
+  export type FormationSessionParticipantCreateWithoutFundingCasesInput = {
+    id?: string
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutParticipantsInput
+    user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
+    candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantUncheckedCreateWithoutFundingCasesInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    candidatureId?: string | null
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantCreateOrConnectWithoutFundingCasesInput = {
+    where: FormationSessionParticipantWhereUniqueInput
+    create: XOR<FormationSessionParticipantCreateWithoutFundingCasesInput, FormationSessionParticipantUncheckedCreateWithoutFundingCasesInput>
+  }
+
+  export type FundingCaseEventCreateWithoutCaseInput = {
+    id?: string
+    fromStatus?: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus
+    source: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FundingCaseEventUncheckedCreateWithoutCaseInput = {
+    id?: string
+    fromStatus?: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus
+    source: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FundingCaseEventCreateOrConnectWithoutCaseInput = {
+    where: FundingCaseEventWhereUniqueInput
+    create: XOR<FundingCaseEventCreateWithoutCaseInput, FundingCaseEventUncheckedCreateWithoutCaseInput>
+  }
+
+  export type FundingCaseEventCreateManyCaseInputEnvelope = {
+    data: FundingCaseEventCreateManyCaseInput | FundingCaseEventCreateManyCaseInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FundingDocumentCreateWithoutCaseInput = {
+    id?: string
+    code: string
+    label: string
+    status: string
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingDocumentUncheckedCreateWithoutCaseInput = {
+    id?: string
+    code: string
+    label: string
+    status: string
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingDocumentCreateOrConnectWithoutCaseInput = {
+    where: FundingDocumentWhereUniqueInput
+    create: XOR<FundingDocumentCreateWithoutCaseInput, FundingDocumentUncheckedCreateWithoutCaseInput>
+  }
+
+  export type FundingDocumentCreateManyCaseInputEnvelope = {
+    data: FundingDocumentCreateManyCaseInput | FundingDocumentCreateManyCaseInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FundingProviderUpsertWithoutCasesInput = {
+    update: XOR<FundingProviderUpdateWithoutCasesInput, FundingProviderUncheckedUpdateWithoutCasesInput>
+    create: XOR<FundingProviderCreateWithoutCasesInput, FundingProviderUncheckedCreateWithoutCasesInput>
+    where?: FundingProviderWhereInput
+  }
+
+  export type FundingProviderUpdateToOneWithWhereWithoutCasesInput = {
+    where?: FundingProviderWhereInput
+    data: XOR<FundingProviderUpdateWithoutCasesInput, FundingProviderUncheckedUpdateWithoutCasesInput>
+  }
+
+  export type FundingProviderUpdateWithoutCasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingProviderUncheckedUpdateWithoutCasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutFundingCasesAsLearnerInput = {
+    update: XOR<UserUpdateWithoutFundingCasesAsLearnerInput, UserUncheckedUpdateWithoutFundingCasesAsLearnerInput>
+    create: XOR<UserCreateWithoutFundingCasesAsLearnerInput, UserUncheckedCreateWithoutFundingCasesAsLearnerInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFundingCasesAsLearnerInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFundingCasesAsLearnerInput, UserUncheckedUpdateWithoutFundingCasesAsLearnerInput>
+  }
+
+  export type UserUpdateWithoutFundingCasesAsLearnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    jobPosition?: RhPositionUpdateOneWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFundingCasesAsLearnerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    jobPositionId?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type FormationSessionUpsertWithoutFundingCasesInput = {
+    update: XOR<FormationSessionUpdateWithoutFundingCasesInput, FormationSessionUncheckedUpdateWithoutFundingCasesInput>
+    create: XOR<FormationSessionCreateWithoutFundingCasesInput, FormationSessionUncheckedCreateWithoutFundingCasesInput>
+    where?: FormationSessionWhereInput
+  }
+
+  export type FormationSessionUpdateToOneWithWhereWithoutFundingCasesInput = {
+    where?: FormationSessionWhereInput
+    data: XOR<FormationSessionUpdateWithoutFundingCasesInput, FormationSessionUncheckedUpdateWithoutFundingCasesInput>
+  }
+
+  export type FormationSessionUpdateWithoutFundingCasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    formation?: FormationUpdateOneRequiredWithoutSessionsNestedInput
+    examVenueRoom?: FormationVenueRoomUpdateOneWithoutExamSessionsNestedInput
+    trainer?: UserUpdateOneWithoutFormationSessionsTrainedNestedInput
+    moderator?: UserUpdateOneWithoutFormationSessionsModeratedNestedInput
+    chatConversation?: ChatConversationUpdateOneWithoutFormationSessionNestedInput
+    venueRoom?: FormationVenueRoomUpdateOneWithoutSessionsNestedInput
+    participants?: FormationSessionParticipantUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUpdateManyWithoutSessionNestedInput
+    formationExam?: FormationExamUpdateOneWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
+    automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
+  }
+
+  export type FormationSessionUncheckedUpdateWithoutFundingCasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    formationId?: StringFieldUpdateOperationsInput | string
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    registrationClosesAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    examVenueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
+    examReservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
+    traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
+    trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
+    reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    dateDisplayLabel?: StringFieldUpdateOperationsInput | string
+    location?: StringFieldUpdateOperationsInput | string
+    sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
+    venueBrandPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionSubtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    bookingEnabled?: BoolFieldUpdateOperationsInput | boolean
+    bookingUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatConversation?: ChatConversationUncheckedUpdateOneWithoutFormationSessionNestedInput
+    participants?: FormationSessionParticipantUncheckedUpdateManyWithoutSessionNestedInput
+    suiviDays?: FormationSessionDayUncheckedUpdateManyWithoutSessionNestedInput
+    attestations?: FormationAttestationUncheckedUpdateManyWithoutSessionNestedInput
+    formationExam?: FormationExamUncheckedUpdateOneWithoutSessionNestedInput
+    portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
+    rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
+    financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
+    automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
+  }
+
+  export type FormationSessionParticipantUpsertWithoutFundingCasesInput = {
+    update: XOR<FormationSessionParticipantUpdateWithoutFundingCasesInput, FormationSessionParticipantUncheckedUpdateWithoutFundingCasesInput>
+    create: XOR<FormationSessionParticipantCreateWithoutFundingCasesInput, FormationSessionParticipantUncheckedCreateWithoutFundingCasesInput>
+    where?: FormationSessionParticipantWhereInput
+  }
+
+  export type FormationSessionParticipantUpdateToOneWithWhereWithoutFundingCasesInput = {
+    where?: FormationSessionParticipantWhereInput
+    data: XOR<FormationSessionParticipantUpdateWithoutFundingCasesInput, FormationSessionParticipantUncheckedUpdateWithoutFundingCasesInput>
+  }
+
+  export type FormationSessionParticipantUpdateWithoutFundingCasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
+    user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
+    candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FormationSessionParticipantUncheckedUpdateWithoutFundingCasesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    candidatureId?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FundingCaseEventUpsertWithWhereUniqueWithoutCaseInput = {
+    where: FundingCaseEventWhereUniqueInput
+    update: XOR<FundingCaseEventUpdateWithoutCaseInput, FundingCaseEventUncheckedUpdateWithoutCaseInput>
+    create: XOR<FundingCaseEventCreateWithoutCaseInput, FundingCaseEventUncheckedCreateWithoutCaseInput>
+  }
+
+  export type FundingCaseEventUpdateWithWhereUniqueWithoutCaseInput = {
+    where: FundingCaseEventWhereUniqueInput
+    data: XOR<FundingCaseEventUpdateWithoutCaseInput, FundingCaseEventUncheckedUpdateWithoutCaseInput>
+  }
+
+  export type FundingCaseEventUpdateManyWithWhereWithoutCaseInput = {
+    where: FundingCaseEventScalarWhereInput
+    data: XOR<FundingCaseEventUpdateManyMutationInput, FundingCaseEventUncheckedUpdateManyWithoutCaseInput>
+  }
+
+  export type FundingCaseEventScalarWhereInput = {
+    AND?: FundingCaseEventScalarWhereInput | FundingCaseEventScalarWhereInput[]
+    OR?: FundingCaseEventScalarWhereInput[]
+    NOT?: FundingCaseEventScalarWhereInput | FundingCaseEventScalarWhereInput[]
+    id?: StringFilter<"FundingCaseEvent"> | string
+    caseId?: StringFilter<"FundingCaseEvent"> | string
+    fromStatus?: EnumFundingCaseStatusNullableFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFilter<"FundingCaseEvent"> | $Enums.FundingCaseStatus
+    source?: StringFilter<"FundingCaseEvent"> | string
+    payload?: JsonNullableFilter<"FundingCaseEvent">
+    actorUserId?: StringNullableFilter<"FundingCaseEvent"> | string | null
+    createdAt?: DateTimeFilter<"FundingCaseEvent"> | Date | string
+  }
+
+  export type FundingDocumentUpsertWithWhereUniqueWithoutCaseInput = {
+    where: FundingDocumentWhereUniqueInput
+    update: XOR<FundingDocumentUpdateWithoutCaseInput, FundingDocumentUncheckedUpdateWithoutCaseInput>
+    create: XOR<FundingDocumentCreateWithoutCaseInput, FundingDocumentUncheckedCreateWithoutCaseInput>
+  }
+
+  export type FundingDocumentUpdateWithWhereUniqueWithoutCaseInput = {
+    where: FundingDocumentWhereUniqueInput
+    data: XOR<FundingDocumentUpdateWithoutCaseInput, FundingDocumentUncheckedUpdateWithoutCaseInput>
+  }
+
+  export type FundingDocumentUpdateManyWithWhereWithoutCaseInput = {
+    where: FundingDocumentScalarWhereInput
+    data: XOR<FundingDocumentUpdateManyMutationInput, FundingDocumentUncheckedUpdateManyWithoutCaseInput>
+  }
+
+  export type FundingDocumentScalarWhereInput = {
+    AND?: FundingDocumentScalarWhereInput | FundingDocumentScalarWhereInput[]
+    OR?: FundingDocumentScalarWhereInput[]
+    NOT?: FundingDocumentScalarWhereInput | FundingDocumentScalarWhereInput[]
+    id?: StringFilter<"FundingDocument"> | string
+    caseId?: StringFilter<"FundingDocument"> | string
+    code?: StringFilter<"FundingDocument"> | string
+    label?: StringFilter<"FundingDocument"> | string
+    status?: StringFilter<"FundingDocument"> | string
+    fileAssetId?: StringNullableFilter<"FundingDocument"> | string | null
+    createdAt?: DateTimeFilter<"FundingDocument"> | Date | string
+    updatedAt?: DateTimeFilter<"FundingDocument"> | Date | string
+  }
+
+  export type FundingCaseCreateWithoutEventsInput = {
+    id?: string
+    reference?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    provider: FundingProviderCreateNestedOneWithoutCasesInput
+    learnerUser?: UserCreateNestedOneWithoutFundingCasesAsLearnerInput
+    session?: FormationSessionCreateNestedOneWithoutFundingCasesInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutFundingCasesInput
+    documents?: FundingDocumentCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUncheckedCreateWithoutEventsInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documents?: FundingDocumentUncheckedCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseCreateOrConnectWithoutEventsInput = {
+    where: FundingCaseWhereUniqueInput
+    create: XOR<FundingCaseCreateWithoutEventsInput, FundingCaseUncheckedCreateWithoutEventsInput>
+  }
+
+  export type FundingCaseUpsertWithoutEventsInput = {
+    update: XOR<FundingCaseUpdateWithoutEventsInput, FundingCaseUncheckedUpdateWithoutEventsInput>
+    create: XOR<FundingCaseCreateWithoutEventsInput, FundingCaseUncheckedCreateWithoutEventsInput>
+    where?: FundingCaseWhereInput
+  }
+
+  export type FundingCaseUpdateToOneWithWhereWithoutEventsInput = {
+    where?: FundingCaseWhereInput
+    data: XOR<FundingCaseUpdateWithoutEventsInput, FundingCaseUncheckedUpdateWithoutEventsInput>
+  }
+
+  export type FundingCaseUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: FundingProviderUpdateOneRequiredWithoutCasesNestedInput
+    learnerUser?: UserUpdateOneWithoutFundingCasesAsLearnerNestedInput
+    session?: FormationSessionUpdateOneWithoutFundingCasesNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutFundingCasesNestedInput
+    documents?: FundingDocumentUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateWithoutEventsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: FundingDocumentUncheckedUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseCreateWithoutDocumentsInput = {
+    id?: string
+    reference?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    provider: FundingProviderCreateNestedOneWithoutCasesInput
+    learnerUser?: UserCreateNestedOneWithoutFundingCasesAsLearnerInput
+    session?: FormationSessionCreateNestedOneWithoutFundingCasesInput
+    participant?: FormationSessionParticipantCreateNestedOneWithoutFundingCasesInput
+    events?: FundingCaseEventCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseUncheckedCreateWithoutDocumentsInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    events?: FundingCaseEventUncheckedCreateNestedManyWithoutCaseInput
+  }
+
+  export type FundingCaseCreateOrConnectWithoutDocumentsInput = {
+    where: FundingCaseWhereUniqueInput
+    create: XOR<FundingCaseCreateWithoutDocumentsInput, FundingCaseUncheckedCreateWithoutDocumentsInput>
+  }
+
+  export type FundingCaseUpsertWithoutDocumentsInput = {
+    update: XOR<FundingCaseUpdateWithoutDocumentsInput, FundingCaseUncheckedUpdateWithoutDocumentsInput>
+    create: XOR<FundingCaseCreateWithoutDocumentsInput, FundingCaseUncheckedCreateWithoutDocumentsInput>
+    where?: FundingCaseWhereInput
+  }
+
+  export type FundingCaseUpdateToOneWithWhereWithoutDocumentsInput = {
+    where?: FundingCaseWhereInput
+    data: XOR<FundingCaseUpdateWithoutDocumentsInput, FundingCaseUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type FundingCaseUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: FundingProviderUpdateOneRequiredWithoutCasesNestedInput
+    learnerUser?: UserUpdateOneWithoutFundingCasesAsLearnerNestedInput
+    session?: FormationSessionUpdateOneWithoutFundingCasesNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutFundingCasesNestedInput
+    events?: FundingCaseEventUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: FundingCaseEventUncheckedUpdateManyWithoutCaseNestedInput
   }
 
   export type SystemLogCreateManyUserInput = {
@@ -244291,6 +252938,25 @@ export namespace Prisma {
     validatedAt?: Date | string | null
     rejectionReason?: string | null
     lastCheckedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingCaseCreateManyLearnerUserInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -245439,6 +254105,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutUserInput = {
@@ -245457,6 +254124,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutUserInput = {
@@ -245742,6 +254410,67 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FundingCaseUpdateWithoutLearnerUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: FundingProviderUpdateOneRequiredWithoutCasesNestedInput
+    session?: FormationSessionUpdateOneWithoutFundingCasesNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutFundingCasesNestedInput
+    events?: FundingCaseEventUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateWithoutLearnerUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: FundingCaseEventUncheckedUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUncheckedUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutLearnerUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type DocumentRequestUpdateWithoutRequestedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumDocumentRequestStatusFieldUpdateOperationsInput | $Enums.DocumentRequestStatus
@@ -245846,6 +254575,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -245883,6 +254613,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -245946,6 +254677,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -245983,6 +254715,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -247882,6 +256615,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -247996,6 +256730,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -248564,6 +257299,7 @@ export namespace Prisma {
     candidatures?: CandidatureUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
@@ -248678,6 +257414,7 @@ export namespace Prisma {
     candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
     complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
     complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
     documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
     formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
@@ -249162,6 +257899,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -249199,6 +257937,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -249658,6 +258397,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -249695,6 +258435,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -249758,6 +258499,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUpdateManyWithoutSessionNestedInput
@@ -249795,6 +258537,7 @@ export namespace Prisma {
     portalAnnouncements?: PortalSessionAnnouncementUncheckedUpdateManyWithoutSessionNestedInput
     rhTeam?: RhTeamUncheckedUpdateOneWithoutFormationSessionNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutSessionNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutSessionNestedInput
     candidaturesInterested?: CandidatureUncheckedUpdateManyWithoutInterestedSessionNestedInput
     financeDevisSessionLinks?: FinanceDevisUncheckedUpdateManyWithoutFormationSessionNestedInput
     automationRuns?: SessionAutomationRunUncheckedUpdateManyWithoutSessionNestedInput
@@ -249996,6 +258739,25 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type FundingCaseCreateManySessionInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type CandidatureCreateManyInterestedSessionInput = {
     id?: string
     userId: string
@@ -250076,6 +258838,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSessionInput = {
@@ -250094,6 +258857,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutSessionInput = {
@@ -250248,6 +259012,67 @@ export namespace Prisma {
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: FundingProviderUpdateOneRequiredWithoutCasesNestedInput
+    learnerUser?: UserUpdateOneWithoutFundingCasesAsLearnerNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutFundingCasesNestedInput
+    events?: FundingCaseEventUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: FundingCaseEventUncheckedUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUncheckedUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutSessionInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -250599,6 +259424,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutCandidatureInput = {
@@ -250617,6 +259443,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureInput = {
@@ -250786,6 +259613,25 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type FundingCaseCreateManyParticipantInput = {
+    id?: string
+    reference?: string | null
+    providerId: string
+    learnerUserId?: string | null
+    sessionId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type FormationSessionEmargementUpdateWithoutParticipantInput = {
     id?: StringFieldUpdateOperationsInput | string
     slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
@@ -250854,6 +259700,67 @@ export namespace Prisma {
     sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     respondedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     answers?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    provider?: FundingProviderUpdateOneRequiredWithoutCasesNestedInput
+    learnerUser?: UserUpdateOneWithoutFundingCasesAsLearnerNestedInput
+    session?: FormationSessionUpdateOneWithoutFundingCasesNestedInput
+    events?: FundingCaseEventUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: FundingCaseEventUncheckedUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUncheckedUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    providerId?: StringFieldUpdateOperationsInput | string
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -253319,6 +262226,166 @@ export namespace Prisma {
     fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
     payload?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseCreateManyProviderInput = {
+    id?: string
+    reference?: string | null
+    learnerUserId?: string | null
+    sessionId?: string | null
+    participantId?: string | null
+    funderType: $Enums.FundingFunderType
+    transport: $Enums.FundingTransport
+    status?: $Enums.FundingCaseStatus
+    externalReference?: string | null
+    requestedAmount?: Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: Decimal | DecimalJsLike | number | string | null
+    currency?: string
+    notes?: string | null
+    ownerUserId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingCaseUpdateWithoutProviderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    learnerUser?: UserUpdateOneWithoutFundingCasesAsLearnerNestedInput
+    session?: FormationSessionUpdateOneWithoutFundingCasesNestedInput
+    participant?: FormationSessionParticipantUpdateOneWithoutFundingCasesNestedInput
+    events?: FundingCaseEventUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateWithoutProviderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    events?: FundingCaseEventUncheckedUpdateManyWithoutCaseNestedInput
+    documents?: FundingDocumentUncheckedUpdateManyWithoutCaseNestedInput
+  }
+
+  export type FundingCaseUncheckedUpdateManyWithoutProviderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    learnerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    participantId?: NullableStringFieldUpdateOperationsInput | string | null
+    funderType?: EnumFundingFunderTypeFieldUpdateOperationsInput | $Enums.FundingFunderType
+    transport?: EnumFundingTransportFieldUpdateOperationsInput | $Enums.FundingTransport
+    status?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    externalReference?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    approvedAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseEventCreateManyCaseInput = {
+    id?: string
+    fromStatus?: $Enums.FundingCaseStatus | null
+    toStatus: $Enums.FundingCaseStatus
+    source: string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: string | null
+    createdAt?: Date | string
+  }
+
+  export type FundingDocumentCreateManyCaseInput = {
+    id?: string
+    code: string
+    label: string
+    status: string
+    fileAssetId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FundingCaseEventUpdateWithoutCaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromStatus?: NullableEnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    source?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseEventUncheckedUpdateWithoutCaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromStatus?: NullableEnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    source?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingCaseEventUncheckedUpdateManyWithoutCaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromStatus?: NullableEnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus | null
+    toStatus?: EnumFundingCaseStatusFieldUpdateOperationsInput | $Enums.FundingCaseStatus
+    source?: StringFieldUpdateOperationsInput | string
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    actorUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingDocumentUpdateWithoutCaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingDocumentUncheckedUpdateWithoutCaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FundingDocumentUncheckedUpdateManyWithoutCaseInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    fileAssetId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

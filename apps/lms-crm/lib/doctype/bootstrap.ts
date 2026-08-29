@@ -3,6 +3,7 @@ import { registerCoreIamDocTypes } from '@/domains/core/iam/register';
 import { registerRhDocTypes } from '@/domains/rh/register';
 import { registerLmsDocTypes } from '@/domains/lms/register';
 import { registerQualiopiDocTypes } from '@/domains/qualiopi/register';
+import { registerFundingDocTypes } from '@/domains/funding/register';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -50,6 +51,7 @@ export function bootstrapDocTypes(): DocTypeRegistry {
     registerRhDocTypes(registry);
     registerLmsDocTypes(registry);
     registerQualiopiDocTypes(registry);
+    registerFundingDocTypes(registry);
     registry.assertValid();
     registry.seal();
     globalThis.__gsmsDocTypeBootstrap = 'ready';

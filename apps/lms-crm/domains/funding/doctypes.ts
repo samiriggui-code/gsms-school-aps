@@ -1,0 +1,112 @@
+import type { DocTypeDefinition } from '@repo/doctype';
+import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
+
+export const fundingProviderDocType: DocTypeDefinition = {
+  name: 'FundingProvider',
+  module: 'funding',
+  label: 'Financeur',
+  table: 'FundingProvider',
+  schemaVersion: 1,
+  aliases: ['fundingProvider'],
+  fields: [
+    { fieldname: 'code', label: 'Code', fieldtype: 'Data', required: true, unique: true, searchable: true },
+    { fieldname: 'label', label: 'Libellé', fieldtype: 'Data', required: true, searchable: true },
+    { fieldname: 'funderType', label: 'Type', fieldtype: 'Select', required: true },
+    { fieldname: 'transport', label: 'Transport', fieldtype: 'Select', required: true },
+    { fieldname: 'isActive', label: 'Actif', fieldtype: 'Boolean' },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  persistence: {
+    table: 'FundingProvider',
+    delegate: 'fundingProvider',
+    nameField: 'id',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+  },
+};
+
+export const fundingCaseDocType: DocTypeDefinition = {
+  name: 'FundingCase',
+  module: 'funding',
+  label: 'Dossier financement',
+  table: 'FundingCase',
+  schemaVersion: 1,
+  aliases: ['fundingCase'],
+  fields: [
+    { fieldname: 'reference', label: 'Référence', fieldtype: 'Data', searchable: true },
+    {
+      fieldname: 'providerId',
+      label: 'Financeur',
+      fieldtype: 'Link',
+      options: 'FundingProvider',
+      required: true,
+      linkDisplayField: 'label',
+    },
+    {
+      fieldname: 'learnerUserId',
+      label: 'Apprenant',
+      fieldtype: 'Link',
+      options: 'User',
+      linkDisplayField: 'name',
+    },
+    { fieldname: 'sessionId', label: 'Session', fieldtype: 'Data' },
+    { fieldname: 'participantId', label: 'Participant', fieldtype: 'Data' },
+    { fieldname: 'funderType', label: 'Type financeur', fieldtype: 'Select', required: true },
+    { fieldname: 'transport', label: 'Transport', fieldtype: 'Select', required: true },
+    { fieldname: 'status', label: 'Statut', fieldtype: 'Select', required: true },
+    { fieldname: 'externalReference', label: 'Réf. externe', fieldtype: 'Data', searchable: true },
+    { fieldname: 'requestedAmount', label: 'Montant demandé', fieldtype: 'Currency' },
+    { fieldname: 'approvedAmount', label: 'Montant accordé', fieldtype: 'Currency' },
+    { fieldname: 'currency', label: 'Devise', fieldtype: 'Data' },
+    { fieldname: 'notes', label: 'Notes', fieldtype: 'Text' },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  list: {
+    searchFields: ['reference', 'externalReference'],
+    defaultSort: { fieldname: 'createdAt', direction: 'desc' },
+    pageSize: 25,
+  },
+  persistence: {
+    table: 'FundingCase',
+    delegate: 'fundingCase',
+    nameField: 'id',
+    ownerField: 'ownerUserId',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+    docstatusField: undefined,
+  },
+};

@@ -1662,6 +1662,60 @@ exports.Prisma.SatisfactionSurveyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FundingProviderScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  label: 'label',
+  funderType: 'funderType',
+  transport: 'transport',
+  isActive: 'isActive',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FundingCaseScalarFieldEnum = {
+  id: 'id',
+  reference: 'reference',
+  providerId: 'providerId',
+  learnerUserId: 'learnerUserId',
+  sessionId: 'sessionId',
+  participantId: 'participantId',
+  funderType: 'funderType',
+  transport: 'transport',
+  status: 'status',
+  externalReference: 'externalReference',
+  requestedAmount: 'requestedAmount',
+  approvedAmount: 'approvedAmount',
+  currency: 'currency',
+  notes: 'notes',
+  ownerUserId: 'ownerUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FundingCaseEventScalarFieldEnum = {
+  id: 'id',
+  caseId: 'caseId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  source: 'source',
+  payload: 'payload',
+  actorUserId: 'actorUserId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.FundingDocumentScalarFieldEnum = {
+  id: 'id',
+  caseId: 'caseId',
+  code: 'code',
+  label: 'label',
+  status: 'status',
+  fileAssetId: 'fileAssetId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2206,6 +2260,44 @@ exports.SatisfactionSurveyStatus = exports.$Enums.SatisfactionSurveyStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.FundingFunderType = exports.$Enums.FundingFunderType = {
+  CPF: 'CPF',
+  OPCO: 'OPCO',
+  FRANCE_TRAVAIL: 'FRANCE_TRAVAIL',
+  AGEFIPH: 'AGEFIPH',
+  REGION: 'REGION',
+  ENTREPRISE: 'ENTREPRISE',
+  TRANSITIONS_PRO: 'TRANSITIONS_PRO',
+  OTHER: 'OTHER'
+};
+
+exports.FundingTransport = exports.$Enums.FundingTransport = {
+  MANUAL_PORTAL: 'MANUAL_PORTAL',
+  PARTIAL_API: 'PARTIAL_API',
+  VERIFIED_API: 'VERIFIED_API',
+  INTERNAL: 'INTERNAL'
+};
+
+exports.FundingCaseStatus = exports.$Enums.FundingCaseStatus = {
+  DRAFT: 'DRAFT',
+  DOCUMENTS_REQUIRED: 'DOCUMENTS_REQUIRED',
+  READY_TO_SUBMIT: 'READY_TO_SUBMIT',
+  SUBMITTED: 'SUBMITTED',
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  PARTIALLY_APPROVED: 'PARTIALLY_APPROVED',
+  REJECTED: 'REJECTED',
+  SERVICE_IN_PROGRESS: 'SERVICE_IN_PROGRESS',
+  SERVICE_COMPLETED: 'SERVICE_COMPLETED',
+  JUSTIFICATION_REQUIRED: 'JUSTIFICATION_REQUIRED',
+  READY_TO_INVOICE: 'READY_TO_INVOICE',
+  INVOICED: 'INVOICED',
+  PAYMENT_PENDING: 'PAYMENT_PENDING',
+  PAID: 'PAID',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   LandingConfig: 'LandingConfig',
   User: 'User',
@@ -2314,7 +2406,11 @@ exports.Prisma.ModelName = {
   ComplianceDossierItem: 'ComplianceDossierItem',
   DocumentRequest: 'DocumentRequest',
   ComplianceItemEvent: 'ComplianceItemEvent',
-  SatisfactionSurvey: 'SatisfactionSurvey'
+  SatisfactionSurvey: 'SatisfactionSurvey',
+  FundingProvider: 'FundingProvider',
+  FundingCase: 'FundingCase',
+  FundingCaseEvent: 'FundingCaseEvent',
+  FundingDocument: 'FundingDocument'
 };
 
 /**
