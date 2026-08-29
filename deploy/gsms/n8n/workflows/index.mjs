@@ -966,6 +966,58 @@ return (data.items ?? []).filter((i) => i.daysOverdue >= 15).map((i) => ({ json:
     }),
   );
 
+  // ── Cron satisfaction à froid J+45 (endpoint CRM déjà prêt) ───────────────
+  workflows.push(
+    wf('GSMS — Satisfaction à froid', [
+      scheduleTrigger('sat-cold-cron', 'Cron 10h', pos(0, 0), '0 10 * * *'),
+      httpGetNode(
+        'sat-cold-fetch',
+        'Envois J+45',
+        pos(240, 0),
+        ctx,
+        `${base}/api/internal/n8n/cron/satisfaction-cold-followup`,
+      ),
+      dispatchNode(
+        'sat-cold-dispatch',
+        'Digest satisfaction froid',
+        pos(480, 0),
+        ctx,
+        '"crm.satisfaction.cold.followup"',
+        '{ candidates: ($json.data ?? $json).candidates ?? 0, invitesSent: ($json.data ?? $json).invitesSent ?? 0, invitesSkipped: ($json.data ?? $json).invitesSkipped ?? 0, summary: "Satisfaction à froid J+45 — " + (($json.data ?? $json).invitesSent ?? 0) + " envoi(s) / " + (($json.data ?? $json).candidates ?? 0) + " candidat(s)" }',
+        ['notification', 'email'],
+      ),
+    ], {
+      'Cron 10h': { main: [[{ node: 'Envois J+45', type: 'main', index: 0 }]] },
+      'Envois J+45': { main: [[{ node: 'Digest satisfaction froid', type: 'main', index: 0 }]] },
+    }),
+  );
+
+  // ── Cron satisfaction à chaud (sessions finies hier) ─────────────────────
+  workflows.push(
+    wf('GSMS — Satisfaction à chaud', [
+      scheduleTrigger('sat-hot-cron', 'Cron 10h30', pos(0, 0), '30 10 * * *'),
+      httpGetNode(
+        'sat-hot-fetch',
+        'Envois HOT hier',
+        pos(240, 0),
+        ctx,
+        `${base}/api/internal/n8n/cron/satisfaction-hot-followup`,
+      ),
+      dispatchNode(
+        'sat-hot-dispatch',
+        'Digest satisfaction chaud',
+        pos(480, 0),
+        ctx,
+        '"crm.satisfaction.hot.followup"',
+        '{ sessionsConsidered: ($json.data ?? $json).sessionsConsidered ?? 0, candidates: ($json.data ?? $json).candidates ?? 0, invitesSent: ($json.data ?? $json).invitesSent ?? 0, invitesSkipped: ($json.data ?? $json).invitesSkipped ?? 0, surveysCreated: ($json.data ?? $json).surveysCreated ?? 0, summary: "Satisfaction à chaud — " + (($json.data ?? $json).invitesSent ?? 0) + " envoi(s) / " + (($json.data ?? $json).sessionsConsidered ?? 0) + " session(s) hier" }',
+        ['notification', 'email'],
+      ),
+    ], {
+      'Cron 10h30': { main: [[{ node: 'Envois HOT hier', type: 'main', index: 0 }]] },
+      'Envois HOT hier': { main: [[{ node: 'Digest satisfaction chaud', type: 'main', index: 0 }]] },
+    }),
+  );
+
   // ── Parcours candidat (statut, conversion lead, clôture) ─────────────────
   workflows.push(
     wf('GSMS — Parcours candidat', [

@@ -24,6 +24,8 @@ export type StandardWebhookEventType =
   | 'crm.session.absence.unjustified'
   | 'crm.finance.invoice.overdue'
   | 'crm.session.milestone.due'
+  | 'crm.satisfaction.cold.followup'
+  | 'crm.satisfaction.hot.followup'
   | 'crm.candidature.dossier.relance'
   | 'crm.qualiopi.checklist.due'
   | 'crm.automation.ops.weekly'
@@ -193,6 +195,18 @@ export const STANDARD_WEBHOOK_EVENT_META: Record<StandardWebhookEventType, Stand
     domain: 'vie-scolaire',
     action: 'session_milestone',
     label: 'Jalon circuit session',
+  },
+  'crm.satisfaction.cold.followup': {
+    app: 'crm',
+    domain: 'vie-scolaire',
+    action: 'satisfaction_cold_followup',
+    label: 'Satisfaction à froid — envois J+45',
+  },
+  'crm.satisfaction.hot.followup': {
+    app: 'crm',
+    domain: 'vie-scolaire',
+    action: 'satisfaction_hot_followup',
+    label: 'Satisfaction à chaud — sessions finies hier',
   },
   'crm.candidature.dossier.relance': {
     app: 'crm',
@@ -708,6 +722,36 @@ export const STANDARD_WEBHOOK_CRM: Record<StandardWebhookEventType, WorkflowEven
       return session;
     },
     buildHref: candidatureHref,
+  },
+  'crm.satisfaction.cold.followup': {
+    crmEventType: 'crm.satisfaction.cold.followup',
+    moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    buildTitle: () => 'Satisfaction à froid (J+45)',
+    buildBody: (p) => {
+      const sent = typeof p.invitesSent === 'number' ? p.invitesSent : 0;
+      const candidates = typeof p.candidates === 'number' ? p.candidates : 0;
+      return typeof p.summary === 'string'
+        ? p.summary
+        : `${sent} invitation(s) envoyée(s) sur ${candidates} candidate(s)`;
+    },
+    buildHref: () => '/gestion-academique/suivi-formations/satisfaction',
+  },
+  'crm.satisfaction.hot.followup': {
+    crmEventType: 'crm.satisfaction.hot.followup',
+    moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+    category: 'ACADEMIC',
+    severity: 'INFO',
+    buildTitle: () => 'Satisfaction à chaud (fin session)',
+    buildBody: (p) => {
+      const sent = typeof p.invitesSent === 'number' ? p.invitesSent : 0;
+      const sessions = typeof p.sessionsConsidered === 'number' ? p.sessionsConsidered : 0;
+      return typeof p.summary === 'string'
+        ? p.summary
+        : `${sent} invitation(s) HOT — ${sessions} session(s) clôturée(s) hier`;
+    },
+    buildHref: () => '/gestion-academique/suivi-formations/satisfaction',
   },
   'crm.candidature.dossier.relance': {
     crmEventType: 'crm.candidature.dossier.relance',
