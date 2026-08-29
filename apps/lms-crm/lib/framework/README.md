@@ -1,14 +1,14 @@
 /**
- * Framework maison GSMS (DocType-like) — socle posé 2026-08-24.
+ * Framework maison GSMS — pont vers DOCTYPE V2 (Frappe-like).
  *
- * Une entité = une déclaration dans `lib/framework/registry.ts`.
- * API générique : `/api/entities/[entity]` (+ `/[id]`, `/schema`).
- * UI : `<EntityForm>` / `<EntityTable>`.
- * Permissions fail-closed : `lib/auth/entity-registry.ts` + `protectRoute()`.
+ * SOURCE DE VÉRITÉ PRODUIT :
+ *   docs/GSMS SCHOOL — FRAMEWORK DOCTYPE V2.md
+ *   docs/framework/MIGRATION_PLAN.md
  *
- * Lab UI : `/securite-configuration/framework-lab`
+ * État actuel = EntityDefinition + /api/entities (socle partiel, drift LMS/Qualiopi documenté).
+ * NE PAS ajouter d’entités LMS ici avant Phase 18.
+ * NE PAS faire importer le registry par des domaines ; les domaines s’enregistrent auprès du core (cible V2).
  *
- * Protocole de bascule : voir skill agent (inventaire → parité → redirect → test → delete route).
- * Ne jamais contourner le fail-closed (pas de DEFAULT_OPEN).
+ * Fail-closed : entity-registry + protectRoute. Pas de DEFAULT_OPEN. Pas de copie AGPL Frappe.
  */
 export {};

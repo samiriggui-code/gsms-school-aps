@@ -54,6 +54,7 @@
     "@remixicon/react": "^4.6.0",
     "@repo/api-core": "workspace:*",
     "@repo/database": "workspace:*",
+    "@repo/doctype": "workspace:*",
     "@repo/emails": "workspace:*",
     "@repo/i18n": "workspace:*",
     "@repo/mail": "workspace:*",

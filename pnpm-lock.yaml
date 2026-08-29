@@ -136,6 +136,9 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@repo/doctype':
+        specifier: workspace:*
+        version: link:../../packages/doctype
       '@repo/emails':
         specifier: workspace:*
         version: link:../../packages/emails
@@ -444,6 +447,12 @@ importers:
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.3))(@types/react@19.2.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)(typescript@5.9.3)
       tsx:
         specifier: ^4.21.0
+        version: 4.22.1
+
+  packages/doctype:
+    devDependencies:
+      tsx:
+        specifier: ^4.19.0
         version: 4.22.1
 
   packages/emails:
