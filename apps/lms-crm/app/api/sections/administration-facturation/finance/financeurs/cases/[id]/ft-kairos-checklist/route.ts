@@ -1,0 +1,106 @@
+import { getServerSession } from 'next-auth/next';
+import { FundingFunderType } from '@repo/database';
+import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { prisma } from '@/lib/prisma';
+import { ok, fail } from '@/app/api/_shared/http/response';
+import {
+  buildFtKairosDossierChecklist,
+  FT_KAIROS_DOSSIER_STEPS,
+} from '@/lib/connectors/france-travail/kairos-dossier-checklist';
+
+type Ctx = { params: Promise<{ id: string }> };
+
+/** GET — checklist manuelle France Travail Kairos (portail). */
+export async function GET(_request: Request, context: Ctx) {
+  const session = await getServerSession(authOptions);
+  if (!session) return fail('Unauthorized request', 401);
+
+  const { id } = await context.params;
+  try {
+    const fundingCase = await prisma.fundingCase.findUnique({
+      where: { id },
+      include: {
+        documents: { select: { id: true, code: true, status: true, label: true } },
+        provider: { select: { code: true, label: true } },
+      },
+    });
+    if (!fundingCase) return fail('Funding case not found', 404);
+    if (fundingCase.funderType !== FundingFunderType.FRANCE_TRAVAIL) {
+      return fail('Kairos checklist applies only to FRANCE_TRAVAIL funding cases', 400);
+    }
+
+    const steps = buildFtKairosDossierChecklist({
+      caseStatus: fundingCase.status,
+      documents: fundingCase.documents,
+    });
+
+    return ok({
+      connector: 'FRANCE_TRAVAIL_KAIROS_PORTAIL',
+      transport: 'MANUAL_PORTAL',
+      caseId: fundingCase.id,
+      reference: fundingCase.reference,
+      status: fundingCase.status,
+      providerCode: fundingCase.provider.code,
+      providerLabel: fundingCase.provider.label,
+      steps,
+      dueCount: steps.filter((s) => s.state === 'due').length,
+      doneCount: steps.filter((s) => s.state === 'done').length,
+    });
+  } catch (e) {
+    console.error('[ft-kairos-checklist] GET', e);
+    return fail('Failed to load France Travail Kairos checklist', 500);
+  }
+}
+
+/** POST — marquer étape Kairos faite (upsert FundingDocument VALIDATED). */
+export async function POST(request: Request, context: Ctx) {
+  const session = await getServerSession(authOptions);
+  if (!session) return fail('Unauthorized request', 401);
+
+  const { id } = await context.params;
+  let body: { stepCode?: string };
+  try {
+    body = (await request.json()) as typeof body;
+  } catch {
+    return fail('Invalid JSON body', 400);
+  }
+
+  const step = FT_KAIROS_DOSSIER_STEPS.find((s) => s.code === body.stepCode?.trim());
+  if (!step) return fail('Unknown FT Kairos step code', 400);
+
+  try {
+    const fundingCase = await prisma.fundingCase.findUnique({ where: { id } });
+    if (!fundingCase) return fail('Funding case not found', 404);
+    if (fundingCase.funderType !== FundingFunderType.FRANCE_TRAVAIL) {
+      return fail('Kairos checklist applies only to FRANCE_TRAVAIL funding cases', 400);
+    }
+
+    const document = await prisma.fundingDocument.upsert({
+      where: { caseId_code: { caseId: id, code: step.code } },
+      create: {
+        caseId: id,
+        code: step.code,
+        label: step.label,
+        status: 'VALIDATED',
+      },
+      update: {
+        label: step.label,
+        status: 'VALIDATED',
+      },
+    });
+
+    const docs = await prisma.fundingDocument.findMany({
+      where: { caseId: id },
+      select: { id: true, code: true, status: true },
+    });
+    const steps = buildFtKairosDossierChecklist({
+      caseStatus: fundingCase.status,
+      documents: docs,
+    });
+
+    return ok({ document, steps });
+  } catch (e) {
+    console.error('[ft-kairos-checklist] POST', e);
+    return fail('Failed to mark FT Kairos step done', 500);
+  }
+}

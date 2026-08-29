@@ -11,9 +11,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { CreateFundingCaseForm } from './create-funding-case-form';
+import { EdofDossierChecklistPanel } from './edof-dossier-checklist-panel';
 import { FundingCaseDocumentsPanel } from './funding-case-documents-panel';
 import { FundingCaseAgentPanel } from './funding-case-agent-panel';
 import { FundingCaseTransitionActions } from './funding-case-transition-actions';
+import { OpcoDossierChecklistPanel } from './opco-dossier-checklist-panel';
+import { FtKairosChecklistPanel } from './ft-kairos-checklist-panel';
 import {
   canCancelFundingCase,
   nextFundingCaseStatus,
@@ -205,6 +208,37 @@ export default async function FinanceursPage() {
           id: c.id,
           reference: c.reference,
           status: c.status,
+          providerLabel: c.provider.label,
+        }))}
+      />
+
+      <EdofDossierChecklistPanel
+        cases={recentCases.map((c) => ({
+          id: c.id,
+          reference: c.reference,
+          status: c.status,
+          funderType: c.funderType,
+          providerLabel: c.provider.label,
+        }))}
+      />
+
+      <OpcoDossierChecklistPanel
+        cases={recentCases.map((c) => ({
+          id: c.id,
+          reference: c.reference,
+          status: c.status,
+          funderType: c.funderType,
+          providerCode: c.provider.code,
+          providerLabel: c.provider.label,
+        }))}
+      />
+
+      <FtKairosChecklistPanel
+        cases={recentCases.map((c) => ({
+          id: c.id,
+          reference: c.reference,
+          status: c.status,
+          funderType: c.funderType,
           providerLabel: c.provider.label,
         }))}
       />
