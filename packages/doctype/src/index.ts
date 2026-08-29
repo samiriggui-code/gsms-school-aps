@@ -7,3 +7,17 @@ export {
   effectivePermissions,
   buildMetaResponse,
 } from './permissions/permission-engine';
+export type { PersistenceAdapter, PersistenceListQuery, PersistenceGetQuery, PersistenceWriteQuery, PersistenceOrderBy } from './persistence/adapter';
+export { allocateName, pickWritableFields, validateRequired } from './naming/naming-engine';
+export {
+  Document,
+  type DocControllerHooks,
+  type DocLifecycleContext,
+  type DocumentOptions,
+} from './document/document';
+export {
+  ResourceService,
+  type ResourceListParams,
+  type ResourceListResult,
+  type ResourceServiceOptions,
+} from './document/resource-service';

@@ -291,4 +291,4 @@ Vague 2 = CORE done → CRM → Training → Funding → Documents → Quality �
 | Bootstrap non-fatal + instrumentation | ✅ |
 | CH-SAFE IA brouillons / historique | ✅ |
 | CH-SAFE Qualiopi historique | ✅ |
-| Document runtime / flag cutover / delete legacy | ⏳ suite G1-B…E |
+| Document runtime / flag cutover / delete legacy | ✅ G1-B/C Document+ResourceService+shim+protectRoute dual (`DOCTYPE_V2_RUNTIME`, défaut 0). G1-D/E remaining |

@@ -1,4 +1,5 @@
 import { compileDocMeta } from '../meta/compile-doc-meta';
+import type { DocControllerHooks } from '../document/document';
 import type {
   DocMeta,
   DocTypeDefinition,
@@ -6,11 +7,12 @@ import type {
   PermissionPrincipal,
 } from '../types';
 
-export type DocController = Record<string, unknown>;
+/** @deprecated Prefer DocControllerHooks — kept as alias for registrations. */
+export type DocController = DocControllerHooks;
 
 export type DocTypeRegistration = {
   definition: DocTypeDefinition;
-  controller?: DocController;
+  controller?: DocControllerHooks;
 };
 
 export type DocTypeRegistryOptions = {

@@ -45,9 +45,11 @@ export function compileDocMeta(def: DocTypeDefinition): DocMeta {
     seen.add(field.fieldname);
   }
 
-  const systemNames = new Set(SYSTEM_FIELDS.map((f) => f.fieldname));
-  const userFields = def.fields.filter((f) => !systemNames.has(f.fieldname));
-  const fields: DocField[] = [...SYSTEM_FIELDS, ...userFields];
+  // Prisma legacy tables often use `name` as a display column while PK is `id`.
+  // Document identity stays persistence.nameField; skip system fields that collide.
+  const injectedSystem = SYSTEM_FIELDS.filter((f) => !seen.has(f.fieldname));
+  const fields: DocField[] = [...injectedSystem, ...def.fields];
+  const systemFields = injectedSystem;
 
   const fieldsByName = new Map(fields.map((f) => [f.fieldname, f]));
   const linkFields = fields.filter((f) => f.fieldtype === 'Link');
@@ -78,7 +80,7 @@ export function compileDocMeta(def: DocTypeDefinition): DocMeta {
     controller: def.controller,
     workflow: def.workflow,
     persistence: { ...def.persistence },
-    systemFields: SYSTEM_FIELDS,
+    systemFields,
     linkFields,
     tableFields,
     searchFields: [...searchFields],

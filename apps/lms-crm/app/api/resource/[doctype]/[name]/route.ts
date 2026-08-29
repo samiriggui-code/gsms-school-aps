@@ -8,9 +8,9 @@ import {
   getDocTypeBootstrapStatus,
 } from '@/lib/doctype/bootstrap';
 import { principalFromSession } from '@/lib/doctype/principal';
-import { getResourceService, listParamsFromSearchParams } from '@/lib/doctype/resource';
+import { getResourceService } from '@/lib/doctype/resource';
 
-type Params = { params: Promise<{ doctype: string }> };
+type Params = { params: Promise<{ doctype: string; name: string }> };
 
 async function gated(doctype: string) {
   const session = await getServerSession(getAuthOptions());
@@ -29,43 +29,57 @@ async function gated(doctype: string) {
   return { session, registry };
 }
 
-/** Canonical resource list + create (G1-B Document runtime). */
-export async function GET(req: NextRequest, context: Params) {
-  const { doctype } = await context.params;
+export async function GET(_req: NextRequest, context: Params) {
+  const { doctype, name } = await context.params;
   const gate = await gated(doctype);
   if ('error' in gate) return gate.error;
 
   try {
-    const result = await getResourceService().list(
-      doctype,
-      principalFromSession(gate.session),
-      listParamsFromSearchParams(new URL(req.url).searchParams),
-    );
-    return ok({ doctype: gate.registry.resolveName(doctype), ...result });
+    const row = await getResourceService().get(doctype, name, principalFromSession(gate.session));
+    if (!row) return fail('Enregistrement introuvable.', 404);
+    return ok(row);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Erreur liste.';
+    const message = error instanceof Error ? error.message : 'Erreur lecture.';
     const status = message.startsWith('Permission denied') ? 403 : 500;
     return fail(message, status);
   }
 }
 
-export async function POST(req: NextRequest, context: Params) {
-  const { doctype } = await context.params;
+export async function PATCH(req: NextRequest, context: Params) {
+  const { doctype, name } = await context.params;
   const gate = await gated(doctype);
   if ('error' in gate) return gate.error;
 
   try {
     const body = (await req.json()) as Record<string, unknown>;
-    const created = await getResourceService().create(
+    const updated = await getResourceService().update(
       doctype,
+      name,
       body,
       principalFromSession(gate.session),
     );
-    return ok(created, 201);
+    return ok(updated);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Erreur création.';
+    const message = error instanceof Error ? error.message : 'Erreur mise à jour.';
+    if (message === 'Record not found') return fail(message, 404);
     if (message.startsWith('Permission denied')) return fail(message, 403);
     const status = message.startsWith('Validation') ? 400 : 500;
     return fail(message, status);
+  }
+}
+
+export async function DELETE(_req: NextRequest, context: Params) {
+  const { doctype, name } = await context.params;
+  const gate = await gated(doctype);
+  if ('error' in gate) return gate.error;
+
+  try {
+    await getResourceService().delete(doctype, name, principalFromSession(gate.session));
+    return ok({ name, deleted: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Erreur suppression.';
+    if (message === 'Record not found') return fail(message, 404);
+    if (message.startsWith('Permission denied')) return fail(message, 403);
+    return fail(message, 500);
   }
 }
