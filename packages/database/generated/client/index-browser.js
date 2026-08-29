@@ -848,6 +848,9 @@ exports.Prisma.CandidatureAssessmentScalarFieldEnum = {
   level: 'level',
   prerequisitesStatus: 'prerequisitesStatus',
   adaptationRequired: 'adaptationRequired',
+  adaptationStatus: 'adaptationStatus',
+  adaptationNotifiedAt: 'adaptationNotifiedAt',
+  adaptationNotes: 'adaptationNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -865,6 +868,7 @@ exports.Prisma.FormationSessionParticipantScalarFieldEnum = {
   fundingMode: 'fundingMode',
   fundingReference: 'fundingReference',
   fundingNotes: 'fundingNotes',
+  j5PrepReminderSentAt: 'j5PrepReminderSentAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -2165,6 +2169,13 @@ exports.CandidatureAssessmentStatus = exports.$Enums.CandidatureAssessmentStatus
   PENDING: 'PENDING',
   SENT: 'SENT',
   COMPLETED: 'COMPLETED'
+};
+
+exports.AdaptationStatus = exports.$Enums.AdaptationStatus = {
+  NO_ADAPTATION_REQUIRED: 'NO_ADAPTATION_REQUIRED',
+  ADAPTATION_PENDING: 'ADAPTATION_PENDING',
+  ADAPTATION_APPROVED: 'ADAPTATION_APPROVED',
+  ADAPTATION_IMPLEMENTED: 'ADAPTATION_IMPLEMENTED'
 };
 
 exports.FormationSessionEnrollmentStatus = exports.$Enums.FormationSessionEnrollmentStatus = {

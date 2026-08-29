@@ -1540,21 +1540,33 @@ enum CandidatureAssessmentStatus {
   COMPLETED
 }
 
+/// WF-04 — suivi accessibilité / aménagement côté candidature.
+enum AdaptationStatus {
+  NO_ADAPTATION_REQUIRED
+  ADAPTATION_PENDING
+  ADAPTATION_APPROVED
+  ADAPTATION_IMPLEMENTED
+}
+
 model CandidatureAssessment {
-  id                  String                      @id @default(uuid())
-  candidatureId       String
-  kind                CandidatureAssessmentKind
-  status              CandidatureAssessmentStatus @default(PENDING)
-  sentAt              DateTime?
-  completedAt         DateTime?
+  id                   String                      @id @default(uuid())
+  candidatureId        String
+  kind                 CandidatureAssessmentKind
+  status               CandidatureAssessmentStatus @default(PENDING)
+  sentAt               DateTime?
+  completedAt          DateTime?
   /// Réponses questionnaire (Json libre).
-  answers             Json?
+  answers              Json?
   /// WF-03 — niveau constaté (libre).
-  level               String?
+  level                String?
   /// WF-03 — OK / PARTIAL / MISSING (ou texte libre).
-  prerequisitesStatus String?
+  prerequisitesStatus  String?
   /// Signal adaptation (lien WF-04 organisme, info staff).
-  adaptationRequired  Boolean?
+  adaptationRequired   Boolean?
+  /// WF-04 — cycle aménagement (renseigné surtout sur NEEDS_ANALYSIS).
+  adaptationStatus     AdaptationStatus?
+  adaptationNotifiedAt DateTime?
+  adaptationNotes      String?                     @db.Text
 
   candidature Candidature @relation(fields: [candidatureId], references: [id], onDelete: Cascade)
 
@@ -1565,6 +1577,7 @@ model CandidatureAssessment {
   @@index([candidatureId])
   @@index([status])
   @@index([adaptationRequired])
+  @@index([adaptationStatus])
 }
 
 /// Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.
@@ -1590,6 +1603,9 @@ model FormationSessionParticipant {
   fundingReference String?
   fundingNotes     String? @db.Text
 
+  /// WF-14 — rappel J-5 préparation pédagogique déjà envoyé.
+  j5PrepReminderSentAt DateTime?
+
   emargements         FormationSessionEmargement[]
   satisfactionSurveys SatisfactionSurvey[]
   fundingCases        FundingCase[]
@@ -1600,6 +1616,7 @@ model FormationSessionParticipant {
 
   @@unique([sessionId, userId])
   @@index([userId])
+  @@index([j5PrepReminderSentAt])
   @@index([candidatureId])
   @@index([examOutcome])
 }

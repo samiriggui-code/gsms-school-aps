@@ -1096,6 +1096,16 @@ export const CandidatureAssessmentStatus: {
 export type CandidatureAssessmentStatus = (typeof CandidatureAssessmentStatus)[keyof typeof CandidatureAssessmentStatus]
 
 
+export const AdaptationStatus: {
+  NO_ADAPTATION_REQUIRED: 'NO_ADAPTATION_REQUIRED',
+  ADAPTATION_PENDING: 'ADAPTATION_PENDING',
+  ADAPTATION_APPROVED: 'ADAPTATION_APPROVED',
+  ADAPTATION_IMPLEMENTED: 'ADAPTATION_IMPLEMENTED'
+};
+
+export type AdaptationStatus = (typeof AdaptationStatus)[keyof typeof AdaptationStatus]
+
+
 export const ActivityType: {
   VIDEO: 'VIDEO',
   DOCUMENT: 'DOCUMENT',
@@ -1742,6 +1752,10 @@ export const CandidatureAssessmentKind: typeof $Enums.CandidatureAssessmentKind
 export type CandidatureAssessmentStatus = $Enums.CandidatureAssessmentStatus
 
 export const CandidatureAssessmentStatus: typeof $Enums.CandidatureAssessmentStatus
+
+export type AdaptationStatus = $Enums.AdaptationStatus
+
+export const AdaptationStatus: typeof $Enums.AdaptationStatus
 
 export type ActivityType = $Enums.ActivityType
 
@@ -69140,6 +69154,9 @@ export namespace Prisma {
     level: string | null
     prerequisitesStatus: string | null
     adaptationRequired: boolean | null
+    adaptationStatus: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt: Date | null
+    adaptationNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -69154,6 +69171,9 @@ export namespace Prisma {
     level: string | null
     prerequisitesStatus: string | null
     adaptationRequired: boolean | null
+    adaptationStatus: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt: Date | null
+    adaptationNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -69169,6 +69189,9 @@ export namespace Prisma {
     level: number
     prerequisitesStatus: number
     adaptationRequired: number
+    adaptationStatus: number
+    adaptationNotifiedAt: number
+    adaptationNotes: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -69185,6 +69208,9 @@ export namespace Prisma {
     level?: true
     prerequisitesStatus?: true
     adaptationRequired?: true
+    adaptationStatus?: true
+    adaptationNotifiedAt?: true
+    adaptationNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -69199,6 +69225,9 @@ export namespace Prisma {
     level?: true
     prerequisitesStatus?: true
     adaptationRequired?: true
+    adaptationStatus?: true
+    adaptationNotifiedAt?: true
+    adaptationNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -69214,6 +69243,9 @@ export namespace Prisma {
     level?: true
     prerequisitesStatus?: true
     adaptationRequired?: true
+    adaptationStatus?: true
+    adaptationNotifiedAt?: true
+    adaptationNotes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -69302,6 +69334,9 @@ export namespace Prisma {
     level: string | null
     prerequisitesStatus: string | null
     adaptationRequired: boolean | null
+    adaptationStatus: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt: Date | null
+    adaptationNotes: string | null
     createdAt: Date
     updatedAt: Date
     _count: CandidatureAssessmentCountAggregateOutputType | null
@@ -69334,6 +69369,9 @@ export namespace Prisma {
     level?: boolean
     prerequisitesStatus?: boolean
     adaptationRequired?: boolean
+    adaptationStatus?: boolean
+    adaptationNotifiedAt?: boolean
+    adaptationNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
@@ -69350,6 +69388,9 @@ export namespace Prisma {
     level?: boolean
     prerequisitesStatus?: boolean
     adaptationRequired?: boolean
+    adaptationStatus?: boolean
+    adaptationNotifiedAt?: boolean
+    adaptationNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
@@ -69366,6 +69407,9 @@ export namespace Prisma {
     level?: boolean
     prerequisitesStatus?: boolean
     adaptationRequired?: boolean
+    adaptationStatus?: boolean
+    adaptationNotifiedAt?: boolean
+    adaptationNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
@@ -69382,11 +69426,14 @@ export namespace Prisma {
     level?: boolean
     prerequisitesStatus?: boolean
     adaptationRequired?: boolean
+    adaptationStatus?: boolean
+    adaptationNotifiedAt?: boolean
+    adaptationNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CandidatureAssessmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "candidatureId" | "kind" | "status" | "sentAt" | "completedAt" | "answers" | "level" | "prerequisitesStatus" | "adaptationRequired" | "createdAt" | "updatedAt", ExtArgs["result"]["candidatureAssessment"]>
+  export type CandidatureAssessmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "candidatureId" | "kind" | "status" | "sentAt" | "completedAt" | "answers" | "level" | "prerequisitesStatus" | "adaptationRequired" | "adaptationStatus" | "adaptationNotifiedAt" | "adaptationNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["candidatureAssessment"]>
   export type CandidatureAssessmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     candidature?: boolean | CandidatureDefaultArgs<ExtArgs>
   }
@@ -69425,6 +69472,12 @@ export namespace Prisma {
        * Signal adaptation (lien WF-04 organisme, info staff).
        */
       adaptationRequired: boolean | null
+      /**
+       * WF-04 — cycle aménagement (renseigné surtout sur NEEDS_ANALYSIS).
+       */
+      adaptationStatus: $Enums.AdaptationStatus | null
+      adaptationNotifiedAt: Date | null
+      adaptationNotes: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["candidatureAssessment"]>
@@ -69861,6 +69914,9 @@ export namespace Prisma {
     readonly level: FieldRef<"CandidatureAssessment", 'String'>
     readonly prerequisitesStatus: FieldRef<"CandidatureAssessment", 'String'>
     readonly adaptationRequired: FieldRef<"CandidatureAssessment", 'Boolean'>
+    readonly adaptationStatus: FieldRef<"CandidatureAssessment", 'AdaptationStatus'>
+    readonly adaptationNotifiedAt: FieldRef<"CandidatureAssessment", 'DateTime'>
+    readonly adaptationNotes: FieldRef<"CandidatureAssessment", 'String'>
     readonly createdAt: FieldRef<"CandidatureAssessment", 'DateTime'>
     readonly updatedAt: FieldRef<"CandidatureAssessment", 'DateTime'>
   }
@@ -70305,6 +70361,7 @@ export namespace Prisma {
     fundingMode: string | null
     fundingReference: string | null
     fundingNotes: string | null
+    j5PrepReminderSentAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70322,6 +70379,7 @@ export namespace Prisma {
     fundingMode: string | null
     fundingReference: string | null
     fundingNotes: string | null
+    j5PrepReminderSentAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70339,6 +70397,7 @@ export namespace Prisma {
     fundingMode: number
     fundingReference: number
     fundingNotes: number
+    j5PrepReminderSentAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -70358,6 +70417,7 @@ export namespace Prisma {
     fundingMode?: true
     fundingReference?: true
     fundingNotes?: true
+    j5PrepReminderSentAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70375,6 +70435,7 @@ export namespace Prisma {
     fundingMode?: true
     fundingReference?: true
     fundingNotes?: true
+    j5PrepReminderSentAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70392,6 +70453,7 @@ export namespace Prisma {
     fundingMode?: true
     fundingReference?: true
     fundingNotes?: true
+    j5PrepReminderSentAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -70482,6 +70544,7 @@ export namespace Prisma {
     fundingMode: string | null
     fundingReference: string | null
     fundingNotes: string | null
+    j5PrepReminderSentAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: FormationSessionParticipantCountAggregateOutputType | null
@@ -70516,6 +70579,7 @@ export namespace Prisma {
     fundingMode?: boolean
     fundingReference?: boolean
     fundingNotes?: boolean
+    j5PrepReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70541,6 +70605,7 @@ export namespace Prisma {
     fundingMode?: boolean
     fundingReference?: boolean
     fundingNotes?: boolean
+    j5PrepReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70561,6 +70626,7 @@ export namespace Prisma {
     fundingMode?: boolean
     fundingReference?: boolean
     fundingNotes?: boolean
+    j5PrepReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70581,11 +70647,12 @@ export namespace Prisma {
     fundingMode?: boolean
     fundingReference?: boolean
     fundingNotes?: boolean
+    j5PrepReminderSentAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "fundingMode" | "fundingReference" | "fundingNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
+  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "fundingMode" | "fundingReference" | "fundingNotes" | "j5PrepReminderSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
   export type FormationSessionParticipantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -70634,6 +70701,10 @@ export namespace Prisma {
       fundingMode: string | null
       fundingReference: string | null
       fundingNotes: string | null
+      /**
+       * WF-14 — rappel J-5 préparation pédagogique déjà envoyé.
+       */
+      j5PrepReminderSentAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["formationSessionParticipant"]>
@@ -71078,6 +71149,7 @@ export namespace Prisma {
     readonly fundingMode: FieldRef<"FormationSessionParticipant", 'String'>
     readonly fundingReference: FieldRef<"FormationSessionParticipant", 'String'>
     readonly fundingNotes: FieldRef<"FormationSessionParticipant", 'String'>
+    readonly j5PrepReminderSentAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly createdAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly updatedAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
   }
@@ -167341,6 +167413,9 @@ export namespace Prisma {
     level: 'level',
     prerequisitesStatus: 'prerequisitesStatus',
     adaptationRequired: 'adaptationRequired',
+    adaptationStatus: 'adaptationStatus',
+    adaptationNotifiedAt: 'adaptationNotifiedAt',
+    adaptationNotes: 'adaptationNotes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -167361,6 +167436,7 @@ export namespace Prisma {
     fundingMode: 'fundingMode',
     fundingReference: 'fundingReference',
     fundingNotes: 'fundingNotes',
+    j5PrepReminderSentAt: 'j5PrepReminderSentAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -169293,6 +169369,20 @@ export namespace Prisma {
    * Reference to a field of type 'CandidatureAssessmentStatus[]'
    */
   export type ListEnumCandidatureAssessmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CandidatureAssessmentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AdaptationStatus'
+   */
+  export type EnumAdaptationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdaptationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AdaptationStatus[]'
+   */
+  export type ListEnumAdaptationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AdaptationStatus[]'>
     
 
 
@@ -174666,6 +174756,9 @@ export namespace Prisma {
     level?: StringNullableFilter<"CandidatureAssessment"> | string | null
     prerequisitesStatus?: StringNullableFilter<"CandidatureAssessment"> | string | null
     adaptationRequired?: BoolNullableFilter<"CandidatureAssessment"> | boolean | null
+    adaptationStatus?: EnumAdaptationStatusNullableFilter<"CandidatureAssessment"> | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    adaptationNotes?: StringNullableFilter<"CandidatureAssessment"> | string | null
     createdAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
     updatedAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
     candidature?: XOR<CandidatureScalarRelationFilter, CandidatureWhereInput>
@@ -174682,6 +174775,9 @@ export namespace Prisma {
     level?: SortOrderInput | SortOrder
     prerequisitesStatus?: SortOrderInput | SortOrder
     adaptationRequired?: SortOrderInput | SortOrder
+    adaptationStatus?: SortOrderInput | SortOrder
+    adaptationNotifiedAt?: SortOrderInput | SortOrder
+    adaptationNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     candidature?: CandidatureOrderByWithRelationInput
@@ -174702,6 +174798,9 @@ export namespace Prisma {
     level?: StringNullableFilter<"CandidatureAssessment"> | string | null
     prerequisitesStatus?: StringNullableFilter<"CandidatureAssessment"> | string | null
     adaptationRequired?: BoolNullableFilter<"CandidatureAssessment"> | boolean | null
+    adaptationStatus?: EnumAdaptationStatusNullableFilter<"CandidatureAssessment"> | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    adaptationNotes?: StringNullableFilter<"CandidatureAssessment"> | string | null
     createdAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
     updatedAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
     candidature?: XOR<CandidatureScalarRelationFilter, CandidatureWhereInput>
@@ -174718,6 +174817,9 @@ export namespace Prisma {
     level?: SortOrderInput | SortOrder
     prerequisitesStatus?: SortOrderInput | SortOrder
     adaptationRequired?: SortOrderInput | SortOrder
+    adaptationStatus?: SortOrderInput | SortOrder
+    adaptationNotifiedAt?: SortOrderInput | SortOrder
+    adaptationNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CandidatureAssessmentCountOrderByAggregateInput
@@ -174739,6 +174841,9 @@ export namespace Prisma {
     level?: StringNullableWithAggregatesFilter<"CandidatureAssessment"> | string | null
     prerequisitesStatus?: StringNullableWithAggregatesFilter<"CandidatureAssessment"> | string | null
     adaptationRequired?: BoolNullableWithAggregatesFilter<"CandidatureAssessment"> | boolean | null
+    adaptationStatus?: EnumAdaptationStatusNullableWithAggregatesFilter<"CandidatureAssessment"> | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: DateTimeNullableWithAggregatesFilter<"CandidatureAssessment"> | Date | string | null
+    adaptationNotes?: StringNullableWithAggregatesFilter<"CandidatureAssessment"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"CandidatureAssessment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CandidatureAssessment"> | Date | string
   }
@@ -174759,6 +174864,7 @@ export namespace Prisma {
     fundingMode?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
@@ -174783,6 +174889,7 @@ export namespace Prisma {
     fundingMode?: SortOrderInput | SortOrder
     fundingReference?: SortOrderInput | SortOrder
     fundingNotes?: SortOrderInput | SortOrder
+    j5PrepReminderSentAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     session?: FormationSessionOrderByWithRelationInput
@@ -174811,6 +174918,7 @@ export namespace Prisma {
     fundingMode?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
@@ -174835,6 +174943,7 @@ export namespace Prisma {
     fundingMode?: SortOrderInput | SortOrder
     fundingReference?: SortOrderInput | SortOrder
     fundingNotes?: SortOrderInput | SortOrder
+    j5PrepReminderSentAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FormationSessionParticipantCountOrderByAggregateInput
@@ -174858,6 +174967,7 @@ export namespace Prisma {
     fundingMode?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
     fundingReference?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
+    j5PrepReminderSentAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
   }
@@ -187071,6 +187181,9 @@ export namespace Prisma {
     level?: string | null
     prerequisitesStatus?: string | null
     adaptationRequired?: boolean | null
+    adaptationStatus?: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: Date | string | null
+    adaptationNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     candidature: CandidatureCreateNestedOneWithoutAssessmentsInput
@@ -187087,6 +187200,9 @@ export namespace Prisma {
     level?: string | null
     prerequisitesStatus?: string | null
     adaptationRequired?: boolean | null
+    adaptationStatus?: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: Date | string | null
+    adaptationNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -187101,6 +187217,9 @@ export namespace Prisma {
     level?: NullableStringFieldUpdateOperationsInput | string | null
     prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
     adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    adaptationStatus?: NullableEnumAdaptationStatusFieldUpdateOperationsInput | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adaptationNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidature?: CandidatureUpdateOneRequiredWithoutAssessmentsNestedInput
@@ -187117,6 +187236,9 @@ export namespace Prisma {
     level?: NullableStringFieldUpdateOperationsInput | string | null
     prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
     adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    adaptationStatus?: NullableEnumAdaptationStatusFieldUpdateOperationsInput | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adaptationNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187132,6 +187254,9 @@ export namespace Prisma {
     level?: string | null
     prerequisitesStatus?: string | null
     adaptationRequired?: boolean | null
+    adaptationStatus?: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: Date | string | null
+    adaptationNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -187146,6 +187271,9 @@ export namespace Prisma {
     level?: NullableStringFieldUpdateOperationsInput | string | null
     prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
     adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    adaptationStatus?: NullableEnumAdaptationStatusFieldUpdateOperationsInput | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adaptationNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187161,6 +187289,9 @@ export namespace Prisma {
     level?: NullableStringFieldUpdateOperationsInput | string | null
     prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
     adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    adaptationStatus?: NullableEnumAdaptationStatusFieldUpdateOperationsInput | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adaptationNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187175,6 +187306,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -187199,6 +187331,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -187217,6 +187350,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -187241,6 +187375,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -187262,6 +187397,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -187276,6 +187412,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187293,6 +187430,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -198716,6 +198854,13 @@ export namespace Prisma {
     not?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel> | $Enums.CandidatureAssessmentStatus
   }
 
+  export type EnumAdaptationStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdaptationStatus | EnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAdaptationStatusNullableFilter<$PrismaModel> | $Enums.AdaptationStatus | null
+  }
+
   export type CandidatureScalarRelationFilter = {
     is?: CandidatureWhereInput
     isNot?: CandidatureWhereInput
@@ -198737,6 +198882,9 @@ export namespace Prisma {
     level?: SortOrder
     prerequisitesStatus?: SortOrder
     adaptationRequired?: SortOrder
+    adaptationStatus?: SortOrder
+    adaptationNotifiedAt?: SortOrder
+    adaptationNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -198751,6 +198899,9 @@ export namespace Prisma {
     level?: SortOrder
     prerequisitesStatus?: SortOrder
     adaptationRequired?: SortOrder
+    adaptationStatus?: SortOrder
+    adaptationNotifiedAt?: SortOrder
+    adaptationNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -198765,6 +198916,9 @@ export namespace Prisma {
     level?: SortOrder
     prerequisitesStatus?: SortOrder
     adaptationRequired?: SortOrder
+    adaptationStatus?: SortOrder
+    adaptationNotifiedAt?: SortOrder
+    adaptationNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -198787,6 +198941,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
     _max?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumAdaptationStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdaptationStatus | EnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAdaptationStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.AdaptationStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAdaptationStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumAdaptationStatusNullableFilter<$PrismaModel>
   }
 
   export type EnumFormationSessionEnrollmentStatusFilter<$PrismaModel = never> = {
@@ -198826,6 +198990,7 @@ export namespace Prisma {
     fundingMode?: SortOrder
     fundingReference?: SortOrder
     fundingNotes?: SortOrder
+    j5PrepReminderSentAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -198843,6 +199008,7 @@ export namespace Prisma {
     fundingMode?: SortOrder
     fundingReference?: SortOrder
     fundingNotes?: SortOrder
+    j5PrepReminderSentAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -198860,6 +199026,7 @@ export namespace Prisma {
     fundingMode?: SortOrder
     fundingReference?: SortOrder
     fundingNotes?: SortOrder
+    j5PrepReminderSentAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -209842,6 +210009,10 @@ export namespace Prisma {
     set?: $Enums.CandidatureAssessmentStatus
   }
 
+  export type NullableEnumAdaptationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AdaptationStatus | null
+  }
+
   export type CandidatureUpdateOneRequiredWithoutAssessmentsNestedInput = {
     create?: XOR<CandidatureCreateWithoutAssessmentsInput, CandidatureUncheckedCreateWithoutAssessmentsInput>
     connectOrCreate?: CandidatureCreateOrConnectWithoutAssessmentsInput
@@ -216198,6 +216369,13 @@ export namespace Prisma {
     not?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel> | $Enums.CandidatureAssessmentStatus
   }
 
+  export type NestedEnumAdaptationStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdaptationStatus | EnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAdaptationStatusNullableFilter<$PrismaModel> | $Enums.AdaptationStatus | null
+  }
+
   export type NestedEnumCandidatureAssessmentKindWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.CandidatureAssessmentKind | EnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
     in?: $Enums.CandidatureAssessmentKind[] | ListEnumCandidatureAssessmentKindFieldRefInput<$PrismaModel>
@@ -216216,6 +216394,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
     _max?: NestedEnumCandidatureAssessmentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAdaptationStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AdaptationStatus | EnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AdaptationStatus[] | ListEnumAdaptationStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAdaptationStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.AdaptationStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAdaptationStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumAdaptationStatusNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumFormationSessionEnrollmentStatusFilter<$PrismaModel = never> = {
@@ -217818,6 +218006,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -217840,6 +218029,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -220567,6 +220757,7 @@ export namespace Prisma {
     fundingMode?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
   }
@@ -237406,6 +237597,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
@@ -237428,6 +237620,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -240323,6 +240516,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -240345,6 +240539,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -240479,6 +240674,9 @@ export namespace Prisma {
     level?: string | null
     prerequisitesStatus?: string | null
     adaptationRequired?: boolean | null
+    adaptationStatus?: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: Date | string | null
+    adaptationNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -240493,6 +240691,9 @@ export namespace Prisma {
     level?: string | null
     prerequisitesStatus?: string | null
     adaptationRequired?: boolean | null
+    adaptationStatus?: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: Date | string | null
+    adaptationNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -241131,6 +241332,9 @@ export namespace Prisma {
     level?: StringNullableFilter<"CandidatureAssessment"> | string | null
     prerequisitesStatus?: StringNullableFilter<"CandidatureAssessment"> | string | null
     adaptationRequired?: BoolNullableFilter<"CandidatureAssessment"> | boolean | null
+    adaptationStatus?: EnumAdaptationStatusNullableFilter<"CandidatureAssessment"> | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: DateTimeNullableFilter<"CandidatureAssessment"> | Date | string | null
+    adaptationNotes?: StringNullableFilter<"CandidatureAssessment"> | string | null
     createdAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
     updatedAt?: DateTimeFilter<"CandidatureAssessment"> | Date | string
   }
@@ -242562,6 +242766,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -242585,6 +242790,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
@@ -242888,6 +243094,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -242911,6 +243118,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
@@ -243262,6 +243470,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -243285,6 +243494,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -243488,6 +243698,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -243511,6 +243722,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -274786,6 +274998,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -274809,6 +275022,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -274937,6 +275151,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -274960,6 +275175,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -275402,6 +275618,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -275425,6 +275642,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -275893,6 +276111,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -275916,6 +276135,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -279436,6 +279656,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -280722,6 +280943,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -280744,6 +280966,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -280764,6 +280987,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -285718,6 +285942,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -285910,6 +286135,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
@@ -285932,6 +286158,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -285952,6 +286179,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -286540,6 +286768,7 @@ export namespace Prisma {
     fundingMode?: string | null
     fundingReference?: string | null
     fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -286595,6 +286824,9 @@ export namespace Prisma {
     level?: string | null
     prerequisitesStatus?: string | null
     adaptationRequired?: boolean | null
+    adaptationStatus?: $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: Date | string | null
+    adaptationNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -286665,6 +286897,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -286687,6 +286920,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -286707,6 +286941,7 @@ export namespace Prisma {
     fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -286848,6 +287083,9 @@ export namespace Prisma {
     level?: NullableStringFieldUpdateOperationsInput | string | null
     prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
     adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    adaptationStatus?: NullableEnumAdaptationStatusFieldUpdateOperationsInput | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adaptationNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -286862,6 +287100,9 @@ export namespace Prisma {
     level?: NullableStringFieldUpdateOperationsInput | string | null
     prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
     adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    adaptationStatus?: NullableEnumAdaptationStatusFieldUpdateOperationsInput | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adaptationNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -286876,6 +287117,9 @@ export namespace Prisma {
     level?: NullableStringFieldUpdateOperationsInput | string | null
     prerequisitesStatus?: NullableStringFieldUpdateOperationsInput | string | null
     adaptationRequired?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    adaptationStatus?: NullableEnumAdaptationStatusFieldUpdateOperationsInput | $Enums.AdaptationStatus | null
+    adaptationNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    adaptationNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
