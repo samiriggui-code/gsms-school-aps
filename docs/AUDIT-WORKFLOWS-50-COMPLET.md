@@ -25,6 +25,18 @@
 - **❌ (6)** : WF-19 (prévention rupture — heuristique de risque à concevoir), WF-21 (évaluation formative non rattachée au parcours CNAPS présentiel), WF-35/36/37 (veille, bloqué faute de source externe), WF-45 (autres financeurs, bloqué faute de process vérifié).
 - **🟡 (10)** : WF-11/12 (design assumé — pas de hard-block auto, décision volontaire, pas un bug à corriger), WF-15/20/22/24/25/33/38/46. **WF-24 (rattrapage examen) a un vrai point de design non résolu** : `FormationExam` est 1:1 par session, pas par participant — décider nouvelle session dédiée vs champ retry participant avant de coder. **WF-33 a été jugé non prioritaire** : `SupportTicket` couvre déjà fonctionnellement le cycle réclamation, renommer l'enum toucherait tous les usages du ticketing au-delà des réclamations.
 
+**Mise à jour 30/08 (matin, reprise)** — cadrages produits et livrés pour les 3 derniers WF ❌/🟡 non triviaux :
+- **WF-24 🟡→✅** : finalement plus simple qu'anticipé — `examOutcome`/`examDate` déjà ré-écrasables sur `FormationSessionParticipant`, pas besoin de toucher `FormationExam`. Ajout `retakeDate`/`retakeNotes` + action `proposeExamRetake` (gate FAILED, e-mail apprenant, Evidence, **pas** d'e-mail financeur fabriqué). Commit `e858181`.
+- **WF-19 ❌→✅** : signal "réclamation" écarté après vérification (`SupportTicket` sans FK fiable vers un participant) — 2 signaux solides retenus (absences non justifiées ≥2, échec sans rattrapage). Cycle `DropoutRiskStatus`, détection cron + progression staff manuelle. Commit `fc7ed72`.
+- **WF-21 ❌→✅** : confirmé que `Formation`/`Course` sont délibérément deux systèmes séparés (commentaire explicite du schéma) — pas de pont LMS. Nouveau modèle léger `FormativeAssessment`. Commit `fc7ed72`.
+- Intégrité DB vérifiée après un redémarrage/crash-recovery Postgres du matin ("arrêt sale") — 55 users avant/après, aucune perte.
+
+**Tally final : 37 ✅ / 9 🟡 / 4 ❌ (sur 50)**, contre 20/15/15 au départ — **17 workflows fermés au total sur les deux sessions**, chacun vérifié indépendamment de bout en bout (code relu en entier, tests+tsc+migrate diff relancés, jamais accepté sur parole).
+
+**Ce qui reste réellement ouvert** :
+- **❌ (4, tous bloqués pour de vraies raisons documentées)** : WF-35/36/37 (veille — aucune source externe branchée), WF-45 (autres financeurs — process non vérifiés officiellement).
+- **🟡 (9, aucun n'est un bug)** : WF-11/12 (garde-fous "forçables" assumés par design, pas un manque), WF-15/20/22/25/33/38/46 — raffinements mineurs de nommage/complétude, pas de gap fonctionnel Qualiopi identifié.
+
 ---
 
 *Détail original (29/08), tableaux ci-dessous non mis à jour ligne par ligne — se référer à la section "Mise à jour 30/08" ci-dessus pour le statut courant des WF listés.*

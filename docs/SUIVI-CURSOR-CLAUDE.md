@@ -316,3 +316,32 @@ Cadrage suivi à la lettre : modèle `CandidatureAssessment` (kind NEEDS_ANALYSI
 - Toujours hors scope volontaire : ExternalExchange (comptes externes requis), EVE.
 
 Session arrêtée à la demande explicite de l'utilisateur après ce dernier rapport Cursor — reprise prévue demain, handoff écrit dans `HANDOFF-CLAUDE.md`.
+
+## ☀️ Reprise du matin (30/08/2026, ~11h25)
+
+Rien de nouveau côté Cursor pendant la coupure (même commit `3450941` qu'au coucher — vérifié, pas supposé). Committé `5a2c50d` : les docs de clôture de cette nuit + la recherche financeurs (AGEFIPH/Transitions Pro/Régions) qui traînait non commitée depuis le début de soirée. Monitor `HANDOFF-CURSOR.md` relancé (process précédent mort avec la session).
+
+**Cadrage WF-24 produit ce matin** — moins lourd que redouté à 1h du matin en le regardant à tête reposée : `examOutcome`/`examDate` sont déjà des champs simples ré-écrasables sur `FormationSessionParticipant` (vérifié dans `parcours-candidat.ts::recordExamOutcome`), donc pas besoin d'historique de tentatives ni de toucher `FormationExam`. Le vrai trou = juste l'action "proposer un rattrapage" (champ `retakeDate` + notif apprenant + Evidence interne si FundingCase, sans e-mail financeur fiable — même limite P0 que WF-30). Vérifié aussi que `FundingCaseEvent` exige une vraie transition de statut (pas de note libre) avant d'écarter cette option pour la notification financeur. Cadrage écrit dans `HANDOFF-CLAUDE.md`, go direct donné à Cursor.
+
+### WF-24 (rattrapage examen) — livré et vérifié en profondeur (commit `e858181`)
+Cadrage suivi à la lettre : `retakeDate`/`retakeNotes` sur `FormationSessionParticipant` (pas de nouveau modèle, `FormationExam` non touché), `proposeExamRetake` gaté strictement sur `examOutcome === 'FAILED'`, e-mail apprenant, Evidence `EXAM_RETAKE_PROPOSED` (`sourceType: LOG`) avec `fundingCasePresent` en métadonnée si un `FundingCase` existe — **aucun e-mail financeur fabriqué, aucun `FundingCaseEvent` détourné**, exactement comme demandé. Route PATCH `academiqueEdit`, erreurs typées (`NOT_FOUND`/`NOT_FAILED`/`INVALID_DATE`) bien mappées en codes HTTP.
+
+**Incident mineur pendant la vérif, résolu** : après le redémarrage du matin (Cursor avait signalé un "arrêt sale" Postgres nécessitant crash recovery), `pnpm smoke:doctype` et `migrate diff` ont semblé bloqués (>2 min sans sortie). Vérifié directement plutôt que de supposer un vrai problème : process Postgres actifs (9 process, port 5432 répond), les deux commandes ont fini par aboutir avec succès juste après — simple démarrage à froid (cache tsx/npm + I/O post-recovery), pas de blocage réel. **Intégrité de la base confirmée par comparaison directe** : `smoke:doctype` retourne toujours 55 users, identique au chiffre d'avant la coupure — aucune perte de données malgré l'arrêt sale.
+
+**Vérifications indépendantes finales** : `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Tout vert, rien à reprendre.
+
+### Cadrage WF-19/WF-21 — décision déléguée par l'utilisateur, tranchée par moi
+Posé les 2 questions design (bridge LMS vs note simple pour WF-21 ; seuil simple vs score pondéré pour WF-19) via AskUserQuestion — utilisateur a explicitement délégué ("c toi qui gere"). Parti sur mes options recommandées, mais **affiné après vérification code** plutôt que d'appliquer la recommandation telle quelle :
+- **WF-21** : confirmé que `Formation` (CRM) et `Course` (LMS) sont délibérément séparés (commentaire explicite dans le schéma) — pas de pont. Nouveau petit modèle `FormativeAssessment` (pas un champ en vrac comme WF-24 — un participant peut avoir plusieurs évaluations formatives par session, mérite sa propre table).
+- **WF-19** : vérifié que `SupportTicket` n'a pas de FK fiable vers un participant (juste `leadId`+e-mail texte libre) — **retiré le signal "réclamation" du seuil automatique** plutôt que de matcher par e-mail (fragile, risque de faux positifs/négatifs). Design réduit à 2 signaux solides : absences non justifiées (≥2) + échec examen sans rattrapage posé. Cycle `DropoutRiskStatus` (NONE→FLAGGED→CONTACTED→ACTION_PROPOSED→RESOLVED), détection auto par cron (flag seulement), progression manuelle staff (contact humain non automatisable, cohérent avec la doctrine).
+Cadrage écrit dans `HANDOFF-CLAUDE.md`, go direct donné à Cursor pour les deux.
+
+### WF-19/WF-21 — livrés et vérifiés en profondeur (commit `fc7ed72`)
+Cadrage suivi à la lettre, avec 2 bons réflexes en plus de ce que j'avais spécifié :
+- **WF-19** : détection cron correcte — filtre Prisma large (`emargements: { some: {...} }`, au moins 1) puis comptage précis `>= 2` en mémoire sur le tableau réellement récupéré, pas de faux positif sur 1 seule absence. State machine forward-only (`FORWARD` map) identique au pattern `AdaptationStatus`. **Bonus** : la route PATCH staff bloque explicitement `NONE`/`FLAGGED` comme cibles (seul le cron peut flagger, staff ne peut qu'avancer CONTACTED→ACTION_PROPOSED→RESOLVED) — plus strict que ce que j'avais demandé, bonne initiative. Pas de mail apprenant automatique, conforme.
+- **WF-21** : `FormativeAssessment` avec vraie relation `sessionDayId→FormationSessionDay` (amélioration sur mon design), permissions view/edit split correctement, validation `label requis` + erreurs typées (`PARTICIPANT_NOT_FOUND`/`SESSION_DAY_NOT_FOUND`) bien mappées.
+- n8n `GSMS — Risque de rupture` wiré à 10h15 (créneau distinct des autres crons).
+
+**Vérifications indépendantes** : `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Tout vert, rien à reprendre.
+
+**Tally final** : tous les cadrages du matin livrés et vérifiés (WF-24/19/21). **37✅ / 9🟡 / 4❌ sur 50** (parti de 20/15/15 hier soir). Reste en ❌ : WF-35/36/37 (veille, bloqué faute de source externe) et WF-45 (autres financeurs, bloqué faute de process vérifié) — les 4 seuls items encore réellement non couverts, tous bloqués pour de vraies raisons documentées, pas des oublis. `AUDIT-WORKFLOWS-50-COMPLET.md` à mettre à jour.
