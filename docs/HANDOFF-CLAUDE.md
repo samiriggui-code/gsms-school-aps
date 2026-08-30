@@ -858,3 +858,18 @@ Vas-y, teste le golden path que je t'avais demandé (WF-02/03/04 sur la fiche ca
 J'ai repris le test navigateur moi-même (agent-browser) après le fix NEXTAUTH. Chaîne de diagnostic : 2 process APEX-UI squattant les ports (tués), Redis à 5 Go de RAM anormal (redémarré, RAM libérée 2,8→7,5 Go), `.next` vidé, serveur relancé propre. **Le crash persiste identique à chaque tentative de login** : `Jest worker encountered 2 child process exceptions, exceeding retry limit` sur la route d'auth, RAM/cache éliminés comme causes. Piste restante : Windows Defender (protection temps réel active, confirmé) interfère probablement avec les processus enfants Node — je n'ai pas les droits admin pour ajouter une exclusion.
 
 **Ce n'est pas un problème de code** — `tsc --noEmit` reste à 0, tout le code Front A+B a déjà été relu en entier. C'est un problème d'environnement Windows local, pré-existant, pas introduit par le travail de ce soir. Laissé en suivi, pas bloquant : dis-le si l'utilisateur ajoute l'exclusion Defender et qu'on peut retester.
+
+## 2026-08-30 — Nouveau chantier : GSMS-OF-06 (facturation first-class) — cadrage d'abord, pas de code
+
+`docs/BILAN-CHANTIERS-GLOBAL.md` mis à jour avec tout ce qui a été fait cette session (SEC-03, NAF-00-03/12, OF-04 passés à ✅, OF-07/NAF-11 nuancés en partiel). Les deux seuls P1 encore réellement ouverts et non bloqués : **OF-06** (facture first-class) et **OF-11** (non-conformité étendue). Je choisis **OF-06** — point de départ concret déjà identifié (le code lui-même dit "émission à venir").
+
+**Ce que j'ai vérifié avant d'écrire ce chantier** (`.../finance/factures/route.ts`) : il n'y a **pas d'entité facture dédiée**. La page "Factures" relit juste les `FinanceDevis` avec `status: ACCEPTED` et les réaffiche avec le même payload que la page devis. Pire : **le pipeline Factur-X (réforme facturation électronique légale 2026) est câblé directement sur `FinanceDevis`** (`einvoiceStatus`/`einvoiceProfile`/`einvoiceXmlAssetKey`, etc., champs du modèle devis lui-même) — pas sur une entité facture séparée.
+
+**Pourquoi cadrage d'abord, pas code direct** : c'est un sujet à enjeu légal (facturation électronique), et introduire une vraie entité `FinanceInvoice` séparée du devis toucherait potentiellement la conformité Factur-X déjà câblée. Je ne veux pas qu'on se retrouve à casser un pipeline réglementaire pour gagner un confort UX. Même règle que P4/WF-02-03 cette nuit : mini-draft avant tout changement de modèle.
+
+**Questions à trancher dans ton mini-draft** (pas besoin d'un gros document, même format que `P4-DOCPERM-ACTIONS-DRAFT.md`) :
+1. Un devis ACCEPTED devient-il numériquement UNE facture, ou peut-on facturer partiellement/en plusieurs fois (acompte + solde) ? Ça détermine si `FinanceInvoice` doit être 1:1 avec `FinanceDevis` ou 1:N.
+2. Les champs `einvoice*` doivent-ils migrer du devis vers la nouvelle entité facture, ou rester sur le devis (facture = juste un numéro/statut, la génération Factur-X restant côté devis) ? Vérifie s'il y a déjà du code amont qui dépend de `devis.einvoiceStatus` avant de proposer une migration.
+3. Numérotation légale des factures (séquence continue, pas de trou — obligation comptable française) : comment tu comptes la garantir si plusieurs process peuvent créer une facture en même temps ?
+
+Pas de code sur ce chantier avant mon ack sur ces 3 points. Si tu préfères plutôt attaquer OF-11 (non-conformité, moins risqué, pas d'enjeu légal) en attendant, dis-le — je n'ai pas de préférence forte, juste évité de laisser OF-06 sans réponse.
