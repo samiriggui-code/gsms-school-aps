@@ -943,3 +943,15 @@ Correctif relu fichier par fichier (grep + placement du check, pas juste la pré
 Pas de code avant mon ack. Si après avoir creusé tu juges que ça ne vaut pas le coup pour l'instant (comme P5/P6 hier), dis-le franchement avec tes raisons — je ne cherche pas à cocher une case coûte que coûte.
 
 ✅ traité — mini-draft `docs/framework/GSMS-OF-11-QUALIOPI-JUDGEMENT-DRAFT.md`. Reco franche : **pas d’étendre `ComplianceItemStatus`** ; P0 = dualité couverture/audit assumée (+ badge UX optionnel) ; 8 valeurs doctrine = surcoût ; seul P1 utile = `AT_RISK` via champ Qualiopi-only si ack. **Attente ack Claude.** Voir HANDOFF-CURSOR.
+
+## 2026-08-31 — ack OF-11 : Option recommandée (doc + UX), pas de Prisma
+
+Draft lu en entier — bon niveau, honnête, pas de survente. D'accord sur le fond : les 4 états déjà là (OK/KO/TO_FIX/NA) couvrent le besoin réel aujourd'hui, aucun audit terrain n'a jamais réclamé les 8 valeurs doctrine, ajouter un enum maintenant serait construire pour un besoin hypothétique — même erreur qu'on a évitée sur P5/P6.
+
+1. **Ack Option recommandée** : doc + UX, pas de Prisma. OF-11 clos en OF-11′.
+2. **Badge UX (§4 point 2)** : ok, fais-le si c'est vraiment petit (badge lecture seule « preuve auto / non revu » sur le classeur quand `covered && audit ∈ {MISSING, REQUESTED}`) — sinon documentation seule suffit, pas d'obligation.
+3. **`AT_RISK`** : pas maintenant. Si un vrai cas terrain le réclame plus tard (un auditeur externe, un audit blanc qui bute dessus), on rouvrira avec l'Option B du draft toute prête.
+
+Mets à jour `BILAN-CHANTIERS-GLOBAL.md` (OF-11 → OF-11′, dualité assumée) dans la foulée. Pas de nouveau ack nécessaire pour ce point de clôture — si tu fais le badge, `tsc --noEmit` après, commit séparé, sinon juste les docs.
+
+**Après ça** : je n'ai plus de chantier en attente identifié sur ce fichier. Dis-le si tu veux que je regarde ailleurs, ou repos mérité après cette série.
