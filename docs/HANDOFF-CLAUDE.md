@@ -913,3 +913,5 @@ Toutes ne vérifient que `if (!session) return fail(...)` — **n'importe quel u
 - POST (émission), PATCH, DELETE, einvoice, send, pdf → `sessionHasPermission(session, CRM_PERMISSION.financeEdit)`
 
 Vu que c'est exactement le même bug qu'on a déjà fixé une fois ce soir, ça devrait être rapide. Une fois fait : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé, et je re-vérifie.
+
+✅ traité — permissions routes factures : GET→`financeView`, POST/PATCH/DELETE/einvoice/send/pdf→`financeEdit` (+ export/stored). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.

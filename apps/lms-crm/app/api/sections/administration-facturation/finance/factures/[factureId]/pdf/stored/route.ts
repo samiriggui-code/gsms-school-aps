@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { getStoredFinancePdf } from '@/lib/finance/store-finance-pdf-asset';
 import { fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ factureId: string }> };
 
@@ -11,6 +12,9 @@ type Ctx = { params: Promise<{ factureId: string }> };
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
 

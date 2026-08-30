@@ -12,6 +12,7 @@ import {
   parseEinvoiceLines,
   type EinvoiceSellerProfile,
 } from '@/lib/finance/factur-x';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ factureId: string }> };
 
@@ -58,6 +59,9 @@ async function loadInvoice(factureId: string) {
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
   const invoice = await loadInvoice(factureId);
@@ -99,6 +103,9 @@ export async function GET(_request: NextRequest, context: Ctx) {
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
   const persist = request.nextUrl.searchParams.get('persist') !== '0';

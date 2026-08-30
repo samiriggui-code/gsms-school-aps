@@ -6,6 +6,7 @@ import { FinanceInvoiceStatus, Prisma } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { getStoredFinancePdf } from '@/lib/finance/store-finance-pdf-asset';
 import { summarizePayments } from '@/lib/finance/finance-payment-summary';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 /**
  * OF-06 — détail d’une `FinanceInvoice` (pas de lazy-create : 404 si absente).
@@ -23,6 +24,9 @@ function decimalNum(d: unknown): number {
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
 
@@ -150,6 +154,9 @@ export async function GET(_request: NextRequest, context: Ctx) {
 export async function PATCH(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
 
@@ -206,6 +213,9 @@ export async function PATCH(request: NextRequest, context: Ctx) {
 export async function DELETE(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
 

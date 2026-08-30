@@ -4,6 +4,22 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — OF-06 permissions routes factures (trou fermé)
+
+Même pattern P4 / sous-traitants :
+- GET liste, détail, einvoice readiness, pdf, export, pdf/stored → `CRM_PERMISSION.financeView`
+- POST émission, PATCH, DELETE, einvoice generate, send, pdf archive → `CRM_PERMISSION.financeEdit`
+- 403 Forbidden si slug manquant (superadmin bypass inchangé via `sessionHasPermission`)
+
+Fichiers : `factures/route.ts`, `[factureId]/route.ts`, `einvoice`, `send`, `pdf`, `pdf/stored`, `export`.
+
+### Vérifs
+`test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0 · migrate diff **0**
+
+OF-06 prêt pour clôture côté Claude.
+
+---
+
 ## 2026-08-30 — OF-06 FinanceInvoice livré (ack + amendements)
 
 ### Amendements respectés

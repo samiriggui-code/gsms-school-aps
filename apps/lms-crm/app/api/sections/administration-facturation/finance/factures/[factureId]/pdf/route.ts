@@ -7,6 +7,7 @@ import { buildFinanceDevisPdfBuffer } from '@/lib/finance/finance-devis-pdf';
 import { loadFinanceDevisPdfRow } from '@/lib/finance/load-finance-devis-pdf-row';
 import { storeFinancePdfAsset } from '@/lib/finance/store-finance-pdf-asset';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ factureId: string }> };
 
@@ -30,6 +31,9 @@ async function assertIssuedInvoice(factureId: string) {
 export async function GET(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return new NextResponse('Unauthorized', { status: 401 });
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return new NextResponse('Forbidden', { status: 403 });
+  }
 
   const { factureId } = await context.params;
   const format = request.nextUrl.searchParams.get('format');
@@ -73,6 +77,9 @@ export async function GET(request: NextRequest, context: Ctx) {
 export async function POST(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
 

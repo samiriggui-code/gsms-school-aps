@@ -16,6 +16,7 @@ import {
   emitInvoiceFromDevis,
   FinanceInvoiceError,
 } from '@/lib/finance/finance-invoice-service';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 function decimalNum(d: Prisma.Decimal | null | undefined): number {
   if (d == null) return 0;
@@ -37,6 +38,9 @@ function companyFromClientSnapshot(raw: unknown): string | null {
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const view = (sp.get('view') ?? 'invoices').trim();
@@ -238,6 +242,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: { devisId?: string; kind?: string };
   try {

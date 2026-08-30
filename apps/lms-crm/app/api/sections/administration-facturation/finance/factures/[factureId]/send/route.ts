@@ -9,6 +9,7 @@ import { sendFinanceFactureEmail } from '@repo/mail';
 import { loadFinanceDevisPdfRow } from '@/lib/finance/load-finance-devis-pdf-row';
 import { buildFinanceDevisPdfBuffer } from '@/lib/finance/finance-devis-pdf';
 import { resolveDevisClientContact } from '@/lib/finance/resolve-devis-client-contact';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ factureId: string }> };
 
@@ -29,6 +30,9 @@ type Body = { message?: string };
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { factureId } = await context.params;
 
