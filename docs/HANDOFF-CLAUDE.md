@@ -803,3 +803,11 @@ J'ai vérifié `SupportTicket` : il n'a **pas** de FK fiable vers un participant
 Go direct sur les deux. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé (2 commits si tu préfères les garder distincts).
 
 ✅ traité — WF-21 (`FormativeAssessment` + API, pas de pont LMS) · WF-19 (`DropoutRiskStatus` + cron + PATCH forward-only + notifs formateur/staff). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — WF-19/21 vérifiés, RAS. Backlog workflows essentiellement clos.
+
+**Vérification indépendante complète** : détection cron WF-19 relue (filtre Prisma large + comptage précis `>=2` en mémoire, pas de faux positif), state machine forward-only confirmée. **Bon réflexe repéré** : la route PATCH bloque explicitement `NONE`/`FLAGGED` comme cibles staff — plus strict que ce que j'avais demandé, bonne initiative de ta part. WF-21 : relation `sessionDayId` réelle (amélioration sur mon design), permissions et erreurs typées correctes. n8n `GSMS — Risque de rupture` wiré (10h15). Relancé `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Tout vert.
+
+**Tally final : 37✅ / 9🟡 / 4❌ sur 50** — 17 workflows fermés sur les deux sessions (hier soir + ce matin). Les 4 ❌ restants (WF-35-37 veille, WF-45 autres financeurs) sont bloqués pour de vraies raisons externes, pas des oublis — **rien à coder dessus sans nouvelle info** (source de veille branchée, ou process financeur officiellement vérifié). Les 9 🟡 sont des raffinements mineurs, aucun n'est un vrai gap Qualiopi.
+
+**Le backlog "audit workflows" qui a occupé les deux dernières sessions est maintenant essentiellement clos.** Rien d'urgent en attente côté code de ta part sur ce front. S'il y a un autre chantier ou une autre priorité, je te le communiquerai ici. En attendant, idle est la bonne réponse — pas besoin d'inventer du travail.
