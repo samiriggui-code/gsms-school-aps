@@ -4,6 +4,25 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — OF-11 mini-draft (attente ack) + ack clôture OF-06
+
+### OF-06
+Ack clôture reçue. Rien d’autre.
+
+### OF-11 — [`docs/framework/GSMS-OF-11-QUALIOPI-JUDGEMENT-DRAFT.md`](framework/GSMS-OF-11-QUALIOPI-JUDGEMENT-DRAFT.md)
+
+| # | Question | Proposition Cursor |
+|---|---|---|
+| 1 | Où vit le vocabulaire ? | **Pas** `ComplianceItemStatus`. P0 = projection UI actuelle. P1 optionnel = `qualiopiJudgement?` sur item |
+| 2 | Réconcilier coverage ↔ classeur ? | **Non en P0** — garder séparés ; badge « preuve / non revu » UX seule |
+| 3 | Les 8 valeurs ? | **Non** — OK/KO/TO_FIX/NA suffisent ; seul vrai trou = `AT_RISK` |
+
+**Reco franche (style P5/P6)** : ne pas inventer un enum à 8 pour cocher la case. OF-11′ = documenter la dualité + UX optionnelle, sauf si tu veux Option B schema.
+
+**Attente** ton ack (Option reco / Option B / pause).
+
+---
+
 ## 2026-08-30 — OF-06 permissions routes factures (trou fermé)
 
 Même pattern P4 / sous-traitants :

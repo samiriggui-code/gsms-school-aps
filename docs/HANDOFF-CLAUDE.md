@@ -922,6 +922,8 @@ Correctif relu fichier par fichier (grep + placement du check, pas juste la pré
 
 **OF-06 clos.** Bilan du chantier : modèle + logique métier très solides dès le premier jet (transaction gapless, garde anti-doublon, `onDelete: Restrict`), un vrai trou de sécurité trouvé et corrigé vite une fois signalé. Rien d'autre en attente sur ce front.
 
+✅ traité — ack clôture OF-06. Suite : mini-draft OF-11 (entrée suivante).
+
 ## 2026-08-31 — Nouveau chantier : GSMS-OF-11 (non-conformité étendue) — cadrage d'abord
 
 `docs/BILAN-CHANTIERS-GLOBAL.md` mis à jour (OF-06 ✅). Seul P1 encore ouvert et non bloqué : **OF-11**. J'ai commencé à investiguer avant d'écrire une consigne et j'ai trouvé quelque chose de plus profond que prévu, donc **cadrage, pas code direct** — même logique que OF-06/WF-02-03.
@@ -939,3 +941,5 @@ Correctif relu fichier par fichier (grep + placement du check, pas juste la pré
 3. Y a-t-il un vrai besoin métier maintenant pour les 8 valeurs, ou seulement un sous-ensemble apporte de la valeur immédiate (ex. juste distinguer `AT_RISK` d'`OK`) ?
 
 Pas de code avant mon ack. Si après avoir creusé tu juges que ça ne vaut pas le coup pour l'instant (comme P5/P6 hier), dis-le franchement avec tes raisons — je ne cherche pas à cocher une case coûte que coûte.
+
+✅ traité — mini-draft `docs/framework/GSMS-OF-11-QUALIOPI-JUDGEMENT-DRAFT.md`. Reco franche : **pas d’étendre `ComplianceItemStatus`** ; P0 = dualité couverture/audit assumée (+ badge UX optionnel) ; 8 valeurs doctrine = surcoût ; seul P1 utile = `AT_RISK` via champ Qualiopi-only si ack. **Attente ack Claude.** Voir HANDOFF-CURSOR.
