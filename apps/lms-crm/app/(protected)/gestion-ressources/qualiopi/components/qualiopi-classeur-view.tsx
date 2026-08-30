@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle2, Loader2, ShieldAlert, Upload } from 'lucide-react';
@@ -25,6 +26,7 @@ import {
   type QualiopiAuditStatus,
   type QualiopiIndicator,
 } from '@/lib/of/qualiopi-indicators';
+import type { QualiopiCoveragePayload } from '@/lib/of/qualiopi-coverage';
 
 type DossierBootstrap = {
   dossierId: string;
@@ -110,10 +112,13 @@ function IndicatorCard({
   indicator,
   item,
   disabled,
+  evidenceCovered,
 }: {
   indicator: QualiopiIndicator;
   item: ComplianceItemRow | undefined;
   disabled: boolean;
+  /** OF-11′ — preuve Evidence existante (couverture auto), distinct du jugement audit. */
+  evidenceCovered: boolean;
 }) {
   const queryClient = useQueryClient();
   const [auditStatus, setAuditStatus] = useState<QualiopiAuditStatus | ''>(
@@ -124,6 +129,10 @@ function IndicatorCard({
   const dirty =
     (auditStatus || '') !== (item ? (STATUS_TO_AUDIT[item.status] ?? '') : '') ||
     comment !== (item?.rejectionReason ?? '');
+
+  const unauditedWithEvidence =
+    evidenceCovered &&
+    (!item || item.status === 'MISSING' || item.status === 'REQUESTED');
 
   const saveMutation = useMutation({
     mutationFn: async (patch: Record<string, unknown>) => {
@@ -198,7 +207,19 @@ function IndicatorCard({
             </CardTitle>
             <CardDescription className="text-sm leading-relaxed">{indicator.description}</CardDescription>
           </div>
-          {item ? statusBadge(item.status) : null}
+          <div className="flex flex-col items-end gap-1">
+            {item ? statusBadge(item.status) : null}
+            {unauditedWithEvidence ? (
+              <Badge
+                variant="secondary"
+                appearance="outline"
+                className="text-[10px] font-medium"
+                title="Une preuve Evidence est liée à cet indicateur, mais le jugement d’audit n’est pas encore OK/KO/NA."
+              >
+                Preuve auto · non revu
+              </Badge>
+            ) : null}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -302,6 +323,16 @@ export function QualiopiClasseurView() {
     staleTime: 1000 * 30,
   });
 
+  const coverageQuery = useQuery({
+    queryKey: [QUERY_KEY, 'coverage'],
+    queryFn: async () => {
+      const res = await apiFetch('/api/sections/gestion-ressources/qualiopi/coverage');
+      if (!res.ok) throw new Error('coverage');
+      return unwrapSectionApiData<QualiopiCoveragePayload>(await res.json());
+    },
+    staleTime: 1000 * 60,
+  });
+
   const dossierId = bootstrapQuery.data?.dossierId;
   const items = bootstrapQuery.data?.items ?? [];
 
@@ -310,6 +341,14 @@ export function QualiopiClasseurView() {
     for (const row of items) map.set(row.code, row);
     return map;
   }, [items]);
+
+  const coveredByCode = useMemo(() => {
+    const map = new Map<string, boolean>();
+    for (const ind of coverageQuery.data?.indicators ?? []) {
+      map.set(ind.code, ind.covered);
+    }
+    return map;
+  }, [coverageQuery.data]);
 
   const grouped = useMemo(() => qualiopiIndicatorsByCriterion(), []);
 
@@ -381,9 +420,14 @@ export function QualiopiClasseurView() {
             </p>
           </div>
         </div>
-        <Badge variant="outline" className="text-xs font-bold">
-          {bootstrapQuery.data?.summary.completenessPct ?? 0}% complet
-        </Badge>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button type="button" variant="outline" size="sm" asChild>
+            <Link href="/gestion-ressources/qualiopi/couverture">Couverture Evidence</Link>
+          </Button>
+          <Badge variant="outline" className="text-xs font-bold">
+            {bootstrapQuery.data?.summary.completenessPct ?? 0}% complet
+          </Badge>
+        </div>
       </div>
 
       {[1, 2, 3, 4, 5, 6, 7].map((criterion) => {
@@ -403,6 +447,7 @@ export function QualiopiClasseurView() {
                   indicator={indicator}
                   item={itemsByCode.get(indicator.code)}
                   disabled={false}
+                  evidenceCovered={coveredByCode.get(indicator.code) === true}
                 />
               ))}
             </div>

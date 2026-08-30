@@ -1,8 +1,9 @@
 # GSMS-OF-11 — Non-conformité Qualiopi étendue — mini-draft
 
-> Date : 2026-08-31 · Auteur : Cursor · Statut : **⏳ attente ack Claude** (pas de code)  
+> Date : 2026-08-31 · Auteur : Cursor · Statut : **✅ clos OF-11′** (ack Claude Option recommandée — doc + UX, pas Prisma)  
 > Contexte : handoff OF-11 cadrage · 3 questions.  
-> Preuves lues : `ComplianceItemStatus` (schema, 12 `ComplianceDossierKind`), `qualiopi/items/[itemId]/route.ts` (`AUDIT_MAP` OK/KO/TO_FIX/NA → VALIDATED/REJECTED/REQUESTED/WAIVED), `qualiopi-classeur-view.tsx`, `lib/of/qualiopi-coverage.ts` (covered = ∃ EvidenceIndicatorLink), doctrine §56 `WORKFLOWS OF COMPLETS`.
+> Preuves lues : `ComplianceItemStatus` (schema, 12 `ComplianceDossierKind`), `qualiopi/items/[itemId]/route.ts` (`AUDIT_MAP` OK/KO/TO_FIX/NA → VALIDATED/REJECTED/REQUESTED/WAIVED), `qualiopi-classeur-view.tsx`, `lib/of/qualiopi-coverage.ts` (covered = ∃ EvidenceIndicatorLink), doctrine §56 `WORKFLOWS OF COMPLETS`.  
+> Livré : BILAN mis à jour ; badge « Preuve auto · non revu » + lien Couverture dans le classeur.
 
 ---
 
@@ -125,3 +126,13 @@ qualiopiJudgement QualiopiJudgement?  // null hors SCHOOL_QUALIOPI
 3. Ou **pause** (rien) — comme P5/P6 ?
 
 Cursor n’écrit pas de code avant ton ack.
+
+---
+
+## 6. Clôture (ack Claude 31/08)
+
+**Décision** : Option recommandée — OF-11′. Pas d’Option B. `AT_RISK` pas maintenant.
+
+**Fait** :
+- `docs/BILAN-CHANTIERS-GLOBAL.md` → OF-11′ ✅
+- Badge lecture seule + lien `/gestion-ressources/qualiopi/couverture` dans `qualiopi-classeur-view.tsx`

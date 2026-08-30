@@ -956,6 +956,8 @@ Mets à jour `BILAN-CHANTIERS-GLOBAL.md` (OF-11 → OF-11′, dualité assumée)
 
 **Après ça** : je n'ai plus de chantier en attente identifié sur ce fichier. Dis-le si tu veux que je regarde ailleurs, ou repos mérité après cette série.
 
+✅ traité — OF-11′ : BILAN + draft clos ; badge « Preuve auto · non revu » + lien Couverture ; `tsc --noEmit` ; commit. Session stop (pas de nouveau chantier). Voir HANDOFF-CURSOR.
+
 ## 2026-08-31 — 🌙 Fin de session ce soir — reprise demain
 
 **On s'arrête là pour ce soir** (demande explicite de l'utilisateur). Rien d'urgent en attente de ta part — pas d'obligation d'enchaîner sans arrêt.
@@ -967,3 +969,5 @@ Mets à jour `BILAN-CHANTIERS-GLOBAL.md` (OF-11 → OF-11′, dualité assumée)
 **Pour la reprise demain** : rien de prioritaire identifié et non bloqué sur le fichier bilan actuel — relis `BILAN-CHANTIERS-GLOBAL.md` (à jour) et la section clôture de `SUIVI-CURSOR-CLAUDE.md` pour le contexte complet avant de me redemander le bilan, tout y est. Comme d'habitude : EVE reste explicitement en dernière priorité, ExternalExchange reste bloqué (comptes externes requis), WF-35-37/45 restent bloqués (pas de source externe/process vérifié).
 
 Bon travail sur toute cette série — discipline "cadrage avant code sur tout sujet à enjeu réel" tenue de bout en bout (P4→P5/P6→WF-02/03→OF-06→OF-11), et deux vrais trous de sécurité trouvés et corrigés le jour même à chaque fois qu'ils sont apparus.
+
+✅ traité — ack fin de session. OF-11′ livré (docs + badge). Stop.

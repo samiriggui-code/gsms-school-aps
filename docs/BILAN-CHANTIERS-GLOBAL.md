@@ -14,17 +14,18 @@ Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de d
 
 **Nuancé (pas ✅, vérifié partiel — ne pas survendre)** :
 - **GSMS-OF-07** (BPF Cerfa) : agrégats déterministes réels (`bpf-aggregates.ts`), mais **pas d'export Cerfa PDF** — reste 🟡.
-- **GSMS-OF-11** (non-conformité) : moteur Qualiopi utilise toujours le vocabulaire simple (`VALIDATED`/`REJECTED`/`REQUESTED`/`WAIVED`), pas le vocabulaire étendu de la doctrine (`TO_FIX`/`AT_RISK`/etc.) — reste **Ouvert**.
 
 **Reste ouvert, bloqué pour de vraies raisons (pas des oublis)** : WF-35-37 (veille réglementaire — aucune source externe branchée), WF-45 (autres financeurs — AGEFIPH/Transitions Pro/Régions non vérifiés officiellement, sauf IDF Transitions Pro vérifié).
 
 **Non touché cette session** : AI-02/03/04, NAF-04…14 (hors 00-03/11/12), OPS-*, LMS-01/02, EVE (explicitement dernière priorité, non démarré).
 
-## ✅ Mise à jour 31 août 2026 — OF-06 clos
+## ✅ Mise à jour 31 août 2026 — OF-06 clos + OF-11′ (dualité Qualiopi)
 
 **GSMS-OF-06 (facture first-class)** : ✅ Fait — `FinanceInvoice` 1:N vers `FinanceDevis`, numérotation légale gapless (`FAC-YYYY-######`, séquence PG en transaction), `einvoice*`/Factur-X migrés hors devis, émission = acte staff explicite (jamais de lazy-create sur GET). Commits `05eb846`/`81deadc`. Un trou de permission trouvé sur les routes bespoke (aucune ne vérifiait `financeEdit`/`financeView`) et corrigé le jour même. Détail complet : `docs/SUIVI-CURSOR-CLAUDE.md`.
 
-Seul P1 encore ouvert et non bloqué : **GSMS-OF-11** (non-conformité étendue).
+**GSMS-OF-11′ (non-conformité)** : ✅ Clos en **OF-11′** (pas Prisma) — dualité assumée : couverture Evidence (`covered`) ≠ jugement audit classeur (OK/KO/TO_FIX/NA → `VALIDATED`/`REJECTED`/`REQUESTED`/`WAIVED`). Les 8 valeurs doctrine non modélisées (surcoût ; `AT_RISK` reporté P1 si besoin terrain). Badge UX « Preuve auto · non revu » + lien Couverture. Draft : `docs/framework/GSMS-OF-11-QUALIOPI-JUDGEMENT-DRAFT.md`.
+
+Plus de P1 OF ouvert non bloqué sur ce fichier ; prochaines pistes : OF-07 Cerfa, AI-03/04, NAF suite — EVE / ExternalExchange / WF-35-37/45 restent hors priorité.
 
 ---
 
@@ -182,7 +183,7 @@ Seul P1 encore ouvert et non bloqué : **GSMS-OF-11** (non-conformité étendue)
 | **GSMS-OF-08** | ✅ Fait | Module Docs & circuits (dashboard + listes) ; Qualiopi classeur via API section |
 | **GSMS-OF-09** | P2 | SCORM option |
 | **GSMS-OF-10** | ✅ Fait | Survey DB + lien public + cron J+45 + trigger session |
-| **GSMS-OF-11** | Ouvert P1 (vérifié 30/08) | Non-conformité — moteur Qualiopi encore sur vocabulaire simple (VALIDATED/REJECTED/REQUESTED/WAIVED), pas TO_FIX/AT_RISK. ERPNext / pas OPAGA |
+| **GSMS-OF-11′** | ✅ Clos (31/08) | Dualité couverture Evidence / jugement audit assumée ; pas d’enum 8 valeurs ; badge « Preuve auto · non revu » ; `AT_RISK` reporté |
 
 ### 3.4 AI
 
@@ -240,9 +241,9 @@ OPS-02 n8n prod · OPS-03 workers AI · OPS-04 obs · OPS-05 démo 15 min.
 6. ~~**SEC-03** / **NAF-00·01**~~ — fait 30/08 (audit IAM P1-P10 clos, Vague 1 DocType terminée)  
 7. ~~**OF-04**~~ + **idée 3** registre financement — fait 30/08 (FundingCase/checklists connecteurs) ; idée 3 (registre légal unifié) pas formellement vérifiée comme module dédié  
 8. **OF-07** + **idée 2** pilote garde-fous (P2) — **partiel** : agrégats faits, export Cerfa PDF + garde-fous non faits  
-9. **OF-11** — après OF-05 (écart = TO_FIX) — **toujours ouvert**, vocabulaire non-conformité étendu non implémenté — source ERPNext, pas Formacoop  
+9. ~~**OF-11**~~ → **OF-11′** clos 31/08 (doc + UX dualité ; pas Prisma 8 valeurs)
 
-**Prochaine cohorte suggérée (après ce bilan)** : OF-06 (facture first-class) ou OF-11 (non-conformité étendue) sont les deux items P1 encore réellement ouverts et non bloqués par une dépendance externe — candidats naturels si l'utilisateur veut enchaîner sur ce fichier plutôt que sur un nouveau sujet.
+**Prochaine cohorte suggérée (après ce bilan)** : OF-07 (export Cerfa BPF), AI-03/04, NAF-04… — pas de P1 OF non bloqué restant. EVE / ExternalExchange / WF-35-37/45 restent bloqués ou dernière priorité.
 
 **Hors trajectoire :** tout chantier « Qualiopi depuis Formacoop », portage WordPress, ou second moteur docs parallèle au pack PDF.
 

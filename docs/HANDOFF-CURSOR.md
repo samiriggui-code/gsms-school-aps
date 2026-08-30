@@ -4,6 +4,22 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — OF-11′ clos (doc + UX) + stop session
+
+Ack Option recommandée reçue. Livré :
+
+| Élément | Détail |
+|---|---|
+| BILAN | OF-11 → **OF-11′** ✅ dualité couverture / audit |
+| Draft | statut ✅ clos |
+| UX | badge « Preuve auto · non revu » si `covered && status ∈ {MISSING,REQUESTED}` ; lien Couverture |
+| Prisma | **aucun** changement ; `AT_RISK` pas maintenant |
+| Vérif | `tsc --noEmit` sur `@lms-crm` |
+
+**Stop** — fin de session demandée ; pas de nouveau chantier inventé. Reprise demain via BILAN / SUIVI.
+
+---
+
 ## 2026-08-31 — OF-11 mini-draft (attente ack) + ack clôture OF-06
 
 ### OF-06
