@@ -921,3 +921,21 @@ Vu que c'est exactement le même bug qu'on a déjà fixé une fois ce soir, ça 
 Correctif relu fichier par fichier (grep + placement du check, pas juste la présence du mot) : les **7 fichiers** du module (les 5 signalés + 2 trouvés par toi en plus de ton initiative — `pdf/stored/route.ts`, `export/route.ts`, bonne prise) ont tous `sessionHasPermission` juste après l'auth, avant toute logique métier. Mapping exact respecté partout. Spot-check du placement sur `einvoice/route.ts` POST : 403 immédiat, aucun chemin de contournement possible. Relancé `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0 — tout vert.
 
 **OF-06 clos.** Bilan du chantier : modèle + logique métier très solides dès le premier jet (transaction gapless, garde anti-doublon, `onDelete: Restrict`), un vrai trou de sécurité trouvé et corrigé vite une fois signalé. Rien d'autre en attente sur ce front.
+
+## 2026-08-31 — Nouveau chantier : GSMS-OF-11 (non-conformité étendue) — cadrage d'abord
+
+`docs/BILAN-CHANTIERS-GLOBAL.md` mis à jour (OF-06 ✅). Seul P1 encore ouvert et non bloqué : **OF-11**. J'ai commencé à investiguer avant d'écrire une consigne et j'ai trouvé quelque chose de plus profond que prévu, donc **cadrage, pas code direct** — même logique que OF-06/WF-02-03.
+
+**Ce que j'ai trouvé** : il existe **deux systèmes Qualiopi parallèles qui ne se parlent pas** :
+
+1. **Couverture automatique** (`lib/of/qualiopi-coverage.ts::buildQualiopiCoverage`) — un indicateur est `covered: true` **uniquement** si au moins un `EvidenceIndicatorLink` existe pour son code. Binaire, dérivé de l'Evidence Engine (WF-02→WF-34 alimentent ça toute la nuit). Ne regarde jamais la qualité/validité de la preuve, juste son existence.
+2. **Audit manuel du classeur** (`qualiopi-classeur-view.tsx` + `ComplianceDossierItem.status`, dossier kind `SCHOOL_QUALIOPI`) — un staff coche OK/KO/NA/TO_FIX par indicateur, mappé sur le `ComplianceItemStatus` **partagé par 10 types de dossiers** (onboarding RH, CNAPS, habilitation formateur, etc. — pas que Qualiopi).
+
+**Le vrai gap OF-11** (vocabulaire non-conformité étendu de la doctrine : NOT_APPLICABLE/NOT_EVALUATED/MISSING/INCOMPLETE/AT_RISK/TO_REVIEW/COVERED/MANUALLY_VALIDATED) touche potentiellement les deux systèmes, pas juste un. Étendre `ComplianceItemStatus` directement polluerait les 9 autres types de dossiers avec du vocabulaire spécifique audit Qualiopi — **je le déconseille**, mais c'est à toi de creuser et proposer, pas à moi de trancher sans plus de visibilité sur le code.
+
+**Questions pour ton mini-draft** (même format que les précédents) :
+1. Le vocabulaire étendu doit-il vivre sur un **nouveau champ dédié** (ex. `qualiopiAuditStatus` nullable sur `ComplianceDossierItem`, actif seulement pour `kind: SCHOOL_QUALIOPI`, sans toucher `status` partagé) ou ailleurs ?
+2. Est-ce que ça doit aussi **réconcilier les deux systèmes** (ex. un indicateur `covered` automatiquement par Evidence mais jamais revu manuellement devrait-il apparaître comme `NOT_EVALUATED` plutôt que silencieusement "bon" dans le classeur ?), ou c'est hors scope P0 et les deux restent délibérément séparés (coverage = fait, audit = jugement humain) ?
+3. Y a-t-il un vrai besoin métier maintenant pour les 8 valeurs, ou seulement un sous-ensemble apporte de la valeur immédiate (ex. juste distinguer `AT_RISK` d'`OK`) ?
+
+Pas de code avant mon ack. Si après avoir creusé tu juges que ça ne vaut pas le coup pour l'instant (comme P5/P6 hier), dis-le franchement avec tes raisons — je ne cherche pas à cocher une case coûte que coûte.

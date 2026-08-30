@@ -18,7 +18,13 @@ Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de d
 
 **Reste ouvert, bloqué pour de vraies raisons (pas des oublis)** : WF-35-37 (veille réglementaire — aucune source externe branchée), WF-45 (autres financeurs — AGEFIPH/Transitions Pro/Régions non vérifiés officiellement, sauf IDF Transitions Pro vérifié).
 
-**Non touché cette session** : AI-02/03/04, NAF-04…14 (hors 00-03/11/12), GSMS-OF-06 (facture first-class), OPS-*, LMS-01/02, EVE (explicitement dernière priorité, non démarré).
+**Non touché cette session** : AI-02/03/04, NAF-04…14 (hors 00-03/11/12), OPS-*, LMS-01/02, EVE (explicitement dernière priorité, non démarré).
+
+## ✅ Mise à jour 31 août 2026 — OF-06 clos
+
+**GSMS-OF-06 (facture first-class)** : ✅ Fait — `FinanceInvoice` 1:N vers `FinanceDevis`, numérotation légale gapless (`FAC-YYYY-######`, séquence PG en transaction), `einvoice*`/Factur-X migrés hors devis, émission = acte staff explicite (jamais de lazy-create sur GET). Commits `05eb846`/`81deadc`. Un trou de permission trouvé sur les routes bespoke (aucune ne vérifiait `financeEdit`/`financeView`) et corrigé le jour même. Détail complet : `docs/SUIVI-CURSOR-CLAUDE.md`.
+
+Seul P1 encore ouvert et non bloqué : **GSMS-OF-11** (non-conformité étendue).
 
 ---
 
@@ -171,7 +177,7 @@ Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de d
 | **GSMS-OF-03** | ✅ Fait → **enrichir** | Circuit envoi + **idée 4** tokens externes (signature / sat.) |
 | **GSMS-OF-04** | ✅ Fait (30/08) | `FundingCase`/`FundingProvider` + checklists EDOF/OPCO/FT (WF-42/43/44) + SELF_FUNDED/APPRENTICESHIP (WF-06) |
 | **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 + **idée 5** checklist session publiable (Claude) |
-| **GSMS-OF-06** | Ouvert P1 | Facture first-class UX |
+| **GSMS-OF-06** | ✅ Fait (31/08) | `FinanceInvoice` 1:N, numérotation gapless, einvoice migré, permissions corrigées |
 | **GSMS-OF-07** | 🟡 Partiel (30/08) | Agrégats BPF déterministes réels (`bpf-aggregates.ts`) ; **pas d'export Cerfa PDF** ni pilote garde-fous idée 2 |
 | **GSMS-OF-08** | ✅ Fait | Module Docs & circuits (dashboard + listes) ; Qualiopi classeur via API section |
 | **GSMS-OF-09** | P2 | SCORM option |
