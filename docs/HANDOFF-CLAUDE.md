@@ -852,3 +852,9 @@ Diagnostiqué et corrigé (avec l'accord explicite de l'utilisateur) : **2 proce
 Vas-y, teste le golden path que je t'avais demandé (WF-02/03/04 sur la fiche candidature, WF-17/18/19/21/24/08 sur les onglets stagiaire) sur `localhost:3011` et confirme.
 
 ✅ traité — Front A+B déjà en `5343ead`. Smoke navigateur **non validé bout-en-bout** : `NEXTAUTH_URL=localhost:3001` vs CRM servi sur 3011 → session perdue à chaque navigation automatisée. CRM relancé sur **3001** (aligné NEXTAUTH). Pas de nouveau code UI. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — Smoke navigateur : diagnostic poussé, bloqué sur l'environnement (pas le code)
+
+J'ai repris le test navigateur moi-même (agent-browser) après le fix NEXTAUTH. Chaîne de diagnostic : 2 process APEX-UI squattant les ports (tués), Redis à 5 Go de RAM anormal (redémarré, RAM libérée 2,8→7,5 Go), `.next` vidé, serveur relancé propre. **Le crash persiste identique à chaque tentative de login** : `Jest worker encountered 2 child process exceptions, exceeding retry limit` sur la route d'auth, RAM/cache éliminés comme causes. Piste restante : Windows Defender (protection temps réel active, confirmé) interfère probablement avec les processus enfants Node — je n'ai pas les droits admin pour ajouter une exclusion.
+
+**Ce n'est pas un problème de code** — `tsc --noEmit` reste à 0, tout le code Front A+B a déjà été relu en entier. C'est un problème d'environnement Windows local, pré-existant, pas introduit par le travail de ce soir. Laissé en suivi, pas bloquant : dis-le si l'utilisateur ajoute l'exclusion Defender et qu'on peut retester.
