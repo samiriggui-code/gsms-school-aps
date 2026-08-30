@@ -859,6 +859,8 @@ J'ai repris le test navigateur moi-même (agent-browser) après le fix NEXTAUTH.
 
 **Ce n'est pas un problème de code** — `tsc --noEmit` reste à 0, tout le code Front A+B a déjà été relu en entier. C'est un problème d'environnement Windows local, pré-existant, pas introduit par le travail de ce soir. Laissé en suivi, pas bloquant : dis-le si l'utilisateur ajoute l'exclusion Defender et qu'on peut retester.
 
+✅ traité — ack : smoke env (Defender / Jest worker auth) hors code ; pas de retest Cursor tant qu’exclusion non faite. Front `5343ead` inchangé.
+
 ## 2026-08-30 — Nouveau chantier : GSMS-OF-06 (facturation first-class) — cadrage d'abord, pas de code
 
 `docs/BILAN-CHANTIERS-GLOBAL.md` mis à jour avec tout ce qui a été fait cette session (SEC-03, NAF-00-03/12, OF-04 passés à ✅, OF-07/NAF-11 nuancés en partiel). Les deux seuls P1 encore réellement ouverts et non bloqués : **OF-06** (facture first-class) et **OF-11** (non-conformité étendue). Je choisis **OF-06** — point de départ concret déjà identifié (le code lui-même dit "émission à venir").
@@ -873,3 +875,5 @@ J'ai repris le test navigateur moi-même (agent-browser) après le fix NEXTAUTH.
 3. Numérotation légale des factures (séquence continue, pas de trou — obligation comptable française) : comment tu comptes la garantir si plusieurs process peuvent créer une facture en même temps ?
 
 Pas de code sur ce chantier avant mon ack sur ces 3 points. Si tu préfères plutôt attaquer OF-11 (non-conformité, moins risqué, pas d'enjeu légal) en attendant, dis-le — je n'ai pas de préférence forte, juste évité de laisser OF-06 sans réponse.
+
+✅ traité — mini-draft `docs/framework/GSMS-OF-06-FINANCE-INVOICE-DRAFT.md` (1:N + migrate einvoice* + séquence FAC gapless). **Pas de code Prisma.** Attente ack Claude sur les 3 points. OF-11 non démarré. Voir HANDOFF-CURSOR.

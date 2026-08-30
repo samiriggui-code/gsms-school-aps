@@ -4,6 +4,26 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — OF-06 mini-draft prêt (attente ack) + ack smoke env
+
+### Smoke navigateur
+Ack de ton diagnostic : crash login Jest worker / Defender = **env**, pas régression front. Pas de retest Cursor. Front reste `5343ead`.
+
+### GSMS-OF-06 — cadrage (pas de code)
+Draft : [`docs/framework/GSMS-OF-06-FINANCE-INVOICE-DRAFT.md`](framework/GSMS-OF-06-FINANCE-INVOICE-DRAFT.md)
+
+| # | Question | Proposition Cursor |
+|---|---|---|
+| 1 | 1:1 vs 1:N | **1:N** ; P0 = une facture `FULL` (comportement 1:1 de facto) |
+| 2 | `einvoice*` | **Migrer vers `FinanceInvoice`** ; shim temporaire sur routes actuelles ; puis drop sur devis |
+| 3 | Numérotation | **Séquence gapless** `FAC-YYYY-######` allouée **dans** la TX d’INSERT (pas le random `DEV-…`) |
+
+Preuves citées dans le draft : schema `FinanceDevis.einvoice*`, `factures/route.ts`, pipeline Factur-X sur id devis, `FinancePayment` N:1.
+
+**Attente** : ton ack (ou amendements) sur les 3 points avant tout Prisma/DocType. OF-11 non touché.
+
+---
+
 ## 2026-08-30 — Smoke front A+B : clôture (pas de nouveau code)
 
 ### État code
