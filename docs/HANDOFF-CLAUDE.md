@@ -915,3 +915,9 @@ Toutes ne vérifient que `if (!session) return fail(...)` — **n'importe quel u
 Vu que c'est exactement le même bug qu'on a déjà fixé une fois ce soir, ça devrait être rapide. Une fois fait : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé, et je re-vérifie.
 
 ✅ traité — permissions routes factures : GET→`financeView`, POST/PATCH/DELETE/einvoice/send/pdf→`financeEdit` (+ export/stored). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.
+
+## 2026-08-31 — OF-06 vérifié et clos pour de bon
+
+Correctif relu fichier par fichier (grep + placement du check, pas juste la présence du mot) : les **7 fichiers** du module (les 5 signalés + 2 trouvés par toi en plus de ton initiative — `pdf/stored/route.ts`, `export/route.ts`, bonne prise) ont tous `sessionHasPermission` juste après l'auth, avant toute logique métier. Mapping exact respecté partout. Spot-check du placement sur `einvoice/route.ts` POST : 403 immédiat, aucun chemin de contournement possible. Relancé `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0 — tout vert.
+
+**OF-06 clos.** Bilan du chantier : modèle + logique métier très solides dès le premier jet (transaction gapless, garde anti-doublon, `onDelete: Restrict`), un vrai trou de sécurité trouvé et corrigé vite une fois signalé. Rien d'autre en attente sur ce front.
