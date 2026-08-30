@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { FinanceDevisStatus, FinanceEinvoiceStatus } from '@repo/database';
+import { FinanceEinvoiceStatus } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { financeDecimalNum } from '@/lib/finance/finance-decimal';
@@ -39,53 +39,49 @@ async function loadSeller(): Promise<EinvoiceSellerProfile> {
   };
 }
 
-async function loadAcceptedFacture(factureId: string) {
-  return prisma.financeDevis.findUnique({
+/** Charge une facture émise — 404 si absente (jamais de lazy-create). */
+async function loadInvoice(factureId: string) {
+  return prisma.financeInvoice.findUnique({
     where: { id: factureId },
     include: {
-      lead: { select: { firstName: true, lastName: true, email: true, phone: true } },
-      formation: { select: { name: true } },
+      devis: {
+        include: {
+          lead: { select: { firstName: true, lastName: true, email: true, phone: true } },
+          formation: { select: { name: true } },
+        },
+      },
     },
   });
 }
 
-/** Contrôle de conformité e-facture (SIRET, lignes, montants…). */
+/** Contrôle de conformité e-facture — GET pur (pas d’écriture). */
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
 
   const { factureId } = await context.params;
-  const row = await loadAcceptedFacture(factureId);
-  if (!row) return fail('Dossier introuvable.', 404);
-  if (row.status !== FinanceDevisStatus.ACCEPTED) {
-    return fail('Seules les propositions acceptées peuvent être e-facturées.', 400);
-  }
+  const invoice = await loadInvoice(factureId);
+  if (!invoice) return fail('Facture introuvable.', 404);
 
+  const devis = invoice.devis;
   const seller = await loadSeller();
   const { ready, issues } = assessEinvoiceReadiness({
     seller,
-    clientSnapshot: row.clientSnapshot,
-    lead: row.lead,
-    lines: row.lines,
-    subtotalHt: row.subtotalHt,
-    totalTtc: row.totalTtc,
+    clientSnapshot: devis.clientSnapshot,
+    lead: devis.lead,
+    lines: invoice.lines,
+    subtotalHt: invoice.subtotalHt,
+    totalTtc: invoice.totalTtc,
   });
 
-  if (ready && row.einvoiceStatus === FinanceEinvoiceStatus.NOT_READY) {
-    await prisma.financeDevis.update({
-      where: { id: row.id },
-      data: { einvoiceStatus: FinanceEinvoiceStatus.READY },
-    });
-  }
-
   return ok({
-    factureId: row.id,
-    referenceCode: row.referenceCode,
-    einvoiceStatus: ready ? FinanceEinvoiceStatus.READY : row.einvoiceStatus,
-    einvoiceProfile: row.einvoiceProfile,
-    einvoiceGeneratedAt: row.einvoiceGeneratedAt,
-    einvoicePdpMessageId: row.einvoicePdpMessageId,
-    einvoiceLastError: row.einvoiceLastError,
+    factureId: invoice.id,
+    referenceCode: invoice.number,
+    einvoiceStatus: invoice.einvoiceStatus,
+    einvoiceProfile: invoice.einvoiceProfile,
+    einvoiceGeneratedAt: invoice.einvoiceGeneratedAt,
+    einvoicePdpMessageId: invoice.einvoicePdpMessageId,
+    einvoiceLastError: invoice.einvoiceLastError,
     ready,
     issues,
     calendar: {
@@ -97,8 +93,8 @@ export async function GET(_request: NextRequest, context: Ctx) {
 }
 
 /**
- * Génère le XML Factur-X (CII) et le renvoie en téléchargement.
- * Query: ?download=1 (défaut) | ?persist=1 pour marquer GENERATED.
+ * Génère le XML Factur-X (CII).
+ * Query: ?download=1 (défaut) | ?persist=0 pour ne pas marquer GENERATED.
  */
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
@@ -107,25 +103,23 @@ export async function POST(request: NextRequest, context: Ctx) {
   const { factureId } = await context.params;
   const persist = request.nextUrl.searchParams.get('persist') !== '0';
 
-  const row = await loadAcceptedFacture(factureId);
-  if (!row) return fail('Dossier introuvable.', 404);
-  if (row.status !== FinanceDevisStatus.ACCEPTED) {
-    return fail('Seules les propositions acceptées peuvent être e-facturées.', 400);
-  }
+  const invoice = await loadInvoice(factureId);
+  if (!invoice) return fail('Facture introuvable.', 404);
 
+  const devis = invoice.devis;
   const seller = await loadSeller();
   const readiness = assessEinvoiceReadiness({
     seller,
-    clientSnapshot: row.clientSnapshot,
-    lead: row.lead,
-    lines: row.lines,
-    subtotalHt: row.subtotalHt,
-    totalTtc: row.totalTtc,
+    clientSnapshot: devis.clientSnapshot,
+    lead: devis.lead,
+    lines: invoice.lines,
+    subtotalHt: invoice.subtotalHt,
+    totalTtc: invoice.totalTtc,
   });
 
   if (!readiness.ready) {
-    await prisma.financeDevis.update({
-      where: { id: row.id },
+    await prisma.financeInvoice.update({
+      where: { id: invoice.id },
       data: {
         einvoiceStatus: FinanceEinvoiceStatus.NOT_READY,
         einvoiceLastError: readiness.issues
@@ -138,27 +132,27 @@ export async function POST(request: NextRequest, context: Ctx) {
   }
 
   const buyer = buildBuyerFromSnapshot({
-    clientSnapshot: row.clientSnapshot,
-    lead: row.lead,
+    clientSnapshot: devis.clientSnapshot,
+    lead: devis.lead,
   });
-  const lines = parseEinvoiceLines(row.lines);
+  const lines = parseEinvoiceLines(invoice.lines);
   const xml = buildFacturXCiiXml({
-    referenceCode: row.referenceCode,
-    title: row.title,
-    issueDate: row.updatedAt,
-    currency: row.currency || 'EUR',
+    referenceCode: invoice.number,
+    title: devis.title,
+    issueDate: invoice.issuedAt,
+    currency: invoice.currency || 'EUR',
     lines,
-    subtotalHt: financeDecimalNum(row.subtotalHt),
-    vatTotal: financeDecimalNum(row.vatTotal),
-    totalTtc: financeDecimalNum(row.totalTtc),
-    notes: row.notes,
+    subtotalHt: financeDecimalNum(invoice.subtotalHt),
+    vatTotal: financeDecimalNum(invoice.vatTotal),
+    totalTtc: financeDecimalNum(invoice.totalTtc),
+    notes: invoice.notes ?? devis.notes,
     seller,
     buyer,
   });
 
   if (persist) {
-    await prisma.financeDevis.update({
-      where: { id: row.id },
+    await prisma.financeInvoice.update({
+      where: { id: invoice.id },
       data: {
         einvoiceStatus: FinanceEinvoiceStatus.GENERATED,
         einvoiceGeneratedAt: new Date(),
@@ -168,7 +162,7 @@ export async function POST(request: NextRequest, context: Ctx) {
     });
   }
 
-  const filename = `factur-x-${row.referenceCode}.xml`;
+  const filename = `factur-x-${invoice.number}.xml`;
   return new Response(xml, {
     status: 200,
     headers: {

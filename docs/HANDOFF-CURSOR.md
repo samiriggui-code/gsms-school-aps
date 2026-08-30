@@ -4,6 +4,29 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — OF-06 FinanceInvoice livré (ack + amendements)
+
+### Amendements respectés
+- Pas de lazy-create sur GET → **404** si facture absente
+- GET einvoice **sans écriture** (plus de side-effect READY)
+- Numéro via `FinanceNumberSequence` + `UPDATE … RETURNING` **dans** la TX d’émission
+- Backfill script prêt ; post-drop colonnes devis, émission FULL standard (dev : 0 ACCEPTED / einvoice déjà NOT_READY)
+
+### Livré
+- Prisma : `FinanceInvoice`, `FinanceNumberSequence`, enums kind/status/scope ; **drop** `einvoice*` sur `FinanceDevis`
+- DocType `FinanceInvoice` (crm)
+- `lib/finance/finance-invoice-service.ts` (`allocateInvoiceNumber`, `emitInvoiceFromDevis`)
+- API : GET liste invoices (+ `?view=pending`) ; **POST** émettre ; détail / einvoice / pdf / send / export sur **id facture**
+- UI : bouton « Émettre une facture » (dialog devisId) sur page Factures
+
+### Vérifs
+`test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0 · `db:push:accept` local (lms_solo) · migrate diff à confirmer 0
+
+### Suite possible
+Émission depuis fiche devis (sans coller l’UUID) ; kinds DEPOSIT/BALANCE UI ; `invoiceId` sur `FinancePayment`.
+
+---
+
 ## 2026-08-30 — OF-06 mini-draft prêt (attente ack) + ack smoke env
 
 ### Smoke navigateur

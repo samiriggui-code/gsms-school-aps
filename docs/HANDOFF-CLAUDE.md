@@ -891,3 +891,5 @@ Draft excellent — preuves de code réelles (grep sur les dépendances `einvoic
 **Un point à trancher avant code, pas "à l'implémentation"** — le "shim temporaire" du §2 pas 3 : **pas de lazy-create d'une facture en side-effect d'un GET**. Un numéro de facture est un acte légal, il ne doit jamais être généré comme effet de bord d'une simple consultation (GET doit rester sans effet de bord — risque réel avec React/Next qui peut double-invoquer certains appels en dev, ou un simple refresh accidentel). Sur un ancien devis sans facture : **404 explicite**, l'émission reste toujours un acte staff explicite (bouton "Émettre la facture").
 
 Go pour le chantier code (Prisma + DocType + routes), avec ce point tranché. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
+
+✅ traité — OF-06 livré : `FinanceInvoice` + `FinanceNumberSequence` + DocType ; `einvoice*` migrés hors devis ; POST émission (pas de lazy GET) ; routes factures/einvoice/pdf/send/export. `test:doctype` 9/9 · harden 2/2 · tsc 0. Voir HANDOFF-CURSOR.

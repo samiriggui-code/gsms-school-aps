@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
-import { FinanceDevisStatus } from '@repo/database';
+import { FinanceInvoiceStatus } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { createWorkflowEngine } from '@repo/api-core';
 import { sendFinanceFactureEmail } from '@repo/mail';
@@ -23,25 +23,9 @@ function moneyFr(value: number, currency: string): string {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: currency || 'EUR' }).format(value);
 }
 
-async function assertAcceptedFacture(factureId: string) {
-  const row = await prisma.financeDevis.findUnique({
-    where: { id: factureId },
-    select: { id: true, status: true },
-  });
-  if (!row) return { ok: false as const, status: 404, message: 'Dossier introuvable.' };
-  if (row.status !== FinanceDevisStatus.ACCEPTED) {
-    return {
-      ok: false as const,
-      status: 404,
-      message: 'Ce dossier ne figure pas dans les propositions acceptées à facturer.',
-    };
-  }
-  return { ok: true as const };
-}
-
 type Body = { message?: string };
 
-/** Envoie la facture (PDF joint) au client par e-mail — pas de plaquette (pas de portail client facture). */
+/** Envoie la facture (PDF joint) au client — id = FinanceInvoice. */
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
@@ -58,11 +42,18 @@ export async function POST(request: NextRequest, context: Ctx) {
   }
 
   try {
-    const check = await assertAcceptedFacture(factureId);
-    if (!check.ok) return fail(check.message, check.status);
+    const invoice = await prisma.financeInvoice.findUnique({
+      where: { id: factureId },
+      select: { id: true, devisId: true, number: true, status: true, totalTtc: true, currency: true },
+    });
+    if (!invoice) return fail('Facture introuvable.', 404);
+    if (invoice.status === FinanceInvoiceStatus.CANCELLED) {
+      return fail('Facture annulée : envoi impossible.', 409);
+    }
 
-    const row = await loadFinanceDevisPdfRow(factureId);
-    if (!row) return fail('Dossier introuvable.', 404);
+    const row = await loadFinanceDevisPdfRow(invoice.devisId);
+    if (!row) return fail('Devis lié introuvable.', 404);
+    const rowForDoc = { ...row, referenceCode: invoice.number };
 
     const contact = resolveDevisClientContact({
       lead: row.lead,
@@ -75,20 +66,26 @@ export async function POST(request: NextRequest, context: Ctx) {
       );
     }
 
-    const { buffer, filename } = await buildFinanceDevisPdfBuffer(row, 'facture');
+    const { buffer, filename } = await buildFinanceDevisPdfBuffer(rowForDoc, 'facture');
 
-    const recipientName = [contact.firstName, contact.lastName].filter(Boolean).join(' ').trim() || 'Madame, Monsieur';
+    const recipientName =
+      [contact.firstName, contact.lastName].filter(Boolean).join(' ').trim() || 'Madame, Monsieur';
     const message = (body.message ?? '').trim() || null;
 
     await sendFinanceFactureEmail({
       to: contact.email,
       recipientName,
-      referenceCode: row.referenceCode,
+      referenceCode: invoice.number,
       title: row.title,
-      totalTtc: moneyFr(decimalNum(row.totalTtc), row.currency),
+      totalTtc: moneyFr(decimalNum(invoice.totalTtc), invoice.currency),
       message,
       pdfBuffer: buffer,
       pdfFilename: filename,
+    });
+
+    await prisma.financeInvoice.update({
+      where: { id: invoice.id },
+      data: { status: FinanceInvoiceStatus.SENT },
     });
 
     try {
@@ -96,11 +93,11 @@ export async function POST(request: NextRequest, context: Ctx) {
       await workflows.emit(
         'crm.finance.facture.sent',
         {
-          factureId,
-          referenceCode: row.referenceCode,
+          factureId: invoice.id,
+          referenceCode: invoice.number,
           recipientEmail: contact.email,
         },
-        { dedupeKey: `workflow:facture-sent:${factureId}:${Date.now()}` },
+        { dedupeKey: `workflow:facture-sent:${invoice.id}:${Date.now()}` },
       );
     } catch (e) {
       console.error('[finance-factures send] workflow', e);

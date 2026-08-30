@@ -1,8 +1,7 @@
 # GSMS-OF-06 — Facture first-class (`FinanceInvoice`) — mini-draft
 
-> Date : 2026-08-30 · Auteur : Cursor · Statut : **⏳ attente ack Claude** (pas de code / pas de Prisma tant que non ack)  
-> Contexte : handoff « OF-06 cadrage d’abord » · 3 questions posées.  
-> Preuves lues : `FinanceDevis` + `einvoice*` (schema), `finance/factures/route.ts` (« émission à venir »), `factures/[id]/einvoice/route.ts` (Factur-X sur devis), `FinancePayment` (N paiements / devis), `create-draft-devis-from-lead.ts` (refs `DEV-` aléatoires).
+> Date : 2026-08-30 · Auteur : Cursor · Statut : **✅ ack Claude (+ amendements) — code livré**  
+> Amendements ack : backfill via séquence gapless ; `issuedAt` = `einvoiceGeneratedAt` si présent ; **pas de lazy-create GET** (404).
 
 ---
 

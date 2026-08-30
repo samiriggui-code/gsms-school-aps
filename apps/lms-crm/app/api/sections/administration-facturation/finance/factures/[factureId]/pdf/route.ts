@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
-import { FinanceDevisStatus } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { buildFinanceDevisHtml } from '@/lib/finance/finance-devis-html';
 import { buildFinanceDevisPdfBuffer } from '@/lib/finance/finance-devis-pdf';
@@ -18,20 +17,13 @@ function requestOrigin(request: NextRequest): string | undefined {
   return `${proto}://${host}`;
 }
 
-async function assertAcceptedFacture(factureId: string) {
-  const row = await prisma.financeDevis.findUnique({
+async function assertIssuedInvoice(factureId: string) {
+  const invoice = await prisma.financeInvoice.findUnique({
     where: { id: factureId },
-    select: { id: true, status: true },
+    select: { id: true, devisId: true, number: true, status: true },
   });
-  if (!row) return { ok: false as const, status: 404, message: 'Dossier introuvable.' };
-  if (row.status !== FinanceDevisStatus.ACCEPTED) {
-    return {
-      ok: false as const,
-      status: 404,
-      message: 'Ce dossier ne figure pas dans les propositions acceptées à facturer.',
-    };
-  }
-  return { ok: true as const };
+  if (!invoice) return { ok: false as const, status: 404, message: 'Facture introuvable.' };
+  return { ok: true as const, invoice };
 }
 
 /** Aperçu HTML brandé ou PDF binaire (?format=pdf). */
@@ -43,14 +35,15 @@ export async function GET(request: NextRequest, context: Ctx) {
   const format = request.nextUrl.searchParams.get('format');
 
   try {
-    const check = await assertAcceptedFacture(factureId);
+    const check = await assertIssuedInvoice(factureId);
     if (!check.ok) return new NextResponse(check.message, { status: check.status });
 
-    const row = await loadFinanceDevisPdfRow(factureId);
-    if (!row) return new NextResponse('Dossier introuvable', { status: 404 });
+    const row = await loadFinanceDevisPdfRow(check.invoice.devisId);
+    if (!row) return new NextResponse('Devis lié introuvable', { status: 404 });
+    const rowForDoc = { ...row, referenceCode: check.invoice.number };
 
     if (format === 'pdf') {
-      const { buffer, filename } = await buildFinanceDevisPdfBuffer(row, 'facture');
+      const { buffer, filename } = await buildFinanceDevisPdfBuffer(rowForDoc, 'facture');
       return new NextResponse(new Uint8Array(buffer), {
         status: 200,
         headers: {
@@ -61,13 +54,13 @@ export async function GET(request: NextRequest, context: Ctx) {
     }
 
     const origin = requestOrigin(request);
-    const html = await buildFinanceDevisHtml(row, 'facture', origin);
+    const html = await buildFinanceDevisHtml(rowForDoc, 'facture', origin);
 
     return new NextResponse(html, {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Content-Disposition': `inline; filename="facture-${row.referenceCode}.html"`,
+        'Content-Disposition': `inline; filename="facture-${check.invoice.number}.html"`,
       },
     });
   } catch (e) {
@@ -84,15 +77,16 @@ export async function POST(_request: NextRequest, context: Ctx) {
   const { factureId } = await context.params;
 
   try {
-    const check = await assertAcceptedFacture(factureId);
+    const check = await assertIssuedInvoice(factureId);
     if (!check.ok) return fail(check.message, check.status);
 
-    const row = await loadFinanceDevisPdfRow(factureId);
-    if (!row) return fail('Dossier introuvable.', 404);
+    const row = await loadFinanceDevisPdfRow(check.invoice.devisId);
+    if (!row) return fail('Devis lié introuvable.', 404);
+    const rowForDoc = { ...row, referenceCode: check.invoice.number };
 
-    const { buffer, filename } = await buildFinanceDevisPdfBuffer(row, 'facture');
+    const { buffer, filename } = await buildFinanceDevisPdfBuffer(rowForDoc, 'facture');
     const asset = await storeFinancePdfAsset({
-      devisId: factureId,
+      devisId: check.invoice.id,
       category: 'invoice-pdf',
       buffer,
       filename,

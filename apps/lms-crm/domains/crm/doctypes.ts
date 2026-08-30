@@ -135,3 +135,63 @@ export const financeDevisDocType: DocTypeDefinition = {
     modifiedField: 'updatedAt',
   },
 };
+
+/** OF-06 — facture first-class (numéro légal + Factur-X). */
+export const financeInvoiceDocType: DocTypeDefinition = {
+  name: 'FinanceInvoice',
+  module: 'crm',
+  label: 'Facture',
+  table: 'FinanceInvoice',
+  schemaVersion: 1,
+  aliases: ['financeInvoice', 'invoice'],
+  fields: [
+    { fieldname: 'number', label: 'Numéro', fieldtype: 'Data', required: true, unique: true, searchable: true },
+    {
+      fieldname: 'devisId',
+      label: 'Devis',
+      fieldtype: 'Link',
+      options: 'FinanceDevis',
+      linkDisplayField: 'referenceCode',
+      required: true,
+    },
+    { fieldname: 'kind', label: 'Nature', fieldtype: 'Select', required: true },
+    { fieldname: 'status', label: 'Statut', fieldtype: 'Select', required: true },
+    { fieldname: 'subtotalHt', label: 'HT', fieldtype: 'Currency' },
+    { fieldname: 'vatTotal', label: 'TVA', fieldtype: 'Currency' },
+    { fieldname: 'totalTtc', label: 'TTC', fieldtype: 'Currency' },
+    { fieldname: 'currency', label: 'Devise', fieldtype: 'Data' },
+    { fieldname: 'issuedAt', label: 'Émise le', fieldtype: 'Datetime' },
+    { fieldname: 'einvoiceStatus', label: 'E-facture', fieldtype: 'Select' },
+    { fieldname: 'notes', label: 'Notes', fieldtype: 'Text' },
+  ],
+  permissions: [
+    {
+      role: '*',
+      permlevel: 0,
+      read: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeView] },
+    },
+    {
+      role: '*',
+      permlevel: 0,
+      create: true,
+      write: true,
+      delete: true,
+      requires: { anyPermissionSlugs: [CRM_PERMISSION.financeEdit] },
+    },
+  ],
+  naming: { strategy: 'UUID_INTERNAL' },
+  flags: { isChild: false, isSingle: false, isVirtual: false, isSubmittable: false },
+  list: {
+    searchFields: ['number'],
+    defaultSort: { fieldname: 'issuedAt', direction: 'desc' },
+    pageSize: 25,
+  },
+  persistence: {
+    table: 'FinanceInvoice',
+    delegate: 'financeInvoice',
+    nameField: 'id',
+    creationField: 'createdAt',
+    modifiedField: 'updatedAt',
+  },
+};

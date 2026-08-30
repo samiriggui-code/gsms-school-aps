@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { fail } from '@/app/api/_shared/http/response';
-import { FinanceDevisStatus, Prisma } from '@repo/database';
+import { Prisma } from '@repo/database';
 
 function decimalNum(d: Prisma.Decimal | null | undefined): number {
   if (d == null) return 0;
@@ -28,39 +28,49 @@ export async function GET(request: NextRequest) {
 
   const q = (request.nextUrl.searchParams.get('q') ?? '').trim();
 
-  const where: Prisma.FinanceDevisWhereInput = {
-    status: FinanceDevisStatus.ACCEPTED,
+  const where: Prisma.FinanceInvoiceWhereInput = {
     ...(q
       ? {
           OR: [
-            { title: { contains: q, mode: 'insensitive' } },
-            { referenceCode: { contains: q, mode: 'insensitive' } },
-            { lead: { email: { contains: q, mode: 'insensitive' } } },
+            { number: { contains: q, mode: 'insensitive' } },
+            { devis: { title: { contains: q, mode: 'insensitive' } } },
+            { devis: { referenceCode: { contains: q, mode: 'insensitive' } } },
+            { devis: { lead: { email: { contains: q, mode: 'insensitive' } } } },
           ],
         }
       : {}),
   };
 
   try {
-    const rows = await prisma.financeDevis.findMany({
+    const rows = await prisma.financeInvoice.findMany({
       where,
-      orderBy: { updatedAt: 'desc' },
+      orderBy: { issuedAt: 'desc' },
       take: 5000,
       select: {
-        referenceCode: true,
-        title: true,
+        number: true,
+        kind: true,
+        status: true,
         totalTtc: true,
         currency: true,
-        validUntil: true,
-        updatedAt: true,
-        clientSnapshot: true,
-        lead: { select: { firstName: true, lastName: true, email: true, phone: true } },
-        formation: { select: { name: true } },
+        issuedAt: true,
+        einvoiceStatus: true,
+        devis: {
+          select: {
+            referenceCode: true,
+            title: true,
+            clientSnapshot: true,
+            lead: { select: { firstName: true, lastName: true, email: true, phone: true } },
+            formation: { select: { name: true } },
+          },
+        },
       },
     });
 
     const header = [
-      'Reference',
+      'NumeroFacture',
+      'Devis',
+      'Nature',
+      'Statut',
       'Titre',
       'Client',
       'Email',
@@ -69,24 +79,29 @@ export async function GET(request: NextRequest) {
       'Formation',
       'Montant TTC',
       'Devise',
-      'Echeance',
-      'Mise a jour',
+      'Emise le',
+      'Efacture',
     ];
 
     const lines = rows.map((r) => {
-      const client = r.lead ? `${r.lead.firstName} ${r.lead.lastName}`.trim() : '';
+      const client = r.devis.lead
+        ? `${r.devis.lead.firstName} ${r.devis.lead.lastName}`.trim()
+        : '';
       return [
-        r.referenceCode,
-        r.title,
+        r.number,
+        r.devis.referenceCode,
+        r.kind,
+        r.status,
+        r.devis.title,
         client,
-        r.lead?.email ?? '',
-        r.lead?.phone ?? '',
-        companyFromClientSnapshot(r.clientSnapshot),
-        r.formation?.name ?? '',
+        r.devis.lead?.email ?? '',
+        r.devis.lead?.phone ?? '',
+        companyFromClientSnapshot(r.devis.clientSnapshot),
+        r.devis.formation?.name ?? '',
         decimalNum(r.totalTtc).toFixed(2),
         r.currency,
-        r.validUntil?.toISOString().slice(0, 10) ?? '',
-        r.updatedAt.toISOString().slice(0, 10),
+        r.issuedAt.toISOString().slice(0, 10),
+        r.einvoiceStatus,
       ]
         .map(csvEscape)
         .join(',');
