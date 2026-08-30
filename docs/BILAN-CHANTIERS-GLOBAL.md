@@ -1,5 +1,27 @@
 # Bilan de chantiers — GSMS
 
+## ✅ Mise à jour 30 août 2026 — rattrapage workflows Qualiopi + framework IAM
+
+Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de doctrine (`docs/GSMS SCHOOL — WORKFLOWS OF COMPLETS.md`) et la fermeture du framework DocType V2/IAM. Chaque item ci-dessous a été **vérifié indépendamment** (code relu en entier, `test:doctype`/`harden`/`tsc --noEmit`/`migrate diff --exit-code` relancés), pas accepté sur parole — détail complet dans `docs/AUDIT-WORKFLOWS-50-COMPLET.md` et `docs/SUIVI-CURSOR-CLAUDE.md`.
+
+**Nouveaux ✅ Fait (repris ci-dessous item par item) :**
+- **SEC-03** (permissions CRM, pas session seule) — moteur `PermissionEngine`/`DocPermission` par action (read/write/create/delete), audit P1-P10 clos, legacy `ENTITY_REGISTRY` supprimé (G1-E).
+- **NAF-00…03** (framework DocType-like) — Vague 1 (G1-A→G1-E) terminée, `@repo/doctype` seul moteur en prod, plus de double source.
+- **NAF-12** (notifications J±N) — J-30/J-15/J-10 (contrôles readiness), J-5 (WF-14), J+45/J0 satisfaction (WF-27/31), tous avec cron réel.
+- **GSMS-OF-04** (financeur + registre légal) — `FundingCase`/`FundingProvider` complet, checklists EDOF/OPCO/FT (WF-42/43/44), `SELF_FUNDED`/`APPRENTICESHIP` ajoutés (WF-06).
+- **50 workflows de la doctrine** (WF-01 à WF-45 + 46-50) : **37✅ / 9🟡 / 4❌** (parti de 20/15/15). Détail : `docs/AUDIT-WORKFLOWS-50-COMPLET.md`.
+- **Front rattrapé** : 8 workflows qui étaient API-only ont maintenant leur UI staff (fiche candidature + onglets stagiaire) — commit `5343ead`.
+
+**Nuancé (pas ✅, vérifié partiel — ne pas survendre)** :
+- **GSMS-OF-07** (BPF Cerfa) : agrégats déterministes réels (`bpf-aggregates.ts`), mais **pas d'export Cerfa PDF** — reste 🟡.
+- **GSMS-OF-11** (non-conformité) : moteur Qualiopi utilise toujours le vocabulaire simple (`VALIDATED`/`REJECTED`/`REQUESTED`/`WAIVED`), pas le vocabulaire étendu de la doctrine (`TO_FIX`/`AT_RISK`/etc.) — reste **Ouvert**.
+
+**Reste ouvert, bloqué pour de vraies raisons (pas des oublis)** : WF-35-37 (veille réglementaire — aucune source externe branchée), WF-45 (autres financeurs — AGEFIPH/Transitions Pro/Régions non vérifiés officiellement, sauf IDF Transitions Pro vérifié).
+
+**Non touché cette session** : AI-02/03/04, NAF-04…14 (hors 00-03/11/12), GSMS-OF-06 (facture first-class), OPS-*, LMS-01/02, EVE (explicitement dernière priorité, non démarré).
+
+---
+
 **Date mise à jour :** 29 août 2026 (menu arbre + cartographie CRM + deploy purge)  
 **Périmètre :** VisioFormation · GSMS · ERPNext/Frappe · exports Qualiopi/satisfaction · Frappe Learning · **Formacoop/OPAGA**  
 **Principe :** plusieurs gisements d’idées, **un seul produit exécuté** — ne pas tout démarrer en parallèle.  
@@ -127,7 +149,7 @@
 |----|--------|---------|
 | **GSMS-SEC-01** | ✅ Fait | Storage public verrouillé |
 | **GSMS-SEC-02** | ✅ Fait | IDOR files |
-| **GSMS-SEC-03** | Ouvert | Permissions CRM (pas session seule) — *Claude/IAM en cours possible* |
+| **GSMS-SEC-03** | ✅ Fait (30/08) | Permissions CRM par action (`PermissionEngine`/`DocPermission`), audit P1-P10 clos, legacy supprimé (G1-E) |
 | **GSMS-SEC-04** | Ouvert | OAuth vs signup off |
 | **GSMS-SEC-05** | Ouvert P1 | Rate limit publics |
 
@@ -147,14 +169,14 @@
 | **GSMS-OF-01** | ✅ Fait → **enrichir** | Pack PDF + **idée OPAGA 1** (états multi-signataires / scan) |
 | **GSMS-OF-02** | ✅ Fait | `c8e7871` — templates + envoi individuel participant |
 | **GSMS-OF-03** | ✅ Fait → **enrichir** | Circuit envoi + **idée 4** tokens externes (signature / sat.) |
-| **GSMS-OF-04** | Ouvert P1 | Financeur + Entreprise + **idée 3** registre légal BPF |
+| **GSMS-OF-04** | ✅ Fait (30/08) | `FundingCase`/`FundingProvider` + checklists EDOF/OPCO/FT (WF-42/43/44) + SELF_FUNDED/APPRENTICESHIP (WF-06) |
 | **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 + **idée 5** checklist session publiable (Claude) |
 | **GSMS-OF-06** | Ouvert P1 | Facture first-class UX |
-| **GSMS-OF-07** | P2 | BPF Cerfa + **idée 2** pilote garde-fous |
+| **GSMS-OF-07** | 🟡 Partiel (30/08) | Agrégats BPF déterministes réels (`bpf-aggregates.ts`) ; **pas d'export Cerfa PDF** ni pilote garde-fous idée 2 |
 | **GSMS-OF-08** | ✅ Fait | Module Docs & circuits (dashboard + listes) ; Qualiopi classeur via API section |
 | **GSMS-OF-09** | P2 | SCORM option |
 | **GSMS-OF-10** | ✅ Fait | Survey DB + lien public + cron J+45 + trigger session |
-| **GSMS-OF-11** | Ouvert P1 | Non-conformité — ERPNext / Qualiopi TO_FIX, **pas** OPAGA |
+| **GSMS-OF-11** | Ouvert P1 (vérifié 30/08) | Non-conformité — moteur Qualiopi encore sur vocabulaire simple (VALIDATED/REJECTED/REQUESTED/WAIVED), pas TO_FIX/AT_RISK. ERPNext / pas OPAGA |
 
 ### 3.4 AI
 
@@ -176,11 +198,11 @@ Sessions · Mux · Devis/Factur-X · WorkflowEngine · RH · Leads — entretien
 
 | ID | Priorité | Note |
 |----|----------|------|
-| NAF-00…03 | P0 | Formaliser track ; bascule 1 entité à la fois — *Claude possible* |
+| NAF-00…03 | ✅ Fait (30/08) | Vague 1 DocType V2 (G1-A→G1-E) terminée, `@repo/doctype` seul moteur en prod |
 | NAF-04…09 | P1 | Hooks, field ACL, child tables… |
 | NAF-10 | Décision | Jamais double backend Frappe en prod |
-| **NAF-11** | P1 | Workflow états déclaratifs |
-| **NAF-12** | P0 | Notifications J±N (porte OF-03 / OF-10) |
+| **NAF-11** | Partiel (30/08) | `SessionReadinessStatus`/`FundingCaseStatus`/etc. state machines réelles par domaine ; pas un moteur générique "workflow états déclaratifs" transverse |
+| **NAF-12** | ✅ Fait (30/08) | J-30/J-15/J-10 (readiness) + J-5 (WF-14) + J0/J+45 satisfaction (WF-27/31), tous avec cron réel |
 | **NAF-13** | P1 | Print Format générique |
 | **NAF-14** | P1 | User Permission par enregistrement |
 
@@ -207,12 +229,14 @@ OPS-02 n8n prod · OPS-03 workers AI · OPS-04 obs · OPS-05 démo 15 min.
 1. ~~SEC-01/02 · OF-01 pack · OF-03 envoi · AI-01 · auth · VF-06~~  
 2. ~~**OF-05 UI** — classeur + **idée 5** checklist session publiable~~  
 3. **OF-01 enrichi** — **idée 1** états docs multi-acteurs (NEED/REQUEST/DONE/scan) sur pack PDF déjà livré  
-4. **OF-10** — Survey + circuit J0/J+45 (+ **idée 4** token si besoin lien externe)  
-5. **OF-02** — pack emails  
-6. **SEC-03** / **NAF-00·01** — *laisser Claude si déjà dessus*  
-7. **OF-04** + **idée 3** registre financement (avant BPF)  
-8. **OF-07** + **idée 2** pilote garde-fous (P2)  
-9. **OF-11** — après OF-05 (écart = TO_FIX) — source ERPNext, pas Formacoop  
+4. ~~**OF-10** — Survey + circuit J0/J+45~~ (+ **idée 4** token si besoin lien externe — non fait)  
+5. ~~**OF-02** — pack emails~~  
+6. ~~**SEC-03** / **NAF-00·01**~~ — fait 30/08 (audit IAM P1-P10 clos, Vague 1 DocType terminée)  
+7. ~~**OF-04**~~ + **idée 3** registre financement — fait 30/08 (FundingCase/checklists connecteurs) ; idée 3 (registre légal unifié) pas formellement vérifiée comme module dédié  
+8. **OF-07** + **idée 2** pilote garde-fous (P2) — **partiel** : agrégats faits, export Cerfa PDF + garde-fous non faits  
+9. **OF-11** — après OF-05 (écart = TO_FIX) — **toujours ouvert**, vocabulaire non-conformité étendu non implémenté — source ERPNext, pas Formacoop  
+
+**Prochaine cohorte suggérée (après ce bilan)** : OF-06 (facture first-class) ou OF-11 (non-conformité étendue) sont les deux items P1 encore réellement ouverts et non bloqués par une dépendance externe — candidats naturels si l'utilisateur veut enchaîner sur ce fichier plutôt que sur un nouveau sujet.
 
 **Hors trajectoire :** tout chantier « Qualiopi depuis Formacoop », portage WordPress, ou second moteur docs parallèle au pack PDF.
 
