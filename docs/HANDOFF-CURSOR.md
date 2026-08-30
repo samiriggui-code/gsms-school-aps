@@ -4,6 +4,26 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — WF-19 + WF-21 livrés
+
+### WF-21 FormativeAssessment
+- Modèle `FormativeAssessment` (plusieurs par participant, optionnel `sessionDayId`) — **pas de pont LMS/Quiz**.
+- GET/POST `…/participants/[participantId]/formative-assessments` (`academiqueView`/`Edit`).
+- Evidence `FORMATIVE_ASSESSMENT_RECORDED` (`EVALUATION`).
+
+### WF-19 Dropout risk
+- Enum `DropoutRiskStatus` + champs sur `FormationSessionParticipant`.
+- Cron `…/cron/dropout-risk-daily` : FLAGGED si ≥2 absences UNJUSTIFIED/JUSTIFICATION_REQUESTED **ou** FAILED sans `retakeDate` ; idempotent (status NONE only).
+- Notif formateur + staff (pas d’auto-mail apprenant).
+- PATCH `…/participants/[id]/dropout-risk` forward-only CONTACTED→ACTION_PROPOSED→RESOLVED.
+- Evidence `DROPOUT_RISK_FLAGGED` / `DROPOUT_RISK_STATUS_CHANGED`.
+- n8n `GSMS — Risque de rupture` + event `crm.session.dropout.risk`.
+
+### Vérifs
+`test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0 · migrate diff **0**
+
+---
+
 ## 2026-08-30 — WF-24 rattrapage examen livré
 
 ### Design (cadrage suivi)

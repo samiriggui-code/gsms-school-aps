@@ -238,6 +238,11 @@ export type CandidatureAssessment = $Result.DefaultSelection<Prisma.$Candidature
  */
 export type FormationSessionParticipant = $Result.DefaultSelection<Prisma.$FormationSessionParticipantPayload>
 /**
+ * Model FormativeAssessment
+ * WF-21 — évaluation formative (présentiel), distinct du Quiz LMS.
+ */
+export type FormativeAssessment = $Result.DefaultSelection<Prisma.$FormativeAssessmentPayload>
+/**
  * Model FormationSessionDay
  * Jour de formation dans le suivi quotidien CRM (dates dérivées de la session ou ajout manuel).
  */
@@ -1106,6 +1111,17 @@ export const AdaptationStatus: {
 export type AdaptationStatus = (typeof AdaptationStatus)[keyof typeof AdaptationStatus]
 
 
+export const DropoutRiskStatus: {
+  NONE: 'NONE',
+  FLAGGED: 'FLAGGED',
+  CONTACTED: 'CONTACTED',
+  ACTION_PROPOSED: 'ACTION_PROPOSED',
+  RESOLVED: 'RESOLVED'
+};
+
+export type DropoutRiskStatus = (typeof DropoutRiskStatus)[keyof typeof DropoutRiskStatus]
+
+
 export const ActivityType: {
   VIDEO: 'VIDEO',
   DOCUMENT: 'DOCUMENT',
@@ -1757,6 +1773,10 @@ export const CandidatureAssessmentStatus: typeof $Enums.CandidatureAssessmentSta
 export type AdaptationStatus = $Enums.AdaptationStatus
 
 export const AdaptationStatus: typeof $Enums.AdaptationStatus
+
+export type DropoutRiskStatus = $Enums.DropoutRiskStatus
+
+export const DropoutRiskStatus: typeof $Enums.DropoutRiskStatus
 
 export type ActivityType = $Enums.ActivityType
 
@@ -2468,6 +2488,16 @@ export class PrismaClient<
     * ```
     */
   get formationSessionParticipant(): Prisma.FormationSessionParticipantDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.formativeAssessment`: Exposes CRUD operations for the **FormativeAssessment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FormativeAssessments
+    * const formativeAssessments = await prisma.formativeAssessment.findMany()
+    * ```
+    */
+  get formativeAssessment(): Prisma.FormativeAssessmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.formationSessionDay`: Exposes CRUD operations for the **FormationSessionDay** model.
@@ -3755,6 +3785,7 @@ export namespace Prisma {
     Candidature: 'Candidature',
     CandidatureAssessment: 'CandidatureAssessment',
     FormationSessionParticipant: 'FormationSessionParticipant',
+    FormativeAssessment: 'FormativeAssessment',
     FormationSessionDay: 'FormationSessionDay',
     FormationSessionEmargement: 'FormationSessionEmargement',
     FormationSessionConvention: 'FormationSessionConvention',
@@ -3851,7 +3882,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "candidatureAssessment" | "formationSessionParticipant" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "candidatureAssessment" | "formationSessionParticipant" | "formativeAssessment" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -7034,6 +7065,80 @@ export namespace Prisma {
           count: {
             args: Prisma.FormationSessionParticipantCountArgs<ExtArgs>
             result: $Utils.Optional<FormationSessionParticipantCountAggregateOutputType> | number
+          }
+        }
+      }
+      FormativeAssessment: {
+        payload: Prisma.$FormativeAssessmentPayload<ExtArgs>
+        fields: Prisma.FormativeAssessmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FormativeAssessmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FormativeAssessmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>
+          }
+          findFirst: {
+            args: Prisma.FormativeAssessmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FormativeAssessmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>
+          }
+          findMany: {
+            args: Prisma.FormativeAssessmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>[]
+          }
+          create: {
+            args: Prisma.FormativeAssessmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>
+          }
+          createMany: {
+            args: Prisma.FormativeAssessmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FormativeAssessmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>[]
+          }
+          delete: {
+            args: Prisma.FormativeAssessmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>
+          }
+          update: {
+            args: Prisma.FormativeAssessmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.FormativeAssessmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FormativeAssessmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FormativeAssessmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.FormativeAssessmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FormativeAssessmentPayload>
+          }
+          aggregate: {
+            args: Prisma.FormativeAssessmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFormativeAssessment>
+          }
+          groupBy: {
+            args: Prisma.FormativeAssessmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FormativeAssessmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FormativeAssessmentCountArgs<ExtArgs>
+            result: $Utils.Optional<FormativeAssessmentCountAggregateOutputType> | number
           }
         }
       }
@@ -13182,6 +13287,7 @@ export namespace Prisma {
     candidature?: CandidatureOmit
     candidatureAssessment?: CandidatureAssessmentOmit
     formationSessionParticipant?: FormationSessionParticipantOmit
+    formativeAssessment?: FormativeAssessmentOmit
     formationSessionDay?: FormationSessionDayOmit
     formationSessionEmargement?: FormationSessionEmargementOmit
     formationSessionConvention?: FormationSessionConventionOmit
@@ -13395,6 +13501,7 @@ export namespace Prisma {
     helpArticlesAuthored: number
     assignedQualityIncidents: number
     reportedQualityIncidents: number
+    formativeAssessmentsRecorded: number
     inAppNotifications: number
     chatParticipants: number
     chatMessages: number
@@ -13461,6 +13568,7 @@ export namespace Prisma {
     helpArticlesAuthored?: boolean | UserCountOutputTypeCountHelpArticlesAuthoredArgs
     assignedQualityIncidents?: boolean | UserCountOutputTypeCountAssignedQualityIncidentsArgs
     reportedQualityIncidents?: boolean | UserCountOutputTypeCountReportedQualityIncidentsArgs
+    formativeAssessmentsRecorded?: boolean | UserCountOutputTypeCountFormativeAssessmentsRecordedArgs
     inAppNotifications?: boolean | UserCountOutputTypeCountInAppNotificationsArgs
     chatParticipants?: boolean | UserCountOutputTypeCountChatParticipantsArgs
     chatMessages?: boolean | UserCountOutputTypeCountChatMessagesArgs
@@ -13847,6 +13955,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountReportedQualityIncidentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: QualityIncidentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFormativeAssessmentsRecordedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormativeAssessmentWhereInput
   }
 
   /**
@@ -14730,6 +14845,7 @@ export namespace Prisma {
     satisfactionSurveys: number
     fundingCases: number
     conventions: number
+    formativeAssessments: number
   }
 
   export type FormationSessionParticipantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14737,6 +14853,7 @@ export namespace Prisma {
     satisfactionSurveys?: boolean | FormationSessionParticipantCountOutputTypeCountSatisfactionSurveysArgs
     fundingCases?: boolean | FormationSessionParticipantCountOutputTypeCountFundingCasesArgs
     conventions?: boolean | FormationSessionParticipantCountOutputTypeCountConventionsArgs
+    formativeAssessments?: boolean | FormationSessionParticipantCountOutputTypeCountFormativeAssessmentsArgs
   }
 
   // Custom InputTypes
@@ -14778,6 +14895,13 @@ export namespace Prisma {
     where?: FormationSessionConventionWhereInput
   }
 
+  /**
+   * FormationSessionParticipantCountOutputType without action
+   */
+  export type FormationSessionParticipantCountOutputTypeCountFormativeAssessmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormativeAssessmentWhereInput
+  }
+
 
   /**
    * Count Type FormationSessionDayCountOutputType
@@ -14785,10 +14909,12 @@ export namespace Prisma {
 
   export type FormationSessionDayCountOutputType = {
     attendances: number
+    formativeAssessments: number
   }
 
   export type FormationSessionDayCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attendances?: boolean | FormationSessionDayCountOutputTypeCountAttendancesArgs
+    formativeAssessments?: boolean | FormationSessionDayCountOutputTypeCountFormativeAssessmentsArgs
   }
 
   // Custom InputTypes
@@ -14807,6 +14933,13 @@ export namespace Prisma {
    */
   export type FormationSessionDayCountOutputTypeCountAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FormationSessionEmargementWhereInput
+  }
+
+  /**
+   * FormationSessionDayCountOutputType without action
+   */
+  export type FormationSessionDayCountOutputTypeCountFormativeAssessmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormativeAssessmentWhereInput
   }
 
 
@@ -17555,6 +17688,7 @@ export namespace Prisma {
     helpArticlesAuthored?: boolean | User$helpArticlesAuthoredArgs<ExtArgs>
     assignedQualityIncidents?: boolean | User$assignedQualityIncidentsArgs<ExtArgs>
     reportedQualityIncidents?: boolean | User$reportedQualityIncidentsArgs<ExtArgs>
+    formativeAssessmentsRecorded?: boolean | User$formativeAssessmentsRecordedArgs<ExtArgs>
     notificationPreference?: boolean | User$notificationPreferenceArgs<ExtArgs>
     inAppNotifications?: boolean | User$inAppNotificationsArgs<ExtArgs>
     chatParticipants?: boolean | User$chatParticipantsArgs<ExtArgs>
@@ -17784,6 +17918,7 @@ export namespace Prisma {
     helpArticlesAuthored?: boolean | User$helpArticlesAuthoredArgs<ExtArgs>
     assignedQualityIncidents?: boolean | User$assignedQualityIncidentsArgs<ExtArgs>
     reportedQualityIncidents?: boolean | User$reportedQualityIncidentsArgs<ExtArgs>
+    formativeAssessmentsRecorded?: boolean | User$formativeAssessmentsRecordedArgs<ExtArgs>
     notificationPreference?: boolean | User$notificationPreferenceArgs<ExtArgs>
     inAppNotifications?: boolean | User$inAppNotificationsArgs<ExtArgs>
     chatParticipants?: boolean | User$chatParticipantsArgs<ExtArgs>
@@ -17874,6 +18009,7 @@ export namespace Prisma {
       helpArticlesAuthored: Prisma.$HelpArticlePayload<ExtArgs>[]
       assignedQualityIncidents: Prisma.$QualityIncidentPayload<ExtArgs>[]
       reportedQualityIncidents: Prisma.$QualityIncidentPayload<ExtArgs>[]
+      formativeAssessmentsRecorded: Prisma.$FormativeAssessmentPayload<ExtArgs>[]
       notificationPreference: Prisma.$UserNotificationPreferencePayload<ExtArgs> | null
       inAppNotifications: Prisma.$InAppNotificationPayload<ExtArgs>[]
       chatParticipants: Prisma.$ChatParticipantPayload<ExtArgs>[]
@@ -18390,6 +18526,7 @@ export namespace Prisma {
     helpArticlesAuthored<T extends User$helpArticlesAuthoredArgs<ExtArgs> = {}>(args?: Subset<T, User$helpArticlesAuthoredArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HelpArticlePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedQualityIncidents<T extends User$assignedQualityIncidentsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedQualityIncidentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QualityIncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reportedQualityIncidents<T extends User$reportedQualityIncidentsArgs<ExtArgs> = {}>(args?: Subset<T, User$reportedQualityIncidentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QualityIncidentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    formativeAssessmentsRecorded<T extends User$formativeAssessmentsRecordedArgs<ExtArgs> = {}>(args?: Subset<T, User$formativeAssessmentsRecordedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationPreference<T extends User$notificationPreferenceArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationPreferenceArgs<ExtArgs>>): Prisma__UserNotificationPreferenceClient<$Result.GetResult<Prisma.$UserNotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     inAppNotifications<T extends User$inAppNotificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$inAppNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InAppNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     chatParticipants<T extends User$chatParticipantsArgs<ExtArgs> = {}>(args?: Subset<T, User$chatParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -20219,6 +20356,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: QualityIncidentScalarFieldEnum | QualityIncidentScalarFieldEnum[]
+  }
+
+  /**
+   * User.formativeAssessmentsRecorded
+   */
+  export type User$formativeAssessmentsRecordedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    where?: FormativeAssessmentWhereInput
+    orderBy?: FormativeAssessmentOrderByWithRelationInput | FormativeAssessmentOrderByWithRelationInput[]
+    cursor?: FormativeAssessmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormativeAssessmentScalarFieldEnum | FormativeAssessmentScalarFieldEnum[]
   }
 
   /**
@@ -70365,6 +70526,10 @@ export namespace Prisma {
     j5PrepReminderSentAt: Date | null
     retakeDate: Date | null
     retakeNotes: string | null
+    dropoutRiskStatus: $Enums.DropoutRiskStatus | null
+    dropoutRiskFlaggedAt: Date | null
+    dropoutRiskReason: string | null
+    dropoutRiskNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70385,6 +70550,10 @@ export namespace Prisma {
     j5PrepReminderSentAt: Date | null
     retakeDate: Date | null
     retakeNotes: string | null
+    dropoutRiskStatus: $Enums.DropoutRiskStatus | null
+    dropoutRiskFlaggedAt: Date | null
+    dropoutRiskReason: string | null
+    dropoutRiskNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70405,6 +70574,10 @@ export namespace Prisma {
     j5PrepReminderSentAt: number
     retakeDate: number
     retakeNotes: number
+    dropoutRiskStatus: number
+    dropoutRiskFlaggedAt: number
+    dropoutRiskReason: number
+    dropoutRiskNotes: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -70427,6 +70600,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: true
     retakeDate?: true
     retakeNotes?: true
+    dropoutRiskStatus?: true
+    dropoutRiskFlaggedAt?: true
+    dropoutRiskReason?: true
+    dropoutRiskNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70447,6 +70624,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: true
     retakeDate?: true
     retakeNotes?: true
+    dropoutRiskStatus?: true
+    dropoutRiskFlaggedAt?: true
+    dropoutRiskReason?: true
+    dropoutRiskNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70467,6 +70648,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: true
     retakeDate?: true
     retakeNotes?: true
+    dropoutRiskStatus?: true
+    dropoutRiskFlaggedAt?: true
+    dropoutRiskReason?: true
+    dropoutRiskNotes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -70560,6 +70745,10 @@ export namespace Prisma {
     j5PrepReminderSentAt: Date | null
     retakeDate: Date | null
     retakeNotes: string | null
+    dropoutRiskStatus: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt: Date | null
+    dropoutRiskReason: string | null
+    dropoutRiskNotes: string | null
     createdAt: Date
     updatedAt: Date
     _count: FormationSessionParticipantCountAggregateOutputType | null
@@ -70597,6 +70786,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: boolean
     retakeDate?: boolean
     retakeNotes?: boolean
+    dropoutRiskStatus?: boolean
+    dropoutRiskFlaggedAt?: boolean
+    dropoutRiskReason?: boolean
+    dropoutRiskNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70606,6 +70799,7 @@ export namespace Prisma {
     satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
     fundingCases?: boolean | FormationSessionParticipant$fundingCasesArgs<ExtArgs>
     conventions?: boolean | FormationSessionParticipant$conventionsArgs<ExtArgs>
+    formativeAssessments?: boolean | FormationSessionParticipant$formativeAssessmentsArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["formationSessionParticipant"]>
 
@@ -70625,6 +70819,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: boolean
     retakeDate?: boolean
     retakeNotes?: boolean
+    dropoutRiskStatus?: boolean
+    dropoutRiskFlaggedAt?: boolean
+    dropoutRiskReason?: boolean
+    dropoutRiskNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70648,6 +70846,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: boolean
     retakeDate?: boolean
     retakeNotes?: boolean
+    dropoutRiskStatus?: boolean
+    dropoutRiskFlaggedAt?: boolean
+    dropoutRiskReason?: boolean
+    dropoutRiskNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70671,11 +70873,15 @@ export namespace Prisma {
     j5PrepReminderSentAt?: boolean
     retakeDate?: boolean
     retakeNotes?: boolean
+    dropoutRiskStatus?: boolean
+    dropoutRiskFlaggedAt?: boolean
+    dropoutRiskReason?: boolean
+    dropoutRiskNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "fundingMode" | "fundingReference" | "fundingNotes" | "j5PrepReminderSentAt" | "retakeDate" | "retakeNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
+  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "fundingMode" | "fundingReference" | "fundingNotes" | "j5PrepReminderSentAt" | "retakeDate" | "retakeNotes" | "dropoutRiskStatus" | "dropoutRiskFlaggedAt" | "dropoutRiskReason" | "dropoutRiskNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
   export type FormationSessionParticipantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -70684,6 +70890,7 @@ export namespace Prisma {
     satisfactionSurveys?: boolean | FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>
     fundingCases?: boolean | FormationSessionParticipant$fundingCasesArgs<ExtArgs>
     conventions?: boolean | FormationSessionParticipant$conventionsArgs<ExtArgs>
+    formativeAssessments?: boolean | FormationSessionParticipant$formativeAssessmentsArgs<ExtArgs>
     _count?: boolean | FormationSessionParticipantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FormationSessionParticipantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -70707,6 +70914,7 @@ export namespace Prisma {
       satisfactionSurveys: Prisma.$SatisfactionSurveyPayload<ExtArgs>[]
       fundingCases: Prisma.$FundingCasePayload<ExtArgs>[]
       conventions: Prisma.$FormationSessionConventionPayload<ExtArgs>[]
+      formativeAssessments: Prisma.$FormativeAssessmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -70733,6 +70941,13 @@ export namespace Prisma {
        */
       retakeDate: Date | null
       retakeNotes: string | null
+      /**
+       * WF-19 — prévention rupture de parcours.
+       */
+      dropoutRiskStatus: $Enums.DropoutRiskStatus
+      dropoutRiskFlaggedAt: Date | null
+      dropoutRiskReason: string | null
+      dropoutRiskNotes: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["formationSessionParticipant"]>
@@ -71136,6 +71351,7 @@ export namespace Prisma {
     satisfactionSurveys<T extends FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$satisfactionSurveysArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SatisfactionSurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     fundingCases<T extends FormationSessionParticipant$fundingCasesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$fundingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FundingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     conventions<T extends FormationSessionParticipant$conventionsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$conventionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionConventionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    formativeAssessments<T extends FormationSessionParticipant$formativeAssessmentsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipant$formativeAssessmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -71180,6 +71396,10 @@ export namespace Prisma {
     readonly j5PrepReminderSentAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly retakeDate: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly retakeNotes: FieldRef<"FormationSessionParticipant", 'String'>
+    readonly dropoutRiskStatus: FieldRef<"FormationSessionParticipant", 'DropoutRiskStatus'>
+    readonly dropoutRiskFlaggedAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
+    readonly dropoutRiskReason: FieldRef<"FormationSessionParticipant", 'String'>
+    readonly dropoutRiskNotes: FieldRef<"FormationSessionParticipant", 'String'>
     readonly createdAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly updatedAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
   }
@@ -71698,6 +71918,30 @@ export namespace Prisma {
   }
 
   /**
+   * FormationSessionParticipant.formativeAssessments
+   */
+  export type FormationSessionParticipant$formativeAssessmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    where?: FormativeAssessmentWhereInput
+    orderBy?: FormativeAssessmentOrderByWithRelationInput | FormativeAssessmentOrderByWithRelationInput[]
+    cursor?: FormativeAssessmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormativeAssessmentScalarFieldEnum | FormativeAssessmentScalarFieldEnum[]
+  }
+
+  /**
    * FormationSessionParticipant without action
    */
   export type FormationSessionParticipantDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -71713,6 +71957,1222 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FormationSessionParticipantInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FormativeAssessment
+   */
+
+  export type AggregateFormativeAssessment = {
+    _count: FormativeAssessmentCountAggregateOutputType | null
+    _avg: FormativeAssessmentAvgAggregateOutputType | null
+    _sum: FormativeAssessmentSumAggregateOutputType | null
+    _min: FormativeAssessmentMinAggregateOutputType | null
+    _max: FormativeAssessmentMaxAggregateOutputType | null
+  }
+
+  export type FormativeAssessmentAvgAggregateOutputType = {
+    score: number | null
+  }
+
+  export type FormativeAssessmentSumAggregateOutputType = {
+    score: number | null
+  }
+
+  export type FormativeAssessmentMinAggregateOutputType = {
+    id: string | null
+    participantId: string | null
+    sessionDayId: string | null
+    label: string | null
+    score: number | null
+    passed: boolean | null
+    feedback: string | null
+    recordedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormativeAssessmentMaxAggregateOutputType = {
+    id: string | null
+    participantId: string | null
+    sessionDayId: string | null
+    label: string | null
+    score: number | null
+    passed: boolean | null
+    feedback: string | null
+    recordedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FormativeAssessmentCountAggregateOutputType = {
+    id: number
+    participantId: number
+    sessionDayId: number
+    label: number
+    score: number
+    passed: number
+    feedback: number
+    recordedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FormativeAssessmentAvgAggregateInputType = {
+    score?: true
+  }
+
+  export type FormativeAssessmentSumAggregateInputType = {
+    score?: true
+  }
+
+  export type FormativeAssessmentMinAggregateInputType = {
+    id?: true
+    participantId?: true
+    sessionDayId?: true
+    label?: true
+    score?: true
+    passed?: true
+    feedback?: true
+    recordedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormativeAssessmentMaxAggregateInputType = {
+    id?: true
+    participantId?: true
+    sessionDayId?: true
+    label?: true
+    score?: true
+    passed?: true
+    feedback?: true
+    recordedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FormativeAssessmentCountAggregateInputType = {
+    id?: true
+    participantId?: true
+    sessionDayId?: true
+    label?: true
+    score?: true
+    passed?: true
+    feedback?: true
+    recordedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FormativeAssessmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormativeAssessment to aggregate.
+     */
+    where?: FormativeAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormativeAssessments to fetch.
+     */
+    orderBy?: FormativeAssessmentOrderByWithRelationInput | FormativeAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FormativeAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormativeAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormativeAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FormativeAssessments
+    **/
+    _count?: true | FormativeAssessmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FormativeAssessmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FormativeAssessmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FormativeAssessmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FormativeAssessmentMaxAggregateInputType
+  }
+
+  export type GetFormativeAssessmentAggregateType<T extends FormativeAssessmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateFormativeAssessment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFormativeAssessment[P]>
+      : GetScalarType<T[P], AggregateFormativeAssessment[P]>
+  }
+
+
+
+
+  export type FormativeAssessmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FormativeAssessmentWhereInput
+    orderBy?: FormativeAssessmentOrderByWithAggregationInput | FormativeAssessmentOrderByWithAggregationInput[]
+    by: FormativeAssessmentScalarFieldEnum[] | FormativeAssessmentScalarFieldEnum
+    having?: FormativeAssessmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FormativeAssessmentCountAggregateInputType | true
+    _avg?: FormativeAssessmentAvgAggregateInputType
+    _sum?: FormativeAssessmentSumAggregateInputType
+    _min?: FormativeAssessmentMinAggregateInputType
+    _max?: FormativeAssessmentMaxAggregateInputType
+  }
+
+  export type FormativeAssessmentGroupByOutputType = {
+    id: string
+    participantId: string
+    sessionDayId: string | null
+    label: string
+    score: number | null
+    passed: boolean | null
+    feedback: string | null
+    recordedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FormativeAssessmentCountAggregateOutputType | null
+    _avg: FormativeAssessmentAvgAggregateOutputType | null
+    _sum: FormativeAssessmentSumAggregateOutputType | null
+    _min: FormativeAssessmentMinAggregateOutputType | null
+    _max: FormativeAssessmentMaxAggregateOutputType | null
+  }
+
+  type GetFormativeAssessmentGroupByPayload<T extends FormativeAssessmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FormativeAssessmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FormativeAssessmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FormativeAssessmentGroupByOutputType[P]>
+            : GetScalarType<T[P], FormativeAssessmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FormativeAssessmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    participantId?: boolean
+    sessionDayId?: boolean
+    label?: boolean
+    score?: boolean
+    passed?: boolean
+    feedback?: boolean
+    recordedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    sessionDay?: boolean | FormativeAssessment$sessionDayArgs<ExtArgs>
+    recordedBy?: boolean | FormativeAssessment$recordedByArgs<ExtArgs>
+  }, ExtArgs["result"]["formativeAssessment"]>
+
+  export type FormativeAssessmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    participantId?: boolean
+    sessionDayId?: boolean
+    label?: boolean
+    score?: boolean
+    passed?: boolean
+    feedback?: boolean
+    recordedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    sessionDay?: boolean | FormativeAssessment$sessionDayArgs<ExtArgs>
+    recordedBy?: boolean | FormativeAssessment$recordedByArgs<ExtArgs>
+  }, ExtArgs["result"]["formativeAssessment"]>
+
+  export type FormativeAssessmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    participantId?: boolean
+    sessionDayId?: boolean
+    label?: boolean
+    score?: boolean
+    passed?: boolean
+    feedback?: boolean
+    recordedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    sessionDay?: boolean | FormativeAssessment$sessionDayArgs<ExtArgs>
+    recordedBy?: boolean | FormativeAssessment$recordedByArgs<ExtArgs>
+  }, ExtArgs["result"]["formativeAssessment"]>
+
+  export type FormativeAssessmentSelectScalar = {
+    id?: boolean
+    participantId?: boolean
+    sessionDayId?: boolean
+    label?: boolean
+    score?: boolean
+    passed?: boolean
+    feedback?: boolean
+    recordedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FormativeAssessmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "participantId" | "sessionDayId" | "label" | "score" | "passed" | "feedback" | "recordedById" | "createdAt" | "updatedAt", ExtArgs["result"]["formativeAssessment"]>
+  export type FormativeAssessmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    sessionDay?: boolean | FormativeAssessment$sessionDayArgs<ExtArgs>
+    recordedBy?: boolean | FormativeAssessment$recordedByArgs<ExtArgs>
+  }
+  export type FormativeAssessmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    sessionDay?: boolean | FormativeAssessment$sessionDayArgs<ExtArgs>
+    recordedBy?: boolean | FormativeAssessment$recordedByArgs<ExtArgs>
+  }
+  export type FormativeAssessmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    participant?: boolean | FormationSessionParticipantDefaultArgs<ExtArgs>
+    sessionDay?: boolean | FormativeAssessment$sessionDayArgs<ExtArgs>
+    recordedBy?: boolean | FormativeAssessment$recordedByArgs<ExtArgs>
+  }
+
+  export type $FormativeAssessmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FormativeAssessment"
+    objects: {
+      participant: Prisma.$FormationSessionParticipantPayload<ExtArgs>
+      sessionDay: Prisma.$FormationSessionDayPayload<ExtArgs> | null
+      recordedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      participantId: string
+      sessionDayId: string | null
+      label: string
+      score: number | null
+      passed: boolean | null
+      feedback: string | null
+      recordedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["formativeAssessment"]>
+    composites: {}
+  }
+
+  type FormativeAssessmentGetPayload<S extends boolean | null | undefined | FormativeAssessmentDefaultArgs> = $Result.GetResult<Prisma.$FormativeAssessmentPayload, S>
+
+  type FormativeAssessmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FormativeAssessmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FormativeAssessmentCountAggregateInputType | true
+    }
+
+  export interface FormativeAssessmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FormativeAssessment'], meta: { name: 'FormativeAssessment' } }
+    /**
+     * Find zero or one FormativeAssessment that matches the filter.
+     * @param {FormativeAssessmentFindUniqueArgs} args - Arguments to find a FormativeAssessment
+     * @example
+     * // Get one FormativeAssessment
+     * const formativeAssessment = await prisma.formativeAssessment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FormativeAssessmentFindUniqueArgs>(args: SelectSubset<T, FormativeAssessmentFindUniqueArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FormativeAssessment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FormativeAssessmentFindUniqueOrThrowArgs} args - Arguments to find a FormativeAssessment
+     * @example
+     * // Get one FormativeAssessment
+     * const formativeAssessment = await prisma.formativeAssessment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FormativeAssessmentFindUniqueOrThrowArgs>(args: SelectSubset<T, FormativeAssessmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormativeAssessment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormativeAssessmentFindFirstArgs} args - Arguments to find a FormativeAssessment
+     * @example
+     * // Get one FormativeAssessment
+     * const formativeAssessment = await prisma.formativeAssessment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FormativeAssessmentFindFirstArgs>(args?: SelectSubset<T, FormativeAssessmentFindFirstArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FormativeAssessment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormativeAssessmentFindFirstOrThrowArgs} args - Arguments to find a FormativeAssessment
+     * @example
+     * // Get one FormativeAssessment
+     * const formativeAssessment = await prisma.formativeAssessment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FormativeAssessmentFindFirstOrThrowArgs>(args?: SelectSubset<T, FormativeAssessmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FormativeAssessments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormativeAssessmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FormativeAssessments
+     * const formativeAssessments = await prisma.formativeAssessment.findMany()
+     * 
+     * // Get first 10 FormativeAssessments
+     * const formativeAssessments = await prisma.formativeAssessment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const formativeAssessmentWithIdOnly = await prisma.formativeAssessment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FormativeAssessmentFindManyArgs>(args?: SelectSubset<T, FormativeAssessmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FormativeAssessment.
+     * @param {FormativeAssessmentCreateArgs} args - Arguments to create a FormativeAssessment.
+     * @example
+     * // Create one FormativeAssessment
+     * const FormativeAssessment = await prisma.formativeAssessment.create({
+     *   data: {
+     *     // ... data to create a FormativeAssessment
+     *   }
+     * })
+     * 
+     */
+    create<T extends FormativeAssessmentCreateArgs>(args: SelectSubset<T, FormativeAssessmentCreateArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FormativeAssessments.
+     * @param {FormativeAssessmentCreateManyArgs} args - Arguments to create many FormativeAssessments.
+     * @example
+     * // Create many FormativeAssessments
+     * const formativeAssessment = await prisma.formativeAssessment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FormativeAssessmentCreateManyArgs>(args?: SelectSubset<T, FormativeAssessmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FormativeAssessments and returns the data saved in the database.
+     * @param {FormativeAssessmentCreateManyAndReturnArgs} args - Arguments to create many FormativeAssessments.
+     * @example
+     * // Create many FormativeAssessments
+     * const formativeAssessment = await prisma.formativeAssessment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FormativeAssessments and only return the `id`
+     * const formativeAssessmentWithIdOnly = await prisma.formativeAssessment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FormativeAssessmentCreateManyAndReturnArgs>(args?: SelectSubset<T, FormativeAssessmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FormativeAssessment.
+     * @param {FormativeAssessmentDeleteArgs} args - Arguments to delete one FormativeAssessment.
+     * @example
+     * // Delete one FormativeAssessment
+     * const FormativeAssessment = await prisma.formativeAssessment.delete({
+     *   where: {
+     *     // ... filter to delete one FormativeAssessment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FormativeAssessmentDeleteArgs>(args: SelectSubset<T, FormativeAssessmentDeleteArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FormativeAssessment.
+     * @param {FormativeAssessmentUpdateArgs} args - Arguments to update one FormativeAssessment.
+     * @example
+     * // Update one FormativeAssessment
+     * const formativeAssessment = await prisma.formativeAssessment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FormativeAssessmentUpdateArgs>(args: SelectSubset<T, FormativeAssessmentUpdateArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FormativeAssessments.
+     * @param {FormativeAssessmentDeleteManyArgs} args - Arguments to filter FormativeAssessments to delete.
+     * @example
+     * // Delete a few FormativeAssessments
+     * const { count } = await prisma.formativeAssessment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FormativeAssessmentDeleteManyArgs>(args?: SelectSubset<T, FormativeAssessmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormativeAssessments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormativeAssessmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FormativeAssessments
+     * const formativeAssessment = await prisma.formativeAssessment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FormativeAssessmentUpdateManyArgs>(args: SelectSubset<T, FormativeAssessmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FormativeAssessments and returns the data updated in the database.
+     * @param {FormativeAssessmentUpdateManyAndReturnArgs} args - Arguments to update many FormativeAssessments.
+     * @example
+     * // Update many FormativeAssessments
+     * const formativeAssessment = await prisma.formativeAssessment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FormativeAssessments and only return the `id`
+     * const formativeAssessmentWithIdOnly = await prisma.formativeAssessment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FormativeAssessmentUpdateManyAndReturnArgs>(args: SelectSubset<T, FormativeAssessmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FormativeAssessment.
+     * @param {FormativeAssessmentUpsertArgs} args - Arguments to update or create a FormativeAssessment.
+     * @example
+     * // Update or create a FormativeAssessment
+     * const formativeAssessment = await prisma.formativeAssessment.upsert({
+     *   create: {
+     *     // ... data to create a FormativeAssessment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FormativeAssessment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FormativeAssessmentUpsertArgs>(args: SelectSubset<T, FormativeAssessmentUpsertArgs<ExtArgs>>): Prisma__FormativeAssessmentClient<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FormativeAssessments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormativeAssessmentCountArgs} args - Arguments to filter FormativeAssessments to count.
+     * @example
+     * // Count the number of FormativeAssessments
+     * const count = await prisma.formativeAssessment.count({
+     *   where: {
+     *     // ... the filter for the FormativeAssessments we want to count
+     *   }
+     * })
+    **/
+    count<T extends FormativeAssessmentCountArgs>(
+      args?: Subset<T, FormativeAssessmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FormativeAssessmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FormativeAssessment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormativeAssessmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FormativeAssessmentAggregateArgs>(args: Subset<T, FormativeAssessmentAggregateArgs>): Prisma.PrismaPromise<GetFormativeAssessmentAggregateType<T>>
+
+    /**
+     * Group by FormativeAssessment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FormativeAssessmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FormativeAssessmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FormativeAssessmentGroupByArgs['orderBy'] }
+        : { orderBy?: FormativeAssessmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FormativeAssessmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFormativeAssessmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FormativeAssessment model
+   */
+  readonly fields: FormativeAssessmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FormativeAssessment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FormativeAssessmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    participant<T extends FormationSessionParticipantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionParticipantDefaultArgs<ExtArgs>>): Prisma__FormationSessionParticipantClient<$Result.GetResult<Prisma.$FormationSessionParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sessionDay<T extends FormativeAssessment$sessionDayArgs<ExtArgs> = {}>(args?: Subset<T, FormativeAssessment$sessionDayArgs<ExtArgs>>): Prisma__FormationSessionDayClient<$Result.GetResult<Prisma.$FormationSessionDayPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    recordedBy<T extends FormativeAssessment$recordedByArgs<ExtArgs> = {}>(args?: Subset<T, FormativeAssessment$recordedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FormativeAssessment model
+   */
+  interface FormativeAssessmentFieldRefs {
+    readonly id: FieldRef<"FormativeAssessment", 'String'>
+    readonly participantId: FieldRef<"FormativeAssessment", 'String'>
+    readonly sessionDayId: FieldRef<"FormativeAssessment", 'String'>
+    readonly label: FieldRef<"FormativeAssessment", 'String'>
+    readonly score: FieldRef<"FormativeAssessment", 'Int'>
+    readonly passed: FieldRef<"FormativeAssessment", 'Boolean'>
+    readonly feedback: FieldRef<"FormativeAssessment", 'String'>
+    readonly recordedById: FieldRef<"FormativeAssessment", 'String'>
+    readonly createdAt: FieldRef<"FormativeAssessment", 'DateTime'>
+    readonly updatedAt: FieldRef<"FormativeAssessment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FormativeAssessment findUnique
+   */
+  export type FormativeAssessmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which FormativeAssessment to fetch.
+     */
+    where: FormativeAssessmentWhereUniqueInput
+  }
+
+  /**
+   * FormativeAssessment findUniqueOrThrow
+   */
+  export type FormativeAssessmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which FormativeAssessment to fetch.
+     */
+    where: FormativeAssessmentWhereUniqueInput
+  }
+
+  /**
+   * FormativeAssessment findFirst
+   */
+  export type FormativeAssessmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which FormativeAssessment to fetch.
+     */
+    where?: FormativeAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormativeAssessments to fetch.
+     */
+    orderBy?: FormativeAssessmentOrderByWithRelationInput | FormativeAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormativeAssessments.
+     */
+    cursor?: FormativeAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormativeAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormativeAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormativeAssessments.
+     */
+    distinct?: FormativeAssessmentScalarFieldEnum | FormativeAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * FormativeAssessment findFirstOrThrow
+   */
+  export type FormativeAssessmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which FormativeAssessment to fetch.
+     */
+    where?: FormativeAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormativeAssessments to fetch.
+     */
+    orderBy?: FormativeAssessmentOrderByWithRelationInput | FormativeAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FormativeAssessments.
+     */
+    cursor?: FormativeAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormativeAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormativeAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormativeAssessments.
+     */
+    distinct?: FormativeAssessmentScalarFieldEnum | FormativeAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * FormativeAssessment findMany
+   */
+  export type FormativeAssessmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter, which FormativeAssessments to fetch.
+     */
+    where?: FormativeAssessmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FormativeAssessments to fetch.
+     */
+    orderBy?: FormativeAssessmentOrderByWithRelationInput | FormativeAssessmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FormativeAssessments.
+     */
+    cursor?: FormativeAssessmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FormativeAssessments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FormativeAssessments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FormativeAssessments.
+     */
+    distinct?: FormativeAssessmentScalarFieldEnum | FormativeAssessmentScalarFieldEnum[]
+  }
+
+  /**
+   * FormativeAssessment create
+   */
+  export type FormativeAssessmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FormativeAssessment.
+     */
+    data: XOR<FormativeAssessmentCreateInput, FormativeAssessmentUncheckedCreateInput>
+  }
+
+  /**
+   * FormativeAssessment createMany
+   */
+  export type FormativeAssessmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FormativeAssessments.
+     */
+    data: FormativeAssessmentCreateManyInput | FormativeAssessmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FormativeAssessment createManyAndReturn
+   */
+  export type FormativeAssessmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many FormativeAssessments.
+     */
+    data: FormativeAssessmentCreateManyInput | FormativeAssessmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormativeAssessment update
+   */
+  export type FormativeAssessmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FormativeAssessment.
+     */
+    data: XOR<FormativeAssessmentUpdateInput, FormativeAssessmentUncheckedUpdateInput>
+    /**
+     * Choose, which FormativeAssessment to update.
+     */
+    where: FormativeAssessmentWhereUniqueInput
+  }
+
+  /**
+   * FormativeAssessment updateMany
+   */
+  export type FormativeAssessmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FormativeAssessments.
+     */
+    data: XOR<FormativeAssessmentUpdateManyMutationInput, FormativeAssessmentUncheckedUpdateManyInput>
+    /**
+     * Filter which FormativeAssessments to update
+     */
+    where?: FormativeAssessmentWhereInput
+    /**
+     * Limit how many FormativeAssessments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormativeAssessment updateManyAndReturn
+   */
+  export type FormativeAssessmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * The data used to update FormativeAssessments.
+     */
+    data: XOR<FormativeAssessmentUpdateManyMutationInput, FormativeAssessmentUncheckedUpdateManyInput>
+    /**
+     * Filter which FormativeAssessments to update
+     */
+    where?: FormativeAssessmentWhereInput
+    /**
+     * Limit how many FormativeAssessments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FormativeAssessment upsert
+   */
+  export type FormativeAssessmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FormativeAssessment to update in case it exists.
+     */
+    where: FormativeAssessmentWhereUniqueInput
+    /**
+     * In case the FormativeAssessment found by the `where` argument doesn't exist, create a new FormativeAssessment with this data.
+     */
+    create: XOR<FormativeAssessmentCreateInput, FormativeAssessmentUncheckedCreateInput>
+    /**
+     * In case the FormativeAssessment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FormativeAssessmentUpdateInput, FormativeAssessmentUncheckedUpdateInput>
+  }
+
+  /**
+   * FormativeAssessment delete
+   */
+  export type FormativeAssessmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    /**
+     * Filter which FormativeAssessment to delete.
+     */
+    where: FormativeAssessmentWhereUniqueInput
+  }
+
+  /**
+   * FormativeAssessment deleteMany
+   */
+  export type FormativeAssessmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FormativeAssessments to delete
+     */
+    where?: FormativeAssessmentWhereInput
+    /**
+     * Limit how many FormativeAssessments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FormativeAssessment.sessionDay
+   */
+  export type FormativeAssessment$sessionDayArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormationSessionDay
+     */
+    select?: FormationSessionDaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormationSessionDay
+     */
+    omit?: FormationSessionDayOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormationSessionDayInclude<ExtArgs> | null
+    where?: FormationSessionDayWhereInput
+  }
+
+  /**
+   * FormativeAssessment.recordedBy
+   */
+  export type FormativeAssessment$recordedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * FormativeAssessment without action
+   */
+  export type FormativeAssessmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
   }
 
 
@@ -71898,6 +73358,7 @@ export namespace Prisma {
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
     attendances?: boolean | FormationSessionDay$attendancesArgs<ExtArgs>
+    formativeAssessments?: boolean | FormationSessionDay$formativeAssessmentsArgs<ExtArgs>
     _count?: boolean | FormationSessionDayCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["formationSessionDay"]>
 
@@ -71937,6 +73398,7 @@ export namespace Prisma {
   export type FormationSessionDayInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
     attendances?: boolean | FormationSessionDay$attendancesArgs<ExtArgs>
+    formativeAssessments?: boolean | FormationSessionDay$formativeAssessmentsArgs<ExtArgs>
     _count?: boolean | FormationSessionDayCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FormationSessionDayIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -71951,6 +73413,7 @@ export namespace Prisma {
     objects: {
       session: Prisma.$FormationSessionPayload<ExtArgs>
       attendances: Prisma.$FormationSessionEmargementPayload<ExtArgs>[]
+      formativeAssessments: Prisma.$FormativeAssessmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -72356,6 +73819,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     session<T extends FormationSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDefaultArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     attendances<T extends FormationSessionDay$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDay$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormationSessionEmargementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    formativeAssessments<T extends FormationSessionDay$formativeAssessmentsArgs<ExtArgs> = {}>(args?: Subset<T, FormationSessionDay$formativeAssessmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FormativeAssessmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -72814,6 +74278,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FormationSessionEmargementScalarFieldEnum | FormationSessionEmargementScalarFieldEnum[]
+  }
+
+  /**
+   * FormationSessionDay.formativeAssessments
+   */
+  export type FormationSessionDay$formativeAssessmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FormativeAssessment
+     */
+    select?: FormativeAssessmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FormativeAssessment
+     */
+    omit?: FormativeAssessmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FormativeAssessmentInclude<ExtArgs> | null
+    where?: FormativeAssessmentWhereInput
+    orderBy?: FormativeAssessmentOrderByWithRelationInput | FormativeAssessmentOrderByWithRelationInput[]
+    cursor?: FormativeAssessmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FormativeAssessmentScalarFieldEnum | FormativeAssessmentScalarFieldEnum[]
   }
 
   /**
@@ -167498,11 +168986,31 @@ export namespace Prisma {
     j5PrepReminderSentAt: 'j5PrepReminderSentAt',
     retakeDate: 'retakeDate',
     retakeNotes: 'retakeNotes',
+    dropoutRiskStatus: 'dropoutRiskStatus',
+    dropoutRiskFlaggedAt: 'dropoutRiskFlaggedAt',
+    dropoutRiskReason: 'dropoutRiskReason',
+    dropoutRiskNotes: 'dropoutRiskNotes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type FormationSessionParticipantScalarFieldEnum = (typeof FormationSessionParticipantScalarFieldEnum)[keyof typeof FormationSessionParticipantScalarFieldEnum]
+
+
+  export const FormativeAssessmentScalarFieldEnum: {
+    id: 'id',
+    participantId: 'participantId',
+    sessionDayId: 'sessionDayId',
+    label: 'label',
+    score: 'score',
+    passed: 'passed',
+    feedback: 'feedback',
+    recordedById: 'recordedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FormativeAssessmentScalarFieldEnum = (typeof FormativeAssessmentScalarFieldEnum)[keyof typeof FormativeAssessmentScalarFieldEnum]
 
 
   export const FormationSessionDayScalarFieldEnum: {
@@ -169478,6 +170986,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DropoutRiskStatus'
+   */
+  export type EnumDropoutRiskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DropoutRiskStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'DropoutRiskStatus[]'
+   */
+  export type ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DropoutRiskStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'FormationSessionDaySlot'
    */
   export type EnumFormationSessionDaySlotFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FormationSessionDaySlot'>
@@ -170299,6 +171821,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleListRelationFilter
     assignedQualityIncidents?: QualityIncidentListRelationFilter
     reportedQualityIncidents?: QualityIncidentListRelationFilter
+    formativeAssessmentsRecorded?: FormativeAssessmentListRelationFilter
     notificationPreference?: XOR<UserNotificationPreferenceNullableScalarRelationFilter, UserNotificationPreferenceWhereInput> | null
     inAppNotifications?: InAppNotificationListRelationFilter
     chatParticipants?: ChatParticipantListRelationFilter
@@ -170419,6 +171942,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleOrderByRelationAggregateInput
     assignedQualityIncidents?: QualityIncidentOrderByRelationAggregateInput
     reportedQualityIncidents?: QualityIncidentOrderByRelationAggregateInput
+    formativeAssessmentsRecorded?: FormativeAssessmentOrderByRelationAggregateInput
     notificationPreference?: UserNotificationPreferenceOrderByWithRelationInput
     inAppNotifications?: InAppNotificationOrderByRelationAggregateInput
     chatParticipants?: ChatParticipantOrderByRelationAggregateInput
@@ -170542,6 +172066,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleListRelationFilter
     assignedQualityIncidents?: QualityIncidentListRelationFilter
     reportedQualityIncidents?: QualityIncidentListRelationFilter
+    formativeAssessmentsRecorded?: FormativeAssessmentListRelationFilter
     notificationPreference?: XOR<UserNotificationPreferenceNullableScalarRelationFilter, UserNotificationPreferenceWhereInput> | null
     inAppNotifications?: InAppNotificationListRelationFilter
     chatParticipants?: ChatParticipantListRelationFilter
@@ -174930,6 +176455,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     retakeDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     retakeNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFilter<"FormationSessionParticipant"> | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    dropoutRiskReason?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
@@ -174939,6 +176468,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
     fundingCases?: FundingCaseListRelationFilter
     conventions?: FormationSessionConventionListRelationFilter
+    formativeAssessments?: FormativeAssessmentListRelationFilter
   }
 
   export type FormationSessionParticipantOrderByWithRelationInput = {
@@ -174957,6 +176487,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: SortOrderInput | SortOrder
     retakeDate?: SortOrderInput | SortOrder
     retakeNotes?: SortOrderInput | SortOrder
+    dropoutRiskStatus?: SortOrder
+    dropoutRiskFlaggedAt?: SortOrderInput | SortOrder
+    dropoutRiskReason?: SortOrderInput | SortOrder
+    dropoutRiskNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     session?: FormationSessionOrderByWithRelationInput
@@ -174966,6 +176500,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyOrderByRelationAggregateInput
     fundingCases?: FundingCaseOrderByRelationAggregateInput
     conventions?: FormationSessionConventionOrderByRelationAggregateInput
+    formativeAssessments?: FormativeAssessmentOrderByRelationAggregateInput
   }
 
   export type FormationSessionParticipantWhereUniqueInput = Prisma.AtLeast<{
@@ -174988,6 +176523,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     retakeDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     retakeNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFilter<"FormationSessionParticipant"> | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    dropoutRiskReason?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
@@ -174997,6 +176536,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyListRelationFilter
     fundingCases?: FundingCaseListRelationFilter
     conventions?: FormationSessionConventionListRelationFilter
+    formativeAssessments?: FormativeAssessmentListRelationFilter
   }, "id" | "sessionId_userId">
 
   export type FormationSessionParticipantOrderByWithAggregationInput = {
@@ -175015,6 +176555,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: SortOrderInput | SortOrder
     retakeDate?: SortOrderInput | SortOrder
     retakeNotes?: SortOrderInput | SortOrder
+    dropoutRiskStatus?: SortOrder
+    dropoutRiskFlaggedAt?: SortOrderInput | SortOrder
+    dropoutRiskReason?: SortOrderInput | SortOrder
+    dropoutRiskNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FormationSessionParticipantCountOrderByAggregateInput
@@ -175041,8 +176585,100 @@ export namespace Prisma {
     j5PrepReminderSentAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
     retakeDate?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
     retakeNotes?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusWithAggregatesFilter<"FormationSessionParticipant"> | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
+    dropoutRiskReason?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskNotes?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
+  }
+
+  export type FormativeAssessmentWhereInput = {
+    AND?: FormativeAssessmentWhereInput | FormativeAssessmentWhereInput[]
+    OR?: FormativeAssessmentWhereInput[]
+    NOT?: FormativeAssessmentWhereInput | FormativeAssessmentWhereInput[]
+    id?: StringFilter<"FormativeAssessment"> | string
+    participantId?: StringFilter<"FormativeAssessment"> | string
+    sessionDayId?: StringNullableFilter<"FormativeAssessment"> | string | null
+    label?: StringFilter<"FormativeAssessment"> | string
+    score?: IntNullableFilter<"FormativeAssessment"> | number | null
+    passed?: BoolNullableFilter<"FormativeAssessment"> | boolean | null
+    feedback?: StringNullableFilter<"FormativeAssessment"> | string | null
+    recordedById?: StringNullableFilter<"FormativeAssessment"> | string | null
+    createdAt?: DateTimeFilter<"FormativeAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"FormativeAssessment"> | Date | string
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+    sessionDay?: XOR<FormationSessionDayNullableScalarRelationFilter, FormationSessionDayWhereInput> | null
+    recordedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type FormativeAssessmentOrderByWithRelationInput = {
+    id?: SortOrder
+    participantId?: SortOrder
+    sessionDayId?: SortOrderInput | SortOrder
+    label?: SortOrder
+    score?: SortOrderInput | SortOrder
+    passed?: SortOrderInput | SortOrder
+    feedback?: SortOrderInput | SortOrder
+    recordedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    participant?: FormationSessionParticipantOrderByWithRelationInput
+    sessionDay?: FormationSessionDayOrderByWithRelationInput
+    recordedBy?: UserOrderByWithRelationInput
+  }
+
+  export type FormativeAssessmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FormativeAssessmentWhereInput | FormativeAssessmentWhereInput[]
+    OR?: FormativeAssessmentWhereInput[]
+    NOT?: FormativeAssessmentWhereInput | FormativeAssessmentWhereInput[]
+    participantId?: StringFilter<"FormativeAssessment"> | string
+    sessionDayId?: StringNullableFilter<"FormativeAssessment"> | string | null
+    label?: StringFilter<"FormativeAssessment"> | string
+    score?: IntNullableFilter<"FormativeAssessment"> | number | null
+    passed?: BoolNullableFilter<"FormativeAssessment"> | boolean | null
+    feedback?: StringNullableFilter<"FormativeAssessment"> | string | null
+    recordedById?: StringNullableFilter<"FormativeAssessment"> | string | null
+    createdAt?: DateTimeFilter<"FormativeAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"FormativeAssessment"> | Date | string
+    participant?: XOR<FormationSessionParticipantScalarRelationFilter, FormationSessionParticipantWhereInput>
+    sessionDay?: XOR<FormationSessionDayNullableScalarRelationFilter, FormationSessionDayWhereInput> | null
+    recordedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type FormativeAssessmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    participantId?: SortOrder
+    sessionDayId?: SortOrderInput | SortOrder
+    label?: SortOrder
+    score?: SortOrderInput | SortOrder
+    passed?: SortOrderInput | SortOrder
+    feedback?: SortOrderInput | SortOrder
+    recordedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FormativeAssessmentCountOrderByAggregateInput
+    _avg?: FormativeAssessmentAvgOrderByAggregateInput
+    _max?: FormativeAssessmentMaxOrderByAggregateInput
+    _min?: FormativeAssessmentMinOrderByAggregateInput
+    _sum?: FormativeAssessmentSumOrderByAggregateInput
+  }
+
+  export type FormativeAssessmentScalarWhereWithAggregatesInput = {
+    AND?: FormativeAssessmentScalarWhereWithAggregatesInput | FormativeAssessmentScalarWhereWithAggregatesInput[]
+    OR?: FormativeAssessmentScalarWhereWithAggregatesInput[]
+    NOT?: FormativeAssessmentScalarWhereWithAggregatesInput | FormativeAssessmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FormativeAssessment"> | string
+    participantId?: StringWithAggregatesFilter<"FormativeAssessment"> | string
+    sessionDayId?: StringNullableWithAggregatesFilter<"FormativeAssessment"> | string | null
+    label?: StringWithAggregatesFilter<"FormativeAssessment"> | string
+    score?: IntNullableWithAggregatesFilter<"FormativeAssessment"> | number | null
+    passed?: BoolNullableWithAggregatesFilter<"FormativeAssessment"> | boolean | null
+    feedback?: StringNullableWithAggregatesFilter<"FormativeAssessment"> | string | null
+    recordedById?: StringNullableWithAggregatesFilter<"FormativeAssessment"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FormativeAssessment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FormativeAssessment"> | Date | string
   }
 
   export type FormationSessionDayWhereInput = {
@@ -175058,6 +176694,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
     attendances?: FormationSessionEmargementListRelationFilter
+    formativeAssessments?: FormativeAssessmentListRelationFilter
   }
 
   export type FormationSessionDayOrderByWithRelationInput = {
@@ -175070,6 +176707,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     session?: FormationSessionOrderByWithRelationInput
     attendances?: FormationSessionEmargementOrderByRelationAggregateInput
+    formativeAssessments?: FormativeAssessmentOrderByRelationAggregateInput
   }
 
   export type FormationSessionDayWhereUniqueInput = Prisma.AtLeast<{
@@ -175086,6 +176724,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FormationSessionDay"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
     attendances?: FormationSessionEmargementListRelationFilter
+    formativeAssessments?: FormativeAssessmentListRelationFilter
   }, "id" | "sessionId_dayDate">
 
   export type FormationSessionDayOrderByWithAggregationInput = {
@@ -181933,6 +183572,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -182051,6 +183691,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -182169,6 +183810,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -182287,6 +183929,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -187392,6 +189035,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -187401,6 +189048,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateInput = {
@@ -187419,12 +189067,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUpdateInput = {
@@ -187440,6 +189093,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -187449,6 +189106,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateInput = {
@@ -187467,12 +189125,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantCreateManyInput = {
@@ -187491,6 +189154,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -187508,6 +189175,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187528,6 +189199,98 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormativeAssessmentCreateInput = {
+    id?: string
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participant: FormationSessionParticipantCreateNestedOneWithoutFormativeAssessmentsInput
+    sessionDay?: FormationSessionDayCreateNestedOneWithoutFormativeAssessmentsInput
+    recordedBy?: UserCreateNestedOneWithoutFormativeAssessmentsRecordedInput
+  }
+
+  export type FormativeAssessmentUncheckedCreateInput = {
+    id?: string
+    participantId: string
+    sessionDayId?: string | null
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    recordedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormativeAssessmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutFormativeAssessmentsNestedInput
+    sessionDay?: FormationSessionDayUpdateOneWithoutFormativeAssessmentsNestedInput
+    recordedBy?: UserUpdateOneWithoutFormativeAssessmentsRecordedNestedInput
+  }
+
+  export type FormativeAssessmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    sessionDayId?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormativeAssessmentCreateManyInput = {
+    id?: string
+    participantId: string
+    sessionDayId?: string | null
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    recordedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormativeAssessmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormativeAssessmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    sessionDayId?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187541,6 +189304,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutSuiviDaysInput
     attendances?: FormationSessionEmargementCreateNestedManyWithoutDayInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutSessionDayInput
   }
 
   export type FormationSessionDayUncheckedCreateInput = {
@@ -187552,6 +189316,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     attendances?: FormationSessionEmargementUncheckedCreateNestedManyWithoutDayInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutSessionDayInput
   }
 
   export type FormationSessionDayUpdateInput = {
@@ -187563,6 +189328,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutSuiviDaysNestedInput
     attendances?: FormationSessionEmargementUpdateManyWithoutDayNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutSessionDayNestedInput
   }
 
   export type FormationSessionDayUncheckedUpdateInput = {
@@ -187574,6 +189340,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendances?: FormationSessionEmargementUncheckedUpdateManyWithoutDayNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutSessionDayNestedInput
   }
 
   export type FormationSessionDayCreateManyInput = {
@@ -195253,6 +197020,12 @@ export namespace Prisma {
     none?: QualityIncidentWhereInput
   }
 
+  export type FormativeAssessmentListRelationFilter = {
+    every?: FormativeAssessmentWhereInput
+    some?: FormativeAssessmentWhereInput
+    none?: FormativeAssessmentWhereInput
+  }
+
   export type UserNotificationPreferenceNullableScalarRelationFilter = {
     is?: UserNotificationPreferenceWhereInput | null
     isNot?: UserNotificationPreferenceWhereInput | null
@@ -195502,6 +197275,10 @@ export namespace Prisma {
   }
 
   export type QualityIncidentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FormativeAssessmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -199078,6 +200855,13 @@ export namespace Prisma {
     not?: NestedEnumFormationExamOutcomeFilter<$PrismaModel> | $Enums.FormationExamOutcome
   }
 
+  export type EnumDropoutRiskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DropoutRiskStatus | EnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDropoutRiskStatusFilter<$PrismaModel> | $Enums.DropoutRiskStatus
+  }
+
   export type CandidatureNullableScalarRelationFilter = {
     is?: CandidatureWhereInput | null
     isNot?: CandidatureWhereInput | null
@@ -199104,6 +200888,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: SortOrder
     retakeDate?: SortOrder
     retakeNotes?: SortOrder
+    dropoutRiskStatus?: SortOrder
+    dropoutRiskFlaggedAt?: SortOrder
+    dropoutRiskReason?: SortOrder
+    dropoutRiskNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -199124,6 +200912,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: SortOrder
     retakeDate?: SortOrder
     retakeNotes?: SortOrder
+    dropoutRiskStatus?: SortOrder
+    dropoutRiskFlaggedAt?: SortOrder
+    dropoutRiskReason?: SortOrder
+    dropoutRiskNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -199144,6 +200936,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: SortOrder
     retakeDate?: SortOrder
     retakeNotes?: SortOrder
+    dropoutRiskStatus?: SortOrder
+    dropoutRiskFlaggedAt?: SortOrder
+    dropoutRiskReason?: SortOrder
+    dropoutRiskNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -199166,6 +200962,73 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
     _max?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
+  }
+
+  export type EnumDropoutRiskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DropoutRiskStatus | EnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDropoutRiskStatusWithAggregatesFilter<$PrismaModel> | $Enums.DropoutRiskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDropoutRiskStatusFilter<$PrismaModel>
+    _max?: NestedEnumDropoutRiskStatusFilter<$PrismaModel>
+  }
+
+  export type FormationSessionParticipantScalarRelationFilter = {
+    is?: FormationSessionParticipantWhereInput
+    isNot?: FormationSessionParticipantWhereInput
+  }
+
+  export type FormationSessionDayNullableScalarRelationFilter = {
+    is?: FormationSessionDayWhereInput | null
+    isNot?: FormationSessionDayWhereInput | null
+  }
+
+  export type FormativeAssessmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    participantId?: SortOrder
+    sessionDayId?: SortOrder
+    label?: SortOrder
+    score?: SortOrder
+    passed?: SortOrder
+    feedback?: SortOrder
+    recordedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormativeAssessmentAvgOrderByAggregateInput = {
+    score?: SortOrder
+  }
+
+  export type FormativeAssessmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    participantId?: SortOrder
+    sessionDayId?: SortOrder
+    label?: SortOrder
+    score?: SortOrder
+    passed?: SortOrder
+    feedback?: SortOrder
+    recordedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormativeAssessmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    participantId?: SortOrder
+    sessionDayId?: SortOrder
+    label?: SortOrder
+    score?: SortOrder
+    passed?: SortOrder
+    feedback?: SortOrder
+    recordedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FormativeAssessmentSumOrderByAggregateInput = {
+    score?: SortOrder
   }
 
   export type FormationSessionDaySessionIdDayDateCompoundUniqueInput = {
@@ -199227,11 +201090,6 @@ export namespace Prisma {
   export type FormationSessionDayScalarRelationFilter = {
     is?: FormationSessionDayWhereInput
     isNot?: FormationSessionDayWhereInput
-  }
-
-  export type FormationSessionParticipantScalarRelationFilter = {
-    is?: FormationSessionParticipantWhereInput
-    isNot?: FormationSessionParticipantWhereInput
   }
 
   export type FormationSessionEmargementDayIdParticipantIdSlotCompoundUniqueInput = {
@@ -204175,6 +206033,13 @@ export namespace Prisma {
     connect?: QualityIncidentWhereUniqueInput | QualityIncidentWhereUniqueInput[]
   }
 
+  export type FormativeAssessmentCreateNestedManyWithoutRecordedByInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutRecordedByInput, FormativeAssessmentUncheckedCreateWithoutRecordedByInput> | FormativeAssessmentCreateWithoutRecordedByInput[] | FormativeAssessmentUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutRecordedByInput | FormativeAssessmentCreateOrConnectWithoutRecordedByInput[]
+    createMany?: FormativeAssessmentCreateManyRecordedByInputEnvelope
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+  }
+
   export type UserNotificationPreferenceCreateNestedOneWithoutUserInput = {
     create?: XOR<UserNotificationPreferenceCreateWithoutUserInput, UserNotificationPreferenceUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserNotificationPreferenceCreateOrConnectWithoutUserInput
@@ -204644,6 +206509,13 @@ export namespace Prisma {
     connectOrCreate?: QualityIncidentCreateOrConnectWithoutReportedByInput | QualityIncidentCreateOrConnectWithoutReportedByInput[]
     createMany?: QualityIncidentCreateManyReportedByInputEnvelope
     connect?: QualityIncidentWhereUniqueInput | QualityIncidentWhereUniqueInput[]
+  }
+
+  export type FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutRecordedByInput, FormativeAssessmentUncheckedCreateWithoutRecordedByInput> | FormativeAssessmentCreateWithoutRecordedByInput[] | FormativeAssessmentUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutRecordedByInput | FormativeAssessmentCreateOrConnectWithoutRecordedByInput[]
+    createMany?: FormativeAssessmentCreateManyRecordedByInputEnvelope
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
   }
 
   export type UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput = {
@@ -205537,6 +207409,20 @@ export namespace Prisma {
     update?: QualityIncidentUpdateWithWhereUniqueWithoutReportedByInput | QualityIncidentUpdateWithWhereUniqueWithoutReportedByInput[]
     updateMany?: QualityIncidentUpdateManyWithWhereWithoutReportedByInput | QualityIncidentUpdateManyWithWhereWithoutReportedByInput[]
     deleteMany?: QualityIncidentScalarWhereInput | QualityIncidentScalarWhereInput[]
+  }
+
+  export type FormativeAssessmentUpdateManyWithoutRecordedByNestedInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutRecordedByInput, FormativeAssessmentUncheckedCreateWithoutRecordedByInput> | FormativeAssessmentCreateWithoutRecordedByInput[] | FormativeAssessmentUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutRecordedByInput | FormativeAssessmentCreateOrConnectWithoutRecordedByInput[]
+    upsert?: FormativeAssessmentUpsertWithWhereUniqueWithoutRecordedByInput | FormativeAssessmentUpsertWithWhereUniqueWithoutRecordedByInput[]
+    createMany?: FormativeAssessmentCreateManyRecordedByInputEnvelope
+    set?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    disconnect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    delete?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    update?: FormativeAssessmentUpdateWithWhereUniqueWithoutRecordedByInput | FormativeAssessmentUpdateWithWhereUniqueWithoutRecordedByInput[]
+    updateMany?: FormativeAssessmentUpdateManyWithWhereWithoutRecordedByInput | FormativeAssessmentUpdateManyWithWhereWithoutRecordedByInput[]
+    deleteMany?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
   }
 
   export type UserNotificationPreferenceUpdateOneWithoutUserNestedInput = {
@@ -206469,6 +208355,20 @@ export namespace Prisma {
     update?: QualityIncidentUpdateWithWhereUniqueWithoutReportedByInput | QualityIncidentUpdateWithWhereUniqueWithoutReportedByInput[]
     updateMany?: QualityIncidentUpdateManyWithWhereWithoutReportedByInput | QualityIncidentUpdateManyWithWhereWithoutReportedByInput[]
     deleteMany?: QualityIncidentScalarWhereInput | QualityIncidentScalarWhereInput[]
+  }
+
+  export type FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutRecordedByInput, FormativeAssessmentUncheckedCreateWithoutRecordedByInput> | FormativeAssessmentCreateWithoutRecordedByInput[] | FormativeAssessmentUncheckedCreateWithoutRecordedByInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutRecordedByInput | FormativeAssessmentCreateOrConnectWithoutRecordedByInput[]
+    upsert?: FormativeAssessmentUpsertWithWhereUniqueWithoutRecordedByInput | FormativeAssessmentUpsertWithWhereUniqueWithoutRecordedByInput[]
+    createMany?: FormativeAssessmentCreateManyRecordedByInputEnvelope
+    set?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    disconnect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    delete?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    update?: FormativeAssessmentUpdateWithWhereUniqueWithoutRecordedByInput | FormativeAssessmentUpdateWithWhereUniqueWithoutRecordedByInput[]
+    updateMany?: FormativeAssessmentUpdateManyWithWhereWithoutRecordedByInput | FormativeAssessmentUpdateManyWithWhereWithoutRecordedByInput[]
+    deleteMany?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
   }
 
   export type UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput = {
@@ -210190,6 +212090,13 @@ export namespace Prisma {
     connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
   }
 
+  export type FormativeAssessmentCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutParticipantInput, FormativeAssessmentUncheckedCreateWithoutParticipantInput> | FormativeAssessmentCreateWithoutParticipantInput[] | FormativeAssessmentUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutParticipantInput | FormativeAssessmentCreateOrConnectWithoutParticipantInput[]
+    createMany?: FormativeAssessmentCreateManyParticipantInputEnvelope
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+  }
+
   export type FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
@@ -210218,12 +212125,23 @@ export namespace Prisma {
     connect?: FormationSessionConventionWhereUniqueInput | FormationSessionConventionWhereUniqueInput[]
   }
 
+  export type FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutParticipantInput, FormativeAssessmentUncheckedCreateWithoutParticipantInput> | FormativeAssessmentCreateWithoutParticipantInput[] | FormativeAssessmentUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutParticipantInput | FormativeAssessmentCreateOrConnectWithoutParticipantInput[]
+    createMany?: FormativeAssessmentCreateManyParticipantInputEnvelope
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+  }
+
   export type EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput = {
     set?: $Enums.FormationSessionEnrollmentStatus
   }
 
   export type EnumFormationExamOutcomeFieldUpdateOperationsInput = {
     set?: $Enums.FormationExamOutcome
+  }
+
+  export type EnumDropoutRiskStatusFieldUpdateOperationsInput = {
+    set?: $Enums.DropoutRiskStatus
   }
 
   export type FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput = {
@@ -210308,6 +212226,20 @@ export namespace Prisma {
     deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
   }
 
+  export type FormativeAssessmentUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutParticipantInput, FormativeAssessmentUncheckedCreateWithoutParticipantInput> | FormativeAssessmentCreateWithoutParticipantInput[] | FormativeAssessmentUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutParticipantInput | FormativeAssessmentCreateOrConnectWithoutParticipantInput[]
+    upsert?: FormativeAssessmentUpsertWithWhereUniqueWithoutParticipantInput | FormativeAssessmentUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FormativeAssessmentCreateManyParticipantInputEnvelope
+    set?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    disconnect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    delete?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    update?: FormativeAssessmentUpdateWithWhereUniqueWithoutParticipantInput | FormativeAssessmentUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FormativeAssessmentUpdateManyWithWhereWithoutParticipantInput | FormativeAssessmentUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
+  }
+
   export type FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutParticipantInput, FormationSessionEmargementUncheckedCreateWithoutParticipantInput> | FormationSessionEmargementCreateWithoutParticipantInput[] | FormationSessionEmargementUncheckedCreateWithoutParticipantInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutParticipantInput | FormationSessionEmargementCreateOrConnectWithoutParticipantInput[]
@@ -210364,6 +212296,66 @@ export namespace Prisma {
     deleteMany?: FormationSessionConventionScalarWhereInput | FormationSessionConventionScalarWhereInput[]
   }
 
+  export type FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutParticipantInput, FormativeAssessmentUncheckedCreateWithoutParticipantInput> | FormativeAssessmentCreateWithoutParticipantInput[] | FormativeAssessmentUncheckedCreateWithoutParticipantInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutParticipantInput | FormativeAssessmentCreateOrConnectWithoutParticipantInput[]
+    upsert?: FormativeAssessmentUpsertWithWhereUniqueWithoutParticipantInput | FormativeAssessmentUpsertWithWhereUniqueWithoutParticipantInput[]
+    createMany?: FormativeAssessmentCreateManyParticipantInputEnvelope
+    set?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    disconnect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    delete?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    update?: FormativeAssessmentUpdateWithWhereUniqueWithoutParticipantInput | FormativeAssessmentUpdateWithWhereUniqueWithoutParticipantInput[]
+    updateMany?: FormativeAssessmentUpdateManyWithWhereWithoutParticipantInput | FormativeAssessmentUpdateManyWithWhereWithoutParticipantInput[]
+    deleteMany?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
+  }
+
+  export type FormationSessionParticipantCreateNestedOneWithoutFormativeAssessmentsInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutFormativeAssessmentsInput, FormationSessionParticipantUncheckedCreateWithoutFormativeAssessmentsInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutFormativeAssessmentsInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+  }
+
+  export type FormationSessionDayCreateNestedOneWithoutFormativeAssessmentsInput = {
+    create?: XOR<FormationSessionDayCreateWithoutFormativeAssessmentsInput, FormationSessionDayUncheckedCreateWithoutFormativeAssessmentsInput>
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutFormativeAssessmentsInput
+    connect?: FormationSessionDayWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutFormativeAssessmentsRecordedInput = {
+    create?: XOR<UserCreateWithoutFormativeAssessmentsRecordedInput, UserUncheckedCreateWithoutFormativeAssessmentsRecordedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFormativeAssessmentsRecordedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type FormationSessionParticipantUpdateOneRequiredWithoutFormativeAssessmentsNestedInput = {
+    create?: XOR<FormationSessionParticipantCreateWithoutFormativeAssessmentsInput, FormationSessionParticipantUncheckedCreateWithoutFormativeAssessmentsInput>
+    connectOrCreate?: FormationSessionParticipantCreateOrConnectWithoutFormativeAssessmentsInput
+    upsert?: FormationSessionParticipantUpsertWithoutFormativeAssessmentsInput
+    connect?: FormationSessionParticipantWhereUniqueInput
+    update?: XOR<XOR<FormationSessionParticipantUpdateToOneWithWhereWithoutFormativeAssessmentsInput, FormationSessionParticipantUpdateWithoutFormativeAssessmentsInput>, FormationSessionParticipantUncheckedUpdateWithoutFormativeAssessmentsInput>
+  }
+
+  export type FormationSessionDayUpdateOneWithoutFormativeAssessmentsNestedInput = {
+    create?: XOR<FormationSessionDayCreateWithoutFormativeAssessmentsInput, FormationSessionDayUncheckedCreateWithoutFormativeAssessmentsInput>
+    connectOrCreate?: FormationSessionDayCreateOrConnectWithoutFormativeAssessmentsInput
+    upsert?: FormationSessionDayUpsertWithoutFormativeAssessmentsInput
+    disconnect?: FormationSessionDayWhereInput | boolean
+    delete?: FormationSessionDayWhereInput | boolean
+    connect?: FormationSessionDayWhereUniqueInput
+    update?: XOR<XOR<FormationSessionDayUpdateToOneWithWhereWithoutFormativeAssessmentsInput, FormationSessionDayUpdateWithoutFormativeAssessmentsInput>, FormationSessionDayUncheckedUpdateWithoutFormativeAssessmentsInput>
+  }
+
+  export type UserUpdateOneWithoutFormativeAssessmentsRecordedNestedInput = {
+    create?: XOR<UserCreateWithoutFormativeAssessmentsRecordedInput, UserUncheckedCreateWithoutFormativeAssessmentsRecordedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFormativeAssessmentsRecordedInput
+    upsert?: UserUpsertWithoutFormativeAssessmentsRecordedInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFormativeAssessmentsRecordedInput, UserUpdateWithoutFormativeAssessmentsRecordedInput>, UserUncheckedUpdateWithoutFormativeAssessmentsRecordedInput>
+  }
+
   export type FormationSessionCreateNestedOneWithoutSuiviDaysInput = {
     create?: XOR<FormationSessionCreateWithoutSuiviDaysInput, FormationSessionUncheckedCreateWithoutSuiviDaysInput>
     connectOrCreate?: FormationSessionCreateOrConnectWithoutSuiviDaysInput
@@ -210377,11 +212369,25 @@ export namespace Prisma {
     connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
   }
 
+  export type FormativeAssessmentCreateNestedManyWithoutSessionDayInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutSessionDayInput, FormativeAssessmentUncheckedCreateWithoutSessionDayInput> | FormativeAssessmentCreateWithoutSessionDayInput[] | FormativeAssessmentUncheckedCreateWithoutSessionDayInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutSessionDayInput | FormativeAssessmentCreateOrConnectWithoutSessionDayInput[]
+    createMany?: FormativeAssessmentCreateManySessionDayInputEnvelope
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+  }
+
   export type FormationSessionEmargementUncheckedCreateNestedManyWithoutDayInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput> | FormationSessionEmargementCreateWithoutDayInput[] | FormationSessionEmargementUncheckedCreateWithoutDayInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutDayInput | FormationSessionEmargementCreateOrConnectWithoutDayInput[]
     createMany?: FormationSessionEmargementCreateManyDayInputEnvelope
     connect?: FormationSessionEmargementWhereUniqueInput | FormationSessionEmargementWhereUniqueInput[]
+  }
+
+  export type FormativeAssessmentUncheckedCreateNestedManyWithoutSessionDayInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutSessionDayInput, FormativeAssessmentUncheckedCreateWithoutSessionDayInput> | FormativeAssessmentCreateWithoutSessionDayInput[] | FormativeAssessmentUncheckedCreateWithoutSessionDayInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutSessionDayInput | FormativeAssessmentCreateOrConnectWithoutSessionDayInput[]
+    createMany?: FormativeAssessmentCreateManySessionDayInputEnvelope
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
   }
 
   export type FormationSessionUpdateOneRequiredWithoutSuiviDaysNestedInput = {
@@ -210406,6 +212412,20 @@ export namespace Prisma {
     deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
   }
 
+  export type FormativeAssessmentUpdateManyWithoutSessionDayNestedInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutSessionDayInput, FormativeAssessmentUncheckedCreateWithoutSessionDayInput> | FormativeAssessmentCreateWithoutSessionDayInput[] | FormativeAssessmentUncheckedCreateWithoutSessionDayInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutSessionDayInput | FormativeAssessmentCreateOrConnectWithoutSessionDayInput[]
+    upsert?: FormativeAssessmentUpsertWithWhereUniqueWithoutSessionDayInput | FormativeAssessmentUpsertWithWhereUniqueWithoutSessionDayInput[]
+    createMany?: FormativeAssessmentCreateManySessionDayInputEnvelope
+    set?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    disconnect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    delete?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    update?: FormativeAssessmentUpdateWithWhereUniqueWithoutSessionDayInput | FormativeAssessmentUpdateWithWhereUniqueWithoutSessionDayInput[]
+    updateMany?: FormativeAssessmentUpdateManyWithWhereWithoutSessionDayInput | FormativeAssessmentUpdateManyWithWhereWithoutSessionDayInput[]
+    deleteMany?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
+  }
+
   export type FormationSessionEmargementUncheckedUpdateManyWithoutDayNestedInput = {
     create?: XOR<FormationSessionEmargementCreateWithoutDayInput, FormationSessionEmargementUncheckedCreateWithoutDayInput> | FormationSessionEmargementCreateWithoutDayInput[] | FormationSessionEmargementUncheckedCreateWithoutDayInput[]
     connectOrCreate?: FormationSessionEmargementCreateOrConnectWithoutDayInput | FormationSessionEmargementCreateOrConnectWithoutDayInput[]
@@ -210418,6 +212438,20 @@ export namespace Prisma {
     update?: FormationSessionEmargementUpdateWithWhereUniqueWithoutDayInput | FormationSessionEmargementUpdateWithWhereUniqueWithoutDayInput[]
     updateMany?: FormationSessionEmargementUpdateManyWithWhereWithoutDayInput | FormationSessionEmargementUpdateManyWithWhereWithoutDayInput[]
     deleteMany?: FormationSessionEmargementScalarWhereInput | FormationSessionEmargementScalarWhereInput[]
+  }
+
+  export type FormativeAssessmentUncheckedUpdateManyWithoutSessionDayNestedInput = {
+    create?: XOR<FormativeAssessmentCreateWithoutSessionDayInput, FormativeAssessmentUncheckedCreateWithoutSessionDayInput> | FormativeAssessmentCreateWithoutSessionDayInput[] | FormativeAssessmentUncheckedCreateWithoutSessionDayInput[]
+    connectOrCreate?: FormativeAssessmentCreateOrConnectWithoutSessionDayInput | FormativeAssessmentCreateOrConnectWithoutSessionDayInput[]
+    upsert?: FormativeAssessmentUpsertWithWhereUniqueWithoutSessionDayInput | FormativeAssessmentUpsertWithWhereUniqueWithoutSessionDayInput[]
+    createMany?: FormativeAssessmentCreateManySessionDayInputEnvelope
+    set?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    disconnect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    delete?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    connect?: FormativeAssessmentWhereUniqueInput | FormativeAssessmentWhereUniqueInput[]
+    update?: FormativeAssessmentUpdateWithWhereUniqueWithoutSessionDayInput | FormativeAssessmentUpdateWithWhereUniqueWithoutSessionDayInput[]
+    updateMany?: FormativeAssessmentUpdateManyWithWhereWithoutSessionDayInput | FormativeAssessmentUpdateManyWithWhereWithoutSessionDayInput[]
+    deleteMany?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
   }
 
   export type FormationSessionDayCreateNestedOneWithoutAttendancesInput = {
@@ -216543,6 +218577,13 @@ export namespace Prisma {
     not?: NestedEnumFormationExamOutcomeFilter<$PrismaModel> | $Enums.FormationExamOutcome
   }
 
+  export type NestedEnumDropoutRiskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DropoutRiskStatus | EnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDropoutRiskStatusFilter<$PrismaModel> | $Enums.DropoutRiskStatus
+  }
+
   export type NestedEnumFormationSessionEnrollmentStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.FormationSessionEnrollmentStatus | EnumFormationSessionEnrollmentStatusFieldRefInput<$PrismaModel>
     in?: $Enums.FormationSessionEnrollmentStatus[] | ListEnumFormationSessionEnrollmentStatusFieldRefInput<$PrismaModel>
@@ -216561,6 +218602,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
     _max?: NestedEnumFormationExamOutcomeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumDropoutRiskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DropoutRiskStatus | EnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DropoutRiskStatus[] | ListEnumDropoutRiskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDropoutRiskStatusWithAggregatesFilter<$PrismaModel> | $Enums.DropoutRiskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDropoutRiskStatusFilter<$PrismaModel>
+    _max?: NestedEnumDropoutRiskStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumFormationSessionDaySlotFilter<$PrismaModel = never> = {
@@ -218132,6 +220183,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -218140,6 +220195,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutUserInput = {
@@ -218157,12 +220213,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutUserInput = {
@@ -219894,6 +221955,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FormativeAssessmentCreateWithoutRecordedByInput = {
+    id?: string
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participant: FormationSessionParticipantCreateNestedOneWithoutFormativeAssessmentsInput
+    sessionDay?: FormationSessionDayCreateNestedOneWithoutFormativeAssessmentsInput
+  }
+
+  export type FormativeAssessmentUncheckedCreateWithoutRecordedByInput = {
+    id?: string
+    participantId: string
+    sessionDayId?: string | null
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormativeAssessmentCreateOrConnectWithoutRecordedByInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    create: XOR<FormativeAssessmentCreateWithoutRecordedByInput, FormativeAssessmentUncheckedCreateWithoutRecordedByInput>
+  }
+
+  export type FormativeAssessmentCreateManyRecordedByInputEnvelope = {
+    data: FormativeAssessmentCreateManyRecordedByInput | FormativeAssessmentCreateManyRecordedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserNotificationPreferenceCreateWithoutUserInput = {
     email?: boolean
     inApp?: boolean
@@ -220895,6 +222990,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     retakeDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
     retakeNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFilter<"FormationSessionParticipant"> | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    dropoutRiskReason?: StringNullableFilter<"FormationSessionParticipant"> | string | null
+    dropoutRiskNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
   }
@@ -222211,6 +224310,38 @@ export namespace Prisma {
     data: XOR<QualityIncidentUpdateManyMutationInput, QualityIncidentUncheckedUpdateManyWithoutReportedByInput>
   }
 
+  export type FormativeAssessmentUpsertWithWhereUniqueWithoutRecordedByInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    update: XOR<FormativeAssessmentUpdateWithoutRecordedByInput, FormativeAssessmentUncheckedUpdateWithoutRecordedByInput>
+    create: XOR<FormativeAssessmentCreateWithoutRecordedByInput, FormativeAssessmentUncheckedCreateWithoutRecordedByInput>
+  }
+
+  export type FormativeAssessmentUpdateWithWhereUniqueWithoutRecordedByInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    data: XOR<FormativeAssessmentUpdateWithoutRecordedByInput, FormativeAssessmentUncheckedUpdateWithoutRecordedByInput>
+  }
+
+  export type FormativeAssessmentUpdateManyWithWhereWithoutRecordedByInput = {
+    where: FormativeAssessmentScalarWhereInput
+    data: XOR<FormativeAssessmentUpdateManyMutationInput, FormativeAssessmentUncheckedUpdateManyWithoutRecordedByInput>
+  }
+
+  export type FormativeAssessmentScalarWhereInput = {
+    AND?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
+    OR?: FormativeAssessmentScalarWhereInput[]
+    NOT?: FormativeAssessmentScalarWhereInput | FormativeAssessmentScalarWhereInput[]
+    id?: StringFilter<"FormativeAssessment"> | string
+    participantId?: StringFilter<"FormativeAssessment"> | string
+    sessionDayId?: StringNullableFilter<"FormativeAssessment"> | string | null
+    label?: StringFilter<"FormativeAssessment"> | string
+    score?: IntNullableFilter<"FormativeAssessment"> | number | null
+    passed?: BoolNullableFilter<"FormativeAssessment"> | boolean | null
+    feedback?: StringNullableFilter<"FormativeAssessment"> | string | null
+    recordedById?: StringNullableFilter<"FormativeAssessment"> | string | null
+    createdAt?: DateTimeFilter<"FormativeAssessment"> | Date | string
+    updatedAt?: DateTimeFilter<"FormativeAssessment"> | Date | string
+  }
+
   export type UserNotificationPreferenceUpsertWithoutUserInput = {
     update: XOR<UserNotificationPreferenceUpdateWithoutUserInput, UserNotificationPreferenceUncheckedUpdateWithoutUserInput>
     create: XOR<UserNotificationPreferenceCreateWithoutUserInput, UserNotificationPreferenceUncheckedCreateWithoutUserInput>
@@ -222658,6 +224789,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -222775,6 +224907,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -223195,6 +225328,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -223312,6 +225446,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -223735,6 +225870,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -223852,6 +225988,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -224147,6 +226284,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -224264,6 +226402,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -224381,6 +226520,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -224498,6 +226638,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -224706,6 +226847,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -224823,6 +226965,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -225021,6 +227164,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -225138,6 +227282,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -225307,6 +227452,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -225424,6 +227570,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -225596,6 +227743,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -225713,6 +227861,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -225891,6 +228040,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -226008,6 +228158,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -226220,6 +228371,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -226337,6 +228489,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -226470,6 +228623,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -226587,6 +228741,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -226704,6 +228859,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -226821,6 +228977,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -226943,6 +229100,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -227060,6 +229218,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -227193,6 +229352,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -227310,6 +229470,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -227438,6 +229599,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -227555,6 +229717,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -227672,6 +229835,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -227789,6 +229953,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -227922,6 +230087,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -228039,6 +230205,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -228156,6 +230323,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -228273,6 +230441,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -228675,6 +230844,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -228792,6 +230962,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -228925,6 +231096,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -229042,6 +231214,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -229159,6 +231332,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -229276,6 +231450,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -229409,6 +231584,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -229526,6 +231702,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -229643,6 +231820,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -229760,6 +231938,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -229893,6 +232072,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -230010,6 +232190,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -230329,6 +232510,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -230446,6 +232628,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -230703,6 +232886,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -230820,6 +233004,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -231046,6 +233231,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -231163,6 +233349,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -231513,6 +233700,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -231630,6 +233818,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -231928,6 +234117,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -232045,6 +234235,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -232225,6 +234416,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -232342,6 +234534,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -232459,6 +234652,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -232576,6 +234770,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -232698,6 +234893,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -232815,6 +235011,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -232948,6 +235145,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -233065,6 +235263,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -233193,6 +235392,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -233310,6 +235510,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -233426,6 +235627,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -233543,6 +235745,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -235490,6 +237693,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -235607,6 +237811,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -235740,6 +237945,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -235857,6 +238063,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -236583,6 +238790,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -236700,6 +238908,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -236878,6 +239087,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -236995,6 +239205,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -237287,6 +239498,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -237404,6 +239616,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -237526,6 +239739,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -237643,6 +239857,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -237743,6 +239958,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
@@ -237751,6 +239970,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSessionInput = {
@@ -237768,12 +239988,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSessionInput = {
@@ -237794,6 +240019,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     attendances?: FormationSessionEmargementCreateNestedManyWithoutDayInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutSessionDayInput
   }
 
   export type FormationSessionDayUncheckedCreateWithoutSessionInput = {
@@ -237804,6 +240030,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     attendances?: FormationSessionEmargementUncheckedCreateNestedManyWithoutDayInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutSessionDayInput
   }
 
   export type FormationSessionDayCreateOrConnectWithoutSessionInput = {
@@ -238648,6 +240875,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -238765,6 +240993,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -238893,6 +241122,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -239010,6 +241240,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -240200,6 +242431,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -240317,6 +242549,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -240666,6 +242899,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -240674,6 +242911,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutCandidatureInput = {
@@ -240691,12 +242929,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutCandidatureInput = {
@@ -240973,6 +243216,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -241090,6 +243334,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -241802,6 +244047,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -241919,6 +244165,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -242173,6 +244420,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FormativeAssessmentCreateWithoutParticipantInput = {
+    id?: string
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessionDay?: FormationSessionDayCreateNestedOneWithoutFormativeAssessmentsInput
+    recordedBy?: UserCreateNestedOneWithoutFormativeAssessmentsRecordedInput
+  }
+
+  export type FormativeAssessmentUncheckedCreateWithoutParticipantInput = {
+    id?: string
+    sessionDayId?: string | null
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    recordedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormativeAssessmentCreateOrConnectWithoutParticipantInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    create: XOR<FormativeAssessmentCreateWithoutParticipantInput, FormativeAssessmentUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FormativeAssessmentCreateManyParticipantInputEnvelope = {
+    data: FormativeAssessmentCreateManyParticipantInput | FormativeAssessmentCreateManyParticipantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FormationSessionUpsertWithoutParticipantsInput = {
     update: XOR<FormationSessionUpdateWithoutParticipantsInput, FormationSessionUncheckedUpdateWithoutParticipantsInput>
     create: XOR<FormationSessionCreateWithoutParticipantsInput, FormationSessionUncheckedCreateWithoutParticipantsInput>
@@ -242382,6 +244663,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -242499,6 +244781,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -242640,6 +244923,698 @@ export namespace Prisma {
     data: XOR<FormationSessionConventionUpdateManyMutationInput, FormationSessionConventionUncheckedUpdateManyWithoutParticipantInput>
   }
 
+  export type FormativeAssessmentUpsertWithWhereUniqueWithoutParticipantInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    update: XOR<FormativeAssessmentUpdateWithoutParticipantInput, FormativeAssessmentUncheckedUpdateWithoutParticipantInput>
+    create: XOR<FormativeAssessmentCreateWithoutParticipantInput, FormativeAssessmentUncheckedCreateWithoutParticipantInput>
+  }
+
+  export type FormativeAssessmentUpdateWithWhereUniqueWithoutParticipantInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    data: XOR<FormativeAssessmentUpdateWithoutParticipantInput, FormativeAssessmentUncheckedUpdateWithoutParticipantInput>
+  }
+
+  export type FormativeAssessmentUpdateManyWithWhereWithoutParticipantInput = {
+    where: FormativeAssessmentScalarWhereInput
+    data: XOR<FormativeAssessmentUpdateManyMutationInput, FormativeAssessmentUncheckedUpdateManyWithoutParticipantInput>
+  }
+
+  export type FormationSessionParticipantCreateWithoutFormativeAssessmentsInput = {
+    id?: string
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutParticipantsInput
+    user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
+    candidature?: CandidatureCreateNestedOneWithoutSessionEnrollmentsInput
+    emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantUncheckedCreateWithoutFormativeAssessmentsInput = {
+    id?: string
+    sessionId: string
+    userId: string
+    candidatureId?: string | null
+    enrollmentStatus?: $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: $Enums.FormationExamOutcome
+    examDate?: Date | string | null
+    certifiedAt?: Date | string | null
+    trainingCompletedAt?: Date | string | null
+    fundingMode?: string | null
+    fundingReference?: string | null
+    fundingNotes?: string | null
+    j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
+    fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+  }
+
+  export type FormationSessionParticipantCreateOrConnectWithoutFormativeAssessmentsInput = {
+    where: FormationSessionParticipantWhereUniqueInput
+    create: XOR<FormationSessionParticipantCreateWithoutFormativeAssessmentsInput, FormationSessionParticipantUncheckedCreateWithoutFormativeAssessmentsInput>
+  }
+
+  export type FormationSessionDayCreateWithoutFormativeAssessmentsInput = {
+    id?: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    session: FormationSessionCreateNestedOneWithoutSuiviDaysInput
+    attendances?: FormationSessionEmargementCreateNestedManyWithoutDayInput
+  }
+
+  export type FormationSessionDayUncheckedCreateWithoutFormativeAssessmentsInput = {
+    id?: string
+    sessionId: string
+    dayDate: Date | string
+    journalNotesMorning?: string | null
+    journalNotesEvening?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    attendances?: FormationSessionEmargementUncheckedCreateNestedManyWithoutDayInput
+  }
+
+  export type FormationSessionDayCreateOrConnectWithoutFormativeAssessmentsInput = {
+    where: FormationSessionDayWhereUniqueInput
+    create: XOR<FormationSessionDayCreateWithoutFormativeAssessmentsInput, FormationSessionDayUncheckedCreateWithoutFormativeAssessmentsInput>
+  }
+
+  export type UserCreateWithoutFormativeAssessmentsRecordedInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    jobPosition?: RhPositionCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
+    evidenceAsLearner?: EvidenceCreateNestedManyWithoutLearnerInput
+    evidenceAsTrainer?: EvidenceCreateNestedManyWithoutTrainerInput
+    documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserUncheckedCreateWithoutFormativeAssessmentsRecordedInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    jobPositionId?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
+    evidenceAsLearner?: EvidenceUncheckedCreateNestedManyWithoutLearnerInput
+    evidenceAsTrainer?: EvidenceUncheckedCreateNestedManyWithoutTrainerInput
+    documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationUncheckedCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserCreateOrConnectWithoutFormativeAssessmentsRecordedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFormativeAssessmentsRecordedInput, UserUncheckedCreateWithoutFormativeAssessmentsRecordedInput>
+  }
+
+  export type FormationSessionParticipantUpsertWithoutFormativeAssessmentsInput = {
+    update: XOR<FormationSessionParticipantUpdateWithoutFormativeAssessmentsInput, FormationSessionParticipantUncheckedUpdateWithoutFormativeAssessmentsInput>
+    create: XOR<FormationSessionParticipantCreateWithoutFormativeAssessmentsInput, FormationSessionParticipantUncheckedCreateWithoutFormativeAssessmentsInput>
+    where?: FormationSessionParticipantWhereInput
+  }
+
+  export type FormationSessionParticipantUpdateToOneWithWhereWithoutFormativeAssessmentsInput = {
+    where?: FormationSessionParticipantWhereInput
+    data: XOR<FormationSessionParticipantUpdateWithoutFormativeAssessmentsInput, FormationSessionParticipantUncheckedUpdateWithoutFormativeAssessmentsInput>
+  }
+
+  export type FormationSessionParticipantUpdateWithoutFormativeAssessmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
+    user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
+    candidature?: CandidatureUpdateOneWithoutSessionEnrollmentsNestedInput
+    emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FormationSessionParticipantUncheckedUpdateWithoutFormativeAssessmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    candidatureId?: NullableStringFieldUpdateOperationsInput | string | null
+    enrollmentStatus?: EnumFormationSessionEnrollmentStatusFieldUpdateOperationsInput | $Enums.FormationSessionEnrollmentStatus
+    examOutcome?: EnumFormationExamOutcomeFieldUpdateOperationsInput | $Enums.FormationExamOutcome
+    examDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    certifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    trainingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fundingMode?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
+    satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
+    fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+  }
+
+  export type FormationSessionDayUpsertWithoutFormativeAssessmentsInput = {
+    update: XOR<FormationSessionDayUpdateWithoutFormativeAssessmentsInput, FormationSessionDayUncheckedUpdateWithoutFormativeAssessmentsInput>
+    create: XOR<FormationSessionDayCreateWithoutFormativeAssessmentsInput, FormationSessionDayUncheckedCreateWithoutFormativeAssessmentsInput>
+    where?: FormationSessionDayWhereInput
+  }
+
+  export type FormationSessionDayUpdateToOneWithWhereWithoutFormativeAssessmentsInput = {
+    where?: FormationSessionDayWhereInput
+    data: XOR<FormationSessionDayUpdateWithoutFormativeAssessmentsInput, FormationSessionDayUncheckedUpdateWithoutFormativeAssessmentsInput>
+  }
+
+  export type FormationSessionDayUpdateWithoutFormativeAssessmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    session?: FormationSessionUpdateOneRequiredWithoutSuiviDaysNestedInput
+    attendances?: FormationSessionEmargementUpdateManyWithoutDayNestedInput
+  }
+
+  export type FormationSessionDayUncheckedUpdateWithoutFormativeAssessmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionId?: StringFieldUpdateOperationsInput | string
+    dayDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    journalNotesMorning?: NullableStringFieldUpdateOperationsInput | string | null
+    journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attendances?: FormationSessionEmargementUncheckedUpdateManyWithoutDayNestedInput
+  }
+
+  export type UserUpsertWithoutFormativeAssessmentsRecordedInput = {
+    update: XOR<UserUpdateWithoutFormativeAssessmentsRecordedInput, UserUncheckedUpdateWithoutFormativeAssessmentsRecordedInput>
+    create: XOR<UserCreateWithoutFormativeAssessmentsRecordedInput, UserUncheckedCreateWithoutFormativeAssessmentsRecordedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFormativeAssessmentsRecordedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFormativeAssessmentsRecordedInput, UserUncheckedUpdateWithoutFormativeAssessmentsRecordedInput>
+  }
+
+  export type UserUpdateWithoutFormativeAssessmentsRecordedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    jobPosition?: RhPositionUpdateOneWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
+    evidenceAsLearner?: EvidenceUpdateManyWithoutLearnerNestedInput
+    evidenceAsTrainer?: EvidenceUpdateManyWithoutTrainerNestedInput
+    documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFormativeAssessmentsRecordedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    jobPositionId?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
+    evidenceAsLearner?: EvidenceUncheckedUpdateManyWithoutLearnerNestedInput
+    evidenceAsTrainer?: EvidenceUncheckedUpdateManyWithoutTrainerNestedInput
+    documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
+  }
+
   export type FormationSessionCreateWithoutSuiviDaysInput = {
     id?: string
     startDate?: Date | string | null
@@ -242771,6 +245746,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FormativeAssessmentCreateWithoutSessionDayInput = {
+    id?: string
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participant: FormationSessionParticipantCreateNestedOneWithoutFormativeAssessmentsInput
+    recordedBy?: UserCreateNestedOneWithoutFormativeAssessmentsRecordedInput
+  }
+
+  export type FormativeAssessmentUncheckedCreateWithoutSessionDayInput = {
+    id?: string
+    participantId: string
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    recordedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormativeAssessmentCreateOrConnectWithoutSessionDayInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    create: XOR<FormativeAssessmentCreateWithoutSessionDayInput, FormativeAssessmentUncheckedCreateWithoutSessionDayInput>
+  }
+
+  export type FormativeAssessmentCreateManySessionDayInputEnvelope = {
+    data: FormativeAssessmentCreateManySessionDayInput | FormativeAssessmentCreateManySessionDayInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FormationSessionUpsertWithoutSuiviDaysInput = {
     update: XOR<FormationSessionUpdateWithoutSuiviDaysInput, FormationSessionUncheckedUpdateWithoutSuiviDaysInput>
     create: XOR<FormationSessionCreateWithoutSuiviDaysInput, FormationSessionUncheckedCreateWithoutSuiviDaysInput>
@@ -242882,6 +245891,22 @@ export namespace Prisma {
     data: XOR<FormationSessionEmargementUpdateManyMutationInput, FormationSessionEmargementUncheckedUpdateManyWithoutDayInput>
   }
 
+  export type FormativeAssessmentUpsertWithWhereUniqueWithoutSessionDayInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    update: XOR<FormativeAssessmentUpdateWithoutSessionDayInput, FormativeAssessmentUncheckedUpdateWithoutSessionDayInput>
+    create: XOR<FormativeAssessmentCreateWithoutSessionDayInput, FormativeAssessmentUncheckedCreateWithoutSessionDayInput>
+  }
+
+  export type FormativeAssessmentUpdateWithWhereUniqueWithoutSessionDayInput = {
+    where: FormativeAssessmentWhereUniqueInput
+    data: XOR<FormativeAssessmentUpdateWithoutSessionDayInput, FormativeAssessmentUncheckedUpdateWithoutSessionDayInput>
+  }
+
+  export type FormativeAssessmentUpdateManyWithWhereWithoutSessionDayInput = {
+    where: FormativeAssessmentScalarWhereInput
+    data: XOR<FormativeAssessmentUpdateManyMutationInput, FormativeAssessmentUncheckedUpdateManyWithoutSessionDayInput>
+  }
+
   export type FormationSessionDayCreateWithoutAttendancesInput = {
     id?: string
     dayDate: Date | string
@@ -242890,6 +245915,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutSuiviDaysInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutSessionDayInput
   }
 
   export type FormationSessionDayUncheckedCreateWithoutAttendancesInput = {
@@ -242900,6 +245926,7 @@ export namespace Prisma {
     journalNotesEvening?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutSessionDayInput
   }
 
   export type FormationSessionDayCreateOrConnectWithoutAttendancesInput = {
@@ -242920,6 +245947,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -242928,6 +245959,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutEmargementsInput = {
@@ -242946,11 +245978,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutEmargementsInput = {
@@ -243061,6 +246098,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -243178,6 +246216,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -243216,6 +246255,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutSuiviDaysNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutSessionDayNestedInput
   }
 
   export type FormationSessionDayUncheckedUpdateWithoutAttendancesInput = {
@@ -243226,6 +246266,7 @@ export namespace Prisma {
     journalNotesEvening?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutSessionDayNestedInput
   }
 
   export type FormationSessionParticipantUpsertWithoutEmargementsInput = {
@@ -243252,6 +246293,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -243260,6 +246305,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutEmargementsInput = {
@@ -243278,11 +246324,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type UserUpsertWithoutFormationSessionEmargementsMarkedInput = {
@@ -243399,6 +246450,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -243516,6 +246568,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -243632,6 +246685,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -243640,6 +246697,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutConventionsInput = {
@@ -243658,11 +246716,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutConventionsInput = {
@@ -243864,6 +246927,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -243872,6 +246939,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutConventionsInput = {
@@ -243890,11 +246958,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FileAssetUpsertWithoutSessionConventionsInput = {
@@ -244349,6 +247422,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -244466,6 +247540,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -244882,6 +247957,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -244999,6 +248075,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -245534,6 +248611,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -245651,6 +248729,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -246304,6 +249383,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -246421,6 +249501,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -247098,6 +250179,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -247215,6 +250297,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -247536,6 +250619,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -247653,6 +250737,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -247920,6 +251005,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -248037,6 +251123,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -248289,6 +251376,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -248406,6 +251494,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -248539,6 +251628,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -248656,6 +251746,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -248902,6 +251993,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -249019,6 +252111,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -249430,6 +252523,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -249547,6 +252641,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -249920,6 +253015,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -250037,6 +253133,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -250373,6 +253470,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -250490,6 +253588,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -250676,6 +253775,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -250793,6 +253893,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -250910,6 +254011,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -251027,6 +254129,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -251209,6 +254312,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -251326,6 +254430,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -251555,6 +254660,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -251672,6 +254778,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -251868,6 +254975,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -251985,6 +255093,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -252102,6 +255211,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -252219,6 +255329,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -252352,6 +255463,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -252469,6 +255581,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -252586,6 +255699,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -252703,6 +255817,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -252992,6 +256107,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -253109,6 +256225,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -253337,6 +256454,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -253454,6 +256572,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -253679,6 +256798,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -253796,6 +256916,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -254017,6 +257138,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -254134,6 +257256,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -254302,6 +257425,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -254419,6 +257543,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -254577,6 +257702,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -254694,6 +257820,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -254884,6 +258011,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -255001,6 +258129,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -257294,6 +260423,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -257411,6 +260541,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -257565,6 +260696,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -257682,6 +260814,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -258002,6 +261135,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -258119,6 +261253,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -258329,6 +261464,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -258446,6 +261582,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -258659,6 +261796,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -258776,6 +261914,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -259031,6 +262170,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -259148,6 +262288,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -259365,6 +262506,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -259482,6 +262624,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -259656,6 +262799,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -259773,6 +262917,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -259917,6 +263062,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -260034,6 +263180,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -260200,6 +263347,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -260317,6 +263465,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -260613,6 +263762,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -260730,6 +263880,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -260896,6 +264047,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -261013,6 +264165,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -261130,6 +264283,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -261247,6 +264401,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -261428,6 +264583,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -261545,6 +264701,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -261895,6 +265052,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -262012,6 +265170,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -262176,6 +265335,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -262293,6 +265453,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -262483,6 +265644,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -262600,6 +265762,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -262733,6 +265896,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -262850,6 +266014,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -262967,6 +266132,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -263084,6 +266250,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -263249,6 +266416,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -263366,6 +266534,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -263843,6 +267012,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -263960,6 +267130,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -264082,6 +267253,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -264199,6 +267371,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -264495,6 +267668,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -264612,6 +267786,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -264740,6 +267915,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -264857,6 +268033,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -265065,6 +268242,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -265182,6 +268360,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -265400,6 +268579,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -265517,6 +268697,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -265793,6 +268974,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -265910,6 +269092,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -266204,6 +269387,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -266321,6 +269505,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -266520,6 +269705,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -266637,6 +269823,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -266759,6 +269946,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -266876,6 +270064,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -267103,6 +270292,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -267220,6 +270410,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -267348,6 +270539,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -267465,6 +270657,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -267582,6 +270775,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -267699,6 +270893,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -267832,6 +271027,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -267949,6 +271145,7 @@ export namespace Prisma {
     ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -268067,6 +271264,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
     chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
@@ -268184,6 +271382,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
@@ -268317,6 +271516,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
@@ -268434,6 +271634,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -268683,6 +271884,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
     chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
@@ -268800,6 +272002,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
@@ -268933,6 +272136,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
@@ -269050,6 +272254,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -269600,6 +272805,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -269717,6 +272923,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -269839,6 +273046,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -269956,6 +273164,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -270124,6 +273333,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -270241,6 +273451,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -270369,6 +273580,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -270486,6 +273698,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -270632,6 +273845,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
@@ -270749,6 +273963,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
@@ -270917,6 +274132,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
@@ -271034,6 +274250,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
@@ -271180,6 +274397,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -271297,6 +274515,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -271465,6 +274684,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -271582,6 +274802,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -271903,6 +275124,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -272020,6 +275242,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -272361,6 +275584,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -272478,6 +275702,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -272894,6 +276119,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -273011,6 +276237,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -273383,6 +276610,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -273500,6 +276728,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -273743,6 +276972,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -273860,6 +277090,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -274099,6 +277330,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -274216,6 +277448,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -274427,6 +277660,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -274544,6 +277778,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -274858,6 +278093,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -274975,6 +278211,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -275172,6 +278409,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -275180,6 +278421,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutSatisfactionSurveysInput = {
@@ -275198,11 +278440,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     fundingCases?: FundingCaseUncheckedCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutSatisfactionSurveysInput = {
@@ -275329,6 +278576,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -275337,6 +278588,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSatisfactionSurveysInput = {
@@ -275355,11 +278607,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FundingCaseCreateWithoutProviderInput = {
@@ -275562,6 +278819,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -275679,6 +278937,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -275800,6 +279059,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -275808,6 +279071,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantUncheckedCreateWithoutFundingCasesInput = {
@@ -275826,11 +279090,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
     conventions?: FormationSessionConventionUncheckedCreateNestedManyWithoutParticipantInput
+    formativeAssessments?: FormativeAssessmentUncheckedCreateNestedManyWithoutParticipantInput
   }
 
   export type FormationSessionParticipantCreateOrConnectWithoutFundingCasesInput = {
@@ -276047,6 +279316,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -276164,6 +279434,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -276297,6 +279568,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -276305,6 +279580,7 @@ export namespace Prisma {
     emargements?: FormationSessionEmargementUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutFundingCasesInput = {
@@ -276323,11 +279599,16 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FundingCaseEventUpsertWithWhereUniqueWithoutCaseInput = {
@@ -278135,6 +281416,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -278252,6 +281534,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -278374,6 +281657,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
@@ -278491,6 +281775,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
     assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
     reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
     notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
     inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
     chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
@@ -278923,6 +282208,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -279040,6 +282326,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -279168,6 +282455,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -279285,6 +282573,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -279846,6 +283135,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -280390,6 +283683,18 @@ export namespace Prisma {
     deadline?: Date | string | null
     verifiedAt?: Date | string | null
     resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormativeAssessmentCreateManyRecordedByInput = {
+    id?: string
+    participantId: string
+    sessionDayId?: string | null
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -281139,6 +284444,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -281147,6 +284456,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutUserInput = {
@@ -281164,12 +284474,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutUserInput = {
@@ -281187,6 +284502,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -282957,6 +286276,42 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FormativeAssessmentUpdateWithoutRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutFormativeAssessmentsNestedInput
+    sessionDay?: FormationSessionDayUpdateOneWithoutFormativeAssessmentsNestedInput
+  }
+
+  export type FormativeAssessmentUncheckedUpdateWithoutRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    sessionDayId?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormativeAssessmentUncheckedUpdateManyWithoutRecordedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    sessionDayId?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type InAppNotificationUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     category?: EnumInAppNotificationCategoryFieldUpdateOperationsInput | $Enums.InAppNotificationCategory
@@ -283944,6 +287299,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -284061,6 +287417,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -284632,6 +287989,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
@@ -284749,6 +288107,7 @@ export namespace Prisma {
     helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
     assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
     reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
     notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
     inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
     chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
@@ -286164,6 +289523,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -286359,6 +289722,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
@@ -286367,6 +289734,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutSessionInput = {
@@ -286384,12 +289752,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutSessionInput = {
@@ -286407,6 +289780,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -286419,6 +289796,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendances?: FormationSessionEmargementUpdateManyWithoutDayNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutSessionDayNestedInput
   }
 
   export type FormationSessionDayUncheckedUpdateWithoutSessionInput = {
@@ -286429,6 +289807,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attendances?: FormationSessionEmargementUncheckedUpdateManyWithoutDayNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutSessionDayNestedInput
   }
 
   export type FormationSessionDayUncheckedUpdateManyWithoutSessionInput = {
@@ -286998,6 +290377,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: Date | string | null
     retakeDate?: Date | string | null
     retakeNotes?: string | null
+    dropoutRiskStatus?: $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: Date | string | null
+    dropoutRiskReason?: string | null
+    dropoutRiskNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -287129,6 +290512,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -287137,6 +290524,7 @@ export namespace Prisma {
     satisfactionSurveys?: SatisfactionSurveyUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateWithoutCandidatureInput = {
@@ -287154,12 +290542,17 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
     fundingCases?: FundingCaseUncheckedUpdateManyWithoutParticipantNestedInput
     conventions?: FormationSessionConventionUncheckedUpdateManyWithoutParticipantNestedInput
+    formativeAssessments?: FormativeAssessmentUncheckedUpdateManyWithoutParticipantNestedInput
   }
 
   export type FormationSessionParticipantUncheckedUpdateManyWithoutCandidatureInput = {
@@ -287177,6 +290570,10 @@ export namespace Prisma {
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskStatus?: EnumDropoutRiskStatusFieldUpdateOperationsInput | $Enums.DropoutRiskStatus
+    dropoutRiskFlaggedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dropoutRiskReason?: NullableStringFieldUpdateOperationsInput | string | null
+    dropoutRiskNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -287426,6 +290823,18 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type FormativeAssessmentCreateManyParticipantInput = {
+    id?: string
+    sessionDayId?: string | null
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    recordedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type FormationSessionEmargementUpdateWithoutParticipantInput = {
     id?: StringFieldUpdateOperationsInput | string
     slot?: EnumFormationSessionDaySlotFieldUpdateOperationsInput | $Enums.FormationSessionDaySlot
@@ -287631,6 +291040,42 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FormativeAssessmentUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessionDay?: FormationSessionDayUpdateOneWithoutFormativeAssessmentsNestedInput
+    recordedBy?: UserUpdateOneWithoutFormativeAssessmentsRecordedNestedInput
+  }
+
+  export type FormativeAssessmentUncheckedUpdateWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionDayId?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormativeAssessmentUncheckedUpdateManyWithoutParticipantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sessionDayId?: NullableStringFieldUpdateOperationsInput | string | null
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FormationSessionEmargementCreateManyDayInput = {
     id?: string
     participantId: string
@@ -287643,6 +291088,18 @@ export namespace Prisma {
     justificationRequestedAt?: Date | string | null
     justificationNote?: string | null
     justificationResolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FormativeAssessmentCreateManySessionDayInput = {
+    id?: string
+    participantId: string
+    label: string
+    score?: number | null
+    passed?: boolean | null
+    feedback?: string | null
+    recordedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -287691,6 +291148,42 @@ export namespace Prisma {
     justificationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     justificationNote?: NullableStringFieldUpdateOperationsInput | string | null
     justificationResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormativeAssessmentUpdateWithoutSessionDayInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participant?: FormationSessionParticipantUpdateOneRequiredWithoutFormativeAssessmentsNestedInput
+    recordedBy?: UserUpdateOneWithoutFormativeAssessmentsRecordedNestedInput
+  }
+
+  export type FormativeAssessmentUncheckedUpdateWithoutSessionDayInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FormativeAssessmentUncheckedUpdateManyWithoutSessionDayInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    participantId?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    passed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    feedback?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

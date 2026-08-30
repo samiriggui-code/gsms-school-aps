@@ -328,6 +328,7 @@ model User {
   helpArticlesAuthored   HelpArticle[]         @relation("HelpArticleAuthor")
   assignedQualityIncidents QualityIncident[]   @relation("QualityIncidentAssignee")
   reportedQualityIncidents QualityIncident[]   @relation("QualityIncidentReporter")
+  formativeAssessmentsRecorded FormativeAssessment[] @relation("FormativeAssessmentRecorder")
   notificationPreference UserNotificationPreference?
 
   inAppNotifications InAppNotification[]
@@ -1604,10 +1605,17 @@ model FormationSessionParticipant {
   retakeDate  DateTime?
   retakeNotes String? @db.Text
 
+  /// WF-19 — prévention rupture de parcours.
+  dropoutRiskStatus    DropoutRiskStatus @default(NONE)
+  dropoutRiskFlaggedAt DateTime?
+  dropoutRiskReason    String?
+  dropoutRiskNotes     String? @db.Text
+
   emargements FormationSessionEmargement[]
   satisfactionSurveys SatisfactionSurvey[]
   fundingCases FundingCase[]
   conventions FormationSessionConvention[]
+  formativeAssessments FormativeAssessment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1618,6 +1626,37 @@ model FormationSessionParticipant {
   @@index([retakeDate])
   @@index([candidatureId])
   @@index([examOutcome])
+  @@index([dropoutRiskStatus])
+}
+
+/// WF-21 — évaluation formative (présentiel), distinct du Quiz LMS.
+model FormativeAssessment {
+  id            String   @id @default(uuid())
+  participantId String
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  sessionDayId  String?
+  sessionDay    FormationSessionDay? @relation(fields: [sessionDayId], references: [id], onDelete: SetNull)
+  label         String
+  score         Int?
+  passed        Boolean?
+  feedback      String?  @db.Text
+  recordedById  String?
+  recordedBy    User?    @relation("FormativeAssessmentRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([participantId])
+  @@index([sessionDayId])
+  @@index([recordedById])
+}
+
+/// WF-19 — cycle prévention rupture.
+enum DropoutRiskStatus {
+  NONE
+  FLAGGED
+  CONTACTED
+  ACTION_PROPOSED
+  RESOLVED
 }
 
 /// Jour de formation dans le suivi quotidien CRM (dates dérivées de la session ou ajout manuel).
@@ -1632,6 +1671,7 @@ model FormationSessionDay {
   journalNotesEvening String? @db.Text
 
   attendances FormationSessionEmargement[]
+  formativeAssessments FormativeAssessment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

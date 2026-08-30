@@ -64,6 +64,7 @@ export {
   CandidatureAssessmentKind,
   CandidatureAssessmentStatus,
   AdaptationStatus,
+  DropoutRiskStatus,
 } from '../generated/client';
 export {
   LandingTeamVolet,

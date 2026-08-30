@@ -871,6 +871,23 @@ exports.Prisma.FormationSessionParticipantScalarFieldEnum = {
   j5PrepReminderSentAt: 'j5PrepReminderSentAt',
   retakeDate: 'retakeDate',
   retakeNotes: 'retakeNotes',
+  dropoutRiskStatus: 'dropoutRiskStatus',
+  dropoutRiskFlaggedAt: 'dropoutRiskFlaggedAt',
+  dropoutRiskReason: 'dropoutRiskReason',
+  dropoutRiskNotes: 'dropoutRiskNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FormativeAssessmentScalarFieldEnum = {
+  id: 'id',
+  participantId: 'participantId',
+  sessionDayId: 'sessionDayId',
+  label: 'label',
+  score: 'score',
+  passed: 'passed',
+  feedback: 'feedback',
+  recordedById: 'recordedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -2195,6 +2212,14 @@ exports.FormationExamOutcome = exports.$Enums.FormationExamOutcome = {
   ABSENT: 'ABSENT'
 };
 
+exports.DropoutRiskStatus = exports.$Enums.DropoutRiskStatus = {
+  NONE: 'NONE',
+  FLAGGED: 'FLAGGED',
+  CONTACTED: 'CONTACTED',
+  ACTION_PROPOSED: 'ACTION_PROPOSED',
+  RESOLVED: 'RESOLVED'
+};
+
 exports.FormationSessionDaySlot = exports.$Enums.FormationSessionDaySlot = {
   MORNING: 'MORNING',
   EVENING: 'EVENING'
@@ -2619,6 +2644,7 @@ exports.Prisma.ModelName = {
   Candidature: 'Candidature',
   CandidatureAssessment: 'CandidatureAssessment',
   FormationSessionParticipant: 'FormationSessionParticipant',
+  FormativeAssessment: 'FormativeAssessment',
   FormationSessionDay: 'FormationSessionDay',
   FormationSessionEmargement: 'FormationSessionEmargement',
   FormationSessionConvention: 'FormationSessionConvention',

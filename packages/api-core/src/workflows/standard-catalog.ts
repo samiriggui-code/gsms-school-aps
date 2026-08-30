@@ -28,6 +28,7 @@ export type StandardWebhookEventType =
   | 'crm.satisfaction.hot.followup'
   | 'crm.session.convention.reminder'
   | 'crm.session.j5.prep.reminder'
+  | 'crm.session.dropout.risk'
   | 'crm.candidature.dossier.relance'
   | 'crm.qualiopi.checklist.due'
   | 'crm.automation.ops.weekly'
@@ -221,6 +222,12 @@ export const STANDARD_WEBHOOK_EVENT_META: Record<StandardWebhookEventType, Stand
     domain: 'vie-scolaire',
     action: 'j5_prep_reminder',
     label: 'J-5 préparation pédagogique',
+  },
+  'crm.session.dropout.risk': {
+    app: 'crm',
+    domain: 'vie-scolaire',
+    action: 'dropout_risk',
+    label: 'Risque de rupture de parcours',
   },
   'crm.candidature.dossier.relance': {
     app: 'crm',
@@ -794,6 +801,20 @@ export const STANDARD_WEBHOOK_CRM: Record<StandardWebhookEventType, WorkflowEven
       return typeof p.summary === 'string'
         ? p.summary
         : `${sent} rappel(s) — ${sessions} session(s)`;
+    },
+    buildHref: () => '/gestion-academique/vie-scolaire/sessions',
+  },
+  'crm.session.dropout.risk': {
+    crmEventType: 'crm.session.dropout.risk',
+    moduleKey: CRM_MODULE_KEYS.VIE_SCOLAIRE,
+    category: 'ACADEMIC',
+    severity: 'WARNING',
+    buildTitle: () => 'Risques de rupture détectés',
+    buildBody: (p) => {
+      const flagged = typeof p.flagged === 'number' ? p.flagged : 0;
+      return typeof p.summary === 'string'
+        ? p.summary
+        : `${flagged} participant(s) flaggé(s)`;
     },
     buildHref: () => '/gestion-academique/vie-scolaire/sessions',
   },

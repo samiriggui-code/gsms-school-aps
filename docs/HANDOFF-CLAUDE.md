@@ -760,3 +760,46 @@ Go direct sur ce cadrage. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `
 WF-19/21 restent en attente d'un vrai cadrage (pas fait ce matin, je m'en occupe après WF-24 si le temps le permet). WF-35-37/45/33 inchangés (raisons déjà données cette nuit).
 
 ✅ traité — WF-24 : `retakeDate`/`retakeNotes` + `proposeExamRetake` + PATCH `…/examens/[id]/retake` + Evidence `EXAM_RETAKE_PROPOSED` (pas d'e-mail financeur, pas de FundingCaseEvent). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — WF-24 vérifié, RAS + cadrage WF-19/WF-21 (décision prise par moi, user a délégué)
+
+**WF-24 vérifié en profondeur** : gate strict sur `FAILED`, pas d'e-mail financeur fabriqué, pas de `FundingCaseEvent` détourné, erreurs typées bien mappées. Petit incident pendant la vérif : après ton "arrêt sale" Postgres signalé ce matin, `smoke:doctype`/`migrate diff` ont semblé bloqués (>2 min). Vérifié directement (process Postgres actifs, port répond) plutôt que de supposer — juste un démarrage à froid, les deux ont fini par aboutir. **Intégrité confirmée** : `smoke:doctype` retourne toujours 55 users, identique à avant la coupure, aucune perte de données. Relancé `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Tout vert.
+
+**WF-19/WF-21 — j'ai tranché moi-même** (l'utilisateur m'a délégué la décision plutôt que d'arbitrer un choix technique). Voici le design, vérifié contre le code réel avant d'écrire :
+
+### WF-21 — évaluation formative : note simple, pas de pont LMS
+
+J'ai vérifié : `Formation` (catalogue CRM/sessions) et `Course` (LMS e-learning, `QuizAttempt`/`Activity`) sont **délibérément deux systèmes séparés** (commentaire explicite dans `schema.prisma` ligne ~2143 : *"Fiche catalogue CRM (Formation)... distinct du cours LMS (courseId)"*). Faire de `QuizAttempt` un objet conscient d'un participant/session traverserait cette frontière volontaire pour un gain incertain. Décision : **pas de pont**, extension légère mirroring WF-20 (déjà fait ce soir) :
+
+1. Nouveau modèle simple `FormativeAssessment` (pas de champ en vrac sur le participant cette fois — contrairement à `retakeDate`/`j5PrepReminderSentAt`, un participant peut avoir *plusieurs* évaluations formatives dans une session, donc ça mérite sa propre table) :
+   ```prisma
+   model FormativeAssessment {
+     id            String   @id @default(uuid())
+     participantId String
+     participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+     sessionDayId  String?
+     label         String   // ex. "QCM module 2", "Cas pratique intervention"
+     score         Int?
+     passed        Boolean?
+     feedback      String?  @db.Text
+     recordedById  String?
+     createdAt     DateTime @default(now())
+     @@index([participantId])
+   }
+   ```
+2. UI/API simple staff (POST/GET), même permission `academiqueEdit`/`academiqueView` que le reste. Pas d'Evidence obligatoire (c'est un suivi pédagogique courant, pas un jalon Qualiopi isolé) — mais si tu veux en ajouter une par cohérence avec le reste, `sourceType: EVALUATION` te va.
+3. **N'ajoute rien côté LMS/Quiz.**
+
+### WF-19 — prévention rupture : seuil simple, signaux fiables seulement
+
+J'ai vérifié `SupportTicket` : il n'a **pas** de FK fiable vers un participant inscrit (juste `leadId` + `requesterEmail` texte libre) — matcher par e-mail serait fragile, donc **pas de détection automatique de réclamation**. Design réduit à 2 signaux solides seulement :
+
+1. `DropoutRiskStatus` enum sur `FormationSessionParticipant` : `NONE` (défaut) → `FLAGGED` → `CONTACTED` → `ACTION_PROPOSED` → `RESOLVED`. Champs `dropoutRiskFlaggedAt`, `dropoutRiskReason String?` (texte généré : "2 absences non justifiées" / "échec examen").
+2. Cron quotidien (même pattern que `compliance-auditor`/`pedagogy-evening`) : flag `FLAGGED` si (a) ≥2 émargements `ABSENT` avec `justificationStatus` encore `UNJUSTIFIED`/`JUSTIFICATION_REQUESTED` sur la session, **ou** (b) `examOutcome === 'FAILED'` sans `retakeDate` posé. Ne re-flag pas si déjà `FLAGGED` ou au-delà (idempotent).
+3. Notif formateur + staff à la mise en `FLAGGED` (pas d'auto-contact apprenant — la doctrine veut un contact humain, "proposition corrective" n'est pas automatisable).
+4. `CONTACTED`→`ACTION_PROPOSED`→`RESOLVED` : PATCH staff manuel, forward-only (même style que `AdaptationStatus`), avec `notes`.
+5. Evidence à chaque transition (`sourceType: LOG`, `eventName: 'DROPOUT_RISK_...'`).
+
+Go direct sur les deux. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé (2 commits si tu préfères les garder distincts).
+
+✅ traité — WF-21 (`FormativeAssessment` + API, pas de pont LMS) · WF-19 (`DropoutRiskStatus` + cron + PATCH forward-only + notifs formateur/staff). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.

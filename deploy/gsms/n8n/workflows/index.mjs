@@ -1070,6 +1070,32 @@ return (data.items ?? []).filter((i) => i.daysOverdue >= 15).map((i) => ({ json:
     }),
   );
 
+  // ── Cron risque de rupture (WF-19) ─────────────────────────────────────────
+  workflows.push(
+    wf('GSMS — Risque de rupture', [
+      scheduleTrigger('dropout-cron', 'Cron 10h15', pos(0, 0), '15 10 * * *'),
+      httpGetNode(
+        'dropout-fetch',
+        'Scan risque rupture',
+        pos(240, 0),
+        ctx,
+        `${base}/api/internal/n8n/cron/dropout-risk-daily`,
+      ),
+      dispatchNode(
+        'dropout-dispatch',
+        'Digest risque rupture',
+        pos(480, 0),
+        ctx,
+        '"crm.session.dropout.risk"',
+        '{ flagged: ($json.data ?? $json).flagged ?? 0, skipped: ($json.data ?? $json).skipped ?? 0, notified: ($json.data ?? $json).notified ?? 0, summary: "Risque rupture — " + (($json.data ?? $json).flagged ?? 0) + " flag(s), " + (($json.data ?? $json).notified ?? 0) + " notif(s)" }',
+        ['notification', 'email'],
+      ),
+    ], {
+      'Cron 10h15': { main: [[{ node: 'Scan risque rupture', type: 'main', index: 0 }]] },
+      'Scan risque rupture': { main: [[{ node: 'Digest risque rupture', type: 'main', index: 0 }]] },
+    }),
+  );
+
   // ── Parcours candidat (statut, conversion lead, clôture) ─────────────────
   workflows.push(
     wf('GSMS — Parcours candidat', [

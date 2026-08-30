@@ -80,6 +80,7 @@ export {
   sendAdaptationRequiredStaffEmail,
   sendJ5PrepReminderEmail,
   sendExamRetakeProposedEmail,
+  sendDropoutRiskFlaggedEmail,
   slotLabelFr,
   type SignatureMissingMailInput,
   type AbsenceJustificationMailInput,
@@ -87,6 +88,7 @@ export {
   type AdaptationRequiredStaffMailInput,
   type J5PrepReminderMailInput,
   type ExamRetakeProposedMailInput,
+  type DropoutRiskFlaggedMailInput,
 } from './session-alert-flows';
 
 export {

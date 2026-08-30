@@ -55,6 +55,9 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | `ADAPTATION_STATUS_CHANGED` | candidature | manual staff (PENDING→APPROVED→IMPLEMENTED) | `type: LOG` | suivi aménagement Q-I20/Q-I26 |
 | `PREFORMATION_J5_REMINDER` | session | cron J-5 (WF-14) | `type: LOG` | rappel horaires/matériel + relance positionnement si incomplet |
 | `EXAM_RETAKE_PROPOSED` | session | manual staff (WF-24, outcome FAILED) | `type: LOG` | e-mail apprenant + trace dossier (pas d'e-mail financeur P0) |
+| `FORMATIVE_ASSESSMENT_RECORDED` | session | manual staff (WF-21) | `type: EVALUATION` | suivi pédagogique présentiel (pas de pont LMS) |
+| `DROPOUT_RISK_FLAGGED` | session | cron WF-19 | `type: LOG` | absences injustifiées ≥2 ou FAILED sans retake |
+| `DROPOUT_RISK_STATUS_CHANGED` | session | manual staff (CONTACTED→…→RESOLVED) | `type: LOG` | cycle prévention rupture |
 | `DOCUMENT_SENT` | session | system | `type: EMAIL` ou `type: DOCUMENT` selon le canal | déjà implémenté ce soir (OF-02 : convocation/convention/attestation) |
 | `SATISFACTION_REQUESTED` | session | scheduled (J+45 pour COLD) | `type: QUESTIONNAIRE` | déjà implémenté ce soir (OF-10) |
 | `SATISFACTION_COMPLETED` | session | manual (soumission apprenant / stakeholder) | `type: QUESTIONNAIRE` | Qualiopi re-eval |

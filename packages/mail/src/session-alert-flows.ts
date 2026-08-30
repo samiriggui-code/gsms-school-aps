@@ -158,3 +158,25 @@ export async function sendExamRetakeProposedEmail(input: ExamRetakeProposedMailI
     text: `Rattrapage proposé le ${input.retakeDateLabel} — ${input.formationName}`,
   });
 }
+
+export type DropoutRiskFlaggedMailInput = {
+  to: string;
+  recipientName: string;
+  roleLabel: 'formateur' | 'administration';
+  learnerName: string;
+  formationName: string;
+  sessionLabel: string;
+  reason: string;
+};
+
+/** WF-19 — alerte risque de rupture (pas d’auto-contact apprenant). */
+export async function sendDropoutRiskFlaggedEmail(input: DropoutRiskFlaggedMailInput): Promise<void> {
+  if (!isEmailConfigured()) return;
+  const subject = `[FORM'SSI] Risque de rupture — ${input.learnerName}`;
+  await sendEmail({
+    to: input.to,
+    subject,
+    html: `<p>Bonjour ${input.recipientName},</p><p>Un risque de rupture a été signalé pour ${input.learnerName} sur « ${input.formationName} » (${input.sessionLabel}).</p><p><strong>Motif :</strong> ${input.reason}</p><p>Merci de prendre contact humainement et de mettre à jour le suivi dans le CRM (CONTACTED → ACTION_PROPOSED → RESOLVED).</p><p>Contact : ${getSupportEmail()}</p>`,
+    text: `Risque de rupture — ${input.learnerName} — ${input.reason}`,
+  });
+}
