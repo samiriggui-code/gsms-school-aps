@@ -358,6 +358,16 @@ export type Lead = $Result.DefaultSelection<Prisma.$LeadPayload>
  */
 export type FinanceDevis = $Result.DefaultSelection<Prisma.$FinanceDevisPayload>
 /**
+ * Model FinanceNumberSequence
+ * Compteur gapless pour numéros légaux (FAC-YYYY-######) — alloué dans la même TX que l’INSERT.
+ */
+export type FinanceNumberSequence = $Result.DefaultSelection<Prisma.$FinanceNumberSequencePayload>
+/**
+ * Model FinanceInvoice
+ * Facture first-class (OF-06) — 1:N vers devis ; porte Factur-X et le numéro légal.
+ */
+export type FinanceInvoice = $Result.DefaultSelection<Prisma.$FinanceInvoicePayload>
+/**
  * Model FinanceDevisPlaquetteMessage
  * Message laissé par le client depuis la plaquette publique (lien signé) — consultable côté CRM.
  */
@@ -1192,6 +1202,35 @@ export const FinanceEinvoiceStatus: {
 export type FinanceEinvoiceStatus = (typeof FinanceEinvoiceStatus)[keyof typeof FinanceEinvoiceStatus]
 
 
+export const FinanceInvoiceKind: {
+  FULL: 'FULL',
+  DEPOSIT: 'DEPOSIT',
+  BALANCE: 'BALANCE',
+  PARTIAL: 'PARTIAL'
+};
+
+export type FinanceInvoiceKind = (typeof FinanceInvoiceKind)[keyof typeof FinanceInvoiceKind]
+
+
+export const FinanceInvoiceStatus: {
+  DRAFT: 'DRAFT',
+  ISSUED: 'ISSUED',
+  SENT: 'SENT',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED'
+};
+
+export type FinanceInvoiceStatus = (typeof FinanceInvoiceStatus)[keyof typeof FinanceInvoiceStatus]
+
+
+export const FinanceNumberSequenceScope: {
+  INVOICE: 'INVOICE'
+};
+
+export type FinanceNumberSequenceScope = (typeof FinanceNumberSequenceScope)[keyof typeof FinanceNumberSequenceScope]
+
+
 export const SupportTicketStatus: {
   OPEN: 'OPEN',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -1801,6 +1840,18 @@ export const FinanceDevisStatus: typeof $Enums.FinanceDevisStatus
 export type FinanceEinvoiceStatus = $Enums.FinanceEinvoiceStatus
 
 export const FinanceEinvoiceStatus: typeof $Enums.FinanceEinvoiceStatus
+
+export type FinanceInvoiceKind = $Enums.FinanceInvoiceKind
+
+export const FinanceInvoiceKind: typeof $Enums.FinanceInvoiceKind
+
+export type FinanceInvoiceStatus = $Enums.FinanceInvoiceStatus
+
+export const FinanceInvoiceStatus: typeof $Enums.FinanceInvoiceStatus
+
+export type FinanceNumberSequenceScope = $Enums.FinanceNumberSequenceScope
+
+export const FinanceNumberSequenceScope: typeof $Enums.FinanceNumberSequenceScope
 
 export type SupportTicketStatus = $Enums.SupportTicketStatus
 
@@ -2728,6 +2779,26 @@ export class PrismaClient<
     * ```
     */
   get financeDevis(): Prisma.FinanceDevisDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.financeNumberSequence`: Exposes CRUD operations for the **FinanceNumberSequence** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FinanceNumberSequences
+    * const financeNumberSequences = await prisma.financeNumberSequence.findMany()
+    * ```
+    */
+  get financeNumberSequence(): Prisma.FinanceNumberSequenceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.financeInvoice`: Exposes CRUD operations for the **FinanceInvoice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FinanceInvoices
+    * const financeInvoices = await prisma.financeInvoice.findMany()
+    * ```
+    */
+  get financeInvoice(): Prisma.FinanceInvoiceDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.financeDevisPlaquetteMessage`: Exposes CRUD operations for the **FinanceDevisPlaquetteMessage** model.
@@ -3809,6 +3880,8 @@ export namespace Prisma {
     Grade: 'Grade',
     Lead: 'Lead',
     FinanceDevis: 'FinanceDevis',
+    FinanceNumberSequence: 'FinanceNumberSequence',
+    FinanceInvoice: 'FinanceInvoice',
     FinanceDevisPlaquetteMessage: 'FinanceDevisPlaquetteMessage',
     FinanceCatalogLine: 'FinanceCatalogLine',
     Certification: 'Certification',
@@ -3882,7 +3955,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "candidatureAssessment" | "formationSessionParticipant" | "formativeAssessment" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "candidatureAssessment" | "formationSessionParticipant" | "formativeAssessment" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeNumberSequence" | "financeInvoice" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -8844,6 +8917,154 @@ export namespace Prisma {
           }
         }
       }
+      FinanceNumberSequence: {
+        payload: Prisma.$FinanceNumberSequencePayload<ExtArgs>
+        fields: Prisma.FinanceNumberSequenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FinanceNumberSequenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FinanceNumberSequenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>
+          }
+          findFirst: {
+            args: Prisma.FinanceNumberSequenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FinanceNumberSequenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>
+          }
+          findMany: {
+            args: Prisma.FinanceNumberSequenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>[]
+          }
+          create: {
+            args: Prisma.FinanceNumberSequenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>
+          }
+          createMany: {
+            args: Prisma.FinanceNumberSequenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FinanceNumberSequenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>[]
+          }
+          delete: {
+            args: Prisma.FinanceNumberSequenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>
+          }
+          update: {
+            args: Prisma.FinanceNumberSequenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>
+          }
+          deleteMany: {
+            args: Prisma.FinanceNumberSequenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FinanceNumberSequenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FinanceNumberSequenceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>[]
+          }
+          upsert: {
+            args: Prisma.FinanceNumberSequenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceNumberSequencePayload>
+          }
+          aggregate: {
+            args: Prisma.FinanceNumberSequenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFinanceNumberSequence>
+          }
+          groupBy: {
+            args: Prisma.FinanceNumberSequenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FinanceNumberSequenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FinanceNumberSequenceCountArgs<ExtArgs>
+            result: $Utils.Optional<FinanceNumberSequenceCountAggregateOutputType> | number
+          }
+        }
+      }
+      FinanceInvoice: {
+        payload: Prisma.$FinanceInvoicePayload<ExtArgs>
+        fields: Prisma.FinanceInvoiceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FinanceInvoiceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FinanceInvoiceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>
+          }
+          findFirst: {
+            args: Prisma.FinanceInvoiceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FinanceInvoiceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>
+          }
+          findMany: {
+            args: Prisma.FinanceInvoiceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>[]
+          }
+          create: {
+            args: Prisma.FinanceInvoiceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>
+          }
+          createMany: {
+            args: Prisma.FinanceInvoiceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FinanceInvoiceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>[]
+          }
+          delete: {
+            args: Prisma.FinanceInvoiceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>
+          }
+          update: {
+            args: Prisma.FinanceInvoiceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>
+          }
+          deleteMany: {
+            args: Prisma.FinanceInvoiceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FinanceInvoiceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FinanceInvoiceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>[]
+          }
+          upsert: {
+            args: Prisma.FinanceInvoiceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FinanceInvoicePayload>
+          }
+          aggregate: {
+            args: Prisma.FinanceInvoiceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFinanceInvoice>
+          }
+          groupBy: {
+            args: Prisma.FinanceInvoiceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FinanceInvoiceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FinanceInvoiceCountArgs<ExtArgs>
+            result: $Utils.Optional<FinanceInvoiceCountAggregateOutputType> | number
+          }
+        }
+      }
       FinanceDevisPlaquetteMessage: {
         payload: Prisma.$FinanceDevisPlaquetteMessagePayload<ExtArgs>
         fields: Prisma.FinanceDevisPlaquetteMessageFieldRefs
@@ -13311,6 +13532,8 @@ export namespace Prisma {
     grade?: GradeOmit
     lead?: LeadOmit
     financeDevis?: FinanceDevisOmit
+    financeNumberSequence?: FinanceNumberSequenceOmit
+    financeInvoice?: FinanceInvoiceOmit
     financeDevisPlaquetteMessage?: FinanceDevisPlaquetteMessageOmit
     financeCatalogLine?: FinanceCatalogLineOmit
     certification?: CertificationOmit
@@ -15320,11 +15543,13 @@ export namespace Prisma {
   export type FinanceDevisCountOutputType = {
     plaquetteMessages: number
     payments: number
+    invoices: number
   }
 
   export type FinanceDevisCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     plaquetteMessages?: boolean | FinanceDevisCountOutputTypeCountPlaquetteMessagesArgs
     payments?: boolean | FinanceDevisCountOutputTypeCountPaymentsArgs
+    invoices?: boolean | FinanceDevisCountOutputTypeCountInvoicesArgs
   }
 
   // Custom InputTypes
@@ -15350,6 +15575,13 @@ export namespace Prisma {
    */
   export type FinanceDevisCountOutputTypeCountPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FinancePaymentWhereInput
+  }
+
+  /**
+   * FinanceDevisCountOutputType without action
+   */
+  export type FinanceDevisCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinanceInvoiceWhereInput
   }
 
 
@@ -99338,12 +99570,6 @@ export namespace Prisma {
     validUntil: Date | null
     notes: string | null
     internalNotes: string | null
-    einvoiceStatus: $Enums.FinanceEinvoiceStatus | null
-    einvoiceProfile: string | null
-    einvoiceGeneratedAt: Date | null
-    einvoicePdpMessageId: string | null
-    einvoiceLastError: string | null
-    einvoiceXmlAssetKey: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -99364,12 +99590,6 @@ export namespace Prisma {
     validUntil: Date | null
     notes: string | null
     internalNotes: string | null
-    einvoiceStatus: $Enums.FinanceEinvoiceStatus | null
-    einvoiceProfile: string | null
-    einvoiceGeneratedAt: Date | null
-    einvoicePdpMessageId: string | null
-    einvoiceLastError: string | null
-    einvoiceXmlAssetKey: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -99392,12 +99612,6 @@ export namespace Prisma {
     validUntil: number
     notes: number
     internalNotes: number
-    einvoiceStatus: number
-    einvoiceProfile: number
-    einvoiceGeneratedAt: number
-    einvoicePdpMessageId: number
-    einvoiceLastError: number
-    einvoiceXmlAssetKey: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -99432,12 +99646,6 @@ export namespace Prisma {
     validUntil?: true
     notes?: true
     internalNotes?: true
-    einvoiceStatus?: true
-    einvoiceProfile?: true
-    einvoiceGeneratedAt?: true
-    einvoicePdpMessageId?: true
-    einvoiceLastError?: true
-    einvoiceXmlAssetKey?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -99458,12 +99666,6 @@ export namespace Prisma {
     validUntil?: true
     notes?: true
     internalNotes?: true
-    einvoiceStatus?: true
-    einvoiceProfile?: true
-    einvoiceGeneratedAt?: true
-    einvoicePdpMessageId?: true
-    einvoiceLastError?: true
-    einvoiceXmlAssetKey?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -99486,12 +99688,6 @@ export namespace Prisma {
     validUntil?: true
     notes?: true
     internalNotes?: true
-    einvoiceStatus?: true
-    einvoiceProfile?: true
-    einvoiceGeneratedAt?: true
-    einvoicePdpMessageId?: true
-    einvoiceLastError?: true
-    einvoiceXmlAssetKey?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -99601,12 +99797,6 @@ export namespace Prisma {
     validUntil: Date | null
     notes: string | null
     internalNotes: string | null
-    einvoiceStatus: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile: string
-    einvoiceGeneratedAt: Date | null
-    einvoicePdpMessageId: string | null
-    einvoiceLastError: string | null
-    einvoiceXmlAssetKey: string | null
     createdAt: Date
     updatedAt: Date
     _count: FinanceDevisCountAggregateOutputType | null
@@ -99648,12 +99838,6 @@ export namespace Prisma {
     validUntil?: boolean
     notes?: boolean
     internalNotes?: boolean
-    einvoiceStatus?: boolean
-    einvoiceProfile?: boolean
-    einvoiceGeneratedAt?: boolean
-    einvoicePdpMessageId?: boolean
-    einvoiceLastError?: boolean
-    einvoiceXmlAssetKey?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     lead?: boolean | FinanceDevis$leadArgs<ExtArgs>
@@ -99662,6 +99846,7 @@ export namespace Prisma {
     formationSession?: boolean | FinanceDevis$formationSessionArgs<ExtArgs>
     plaquetteMessages?: boolean | FinanceDevis$plaquetteMessagesArgs<ExtArgs>
     payments?: boolean | FinanceDevis$paymentsArgs<ExtArgs>
+    invoices?: boolean | FinanceDevis$invoicesArgs<ExtArgs>
     _count?: boolean | FinanceDevisCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["financeDevis"]>
 
@@ -99683,12 +99868,6 @@ export namespace Prisma {
     validUntil?: boolean
     notes?: boolean
     internalNotes?: boolean
-    einvoiceStatus?: boolean
-    einvoiceProfile?: boolean
-    einvoiceGeneratedAt?: boolean
-    einvoicePdpMessageId?: boolean
-    einvoiceLastError?: boolean
-    einvoiceXmlAssetKey?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     lead?: boolean | FinanceDevis$leadArgs<ExtArgs>
@@ -99715,12 +99894,6 @@ export namespace Prisma {
     validUntil?: boolean
     notes?: boolean
     internalNotes?: boolean
-    einvoiceStatus?: boolean
-    einvoiceProfile?: boolean
-    einvoiceGeneratedAt?: boolean
-    einvoicePdpMessageId?: boolean
-    einvoiceLastError?: boolean
-    einvoiceXmlAssetKey?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     lead?: boolean | FinanceDevis$leadArgs<ExtArgs>
@@ -99747,17 +99920,11 @@ export namespace Prisma {
     validUntil?: boolean
     notes?: boolean
     internalNotes?: boolean
-    einvoiceStatus?: boolean
-    einvoiceProfile?: boolean
-    einvoiceGeneratedAt?: boolean
-    einvoicePdpMessageId?: boolean
-    einvoiceLastError?: boolean
-    einvoiceXmlAssetKey?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FinanceDevisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referenceCode" | "title" | "status" | "leadId" | "formationId" | "candidatureId" | "formationSessionId" | "clientSnapshot" | "lines" | "subtotalHt" | "vatTotal" | "totalTtc" | "currency" | "validUntil" | "notes" | "internalNotes" | "einvoiceStatus" | "einvoiceProfile" | "einvoiceGeneratedAt" | "einvoicePdpMessageId" | "einvoiceLastError" | "einvoiceXmlAssetKey" | "createdAt" | "updatedAt", ExtArgs["result"]["financeDevis"]>
+  export type FinanceDevisOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "referenceCode" | "title" | "status" | "leadId" | "formationId" | "candidatureId" | "formationSessionId" | "clientSnapshot" | "lines" | "subtotalHt" | "vatTotal" | "totalTtc" | "currency" | "validUntil" | "notes" | "internalNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["financeDevis"]>
   export type FinanceDevisInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     lead?: boolean | FinanceDevis$leadArgs<ExtArgs>
     formation?: boolean | FinanceDevis$formationArgs<ExtArgs>
@@ -99765,6 +99932,7 @@ export namespace Prisma {
     formationSession?: boolean | FinanceDevis$formationSessionArgs<ExtArgs>
     plaquetteMessages?: boolean | FinanceDevis$plaquetteMessagesArgs<ExtArgs>
     payments?: boolean | FinanceDevis$paymentsArgs<ExtArgs>
+    invoices?: boolean | FinanceDevis$invoicesArgs<ExtArgs>
     _count?: boolean | FinanceDevisCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FinanceDevisIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -99789,6 +99957,7 @@ export namespace Prisma {
       formationSession: Prisma.$FormationSessionPayload<ExtArgs> | null
       plaquetteMessages: Prisma.$FinanceDevisPlaquetteMessagePayload<ExtArgs>[]
       payments: Prisma.$FinancePaymentPayload<ExtArgs>[]
+      invoices: Prisma.$FinanceInvoicePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -99820,24 +99989,6 @@ export namespace Prisma {
       validUntil: Date | null
       notes: string | null
       internalNotes: string | null
-      /**
-       * Facturation électronique (réforme FR 2026) — export Factur-X / envoi PDP.
-       */
-      einvoiceStatus: $Enums.FinanceEinvoiceStatus
-      /**
-       * MINIMUM | BASIC | EN16931 (profil Factur-X).
-       */
-      einvoiceProfile: string
-      einvoiceGeneratedAt: Date | null
-      /**
-       * Identifiant retour PDP / plateforme (quand branchée).
-       */
-      einvoicePdpMessageId: string | null
-      einvoiceLastError: string | null
-      /**
-       * Snapshot XML Factur-X (CII) généré — FileAsset key optionnelle côté storage.
-       */
-      einvoiceXmlAssetKey: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["financeDevis"]>
@@ -100240,6 +100391,7 @@ export namespace Prisma {
     formationSession<T extends FinanceDevis$formationSessionArgs<ExtArgs> = {}>(args?: Subset<T, FinanceDevis$formationSessionArgs<ExtArgs>>): Prisma__FormationSessionClient<$Result.GetResult<Prisma.$FormationSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     plaquetteMessages<T extends FinanceDevis$plaquetteMessagesArgs<ExtArgs> = {}>(args?: Subset<T, FinanceDevis$plaquetteMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceDevisPlaquetteMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends FinanceDevis$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, FinanceDevis$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinancePaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invoices<T extends FinanceDevis$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, FinanceDevis$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -100286,12 +100438,6 @@ export namespace Prisma {
     readonly validUntil: FieldRef<"FinanceDevis", 'DateTime'>
     readonly notes: FieldRef<"FinanceDevis", 'String'>
     readonly internalNotes: FieldRef<"FinanceDevis", 'String'>
-    readonly einvoiceStatus: FieldRef<"FinanceDevis", 'FinanceEinvoiceStatus'>
-    readonly einvoiceProfile: FieldRef<"FinanceDevis", 'String'>
-    readonly einvoiceGeneratedAt: FieldRef<"FinanceDevis", 'DateTime'>
-    readonly einvoicePdpMessageId: FieldRef<"FinanceDevis", 'String'>
-    readonly einvoiceLastError: FieldRef<"FinanceDevis", 'String'>
-    readonly einvoiceXmlAssetKey: FieldRef<"FinanceDevis", 'String'>
     readonly createdAt: FieldRef<"FinanceDevis", 'DateTime'>
     readonly updatedAt: FieldRef<"FinanceDevis", 'DateTime'>
   }
@@ -100819,6 +100965,30 @@ export namespace Prisma {
   }
 
   /**
+   * FinanceDevis.invoices
+   */
+  export type FinanceDevis$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    where?: FinanceInvoiceWhereInput
+    orderBy?: FinanceInvoiceOrderByWithRelationInput | FinanceInvoiceOrderByWithRelationInput[]
+    cursor?: FinanceInvoiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FinanceInvoiceScalarFieldEnum | FinanceInvoiceScalarFieldEnum[]
+  }
+
+  /**
    * FinanceDevis without action
    */
   export type FinanceDevisDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -100834,6 +101004,2349 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: FinanceDevisInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FinanceNumberSequence
+   */
+
+  export type AggregateFinanceNumberSequence = {
+    _count: FinanceNumberSequenceCountAggregateOutputType | null
+    _avg: FinanceNumberSequenceAvgAggregateOutputType | null
+    _sum: FinanceNumberSequenceSumAggregateOutputType | null
+    _min: FinanceNumberSequenceMinAggregateOutputType | null
+    _max: FinanceNumberSequenceMaxAggregateOutputType | null
+  }
+
+  export type FinanceNumberSequenceAvgAggregateOutputType = {
+    year: number | null
+    lastValue: number | null
+  }
+
+  export type FinanceNumberSequenceSumAggregateOutputType = {
+    year: number | null
+    lastValue: number | null
+  }
+
+  export type FinanceNumberSequenceMinAggregateOutputType = {
+    id: string | null
+    scope: $Enums.FinanceNumberSequenceScope | null
+    year: number | null
+    lastValue: number | null
+    updatedAt: Date | null
+  }
+
+  export type FinanceNumberSequenceMaxAggregateOutputType = {
+    id: string | null
+    scope: $Enums.FinanceNumberSequenceScope | null
+    year: number | null
+    lastValue: number | null
+    updatedAt: Date | null
+  }
+
+  export type FinanceNumberSequenceCountAggregateOutputType = {
+    id: number
+    scope: number
+    year: number
+    lastValue: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FinanceNumberSequenceAvgAggregateInputType = {
+    year?: true
+    lastValue?: true
+  }
+
+  export type FinanceNumberSequenceSumAggregateInputType = {
+    year?: true
+    lastValue?: true
+  }
+
+  export type FinanceNumberSequenceMinAggregateInputType = {
+    id?: true
+    scope?: true
+    year?: true
+    lastValue?: true
+    updatedAt?: true
+  }
+
+  export type FinanceNumberSequenceMaxAggregateInputType = {
+    id?: true
+    scope?: true
+    year?: true
+    lastValue?: true
+    updatedAt?: true
+  }
+
+  export type FinanceNumberSequenceCountAggregateInputType = {
+    id?: true
+    scope?: true
+    year?: true
+    lastValue?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FinanceNumberSequenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinanceNumberSequence to aggregate.
+     */
+    where?: FinanceNumberSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceNumberSequences to fetch.
+     */
+    orderBy?: FinanceNumberSequenceOrderByWithRelationInput | FinanceNumberSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FinanceNumberSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceNumberSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceNumberSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FinanceNumberSequences
+    **/
+    _count?: true | FinanceNumberSequenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FinanceNumberSequenceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FinanceNumberSequenceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FinanceNumberSequenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FinanceNumberSequenceMaxAggregateInputType
+  }
+
+  export type GetFinanceNumberSequenceAggregateType<T extends FinanceNumberSequenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateFinanceNumberSequence]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFinanceNumberSequence[P]>
+      : GetScalarType<T[P], AggregateFinanceNumberSequence[P]>
+  }
+
+
+
+
+  export type FinanceNumberSequenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinanceNumberSequenceWhereInput
+    orderBy?: FinanceNumberSequenceOrderByWithAggregationInput | FinanceNumberSequenceOrderByWithAggregationInput[]
+    by: FinanceNumberSequenceScalarFieldEnum[] | FinanceNumberSequenceScalarFieldEnum
+    having?: FinanceNumberSequenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FinanceNumberSequenceCountAggregateInputType | true
+    _avg?: FinanceNumberSequenceAvgAggregateInputType
+    _sum?: FinanceNumberSequenceSumAggregateInputType
+    _min?: FinanceNumberSequenceMinAggregateInputType
+    _max?: FinanceNumberSequenceMaxAggregateInputType
+  }
+
+  export type FinanceNumberSequenceGroupByOutputType = {
+    id: string
+    scope: $Enums.FinanceNumberSequenceScope
+    year: number
+    lastValue: number
+    updatedAt: Date
+    _count: FinanceNumberSequenceCountAggregateOutputType | null
+    _avg: FinanceNumberSequenceAvgAggregateOutputType | null
+    _sum: FinanceNumberSequenceSumAggregateOutputType | null
+    _min: FinanceNumberSequenceMinAggregateOutputType | null
+    _max: FinanceNumberSequenceMaxAggregateOutputType | null
+  }
+
+  type GetFinanceNumberSequenceGroupByPayload<T extends FinanceNumberSequenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FinanceNumberSequenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FinanceNumberSequenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FinanceNumberSequenceGroupByOutputType[P]>
+            : GetScalarType<T[P], FinanceNumberSequenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FinanceNumberSequenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scope?: boolean
+    year?: boolean
+    lastValue?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["financeNumberSequence"]>
+
+  export type FinanceNumberSequenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scope?: boolean
+    year?: boolean
+    lastValue?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["financeNumberSequence"]>
+
+  export type FinanceNumberSequenceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scope?: boolean
+    year?: boolean
+    lastValue?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["financeNumberSequence"]>
+
+  export type FinanceNumberSequenceSelectScalar = {
+    id?: boolean
+    scope?: boolean
+    year?: boolean
+    lastValue?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FinanceNumberSequenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "scope" | "year" | "lastValue" | "updatedAt", ExtArgs["result"]["financeNumberSequence"]>
+
+  export type $FinanceNumberSequencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FinanceNumberSequence"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      scope: $Enums.FinanceNumberSequenceScope
+      year: number
+      lastValue: number
+      updatedAt: Date
+    }, ExtArgs["result"]["financeNumberSequence"]>
+    composites: {}
+  }
+
+  type FinanceNumberSequenceGetPayload<S extends boolean | null | undefined | FinanceNumberSequenceDefaultArgs> = $Result.GetResult<Prisma.$FinanceNumberSequencePayload, S>
+
+  type FinanceNumberSequenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FinanceNumberSequenceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FinanceNumberSequenceCountAggregateInputType | true
+    }
+
+  export interface FinanceNumberSequenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FinanceNumberSequence'], meta: { name: 'FinanceNumberSequence' } }
+    /**
+     * Find zero or one FinanceNumberSequence that matches the filter.
+     * @param {FinanceNumberSequenceFindUniqueArgs} args - Arguments to find a FinanceNumberSequence
+     * @example
+     * // Get one FinanceNumberSequence
+     * const financeNumberSequence = await prisma.financeNumberSequence.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FinanceNumberSequenceFindUniqueArgs>(args: SelectSubset<T, FinanceNumberSequenceFindUniqueArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FinanceNumberSequence that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FinanceNumberSequenceFindUniqueOrThrowArgs} args - Arguments to find a FinanceNumberSequence
+     * @example
+     * // Get one FinanceNumberSequence
+     * const financeNumberSequence = await prisma.financeNumberSequence.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FinanceNumberSequenceFindUniqueOrThrowArgs>(args: SelectSubset<T, FinanceNumberSequenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinanceNumberSequence that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceNumberSequenceFindFirstArgs} args - Arguments to find a FinanceNumberSequence
+     * @example
+     * // Get one FinanceNumberSequence
+     * const financeNumberSequence = await prisma.financeNumberSequence.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FinanceNumberSequenceFindFirstArgs>(args?: SelectSubset<T, FinanceNumberSequenceFindFirstArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinanceNumberSequence that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceNumberSequenceFindFirstOrThrowArgs} args - Arguments to find a FinanceNumberSequence
+     * @example
+     * // Get one FinanceNumberSequence
+     * const financeNumberSequence = await prisma.financeNumberSequence.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FinanceNumberSequenceFindFirstOrThrowArgs>(args?: SelectSubset<T, FinanceNumberSequenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FinanceNumberSequences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceNumberSequenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FinanceNumberSequences
+     * const financeNumberSequences = await prisma.financeNumberSequence.findMany()
+     * 
+     * // Get first 10 FinanceNumberSequences
+     * const financeNumberSequences = await prisma.financeNumberSequence.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const financeNumberSequenceWithIdOnly = await prisma.financeNumberSequence.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FinanceNumberSequenceFindManyArgs>(args?: SelectSubset<T, FinanceNumberSequenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FinanceNumberSequence.
+     * @param {FinanceNumberSequenceCreateArgs} args - Arguments to create a FinanceNumberSequence.
+     * @example
+     * // Create one FinanceNumberSequence
+     * const FinanceNumberSequence = await prisma.financeNumberSequence.create({
+     *   data: {
+     *     // ... data to create a FinanceNumberSequence
+     *   }
+     * })
+     * 
+     */
+    create<T extends FinanceNumberSequenceCreateArgs>(args: SelectSubset<T, FinanceNumberSequenceCreateArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FinanceNumberSequences.
+     * @param {FinanceNumberSequenceCreateManyArgs} args - Arguments to create many FinanceNumberSequences.
+     * @example
+     * // Create many FinanceNumberSequences
+     * const financeNumberSequence = await prisma.financeNumberSequence.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FinanceNumberSequenceCreateManyArgs>(args?: SelectSubset<T, FinanceNumberSequenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FinanceNumberSequences and returns the data saved in the database.
+     * @param {FinanceNumberSequenceCreateManyAndReturnArgs} args - Arguments to create many FinanceNumberSequences.
+     * @example
+     * // Create many FinanceNumberSequences
+     * const financeNumberSequence = await prisma.financeNumberSequence.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FinanceNumberSequences and only return the `id`
+     * const financeNumberSequenceWithIdOnly = await prisma.financeNumberSequence.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FinanceNumberSequenceCreateManyAndReturnArgs>(args?: SelectSubset<T, FinanceNumberSequenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FinanceNumberSequence.
+     * @param {FinanceNumberSequenceDeleteArgs} args - Arguments to delete one FinanceNumberSequence.
+     * @example
+     * // Delete one FinanceNumberSequence
+     * const FinanceNumberSequence = await prisma.financeNumberSequence.delete({
+     *   where: {
+     *     // ... filter to delete one FinanceNumberSequence
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FinanceNumberSequenceDeleteArgs>(args: SelectSubset<T, FinanceNumberSequenceDeleteArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FinanceNumberSequence.
+     * @param {FinanceNumberSequenceUpdateArgs} args - Arguments to update one FinanceNumberSequence.
+     * @example
+     * // Update one FinanceNumberSequence
+     * const financeNumberSequence = await prisma.financeNumberSequence.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FinanceNumberSequenceUpdateArgs>(args: SelectSubset<T, FinanceNumberSequenceUpdateArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FinanceNumberSequences.
+     * @param {FinanceNumberSequenceDeleteManyArgs} args - Arguments to filter FinanceNumberSequences to delete.
+     * @example
+     * // Delete a few FinanceNumberSequences
+     * const { count } = await prisma.financeNumberSequence.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FinanceNumberSequenceDeleteManyArgs>(args?: SelectSubset<T, FinanceNumberSequenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinanceNumberSequences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceNumberSequenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FinanceNumberSequences
+     * const financeNumberSequence = await prisma.financeNumberSequence.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FinanceNumberSequenceUpdateManyArgs>(args: SelectSubset<T, FinanceNumberSequenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinanceNumberSequences and returns the data updated in the database.
+     * @param {FinanceNumberSequenceUpdateManyAndReturnArgs} args - Arguments to update many FinanceNumberSequences.
+     * @example
+     * // Update many FinanceNumberSequences
+     * const financeNumberSequence = await prisma.financeNumberSequence.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FinanceNumberSequences and only return the `id`
+     * const financeNumberSequenceWithIdOnly = await prisma.financeNumberSequence.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FinanceNumberSequenceUpdateManyAndReturnArgs>(args: SelectSubset<T, FinanceNumberSequenceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FinanceNumberSequence.
+     * @param {FinanceNumberSequenceUpsertArgs} args - Arguments to update or create a FinanceNumberSequence.
+     * @example
+     * // Update or create a FinanceNumberSequence
+     * const financeNumberSequence = await prisma.financeNumberSequence.upsert({
+     *   create: {
+     *     // ... data to create a FinanceNumberSequence
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FinanceNumberSequence we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FinanceNumberSequenceUpsertArgs>(args: SelectSubset<T, FinanceNumberSequenceUpsertArgs<ExtArgs>>): Prisma__FinanceNumberSequenceClient<$Result.GetResult<Prisma.$FinanceNumberSequencePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FinanceNumberSequences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceNumberSequenceCountArgs} args - Arguments to filter FinanceNumberSequences to count.
+     * @example
+     * // Count the number of FinanceNumberSequences
+     * const count = await prisma.financeNumberSequence.count({
+     *   where: {
+     *     // ... the filter for the FinanceNumberSequences we want to count
+     *   }
+     * })
+    **/
+    count<T extends FinanceNumberSequenceCountArgs>(
+      args?: Subset<T, FinanceNumberSequenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FinanceNumberSequenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FinanceNumberSequence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceNumberSequenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FinanceNumberSequenceAggregateArgs>(args: Subset<T, FinanceNumberSequenceAggregateArgs>): Prisma.PrismaPromise<GetFinanceNumberSequenceAggregateType<T>>
+
+    /**
+     * Group by FinanceNumberSequence.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceNumberSequenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FinanceNumberSequenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FinanceNumberSequenceGroupByArgs['orderBy'] }
+        : { orderBy?: FinanceNumberSequenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FinanceNumberSequenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFinanceNumberSequenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FinanceNumberSequence model
+   */
+  readonly fields: FinanceNumberSequenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FinanceNumberSequence.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FinanceNumberSequenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FinanceNumberSequence model
+   */
+  interface FinanceNumberSequenceFieldRefs {
+    readonly id: FieldRef<"FinanceNumberSequence", 'String'>
+    readonly scope: FieldRef<"FinanceNumberSequence", 'FinanceNumberSequenceScope'>
+    readonly year: FieldRef<"FinanceNumberSequence", 'Int'>
+    readonly lastValue: FieldRef<"FinanceNumberSequence", 'Int'>
+    readonly updatedAt: FieldRef<"FinanceNumberSequence", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FinanceNumberSequence findUnique
+   */
+  export type FinanceNumberSequenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which FinanceNumberSequence to fetch.
+     */
+    where: FinanceNumberSequenceWhereUniqueInput
+  }
+
+  /**
+   * FinanceNumberSequence findUniqueOrThrow
+   */
+  export type FinanceNumberSequenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which FinanceNumberSequence to fetch.
+     */
+    where: FinanceNumberSequenceWhereUniqueInput
+  }
+
+  /**
+   * FinanceNumberSequence findFirst
+   */
+  export type FinanceNumberSequenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which FinanceNumberSequence to fetch.
+     */
+    where?: FinanceNumberSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceNumberSequences to fetch.
+     */
+    orderBy?: FinanceNumberSequenceOrderByWithRelationInput | FinanceNumberSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinanceNumberSequences.
+     */
+    cursor?: FinanceNumberSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceNumberSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceNumberSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinanceNumberSequences.
+     */
+    distinct?: FinanceNumberSequenceScalarFieldEnum | FinanceNumberSequenceScalarFieldEnum[]
+  }
+
+  /**
+   * FinanceNumberSequence findFirstOrThrow
+   */
+  export type FinanceNumberSequenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which FinanceNumberSequence to fetch.
+     */
+    where?: FinanceNumberSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceNumberSequences to fetch.
+     */
+    orderBy?: FinanceNumberSequenceOrderByWithRelationInput | FinanceNumberSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinanceNumberSequences.
+     */
+    cursor?: FinanceNumberSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceNumberSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceNumberSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinanceNumberSequences.
+     */
+    distinct?: FinanceNumberSequenceScalarFieldEnum | FinanceNumberSequenceScalarFieldEnum[]
+  }
+
+  /**
+   * FinanceNumberSequence findMany
+   */
+  export type FinanceNumberSequenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * Filter, which FinanceNumberSequences to fetch.
+     */
+    where?: FinanceNumberSequenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceNumberSequences to fetch.
+     */
+    orderBy?: FinanceNumberSequenceOrderByWithRelationInput | FinanceNumberSequenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FinanceNumberSequences.
+     */
+    cursor?: FinanceNumberSequenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceNumberSequences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceNumberSequences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinanceNumberSequences.
+     */
+    distinct?: FinanceNumberSequenceScalarFieldEnum | FinanceNumberSequenceScalarFieldEnum[]
+  }
+
+  /**
+   * FinanceNumberSequence create
+   */
+  export type FinanceNumberSequenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * The data needed to create a FinanceNumberSequence.
+     */
+    data: XOR<FinanceNumberSequenceCreateInput, FinanceNumberSequenceUncheckedCreateInput>
+  }
+
+  /**
+   * FinanceNumberSequence createMany
+   */
+  export type FinanceNumberSequenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FinanceNumberSequences.
+     */
+    data: FinanceNumberSequenceCreateManyInput | FinanceNumberSequenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FinanceNumberSequence createManyAndReturn
+   */
+  export type FinanceNumberSequenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * The data used to create many FinanceNumberSequences.
+     */
+    data: FinanceNumberSequenceCreateManyInput | FinanceNumberSequenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FinanceNumberSequence update
+   */
+  export type FinanceNumberSequenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * The data needed to update a FinanceNumberSequence.
+     */
+    data: XOR<FinanceNumberSequenceUpdateInput, FinanceNumberSequenceUncheckedUpdateInput>
+    /**
+     * Choose, which FinanceNumberSequence to update.
+     */
+    where: FinanceNumberSequenceWhereUniqueInput
+  }
+
+  /**
+   * FinanceNumberSequence updateMany
+   */
+  export type FinanceNumberSequenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FinanceNumberSequences.
+     */
+    data: XOR<FinanceNumberSequenceUpdateManyMutationInput, FinanceNumberSequenceUncheckedUpdateManyInput>
+    /**
+     * Filter which FinanceNumberSequences to update
+     */
+    where?: FinanceNumberSequenceWhereInput
+    /**
+     * Limit how many FinanceNumberSequences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinanceNumberSequence updateManyAndReturn
+   */
+  export type FinanceNumberSequenceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * The data used to update FinanceNumberSequences.
+     */
+    data: XOR<FinanceNumberSequenceUpdateManyMutationInput, FinanceNumberSequenceUncheckedUpdateManyInput>
+    /**
+     * Filter which FinanceNumberSequences to update
+     */
+    where?: FinanceNumberSequenceWhereInput
+    /**
+     * Limit how many FinanceNumberSequences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinanceNumberSequence upsert
+   */
+  export type FinanceNumberSequenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * The filter to search for the FinanceNumberSequence to update in case it exists.
+     */
+    where: FinanceNumberSequenceWhereUniqueInput
+    /**
+     * In case the FinanceNumberSequence found by the `where` argument doesn't exist, create a new FinanceNumberSequence with this data.
+     */
+    create: XOR<FinanceNumberSequenceCreateInput, FinanceNumberSequenceUncheckedCreateInput>
+    /**
+     * In case the FinanceNumberSequence was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FinanceNumberSequenceUpdateInput, FinanceNumberSequenceUncheckedUpdateInput>
+  }
+
+  /**
+   * FinanceNumberSequence delete
+   */
+  export type FinanceNumberSequenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+    /**
+     * Filter which FinanceNumberSequence to delete.
+     */
+    where: FinanceNumberSequenceWhereUniqueInput
+  }
+
+  /**
+   * FinanceNumberSequence deleteMany
+   */
+  export type FinanceNumberSequenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinanceNumberSequences to delete
+     */
+    where?: FinanceNumberSequenceWhereInput
+    /**
+     * Limit how many FinanceNumberSequences to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinanceNumberSequence without action
+   */
+  export type FinanceNumberSequenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceNumberSequence
+     */
+    select?: FinanceNumberSequenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceNumberSequence
+     */
+    omit?: FinanceNumberSequenceOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FinanceInvoice
+   */
+
+  export type AggregateFinanceInvoice = {
+    _count: FinanceInvoiceCountAggregateOutputType | null
+    _avg: FinanceInvoiceAvgAggregateOutputType | null
+    _sum: FinanceInvoiceSumAggregateOutputType | null
+    _min: FinanceInvoiceMinAggregateOutputType | null
+    _max: FinanceInvoiceMaxAggregateOutputType | null
+  }
+
+  export type FinanceInvoiceAvgAggregateOutputType = {
+    subtotalHt: Decimal | null
+    vatTotal: Decimal | null
+    totalTtc: Decimal | null
+  }
+
+  export type FinanceInvoiceSumAggregateOutputType = {
+    subtotalHt: Decimal | null
+    vatTotal: Decimal | null
+    totalTtc: Decimal | null
+  }
+
+  export type FinanceInvoiceMinAggregateOutputType = {
+    id: string | null
+    number: string | null
+    devisId: string | null
+    kind: $Enums.FinanceInvoiceKind | null
+    status: $Enums.FinanceInvoiceStatus | null
+    subtotalHt: Decimal | null
+    vatTotal: Decimal | null
+    totalTtc: Decimal | null
+    currency: string | null
+    notes: string | null
+    issuedAt: Date | null
+    einvoiceStatus: $Enums.FinanceEinvoiceStatus | null
+    einvoiceProfile: string | null
+    einvoiceGeneratedAt: Date | null
+    einvoicePdpMessageId: string | null
+    einvoiceLastError: string | null
+    einvoiceXmlAssetKey: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FinanceInvoiceMaxAggregateOutputType = {
+    id: string | null
+    number: string | null
+    devisId: string | null
+    kind: $Enums.FinanceInvoiceKind | null
+    status: $Enums.FinanceInvoiceStatus | null
+    subtotalHt: Decimal | null
+    vatTotal: Decimal | null
+    totalTtc: Decimal | null
+    currency: string | null
+    notes: string | null
+    issuedAt: Date | null
+    einvoiceStatus: $Enums.FinanceEinvoiceStatus | null
+    einvoiceProfile: string | null
+    einvoiceGeneratedAt: Date | null
+    einvoicePdpMessageId: string | null
+    einvoiceLastError: string | null
+    einvoiceXmlAssetKey: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FinanceInvoiceCountAggregateOutputType = {
+    id: number
+    number: number
+    devisId: number
+    kind: number
+    status: number
+    lines: number
+    subtotalHt: number
+    vatTotal: number
+    totalTtc: number
+    currency: number
+    notes: number
+    issuedAt: number
+    einvoiceStatus: number
+    einvoiceProfile: number
+    einvoiceGeneratedAt: number
+    einvoicePdpMessageId: number
+    einvoiceLastError: number
+    einvoiceXmlAssetKey: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FinanceInvoiceAvgAggregateInputType = {
+    subtotalHt?: true
+    vatTotal?: true
+    totalTtc?: true
+  }
+
+  export type FinanceInvoiceSumAggregateInputType = {
+    subtotalHt?: true
+    vatTotal?: true
+    totalTtc?: true
+  }
+
+  export type FinanceInvoiceMinAggregateInputType = {
+    id?: true
+    number?: true
+    devisId?: true
+    kind?: true
+    status?: true
+    subtotalHt?: true
+    vatTotal?: true
+    totalTtc?: true
+    currency?: true
+    notes?: true
+    issuedAt?: true
+    einvoiceStatus?: true
+    einvoiceProfile?: true
+    einvoiceGeneratedAt?: true
+    einvoicePdpMessageId?: true
+    einvoiceLastError?: true
+    einvoiceXmlAssetKey?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FinanceInvoiceMaxAggregateInputType = {
+    id?: true
+    number?: true
+    devisId?: true
+    kind?: true
+    status?: true
+    subtotalHt?: true
+    vatTotal?: true
+    totalTtc?: true
+    currency?: true
+    notes?: true
+    issuedAt?: true
+    einvoiceStatus?: true
+    einvoiceProfile?: true
+    einvoiceGeneratedAt?: true
+    einvoicePdpMessageId?: true
+    einvoiceLastError?: true
+    einvoiceXmlAssetKey?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FinanceInvoiceCountAggregateInputType = {
+    id?: true
+    number?: true
+    devisId?: true
+    kind?: true
+    status?: true
+    lines?: true
+    subtotalHt?: true
+    vatTotal?: true
+    totalTtc?: true
+    currency?: true
+    notes?: true
+    issuedAt?: true
+    einvoiceStatus?: true
+    einvoiceProfile?: true
+    einvoiceGeneratedAt?: true
+    einvoicePdpMessageId?: true
+    einvoiceLastError?: true
+    einvoiceXmlAssetKey?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FinanceInvoiceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinanceInvoice to aggregate.
+     */
+    where?: FinanceInvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceInvoices to fetch.
+     */
+    orderBy?: FinanceInvoiceOrderByWithRelationInput | FinanceInvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FinanceInvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceInvoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceInvoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FinanceInvoices
+    **/
+    _count?: true | FinanceInvoiceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FinanceInvoiceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FinanceInvoiceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FinanceInvoiceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FinanceInvoiceMaxAggregateInputType
+  }
+
+  export type GetFinanceInvoiceAggregateType<T extends FinanceInvoiceAggregateArgs> = {
+        [P in keyof T & keyof AggregateFinanceInvoice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFinanceInvoice[P]>
+      : GetScalarType<T[P], AggregateFinanceInvoice[P]>
+  }
+
+
+
+
+  export type FinanceInvoiceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinanceInvoiceWhereInput
+    orderBy?: FinanceInvoiceOrderByWithAggregationInput | FinanceInvoiceOrderByWithAggregationInput[]
+    by: FinanceInvoiceScalarFieldEnum[] | FinanceInvoiceScalarFieldEnum
+    having?: FinanceInvoiceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FinanceInvoiceCountAggregateInputType | true
+    _avg?: FinanceInvoiceAvgAggregateInputType
+    _sum?: FinanceInvoiceSumAggregateInputType
+    _min?: FinanceInvoiceMinAggregateInputType
+    _max?: FinanceInvoiceMaxAggregateInputType
+  }
+
+  export type FinanceInvoiceGroupByOutputType = {
+    id: string
+    number: string
+    devisId: string
+    kind: $Enums.FinanceInvoiceKind
+    status: $Enums.FinanceInvoiceStatus
+    lines: JsonValue
+    subtotalHt: Decimal
+    vatTotal: Decimal
+    totalTtc: Decimal
+    currency: string
+    notes: string | null
+    issuedAt: Date
+    einvoiceStatus: $Enums.FinanceEinvoiceStatus
+    einvoiceProfile: string
+    einvoiceGeneratedAt: Date | null
+    einvoicePdpMessageId: string | null
+    einvoiceLastError: string | null
+    einvoiceXmlAssetKey: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: FinanceInvoiceCountAggregateOutputType | null
+    _avg: FinanceInvoiceAvgAggregateOutputType | null
+    _sum: FinanceInvoiceSumAggregateOutputType | null
+    _min: FinanceInvoiceMinAggregateOutputType | null
+    _max: FinanceInvoiceMaxAggregateOutputType | null
+  }
+
+  type GetFinanceInvoiceGroupByPayload<T extends FinanceInvoiceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FinanceInvoiceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FinanceInvoiceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FinanceInvoiceGroupByOutputType[P]>
+            : GetScalarType<T[P], FinanceInvoiceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FinanceInvoiceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    number?: boolean
+    devisId?: boolean
+    kind?: boolean
+    status?: boolean
+    lines?: boolean
+    subtotalHt?: boolean
+    vatTotal?: boolean
+    totalTtc?: boolean
+    currency?: boolean
+    notes?: boolean
+    issuedAt?: boolean
+    einvoiceStatus?: boolean
+    einvoiceProfile?: boolean
+    einvoiceGeneratedAt?: boolean
+    einvoicePdpMessageId?: boolean
+    einvoiceLastError?: boolean
+    einvoiceXmlAssetKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    devis?: boolean | FinanceDevisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financeInvoice"]>
+
+  export type FinanceInvoiceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    number?: boolean
+    devisId?: boolean
+    kind?: boolean
+    status?: boolean
+    lines?: boolean
+    subtotalHt?: boolean
+    vatTotal?: boolean
+    totalTtc?: boolean
+    currency?: boolean
+    notes?: boolean
+    issuedAt?: boolean
+    einvoiceStatus?: boolean
+    einvoiceProfile?: boolean
+    einvoiceGeneratedAt?: boolean
+    einvoicePdpMessageId?: boolean
+    einvoiceLastError?: boolean
+    einvoiceXmlAssetKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    devis?: boolean | FinanceDevisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financeInvoice"]>
+
+  export type FinanceInvoiceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    number?: boolean
+    devisId?: boolean
+    kind?: boolean
+    status?: boolean
+    lines?: boolean
+    subtotalHt?: boolean
+    vatTotal?: boolean
+    totalTtc?: boolean
+    currency?: boolean
+    notes?: boolean
+    issuedAt?: boolean
+    einvoiceStatus?: boolean
+    einvoiceProfile?: boolean
+    einvoiceGeneratedAt?: boolean
+    einvoicePdpMessageId?: boolean
+    einvoiceLastError?: boolean
+    einvoiceXmlAssetKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    devis?: boolean | FinanceDevisDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["financeInvoice"]>
+
+  export type FinanceInvoiceSelectScalar = {
+    id?: boolean
+    number?: boolean
+    devisId?: boolean
+    kind?: boolean
+    status?: boolean
+    lines?: boolean
+    subtotalHt?: boolean
+    vatTotal?: boolean
+    totalTtc?: boolean
+    currency?: boolean
+    notes?: boolean
+    issuedAt?: boolean
+    einvoiceStatus?: boolean
+    einvoiceProfile?: boolean
+    einvoiceGeneratedAt?: boolean
+    einvoicePdpMessageId?: boolean
+    einvoiceLastError?: boolean
+    einvoiceXmlAssetKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FinanceInvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "devisId" | "kind" | "status" | "lines" | "subtotalHt" | "vatTotal" | "totalTtc" | "currency" | "notes" | "issuedAt" | "einvoiceStatus" | "einvoiceProfile" | "einvoiceGeneratedAt" | "einvoicePdpMessageId" | "einvoiceLastError" | "einvoiceXmlAssetKey" | "createdAt" | "updatedAt", ExtArgs["result"]["financeInvoice"]>
+  export type FinanceInvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    devis?: boolean | FinanceDevisDefaultArgs<ExtArgs>
+  }
+  export type FinanceInvoiceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    devis?: boolean | FinanceDevisDefaultArgs<ExtArgs>
+  }
+  export type FinanceInvoiceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    devis?: boolean | FinanceDevisDefaultArgs<ExtArgs>
+  }
+
+  export type $FinanceInvoicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FinanceInvoice"
+    objects: {
+      devis: Prisma.$FinanceDevisPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      /**
+       * Numéro légal gapless ex. FAC-2026-000001
+       */
+      number: string
+      devisId: string
+      kind: $Enums.FinanceInvoiceKind
+      status: $Enums.FinanceInvoiceStatus
+      /**
+       * Snapshot figé à l’émission (lignes devis + totaux).
+       */
+      lines: Prisma.JsonValue
+      subtotalHt: Prisma.Decimal
+      vatTotal: Prisma.Decimal
+      totalTtc: Prisma.Decimal
+      currency: string
+      notes: string | null
+      issuedAt: Date
+      /**
+       * Facturation électronique (réforme FR 2026) — migrée depuis FinanceDevis.
+       */
+      einvoiceStatus: $Enums.FinanceEinvoiceStatus
+      einvoiceProfile: string
+      einvoiceGeneratedAt: Date | null
+      einvoicePdpMessageId: string | null
+      einvoiceLastError: string | null
+      einvoiceXmlAssetKey: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["financeInvoice"]>
+    composites: {}
+  }
+
+  type FinanceInvoiceGetPayload<S extends boolean | null | undefined | FinanceInvoiceDefaultArgs> = $Result.GetResult<Prisma.$FinanceInvoicePayload, S>
+
+  type FinanceInvoiceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FinanceInvoiceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FinanceInvoiceCountAggregateInputType | true
+    }
+
+  export interface FinanceInvoiceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FinanceInvoice'], meta: { name: 'FinanceInvoice' } }
+    /**
+     * Find zero or one FinanceInvoice that matches the filter.
+     * @param {FinanceInvoiceFindUniqueArgs} args - Arguments to find a FinanceInvoice
+     * @example
+     * // Get one FinanceInvoice
+     * const financeInvoice = await prisma.financeInvoice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FinanceInvoiceFindUniqueArgs>(args: SelectSubset<T, FinanceInvoiceFindUniqueArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FinanceInvoice that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FinanceInvoiceFindUniqueOrThrowArgs} args - Arguments to find a FinanceInvoice
+     * @example
+     * // Get one FinanceInvoice
+     * const financeInvoice = await prisma.financeInvoice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FinanceInvoiceFindUniqueOrThrowArgs>(args: SelectSubset<T, FinanceInvoiceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinanceInvoice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceInvoiceFindFirstArgs} args - Arguments to find a FinanceInvoice
+     * @example
+     * // Get one FinanceInvoice
+     * const financeInvoice = await prisma.financeInvoice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FinanceInvoiceFindFirstArgs>(args?: SelectSubset<T, FinanceInvoiceFindFirstArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FinanceInvoice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceInvoiceFindFirstOrThrowArgs} args - Arguments to find a FinanceInvoice
+     * @example
+     * // Get one FinanceInvoice
+     * const financeInvoice = await prisma.financeInvoice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FinanceInvoiceFindFirstOrThrowArgs>(args?: SelectSubset<T, FinanceInvoiceFindFirstOrThrowArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FinanceInvoices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceInvoiceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FinanceInvoices
+     * const financeInvoices = await prisma.financeInvoice.findMany()
+     * 
+     * // Get first 10 FinanceInvoices
+     * const financeInvoices = await prisma.financeInvoice.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const financeInvoiceWithIdOnly = await prisma.financeInvoice.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FinanceInvoiceFindManyArgs>(args?: SelectSubset<T, FinanceInvoiceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FinanceInvoice.
+     * @param {FinanceInvoiceCreateArgs} args - Arguments to create a FinanceInvoice.
+     * @example
+     * // Create one FinanceInvoice
+     * const FinanceInvoice = await prisma.financeInvoice.create({
+     *   data: {
+     *     // ... data to create a FinanceInvoice
+     *   }
+     * })
+     * 
+     */
+    create<T extends FinanceInvoiceCreateArgs>(args: SelectSubset<T, FinanceInvoiceCreateArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FinanceInvoices.
+     * @param {FinanceInvoiceCreateManyArgs} args - Arguments to create many FinanceInvoices.
+     * @example
+     * // Create many FinanceInvoices
+     * const financeInvoice = await prisma.financeInvoice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FinanceInvoiceCreateManyArgs>(args?: SelectSubset<T, FinanceInvoiceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FinanceInvoices and returns the data saved in the database.
+     * @param {FinanceInvoiceCreateManyAndReturnArgs} args - Arguments to create many FinanceInvoices.
+     * @example
+     * // Create many FinanceInvoices
+     * const financeInvoice = await prisma.financeInvoice.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FinanceInvoices and only return the `id`
+     * const financeInvoiceWithIdOnly = await prisma.financeInvoice.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FinanceInvoiceCreateManyAndReturnArgs>(args?: SelectSubset<T, FinanceInvoiceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FinanceInvoice.
+     * @param {FinanceInvoiceDeleteArgs} args - Arguments to delete one FinanceInvoice.
+     * @example
+     * // Delete one FinanceInvoice
+     * const FinanceInvoice = await prisma.financeInvoice.delete({
+     *   where: {
+     *     // ... filter to delete one FinanceInvoice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FinanceInvoiceDeleteArgs>(args: SelectSubset<T, FinanceInvoiceDeleteArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FinanceInvoice.
+     * @param {FinanceInvoiceUpdateArgs} args - Arguments to update one FinanceInvoice.
+     * @example
+     * // Update one FinanceInvoice
+     * const financeInvoice = await prisma.financeInvoice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FinanceInvoiceUpdateArgs>(args: SelectSubset<T, FinanceInvoiceUpdateArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FinanceInvoices.
+     * @param {FinanceInvoiceDeleteManyArgs} args - Arguments to filter FinanceInvoices to delete.
+     * @example
+     * // Delete a few FinanceInvoices
+     * const { count } = await prisma.financeInvoice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FinanceInvoiceDeleteManyArgs>(args?: SelectSubset<T, FinanceInvoiceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinanceInvoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceInvoiceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FinanceInvoices
+     * const financeInvoice = await prisma.financeInvoice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FinanceInvoiceUpdateManyArgs>(args: SelectSubset<T, FinanceInvoiceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FinanceInvoices and returns the data updated in the database.
+     * @param {FinanceInvoiceUpdateManyAndReturnArgs} args - Arguments to update many FinanceInvoices.
+     * @example
+     * // Update many FinanceInvoices
+     * const financeInvoice = await prisma.financeInvoice.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FinanceInvoices and only return the `id`
+     * const financeInvoiceWithIdOnly = await prisma.financeInvoice.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FinanceInvoiceUpdateManyAndReturnArgs>(args: SelectSubset<T, FinanceInvoiceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FinanceInvoice.
+     * @param {FinanceInvoiceUpsertArgs} args - Arguments to update or create a FinanceInvoice.
+     * @example
+     * // Update or create a FinanceInvoice
+     * const financeInvoice = await prisma.financeInvoice.upsert({
+     *   create: {
+     *     // ... data to create a FinanceInvoice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FinanceInvoice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FinanceInvoiceUpsertArgs>(args: SelectSubset<T, FinanceInvoiceUpsertArgs<ExtArgs>>): Prisma__FinanceInvoiceClient<$Result.GetResult<Prisma.$FinanceInvoicePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FinanceInvoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceInvoiceCountArgs} args - Arguments to filter FinanceInvoices to count.
+     * @example
+     * // Count the number of FinanceInvoices
+     * const count = await prisma.financeInvoice.count({
+     *   where: {
+     *     // ... the filter for the FinanceInvoices we want to count
+     *   }
+     * })
+    **/
+    count<T extends FinanceInvoiceCountArgs>(
+      args?: Subset<T, FinanceInvoiceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FinanceInvoiceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FinanceInvoice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceInvoiceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FinanceInvoiceAggregateArgs>(args: Subset<T, FinanceInvoiceAggregateArgs>): Prisma.PrismaPromise<GetFinanceInvoiceAggregateType<T>>
+
+    /**
+     * Group by FinanceInvoice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FinanceInvoiceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FinanceInvoiceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FinanceInvoiceGroupByArgs['orderBy'] }
+        : { orderBy?: FinanceInvoiceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FinanceInvoiceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFinanceInvoiceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FinanceInvoice model
+   */
+  readonly fields: FinanceInvoiceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FinanceInvoice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FinanceInvoiceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    devis<T extends FinanceDevisDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FinanceDevisDefaultArgs<ExtArgs>>): Prisma__FinanceDevisClient<$Result.GetResult<Prisma.$FinanceDevisPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FinanceInvoice model
+   */
+  interface FinanceInvoiceFieldRefs {
+    readonly id: FieldRef<"FinanceInvoice", 'String'>
+    readonly number: FieldRef<"FinanceInvoice", 'String'>
+    readonly devisId: FieldRef<"FinanceInvoice", 'String'>
+    readonly kind: FieldRef<"FinanceInvoice", 'FinanceInvoiceKind'>
+    readonly status: FieldRef<"FinanceInvoice", 'FinanceInvoiceStatus'>
+    readonly lines: FieldRef<"FinanceInvoice", 'Json'>
+    readonly subtotalHt: FieldRef<"FinanceInvoice", 'Decimal'>
+    readonly vatTotal: FieldRef<"FinanceInvoice", 'Decimal'>
+    readonly totalTtc: FieldRef<"FinanceInvoice", 'Decimal'>
+    readonly currency: FieldRef<"FinanceInvoice", 'String'>
+    readonly notes: FieldRef<"FinanceInvoice", 'String'>
+    readonly issuedAt: FieldRef<"FinanceInvoice", 'DateTime'>
+    readonly einvoiceStatus: FieldRef<"FinanceInvoice", 'FinanceEinvoiceStatus'>
+    readonly einvoiceProfile: FieldRef<"FinanceInvoice", 'String'>
+    readonly einvoiceGeneratedAt: FieldRef<"FinanceInvoice", 'DateTime'>
+    readonly einvoicePdpMessageId: FieldRef<"FinanceInvoice", 'String'>
+    readonly einvoiceLastError: FieldRef<"FinanceInvoice", 'String'>
+    readonly einvoiceXmlAssetKey: FieldRef<"FinanceInvoice", 'String'>
+    readonly createdAt: FieldRef<"FinanceInvoice", 'DateTime'>
+    readonly updatedAt: FieldRef<"FinanceInvoice", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FinanceInvoice findUnique
+   */
+  export type FinanceInvoiceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which FinanceInvoice to fetch.
+     */
+    where: FinanceInvoiceWhereUniqueInput
+  }
+
+  /**
+   * FinanceInvoice findUniqueOrThrow
+   */
+  export type FinanceInvoiceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which FinanceInvoice to fetch.
+     */
+    where: FinanceInvoiceWhereUniqueInput
+  }
+
+  /**
+   * FinanceInvoice findFirst
+   */
+  export type FinanceInvoiceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which FinanceInvoice to fetch.
+     */
+    where?: FinanceInvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceInvoices to fetch.
+     */
+    orderBy?: FinanceInvoiceOrderByWithRelationInput | FinanceInvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinanceInvoices.
+     */
+    cursor?: FinanceInvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceInvoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceInvoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinanceInvoices.
+     */
+    distinct?: FinanceInvoiceScalarFieldEnum | FinanceInvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * FinanceInvoice findFirstOrThrow
+   */
+  export type FinanceInvoiceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which FinanceInvoice to fetch.
+     */
+    where?: FinanceInvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceInvoices to fetch.
+     */
+    orderBy?: FinanceInvoiceOrderByWithRelationInput | FinanceInvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FinanceInvoices.
+     */
+    cursor?: FinanceInvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceInvoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceInvoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinanceInvoices.
+     */
+    distinct?: FinanceInvoiceScalarFieldEnum | FinanceInvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * FinanceInvoice findMany
+   */
+  export type FinanceInvoiceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which FinanceInvoices to fetch.
+     */
+    where?: FinanceInvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FinanceInvoices to fetch.
+     */
+    orderBy?: FinanceInvoiceOrderByWithRelationInput | FinanceInvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FinanceInvoices.
+     */
+    cursor?: FinanceInvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FinanceInvoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FinanceInvoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FinanceInvoices.
+     */
+    distinct?: FinanceInvoiceScalarFieldEnum | FinanceInvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * FinanceInvoice create
+   */
+  export type FinanceInvoiceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FinanceInvoice.
+     */
+    data: XOR<FinanceInvoiceCreateInput, FinanceInvoiceUncheckedCreateInput>
+  }
+
+  /**
+   * FinanceInvoice createMany
+   */
+  export type FinanceInvoiceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FinanceInvoices.
+     */
+    data: FinanceInvoiceCreateManyInput | FinanceInvoiceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FinanceInvoice createManyAndReturn
+   */
+  export type FinanceInvoiceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * The data used to create many FinanceInvoices.
+     */
+    data: FinanceInvoiceCreateManyInput | FinanceInvoiceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FinanceInvoice update
+   */
+  export type FinanceInvoiceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FinanceInvoice.
+     */
+    data: XOR<FinanceInvoiceUpdateInput, FinanceInvoiceUncheckedUpdateInput>
+    /**
+     * Choose, which FinanceInvoice to update.
+     */
+    where: FinanceInvoiceWhereUniqueInput
+  }
+
+  /**
+   * FinanceInvoice updateMany
+   */
+  export type FinanceInvoiceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FinanceInvoices.
+     */
+    data: XOR<FinanceInvoiceUpdateManyMutationInput, FinanceInvoiceUncheckedUpdateManyInput>
+    /**
+     * Filter which FinanceInvoices to update
+     */
+    where?: FinanceInvoiceWhereInput
+    /**
+     * Limit how many FinanceInvoices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinanceInvoice updateManyAndReturn
+   */
+  export type FinanceInvoiceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * The data used to update FinanceInvoices.
+     */
+    data: XOR<FinanceInvoiceUpdateManyMutationInput, FinanceInvoiceUncheckedUpdateManyInput>
+    /**
+     * Filter which FinanceInvoices to update
+     */
+    where?: FinanceInvoiceWhereInput
+    /**
+     * Limit how many FinanceInvoices to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FinanceInvoice upsert
+   */
+  export type FinanceInvoiceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FinanceInvoice to update in case it exists.
+     */
+    where: FinanceInvoiceWhereUniqueInput
+    /**
+     * In case the FinanceInvoice found by the `where` argument doesn't exist, create a new FinanceInvoice with this data.
+     */
+    create: XOR<FinanceInvoiceCreateInput, FinanceInvoiceUncheckedCreateInput>
+    /**
+     * In case the FinanceInvoice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FinanceInvoiceUpdateInput, FinanceInvoiceUncheckedUpdateInput>
+  }
+
+  /**
+   * FinanceInvoice delete
+   */
+  export type FinanceInvoiceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
+    /**
+     * Filter which FinanceInvoice to delete.
+     */
+    where: FinanceInvoiceWhereUniqueInput
+  }
+
+  /**
+   * FinanceInvoice deleteMany
+   */
+  export type FinanceInvoiceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FinanceInvoices to delete
+     */
+    where?: FinanceInvoiceWhereInput
+    /**
+     * Limit how many FinanceInvoices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FinanceInvoice without action
+   */
+  export type FinanceInvoiceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceInvoice
+     */
+    select?: FinanceInvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceInvoice
+     */
+    omit?: FinanceInvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceInvoiceInclude<ExtArgs> | null
   }
 
 
@@ -169361,6 +171874,37 @@ export namespace Prisma {
     validUntil: 'validUntil',
     notes: 'notes',
     internalNotes: 'internalNotes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FinanceDevisScalarFieldEnum = (typeof FinanceDevisScalarFieldEnum)[keyof typeof FinanceDevisScalarFieldEnum]
+
+
+  export const FinanceNumberSequenceScalarFieldEnum: {
+    id: 'id',
+    scope: 'scope',
+    year: 'year',
+    lastValue: 'lastValue',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FinanceNumberSequenceScalarFieldEnum = (typeof FinanceNumberSequenceScalarFieldEnum)[keyof typeof FinanceNumberSequenceScalarFieldEnum]
+
+
+  export const FinanceInvoiceScalarFieldEnum: {
+    id: 'id',
+    number: 'number',
+    devisId: 'devisId',
+    kind: 'kind',
+    status: 'status',
+    lines: 'lines',
+    subtotalHt: 'subtotalHt',
+    vatTotal: 'vatTotal',
+    totalTtc: 'totalTtc',
+    currency: 'currency',
+    notes: 'notes',
+    issuedAt: 'issuedAt',
     einvoiceStatus: 'einvoiceStatus',
     einvoiceProfile: 'einvoiceProfile',
     einvoiceGeneratedAt: 'einvoiceGeneratedAt',
@@ -169371,7 +171915,7 @@ export namespace Prisma {
     updatedAt: 'updatedAt'
   };
 
-  export type FinanceDevisScalarFieldEnum = (typeof FinanceDevisScalarFieldEnum)[keyof typeof FinanceDevisScalarFieldEnum]
+  export type FinanceInvoiceScalarFieldEnum = (typeof FinanceInvoiceScalarFieldEnum)[keyof typeof FinanceInvoiceScalarFieldEnum]
 
 
   export const FinanceDevisPlaquetteMessageScalarFieldEnum: {
@@ -171164,6 +173708,48 @@ export namespace Prisma {
    * Reference to a field of type 'FinanceDevisStatus[]'
    */
   export type ListEnumFinanceDevisStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceDevisStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FinanceNumberSequenceScope'
+   */
+  export type EnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceNumberSequenceScope'>
+    
+
+
+  /**
+   * Reference to a field of type 'FinanceNumberSequenceScope[]'
+   */
+  export type ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceNumberSequenceScope[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FinanceInvoiceKind'
+   */
+  export type EnumFinanceInvoiceKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceInvoiceKind'>
+    
+
+
+  /**
+   * Reference to a field of type 'FinanceInvoiceKind[]'
+   */
+  export type ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceInvoiceKind[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FinanceInvoiceStatus'
+   */
+  export type EnumFinanceInvoiceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceInvoiceStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'FinanceInvoiceStatus[]'
+   */
+  export type ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceInvoiceStatus[]'>
     
 
 
@@ -178538,12 +181124,6 @@ export namespace Prisma {
     validUntil?: DateTimeNullableFilter<"FinanceDevis"> | Date | string | null
     notes?: StringNullableFilter<"FinanceDevis"> | string | null
     internalNotes?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFilter<"FinanceDevis"> | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFilter<"FinanceDevis"> | string
-    einvoiceGeneratedAt?: DateTimeNullableFilter<"FinanceDevis"> | Date | string | null
-    einvoicePdpMessageId?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceLastError?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceXmlAssetKey?: StringNullableFilter<"FinanceDevis"> | string | null
     createdAt?: DateTimeFilter<"FinanceDevis"> | Date | string
     updatedAt?: DateTimeFilter<"FinanceDevis"> | Date | string
     lead?: XOR<LeadNullableScalarRelationFilter, LeadWhereInput> | null
@@ -178552,6 +181132,7 @@ export namespace Prisma {
     formationSession?: XOR<FormationSessionNullableScalarRelationFilter, FormationSessionWhereInput> | null
     plaquetteMessages?: FinanceDevisPlaquetteMessageListRelationFilter
     payments?: FinancePaymentListRelationFilter
+    invoices?: FinanceInvoiceListRelationFilter
   }
 
   export type FinanceDevisOrderByWithRelationInput = {
@@ -178572,12 +181153,6 @@ export namespace Prisma {
     validUntil?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
-    einvoiceStatus?: SortOrder
-    einvoiceProfile?: SortOrder
-    einvoiceGeneratedAt?: SortOrderInput | SortOrder
-    einvoicePdpMessageId?: SortOrderInput | SortOrder
-    einvoiceLastError?: SortOrderInput | SortOrder
-    einvoiceXmlAssetKey?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     lead?: LeadOrderByWithRelationInput
@@ -178586,6 +181161,7 @@ export namespace Prisma {
     formationSession?: FormationSessionOrderByWithRelationInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageOrderByRelationAggregateInput
     payments?: FinancePaymentOrderByRelationAggregateInput
+    invoices?: FinanceInvoiceOrderByRelationAggregateInput
   }
 
   export type FinanceDevisWhereUniqueInput = Prisma.AtLeast<{
@@ -178609,12 +181185,6 @@ export namespace Prisma {
     validUntil?: DateTimeNullableFilter<"FinanceDevis"> | Date | string | null
     notes?: StringNullableFilter<"FinanceDevis"> | string | null
     internalNotes?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFilter<"FinanceDevis"> | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFilter<"FinanceDevis"> | string
-    einvoiceGeneratedAt?: DateTimeNullableFilter<"FinanceDevis"> | Date | string | null
-    einvoicePdpMessageId?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceLastError?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceXmlAssetKey?: StringNullableFilter<"FinanceDevis"> | string | null
     createdAt?: DateTimeFilter<"FinanceDevis"> | Date | string
     updatedAt?: DateTimeFilter<"FinanceDevis"> | Date | string
     lead?: XOR<LeadNullableScalarRelationFilter, LeadWhereInput> | null
@@ -178623,6 +181193,7 @@ export namespace Prisma {
     formationSession?: XOR<FormationSessionNullableScalarRelationFilter, FormationSessionWhereInput> | null
     plaquetteMessages?: FinanceDevisPlaquetteMessageListRelationFilter
     payments?: FinancePaymentListRelationFilter
+    invoices?: FinanceInvoiceListRelationFilter
   }, "id" | "referenceCode">
 
   export type FinanceDevisOrderByWithAggregationInput = {
@@ -178643,12 +181214,6 @@ export namespace Prisma {
     validUntil?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     internalNotes?: SortOrderInput | SortOrder
-    einvoiceStatus?: SortOrder
-    einvoiceProfile?: SortOrder
-    einvoiceGeneratedAt?: SortOrderInput | SortOrder
-    einvoicePdpMessageId?: SortOrderInput | SortOrder
-    einvoiceLastError?: SortOrderInput | SortOrder
-    einvoiceXmlAssetKey?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FinanceDevisCountOrderByAggregateInput
@@ -178679,14 +181244,195 @@ export namespace Prisma {
     validUntil?: DateTimeNullableWithAggregatesFilter<"FinanceDevis"> | Date | string | null
     notes?: StringNullableWithAggregatesFilter<"FinanceDevis"> | string | null
     internalNotes?: StringNullableWithAggregatesFilter<"FinanceDevis"> | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusWithAggregatesFilter<"FinanceDevis"> | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringWithAggregatesFilter<"FinanceDevis"> | string
-    einvoiceGeneratedAt?: DateTimeNullableWithAggregatesFilter<"FinanceDevis"> | Date | string | null
-    einvoicePdpMessageId?: StringNullableWithAggregatesFilter<"FinanceDevis"> | string | null
-    einvoiceLastError?: StringNullableWithAggregatesFilter<"FinanceDevis"> | string | null
-    einvoiceXmlAssetKey?: StringNullableWithAggregatesFilter<"FinanceDevis"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FinanceDevis"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FinanceDevis"> | Date | string
+  }
+
+  export type FinanceNumberSequenceWhereInput = {
+    AND?: FinanceNumberSequenceWhereInput | FinanceNumberSequenceWhereInput[]
+    OR?: FinanceNumberSequenceWhereInput[]
+    NOT?: FinanceNumberSequenceWhereInput | FinanceNumberSequenceWhereInput[]
+    id?: StringFilter<"FinanceNumberSequence"> | string
+    scope?: EnumFinanceNumberSequenceScopeFilter<"FinanceNumberSequence"> | $Enums.FinanceNumberSequenceScope
+    year?: IntFilter<"FinanceNumberSequence"> | number
+    lastValue?: IntFilter<"FinanceNumberSequence"> | number
+    updatedAt?: DateTimeFilter<"FinanceNumberSequence"> | Date | string
+  }
+
+  export type FinanceNumberSequenceOrderByWithRelationInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    year?: SortOrder
+    lastValue?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinanceNumberSequenceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    scope_year?: FinanceNumberSequenceScopeYearCompoundUniqueInput
+    AND?: FinanceNumberSequenceWhereInput | FinanceNumberSequenceWhereInput[]
+    OR?: FinanceNumberSequenceWhereInput[]
+    NOT?: FinanceNumberSequenceWhereInput | FinanceNumberSequenceWhereInput[]
+    scope?: EnumFinanceNumberSequenceScopeFilter<"FinanceNumberSequence"> | $Enums.FinanceNumberSequenceScope
+    year?: IntFilter<"FinanceNumberSequence"> | number
+    lastValue?: IntFilter<"FinanceNumberSequence"> | number
+    updatedAt?: DateTimeFilter<"FinanceNumberSequence"> | Date | string
+  }, "id" | "scope_year">
+
+  export type FinanceNumberSequenceOrderByWithAggregationInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    year?: SortOrder
+    lastValue?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FinanceNumberSequenceCountOrderByAggregateInput
+    _avg?: FinanceNumberSequenceAvgOrderByAggregateInput
+    _max?: FinanceNumberSequenceMaxOrderByAggregateInput
+    _min?: FinanceNumberSequenceMinOrderByAggregateInput
+    _sum?: FinanceNumberSequenceSumOrderByAggregateInput
+  }
+
+  export type FinanceNumberSequenceScalarWhereWithAggregatesInput = {
+    AND?: FinanceNumberSequenceScalarWhereWithAggregatesInput | FinanceNumberSequenceScalarWhereWithAggregatesInput[]
+    OR?: FinanceNumberSequenceScalarWhereWithAggregatesInput[]
+    NOT?: FinanceNumberSequenceScalarWhereWithAggregatesInput | FinanceNumberSequenceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FinanceNumberSequence"> | string
+    scope?: EnumFinanceNumberSequenceScopeWithAggregatesFilter<"FinanceNumberSequence"> | $Enums.FinanceNumberSequenceScope
+    year?: IntWithAggregatesFilter<"FinanceNumberSequence"> | number
+    lastValue?: IntWithAggregatesFilter<"FinanceNumberSequence"> | number
+    updatedAt?: DateTimeWithAggregatesFilter<"FinanceNumberSequence"> | Date | string
+  }
+
+  export type FinanceInvoiceWhereInput = {
+    AND?: FinanceInvoiceWhereInput | FinanceInvoiceWhereInput[]
+    OR?: FinanceInvoiceWhereInput[]
+    NOT?: FinanceInvoiceWhereInput | FinanceInvoiceWhereInput[]
+    id?: StringFilter<"FinanceInvoice"> | string
+    number?: StringFilter<"FinanceInvoice"> | string
+    devisId?: StringFilter<"FinanceInvoice"> | string
+    kind?: EnumFinanceInvoiceKindFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceStatus
+    lines?: JsonFilter<"FinanceInvoice">
+    subtotalHt?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    currency?: StringFilter<"FinanceInvoice"> | string
+    notes?: StringNullableFilter<"FinanceInvoice"> | string | null
+    issuedAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFilter<"FinanceInvoice"> | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFilter<"FinanceInvoice"> | string
+    einvoiceGeneratedAt?: DateTimeNullableFilter<"FinanceInvoice"> | Date | string | null
+    einvoicePdpMessageId?: StringNullableFilter<"FinanceInvoice"> | string | null
+    einvoiceLastError?: StringNullableFilter<"FinanceInvoice"> | string | null
+    einvoiceXmlAssetKey?: StringNullableFilter<"FinanceInvoice"> | string | null
+    createdAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    updatedAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    devis?: XOR<FinanceDevisScalarRelationFilter, FinanceDevisWhereInput>
+  }
+
+  export type FinanceInvoiceOrderByWithRelationInput = {
+    id?: SortOrder
+    number?: SortOrder
+    devisId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    lines?: SortOrder
+    subtotalHt?: SortOrder
+    vatTotal?: SortOrder
+    totalTtc?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    issuedAt?: SortOrder
+    einvoiceStatus?: SortOrder
+    einvoiceProfile?: SortOrder
+    einvoiceGeneratedAt?: SortOrderInput | SortOrder
+    einvoicePdpMessageId?: SortOrderInput | SortOrder
+    einvoiceLastError?: SortOrderInput | SortOrder
+    einvoiceXmlAssetKey?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    devis?: FinanceDevisOrderByWithRelationInput
+  }
+
+  export type FinanceInvoiceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    number?: string
+    AND?: FinanceInvoiceWhereInput | FinanceInvoiceWhereInput[]
+    OR?: FinanceInvoiceWhereInput[]
+    NOT?: FinanceInvoiceWhereInput | FinanceInvoiceWhereInput[]
+    devisId?: StringFilter<"FinanceInvoice"> | string
+    kind?: EnumFinanceInvoiceKindFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceStatus
+    lines?: JsonFilter<"FinanceInvoice">
+    subtotalHt?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    currency?: StringFilter<"FinanceInvoice"> | string
+    notes?: StringNullableFilter<"FinanceInvoice"> | string | null
+    issuedAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFilter<"FinanceInvoice"> | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFilter<"FinanceInvoice"> | string
+    einvoiceGeneratedAt?: DateTimeNullableFilter<"FinanceInvoice"> | Date | string | null
+    einvoicePdpMessageId?: StringNullableFilter<"FinanceInvoice"> | string | null
+    einvoiceLastError?: StringNullableFilter<"FinanceInvoice"> | string | null
+    einvoiceXmlAssetKey?: StringNullableFilter<"FinanceInvoice"> | string | null
+    createdAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    updatedAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    devis?: XOR<FinanceDevisScalarRelationFilter, FinanceDevisWhereInput>
+  }, "id" | "number">
+
+  export type FinanceInvoiceOrderByWithAggregationInput = {
+    id?: SortOrder
+    number?: SortOrder
+    devisId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    lines?: SortOrder
+    subtotalHt?: SortOrder
+    vatTotal?: SortOrder
+    totalTtc?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    issuedAt?: SortOrder
+    einvoiceStatus?: SortOrder
+    einvoiceProfile?: SortOrder
+    einvoiceGeneratedAt?: SortOrderInput | SortOrder
+    einvoicePdpMessageId?: SortOrderInput | SortOrder
+    einvoiceLastError?: SortOrderInput | SortOrder
+    einvoiceXmlAssetKey?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FinanceInvoiceCountOrderByAggregateInput
+    _avg?: FinanceInvoiceAvgOrderByAggregateInput
+    _max?: FinanceInvoiceMaxOrderByAggregateInput
+    _min?: FinanceInvoiceMinOrderByAggregateInput
+    _sum?: FinanceInvoiceSumOrderByAggregateInput
+  }
+
+  export type FinanceInvoiceScalarWhereWithAggregatesInput = {
+    AND?: FinanceInvoiceScalarWhereWithAggregatesInput | FinanceInvoiceScalarWhereWithAggregatesInput[]
+    OR?: FinanceInvoiceScalarWhereWithAggregatesInput[]
+    NOT?: FinanceInvoiceScalarWhereWithAggregatesInput | FinanceInvoiceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FinanceInvoice"> | string
+    number?: StringWithAggregatesFilter<"FinanceInvoice"> | string
+    devisId?: StringWithAggregatesFilter<"FinanceInvoice"> | string
+    kind?: EnumFinanceInvoiceKindWithAggregatesFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusWithAggregatesFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceStatus
+    lines?: JsonWithAggregatesFilter<"FinanceInvoice">
+    subtotalHt?: DecimalWithAggregatesFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalWithAggregatesFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalWithAggregatesFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    currency?: StringWithAggregatesFilter<"FinanceInvoice"> | string
+    notes?: StringNullableWithAggregatesFilter<"FinanceInvoice"> | string | null
+    issuedAt?: DateTimeWithAggregatesFilter<"FinanceInvoice"> | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusWithAggregatesFilter<"FinanceInvoice"> | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringWithAggregatesFilter<"FinanceInvoice"> | string
+    einvoiceGeneratedAt?: DateTimeNullableWithAggregatesFilter<"FinanceInvoice"> | Date | string | null
+    einvoicePdpMessageId?: StringNullableWithAggregatesFilter<"FinanceInvoice"> | string | null
+    einvoiceLastError?: StringNullableWithAggregatesFilter<"FinanceInvoice"> | string | null
+    einvoiceXmlAssetKey?: StringNullableWithAggregatesFilter<"FinanceInvoice"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"FinanceInvoice"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FinanceInvoice"> | Date | string
   }
 
   export type FinanceDevisPlaquetteMessageWhereInput = {
@@ -191240,12 +193986,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lead?: LeadCreateNestedOneWithoutFinanceDevisInput
@@ -191254,6 +193994,7 @@ export namespace Prisma {
     formationSession?: FormationSessionCreateNestedOneWithoutFinanceDevisSessionLinksInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUncheckedCreateInput = {
@@ -191274,16 +194015,11 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentUncheckedCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUpdateInput = {
@@ -191300,12 +194036,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneWithoutFinanceDevisNestedInput
@@ -191314,6 +194044,7 @@ export namespace Prisma {
     formationSession?: FormationSessionUpdateOneWithoutFinanceDevisSessionLinksNestedInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateInput = {
@@ -191334,16 +194065,11 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUncheckedUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisCreateManyInput = {
@@ -191364,12 +194090,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -191388,12 +194108,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -191416,6 +194130,216 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceNumberSequenceCreateInput = {
+    id?: string
+    scope: $Enums.FinanceNumberSequenceScope
+    year: number
+    lastValue?: number
+    updatedAt?: Date | string
+  }
+
+  export type FinanceNumberSequenceUncheckedCreateInput = {
+    id?: string
+    scope: $Enums.FinanceNumberSequenceScope
+    year: number
+    lastValue?: number
+    updatedAt?: Date | string
+  }
+
+  export type FinanceNumberSequenceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumFinanceNumberSequenceScopeFieldUpdateOperationsInput | $Enums.FinanceNumberSequenceScope
+    year?: IntFieldUpdateOperationsInput | number
+    lastValue?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceNumberSequenceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumFinanceNumberSequenceScopeFieldUpdateOperationsInput | $Enums.FinanceNumberSequenceScope
+    year?: IntFieldUpdateOperationsInput | number
+    lastValue?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceNumberSequenceCreateManyInput = {
+    id?: string
+    scope: $Enums.FinanceNumberSequenceScope
+    year: number
+    lastValue?: number
+    updatedAt?: Date | string
+  }
+
+  export type FinanceNumberSequenceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumFinanceNumberSequenceScopeFieldUpdateOperationsInput | $Enums.FinanceNumberSequenceScope
+    year?: IntFieldUpdateOperationsInput | number
+    lastValue?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceNumberSequenceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumFinanceNumberSequenceScopeFieldUpdateOperationsInput | $Enums.FinanceNumberSequenceScope
+    year?: IntFieldUpdateOperationsInput | number
+    lastValue?: IntFieldUpdateOperationsInput | number
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceInvoiceCreateInput = {
+    id?: string
+    number: string
+    kind?: $Enums.FinanceInvoiceKind
+    status?: $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt: Decimal | DecimalJsLike | number | string
+    vatTotal: Decimal | DecimalJsLike | number | string
+    totalTtc: Decimal | DecimalJsLike | number | string
+    currency?: string
+    notes?: string | null
+    issuedAt?: Date | string
+    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: string
+    einvoiceGeneratedAt?: Date | string | null
+    einvoicePdpMessageId?: string | null
+    einvoiceLastError?: string | null
+    einvoiceXmlAssetKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    devis: FinanceDevisCreateNestedOneWithoutInvoicesInput
+  }
+
+  export type FinanceInvoiceUncheckedCreateInput = {
+    id?: string
+    number: string
+    devisId: string
+    kind?: $Enums.FinanceInvoiceKind
+    status?: $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt: Decimal | DecimalJsLike | number | string
+    vatTotal: Decimal | DecimalJsLike | number | string
+    totalTtc: Decimal | DecimalJsLike | number | string
+    currency?: string
+    notes?: string | null
+    issuedAt?: Date | string
+    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: string
+    einvoiceGeneratedAt?: Date | string | null
+    einvoicePdpMessageId?: string | null
+    einvoiceLastError?: string | null
+    einvoiceXmlAssetKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinanceInvoiceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    kind?: EnumFinanceInvoiceKindFieldUpdateOperationsInput | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFieldUpdateOperationsInput | string
+    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    devis?: FinanceDevisUpdateOneRequiredWithoutInvoicesNestedInput
+  }
+
+  export type FinanceInvoiceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    devisId?: StringFieldUpdateOperationsInput | string
+    kind?: EnumFinanceInvoiceKindFieldUpdateOperationsInput | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFieldUpdateOperationsInput | string
+    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceInvoiceCreateManyInput = {
+    id?: string
+    number: string
+    devisId: string
+    kind?: $Enums.FinanceInvoiceKind
+    status?: $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt: Decimal | DecimalJsLike | number | string
+    vatTotal: Decimal | DecimalJsLike | number | string
+    totalTtc: Decimal | DecimalJsLike | number | string
+    currency?: string
+    notes?: string | null
+    issuedAt?: Date | string
+    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: string
+    einvoiceGeneratedAt?: Date | string | null
+    einvoicePdpMessageId?: string | null
+    einvoiceLastError?: string | null
+    einvoiceXmlAssetKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinanceInvoiceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    kind?: EnumFinanceInvoiceKindFieldUpdateOperationsInput | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFieldUpdateOperationsInput | string
+    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceInvoiceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    devisId?: StringFieldUpdateOperationsInput | string
+    kind?: EnumFinanceInvoiceKindFieldUpdateOperationsInput | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
     einvoiceProfile?: StringFieldUpdateOperationsInput | string
     einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -202262,13 +205186,6 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type EnumFinanceEinvoiceStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.FinanceEinvoiceStatus | EnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel> | $Enums.FinanceEinvoiceStatus
-  }
-
   export type FinanceDevisPlaquetteMessageListRelationFilter = {
     every?: FinanceDevisPlaquetteMessageWhereInput
     some?: FinanceDevisPlaquetteMessageWhereInput
@@ -202281,11 +205198,21 @@ export namespace Prisma {
     none?: FinancePaymentWhereInput
   }
 
+  export type FinanceInvoiceListRelationFilter = {
+    every?: FinanceInvoiceWhereInput
+    some?: FinanceInvoiceWhereInput
+    none?: FinanceInvoiceWhereInput
+  }
+
   export type FinanceDevisPlaquetteMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type FinancePaymentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FinanceInvoiceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -202307,12 +205234,6 @@ export namespace Prisma {
     validUntil?: SortOrder
     notes?: SortOrder
     internalNotes?: SortOrder
-    einvoiceStatus?: SortOrder
-    einvoiceProfile?: SortOrder
-    einvoiceGeneratedAt?: SortOrder
-    einvoicePdpMessageId?: SortOrder
-    einvoiceLastError?: SortOrder
-    einvoiceXmlAssetKey?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -202339,12 +205260,6 @@ export namespace Prisma {
     validUntil?: SortOrder
     notes?: SortOrder
     internalNotes?: SortOrder
-    einvoiceStatus?: SortOrder
-    einvoiceProfile?: SortOrder
-    einvoiceGeneratedAt?: SortOrder
-    einvoicePdpMessageId?: SortOrder
-    einvoiceLastError?: SortOrder
-    einvoiceXmlAssetKey?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -202365,12 +205280,6 @@ export namespace Prisma {
     validUntil?: SortOrder
     notes?: SortOrder
     internalNotes?: SortOrder
-    einvoiceStatus?: SortOrder
-    einvoiceProfile?: SortOrder
-    einvoiceGeneratedAt?: SortOrder
-    einvoicePdpMessageId?: SortOrder
-    einvoiceLastError?: SortOrder
-    einvoiceXmlAssetKey?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -202407,6 +205316,187 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
+  export type EnumFinanceNumberSequenceScopeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceNumberSequenceScope | EnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceNumberSequenceScopeFilter<$PrismaModel> | $Enums.FinanceNumberSequenceScope
+  }
+
+  export type FinanceNumberSequenceScopeYearCompoundUniqueInput = {
+    scope: $Enums.FinanceNumberSequenceScope
+    year: number
+  }
+
+  export type FinanceNumberSequenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    year?: SortOrder
+    lastValue?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinanceNumberSequenceAvgOrderByAggregateInput = {
+    year?: SortOrder
+    lastValue?: SortOrder
+  }
+
+  export type FinanceNumberSequenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    year?: SortOrder
+    lastValue?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinanceNumberSequenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    year?: SortOrder
+    lastValue?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinanceNumberSequenceSumOrderByAggregateInput = {
+    year?: SortOrder
+    lastValue?: SortOrder
+  }
+
+  export type EnumFinanceNumberSequenceScopeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceNumberSequenceScope | EnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceNumberSequenceScopeWithAggregatesFilter<$PrismaModel> | $Enums.FinanceNumberSequenceScope
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinanceNumberSequenceScopeFilter<$PrismaModel>
+    _max?: NestedEnumFinanceNumberSequenceScopeFilter<$PrismaModel>
+  }
+
+  export type EnumFinanceInvoiceKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceKind | EnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceKindFilter<$PrismaModel> | $Enums.FinanceInvoiceKind
+  }
+
+  export type EnumFinanceInvoiceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceStatus | EnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceStatusFilter<$PrismaModel> | $Enums.FinanceInvoiceStatus
+  }
+
+  export type EnumFinanceEinvoiceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceEinvoiceStatus | EnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel> | $Enums.FinanceEinvoiceStatus
+  }
+
+  export type FinanceDevisScalarRelationFilter = {
+    is?: FinanceDevisWhereInput
+    isNot?: FinanceDevisWhereInput
+  }
+
+  export type FinanceInvoiceCountOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    devisId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    lines?: SortOrder
+    subtotalHt?: SortOrder
+    vatTotal?: SortOrder
+    totalTtc?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrder
+    issuedAt?: SortOrder
+    einvoiceStatus?: SortOrder
+    einvoiceProfile?: SortOrder
+    einvoiceGeneratedAt?: SortOrder
+    einvoicePdpMessageId?: SortOrder
+    einvoiceLastError?: SortOrder
+    einvoiceXmlAssetKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinanceInvoiceAvgOrderByAggregateInput = {
+    subtotalHt?: SortOrder
+    vatTotal?: SortOrder
+    totalTtc?: SortOrder
+  }
+
+  export type FinanceInvoiceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    devisId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    subtotalHt?: SortOrder
+    vatTotal?: SortOrder
+    totalTtc?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrder
+    issuedAt?: SortOrder
+    einvoiceStatus?: SortOrder
+    einvoiceProfile?: SortOrder
+    einvoiceGeneratedAt?: SortOrder
+    einvoicePdpMessageId?: SortOrder
+    einvoiceLastError?: SortOrder
+    einvoiceXmlAssetKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinanceInvoiceMinOrderByAggregateInput = {
+    id?: SortOrder
+    number?: SortOrder
+    devisId?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    subtotalHt?: SortOrder
+    vatTotal?: SortOrder
+    totalTtc?: SortOrder
+    currency?: SortOrder
+    notes?: SortOrder
+    issuedAt?: SortOrder
+    einvoiceStatus?: SortOrder
+    einvoiceProfile?: SortOrder
+    einvoiceGeneratedAt?: SortOrder
+    einvoicePdpMessageId?: SortOrder
+    einvoiceLastError?: SortOrder
+    einvoiceXmlAssetKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FinanceInvoiceSumOrderByAggregateInput = {
+    subtotalHt?: SortOrder
+    vatTotal?: SortOrder
+    totalTtc?: SortOrder
+  }
+
+  export type EnumFinanceInvoiceKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceKind | EnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceKindWithAggregatesFilter<$PrismaModel> | $Enums.FinanceInvoiceKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinanceInvoiceKindFilter<$PrismaModel>
+    _max?: NestedEnumFinanceInvoiceKindFilter<$PrismaModel>
+  }
+
+  export type EnumFinanceInvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceStatus | EnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceStatusWithAggregatesFilter<$PrismaModel> | $Enums.FinanceInvoiceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinanceInvoiceStatusFilter<$PrismaModel>
+    _max?: NestedEnumFinanceInvoiceStatusFilter<$PrismaModel>
+  }
+
   export type EnumFinanceEinvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.FinanceEinvoiceStatus | EnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
     in?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
@@ -202415,11 +205505,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel>
     _max?: NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel>
-  }
-
-  export type FinanceDevisScalarRelationFilter = {
-    is?: FinanceDevisWhereInput
-    isNot?: FinanceDevisWhereInput
   }
 
   export type FinanceDevisPlaquetteMessageCountOrderByAggregateInput = {
@@ -214393,6 +217478,13 @@ export namespace Prisma {
     connect?: FinancePaymentWhereUniqueInput | FinancePaymentWhereUniqueInput[]
   }
 
+  export type FinanceInvoiceCreateNestedManyWithoutDevisInput = {
+    create?: XOR<FinanceInvoiceCreateWithoutDevisInput, FinanceInvoiceUncheckedCreateWithoutDevisInput> | FinanceInvoiceCreateWithoutDevisInput[] | FinanceInvoiceUncheckedCreateWithoutDevisInput[]
+    connectOrCreate?: FinanceInvoiceCreateOrConnectWithoutDevisInput | FinanceInvoiceCreateOrConnectWithoutDevisInput[]
+    createMany?: FinanceInvoiceCreateManyDevisInputEnvelope
+    connect?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+  }
+
   export type FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput = {
     create?: XOR<FinanceDevisPlaquetteMessageCreateWithoutDevisInput, FinanceDevisPlaquetteMessageUncheckedCreateWithoutDevisInput> | FinanceDevisPlaquetteMessageCreateWithoutDevisInput[] | FinanceDevisPlaquetteMessageUncheckedCreateWithoutDevisInput[]
     connectOrCreate?: FinanceDevisPlaquetteMessageCreateOrConnectWithoutDevisInput | FinanceDevisPlaquetteMessageCreateOrConnectWithoutDevisInput[]
@@ -214407,6 +217499,13 @@ export namespace Prisma {
     connect?: FinancePaymentWhereUniqueInput | FinancePaymentWhereUniqueInput[]
   }
 
+  export type FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput = {
+    create?: XOR<FinanceInvoiceCreateWithoutDevisInput, FinanceInvoiceUncheckedCreateWithoutDevisInput> | FinanceInvoiceCreateWithoutDevisInput[] | FinanceInvoiceUncheckedCreateWithoutDevisInput[]
+    connectOrCreate?: FinanceInvoiceCreateOrConnectWithoutDevisInput | FinanceInvoiceCreateOrConnectWithoutDevisInput[]
+    createMany?: FinanceInvoiceCreateManyDevisInputEnvelope
+    connect?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+  }
+
   export type EnumFinanceDevisStatusFieldUpdateOperationsInput = {
     set?: $Enums.FinanceDevisStatus
   }
@@ -214417,10 +217516,6 @@ export namespace Prisma {
     decrement?: Decimal | DecimalJsLike | number | string
     multiply?: Decimal | DecimalJsLike | number | string
     divide?: Decimal | DecimalJsLike | number | string
-  }
-
-  export type EnumFinanceEinvoiceStatusFieldUpdateOperationsInput = {
-    set?: $Enums.FinanceEinvoiceStatus
   }
 
   export type LeadUpdateOneWithoutFinanceDevisNestedInput = {
@@ -214491,6 +217586,20 @@ export namespace Prisma {
     deleteMany?: FinancePaymentScalarWhereInput | FinancePaymentScalarWhereInput[]
   }
 
+  export type FinanceInvoiceUpdateManyWithoutDevisNestedInput = {
+    create?: XOR<FinanceInvoiceCreateWithoutDevisInput, FinanceInvoiceUncheckedCreateWithoutDevisInput> | FinanceInvoiceCreateWithoutDevisInput[] | FinanceInvoiceUncheckedCreateWithoutDevisInput[]
+    connectOrCreate?: FinanceInvoiceCreateOrConnectWithoutDevisInput | FinanceInvoiceCreateOrConnectWithoutDevisInput[]
+    upsert?: FinanceInvoiceUpsertWithWhereUniqueWithoutDevisInput | FinanceInvoiceUpsertWithWhereUniqueWithoutDevisInput[]
+    createMany?: FinanceInvoiceCreateManyDevisInputEnvelope
+    set?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    disconnect?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    delete?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    connect?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    update?: FinanceInvoiceUpdateWithWhereUniqueWithoutDevisInput | FinanceInvoiceUpdateWithWhereUniqueWithoutDevisInput[]
+    updateMany?: FinanceInvoiceUpdateManyWithWhereWithoutDevisInput | FinanceInvoiceUpdateManyWithWhereWithoutDevisInput[]
+    deleteMany?: FinanceInvoiceScalarWhereInput | FinanceInvoiceScalarWhereInput[]
+  }
+
   export type FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput = {
     create?: XOR<FinanceDevisPlaquetteMessageCreateWithoutDevisInput, FinanceDevisPlaquetteMessageUncheckedCreateWithoutDevisInput> | FinanceDevisPlaquetteMessageCreateWithoutDevisInput[] | FinanceDevisPlaquetteMessageUncheckedCreateWithoutDevisInput[]
     connectOrCreate?: FinanceDevisPlaquetteMessageCreateOrConnectWithoutDevisInput | FinanceDevisPlaquetteMessageCreateOrConnectWithoutDevisInput[]
@@ -214517,6 +217626,50 @@ export namespace Prisma {
     update?: FinancePaymentUpdateWithWhereUniqueWithoutDevisInput | FinancePaymentUpdateWithWhereUniqueWithoutDevisInput[]
     updateMany?: FinancePaymentUpdateManyWithWhereWithoutDevisInput | FinancePaymentUpdateManyWithWhereWithoutDevisInput[]
     deleteMany?: FinancePaymentScalarWhereInput | FinancePaymentScalarWhereInput[]
+  }
+
+  export type FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput = {
+    create?: XOR<FinanceInvoiceCreateWithoutDevisInput, FinanceInvoiceUncheckedCreateWithoutDevisInput> | FinanceInvoiceCreateWithoutDevisInput[] | FinanceInvoiceUncheckedCreateWithoutDevisInput[]
+    connectOrCreate?: FinanceInvoiceCreateOrConnectWithoutDevisInput | FinanceInvoiceCreateOrConnectWithoutDevisInput[]
+    upsert?: FinanceInvoiceUpsertWithWhereUniqueWithoutDevisInput | FinanceInvoiceUpsertWithWhereUniqueWithoutDevisInput[]
+    createMany?: FinanceInvoiceCreateManyDevisInputEnvelope
+    set?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    disconnect?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    delete?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    connect?: FinanceInvoiceWhereUniqueInput | FinanceInvoiceWhereUniqueInput[]
+    update?: FinanceInvoiceUpdateWithWhereUniqueWithoutDevisInput | FinanceInvoiceUpdateWithWhereUniqueWithoutDevisInput[]
+    updateMany?: FinanceInvoiceUpdateManyWithWhereWithoutDevisInput | FinanceInvoiceUpdateManyWithWhereWithoutDevisInput[]
+    deleteMany?: FinanceInvoiceScalarWhereInput | FinanceInvoiceScalarWhereInput[]
+  }
+
+  export type EnumFinanceNumberSequenceScopeFieldUpdateOperationsInput = {
+    set?: $Enums.FinanceNumberSequenceScope
+  }
+
+  export type FinanceDevisCreateNestedOneWithoutInvoicesInput = {
+    create?: XOR<FinanceDevisCreateWithoutInvoicesInput, FinanceDevisUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: FinanceDevisCreateOrConnectWithoutInvoicesInput
+    connect?: FinanceDevisWhereUniqueInput
+  }
+
+  export type EnumFinanceInvoiceKindFieldUpdateOperationsInput = {
+    set?: $Enums.FinanceInvoiceKind
+  }
+
+  export type EnumFinanceInvoiceStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FinanceInvoiceStatus
+  }
+
+  export type EnumFinanceEinvoiceStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FinanceEinvoiceStatus
+  }
+
+  export type FinanceDevisUpdateOneRequiredWithoutInvoicesNestedInput = {
+    create?: XOR<FinanceDevisCreateWithoutInvoicesInput, FinanceDevisUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: FinanceDevisCreateOrConnectWithoutInvoicesInput
+    upsert?: FinanceDevisUpsertWithoutInvoicesInput
+    connect?: FinanceDevisWhereUniqueInput
+    update?: XOR<XOR<FinanceDevisUpdateToOneWithWhereWithoutInvoicesInput, FinanceDevisUpdateWithoutInvoicesInput>, FinanceDevisUncheckedUpdateWithoutInvoicesInput>
   }
 
   export type FinanceDevisCreateNestedOneWithoutPlaquetteMessagesInput = {
@@ -218835,13 +221988,6 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
-  export type NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.FinanceEinvoiceStatus | EnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel> | $Enums.FinanceEinvoiceStatus
-  }
-
   export type NestedEnumFinanceDevisStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.FinanceDevisStatus | EnumFinanceDevisStatusFieldRefInput<$PrismaModel>
     in?: $Enums.FinanceDevisStatus[] | ListEnumFinanceDevisStatusFieldRefInput<$PrismaModel>
@@ -218866,6 +222012,64 @@ export namespace Prisma {
     _sum?: NestedDecimalFilter<$PrismaModel>
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFinanceNumberSequenceScopeFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceNumberSequenceScope | EnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceNumberSequenceScopeFilter<$PrismaModel> | $Enums.FinanceNumberSequenceScope
+  }
+
+  export type NestedEnumFinanceNumberSequenceScopeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceNumberSequenceScope | EnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceNumberSequenceScope[] | ListEnumFinanceNumberSequenceScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceNumberSequenceScopeWithAggregatesFilter<$PrismaModel> | $Enums.FinanceNumberSequenceScope
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinanceNumberSequenceScopeFilter<$PrismaModel>
+    _max?: NestedEnumFinanceNumberSequenceScopeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFinanceInvoiceKindFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceKind | EnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceKindFilter<$PrismaModel> | $Enums.FinanceInvoiceKind
+  }
+
+  export type NestedEnumFinanceInvoiceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceStatus | EnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceStatusFilter<$PrismaModel> | $Enums.FinanceInvoiceStatus
+  }
+
+  export type NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceEinvoiceStatus | EnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceEinvoiceStatus[] | ListEnumFinanceEinvoiceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceEinvoiceStatusFilter<$PrismaModel> | $Enums.FinanceEinvoiceStatus
+  }
+
+  export type NestedEnumFinanceInvoiceKindWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceKind | EnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceKind[] | ListEnumFinanceInvoiceKindFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceKindWithAggregatesFilter<$PrismaModel> | $Enums.FinanceInvoiceKind
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinanceInvoiceKindFilter<$PrismaModel>
+    _max?: NestedEnumFinanceInvoiceKindFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFinanceInvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FinanceInvoiceStatus | EnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FinanceInvoiceStatus[] | ListEnumFinanceInvoiceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFinanceInvoiceStatusWithAggregatesFilter<$PrismaModel> | $Enums.FinanceInvoiceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFinanceInvoiceStatusFilter<$PrismaModel>
+    _max?: NestedEnumFinanceInvoiceStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumFinanceEinvoiceStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -236808,12 +240012,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lead?: LeadCreateNestedOneWithoutFinanceDevisInput
@@ -236821,6 +240019,7 @@ export namespace Prisma {
     formationSession?: FormationSessionCreateNestedOneWithoutFinanceDevisSessionLinksInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUncheckedCreateWithoutFormationInput = {
@@ -236840,16 +240039,11 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentUncheckedCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisCreateOrConnectWithoutFormationInput = {
@@ -237251,12 +240445,6 @@ export namespace Prisma {
     validUntil?: DateTimeNullableFilter<"FinanceDevis"> | Date | string | null
     notes?: StringNullableFilter<"FinanceDevis"> | string | null
     internalNotes?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFilter<"FinanceDevis"> | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFilter<"FinanceDevis"> | string
-    einvoiceGeneratedAt?: DateTimeNullableFilter<"FinanceDevis"> | Date | string | null
-    einvoicePdpMessageId?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceLastError?: StringNullableFilter<"FinanceDevis"> | string | null
-    einvoiceXmlAssetKey?: StringNullableFilter<"FinanceDevis"> | string | null
     createdAt?: DateTimeFilter<"FinanceDevis"> | Date | string
     updatedAt?: DateTimeFilter<"FinanceDevis"> | Date | string
   }
@@ -240477,12 +243665,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lead?: LeadCreateNestedOneWithoutFinanceDevisInput
@@ -240490,6 +243672,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutFinanceDevisInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUncheckedCreateWithoutFormationSessionInput = {
@@ -240509,16 +243692,11 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentUncheckedCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisCreateOrConnectWithoutFormationSessionInput = {
@@ -243004,12 +246182,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lead?: LeadCreateNestedOneWithoutFinanceDevisInput
@@ -243017,6 +246189,7 @@ export namespace Prisma {
     formationSession?: FormationSessionCreateNestedOneWithoutFinanceDevisSessionLinksInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUncheckedCreateWithoutCandidatureInput = {
@@ -243036,16 +246209,11 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentUncheckedCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisCreateOrConnectWithoutCandidatureInput = {
@@ -258472,12 +261640,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     formation?: FormationCreateNestedOneWithoutFinanceDevisInput
@@ -258485,6 +261647,7 @@ export namespace Prisma {
     formationSession?: FormationSessionCreateNestedOneWithoutFinanceDevisSessionLinksInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUncheckedCreateWithoutLeadInput = {
@@ -258504,16 +261667,11 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput
     payments?: FinancePaymentUncheckedCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisCreateOrConnectWithoutLeadInput = {
@@ -259333,6 +262491,60 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FinanceInvoiceCreateWithoutDevisInput = {
+    id?: string
+    number: string
+    kind?: $Enums.FinanceInvoiceKind
+    status?: $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt: Decimal | DecimalJsLike | number | string
+    vatTotal: Decimal | DecimalJsLike | number | string
+    totalTtc: Decimal | DecimalJsLike | number | string
+    currency?: string
+    notes?: string | null
+    issuedAt?: Date | string
+    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: string
+    einvoiceGeneratedAt?: Date | string | null
+    einvoicePdpMessageId?: string | null
+    einvoiceLastError?: string | null
+    einvoiceXmlAssetKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinanceInvoiceUncheckedCreateWithoutDevisInput = {
+    id?: string
+    number: string
+    kind?: $Enums.FinanceInvoiceKind
+    status?: $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt: Decimal | DecimalJsLike | number | string
+    vatTotal: Decimal | DecimalJsLike | number | string
+    totalTtc: Decimal | DecimalJsLike | number | string
+    currency?: string
+    notes?: string | null
+    issuedAt?: Date | string
+    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: string
+    einvoiceGeneratedAt?: Date | string | null
+    einvoicePdpMessageId?: string | null
+    einvoiceLastError?: string | null
+    einvoiceXmlAssetKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FinanceInvoiceCreateOrConnectWithoutDevisInput = {
+    where: FinanceInvoiceWhereUniqueInput
+    create: XOR<FinanceInvoiceCreateWithoutDevisInput, FinanceInvoiceUncheckedCreateWithoutDevisInput>
+  }
+
+  export type FinanceInvoiceCreateManyDevisInputEnvelope = {
+    data: FinanceInvoiceCreateManyDevisInput | FinanceInvoiceCreateManyDevisInput[]
+    skipDuplicates?: boolean
+  }
+
   export type LeadUpsertWithoutFinanceDevisInput = {
     update: XOR<LeadUpdateWithoutFinanceDevisInput, LeadUncheckedUpdateWithoutFinanceDevisInput>
     create: XOR<LeadCreateWithoutFinanceDevisInput, LeadUncheckedCreateWithoutFinanceDevisInput>
@@ -259742,6 +262954,160 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FinancePayment"> | Date | string
   }
 
+  export type FinanceInvoiceUpsertWithWhereUniqueWithoutDevisInput = {
+    where: FinanceInvoiceWhereUniqueInput
+    update: XOR<FinanceInvoiceUpdateWithoutDevisInput, FinanceInvoiceUncheckedUpdateWithoutDevisInput>
+    create: XOR<FinanceInvoiceCreateWithoutDevisInput, FinanceInvoiceUncheckedCreateWithoutDevisInput>
+  }
+
+  export type FinanceInvoiceUpdateWithWhereUniqueWithoutDevisInput = {
+    where: FinanceInvoiceWhereUniqueInput
+    data: XOR<FinanceInvoiceUpdateWithoutDevisInput, FinanceInvoiceUncheckedUpdateWithoutDevisInput>
+  }
+
+  export type FinanceInvoiceUpdateManyWithWhereWithoutDevisInput = {
+    where: FinanceInvoiceScalarWhereInput
+    data: XOR<FinanceInvoiceUpdateManyMutationInput, FinanceInvoiceUncheckedUpdateManyWithoutDevisInput>
+  }
+
+  export type FinanceInvoiceScalarWhereInput = {
+    AND?: FinanceInvoiceScalarWhereInput | FinanceInvoiceScalarWhereInput[]
+    OR?: FinanceInvoiceScalarWhereInput[]
+    NOT?: FinanceInvoiceScalarWhereInput | FinanceInvoiceScalarWhereInput[]
+    id?: StringFilter<"FinanceInvoice"> | string
+    number?: StringFilter<"FinanceInvoice"> | string
+    devisId?: StringFilter<"FinanceInvoice"> | string
+    kind?: EnumFinanceInvoiceKindFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFilter<"FinanceInvoice"> | $Enums.FinanceInvoiceStatus
+    lines?: JsonFilter<"FinanceInvoice">
+    subtotalHt?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFilter<"FinanceInvoice"> | Decimal | DecimalJsLike | number | string
+    currency?: StringFilter<"FinanceInvoice"> | string
+    notes?: StringNullableFilter<"FinanceInvoice"> | string | null
+    issuedAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFilter<"FinanceInvoice"> | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFilter<"FinanceInvoice"> | string
+    einvoiceGeneratedAt?: DateTimeNullableFilter<"FinanceInvoice"> | Date | string | null
+    einvoicePdpMessageId?: StringNullableFilter<"FinanceInvoice"> | string | null
+    einvoiceLastError?: StringNullableFilter<"FinanceInvoice"> | string | null
+    einvoiceXmlAssetKey?: StringNullableFilter<"FinanceInvoice"> | string | null
+    createdAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+    updatedAt?: DateTimeFilter<"FinanceInvoice"> | Date | string
+  }
+
+  export type FinanceDevisCreateWithoutInvoicesInput = {
+    id?: string
+    referenceCode: string
+    title: string
+    status?: $Enums.FinanceDevisStatus
+    clientSnapshot?: JsonNullValueInput | InputJsonValue
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: Decimal | DecimalJsLike | number | string
+    vatTotal?: Decimal | DecimalJsLike | number | string
+    totalTtc?: Decimal | DecimalJsLike | number | string
+    currency?: string
+    validUntil?: Date | string | null
+    notes?: string | null
+    internalNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lead?: LeadCreateNestedOneWithoutFinanceDevisInput
+    formation?: FormationCreateNestedOneWithoutFinanceDevisInput
+    candidature?: CandidatureCreateNestedOneWithoutFinanceDevisInput
+    formationSession?: FormationSessionCreateNestedOneWithoutFinanceDevisSessionLinksInput
+    plaquetteMessages?: FinanceDevisPlaquetteMessageCreateNestedManyWithoutDevisInput
+    payments?: FinancePaymentCreateNestedManyWithoutDevisInput
+  }
+
+  export type FinanceDevisUncheckedCreateWithoutInvoicesInput = {
+    id?: string
+    referenceCode: string
+    title: string
+    status?: $Enums.FinanceDevisStatus
+    leadId?: string | null
+    formationId?: string | null
+    candidatureId?: string | null
+    formationSessionId?: string | null
+    clientSnapshot?: JsonNullValueInput | InputJsonValue
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: Decimal | DecimalJsLike | number | string
+    vatTotal?: Decimal | DecimalJsLike | number | string
+    totalTtc?: Decimal | DecimalJsLike | number | string
+    currency?: string
+    validUntil?: Date | string | null
+    notes?: string | null
+    internalNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput
+    payments?: FinancePaymentUncheckedCreateNestedManyWithoutDevisInput
+  }
+
+  export type FinanceDevisCreateOrConnectWithoutInvoicesInput = {
+    where: FinanceDevisWhereUniqueInput
+    create: XOR<FinanceDevisCreateWithoutInvoicesInput, FinanceDevisUncheckedCreateWithoutInvoicesInput>
+  }
+
+  export type FinanceDevisUpsertWithoutInvoicesInput = {
+    update: XOR<FinanceDevisUpdateWithoutInvoicesInput, FinanceDevisUncheckedUpdateWithoutInvoicesInput>
+    create: XOR<FinanceDevisCreateWithoutInvoicesInput, FinanceDevisUncheckedCreateWithoutInvoicesInput>
+    where?: FinanceDevisWhereInput
+  }
+
+  export type FinanceDevisUpdateToOneWithWhereWithoutInvoicesInput = {
+    where?: FinanceDevisWhereInput
+    data: XOR<FinanceDevisUpdateWithoutInvoicesInput, FinanceDevisUncheckedUpdateWithoutInvoicesInput>
+  }
+
+  export type FinanceDevisUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    referenceCode?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: EnumFinanceDevisStatusFieldUpdateOperationsInput | $Enums.FinanceDevisStatus
+    clientSnapshot?: JsonNullValueInput | InputJsonValue
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lead?: LeadUpdateOneWithoutFinanceDevisNestedInput
+    formation?: FormationUpdateOneWithoutFinanceDevisNestedInput
+    candidature?: CandidatureUpdateOneWithoutFinanceDevisNestedInput
+    formationSession?: FormationSessionUpdateOneWithoutFinanceDevisSessionLinksNestedInput
+    plaquetteMessages?: FinanceDevisPlaquetteMessageUpdateManyWithoutDevisNestedInput
+    payments?: FinancePaymentUpdateManyWithoutDevisNestedInput
+  }
+
+  export type FinanceDevisUncheckedUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    referenceCode?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: EnumFinanceDevisStatusFieldUpdateOperationsInput | $Enums.FinanceDevisStatus
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    formationId?: NullableStringFieldUpdateOperationsInput | string | null
+    candidatureId?: NullableStringFieldUpdateOperationsInput | string | null
+    formationSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    clientSnapshot?: JsonNullValueInput | InputJsonValue
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput
+    payments?: FinancePaymentUncheckedUpdateManyWithoutDevisNestedInput
+  }
+
   export type FinanceDevisCreateWithoutPlaquetteMessagesInput = {
     id?: string
     referenceCode: string
@@ -259756,12 +263122,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lead?: LeadCreateNestedOneWithoutFinanceDevisInput
@@ -259769,6 +263129,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutFinanceDevisInput
     formationSession?: FormationSessionCreateNestedOneWithoutFinanceDevisSessionLinksInput
     payments?: FinancePaymentCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUncheckedCreateWithoutPlaquetteMessagesInput = {
@@ -259789,15 +263150,10 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     payments?: FinancePaymentUncheckedCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisCreateOrConnectWithoutPlaquetteMessagesInput = {
@@ -259830,12 +263186,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneWithoutFinanceDevisNestedInput
@@ -259843,6 +263193,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutFinanceDevisNestedInput
     formationSession?: FormationSessionUpdateOneWithoutFinanceDevisSessionLinksNestedInput
     payments?: FinancePaymentUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateWithoutPlaquetteMessagesInput = {
@@ -259863,15 +263214,10 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payments?: FinancePaymentUncheckedUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput
   }
 
   export type FormationCreateWithoutFinanceCatalogLineInput = {
@@ -271662,12 +275008,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     lead?: LeadCreateNestedOneWithoutFinanceDevisInput
@@ -271675,6 +275015,7 @@ export namespace Prisma {
     candidature?: CandidatureCreateNestedOneWithoutFinanceDevisInput
     formationSession?: FormationSessionCreateNestedOneWithoutFinanceDevisSessionLinksInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisUncheckedCreateWithoutPaymentsInput = {
@@ -271695,15 +275036,10 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedCreateNestedManyWithoutDevisInput
+    invoices?: FinanceInvoiceUncheckedCreateNestedManyWithoutDevisInput
   }
 
   export type FinanceDevisCreateOrConnectWithoutPaymentsInput = {
@@ -271736,12 +275072,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneWithoutFinanceDevisNestedInput
@@ -271749,6 +275079,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutFinanceDevisNestedInput
     formationSession?: FormationSessionUpdateOneWithoutFinanceDevisSessionLinksNestedInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateWithoutPaymentsInput = {
@@ -271769,15 +275100,10 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput
   }
 
   export type UserCreateWithoutInAppNotificationsInput = {
@@ -288529,12 +291855,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -288922,12 +292242,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneWithoutFinanceDevisNestedInput
@@ -288935,6 +292249,7 @@ export namespace Prisma {
     formationSession?: FormationSessionUpdateOneWithoutFinanceDevisSessionLinksNestedInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateWithoutFormationInput = {
@@ -288954,16 +292269,11 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUncheckedUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateManyWithoutFormationInput = {
@@ -288983,12 +292293,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -289683,12 +292987,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -290227,12 +293525,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneWithoutFinanceDevisNestedInput
@@ -290240,6 +293532,7 @@ export namespace Prisma {
     candidature?: CandidatureUpdateOneWithoutFinanceDevisNestedInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateWithoutFormationSessionInput = {
@@ -290259,16 +293552,11 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUncheckedUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateManyWithoutFormationSessionInput = {
@@ -290288,12 +293576,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -290416,12 +293698,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -290634,12 +293910,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lead?: LeadUpdateOneWithoutFinanceDevisNestedInput
@@ -290647,6 +293917,7 @@ export namespace Prisma {
     formationSession?: FormationSessionUpdateOneWithoutFinanceDevisSessionLinksNestedInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateWithoutCandidatureInput = {
@@ -290666,16 +293937,11 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUncheckedUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateManyWithoutCandidatureInput = {
@@ -290695,12 +293961,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -292187,12 +295447,6 @@ export namespace Prisma {
     validUntil?: Date | string | null
     notes?: string | null
     internalNotes?: string | null
-    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: string
-    einvoiceGeneratedAt?: Date | string | null
-    einvoicePdpMessageId?: string | null
-    einvoiceLastError?: string | null
-    einvoiceXmlAssetKey?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -292227,12 +295481,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     formation?: FormationUpdateOneWithoutFinanceDevisNestedInput
@@ -292240,6 +295488,7 @@ export namespace Prisma {
     formationSession?: FormationSessionUpdateOneWithoutFinanceDevisSessionLinksNestedInput
     plaquetteMessages?: FinanceDevisPlaquetteMessageUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateWithoutLeadInput = {
@@ -292259,16 +295508,11 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     plaquetteMessages?: FinanceDevisPlaquetteMessageUncheckedUpdateManyWithoutDevisNestedInput
     payments?: FinancePaymentUncheckedUpdateManyWithoutDevisNestedInput
+    invoices?: FinanceInvoiceUncheckedUpdateManyWithoutDevisNestedInput
   }
 
   export type FinanceDevisUncheckedUpdateManyWithoutLeadInput = {
@@ -292288,12 +295532,6 @@ export namespace Prisma {
     validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     internalNotes?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
-    einvoiceProfile?: StringFieldUpdateOperationsInput | string
-    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
-    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -292373,6 +295611,28 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type FinanceInvoiceCreateManyDevisInput = {
+    id?: string
+    number: string
+    kind?: $Enums.FinanceInvoiceKind
+    status?: $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt: Decimal | DecimalJsLike | number | string
+    vatTotal: Decimal | DecimalJsLike | number | string
+    totalTtc: Decimal | DecimalJsLike | number | string
+    currency?: string
+    notes?: string | null
+    issuedAt?: Date | string
+    einvoiceStatus?: $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: string
+    einvoiceGeneratedAt?: Date | string | null
+    einvoicePdpMessageId?: string | null
+    einvoiceLastError?: string | null
+    einvoiceXmlAssetKey?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type FinanceDevisPlaquetteMessageUpdateWithoutDevisInput = {
     id?: StringFieldUpdateOperationsInput | string
     authorKind?: StringFieldUpdateOperationsInput | string
@@ -292432,6 +295692,72 @@ export namespace Prisma {
     method?: NullableStringFieldUpdateOperationsInput | string | null
     paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceInvoiceUpdateWithoutDevisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    kind?: EnumFinanceInvoiceKindFieldUpdateOperationsInput | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFieldUpdateOperationsInput | string
+    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceInvoiceUncheckedUpdateWithoutDevisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    kind?: EnumFinanceInvoiceKindFieldUpdateOperationsInput | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFieldUpdateOperationsInput | string
+    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceInvoiceUncheckedUpdateManyWithoutDevisInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    number?: StringFieldUpdateOperationsInput | string
+    kind?: EnumFinanceInvoiceKindFieldUpdateOperationsInput | $Enums.FinanceInvoiceKind
+    status?: EnumFinanceInvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceInvoiceStatus
+    lines?: JsonNullValueInput | InputJsonValue
+    subtotalHt?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vatTotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalTtc?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    currency?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    einvoiceStatus?: EnumFinanceEinvoiceStatusFieldUpdateOperationsInput | $Enums.FinanceEinvoiceStatus
+    einvoiceProfile?: StringFieldUpdateOperationsInput | string
+    einvoiceGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    einvoicePdpMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceLastError?: NullableStringFieldUpdateOperationsInput | string | null
+    einvoiceXmlAssetKey?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -1174,6 +1174,31 @@ exports.Prisma.FinanceDevisScalarFieldEnum = {
   validUntil: 'validUntil',
   notes: 'notes',
   internalNotes: 'internalNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FinanceNumberSequenceScalarFieldEnum = {
+  id: 'id',
+  scope: 'scope',
+  year: 'year',
+  lastValue: 'lastValue',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FinanceInvoiceScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  devisId: 'devisId',
+  kind: 'kind',
+  status: 'status',
+  lines: 'lines',
+  subtotalHt: 'subtotalHt',
+  vatTotal: 'vatTotal',
+  totalTtc: 'totalTtc',
+  currency: 'currency',
+  notes: 'notes',
+  issuedAt: 'issuedAt',
   einvoiceStatus: 'einvoiceStatus',
   einvoiceProfile: 'einvoiceProfile',
   einvoiceGeneratedAt: 'einvoiceGeneratedAt',
@@ -2309,6 +2334,26 @@ exports.FinanceDevisStatus = exports.$Enums.FinanceDevisStatus = {
   EXPIRED: 'EXPIRED'
 };
 
+exports.FinanceNumberSequenceScope = exports.$Enums.FinanceNumberSequenceScope = {
+  INVOICE: 'INVOICE'
+};
+
+exports.FinanceInvoiceKind = exports.$Enums.FinanceInvoiceKind = {
+  FULL: 'FULL',
+  DEPOSIT: 'DEPOSIT',
+  BALANCE: 'BALANCE',
+  PARTIAL: 'PARTIAL'
+};
+
+exports.FinanceInvoiceStatus = exports.$Enums.FinanceInvoiceStatus = {
+  DRAFT: 'DRAFT',
+  ISSUED: 'ISSUED',
+  SENT: 'SENT',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.FinanceEinvoiceStatus = exports.$Enums.FinanceEinvoiceStatus = {
   NOT_READY: 'NOT_READY',
   READY: 'READY',
@@ -2668,6 +2713,8 @@ exports.Prisma.ModelName = {
   Grade: 'Grade',
   Lead: 'Lead',
   FinanceDevis: 'FinanceDevis',
+  FinanceNumberSequence: 'FinanceNumberSequence',
+  FinanceInvoice: 'FinanceInvoice',
   FinanceDevisPlaquetteMessage: 'FinanceDevisPlaquetteMessage',
   FinanceCatalogLine: 'FinanceCatalogLine',
   Certification: 'Certification',

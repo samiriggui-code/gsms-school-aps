@@ -2173,6 +2173,28 @@ enum FinanceEinvoiceStatus {
   FAILED
 }
 
+/// Nature de la facture (1 devis → N factures).
+enum FinanceInvoiceKind {
+  FULL
+  DEPOSIT
+  BALANCE
+  PARTIAL
+}
+
+enum FinanceInvoiceStatus {
+  DRAFT
+  ISSUED
+  SENT
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+}
+
+/// Portée des séquences de numérotation légale (factures, avoirs…).
+enum FinanceNumberSequenceScope {
+  INVOICE
+}
+
 model Lead {
   id        String     @id @default(uuid())
   firstName String
@@ -2238,29 +2260,68 @@ model FinanceDevis {
   notes         String?   @db.Text
   internalNotes String?   @db.Text
 
-  /// Facturation électronique (réforme FR 2026) — export Factur-X / envoi PDP.
-  einvoiceStatus       FinanceEinvoiceStatus @default(NOT_READY)
-  /// MINIMUM | BASIC | EN16931 (profil Factur-X).
-  einvoiceProfile      String                @default("BASIC")
-  einvoiceGeneratedAt  DateTime?
-  /// Identifiant retour PDP / plateforme (quand branchée).
-  einvoicePdpMessageId String?
-  einvoiceLastError    String?               @db.Text
-  /// Snapshot XML Factur-X (CII) généré — FileAsset key optionnelle côté storage.
-  einvoiceXmlAssetKey  String?
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   plaquetteMessages FinanceDevisPlaquetteMessage[]
   payments          FinancePayment[]
+  invoices          FinanceInvoice[]
 
   @@index([leadId])
   @@index([status])
   @@index([formationId])
   @@index([candidatureId])
   @@index([formationSessionId])
+}
+
+/// Compteur gapless pour numéros légaux (FAC-YYYY-######) — alloué dans la même TX que l’INSERT.
+model FinanceNumberSequence {
+  id        String                     @id @default(uuid())
+  scope     FinanceNumberSequenceScope
+  year      Int
+  lastValue Int                        @default(0)
+  updatedAt DateTime                   @updatedAt
+
+  @@unique([scope, year])
+}
+
+/// Facture first-class (OF-06) — 1:N vers devis ; porte Factur-X et le numéro légal.
+model FinanceInvoice {
+  id     String @id @default(uuid())
+  /// Numéro légal gapless ex. FAC-2026-000001
+  number String @unique
+
+  devisId String
+  devis   FinanceDevis @relation(fields: [devisId], references: [id], onDelete: Restrict)
+
+  kind   FinanceInvoiceKind   @default(FULL)
+  status FinanceInvoiceStatus @default(ISSUED)
+
+  /// Snapshot figé à l’émission (lignes devis + totaux).
+  lines      Json    @default("[]")
+  subtotalHt Decimal @db.Decimal(12, 2)
+  vatTotal   Decimal @db.Decimal(12, 2)
+  totalTtc   Decimal @db.Decimal(12, 2)
+  currency   String  @default("EUR")
+  notes      String? @db.Text
+
+  issuedAt DateTime @default(now())
+
+  /// Facturation électronique (réforme FR 2026) — migrée depuis FinanceDevis.
+  einvoiceStatus       FinanceEinvoiceStatus @default(NOT_READY)
+  einvoiceProfile      String                @default("BASIC")
+  einvoiceGeneratedAt  DateTime?
+  einvoicePdpMessageId String?
+  einvoiceLastError    String?               @db.Text
+  einvoiceXmlAssetKey  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([devisId])
+  @@index([status])
   @@index([einvoiceStatus])
+  @@index([issuedAt])
 }
 
 /// Message laissé par le client depuis la plaquette publique (lien signé) — consultable côté CRM.
