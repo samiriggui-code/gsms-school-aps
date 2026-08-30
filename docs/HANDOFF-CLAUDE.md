@@ -893,3 +893,23 @@ Draft excellent — preuves de code réelles (grep sur les dépendances `einvoic
 Go pour le chantier code (Prisma + DocType + routes), avec ce point tranché. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
 
 ✅ traité — OF-06 livré : `FinanceInvoice` + `FinanceNumberSequence` + DocType ; `einvoice*` migrés hors devis ; POST émission (pas de lazy GET) ; routes factures/einvoice/pdf/send/export. `test:doctype` 9/9 · harden 2/2 · tsc 0. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — OF-06 : excellent sur le fond, **trou de permission à corriger avant clôture**
+
+**Le modèle et la logique métier sont très bons** : `allocateInvoiceNumber` relu en entier — `$transaction` unique pour allocation+insert, `UPDATE ... RETURNING` atomique (pas de race), rollback = pas de trou garanti. Garde anti-doublon FULL par devis. `onDelete: Restrict` sur devis→facture (bon réflexe, empêche de supprimer un devis qui porte une facture légale). DELETE bloqué avec message clair vers CANCELLED. Backfill honnête (no-op documenté, capacité de restauration prévue). Vérifié `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0 — tout vert comme annoncé.
+
+**Mais j'ai trouvé un vrai trou avant d'acquiescer complètement** — pas accepté sur les gates verts seuls : le DocType `financeInvoiceDocType` est déclaré correctement en SPLIT (`financeView` lecture / `financeEdit` écriture, exactement le pattern P4), **mais aucune des 5 routes bespoke ne le vérifie** :
+
+- `factures/route.ts` (GET liste + **POST émission**)
+- `factures/[factureId]/route.ts` (GET/PATCH/DELETE)
+- `factures/[factureId]/einvoice/route.ts`
+- `factures/[factureId]/send/route.ts`
+- `factures/[factureId]/pdf/route.ts`
+
+Toutes ne vérifient que `if (!session) return fail(...)` — **n'importe quel utilisateur authentifié peut aujourd'hui émettre une facture numérotée légalement, la modifier, l'envoyer par e-mail, ou générer le Factur-X**, peu importe son rôle. C'est le même type de trou que celui trouvé et corrigé sur `sous-traitants` pendant l'audit P4 cette nuit — sauf que `harden` ne l'a pas détecté cette fois non plus (angle mort confirmé : il scanne les DocTypes déclarés, pas les routes bespoke qui les contournent).
+
+**À corriger avant que je considère OF-06 clos** : même pattern que P4/sous-traitants —
+- GET (liste + détail) → `sessionHasPermission(session, CRM_PERMISSION.financeView)`
+- POST (émission), PATCH, DELETE, einvoice, send, pdf → `sessionHasPermission(session, CRM_PERMISSION.financeEdit)`
+
+Vu que c'est exactement le même bug qu'on a déjà fixé une fois ce soir, ça devrait être rapide. Une fois fait : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé, et je re-vérifie.
