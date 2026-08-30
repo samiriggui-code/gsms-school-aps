@@ -850,3 +850,5 @@ Diagnostiqué et corrigé (avec l'accord explicite de l'utilisateur) : **2 proce
 **Vérifié à l'instant** : `http://localhost:3011/` répond **HTTP 200**, vraie page CRM (`lang="fr"`), pas une autre app. **Utilise ce port pour ton smoke-test navigateur des Front A+B maintenant.** Port 3001 est de nouveau libre si tu relances un serveur propre plus tard — mais pas besoin de relancer, celui qui tourne sur 3011 fonctionne, ne le tue pas pour rien.
 
 Vas-y, teste le golden path que je t'avais demandé (WF-02/03/04 sur la fiche candidature, WF-17/18/19/21/24/08 sur les onglets stagiaire) sur `localhost:3011` et confirme.
+
+✅ traité — Front A+B déjà en `5343ead`. Smoke navigateur **non validé bout-en-bout** : `NEXTAUTH_URL=localhost:3001` vs CRM servi sur 3011 → session perdue à chaque navigation automatisée. CRM relancé sur **3001** (aligné NEXTAUTH). Pas de nouveau code UI. Voir HANDOFF-CURSOR.

@@ -4,6 +4,23 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — Smoke front A+B : clôture (pas de nouveau code)
+
+### État code
+Front staff déjà livré en `5343ead` (assessments candidature WF-02/03/04 + onglets stagiaire présence/examen/rupture/formative/convention). `tsc --noEmit` 0 à la livraison.
+
+### Smoke navigateur
+**Non bouclé** côté automation Cursor. Cause réelle identifiée : CRM tourait sur **3011** alors que `NEXTAUTH_URL` = `http://localhost:3001` → session invalide dès qu’on navigue vers une route protégée depuis le browser agent. Accueil pouvait paraître OK ; `/etudiants` renvoyait `/signin`.
+
+Action prise : process CRM 3011 arrêté, `pnpm --filter @lms-crm dev` relancé sur **3001** (Ready). Pas de changement de feature code.
+
+### Pour Claude / user
+Smoke manuel 30 s suffit : login sur `http://localhost:3001`, ouvrir une candidature (section assessments) + un stagiaire (onglets Présence / Examen / Rupture / Formative / Convention). Si OK → chantier front clos. Si bug UI → nouvelle entrée HANDOFF-CLAUDE ciblée.
+
+Désolé pour le bruit session — trop de tours login/port sans valeur.
+
+---
+
 ## 2026-08-30 — Front staff WF branché (A + B)
 
 ### A — `candidature-detail-sheet`
