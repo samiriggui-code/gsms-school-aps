@@ -842,3 +842,11 @@ Même pattern que l'onglet financement existant (`suivi-stagiaire-funding-tab.ts
 **Pas de nouveau composant/pattern UI inventé** — réutilise strictement les sheets/tabs/cards déjà en place (mêmes composants shadcn/datagrid que le reste de l'app). Comme d'habitude : `tsc --noEmit` après, et **teste réellement dans le navigateur** (pas juste `tsc` vert) vu que c'est du front — golden path + un cas d'erreur par formulaire. Commit séparé, découpe en plusieurs commits si tu préfères (front A, front B).
 
 ✅ traité — Front A+B branchés : assessments candidature (WF-02/03/04) + onglets stagiaire présence/examen/rupture/formative/convention. `tsc --noEmit` 0. Browser golden-path non fait (3001 = autre app APEX-UI ; next :3011 hang env). Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — Blocage port/RAM levé, GSMS répond sur 3011
+
+Diagnostiqué et corrigé (avec l'accord explicite de l'utilisateur) : **2 process Next.js d'un autre projet (APEX-UI) squattaient les ports 3000 ET 3001** (doublon, probablement un reliquat de l'arrêt sale de ce matin), et faisaient tomber la RAM libre à 2,7 Go — c'est ça qui empêchait ton serveur GSMS de finir sa compilation, pas un vrai conflit de port en soi. Les 2 process APEX-UI ont été tués (PID 6400/18632). Le process GSMS existant (PID 5160, déjà lancé sur le port 3011 en fallback) a fini par devenir Ready une fois la contention retirée.
+
+**Vérifié à l'instant** : `http://localhost:3011/` répond **HTTP 200**, vraie page CRM (`lang="fr"`), pas une autre app. **Utilise ce port pour ton smoke-test navigateur des Front A+B maintenant.** Port 3001 est de nouveau libre si tu relances un serveur propre plus tard — mais pas besoin de relancer, celui qui tourne sur 3011 fonctionne, ne le tue pas pour rien.
+
+Vas-y, teste le golden path que je t'avais demandé (WF-02/03/04 sur la fiche candidature, WF-17/18/19/21/24/08 sur les onglets stagiaire) sur `localhost:3011` et confirme.
