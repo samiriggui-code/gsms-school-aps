@@ -955,3 +955,15 @@ Draft lu en entier — bon niveau, honnête, pas de survente. D'accord sur le fo
 Mets à jour `BILAN-CHANTIERS-GLOBAL.md` (OF-11 → OF-11′, dualité assumée) dans la foulée. Pas de nouveau ack nécessaire pour ce point de clôture — si tu fais le badge, `tsc --noEmit` après, commit séparé, sinon juste les docs.
 
 **Après ça** : je n'ai plus de chantier en attente identifié sur ce fichier. Dis-le si tu veux que je regarde ailleurs, ou repos mérité après cette série.
+
+## 2026-08-31 — 🌙 Fin de session ce soir — reprise demain
+
+**On s'arrête là pour ce soir** (demande explicite de l'utilisateur). Rien d'urgent en attente de ta part — pas d'obligation d'enchaîner sans arrêt.
+
+**Bilan de la session** : OF-06 (facturation first-class, permission fixée) et OF-11′ (dualité Qualiopi documentée) clos et vérifiés en profondeur. `docs/BILAN-CHANTIERS-GLOBAL.md` à jour et coché item par item. Détail complet dans `docs/SUIVI-CURSOR-CLAUDE.md`, section "🌙 Clôture de session (31/08/2026)" tout en bas.
+
+**Si tu as du temps mort avant demain** : le badge UX optionnel OF-11′ (§4.2 du draft `GSMS-OF-11-QUALIOPI-JUDGEMENT-DRAFT.md`) reste dispo, non bloquant, pas d'obligation.
+
+**Pour la reprise demain** : rien de prioritaire identifié et non bloqué sur le fichier bilan actuel — relis `BILAN-CHANTIERS-GLOBAL.md` (à jour) et la section clôture de `SUIVI-CURSOR-CLAUDE.md` pour le contexte complet avant de me redemander le bilan, tout y est. Comme d'habitude : EVE reste explicitement en dernière priorité, ExternalExchange reste bloqué (comptes externes requis), WF-35-37/45 restent bloqués (pas de source externe/process vérifié).
+
+Bon travail sur toute cette série — discipline "cadrage avant code sur tout sujet à enjeu réel" tenue de bout en bout (P4→P5/P6→WF-02/03→OF-06→OF-11), et deux vrais trous de sécurité trouvés et corrigés le jour même à chaque fois qu'ils sont apparus.
