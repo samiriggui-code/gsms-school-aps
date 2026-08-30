@@ -812,6 +812,8 @@ Go direct sur les deux. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `mi
 
 **Le backlog "audit workflows" qui a occupé les deux dernières sessions est maintenant essentiellement clos.** Rien d'urgent en attente côté code de ta part sur ce front. S'il y a un autre chantier ou une autre priorité, je te le communiquerai ici. En attendant, idle est la bonne réponse — pas besoin d'inventer du travail.
 
+✅ traité — ack idle ; chantier front lancé immédiatement après (entrée suivante).
+
 ## 2026-08-30 — Nouveau chantier : rattraper le FRONT (EVE reste hors scope, dernière priorité)
 
 L'utilisateur a raison de le pointer : j'ai vérifié tout le backend cette nuit/ce matin (17 workflows) mais je n'ai **pas systématiquement checké si c'est visible/utilisable côté UI staff**. Audit fait avant d'écrire ce chantier (grep sur `app/(protected)`, pas supposé) :
@@ -838,3 +840,5 @@ Même pattern que l'onglet financement existant (`suivi-stagiaire-funding-tab.ts
 **Comment prioriser** : à toi de voir l'ordre, mais si tu dois choisir, WF-04 (accessibilité) et WF-19 (rupture) sont les plus utiles en premier — ce sont les seuls qui déclenchent une action humaine (staff doit voir pour agir), le reste est plus consultatif.
 
 **Pas de nouveau composant/pattern UI inventé** — réutilise strictement les sheets/tabs/cards déjà en place (mêmes composants shadcn/datagrid que le reste de l'app). Comme d'habitude : `tsc --noEmit` après, et **teste réellement dans le navigateur** (pas juste `tsc` vert) vu que c'est du front — golden path + un cas d'erreur par formulaire. Commit séparé, découpe en plusieurs commits si tu préfères (front A, front B).
+
+✅ traité — Front A+B branchés : assessments candidature (WF-02/03/04) + onglets stagiaire présence/examen/rupture/formative/convention. `tsc --noEmit` 0. Browser golden-path non fait (3001 = autre app APEX-UI ; next :3011 hang env). Voir HANDOFF-CURSOR.

@@ -40,6 +40,12 @@ export type SuiviStagiaireRow = {
   avatar: string | null;
   enrollmentStatus: string;
   examOutcome: string;
+  retakeDate: string | null;
+  retakeNotes: string | null;
+  dropoutRiskStatus: string;
+  dropoutRiskReason: string | null;
+  dropoutRiskNotes: string | null;
+  dropoutRiskFlaggedAt: string | null;
   fundingMode: string | null;
   fundingReference: string | null;
   fundingNotes: string | null;
@@ -124,11 +130,14 @@ export type SuiviDocumentRow = {
 };
 
 export type SuiviPresenceHistoryRow = {
+  emargementId: string;
   dayId: string;
   dayDate: string;
   slot: 'MORNING' | 'EVENING';
   status: SuiviEmargementStatus;
   markedAt: string | null;
+  justificationStatus: string | null;
+  justificationNote: string | null;
 };
 
 export type SuiviParticipantLearningPayload = {

@@ -1,8 +1,6 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { format, parseISO } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -21,111 +19,17 @@ import { formatDateTime, getAvatarUrl, getInitials } from '@/lib/helpers';
 import { apiFetch } from '@/lib/api';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../vie-scolaire/constants/sheet-shell-classes';
 import { SuiviStagiaireFundingTab } from './suivi-stagiaire-funding-tab';
+import { SuiviStagiairePedagogyTab } from './suivi-stagiaire-pedagogy-tab';
+import { SuiviStagiaireExamTab } from './suivi-stagiaire-exam-tab';
+import { SuiviStagiaireDropoutTab } from './suivi-stagiaire-dropout-tab';
+import { SuiviStagiaireFormativeTab } from './suivi-stagiaire-formative-tab';
+import { SuiviStagiaireConventionTab } from './suivi-stagiaire-convention-tab';
 import {
-  SUIVI_DAY_SLOT_LABELS,
-  SUIVI_EMARGEMENT_STATUS_LABELS,
   SUIVI_ENROLLMENT_STATUS_LABELS,
   SUIVI_EXAM_OUTCOME_LABELS,
   type SuiviParticipantLearningPayload,
-  type SuiviPresenceHistoryRow,
   type SuiviStagiaireRow,
 } from '../types/suivi-formations-api';
-
-function formatPresenceDay(iso: string) {
-  try {
-    return format(parseISO(iso), 'EEE d MMM yyyy', { locale: fr });
-  } catch {
-    return iso;
-  }
-}
-
-function PresenceTab({
-  sessionId,
-  participantId,
-}: {
-  sessionId: string | null;
-  participantId: string;
-}) {
-  const { data, isLoading, error } = useQuery({
-    queryKey: [
-      'gestion-academique',
-      'vie-scolaire',
-      'suivi-formations',
-      'presence',
-      sessionId,
-      participantId,
-    ],
-    queryFn: async (): Promise<SuiviPresenceHistoryRow[]> => {
-      const res = await apiFetch(
-        `/api/sections/gestion-academique/vie-scolaire/suivi-formations/${sessionId}/participants/${participantId}/presence`,
-      );
-      if (!res.ok) throw new Error('Historique présence indisponible.');
-      const j = await res.json();
-      return (j?.data?.items ?? []) as SuiviPresenceHistoryRow[];
-    },
-    enabled: Boolean(sessionId && participantId),
-  });
-
-  if (isLoading) {
-    return (
-      <div className="space-y-3 p-6">
-        {[1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-12 w-full rounded-lg" />
-        ))}
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-6 text-sm text-destructive">
-        {(error as Error).message}
-      </div>
-    );
-  }
-
-  const items = data ?? [];
-  if (items.length === 0) {
-    return (
-      <div className="rounded-lg border border-dashed border-border/70 bg-muted/20 p-8 m-6 text-center text-sm text-muted-foreground">
-        Aucun émargement enregistré pour ce stagiaire.
-      </div>
-    );
-  }
-
-  return (
-    <div className="p-6">
-      <div className="overflow-hidden rounded-lg border border-border/60">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/40">
-            <tr>
-              <th className="px-4 py-2 text-left font-medium">Jour</th>
-              <th className="px-4 py-2 text-left font-medium">Créneau</th>
-              <th className="px-4 py-2 text-left font-medium">Statut</th>
-              <th className="px-4 py-2 text-left font-medium">Horodatage</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((row) => (
-              <tr key={`${row.dayId}-${row.slot}`} className="border-t border-border/50">
-                <td className="px-4 py-3 capitalize">{formatPresenceDay(row.dayDate)}</td>
-                <td className="px-4 py-3">{SUIVI_DAY_SLOT_LABELS[row.slot]}</td>
-                <td className="px-4 py-3">
-                  <Badge variant="secondary" appearance="outline">
-                    {SUIVI_EMARGEMENT_STATUS_LABELS[row.status] ?? row.status}
-                  </Badge>
-                </td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  {row.markedAt ? formatDateTime(row.markedAt) : '—'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
 
 function useParticipantLearning(
   sessionId: string | null,
@@ -370,6 +274,11 @@ export function SuiviStagiaireDetailsSheet({
                 >
                   {SUIVI_EXAM_OUTCOME_LABELS[stagiaire.examOutcome] ?? stagiaire.examOutcome}
                 </Badge>
+                {stagiaire.dropoutRiskStatus && stagiaire.dropoutRiskStatus !== 'NONE' ? (
+                  <Badge variant="warning" appearance="outline">
+                    Rupture · {stagiaire.dropoutRiskStatus}
+                  </Badge>
+                ) : null}
                 <Badge variant="secondary" appearance="outline">
                   {stagiaire.fundingModeLabel}
                 </Badge>
@@ -385,6 +294,10 @@ export function SuiviStagiaireDetailsSheet({
                 <TabsTrigger value="synthese">Synthèse</TabsTrigger>
                 <TabsTrigger value="financeur">Financeur</TabsTrigger>
                 <TabsTrigger value="presence">Présence</TabsTrigger>
+                <TabsTrigger value="examen">Examen</TabsTrigger>
+                <TabsTrigger value="rupture">Rupture</TabsTrigger>
+                <TabsTrigger value="formative">Formative</TabsTrigger>
+                <TabsTrigger value="convention">Convention</TabsTrigger>
                 <TabsTrigger value="elearning">E-learning</TabsTrigger>
                 <TabsTrigger value="quiz">Quiz</TabsTrigger>
               </TabsList>
@@ -440,7 +353,32 @@ export function SuiviStagiaireDetailsSheet({
               </TabsContent>
 
               <TabsContent value="presence" className="mt-0">
-                <PresenceTab
+                <SuiviStagiairePedagogyTab
+                  sessionId={sessionId}
+                  participantId={stagiaire.participantId}
+                />
+              </TabsContent>
+
+              <TabsContent value="examen" className="mt-0">
+                <SuiviStagiaireExamTab
+                  participantId={stagiaire.participantId}
+                  stagiaire={stagiaire}
+                />
+              </TabsContent>
+
+              <TabsContent value="rupture" className="mt-0">
+                <SuiviStagiaireDropoutTab
+                  participantId={stagiaire.participantId}
+                  stagiaire={stagiaire}
+                />
+              </TabsContent>
+
+              <TabsContent value="formative" className="mt-0">
+                <SuiviStagiaireFormativeTab participantId={stagiaire.participantId} />
+              </TabsContent>
+
+              <TabsContent value="convention" className="mt-0">
+                <SuiviStagiaireConventionTab
                   sessionId={sessionId}
                   participantId={stagiaire.participantId}
                 />

@@ -218,18 +218,24 @@ export async function loadParticipantPresenceHistory(
     },
     orderBy: [{ day: { dayDate: 'desc' } }, { slot: 'asc' }],
     select: {
+      id: true,
       slot: true,
       status: true,
       markedAt: true,
+      justificationStatus: true,
+      justificationNote: true,
       day: { select: { id: true, dayDate: true } },
     },
   });
 
   return rows.map((r) => ({
+    emargementId: r.id,
     dayId: r.day.id,
     dayDate: isoDateOnly(r.day.dayDate),
     slot: r.slot,
     status: r.status,
     markedAt: r.markedAt?.toISOString() ?? null,
+    justificationStatus: r.justificationStatus,
+    justificationNote: r.justificationNote,
   }));
 }

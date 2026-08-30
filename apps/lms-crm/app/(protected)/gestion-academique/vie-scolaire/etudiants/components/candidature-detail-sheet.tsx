@@ -12,6 +12,7 @@ import { CandidatureStatus } from '@repo/database/browser';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { User as EtudiantType, UserStatus } from '@/app/models/user';
 import { CandidatureParcoursActions } from './candidature-parcours-actions';
+import { CandidatureAssessmentsSection } from './candidature-assessments-section';
 import { RiCheckboxCircleFill } from '@remixicon/react';
 import {
   Etudiant_ACTIVITY_EVENT,
@@ -768,6 +769,9 @@ export function CandidatureDetailSheet({
                             candidatureId={selectedCandidature.id}
                             candidatureStatus={selectedCandidature.status}
                           />
+                        ) : null}
+                        {selectedCandidature ? (
+                          <CandidatureAssessmentsSection candidatureId={selectedCandidature.id} />
                         ) : null}
                         <section className="space-y-3">
                           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">

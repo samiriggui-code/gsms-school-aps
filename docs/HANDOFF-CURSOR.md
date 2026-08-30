@@ -4,6 +4,30 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — Front staff WF branché (A + B)
+
+### A — `candidature-detail-sheet`
+- Section `CandidatureAssessmentsSection` : liste NEEDS_ANALYSIS / POSITIONING, relance POST, badge + avance adaptation PENDING→APPROVED→IMPLEMENTED (WF-02/03/04).
+
+### B — `suivi-stagiaire-details-sheet`
+Nouveaux onglets (pattern funding) :
+- **Présence** → `SuiviStagiairePedagogyTab` (alerte signature sans forge, PATCH justification WF-17/18)
+- **Examen** → rattrapage si FAILED (WF-24)
+- **Rupture** → badge header + avance CONTACTED→…→RESOLVED (WF-19)
+- **Formative** → liste + create (WF-21)
+- **Convention** → GET participant + PATCH avance statut (WF-08, pas de doublon génération)
+
+API liste participants déjà enrichie (`retake*` / `dropoutRisk*`) ; GET `…/participants/[id]/convention` ; presence history avec `emargementId` / `justification*`.
+
+### Vérifs
+- `pnpm --filter @lms-crm exec tsc --noEmit` → **0**
+- **Browser** : non validé ce tour — `localhost:3001` sert une autre app (APEX-UI / 404 CRM) ; tentative `next dev --port 3011` sans sortie Ready (env saturée). À smoke-tester dès que le vrai CRM tourne sur 3001.
+
+### Hors scope
+EVE ; WF-33/35–37/45 inchangés.
+
+---
+
 ## 2026-08-30 — WF-19 + WF-21 livrés
 
 ### WF-21 FormativeAssessment
