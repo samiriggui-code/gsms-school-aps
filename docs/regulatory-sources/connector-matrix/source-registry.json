@@ -250,6 +250,17 @@
       "notes": "14 associations régionales distinctes, chacune avec son propre site/espace. Aucune API publiée sur aucune instance consultée. Socle commun plausible mais non vérifié — accès à paramétrer par région."
     },
     {
+      "source_id": "TRANSITIONS_PRO_IDF_FAQ_OF",
+      "authority": "Transitions Pro Île-de-France",
+      "domain": "TRANSITIONS_PRO",
+      "type": "PROCESS_DOCUMENTATION",
+      "title": "FAQ — accès organisme de formation et saisie certificat de réalisation",
+      "url": "https://www.transitionspro-idf.fr/faq/",
+      "verified": true,
+      "used_by": ["TransitionsProConnector"],
+      "notes": "Confirme le process exact : « Votre espace est créé directement par Transitions Pro Île-de-France » (pas d'auto-inscription) ; « L'organisme de formation déclare les heures et saisit les certificats de réalisation 100 % en ligne, depuis l'espace personnel » via Menu Mes Dossiers → Certificat de réalisation. Aucune mention d'API/webservice. Recherché 29/08/2026, upgrade TRANSITIONS_PRO de verified:false à verified:true (process confirmé sur au moins une région, cohérent avec le reste du réseau)."
+    },
+    {
       "source_id": "LHEO_DECRET",
       "authority": "Ministères / Carif-Oref",
       "domain": "REGIONS",
@@ -270,6 +281,17 @@
       "verified": true,
       "used_by": [],
       "notes": "JSON, appel par SIRET, renvoie certificats Qualiopi au niveau établissement + habilitations France Compétences. Utile pour contrôle de conformité sous-traitants/partenaires, sans rapport avec le financement."
+    },
+    {
+      "source_id": "REGION_IDF_REMUNET_ASP",
+      "authority": "Région Île-de-France / ASP (Agence de services et de paiement)",
+      "domain": "REGIONS",
+      "type": "PROCESS_DOCUMENTATION",
+      "title": "Rémunération des stagiaires PRF Île-de-France — dossier RS1, extranet RemuNet",
+      "url": "https://www.iledefrance.fr/toutes-les-faq/remuneration-des-stagiaires-par-la-region-ile-de-france-faqquestions-frequentes",
+      "verified": true,
+      "used_by": ["RegionConnector"],
+      "notes": "Dossier stagiaire (RS1) transmis à l'ASP, qui gère administratif/calcul/paiement pour le compte de la Région. L'OF assure la transmission dématérialisée des déclarations d'absences et saisit en continu les relevés de présence mensuels sur l'extranet RemuNet (remunet.asp-public.fr, identifiants). Portail stagiaire séparé (maremuneration.iledefrance.fr) non pertinent pour l'OF. RemuNet semble être une plateforme ASP générique (l'ASP utilise un autre extranet nommé DEFI pour le Grand Est) — ne pas supposer qu'elle est universelle sans vérification individuelle par région. Recherché 29/08/2026, scope volontairement limité à l'IDF (région réelle de GSMS School, cf. seed companyRegion/ndaRegion)."
     }
   ]
 }

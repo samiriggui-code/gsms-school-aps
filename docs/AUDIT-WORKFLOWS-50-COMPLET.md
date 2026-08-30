@@ -2,8 +2,32 @@
 
 > Contexte : `docs/GSMS SCHOOL — WORKFLOWS OF COMPLETS.md` §64 fixe une cible de 40-50 workflows métier (WF-01 à WF-45 numérotés + 5 items nommés non numérotés : Facturation/Relance paiement/Evidence generation/Qualiopi recalculation/Audit interne). Cet audit vérifie chacun contre le **code réel** (grep/lecture), pas contre les docs de suivi du projet (`SUIVI-CURSOR-CLAUDE.md`, `HANDOFF-*.md`, `SD-06-EVENT-CATALOG-DRAFT.md`) qui ont servi seulement d'indices de départ. Deux des findings les plus lourds (WF-11/12, WF-17) ont été re-vérifiés manuellement par Claude après le rapport de l'agent, pas acceptés sur parole.
 
-**Résumé chiffré : 20 ✅ Implémenté · 15 🟡 Partiel · 15 ❌ Non implémenté (sur 50)**
-Famille A (WF-01→34) : 10✅ / 13🟡 / 11❌ · Famille B (WF-35→40) : 2✅ / 1🟡 / 3❌ · Famille C (WF-41→45) : 4✅ / 0🟡 / 1❌ · Items 46-50 : 4✅ / 1🟡 / 0❌
+**Résumé chiffré original (29/08, avant rattrapage) : 20 ✅ / 15 🟡 / 15 ❌ (sur 50).**
+
+**Mise à jour 30/08 après Tranches 1+2 + WF-02/03** (détail des livraisons et vérifications indépendantes dans `SUIVI-CURSOR-CLAUDE.md`) :
+**31 ✅ / 11 🟡 / 8 ❌ (sur 50)**, soit 11 workflows fermés en une session — tous vérifiés indépendamment (code relu en entier, tests + `tsc` + `migrate diff` relancés par Claude, pas acceptés sur le rapport de Cursor) :
+- WF-06 🟡→✅ (SELF_FUNDED/APPRENTICESHIP explicites)
+- WF-07 🟡→✅ (statut VIEWED ajouté au cycle devis)
+- WF-08 🟡→✅ (cycle convention complet GENERATED→ARCHIVED + relances J+2/J+5)
+- WF-17 ❌→✅ (détection signature manquante + notifs, sans fabriquer de preuve)
+- WF-18 🟡→✅ (cycle de justification d'absence complet)
+- WF-28/29/30 ❌→✅ (satisfaction entreprise/formateur/financeur)
+- WF-32 ❌→✅ (analyse auto satisfaction + alerte)
+- WF-02/03 ❌→✅ (analyse du besoin + positionnement, nouveau modèle `CandidatureAssessment`)
+
+**Reste ouvert (8❌ / 11🟡)** : WF-04 (accessibilité par candidat), WF-14 (J-5, quasi gratuit maintenant que WF-02/03 existent), WF-19 (prévention rupture), WF-21 (évaluation formative non rattachée au parcours CNAPS), WF-35-37 (veille, bloqué), WF-45 (autres financeurs, bloqué) en ❌ ; WF-11/12 (design assumé, pas un bug), WF-15/20/22/24/25/33/34/38/46 en 🟡.
+
+**Mise à jour 30/08 (nuit, fin de session)** — Tranches 2 et 3 fermées (voir plus haut : WF-06/07/08/17/18/28/29/30/32/02/03/04/14 = 13 workflows), puis **Tranche 4 : WF-34 🟡→✅** (`QualityIncident.deadline`/`verifiedAt` + statut `AWAITING_VERIFICATION`, commit `3450941`, vérifié indépendamment).
+
+**Tally final de la nuit : 34 ✅ / 10 🟡 / 6 ❌ (sur 50)**, contre 20/15/15 en début de soirée — **14 workflows fermés en une session**, chacun vérifié indépendamment (code relu en entier, `test:doctype` + `harden` + `tsc --noEmit` + `prisma migrate diff --exit-code` relancés par Claude, jamais acceptés sur le rapport de Cursor seul).
+
+**Reste ouvert pour la prochaine session** :
+- **❌ (6)** : WF-19 (prévention rupture — heuristique de risque à concevoir), WF-21 (évaluation formative non rattachée au parcours CNAPS présentiel), WF-35/36/37 (veille, bloqué faute de source externe), WF-45 (autres financeurs, bloqué faute de process vérifié).
+- **🟡 (10)** : WF-11/12 (design assumé — pas de hard-block auto, décision volontaire, pas un bug à corriger), WF-15/20/22/24/25/33/38/46. **WF-24 (rattrapage examen) a un vrai point de design non résolu** : `FormationExam` est 1:1 par session, pas par participant — décider nouvelle session dédiée vs champ retry participant avant de coder. **WF-33 a été jugé non prioritaire** : `SupportTicket` couvre déjà fonctionnellement le cycle réclamation, renommer l'enum toucherait tous les usages du ticketing au-delà des réclamations.
+
+---
+
+*Détail original (29/08), tableaux ci-dessous non mis à jour ligne par ligne — se référer à la section "Mise à jour 30/08" ci-dessus pour le statut courant des WF listés.*
 
 ---
 

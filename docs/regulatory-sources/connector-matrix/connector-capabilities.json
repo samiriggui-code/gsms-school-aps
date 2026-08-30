@@ -158,9 +158,9 @@
       "data_sent": ["heures réalisées (assiduité)", "certificat de réalisation"],
       "data_received": ["décision de financement", "statut du dossier"],
       "documents": ["certificat de réalisation (remplace attestations de présence depuis 01/06/2020)"],
-      "sources": ["TRANSITIONS_PRO_SERVICES_OF", "TRANSITIONS_PRO_REGIONAL_STRUCTURE"],
-      "verified": false,
-      "notes": "Socle applicatif commun aux 14 régions plausible mais non confirmé par une source nommant un outil national partagé."
+      "sources": ["TRANSITIONS_PRO_SERVICES_OF", "TRANSITIONS_PRO_REGIONAL_STRUCTURE", "TRANSITIONS_PRO_IDF_FAQ_OF"],
+      "verified": true,
+      "notes": "Process confirmé (29/08/2026, ATpro Île-de-France) : espace personnel créé directement par Transitions Pro (pas d'auto-inscription), saisie 100% en ligne via Menu Mes Dossiers → Certificat de réalisation. Aucune API/webservice trouvée. Socle applicatif commun aux 14 régions toujours non confirmé nommément (chaque ATpro a son propre site), mais le process MANUAL_PORTAL lui-même est désormais vérifié sur au moins une région représentative."
     },
     {
       "connector_id": "REGIONS_PRF",
@@ -168,14 +168,14 @@
       "scope": "Financement formation via marchés publics régionaux",
       "api_available": false,
       "transport": ["XML_FILE", "MANUAL_PORTAL"],
-      "format": "LHÉO XML pour l'offre catalogue vers le Carif-Oref régional ; portail/marché public pour les dossiers",
-      "authentication": "Variable par région",
-      "data_sent": ["offre de formation (LHÉO)"],
-      "data_received": ["remontée automatique vers Kairos via Carif-Oref"],
+      "format": "LHÉO XML pour l'offre catalogue vers le Carif-Oref régional ; portail (RS1 + saisie mensuelle de présence sur extranet RemuNet pour l'IDF) pour les dossiers stagiaires",
+      "authentication": "Variable par région ; pour l'IDF : identifiants extranet RemuNet (ASP)",
+      "data_sent": ["offre de formation (LHÉO)", "dossier stagiaire RS1 (IDF)", "relevé mensuel de présence/absence (IDF)"],
+      "data_received": ["remontée automatique vers Kairos via Carif-Oref", "validation du dossier stagiaire par la Région (IDF)"],
       "documents": [],
-      "sources": ["LHEO_DECRET"],
-      "verified": false,
-      "notes": "Aucune API de gestion de dossiers de financement trouvée. Seul flux normalisé = publication de l'offre en LHÉO. 13-18 régions non auditées individuellement."
+      "sources": ["LHEO_DECRET", "REGION_IDF_REMUNET_ASP"],
+      "verified": true,
+      "notes": "Process MANUAL_PORTAL confirmé pour l'IDF (29/08/2026, région réelle de GSMS School) : dossier RS1 → ASP, saisie continue des présences sur RemuNet (remunet.asp-public.fr). Aucune API trouvée. RemuNet n'est pas confirmé universel aux 13-18 régions (l'ASP a un extranet distinct, DEFI, pour le Grand Est) — les autres régions restent non auditées individuellement, non prioritaire tant que GSMS n'opère qu'en IDF."
     }
   ]
 }

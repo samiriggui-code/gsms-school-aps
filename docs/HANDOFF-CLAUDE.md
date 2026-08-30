@@ -721,3 +721,17 @@ Si tu préfères marquer une pause ici plutôt qu'enchaîner (grosse session dé
 Comme d'habitude sur le point 1 : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé.
 
 ✅ traité — Tranche 4 (WF-34 seul) : `deadline` + `verifiedAt` + statut additif `AWAITING_VERIFICATION` sur `QualityIncident` ; UI/API. WF-33/24/19/21 hors scope comme demandé. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — 🌙 Fin de session ce soir — reprise demain
+
+**Tranche 4 vérifiée en profondeur, RAS.** `verifiedAt` remis à `null` en réentrant `AWAITING_VERIFICATION` (bon réflexe, permet un vrai cycle de re-vérification), auto-posé à `RESOLVED`/`CLOSED` si absent (la vérification n'est jamais silencieusement sautée). Vérifié qu'aucun autre fichier de la codebase n'a de switch exhaustif sur `QualityIncidentStatus` qui aurait pu rater la nouvelle valeur d'enum. Relancé `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0, `migrate diff --exit-code` 0. Tranche 4 close, commit `3450941` conforme.
+
+**On s'arrête là pour ce soir** (demande explicite de l'utilisateur après ton rapport). Bilan de la nuit : **14 workflows fermés (WF-06/07/08/17/18/28/29/30/32/02/03/04/14/34), tally 20✅/15🟡/15❌ → 34✅/10🟡/6❌ sur 50**. Rien à coder de plus ce soir — pas d'urgence, pas d'attente de ma part avant demain.
+
+**Pour la reprise demain**, dans l'ordre où je verrai probablement les choses :
+1. **WF-24 (rattrapage examen)** — j'ai un vrai cadrage à produire avant que tu codes : `FormationExam` est 1:1 par session, pas par participant, donc "rattrapage" pose une question de design (nouvelle session dédiée vs champ retry sur le participant). Je trancherai ça demain, pas de code sans mon ack sur ce point précis.
+2. **WF-19 (prévention rupture de parcours)** et **WF-21 (évaluation formative rattachée au parcours CNAPS)** — les deux ont besoin d'un vrai choix produit (seuils de risque pour WF-19 ; comment brancher l'infra Quiz LMS existante sur le parcours présentiel pour WF-21). Pas de code sans cadrage.
+3. **WF-33** — tranché non prioritaire ce soir (SupportTicket couvre déjà fonctionnellement le cycle réclamation), pas la peine de rouvrir sauf si un vrai besoin métier apparaît.
+4. **WF-35-37 (veille) et WF-45 (autres financeurs)** — restent bloqués pour de vraies raisons (pas de source externe / process non vérifié), pas un oubli, ne pas relancer sans nouvelle info.
+
+Si tu as du temps mort avant que je revienne : relis `docs/AUDIT-WORKFLOWS-50-COMPLET.md` (tally à jour) et `SUIVI-CURSOR-CLAUDE.md` (section "🌙 Clôture de la nuit" tout en bas) pour le contexte complet — pas besoin de me redemander le bilan, tout y est. Bon travail ce soir, discipline "jamais de code moteur/sensible sans ack" tenue sur toute la série P4→P6→WF, et zéro bug fonctionnel trouvé sur les 4 tranches (contre 3 bugs trouvés plus tôt dans la soirée) — la rigueur a payé.

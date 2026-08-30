@@ -14,9 +14,12 @@ Transitions Pro n'est **pas une entité unique** mais **14 associations régiona
 
 **Aucune API publiée n'a été trouvée sur aucune des instances consultées.**
 
-## Non vérifié
+## Statut vérification (mise à jour 29/08/2026)
 
-L'hypothèse "socle commun, accès régionaux distincts" est plausible mais non confirmée — aucune source ne nomme un outil national partagé entre les 14 ATpro.
+**Le process lui-même (MANUAL_PORTAL, pas d'API) est désormais vérifié**, confirmé via ATpro Île-de-France : « Votre espace est créé directement par Transitions Pro Île-de-France » (pas d'auto-inscription par l'OF) ; « L'organisme de formation déclare les heures et saisit les certificats de réalisation 100 % en ligne, depuis l'espace personnel » via Menu Mes Dossiers → Certificat de réalisation.
+Source : https://www.transitionspro-idf.fr/faq/
+
+**Reste non vérifié** : l'hypothèse "socle applicatif technique commun aux 14 ATpro" — aucune source ne nomme un outil national partagé, chaque région a son propre site. Le process (portail manuel, pas d'API) a été confirmé sur IDF seulement ; à vérifier individuellement si un jour une autre région montre un comportement différent.
 
 ## Impact architecture GSMS
 
