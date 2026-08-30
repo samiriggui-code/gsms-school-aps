@@ -869,6 +869,8 @@ exports.Prisma.FormationSessionParticipantScalarFieldEnum = {
   fundingReference: 'fundingReference',
   fundingNotes: 'fundingNotes',
   j5PrepReminderSentAt: 'j5PrepReminderSentAt',
+  retakeDate: 'retakeDate',
+  retakeNotes: 'retakeNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

@@ -54,6 +54,7 @@ Scope volontairement resserré aux événements déjà couverts par du code exis
 | `SPECIAL_NEED_DECLARED` | candidature | system (WF-02 `adaptationRequired=true`) | `type: LOG` | notif référent handicap + cycle WF-04 |
 | `ADAPTATION_STATUS_CHANGED` | candidature | manual staff (PENDING→APPROVED→IMPLEMENTED) | `type: LOG` | suivi aménagement Q-I20/Q-I26 |
 | `PREFORMATION_J5_REMINDER` | session | cron J-5 (WF-14) | `type: LOG` | rappel horaires/matériel + relance positionnement si incomplet |
+| `EXAM_RETAKE_PROPOSED` | session | manual staff (WF-24, outcome FAILED) | `type: LOG` | e-mail apprenant + trace dossier (pas d'e-mail financeur P0) |
 | `DOCUMENT_SENT` | session | system | `type: EMAIL` ou `type: DOCUMENT` selon le canal | déjà implémenté ce soir (OF-02 : convocation/convention/attestation) |
 | `SATISFACTION_REQUESTED` | session | scheduled (J+45 pour COLD) | `type: QUESTIONNAIRE` | déjà implémenté ce soir (OF-10) |
 | `SATISFACTION_COMPLETED` | session | manual (soumission apprenant / stakeholder) | `type: QUESTIONNAIRE` | Qualiopi re-eval |

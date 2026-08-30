@@ -134,3 +134,27 @@ export async function sendJ5PrepReminderEmail(input: J5PrepReminderMailInput): P
     text: `J-5 préparation — ${input.formationName} — début ${input.startDateLabel}`,
   });
 }
+
+export type ExamRetakeProposedMailInput = {
+  to: string;
+  learnerName: string;
+  formationName: string;
+  sessionLabel: string;
+  retakeDateLabel: string;
+  notes?: string | null;
+};
+
+/** WF-24 — proposition de rattrapage examen. */
+export async function sendExamRetakeProposedEmail(input: ExamRetakeProposedMailInput): Promise<void> {
+  if (!isEmailConfigured()) return;
+  const subject = `[FORM'SSI] Proposition de rattrapage — ${input.formationName}`;
+  const notes = input.notes?.trim()
+    ? `<p><strong>Précisions :</strong> ${input.notes.trim()}</p>`
+    : '';
+  await sendEmail({
+    to: input.to,
+    subject,
+    html: `<p>Bonjour ${input.learnerName},</p><p>Suite à votre résultat d’examen sur « ${input.formationName} » (${input.sessionLabel}), un rattrapage vous est proposé le <strong>${input.retakeDateLabel}</strong>.</p>${notes}<p>Merci de confirmer votre présence auprès de l’organisme.</p><p>Contact : ${getSupportEmail()}</p>`,
+    text: `Rattrapage proposé le ${input.retakeDateLabel} — ${input.formationName}`,
+  });
+}

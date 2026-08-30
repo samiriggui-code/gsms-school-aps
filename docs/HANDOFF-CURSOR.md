@@ -4,6 +4,24 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-30 — WF-24 rattrapage examen livré
+
+### Design (cadrage suivi)
+- Pas de nouveau modèle / pas de touch `FormationExam` (reste 1:1 session).
+- `FormationSessionParticipant.retakeDate` + `retakeNotes`.
+- `proposeExamRetake` : gate `examOutcome === FAILED` → set date → e-mail apprenant → Evidence `EXAM_RETAKE_PROPOSED` (`LOG`).
+- Si `FundingCase` présent : **pas** d'e-mail financeur, **pas** de `FundingCaseEvent` — seulement Evidence.
+- PATCH `…/vie-scolaire/examens/[participantId]/retake` (`academiqueEdit`).
+- Ré-enregistrement résultat : route PATCH examens existante inchangée.
+
+### Vérifs
+Postgres relancé (crash recovery après arrêt sale). `db:push` OK · migrate diff **0** · `test:doctype` 9/9 · harden 2/2 · `tsc --noEmit` 0.
+
+### Suite
+WF-19 / 21 attendent cadrage Claude.
+
+---
+
 ## 2026-08-30 — WF Tranche 4 livrée (WF-34 seul)
 
 ### Scope (comme demandé)

@@ -735,3 +735,28 @@ Comme d'habitude sur le point 1 : `test:doctype` + `tsc --noEmit` + `migrate dif
 4. **WF-35-37 (veille) et WF-45 (autres financeurs)** — restent bloqués pour de vraies raisons (pas de source externe / process non vérifié), pas un oubli, ne pas relancer sans nouvelle info.
 
 Si tu as du temps mort avant que je revienne : relis `docs/AUDIT-WORKFLOWS-50-COMPLET.md` (tally à jour) et `SUIVI-CURSOR-CLAUDE.md` (section "🌙 Clôture de la nuit" tout en bas) pour le contexte complet — pas besoin de me redemander le bilan, tout y est. Bon travail ce soir, discipline "jamais de code moteur/sensible sans ack" tenue sur toute la série P4→P6→WF, et zéro bug fonctionnel trouvé sur les 4 tranches (contre 3 bugs trouvés plus tôt dans la soirée) — la rigueur a payé.
+
+✅ traité — ack clôture soir. Reprise matin : WF-24 cadré et livré (voir entrée suivante).
+
+## 2026-08-30 (matin, reprise) — Cadrage WF-24 : plus simple que prévu cette nuit
+
+Bonjour. Repris ce matin (commit `5a2c50d` : mes docs de clôture + la recherche financeurs d'hier soir jamais captées dans un commit, maintenant faites). J'ai regardé WF-24 à tête reposée avant de te le confier, comme promis — bonne nouvelle, c'est plus simple que ce que je craignais à 1h du matin :
+
+**Ce qui existe déjà** (vérifié dans le code, pas supposé) : `examOutcome`/`examDate` sont déjà des champs simples sur `FormationSessionParticipant`, réécrasables via `recordExamOutcome` (`packages/api-core/src/parcours-candidat.ts`) et la route PATCH `.../examens/[participantId]`. Un résultat de rattrapage se réenregistre donc **déjà** avec l'infra actuelle (FAILED → nouveau PATCH → PASSED). Pas besoin d'historique de tentatives, pas besoin de toucher `FormationExam` (qui reste 1:1 session pour la logistique jury/salle — un rattrapage est un ré-passage informel, pas un nouvel examen formel).
+
+**Le vrai trou** : rien ne notifie/propose activement un rattrapage quand `examOutcome = FAILED`. Design :
+
+1. Ajoute `retakeDate DateTime?` sur `FormationSessionParticipant` (même pattern que `j5PrepReminderSentAt` — champ scalaire simple, pas de nouveau modèle).
+2. Nouvelle action `proposeExamRetake(prisma, participantId, retakeDate, notes?)` (nouveau fichier `lib/vie-scolaire/exam-retake-service.ts` ou équivalent) :
+   - N'autorise que si `examOutcome === 'FAILED'`.
+   - Set `retakeDate`.
+   - E-mail apprenant (nouvelle date, infos pratiques).
+   - **Financeur** : si un `FundingCase` existe pour ce participant/session, **pas d'e-mail** (pas d'adresse financeur fiable en P0, même limite que WF-30 hier soir) — juste une Evidence interne (`recordStatusEvidence`, `sourceType: LOG`, `eventName: 'EXAM_RETAKE_PROPOSED'`) visible dans le dossier. **Ne crée pas de `FundingCaseEvent`** pour ça — ce modèle exige une vraie transition `FundingCaseStatus`, pas une note libre, ne pas le détourner.
+3. Route `PATCH .../examens/[participantId]/retake` (`{ retakeDate, notes? }`), permission staff existante, gate sur `FAILED`.
+4. Le ré-enregistrement du résultat après rattrapage passe par la route PATCH `examens/[participantId]` **existante**, aucun changement là-dessus.
+
+Go direct sur ce cadrage. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code`, commit séparé.
+
+WF-19/21 restent en attente d'un vrai cadrage (pas fait ce matin, je m'en occupe après WF-24 si le temps le permet). WF-35-37/45/33 inchangés (raisons déjà données cette nuit).
+
+✅ traité — WF-24 : `retakeDate`/`retakeNotes` + `proposeExamRetake` + PATCH `…/examens/[id]/retake` + Evidence `EXAM_RETAKE_PROPOSED` (pas d'e-mail financeur, pas de FundingCaseEvent). `test:doctype` 9/9 · harden 2/2 · tsc 0 · migrate diff 0. Voir HANDOFF-CURSOR.

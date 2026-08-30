@@ -79,12 +79,14 @@ export {
   sendConventionReminderEmail,
   sendAdaptationRequiredStaffEmail,
   sendJ5PrepReminderEmail,
+  sendExamRetakeProposedEmail,
   slotLabelFr,
   type SignatureMissingMailInput,
   type AbsenceJustificationMailInput,
   type ConventionReminderMailInput,
   type AdaptationRequiredStaffMailInput,
   type J5PrepReminderMailInput,
+  type ExamRetakeProposedMailInput,
 } from './session-alert-flows';
 
 export {

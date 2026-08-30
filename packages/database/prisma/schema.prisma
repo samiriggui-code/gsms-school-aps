@@ -1600,6 +1600,10 @@ model FormationSessionParticipant {
   /// WF-14 — rappel J-5 préparation pédagogique déjà envoyé.
   j5PrepReminderSentAt DateTime?
 
+  /// WF-24 — date de rattrapage proposée (si examOutcome = FAILED).
+  retakeDate  DateTime?
+  retakeNotes String? @db.Text
+
   emargements FormationSessionEmargement[]
   satisfactionSurveys SatisfactionSurvey[]
   fundingCases FundingCase[]
@@ -1611,6 +1615,7 @@ model FormationSessionParticipant {
   @@unique([sessionId, userId])
   @@index([userId])
   @@index([j5PrepReminderSentAt])
+  @@index([retakeDate])
   @@index([candidatureId])
   @@index([examOutcome])
 }

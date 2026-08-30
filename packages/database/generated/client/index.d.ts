@@ -70363,6 +70363,8 @@ export namespace Prisma {
     fundingReference: string | null
     fundingNotes: string | null
     j5PrepReminderSentAt: Date | null
+    retakeDate: Date | null
+    retakeNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70381,6 +70383,8 @@ export namespace Prisma {
     fundingReference: string | null
     fundingNotes: string | null
     j5PrepReminderSentAt: Date | null
+    retakeDate: Date | null
+    retakeNotes: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -70399,6 +70403,8 @@ export namespace Prisma {
     fundingReference: number
     fundingNotes: number
     j5PrepReminderSentAt: number
+    retakeDate: number
+    retakeNotes: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -70419,6 +70425,8 @@ export namespace Prisma {
     fundingReference?: true
     fundingNotes?: true
     j5PrepReminderSentAt?: true
+    retakeDate?: true
+    retakeNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70437,6 +70445,8 @@ export namespace Prisma {
     fundingReference?: true
     fundingNotes?: true
     j5PrepReminderSentAt?: true
+    retakeDate?: true
+    retakeNotes?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -70455,6 +70465,8 @@ export namespace Prisma {
     fundingReference?: true
     fundingNotes?: true
     j5PrepReminderSentAt?: true
+    retakeDate?: true
+    retakeNotes?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -70546,6 +70558,8 @@ export namespace Prisma {
     fundingReference: string | null
     fundingNotes: string | null
     j5PrepReminderSentAt: Date | null
+    retakeDate: Date | null
+    retakeNotes: string | null
     createdAt: Date
     updatedAt: Date
     _count: FormationSessionParticipantCountAggregateOutputType | null
@@ -70581,6 +70595,8 @@ export namespace Prisma {
     fundingReference?: boolean
     fundingNotes?: boolean
     j5PrepReminderSentAt?: boolean
+    retakeDate?: boolean
+    retakeNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70607,6 +70623,8 @@ export namespace Prisma {
     fundingReference?: boolean
     fundingNotes?: boolean
     j5PrepReminderSentAt?: boolean
+    retakeDate?: boolean
+    retakeNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70628,6 +70646,8 @@ export namespace Prisma {
     fundingReference?: boolean
     fundingNotes?: boolean
     j5PrepReminderSentAt?: boolean
+    retakeDate?: boolean
+    retakeNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
@@ -70649,11 +70669,13 @@ export namespace Prisma {
     fundingReference?: boolean
     fundingNotes?: boolean
     j5PrepReminderSentAt?: boolean
+    retakeDate?: boolean
+    retakeNotes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "fundingMode" | "fundingReference" | "fundingNotes" | "j5PrepReminderSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
+  export type FormationSessionParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "candidatureId" | "enrollmentStatus" | "examOutcome" | "examDate" | "certifiedAt" | "trainingCompletedAt" | "fundingMode" | "fundingReference" | "fundingNotes" | "j5PrepReminderSentAt" | "retakeDate" | "retakeNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSessionParticipant"]>
   export type FormationSessionParticipantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | FormationSessionDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -70706,6 +70728,11 @@ export namespace Prisma {
        * WF-14 — rappel J-5 préparation pédagogique déjà envoyé.
        */
       j5PrepReminderSentAt: Date | null
+      /**
+       * WF-24 — date de rattrapage proposée (si examOutcome = FAILED).
+       */
+      retakeDate: Date | null
+      retakeNotes: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["formationSessionParticipant"]>
@@ -71151,6 +71178,8 @@ export namespace Prisma {
     readonly fundingReference: FieldRef<"FormationSessionParticipant", 'String'>
     readonly fundingNotes: FieldRef<"FormationSessionParticipant", 'String'>
     readonly j5PrepReminderSentAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
+    readonly retakeDate: FieldRef<"FormationSessionParticipant", 'DateTime'>
+    readonly retakeNotes: FieldRef<"FormationSessionParticipant", 'String'>
     readonly createdAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
     readonly updatedAt: FieldRef<"FormationSessionParticipant", 'DateTime'>
   }
@@ -167467,6 +167496,8 @@ export namespace Prisma {
     fundingReference: 'fundingReference',
     fundingNotes: 'fundingNotes',
     j5PrepReminderSentAt: 'j5PrepReminderSentAt',
+    retakeDate: 'retakeDate',
+    retakeNotes: 'retakeNotes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -174897,6 +174928,8 @@ export namespace Prisma {
     fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
@@ -174922,6 +174955,8 @@ export namespace Prisma {
     fundingReference?: SortOrderInput | SortOrder
     fundingNotes?: SortOrderInput | SortOrder
     j5PrepReminderSentAt?: SortOrderInput | SortOrder
+    retakeDate?: SortOrderInput | SortOrder
+    retakeNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     session?: FormationSessionOrderByWithRelationInput
@@ -174951,6 +174986,8 @@ export namespace Prisma {
     fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     session?: XOR<FormationSessionScalarRelationFilter, FormationSessionWhereInput>
@@ -174976,6 +175013,8 @@ export namespace Prisma {
     fundingReference?: SortOrderInput | SortOrder
     fundingNotes?: SortOrderInput | SortOrder
     j5PrepReminderSentAt?: SortOrderInput | SortOrder
+    retakeDate?: SortOrderInput | SortOrder
+    retakeNotes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: FormationSessionParticipantCountOrderByAggregateInput
@@ -175000,6 +175039,8 @@ export namespace Prisma {
     fundingReference?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
     j5PrepReminderSentAt?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeDate?: DateTimeNullableWithAggregatesFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeNotes?: StringNullableWithAggregatesFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"FormationSessionParticipant"> | Date | string
   }
@@ -187349,6 +187390,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -187374,6 +187417,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -187393,6 +187438,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -187418,6 +187465,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -187440,6 +187489,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -187455,6 +187506,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -187473,6 +187526,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -199047,6 +199102,8 @@ export namespace Prisma {
     fundingReference?: SortOrder
     fundingNotes?: SortOrder
     j5PrepReminderSentAt?: SortOrder
+    retakeDate?: SortOrder
+    retakeNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -199065,6 +199122,8 @@ export namespace Prisma {
     fundingReference?: SortOrder
     fundingNotes?: SortOrder
     j5PrepReminderSentAt?: SortOrder
+    retakeDate?: SortOrder
+    retakeNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -199083,6 +199142,8 @@ export namespace Prisma {
     fundingReference?: SortOrder
     fundingNotes?: SortOrder
     j5PrepReminderSentAt?: SortOrder
+    retakeDate?: SortOrder
+    retakeNotes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -218069,6 +218130,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -218092,6 +218155,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -220828,6 +220893,8 @@ export namespace Prisma {
     fundingReference?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     fundingNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     j5PrepReminderSentAt?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeDate?: DateTimeNullableFilter<"FormationSessionParticipant"> | Date | string | null
+    retakeNotes?: StringNullableFilter<"FormationSessionParticipant"> | string | null
     createdAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
     updatedAt?: DateTimeFilter<"FormationSessionParticipant"> | Date | string
   }
@@ -237674,6 +237741,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutFormationSessionParticipantsInput
@@ -237697,6 +237766,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -240593,6 +240664,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -240616,6 +240689,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -242843,6 +242918,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -242867,6 +242944,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedCreateNestedManyWithoutParticipantInput
@@ -243171,6 +243250,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -243195,6 +243276,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     satisfactionSurveys?: SatisfactionSurveyUncheckedUpdateManyWithoutParticipantNestedInput
@@ -243547,6 +243630,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -243571,6 +243656,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -243775,6 +243862,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -243799,6 +243888,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -275079,6 +275170,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -275103,6 +275196,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -275232,6 +275327,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -275256,6 +275353,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -275699,6 +275798,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     session: FormationSessionCreateNestedOneWithoutParticipantsInput
@@ -275723,6 +275824,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     emargements?: FormationSessionEmargementUncheckedCreateNestedManyWithoutParticipantInput
@@ -276192,6 +276295,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -276216,6 +276321,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -279737,6 +279844,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -281028,6 +281137,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -281051,6 +281162,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -281072,6 +281185,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -286047,6 +286162,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -286240,6 +286357,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutFormationSessionParticipantsNestedInput
@@ -286263,6 +286382,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -286284,6 +286405,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -286873,6 +286996,8 @@ export namespace Prisma {
     fundingReference?: string | null
     fundingNotes?: string | null
     j5PrepReminderSentAt?: Date | string | null
+    retakeDate?: Date | string | null
+    retakeNotes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -287002,6 +287127,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     session?: FormationSessionUpdateOneRequiredWithoutParticipantsNestedInput
@@ -287025,6 +287152,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     emargements?: FormationSessionEmargementUncheckedUpdateManyWithoutParticipantNestedInput
@@ -287046,6 +287175,8 @@ export namespace Prisma {
     fundingReference?: NullableStringFieldUpdateOperationsInput | string | null
     fundingNotes?: NullableStringFieldUpdateOperationsInput | string | null
     j5PrepReminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    retakeNotes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
