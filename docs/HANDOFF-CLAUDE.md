@@ -811,3 +811,30 @@ Go direct sur les deux. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `mi
 **Tally final : 37✅ / 9🟡 / 4❌ sur 50** — 17 workflows fermés sur les deux sessions (hier soir + ce matin). Les 4 ❌ restants (WF-35-37 veille, WF-45 autres financeurs) sont bloqués pour de vraies raisons externes, pas des oublis — **rien à coder dessus sans nouvelle info** (source de veille branchée, ou process financeur officiellement vérifié). Les 9 🟡 sont des raffinements mineurs, aucun n'est un vrai gap Qualiopi.
 
 **Le backlog "audit workflows" qui a occupé les deux dernières sessions est maintenant essentiellement clos.** Rien d'urgent en attente côté code de ta part sur ce front. S'il y a un autre chantier ou une autre priorité, je te le communiquerai ici. En attendant, idle est la bonne réponse — pas besoin d'inventer du travail.
+
+## 2026-08-30 — Nouveau chantier : rattraper le FRONT (EVE reste hors scope, dernière priorité)
+
+L'utilisateur a raison de le pointer : j'ai vérifié tout le backend cette nuit/ce matin (17 workflows) mais je n'ai **pas systématiquement checké si c'est visible/utilisable côté UI staff**. Audit fait avant d'écrire ce chantier (grep sur `app/(protected)`, pas supposé) :
+
+**Déjà couvert côté UI** (rien à faire) :
+- WF-28/29/30/32 (satisfaction stakeholders + alerte score) : `suivi-formations/satisfaction/page.tsx` déjà mis à jour en Tranche 1 (labels COMPANY/TRAINER/FUNDER + badge `scoreAlert`/`scoreAverage` présents). Vérifié dans le fichier.
+- WF-34 (action corrective) : sheet UI déjà faite par toi en Tranche 4.
+- WF-06/07 (financement, devis VIEWED) : labels de statut déjà mis à jour.
+
+**Zéro UI, API-only pour l'instant** — c'est le chantier :
+
+### A. Niveau candidat — `etudiants/components/candidature-detail-sheet.tsx`
+1. **WF-02/03** : section "Analyse du besoin / Positionnement" — statut (`PENDING`/`SENT`/`COMPLETED`) par kind, `level`/`prerequisitesStatus` si POSITIONING complété, bouton "relancer" (POST existant `.../assessments`).
+2. **WF-04** : badge `adaptationStatus` + boutons d'action staff (PATCH `.../assessments/[id]/adaptation`, PENDING→APPROVED→IMPLEMENTED). C'est le point que j'avais explicitement laissé de côté deux fois cette nuit ("rebranchement UI fiche candidature" — hors scope à chaque fois) — c'est le moment de le faire.
+
+### B. Niveau participant session — `suivi-formations/tableau/components/suivi-stagiaire-details-sheet.tsx`
+Même pattern que l'onglet financement existant (`suivi-stagiaire-funding-tab.tsx`) — nouveaux onglets/sections :
+3. **WF-17/18** : signature manquante (alerte, lecture seule — jamais de bouton "marquer présent" à la place de la preuve) + statut justification absence avec PATCH (`.../emargement/[id]/justification`).
+4. **WF-24** : `examOutcome` + `retakeDate` + formulaire "proposer un rattrapage" (PATCH `.../examens/[id]/retake`, uniquement actionnable si FAILED).
+5. **WF-19** : badge `dropoutRiskStatus` + `dropoutRiskReason` + boutons de progression staff (PATCH `.../dropout-risk`, CONTACTED→ACTION_PROPOSED→RESOLVED uniquement, la route bloque déjà le reste côté serveur).
+6. **WF-21** : liste des évaluations formatives + formulaire d'ajout (GET/POST `.../formative-assessments`).
+7. **WF-08** : statut convention (GENERATED→ARCHIVED) si pas déjà visible ailleurs dans les documents de session — à vérifier avant de dupliquer.
+
+**Comment prioriser** : à toi de voir l'ordre, mais si tu dois choisir, WF-04 (accessibilité) et WF-19 (rupture) sont les plus utiles en premier — ce sont les seuls qui déclenchent une action humaine (staff doit voir pour agir), le reste est plus consultatif.
+
+**Pas de nouveau composant/pattern UI inventé** — réutilise strictement les sheets/tabs/cards déjà en place (mêmes composants shadcn/datagrid que le reste de l'app). Comme d'habitude : `tsc --noEmit` après, et **teste réellement dans le navigateur** (pas juste `tsc` vert) vu que c'est du front — golden path + un cas d'erreur par formulaire. Commit séparé, découpe en plusieurs commits si tu préfères (front A, front B).
