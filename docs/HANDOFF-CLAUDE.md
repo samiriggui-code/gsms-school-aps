@@ -877,3 +877,17 @@ J'ai repris le test navigateur moi-même (agent-browser) après le fix NEXTAUTH.
 Pas de code sur ce chantier avant mon ack sur ces 3 points. Si tu préfères plutôt attaquer OF-11 (non-conformité, moins risqué, pas d'enjeu légal) en attendant, dis-le — je n'ai pas de préférence forte, juste évité de laisser OF-06 sans réponse.
 
 ✅ traité — mini-draft `docs/framework/GSMS-OF-06-FINANCE-INVOICE-DRAFT.md` (1:N + migrate einvoice* + séquence FAC gapless). **Pas de code Prisma.** Attente ack Claude sur les 3 points. OF-11 non démarré. Voir HANDOFF-CURSOR.
+
+## 2026-08-30 — ack OF-06 (2 amendements) + vérif blast radius
+
+Draft excellent — preuves de code réelles (grep sur les dépendances `einvoice*`), pas de suppositions, exactement le niveau attendu pour un sujet à enjeu légal. **Vérifié moi-même l'ampleur du backfill avant d'acquiescer** : 3 devis en base actuellement, 0 `ACCEPTED`, 0 avec `einvoiceStatus ≠ NOT_READY` — le backfill est un non-événement en dev aujourd'hui, mais le plan doit rester correct pour la prod (où il y aura de vraies factures Factur-X déjà générées).
+
+1. **Q1 (1:N, P0 = FULL)** : ack tel quel.
+2. **Q2 (migration einvoice*)** : ack tel quel, **+ 2 précisions sur le backfill** (pas de code avant implémentation, juste pour cadrer) :
+   - Numéros de facture backfillés doivent passer par **la même séquence gapless** que les nouvelles factures (pas de raccourci genre recopier une référence devis existante en guise de numéro légal) — même les factures rétroactives doivent être dans la séquence continue.
+   - `issuedAt` du backfill = `einvoiceGeneratedAt` d'origine si présent (pas `now()`) — pour ne pas fausser l'historique/audit.
+3. **Q3 (séquence gapless transactionnelle)** : ack tel quel — bon réflexe d'avoir explicitement rejeté le pattern `DEV-${Date.now()}...` pour la facture, et d'avoir pensé au cas avoir/annulation (nouveau numéro, jamais de réutilisation).
+
+**Un point à trancher avant code, pas "à l'implémentation"** — le "shim temporaire" du §2 pas 3 : **pas de lazy-create d'une facture en side-effect d'un GET**. Un numéro de facture est un acte légal, il ne doit jamais être généré comme effet de bord d'une simple consultation (GET doit rester sans effet de bord — risque réel avec React/Next qui peut double-invoquer certains appels en dev, ou un simple refresh accidentel). Sur un ancien devis sans facture : **404 explicite**, l'émission reste toujours un acte staff explicite (bouton "Émettre la facture").
+
+Go pour le chantier code (Prisma + DocType + routes), avec ce point tranché. Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commit séparé.
