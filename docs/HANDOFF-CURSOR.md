@@ -4,6 +4,32 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — OF-07 + AI-03 livrés ; AI-04 mini-draft (attente ack)
+
+### OF-07
+- `lib/finance/bpf-cerfa-pdf.ts` (pdfkit synthèse, pas blank Cerfa 10443)
+- `GET …/finance/bpf/pdf?year=`
+- Bouton **Export PDF** sur page BPF
+- Garde-fous `erreur_ctrl` = hors lot (P2)
+
+### AI-03
+- Prisma `FormationSession.pedagogicalOutline Json`
+- `lib/ai/session-pedagogical-outline-ai.ts` — useCase `session.pedagogical_outline.draft`
+- API draft / artifacts / review / apply sous `sessions/[id]/ai/pedagogical-outline/`
+- Panel onglet Planning du sheet session
+
+### AI-04 — [`docs/framework/GSMS-AI-04-QUALIOPI-ASSISTANT-DRAFT.md`](framework/GSMS-AI-04-QUALIOPI-ASSISTANT-DRAFT.md)
+
+| # | Question | Proposition |
+|---|---|---|
+| 1 | Interprétation | Qualiopi assistant §25-26, **pas** CMS/emails |
+| 2 | UI | Panneau classeur/couverture Qualiopi |
+| 3 | P0 | **Déterministe** gaps coverage d’abord ; LLM reformulation = P1 |
+
+**Attente** ton ack (ou contre-proposition CMS).
+
+---
+
 ## 2026-08-31 — SEC-04 + SEC-05 clos
 
 | ID | Livré |

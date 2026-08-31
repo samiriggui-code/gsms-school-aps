@@ -13,7 +13,7 @@ Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de d
 - **Front rattrapé** : 8 workflows qui étaient API-only ont maintenant leur UI staff (fiche candidature + onglets stagiaire) — commit `5343ead`.
 
 **Nuancé (pas ✅, vérifié partiel — ne pas survendre)** :
-- **GSMS-OF-07** (BPF Cerfa) : agrégats déterministes réels (`bpf-aggregates.ts`), mais **pas d'export Cerfa PDF** — reste 🟡.
+- **GSMS-OF-07** (BPF Cerfa) : agrégats déterministes + PDF synthèse OF-07 ; **pas** Cerfa officiel pixel-perfect ni garde-fous `erreur_ctrl` — reste 🟡.
 
 **Reste ouvert, bloqué pour de vraies raisons (pas des oublis)** : WF-35-37 (veille réglementaire — aucune source externe branchée), WF-45 (autres financeurs — AGEFIPH/Transitions Pro/Régions non vérifiés officiellement, sauf IDF Transitions Pro vérifié).
 
@@ -179,7 +179,7 @@ Plus de P1 OF ouvert non bloqué sur ce fichier ; prochaines pistes : OF-07 Cerf
 | **GSMS-OF-04** | ✅ Fait (30/08) | `FundingCase`/`FundingProvider` + checklists EDOF/OPCO/FT (WF-42/43/44) + SELF_FUNDED/APPRENTICESHIP (WF-06) |
 | **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 + **idée 5** checklist session publiable (Claude) |
 | **GSMS-OF-06** | ✅ Fait (31/08) | `FinanceInvoice` 1:N, numérotation gapless, einvoice migré, permissions corrigées |
-| **GSMS-OF-07** | 🟡 Partiel (30/08) | Agrégats BPF déterministes réels (`bpf-aggregates.ts`) ; **pas d'export Cerfa PDF** ni pilote garde-fous idée 2 |
+| **GSMS-OF-07** | 🟡 Partiel (31/08) | Agrégats + **PDF synthèse** (`bpf-cerfa-pdf.ts`) ; pas Cerfa 10443 pixel-perfect ni pilote `erreur_ctrl` |
 | **GSMS-OF-08** | ✅ Fait | Module Docs & circuits (dashboard + listes) ; Qualiopi classeur via API section |
 | **GSMS-OF-09** | P2 | SCORM option |
 | **GSMS-OF-10** | ✅ Fait | Survey DB + lien public + cron J+45 + trigger session |
@@ -191,8 +191,8 @@ Plus de P1 OF ouvert non bloqué sur ce fichier ; prochaines pistes : OF-07 Cerf
 |----|--------|
 | **GSMS-AI-01** | ✅ Fait (Claude) |
 | **GSMS-AI-02** | ✅ Fait | Brouillon `programModules` + UI review/apply (Claude backend + Cursor UI) |
-| **GSMS-AI-03** | Ouvert P0 | Déroulé pédagogique session (après AI-02) |
-| **GSMS-AI-04** | Ouvert P0 | À définir (copies emails / contenus CMS) |
+| **GSMS-AI-03** | ✅ Fait (31/08) | Déroulé pédagogique session (`session.pedagogical_outline.draft` → review → apply sur `pedagogicalOutline`) |
+| **GSMS-AI-04** | Ouvert P0 | Mini-draft assistant Qualiopi lecture seule — `docs/framework/GSMS-AI-04-QUALIOPI-ASSISTANT-DRAFT.md` (attente ack) |
 | **GSMS-AI-05…07** | P1 |
 | **GSMS-AI-08** | P2 (après OF-10) |
 | **GSMS-AI-X** | Bloqué |

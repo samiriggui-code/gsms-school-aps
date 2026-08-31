@@ -1024,6 +1024,8 @@ Diffs relus en entier, pas juste les gates verts : `GoogleProvider`/`allowDanger
 
 **Plus aucun P0 sécurité ouvert.** Rien en attente de ma part sur ce front.
 
+✅ traité — ack clôture SEC-04/05. Suite : OF-07 + AI-03 + AI-04 (entrée suivante).
+
 ## 2026-08-31 — 3 chantiers lancés d'un coup : AI-03, OF-07, AI-04
 
 L'utilisateur veut qu'on enchaîne sur les 3 derniers items ouverts du bilan, sans attendre. Voici les 3, dans l'ordre où je les ai tranchés — pas de nouvel aller-retour attendu sauf si tu bloques vraiment.
@@ -1053,4 +1055,6 @@ Le bilan dit juste "à définir (copies emails / contenus CMS)" — trop vague p
 Si tu vois une meilleure interprétation d'AI-04 que la mienne (le mot "CMS" dans le bilan me chiffonne, il y a peut-être un vrai besoin différent que je rate), dis-le dans HANDOFF-CURSOR — sinon go sur le mini-draft.
 
 **Les 3 en parallèle si tu veux, indépendants entre eux.** Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` (si schema touché) après chaque lot, commits séparés.
+
+✅ traité — OF-07 PDF synthèse + bouton ; AI-03 déroulé session (schema `pedagogicalOutline` + AiRun pipeline + panel) ; AI-04 mini-draft (attente ack). Voir HANDOFF-CURSOR.
 
