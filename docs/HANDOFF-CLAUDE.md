@@ -991,15 +991,19 @@ L'utilisateur a demandé un croisement complet des docs (anciennes vs ce qui a �
 
 Repris `BILAN-CHANTIERS-GLOBAL.md` §3.1 : SEC-04 (OAuth/signup ouvert) et SEC-05 (rate limit public) sont marqués **P0/P1 depuis le tout début du projet**, jamais traités pendant toute la série WF/OF. J'ai vérifié le code réel avant d'écrire — pas deviné.
 
-### SEC-04 — Google OAuth crée des comptes actifs sans validation
+### SEC-04 — **CORRECTION** : pas de PENDING, retirer Google OAuth complètement
 
-`app/api/auth/[...nextauth]/auth-options.ts`, provider `GoogleProvider.profile()` : si l'email Google n'a **aucun** compte existant, création automatique — `status: 'ACTIVE'`, rôle par défaut, **zéro validation staff**. Vérifié en base (pas dans un fichier de seed potentiellement mort) : le rôle par défaut réel est **`Eleve`** (portail apprenant). Donc n'importe qui avec un compte Google obtient un compte actif avec accès portail, sans qu'aucun humain ne le valide.
+Consigne initiale remplacée — décision utilisateur tranchée : **aucun login Google, uniquement des comptes username/password créés en base côté staff (NextAuth Credentials)**. Plus simple et plus sûr que ma première idée de statut PENDING.
 
-Bonus trouvé en creusant (pas le sujet principal, à garder en tête) : `allowDangerousEmailAccountLinking: true` est actif — NextAuth nomme cette option "dangereuse" explicitement dans sa doc, elle lie un login Google à un compte existant sur simple correspondance d'email sans vérification supplémentaire.
+Vérifié avant d'écrire (pas supposé) : sur 55 users, **1 seul** a un mot de passe vide (`samiriggui@gmail.com`, "Samir (test smoke OF)") — un compte de test créé pendant les smoke tests de cette nuit, pas un vrai utilisateur. Aucun risque de verrouiller quelqu'un en retirant OAuth.
 
-**Ce que je veux** (pas de code avant ton avis si tu vois un angle que j'ai raté, sinon go direct — c'est un gap connu et bien compris, pas un sujet ambigu) :
-1. Nouveau compte via Google OAuth → statut **`PENDING`** (ou équivalent existant dans `UserStatus` — vérifie l'enum) au lieu de `ACTIVE` direct, avec notification staff pour validation manuelle. Garde le rôle par défaut `Eleve` mais bloque l'accès réel tant que non validé (mécanisme `resolveAccountBlockReason`/`assertLoginAllowed` a l'air déjà prévu pour ça — regarde s'il couvre déjà `PENDING`, sinon étends-le).
-2. Sur `allowDangerousEmailAccountLinking` : documente pourquoi c'est acceptable ici (si ça l'est — ex. un seul provider OAuth, pas de multi-provider concurrent) ou corrige si tu vois un vrai risque concret sur GSMS.
+**À faire** :
+1. Retirer complètement `GoogleProvider` de `app/api/auth/[...nextauth]/auth-options.ts` (import + entrée dans `providers[]`) — donc aussi `allowDangerousEmailAccountLinking` disparaît avec, plus la peine d'en discuter.
+2. Retirer tout bouton/UI "Se connecter avec Google" sur la page `/signin` si présent.
+3. `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` : laisse dans `.env`/`.env.example` sans risque si non lus ailleurs (vérifie vite un grep avant de les supprimer, au cas où un autre flow les utiliserait), sinon retire proprement.
+4. Le compte de test sans mot de passe (`samiriggui@gmail.com`) restera bloqué au login une fois Google retiré — normal, c'est un compte de test, pas la peine de le "réparer", à toi de voir si tu veux juste le supprimer en passant.
+
+Reste de la doctrine SEC-04 inchangé pour la suite : création de compte = uniquement staff via l'admin (pas de self-signup public du tout, ni Google ni un futur formulaire), cohérent avec "école unique, comptes gérés en interne".
 
 ### SEC-05 — Zéro rate limiting sur les routes publiques
 
