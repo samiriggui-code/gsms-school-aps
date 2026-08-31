@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { listDocumentAuditTrail } from '@/lib/governance/document-audit-trail';
 import type { DocumentAuditSource } from '@/lib/governance/document-audit-trail';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 const SOURCES = new Set<DocumentAuditSource | 'all'>(['all', 'compliance', 'file', 'version']);
 
@@ -16,6 +17,9 @@ function parseDate(value: string | null): Date | undefined {
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const page = Math.max(Number(sp.get('page')) || 1, 1);

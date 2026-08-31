@@ -1209,6 +1209,8 @@ En mode `local` (le mode actif aujourd'hui, confirmé plus tôt), **chaque fichi
 
 Pas de code écrit par moi — anomalie fonctionnelle réelle et vérifiée (pas de sécurité, mais casse une fonctionnalité transverse en dev), signalée avec le point d'insertion exact.
 
+✅ traité — `Content-Type` = `record.mimeType ?? file.contentType` sur `/uploads` + `/api/public/storage` ; select `mimeType` ; refuse soft-deleted / non-ACTIVE. Voir HANDOFF-CURSOR.
+
 ## 2026-08-31 — 🚨🚨🚨 LE PLUS GRAVE DE LA SOIRÉE : module `gouvernance-donnees/storage` — presque tous les GET (et une écriture) sans permission `storageAdmin`
 
 Toujours en train de chercher (« cherche cherche pas de pause »). En regardant qui d'autre appelle `getStoredFile`/sert des fichiers dans le repo, j'ai trouvé un troisième point de fuite fichier — **plus large que les deux fermés ce soir**, dans le module de gouvernance stockage lui-même (`securite-configuration/gouvernance-donnees/storage`), censé être réservé à `GOVERNANCE_PERMISSION.storageAdmin`.
@@ -1235,3 +1237,5 @@ if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
 (import `GOVERNANCE_PERMISSION, sessionHasPermission` depuis `@/lib/auth/crm-permissions`, déjà fait dans `storage/files/[id]/route.ts` à copier tel quel). Aucun nouveau modèle, aucune nouvelle route — uniquement ajouter la vérification manquante, 8 endroits. Priorise `preview` et `versions` POST (les deux qui touchent au contenu réel des fichiers), le reste peut suivre dans la foulée du même commit vu que c'est mécanique.
 
 Pas de code écrit par moi.
+
+✅ traité — `storageAdmin` après session sur preview, versions GET/POST, storage liste, corbeille, demandes, audit, dashboard, socle GET/POST. Voir HANDOFF-CURSOR.

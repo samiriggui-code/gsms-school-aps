@@ -7,11 +7,33 @@ import { canServeFileAsset } from '@/lib/http/common-files-access';
 
 type RouteParams = { params: Promise<{ path?: string[] }> };
 
+type ServeRecord = {
+  visibility: string;
+  createdById: string | null;
+  module: string;
+  mimeType: string;
+  status: string;
+  deletedAt: Date | null;
+};
+
 /**
  * Préfixes historiques jamais suivis par un FileAsset (avatars, logos, divers) — seuls chemins
  * servis sans enregistrement en base. Tout le reste doit être tracé par un FileAsset pour être servi.
  */
 const UNTRACKED_PUBLIC_PREFIX = /^(avatars|company|misc)\//;
+
+const ASSET_SELECT = {
+  visibility: true,
+  createdById: true,
+  module: true,
+  mimeType: true,
+  status: true,
+  deletedAt: true,
+} as const;
+
+function isServableAsset(record: ServeRecord): boolean {
+  return record.deletedAt == null && record.status === 'ACTIVE';
+}
 
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   const segments = (await params).path ?? [];
@@ -23,18 +45,19 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   const [asset, version] = await Promise.all([
     prisma.fileAsset.findUnique({
       where: { storageKey: key },
-      select: { visibility: true, createdById: true, module: true },
+      select: ASSET_SELECT,
     }),
     prisma.fileAssetVersion.findUnique({
       where: { storageKey: key },
-      select: {
-        fileAsset: { select: { visibility: true, createdById: true, module: true } },
-      },
+      select: { fileAsset: { select: ASSET_SELECT } },
     }),
   ]);
-  const record = asset ?? version?.fileAsset ?? null;
+  const record: ServeRecord | null = asset ?? version?.fileAsset ?? null;
 
   if (record) {
+    if (!isServableAsset(record)) {
+      return NextResponse.json({ message: 'Fichier introuvable' }, { status: 404 });
+    }
     const session =
       record.visibility === 'PUBLIC' ? null : await getServerSession(authOptions);
     if (!canServeFileAsset(session, record)) {
@@ -52,11 +75,12 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   }
 
   const isPublic = !record || record.visibility === 'PUBLIC';
+  const contentType = record?.mimeType || file.contentType;
 
   return new NextResponse(new Uint8Array(file.body), {
     status: 200,
     headers: {
-      'Content-Type': file.contentType,
+      'Content-Type': contentType,
       'Cache-Control': isPublic ? file.cacheControl : 'private, max-age=0, no-store',
     },
   });

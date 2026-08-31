@@ -8,6 +8,7 @@ import {
   getStorageSocleStatus,
   isRemoteStorageConfigured,
 } from '@repo/storage';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 function storageAccessUrls() {
   const mode = getStorageMode();
@@ -41,6 +42,9 @@ function storageAccessUrls() {
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const [socle, access] = await Promise.all([
@@ -83,6 +87,9 @@ export async function GET() {
 export async function POST(_request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const result = await ensureStorageSocle();

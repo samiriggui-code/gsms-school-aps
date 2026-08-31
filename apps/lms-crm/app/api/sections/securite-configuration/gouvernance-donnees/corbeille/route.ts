@@ -4,10 +4,14 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { Prisma } from '@repo/database';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const q = (sp.get('q') ?? '').trim();

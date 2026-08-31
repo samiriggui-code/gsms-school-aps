@@ -9,6 +9,7 @@ import {
   formatMissingDocumentsLabel,
   listMissingCandidatDocuments,
 } from '@/lib/governance/candidat-missing-documents';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 const OPEN_CANDIDATURE_STATUSES: CandidatureStatus[] = [
   CandidatureStatus.DRAFT,
@@ -24,6 +25,9 @@ function monthKey(date: Date): string {
 export async function GET(_request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const now = new Date();

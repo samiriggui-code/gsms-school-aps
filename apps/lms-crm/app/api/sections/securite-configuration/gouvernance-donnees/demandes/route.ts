@@ -10,6 +10,7 @@ import {
   complianceDossierGedPath,
 } from '@/lib/governance/compliance-dossier-links';
 import type { Prisma } from '@repo/database';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 const ACTIONABLE_ITEM_STATUSES = ['MISSING', 'REJECTED', 'EXPIRED', 'REQUESTED'] as const;
 
@@ -27,6 +28,9 @@ function displayName(user: {
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const q = (sp.get('q') ?? '').trim();

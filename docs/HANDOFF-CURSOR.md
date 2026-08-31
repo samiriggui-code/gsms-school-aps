@@ -4,6 +4,25 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — SEC storageAdmin + Content-Type local
+
+### Critique — gouvernance-donnees sans `storageAdmin`
+Ajouté `sessionHasPermission(..., GOVERNANCE_PERMISSION.storageAdmin)` → 403 sur :
+- `storage/files/[id]/preview` (GET octets)
+- `storage/files/[id]/versions` (GET + POST écriture)
+- `storage` (liste)
+- `corbeille` (liste)
+- `demandes`, `audit`, `dashboard`
+- `storage/socle` (GET + POST)
+
+### Bug Content-Type mode local
+`/uploads` + `/api/public/storage` : header `Content-Type` = `FileAsset.mimeType` (fallback `getStoredFile`). Plus de téléchargement forcé PDF/images en dev.
+
+### Bonus (point mineur Claude)
+Refuse de servir FileAsset soft-deleted / `status !== ACTIVE`.
+
+---
+
 ## 2026-08-31 — OF-07 garde-fous `erreur_ctrl`
 
 ### Livré dans `lib/finance/bpf-aggregates.ts`
