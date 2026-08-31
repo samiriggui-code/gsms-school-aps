@@ -987,3 +987,28 @@ L'utilisateur a demandé un croisement complet des docs (anciennes vs ce qui a �
 
 ✅ traité — Q3/Q4 confirmés sur code ; **choix assumé P0** (pas de migration ResourceService maintenant). `QUALIOPI_DRIFT.md` mis à jour (statuts Q1–Q8). Voir HANDOFF-CURSOR.
 
+## 2026-08-31 — Nouveau chantier : SEC-04 + SEC-05 (P0 sécurité jamais ouverts)
+
+Repris `BILAN-CHANTIERS-GLOBAL.md` §3.1 : SEC-04 (OAuth/signup ouvert) et SEC-05 (rate limit public) sont marqués **P0/P1 depuis le tout début du projet**, jamais traités pendant toute la série WF/OF. J'ai vérifié le code réel avant d'écrire — pas deviné.
+
+### SEC-04 — Google OAuth crée des comptes actifs sans validation
+
+`app/api/auth/[...nextauth]/auth-options.ts`, provider `GoogleProvider.profile()` : si l'email Google n'a **aucun** compte existant, création automatique — `status: 'ACTIVE'`, rôle par défaut, **zéro validation staff**. Vérifié en base (pas dans un fichier de seed potentiellement mort) : le rôle par défaut réel est **`Eleve`** (portail apprenant). Donc n'importe qui avec un compte Google obtient un compte actif avec accès portail, sans qu'aucun humain ne le valide.
+
+Bonus trouvé en creusant (pas le sujet principal, à garder en tête) : `allowDangerousEmailAccountLinking: true` est actif — NextAuth nomme cette option "dangereuse" explicitement dans sa doc, elle lie un login Google à un compte existant sur simple correspondance d'email sans vérification supplémentaire.
+
+**Ce que je veux** (pas de code avant ton avis si tu vois un angle que j'ai raté, sinon go direct — c'est un gap connu et bien compris, pas un sujet ambigu) :
+1. Nouveau compte via Google OAuth → statut **`PENDING`** (ou équivalent existant dans `UserStatus` — vérifie l'enum) au lieu de `ACTIVE` direct, avec notification staff pour validation manuelle. Garde le rôle par défaut `Eleve` mais bloque l'accès réel tant que non validé (mécanisme `resolveAccountBlockReason`/`assertLoginAllowed` a l'air déjà prévu pour ça — regarde s'il couvre déjà `PENDING`, sinon étends-le).
+2. Sur `allowDangerousEmailAccountLinking` : documente pourquoi c'est acceptable ici (si ça l'est — ex. un seul provider OAuth, pas de multi-provider concurrent) ou corrige si tu vois un vrai risque concret sur GSMS.
+
+### SEC-05 — Zéro rate limiting sur les routes publiques
+
+Grep confirmé : aucune trace de rate limiting nulle part dans `apps/lms-crm/app/api/public` ni `lib/`. Routes publiques concernées (au moins) : `preinscriptions`, `public/assessment/[id]` (POST soumission), `public/finance/devis/[id]/plaquette-accept`, `public/satisfaction/[surveyId]`. Toutes ouvertes au spam/flood sans aucune limite.
+
+**Redis existe déjà** (`packages/redis`, tu l'as même redémarré cette nuit) — c'est l'outil naturel pour un rate limiter (compteur par IP + fenêtre glissante). Design suggéré, à toi d'affiner :
+1. Middleware/helper réutilisable (ex. `assertRateLimit(key, { max, windowMs })`) branché sur Redis, pas une solution par route.
+2. L'appliquer sur les routes POST publiques listées ci-dessus en premier — pas besoin de tout couvrir d'un coup, commence par les plus exposées (formulaires publics sans token).
+3. Les routes déjà protégées par token HMAC signé (assessment, satisfaction, plaquette-accept) sont moins critiques que `preinscriptions` (aucun secret requis) — priorise si tu dois séquencer.
+
+Les deux sont indépendants, tu peux les faire dans l'ordre que tu veux ou en parallèle. `test:doctype` + `tsc --noEmit` après, comme d'habitude.
+
