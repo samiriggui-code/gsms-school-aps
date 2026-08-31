@@ -1189,3 +1189,22 @@ Pas de nouveau modèle Prisma, pas de nouvelle route — uniquement enrichir la 
 
 ✅ traité — 4 contrôles `erreur_ctrl` dans `buildBpfAggregates` (HOURS_OVER_CATALOG, APPROVED_OVER_REQUESTED, SESSION_DATES_INCOHERENT, ZERO_HOURS_FORMATION) ; PDF inchangé ; BILAN OF-07 mis à jour. `tsc` 0 · `test:doctype` 9/9. Voir HANDOFF-CURSOR.
 
+## 2026-08-31 — Bug fonctionnel réel : tous les documents s'ouvrent en téléchargement forcé au lieu de s'afficher (mode local)
+
+Continué à chercher (l'utilisateur a dit « cherche cherche pas de pause »). En vérifiant la suite logique du fix `/uploads` (je suis remonté à la source des octets servis), j'ai relu `packages/storage/src/index.ts::readLocalStoredFile` (ligne ~194-213) :
+
+```ts
+return {
+  body: bytes,
+  contentType: 'application/octet-stream', // toujours, quel que soit le fichier
+  cacheControl: 'public, max-age=86400',
+};
+```
+
+En mode `local` (le mode actif aujourd'hui, confirmé plus tôt), **chaque fichier servi renvoie `Content-Type: application/octet-stream`**, peu importe si c'est un PDF, une image, etc. — le mimeType réel n'est jamais lu depuis le disque ni depuis la base. En mode `remote` (S3/MinIO), ce n'est pas le cas : `getStoredFile` renvoie `out.ContentType` (le vrai type stocké par S3). C'est donc une différence de comportement local vs prod, pas voulue à ma lecture (aucun commentaire n'indique une décision consciente).
+
+**Impact réel vérifié** : grep sur tout `apps/lms-crm` — l'ouverture de document est un pattern utilisé partout (`target="_blank"` ou `window.open(url)`) sans l'attribut `download`, dans au moins : classeur Qualiopi (`qualiopi-classeur-view.tsx`), dossier administratif (`dossier-administratif-view.tsx`, `dossier-file-viewer-dialog.tsx`, `documents-list.tsx`), factures (`facture-detail-sheet.tsx`), devis (`devis-detail-sheet.tsx`), suivi formations (`suivi-documents-list.tsx`, `suivi-journal-day-sheet.tsx`, `suivi-slot-documents-badges.tsx`), examens (`formation-exam-detail-sheet.tsx`), inventaire équipements. Tous ces boutons « ouvrir le document » attendent un aperçu inline (PDF/image dans le navigateur) — avec `application/octet-stream`, le navigateur déclenche un téléchargement forcé à la place. En prod (mode `remote`), ça marche correctement ; en local/dev (mode actif), ça ne marche pour aucun document.
+
+**Correctif demandé, borné** : dans les deux routes qui servent les fichiers (`app/uploads/[[...path]]/route.ts` et `app/api/public/storage/[[...path]]/route.ts`, toutes deux déjà modifiées ce soir pour l'auth), ajoute `mimeType: true` aux deux `select` Prisma (`fileAsset` et `fileAssetVersion.fileAsset`), puis remplace `file.contentType` par `record?.mimeType ?? file.contentType` dans le header `Content-Type` de la réponse (fallback sur la valeur de `getStoredFile` pour les chemins non trackés `avatars|company|misc`, qui n'ont pas de `record`). Le `mimeType` en base est déjà validé au moment de l'upload (`COMMON_FILES_ALLOWED_MIME` côté `common/files`, ou l'équivalent des autres endpoints d'upload) donc c'est une source fiable, pas une donnée client non vérifiée à la volée.
+
+Pas de code écrit par moi — anomalie fonctionnelle réelle et vérifiée (pas de sécurité, mais casse une fonctionnalité transverse en dev), signalée avec le point d'insertion exact.
