@@ -1109,3 +1109,19 @@ Plutôt que d'attendre, j'ai fait un audit systématique de toutes les routes `/
 
 Pas de code écrit par moi là-dessus — c'est mineur, pas bloquant, à faire quand tu veux.
 
+## 2026-08-31 — 🚨 URGENT : fuite de fichiers cross-module, `GET /api/common/files`
+
+Continué le balayage sécurité sur l'upload/GED (`apps/lms-crm/app/api/common/files/route.ts`), zone jamais auditée. **Trouvé un vrai problème sérieux, pas mineur cette fois** :
+
+**Le GET ne vérifie qu'une session authentifiée** (`if (!session)`), aucun rôle/permission. Les filtres `module`/`entityType`/`entityId` sont **tous optionnels**. Le `findMany` n'a **aucun `select`** (donc renvoie tous les champs du modèle, y compris `url`) et **ne filtre pas sur `visibility`**.
+
+**Conséquence concrète** : n'importe quel utilisateur connecté — même le rôle le plus bas (`candidat`/`eleve`, celui qu'on vient de restreindre en SEC-04) — peut appeler `GET /api/common/files` **sans aucun paramètre** et recevoir jusqu'à 200 `FileAsset`, avec leur `url` directe, **tous modules confondus** (RH, CNAPS, conformité, finance...), **y compris les fichiers marqués `PRIVATE`**. C'est une vraie fuite de documents entre modules/rôles, pas juste un manque de granularité.
+
+**Bonus trouvé en vérifiant le POST (upload)** : `createFileAssetWithVersion` ne valide ni type de fichier (pas de liste blanche mimeType) ni taille max — moins urgent que le GET mais réel, à corriger dans le même lot si possible.
+
+**Correctif attendu** (priorité haute, avant tout le reste) :
+1. GET : exiger une permission réelle scoped au `module`/`entityType` demandé (mirroir ce qui existe déjà par module — ex. `financeView` si `module === 'finance'`, `academiqueView` si vie-scolaire, etc.) plutôt qu'un accès générique à toute la table `FileAsset`. Au minimum P0 : filtrer par `visibility` selon le rôle (jamais renvoyer `PRIVATE` à quelqu'un qui n'a pas de lien direct avec l'entité), et refuser une requête sans `module`+`entityType` (pas de balayage total de la table).
+2. POST : valider `mimeType` (liste blanche raisonnable — PDF/images/office pour un GED d'école) + taille max (ex. 20-50 Mo), rejeter sinon.
+
+Pas de code écrit par moi — je te le remonte vite vu la gravité, mais reste dans les clous de "je ne touche pas au code, je remonte l'anomalie".
+
