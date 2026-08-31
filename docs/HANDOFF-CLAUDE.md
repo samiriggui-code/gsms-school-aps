@@ -1238,4 +1238,52 @@ if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
 
 Pas de code écrit par moi.
 
+## 2026-08-31 — 🚨🚨🚨 4e trouvaille, la plus large en surface : le module `finance` pré-existant (devis, budget, paiements…) n'a jamais eu le check `financeView`/`financeEdit` en dehors des routes touchées par OF-06
+
+Toujours en train de chercher. J'ai relu le commentaire OF-06 dans le bilan (« un trou de permission trouvé sur les routes bespoke... corrigé le jour même ») et vérifié ce que ça couvrait réellement, pas supposé que ça couvrait tout le module.
+
+**Vérifié directement dans le code** (pas de grep hâtif — j'ai ouvert les fichiers) : `factures/*` et `bpf/*` ont bien le pattern correct, ex. `factures/route.ts` :
+```ts
+const session = await getServerSession(authOptions);
+if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) { ... } // GET
+if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) { ... } // POST
+```
+Mais **le reste du module finance, plus ancien, n'a jamais eu ce check** — juste `if (!session) return fail('Unauthorized request', 401)`, donc n'importe quel compte staff authentifié (formateur, RH, n'importe quel rôle) peut lire/écrire des données financières sans la permission `finance*`. Confirmé sur plusieurs fichiers en entier, pas juste par pattern-matching : `devis/route.ts` (GET liste tous les devis clients), `paiements/route.ts` (GET liste **et POST crée** des paiements — `markFinancePaymentReceived` importé, donc l'action d'enregistrer un paiement reçu n'est pas non plus protégée), `budget/route.ts`.
+
+**Liste complète des fichiers concernés** (grep ciblé sur `sessionHasPermission|financeView|financeEdit` absent, tous sous `administration-facturation/finance`) :
+```
+alerts/route.ts
+budget/route.ts
+budget/[lineId]/route.ts
+catalog-lines/route.ts
+devis/route.ts
+devis/[devisId]/route.ts
+devis/[devisId]/send/route.ts
+devis/[devisId]/pdf/route.ts
+devis/[devisId]/pdf/proposition/route.ts
+devis/[devisId]/plaquette-messages/route.ts
+devis/[devisId]/plaquette-public-link/route.ts
+edof-catalog/route.ts
+financeurs/route.ts
+financeurs/cases/route.ts
+financeurs/cases/[id]/route.ts
+financeurs/cases/[id]/agent/messages/route.ts
+financeurs/cases/[id]/documents/route.ts
+financeurs/cases/[id]/documents/[docId]/route.ts
+financeurs/cases/[id]/edof-checklist/route.ts
+financeurs/cases/[id]/ft-kairos-checklist/route.ts
+financeurs/cases/[id]/opco-checklist/route.ts
+operations/route.ts
+paiements/route.ts
+paiements/[paymentId]/route.ts
+rapports/route.ts
+rapports/export/route.ts
+stats/route.ts
+```
+27 fichiers.
+
+**Correctif demandé, même mécanique que pour le module gouvernance** : ajouter `sessionHasPermission(session, CRM_PERMISSION.financeView)` sur les GET et `CRM_PERMISSION.financeEdit` sur les POST/PATCH/DELETE, en copiant exactement le pattern déjà présent dans `factures/route.ts` (import `CRM_PERMISSION, sessionHasPermission` depuis `@/lib/auth/crm-permissions`, déjà fait). Avant de foncer partout : vérifie au cas par cas si certaines routes de la liste sont volontairement accessibles à tout profil staff (ex. si `stats/route.ts` est un résumé anodin déjà affiché sur un dashboard transverse) — si un doute, demande plutôt que de sur-restreindre et casser une page existante. Mais le cas `paiements` (lecture ET création de paiements) et `devis` (données clients + montants) doivent être corrigés en priorité, ce sont clairement des données finance sensibles.
+
+Pas de code écrit par moi.
+
 ✅ traité — `storageAdmin` après session sur preview, versions GET/POST, storage liste, corbeille, demandes, audit, dashboard, socle GET/POST. Voir HANDOFF-CURSOR.
