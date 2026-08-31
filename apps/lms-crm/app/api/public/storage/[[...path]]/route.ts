@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { getStoredFile } from '@repo/storage';
 import { prisma } from '@/lib/prisma';
-import { canReadFileAsset } from '@/lib/file-asset-service';
+import { canServeFileAsset } from '@/lib/http/common-files-access';
 
 type RouteParams = { params: Promise<{ path?: string[] }> };
 
@@ -11,7 +11,7 @@ type RouteParams = { params: Promise<{ path?: string[] }> };
  * Préfixes historiques jamais suivis par un FileAsset (avatars, logos, divers) — seuls chemins
  * servis sans enregistrement en base. Tout le reste doit être tracé par un FileAsset pour être servi.
  */
-const UNTRACKED_PUBLIC_PREFIX = /^(avatars|company|misc)\//i;
+const UNTRACKED_PUBLIC_PREFIX = /^(avatars|company|misc)\//;
 
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   const segments = (await params).path ?? [];
@@ -23,18 +23,21 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
   const [asset, version] = await Promise.all([
     prisma.fileAsset.findUnique({
       where: { storageKey: key },
-      select: { visibility: true, createdById: true },
+      select: { visibility: true, createdById: true, module: true },
     }),
     prisma.fileAssetVersion.findUnique({
       where: { storageKey: key },
-      select: { fileAsset: { select: { visibility: true, createdById: true } } },
+      select: {
+        fileAsset: { select: { visibility: true, createdById: true, module: true } },
+      },
     }),
   ]);
   const record = asset ?? version?.fileAsset ?? null;
 
   if (record) {
-    const session = record.visibility === 'PUBLIC' ? null : await getServerSession(authOptions);
-    if (!canReadFileAsset(session, record)) {
+    const session =
+      record.visibility === 'PUBLIC' ? null : await getServerSession(authOptions);
+    if (!canServeFileAsset(session, record)) {
       return NextResponse.json({ message: 'Fichier introuvable' }, { status: 404 });
     }
   } else if (!UNTRACKED_PUBLIC_PREFIX.test(key)) {

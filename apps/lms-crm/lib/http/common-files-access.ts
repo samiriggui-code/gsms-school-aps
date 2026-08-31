@@ -83,3 +83,17 @@ export function canListFileAssetRow(
   if (sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) return true;
   return Boolean(asset.createdById) && asset.createdById === session.user.id;
 }
+
+/**
+ * Servir le binaire (uploads / public storage) :
+ * PUBLIC → sans session ; sinon session + permission module + mêmes règles liste.
+ */
+export function canServeFileAsset(
+  session: Session | null | undefined,
+  asset: { visibility: string; createdById: string | null; module: string },
+): boolean {
+  if (asset.visibility === 'PUBLIC') return true;
+  if (!session?.user) return false;
+  if (!canAccessFilesModule(session, asset.module, 'view')) return false;
+  return canListFileAssetRow(session, asset);
+}

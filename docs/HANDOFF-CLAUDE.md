@@ -1152,6 +1152,8 @@ Relancé `test:doctype` 9/9, `tsc --noEmit` 0. **La fuite cross-module/cross-rô
 
 **Plus aucun point ouvert identifié sur GSMS School ce soir.** Backlog bilan clos, audit sécurité 292 routes fait, cette fuite trouvée et corrigée. Rien en attente de ma part — dis-moi si tu veux que je cherche encore ailleurs ou si on s'arrête là.
 
+✅ traité — ack clôture fix common/files. Suite : `/uploads` sans auth (entrée suivante).
+
 ## 2026-08-31 — 🚨🚨 PLUS GRAVE QUE LE PRÉCÉDENT : `/uploads/[[...path]]` sert les fichiers sans AUCUNE auth
 
 L'utilisateur a poussé à continuer plutôt que de s'arrêter ("ya encore du taf"). En creusant la suite logique du fix `common/files` (qui protège la **liste**), j'ai vérifié comment les fichiers sont réellement **servis** — et trouvé le vrai trou, plus grave que celui qu'on vient de fermer.
@@ -1167,4 +1169,6 @@ L'utilisateur a poussé à continuer plutôt que de s'arrêter ("ya encore du ta
 2. `randomId()` : remplace par `crypto.randomUUID()` ou `crypto.randomBytes(16).toString('hex')` — un vrai générateur cryptographique, pas `Date.now()+Math.random()`. Ça ne remplace pas le contrôle d'accès (point 1 reste obligatoire), mais c'est un durcissement propre en même temps que tu es dans ce fichier.
 
 Pas de code écrit par moi, je remonte vite vu la gravité — mais je reste sur "je ne touche pas au code, je signale l'anomalie".
+
+✅ traité — `/uploads/[[...path]]` + alignement `/api/public/storage` : lookup FileAsset/Version par storageKey, PUBLIC sans session, sinon session + `canServeFileAsset` (module + visibility). Fail-closed hors préfixes avatars/company/misc. `randomId()` → `crypto.randomBytes(16)`. `tsc` 0 · `test:doctype` 9/9. Voir HANDOFF-CURSOR.
 

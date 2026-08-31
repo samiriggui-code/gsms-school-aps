@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
 import { getStoredFile } from '@repo/storage';
+import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { prisma } from '@/lib/prisma';
+import { canServeFileAsset } from '@/lib/http/common-files-access';
 
 type RouteParams = { params: Promise<{ path?: string[] }> };
+
+/**
+ * Préfixes historiques jamais suivis par un FileAsset (avatars, logos, divers) —
+ * seuls chemins servis sans enregistrement en base. Aligné sur `/api/public/storage`.
+ */
+const UNTRACKED_PUBLIC_PREFIX = /^(avatars|company|misc)\//;
 
 /** Compatibilité URLs historiques `/uploads/...` (dev local ou proxy). */
 export async function GET(_request: NextRequest, { params }: RouteParams) {
@@ -11,16 +21,42 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Chemin fichier manquant' }, { status: 400 });
   }
 
+  const [asset, version] = await Promise.all([
+    prisma.fileAsset.findUnique({
+      where: { storageKey: key },
+      select: { visibility: true, createdById: true, module: true },
+    }),
+    prisma.fileAssetVersion.findUnique({
+      where: { storageKey: key },
+      select: {
+        fileAsset: { select: { visibility: true, createdById: true, module: true } },
+      },
+    }),
+  ]);
+  const record = asset ?? version?.fileAsset ?? null;
+
+  if (record) {
+    const session =
+      record.visibility === 'PUBLIC' ? null : await getServerSession(authOptions);
+    if (!canServeFileAsset(session, record)) {
+      return NextResponse.json({ message: 'Fichier introuvable' }, { status: 404 });
+    }
+  } else if (!UNTRACKED_PUBLIC_PREFIX.test(key)) {
+    return NextResponse.json({ message: 'Fichier introuvable' }, { status: 404 });
+  }
+
   const file = await getStoredFile(key);
   if (!file) {
     return NextResponse.json({ message: 'Fichier introuvable' }, { status: 404 });
   }
 
+  const isPublic = !record || record.visibility === 'PUBLIC';
+
   return new NextResponse(new Uint8Array(file.body), {
     status: 200,
     headers: {
       'Content-Type': file.contentType,
-      'Cache-Control': file.cacheControl,
+      'Cache-Control': isPublic ? file.cacheControl : 'private, max-age=0, no-store',
     },
   });
 }

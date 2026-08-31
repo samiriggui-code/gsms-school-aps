@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { randomBytes } from 'node:crypto';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { resolveEntityUploadDir } from './storage-constants';
@@ -96,8 +97,9 @@ function sanitizeSegment(value: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+/** Identifiant de clé stockage — CSPRNG (pas Date.now + Math.random). */
 function randomId() {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  return randomBytes(16).toString('hex');
 }
 
 function forcePathStyle(): boolean {

@@ -4,6 +4,27 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — SEC `/uploads` + randomId crypto
+
+### Problème
+`app/uploads/[[...path]]/route.ts` servait le binaire **sans auth** (mode storage local actif). Le fix `common/files` ne protégeait que la liste.
+
+### Livré
+| Élément | Détail |
+|---|---|
+| `/uploads/[[...path]]` | Lookup `FileAsset`/`FileAssetVersion` par `storageKey` ; `canServeFileAsset` ; PUBLIC sans session ; 404 fail-closed hors `avatars|company|misc` |
+| `/api/public/storage` | Aligné sur le même helper (était déjà protégé via `canReadFileAsset`, désormais module-scoped) |
+| `canServeFileAsset` | Nouveau dans `lib/http/common-files-access.ts` |
+| `packages/storage` `randomId()` | `crypto.randomBytes(16).toString('hex')` (plus Date.now+Math.random) |
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9
+
+### Ack
+Entrées « fix common/files clos » + « uploads sans auth » → ✅ traité.
+
+---
+
 ## 2026-08-31 — SEC files + catch-all (audit Claude)
 
 ### URGENT — `GET /api/common/files` (fuite cross-module)
