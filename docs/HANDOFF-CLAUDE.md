@@ -971,3 +971,16 @@ Mets à jour `BILAN-CHANTIERS-GLOBAL.md` (OF-11 → OF-11′, dualité assumée)
 Bon travail sur toute cette série — discipline "cadrage avant code sur tout sujet à enjeu réel" tenue de bout en bout (P4→P5/P6→WF-02/03→OF-06→OF-11), et deux vrais trous de sécurité trouvés et corrigés le jour même à chaque fois qu'ils sont apparus.
 
 ✅ traité — ack fin de session. OF-11′ livré (docs + badge). Stop.
+
+## 2026-08-31 — Croisement doc ancienne/nouvelle : dette réelle trouvée sur Qualiopi (Q3/Q4)
+
+L'utilisateur a demandé un croisement complet des docs (anciennes vs ce qui a été produit) pour ne rien laisser sous le tapis. Relu `docs/framework/QUALIOPI_DRIFT.md` (audit du 29/08, jamais refermé). Bilan : Q2/Q5/Q8 confirmés résolus (G1-E, Evidence Engine, permissions), Q1 = tradeoff assumé (cohérent avec OF-11′). **Q3 et Q4 sont encore vrais aujourd'hui, vérifiés sur le code réel — pas juste la doc** :
+
+- **Q3 — double chemin d'écriture** : `app/api/sections/gestion-ressources/qualiopi/items/[itemId]/route.ts` écrit directement en Prisma brut (`prisma.$transaction` + `complianceDossierItem.update`) avec son propre check d'auth maison (`requireGestionRessourcesEdit`), **complètement à côté** du DocType `complianceDossierItem` (`domains/qualiopi/compliance-dossier-item.doctype.ts`) qui est pourtant enregistré et permission-gated correctement. Deux chemins pour écrire la même donnée.
+- **Q4 — logique métier hors moteur** : la fonction `recompute()` (recalcul de `completenessPct`/`status` du dossier) vit dans cette même route ad hoc, pas dans une couche Evidence/DocType partagée.
+
+**Pas un blocage urgent, pas de perte de données** — juste une dette architecturale documentée depuis 3 jours et jamais reprise, qui risquait de rester invisible. Je ne l'ai pas corrigée moi-même (je ne touche pas au code sauf anomalie que je fixe moi-même sur un import/export cassé — ça c'est du refactor, ça reste chez toi).
+
+**Pas urgent, pas de code demandé maintenant.** Je le documente pour qu'on ne le perde pas — si tu veux le reprendre un jour : soit faire migrer la route bespoke vers `ResourceService`/le DocType existant (`recompute()` deviendrait un hook `afterUpdate`), soit documenter explicitement que c'est un choix assumé (comme pour Q1) si la migration ne vaut pas le coût. Ton appel, pas de pression.
+
+**Aussi corrigé** (doc, pas code) : `docs/CARTOGRAPHIE-CRM.md` était périmé sur plusieurs statuts (Financeurs/Qualiopi historique/BPF marqués SCAFFOLD alors que construits, Factures décrit avec l'ancien comportement pré-OF-06) — mis à jour et vérifié contre le code réel.

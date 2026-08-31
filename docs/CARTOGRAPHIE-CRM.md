@@ -5,7 +5,7 @@
 > Layouts : `.cursor/rules/gestion-ressources-layout.mdc` (3 niveaux)  
 > API : `apps/lms-crm/app/api/sections/{section}/...` (miroir URL UI)  
 > Accueil cartes : `app/(protected)/accueil/components/menu-cards-section.tsx`  
-> **Date :** 29 août 2026
+> **Date :** 29 août 2026 · **Statuts Qualiopi/Financeurs/BPF/Factures/IA revérifiés et corrigés le 31 août 2026** (voir notes "vérifié 31/08" inline)
 
 ---
 
@@ -100,7 +100,7 @@ Ressources (Compagnie, RH, Formateurs, Salles, Matériel, Qualiopi)
 |------|------|--------|----------------|-----------|
 | Hub | `…/qualiopi` | HUB | Complétude 32 ind., alertes, overview | `ComplianceItem` SCHOOL_QUALIOPI |
 | Classeur | `…/classeur` | OK | 32 indicateurs : statut, commentaire, preuve | Storage preuves |
-| Historique | `…/historique` | SCAFFOLD | Timeline écarts (`ComplianceItemEvent`) | OF-11 |
+| Historique | `…/historique` | OK (vérifié 31/08) | Timeline écarts (`ComplianceItemEvent`) — DataGrid réel, pas un scaffold | OF-11′ |
 
 **API :** `sections/gestion-ressources/qualiopi` · redirects legacy `support-qualite/qualiopi` → ici.
 
@@ -166,10 +166,10 @@ Ressources (Compagnie, RH, Formateurs, Salles, Matériel, Qualiopi)
 | Module Finance | `…/finance` | HUB / landing | Accès rapide pages | — |
 | Budget | `…/budget` | OK | Lignes budgétaires | — |
 | Devis | `…/devis` | OK | Pipeline `FinanceDevis`, plaquettes | Leads, étudiants, sessions |
-| Factures | `…/factures` | OK | Émission / relances (même dossier devis ACCEPTED) | Paiements ; WIP Factur-X local |
+| Factures | `…/factures` | OK (vérifié 31/08) | `FinanceInvoice` 1:N dédiée (OF-06) — numérotation légale gapless, émission = acte staff explicite, plus le devis ACCEPTED réutilisé | Devis, Paiements, Factur-X migré |
 | Paiements | `…/paiements` | OK | Encaissements | Factures |
-| Financeurs | `…/financeurs` | SCAFFOLD | Registre OPCO/CPF/entreprise | Sessions, BPF — **OF-04** |
-| BPF | `…/bpf` | SCAFFOLD | Bilan pédagogique & financier Cerfa | Financeurs, sessions — **OF-07** |
+| Financeurs | `…/financeurs` | OK (vérifié 31/08) | Registre `FundingCase` réel + checklists EDOF/OPCO/FT + agent IA — **OF-04** clos | Sessions, BPF |
+| BPF | `…/bpf` | 🟡 Partiel (vérifié 31/08) | Agrégats déterministes réels (`bpf-aggregates.ts`) branchés ; **pas d'export Cerfa PDF** ni pilote garde-fous — **OF-07** | Financeurs, sessions |
 | Rapports | `…/rapports` | OK | Synthèses finance | Stats |
 
 ---
@@ -250,11 +250,15 @@ Ressources (Compagnie, RH, Formateurs, Salles, Matériel, Qualiopi)
 
 ## 12. Chantiers scaffolds prioritaires (collab Claude)
 
-1. **IA brouillons** — DataGrid AiArtifact PROPOSED + apply métier  
-2. **IA historique** — DataGrid AiRun  
-3. **Qualiopi historique** — timeline ComplianceItemEvent  
-4. **Financeurs** — modèle Prisma + CRUD Type A  
-5. **BPF** — agrégats déterministes Cerfa (pas de 2e système Qualiopi)
+**Tous vérifiés construits au 31/08** (cette liste datait du 29/08, plus à jour) :
+
+1. ~~**IA brouillons**~~ — ✅ DataGrid AiArtifact PROPOSED + apply métier (190 lignes, réel)
+2. ~~**IA historique**~~ — ✅ DataGrid AiRun (167 lignes, réel)
+3. ~~**Qualiopi historique**~~ — ✅ timeline ComplianceItemEvent (OF-11′)
+4. ~~**Financeurs**~~ — ✅ `FundingCase` réel + checklists (OF-04)
+5. **BPF** — 🟡 agrégats déterministes réels, export Cerfa PDF encore manquant (OF-07 partiel)
+
+Reste ouvert et non couvert par cette liste, trouvé lors du croisement doc du 31/08 : `docs/framework/QUALIOPI_DRIFT.md` Q3/Q4 (double chemin d'écriture `complianceDossierItem` — route bespoke `qualiopi/items/[itemId]` en Prisma brut, à côté du DocType enregistré, avec la logique de recalcul de complétude hors du moteur Evidence/DocType) — architecture dette réelle, pas un simple scaffold vide.
 
 Ne pas : recréer Qualiopi sous Support · hub Accéder vide · second schema Prisma · copier code AGPL Formacoop/Frappe.
 
