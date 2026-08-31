@@ -1289,3 +1289,31 @@ stats/route.ts
 Pas de code écrit par moi.
 
 ✅ traité — `financeView` (GET) / `financeEdit` (POST/PATCH/DELETE) sur les 27 routes listées (devis, paiements, budget, financeurs, stats, rapports…). Pattern aligné `factures/route.ts`. Voir HANDOFF-CURSOR.
+
+## 2026-08-31 — 🔴🔴🔴 CRITIQUE, LE PLUS GRAVE DE TOUT LE PROJET : escalade de privilèges réelle sur `roles/[id]` (module IAM lui-même)
+
+En élargissant la recherche au-delà des fichiers (« cherche cherche pas de pause »), j'ai comparé toutes les routes du module `securite-configuration/acces` (IAM — users/roles/permissions) entre elles. Même pattern d'asymétrie que sur `gouvernance-donnees` et `finance` : `roles/route.ts` (liste/création) vérifie bien `IAM_PERMISSION.rolesView`/`rolesEdit`, mais **`roles/[id]/route.ts` (GET/PUT/DELETE — la fiche détail d'un rôle) ne vérifie que la présence d'une session, jamais la permission.**
+
+**C'est une vraie escalade de privilèges, pas juste une fuite de lecture.** Lu le fichier en entier : `PUT /api/sections/securite-configuration/acces/roles/[id]` accepte de n'importe quel compte staff authentifié un body `{ name, slug, description, permissions: string[] }` et **réécrit entièrement la liste des permissions du rôle** (`userRolePermission.deleteMany` puis `createMany` avec les `permissionId` fournis par l'appelant, aucune validation côté serveur que ces ids sont légitimes pour ce contexte). Même pour un rôle « protégé » (`isProtected` + `isSchoolIamRoleSlug`), seuls `name`/`slug` sont verrouillés dans la branche `isLockedSchoolRole` — **la liste de permissions reste réécrite sans restriction** dans les deux branches du code.
+
+Concrètement : n'importe quel utilisateur du CRM (même le rôle le plus bas, un formateur, un agent RH…) peut appeler cette route avec l'id de **son propre rôle** et lui injecter **toutes les permissions du système**, y compris `iam.roles.edit`, `governance.storage.admin`, `crm.finance.edit`, etc. — prise de contrôle complète du CRM au prochain rafraîchissement de session. `DELETE` sur la même route permet aussi de supprimer n'importe quel rôle non protégé sans vérification.
+
+**Correctif demandé, priorité absolue, avant tout le reste, y compris ce qui est déjà en attente** : dans `apps/lms-crm/app/api/sections/securite-configuration/acces/roles/[id]/route.ts`, ajouter sur `GET`, `PUT` et `DELETE` le même check que `roles/route.ts` :
+```ts
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+// après le if (!session) ...
+if (!sessionHasPermission(session, IAM_PERMISSION.rolesView)) { ... } // GET
+if (!sessionHasPermission(session, IAM_PERMISSION.rolesEdit)) { ... } // PUT, DELETE
+```
+
+**Reste du cluster IAM, même cause, sévérité moindre mais réelle — à corriger dans la foulée** (vérifié fichier par fichier, pas de suppositions) :
+- `roles/[id]/default/route.ts` (PATCH) : n'importe qui peut changer le rôle par défaut du système → `IAM_PERMISSION.rolesEdit`.
+- `users/[id]/restore/route.ts` (PATCH) : n'importe qui peut restaurer un compte utilisateur mis à la corbeille → `IAM_PERMISSION.usersEdit` (constante confirmée dans `lib/auth/crm-permissions.ts`, `iam.users.edit`).
+- `logs/route.ts` + `logs/stats/route.ts` : journal d'audit complet (connexion/iam/conformité/documents) lisible par tout utilisateur connecté → `IAM_PERMISSION.logsView` (`iam.logs.view`, constante existe déjà, juste jamais utilisée sur ces deux routes).
+- `users/[id]/logs/route.ts` : historique d'activité d'un utilisateur quelconque, même chose → `IAM_PERMISSION.logsView`.
+- `permissions/route.ts` (GET) et `permissions/[id]/route.ts` (GET) : liste/détail du catalogue de permissions sans check — sévérité faible (catalogue pas secret, et leurs `POST`/`PUT`/`DELETE` sont déjà correctement bloqués en dur, « catalogue seed-driven »), mais à aligner pour la cohérence → `IAM_PERMISSION.permissionsView` (`iam.permissions.view`, constante déjà définie, jamais utilisée nulle part actuellement — à vérifier).
+- `permissions/select/route.ts`, `roles/select/route.ts`, `users/select/route.ts` : à vérifier si ce sont de simples listes déroulantes déjà peu sensibles (nom/id seulement) — si oui, priorité basse, mais vérifie quand même.
+
+**Vérifié comme non concernés, ne pas toucher** : `account/route.ts` et `account/profile/route.ts` (POST) sont correctement scopés sur `session.user.id`/`session.user.email` (auto-service, pas de fuite cross-utilisateur) ; `settings/general|notifications|social/route.ts` sont des ré-exports dépréciés vers `parametres/settings/*` qui, eux, vérifient déjà `CRM_PERMISSION.securiteEdit` via `requireCrmApiAuth`.
+
+Pas de code écrit par moi — mais celle-ci est plus grave que les 4 précédentes réunies, à traiter en tout premier.
