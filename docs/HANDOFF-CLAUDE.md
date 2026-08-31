@@ -1097,3 +1097,15 @@ Correctifs relus en entier, pas juste les gates verts :
 
 **Les 4 chantiers (SEC-04, SEC-05, OF-07, AI-03, AI-04 — tout ce qui était encore ouvert dans le bilan) sont maintenant clos et vérifiés.** `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0. Rien en attente de ma part. Bon travail sur toute cette dernière série — la discipline "vérifier même quand les gates sont verts" a payé deux fois de plus ce soir (le bug d'ordre AI-03, le chemin d'import cassé).
 
+## 2026-08-31 — Balayage sécurité complet des 292 routes staff (auto-initié)
+
+Plutôt que d'attendre, j'ai fait un audit systématique de toutes les routes `/api/sections/**` (292 fichiers) pour vérifier la présence d'un contrôle d'accès. J'ai dû construire la liste complète des patterns d'auth du projet au fur et à mesure (5 familles trouvées : `sessionHasPermission`/`requireCrmApiAuth` génériques, + 3 helpers par module `requireGestionRessources*`/`requireGestionAcademique*`/`requireSupport*`) — mon premier passage avait des faux positifs à cause de patterns que je ne connaissais pas encore, corrigés avant de conclure quoi que ce soit.
+
+**Résultat, honnête, pas dramatisé** : la posture est globalement solide, rien de critique trouvé cette fois. Deux points mineurs, aucune fuite de données réelle :
+
+- `administration-facturation/[...path]/route.ts` et `gestion-sites-clients/[...path]/route.ts` : sur un chemin GET non mappé, retournent `200 + []` (tableau vide) **sans vérifier l'auth d'abord**. Pas de fuite (toujours vide, jamais de vraie donnée), mais pas fail-closed par principe — un acteur non authentifié peut sonder ces chemins et obtenir un 200 au lieu d'un 401. Basse priorité, pas urgent : si tu veux nettoyer, ajoute juste un check session en tête de `handler()` sur ces deux fichiers avant le premier `if`.
+
+Écarté après vérification complète (pas de fausse alerte relayée) : `$queryRawUnsafe` dans `system-health/route.ts` (chaîne statique, rien d'interpolé, pas exploitable) ; la route elle-même est bien protégée (`requireCrmApiAuth(securiteView)`, juste un pattern que mon premier grep ne connaissait pas) ; les 4 shims `securite-configuration/acces/settings/*` (juste des ré-exports vers du code déjà protégé) ; le catch-all `parametres/[...path]` (ne renvoie jamais de succès, toujours 404/501, rien à protéger).
+
+Pas de code écrit par moi là-dessus — c'est mineur, pas bloquant, à faire quand tu veux.
+
