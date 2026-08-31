@@ -13,7 +13,7 @@ Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de d
 - **Front rattrapé** : 8 workflows qui étaient API-only ont maintenant leur UI staff (fiche candidature + onglets stagiaire) — commit `5343ead`.
 
 **Nuancé (pas ✅, vérifié partiel — ne pas survendre)** :
-- **GSMS-OF-07** (BPF Cerfa) : agrégats déterministes + PDF synthèse OF-07 ; **pas** Cerfa officiel pixel-perfect ni garde-fous `erreur_ctrl` — reste 🟡.
+- **GSMS-OF-07** (BPF Cerfa) : agrégats + PDF synthèse + garde-fous `erreur_ctrl` (cohérence heures/montants/dates) ; **pas** Cerfa 10443 pixel-perfect — reste 🟡 partiel.
 
 **Reste ouvert, bloqué pour de vraies raisons (pas des oublis)** : WF-35-37 (veille réglementaire — aucune source externe branchée), WF-45 (autres financeurs — AGEFIPH/Transitions Pro/Régions non vérifiés officiellement, sauf IDF Transitions Pro vérifié).
 
@@ -189,7 +189,7 @@ Plus de P1 OF ouvert non bloqué sur ce fichier ; prochaines pistes : OF-07 Cerf
 | **GSMS-OF-04** | ✅ Fait (30/08) | `FundingCase`/`FundingProvider` + checklists EDOF/OPCO/FT (WF-42/43/44) + SELF_FUNDED/APPRENTICESHIP (WF-06) |
 | **GSMS-OF-05** | ✅ Fait → **enrichir** | Classeur UI + seed V9 + **idée 5** checklist session publiable (Claude) |
 | **GSMS-OF-06** | ✅ Fait (31/08) | `FinanceInvoice` 1:N, numérotation gapless, einvoice migré, permissions corrigées |
-| **GSMS-OF-07** | 🟡 Partiel (31/08) | Agrégats + **PDF synthèse** (`bpf-cerfa-pdf.ts`) ; pas Cerfa 10443 pixel-perfect ni pilote `erreur_ctrl` |
+| **GSMS-OF-07** | 🟡 Partiel (31/08) | Agrégats + PDF synthèse + **garde-fous `erreur_ctrl`** (HOURS_OVER_CATALOG, APPROVED_OVER_REQUESTED, SESSION_DATES_INCOHERENT, ZERO_HOURS_FORMATION) ; pas Cerfa 10443 pixel-perfect |
 | **GSMS-OF-08** | ✅ Fait | Module Docs & circuits (dashboard + listes) ; Qualiopi classeur via API section |
 | **GSMS-OF-09** | P2 | SCORM option |
 | **GSMS-OF-10** | ✅ Fait | Survey DB + lien public + cron J+45 + trigger session |
@@ -250,7 +250,7 @@ OPS-02 n8n prod · OPS-03 workers AI · OPS-04 obs · OPS-05 démo 15 min.
 5. ~~**OF-02** — pack emails~~  
 6. ~~**SEC-03** / **NAF-00·01**~~ — fait 30/08 (audit IAM P1-P10 clos, Vague 1 DocType terminée)  
 7. ~~**OF-04**~~ + **idée 3** registre financement — fait 30/08 (FundingCase/checklists connecteurs) ; idée 3 (registre légal unifié) pas formellement vérifiée comme module dédié  
-8. **OF-07** + **idée 2** pilote garde-fous (P2) — **partiel** : agrégats faits, export Cerfa PDF + garde-fous non faits  
+8. **OF-07** + **idée 2** pilote garde-fous (P2) — **partiel** : agrégats + export PDF synthèse + garde-fous `erreur_ctrl` faits ; Cerfa 10443 pixel-perfect non fait  
 9. ~~**OF-11**~~ → **OF-11′** clos 31/08 (doc + UX dualité ; pas Prisma 8 valeurs)
 
 **Prochaine cohorte suggérée (après ce bilan)** : OF-07 (export Cerfa BPF), AI-03/04, NAF-04… — pas de P1 OF non bloqué restant. EVE / ExternalExchange / WF-35-37/45 restent bloqués ou dernière priorité.

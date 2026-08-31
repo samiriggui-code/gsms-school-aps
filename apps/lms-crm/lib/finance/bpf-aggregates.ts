@@ -129,12 +129,28 @@ export async function buildBpfAggregates(
   const stagiaireIds = new Set<string>();
   let hoursCatalog = 0;
   let attendedSlots = 0;
+  let sessionsDatesIncoherent = 0;
+  let zeroHoursFormationSessions = 0;
 
   for (const session of sessionsInYear) {
-    const hours =
-      session.formation.hoursMin ??
-      session.formation.hoursMax ??
-      0;
+    if (
+      session.startDate &&
+      session.endDate &&
+      session.endDate.getTime() < session.startDate.getTime()
+    ) {
+      sessionsDatesIncoherent += 1;
+    }
+
+    const hoursMin = session.formation.hoursMin;
+    const hoursMax = session.formation.hoursMax;
+    const hours = hoursMin ?? hoursMax ?? 0;
+    const catalogUndefined =
+      (hoursMin == null || hoursMin === 0) && (hoursMax == null || hoursMax === 0);
+
+    if (catalogUndefined && session.participants.length > 0) {
+      zeroHoursFormationSessions += 1;
+    }
+
     for (const p of session.participants) {
       stagiaireIds.add(p.userId);
       hoursCatalog += hours;
@@ -170,6 +186,7 @@ export async function buildBpfAggregates(
   let amountApproved = 0;
   const byType = new Map<string, BpfFunderRow>();
   let approvedMissingAmount = 0;
+  let approvedOverRequested = 0;
 
   for (const c of fundingCases) {
     const requested = toNumber(c.requestedAmount);
@@ -179,6 +196,9 @@ export async function buildBpfAggregates(
     if (countsAsApproved) {
       amountApproved += approved;
       if (c.approvedAmount == null) approvedMissingAmount += 1;
+    }
+    if (c.approvedAmount != null && approved > requested) {
+      approvedOverRequested += 1;
     }
 
     const row = byType.get(c.funderType) ?? {
@@ -222,6 +242,34 @@ export async function buildBpfAggregates(
       message: `${approvedMissingAmount} dossier(s) post-approbation sans approvedAmount.`,
     });
   }
+  if (hoursCatalog > 0 && hoursAttendedProxy > hoursCatalog) {
+    controls.push({
+      code: 'HOURS_OVER_CATALOG',
+      severity: 'warn',
+      message: `Heures émargées (proxy ${Math.round(hoursAttendedProxy * 10) / 10} h) > heures catalogue (${hoursCatalog} h) — possible double émargement ou hoursMin/Max sous-estimés.`,
+    });
+  }
+  if (approvedOverRequested > 0) {
+    controls.push({
+      code: 'APPROVED_OVER_REQUESTED',
+      severity: 'warn',
+      message: `${approvedOverRequested} dossier(s) FundingCase avec approvedAmount > requestedAmount.`,
+    });
+  }
+  if (sessionsDatesIncoherent > 0) {
+    controls.push({
+      code: 'SESSION_DATES_INCOHERENT',
+      severity: 'warn',
+      message: `${sessionsDatesIncoherent} session(s) avec endDate < startDate sur l’exercice ${year}.`,
+    });
+  }
+  if (zeroHoursFormationSessions > 0) {
+    controls.push({
+      code: 'ZERO_HOURS_FORMATION',
+      severity: 'warn',
+      message: `${zeroHoursFormationSessions} session(s) avec stagiaires mais Formation.hoursMin/hoursMax nuls ou 0 — heures catalogue non fiables.`,
+    });
+  }
 
   return {
     year,
@@ -241,6 +289,7 @@ export async function buildBpfAggregates(
       'Heures catalogue = sum(Formation.hoursMin ?? hoursMax) par inscription non annulée.',
       `Heures émargées (proxy) = créneaux PRESENT|LATE × ${BPF_HOURS_PER_SLOT} h (pas la durée réelle du créneau).`,
       'Montants funding = FundingCase de l’année (createdAt ou session liée) ; approvedAmount si statut post-approbation.',
+      'Garde-fous erreur_ctrl (OF-07) : HOURS_OVER_CATALOG, APPROVED_OVER_REQUESTED, SESSION_DATES_INCOHERENT, ZERO_HOURS_FORMATION.',
       'Export PDF synthèse disponible (OF-07) — pas un Cerfa 10443 pixel-perfect.',
     ],
   };

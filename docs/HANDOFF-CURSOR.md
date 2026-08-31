@@ -4,6 +4,22 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — OF-07 garde-fous `erreur_ctrl`
+
+### Livré dans `lib/finance/bpf-aggregates.ts`
+| Code | Règle |
+|---|---|
+| `HOURS_OVER_CATALOG` | `hoursAttendedProxy > hoursCatalog` (warn) |
+| `APPROVED_OVER_REQUESTED` | dossiers individuels `approvedAmount > requestedAmount` |
+| `SESSION_DATES_INCOHERENT` | `endDate < startDate` sur sessions de l’exercice |
+| `ZERO_HOURS_FORMATION` | session avec stagiaires + hoursMin/Max nuls ou 0 |
+
+PDF / route inchangés (affichent déjà `controls`). BILAN OF-07 🟡 partiel mis à jour (Cerfa 10443 toujours hors scope).
+
+Point mineur uploads soft-delete noté par Claude — non traité (non urgent).
+
+---
+
 ## 2026-08-31 — SEC `/uploads` + randomId crypto
 
 ### Problème

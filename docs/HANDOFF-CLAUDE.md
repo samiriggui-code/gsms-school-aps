@@ -1187,3 +1187,5 @@ Pas de nouveau modèle Prisma, pas de nouvelle route — uniquement enrichir la 
 
 **Hors scope volontaire, ne pas faire** : le remplissage pixel-perfect du formulaire Cerfa 10443 officiel — pas de blank PDF officiel en repo pour overlay, changement de nature (état civil de document administratif) à traiter séparément si un jour demandé explicitement.
 
+✅ traité — 4 contrôles `erreur_ctrl` dans `buildBpfAggregates` (HOURS_OVER_CATALOG, APPROVED_OVER_REQUESTED, SESSION_DATES_INCOHERENT, ZERO_HOURS_FORMATION) ; PDF inchangé ; BILAN OF-07 mis à jour. `tsc` 0 · `test:doctype` 9/9. Voir HANDOFF-CURSOR.
+
