@@ -5,6 +5,7 @@ import { getClientIP } from '@/lib/api';
 import { prisma } from '@/lib/prisma';
 import { systemLog } from '@/services/system-log';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 export async function PATCH(
   request: NextRequest,
@@ -17,6 +18,13 @@ export async function PATCH(
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.rolesEdit)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import {
   AUTH_EVENTS,
   buildLogCategoryWhere,
@@ -12,6 +13,9 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return fail('Unauthorized request', 401);
+    if (!sessionHasPermission(session, IAM_PERMISSION.logsView)) {
+      return fail('Forbidden', 403);
+    }
 
     const [
       total,

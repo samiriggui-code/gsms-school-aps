@@ -4,6 +4,29 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — SEC IAM : escalade `roles/[id]` + cluster
+
+### Critique — privilege escalation
+`PUT/DELETE/GET …/acces/roles/[id]` : session seule → tout staff pouvait réécrire la matrice de permissions d’un rôle (y compris le sien).
+
+Fix : `rolesView` (GET) / `rolesEdit` (PUT, DELETE) — même message 403 que `roles/route.ts`.
+
+### Cluster IAM (foulée)
+| Route | Gate |
+|---|---|
+| `roles/[id]/default` PATCH | `rolesEdit` |
+| `users/[id]/restore` PATCH | `usersEdit` |
+| `logs` + `logs/stats` GET | `logsView` |
+| `users/[id]/logs` GET | `logsView` |
+| `permissions` GET, `permissions/[id]` GET, `permissions/select` GET | `permissionsView` |
+
+Déjà OK (non touchés) : `roles/select`, `users/select`, `roles/[id]/permissions`, `permissions/[id]/roles`, account/*.
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9
+
+---
+
 ## 2026-08-31 — SEC financeView/financeEdit sur module finance legacy
 
 ### Critique — 27 routes hors OF-06 sans `finance*`

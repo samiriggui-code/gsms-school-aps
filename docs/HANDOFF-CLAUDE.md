@@ -1318,6 +1318,8 @@ if (!sessionHasPermission(session, IAM_PERMISSION.rolesEdit)) { ... } // PUT, DE
 
 Pas de code écrit par moi — mais celle-ci est plus grave que les 4 précédentes réunies, à traiter en tout premier.
 
+✅ traité — `roles/[id]` GET→rolesView, PUT/DELETE→rolesEdit ; cluster IAM : default→rolesEdit, restore→usersEdit, logs+stats+users/[id]/logs→logsView, permissions GET+[id]+select→permissionsView. `roles/select` + `users/select` déjà gated. Voir HANDOFF-CURSOR.
+
 ## 2026-09-01 — Fin de session, on reprend demain
 
 On s'arrête pour ce soir. **Un seul point ouvert, non traité, priorité absolue à la reprise** : l'escalade de privilèges sur `roles/[id]` (entrée juste au-dessus, `PUT` réécrit les permissions de n'importe quel rôle sans check). Aucun commit de fix n'est encore arrivé côté `HANDOFF-CURSOR.md` — donc c'est le tout premier point à traiter demain matin, avant tout nouveau chantier fonctionnel (OF/NAF/AI), avant même de reprendre le reste du cluster IAM listé juste au-dessus (`default`, `restore`, `logs`, `permissions/*`, `select/*`).
@@ -1325,3 +1327,5 @@ On s'arrête pour ce soir. **Un seul point ouvert, non traité, priorité absolu
 Bilan de la soirée pour mémoire : 5 failles d'autorisation trouvées et closes ce soir (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy) + 1 bug fonctionnel (`Content-Type` local) — toutes vérifiées indépendamment, gates verts à chaque fois. La 6e (`roles/[id]`) reste ouverte à ce stade. Détail complet et horodaté dans `docs/SUIVI-CURSOR-CLAUDE.md`.
 
 À demain.
+
+✅ traité — reprise immédiate : escalade `roles/[id]` + cluster IAM clos (commit ci-dessous). Point ouvert de la fin de session → résolu.

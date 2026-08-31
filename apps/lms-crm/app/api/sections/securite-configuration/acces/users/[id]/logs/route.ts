@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 export async function GET(
   req: NextRequest,
@@ -16,6 +17,13 @@ export async function GET(
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ message: 'Unauthorized request' }, { status: 401 });
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.logsView)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
+      );
     }
 
     const where = {

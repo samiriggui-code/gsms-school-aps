@@ -13,6 +13,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { UserRolePermission } from '@/app/models/user';
 import { isSchoolIamRoleSlug } from '@/lib/rh-iam-roles';
 import { createWorkflowEngine } from '@repo/api-core';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 // GET: Fetch a specific role by ID, including permissions
 export async function GET(
@@ -26,6 +27,13 @@ export async function GET(
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.rolesView)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 
@@ -70,6 +78,13 @@ export async function PUT(
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.rolesEdit)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 
@@ -229,6 +244,13 @@ export async function DELETE(
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.rolesEdit)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 

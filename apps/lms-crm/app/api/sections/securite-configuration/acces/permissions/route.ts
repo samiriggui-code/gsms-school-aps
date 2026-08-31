@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { schoolPermissionPrismaFilter } from '@/lib/iam/school-permissions';
 import { domainLabelForPermissionSlug } from '@/lib/auth/permission-domains';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 // GET: Fetch all permissions
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -23,6 +24,13 @@ export async function GET(request: Request) {
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.permissionsView)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 

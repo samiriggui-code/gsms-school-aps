@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { domainLabelForPermissionSlug } from '@/lib/auth/permission-domains';
+import { IAM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 // GET: Fetch a specific permission by ID
 export async function GET(
@@ -16,6 +17,13 @@ export async function GET(
       return NextResponse.json(
         { message: 'Unauthorized request' },
         { status: 401 }, // Unauthorized
+      );
+    }
+
+    if (!sessionHasPermission(session, IAM_PERMISSION.permissionsView)) {
+      return NextResponse.json(
+        { message: 'Accès refusé — permission requise.' },
+        { status: 403 },
       );
     }
 
