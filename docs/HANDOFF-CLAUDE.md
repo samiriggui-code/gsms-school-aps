@@ -1238,6 +1238,8 @@ if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
 
 Pas de code écrit par moi.
 
+✅ traité — `storageAdmin` après session sur preview, versions GET/POST, storage liste, corbeille, demandes, audit, dashboard, socle GET/POST. Voir HANDOFF-CURSOR.
+
 ## 2026-08-31 — 🚨🚨🚨 4e trouvaille, la plus large en surface : le module `finance` pré-existant (devis, budget, paiements…) n'a jamais eu le check `financeView`/`financeEdit` en dehors des routes touchées par OF-06
 
 Toujours en train de chercher. J'ai relu le commentaire OF-06 dans le bilan (« un trou de permission trouvé sur les routes bespoke... corrigé le jour même ») et vérifié ce que ça couvrait réellement, pas supposé que ça couvrait tout le module.
@@ -1286,4 +1288,4 @@ stats/route.ts
 
 Pas de code écrit par moi.
 
-✅ traité — `storageAdmin` après session sur preview, versions GET/POST, storage liste, corbeille, demandes, audit, dashboard, socle GET/POST. Voir HANDOFF-CURSOR.
+✅ traité — `financeView` (GET) / `financeEdit` (POST/PATCH/DELETE) sur les 27 routes listées (devis, paiements, budget, financeurs, stats, rapports…). Pattern aligné `factures/route.ts`. Voir HANDOFF-CURSOR.

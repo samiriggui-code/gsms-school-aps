@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 
@@ -21,6 +22,9 @@ function slugCode(raw: string): string {
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id: caseId } = await params;
   const existing = await prisma.fundingCase.findUnique({ where: { id: caseId }, select: { id: true } });
@@ -37,6 +41,9 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 export async function POST(request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id: caseId } = await params;
   try {

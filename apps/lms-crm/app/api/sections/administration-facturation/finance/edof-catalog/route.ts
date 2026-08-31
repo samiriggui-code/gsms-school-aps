@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth/next';
 import { NextResponse } from 'next/server';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { buildEdofCatalogXml } from '@/lib/connectors/edof/build-catalog-xml';
@@ -17,6 +18,9 @@ import {
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { searchParams } = new URL(request.url);
   const format = (searchParams.get('format') ?? 'xml').toLowerCase();

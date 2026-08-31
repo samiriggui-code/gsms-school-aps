@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { fail } from '@/app/api/_shared/http/response';
 import { FinanceDevisStatus } from '@repo/database';
@@ -14,6 +15,9 @@ function csvEscape(value: string | number | null | undefined): string {
 export async function GET(_request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const months = 12;
   const now = new Date();

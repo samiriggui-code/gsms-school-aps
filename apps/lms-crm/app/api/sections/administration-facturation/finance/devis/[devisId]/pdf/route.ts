@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { buildFinanceDevisHtml } from '@/lib/finance/finance-devis-html';
 import { buildFinanceDevisPdfBuffer } from '@/lib/finance/finance-devis-pdf';
 import { loadFinanceDevisPdfRow } from '@/lib/finance/load-finance-devis-pdf-row';
@@ -20,6 +21,9 @@ function requestOrigin(request: NextRequest): string | undefined {
 export async function GET(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return new NextResponse('Unauthorized', { status: 401 });
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return new NextResponse('Forbidden', { status: 403 });
+  }
 
   const { devisId } = await context.params;
   const format = request.nextUrl.searchParams.get('format');
@@ -59,6 +63,9 @@ export async function GET(request: NextRequest, context: Ctx) {
 export async function POST(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { devisId } = await context.params;
 

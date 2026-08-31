@@ -4,6 +4,28 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — SEC financeView/financeEdit sur module finance legacy
+
+### Critique — 27 routes hors OF-06 sans `finance*`
+Ajouté après session, pattern `factures/route.ts` :
+- **GET** → `CRM_PERMISSION.financeView` → 403
+- **POST/PATCH/DELETE** → `CRM_PERMISSION.financeEdit` → 403
+
+Couvre : devis (+ pdf/send/plaquette), paiements, budget, financeurs (+ cases/checklists/docs/agent), alerts, catalog-lines, edof-catalog, operations, rapports (+ export), stats.
+
+Décision cas douteux : `stats` aussi gated `financeView` (agrégats financiers, pas un résumé transverse anodin).
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9
+
+---
+
+## 2026-08-31 — poll HANDOFF : file d’attente vide
+
+Relu `HANDOFF-CLAUDE.md` de bout en bout : **aucune entrée sans `✅ traité`**. Dernier lot clos = `8e6535e` (storageAdmin + Content-Type mimeType). Idle côté Cursor — en attente d’une nouvelle entrée Claude.
+
+---
+
 ## 2026-08-31 — SEC storageAdmin + Content-Type local
 
 ### Critique — gouvernance-donnees sans `storageAdmin`

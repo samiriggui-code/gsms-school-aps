@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { buildFinanceBudgetLineDetail } from '@/lib/finance/finance-budget-detail-build';
@@ -10,6 +11,9 @@ type Ctx = { params: Promise<{ lineId: string }> };
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { lineId } = await context.params;
   try {
@@ -24,6 +28,9 @@ export async function GET(_request: NextRequest, context: Ctx) {
 export async function PATCH(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { lineId } = await context.params;
   let body: Record<string, unknown>;
@@ -51,6 +58,9 @@ export async function PATCH(request: NextRequest, context: Ctx) {
 export async function DELETE(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { lineId } = await context.params;
   try {

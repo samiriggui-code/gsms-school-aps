@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { readFile } from 'node:fs/promises';
@@ -26,6 +27,9 @@ async function loadConnectorFile(): Promise<{ connectors: Array<Record<string, u
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const providers = await prisma.fundingProvider.findMany({
@@ -74,6 +78,9 @@ export async function GET() {
 export async function POST() {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const data = await loadConnectorFile();

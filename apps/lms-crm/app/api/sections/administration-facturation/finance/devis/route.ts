@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { NotificationService, createWorkflowEngine } from '@repo/api-core';
 import { FinanceDevisStatus, Prisma } from '@repo/database';
@@ -75,6 +76,9 @@ function companyFromClientSnapshot(raw: unknown): string | null {
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const leadIdFilter = (sp.get('leadId') ?? '').trim();
@@ -294,6 +298,9 @@ async function allocateReferenceCode(): Promise<string> {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: PostBody;
   try {

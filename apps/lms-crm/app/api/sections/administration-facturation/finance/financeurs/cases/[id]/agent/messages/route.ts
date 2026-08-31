@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import type { ModelMessage } from 'ai';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import {
@@ -19,6 +20,9 @@ type RouteParams = { params: Promise<{ id: string }> };
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await params;
   const conversation = await getOrCreateAgentConversation({
@@ -33,6 +37,9 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 export async function POST(request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await params;
   const fundingCase = await prisma.fundingCase.findUnique({ where: { id }, select: { id: true } });

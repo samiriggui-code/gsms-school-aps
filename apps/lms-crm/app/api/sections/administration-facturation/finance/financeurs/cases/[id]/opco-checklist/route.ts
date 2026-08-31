@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth/next';
 import { FundingFunderType } from '@repo/database';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import {
@@ -15,6 +16,9 @@ type Ctx = { params: Promise<{ id: string }> };
 export async function GET(_request: Request, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await context.params;
   try {
@@ -63,6 +67,9 @@ export async function GET(_request: Request, context: Ctx) {
 export async function POST(request: Request, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await context.params;
   let body: { stepCode?: string };
