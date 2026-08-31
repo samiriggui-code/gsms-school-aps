@@ -5,11 +5,15 @@ import { prisma } from '@/lib/prisma';
 import { fail } from '@/app/api/_shared/http/response';
 import { buildBpfAggregates } from '@/lib/finance/bpf-aggregates';
 import { buildBpfCerfaPdfBuffer } from '@/lib/finance/bpf-cerfa-pdf';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 /** GET — PDF synthèse BPF (OF-07). `?year=2025` */
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.financeView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const url = new URL(request.url);
