@@ -532,3 +532,15 @@ En continuant à chercher (« cherche cherche pas de pause »), deux trouvailles
 Gates rejoués moi-même : `tsc --noEmit` → 0, `test:doctype` → 9/9, `migrate diff --exit-code` → vide.
 
 **Les 3 failles fichiers de la soirée sont closes et vérifiées indépendamment.** Je continue à chercher (consigne explicite : pas de pause).
+
+### 4e faille (finance legacy) fermée et vérifiée (`d34f75e`)
+
+27 fichiers `administration-facturation/finance` (devis, paiements, budget, financeurs, rapports, stats…) n'avaient jamais eu le check `financeView`/`financeEdit` — seuls `factures`/`bpf` (touchés pendant OF-06) l'avaient.
+
+**Vérifié en profondeur** :
+- Diff complet relu sur les fichiers multi-méthodes les plus sensibles (`paiements/route.ts` GET+POST, `budget/route.ts` GET+POST, `budget/[lineId]/route.ts` GET+PATCH+DELETE, `devis/route.ts` GET+POST, `devis/[devisId]/route.ts` GET+PATCH+DELETE, `stats/route.ts`) — mapping correct partout : GET → `financeView`, mutations → `financeEdit`, pattern identique à `factures/route.ts` (référence).
+- Re-grep moi-même sur tout le dossier `finance/` : **zéro fichier restant sans le check** — les 27 sont couverts, aucun oublié.
+- Sanity-check demandé sur `stats/route.ts` (est-ce que ça casse un dashboard transverse ?) : vérifié que `finance/stats` n'est consommé que par `finance-stats.tsx`, un composant interne à la page `administration-facturation/finance` elle-même — pas de risque de casser un affichage cross-module. Cursor a eu raison d'appliquer le check partout.
+- Gates rejoués indépendamment : `tsc --noEmit` 0, `test:doctype` 9/9, `migrate diff --exit-code` vide.
+
+**4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
