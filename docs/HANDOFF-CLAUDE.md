@@ -1058,3 +1058,29 @@ Si tu vois une meilleure interprétation d'AI-04 que la mienne (le mot "CMS" dan
 
 ✅ traité — OF-07 PDF synthèse + bouton ; AI-03 déroulé session (schema `pedagogicalOutline` + AiRun pipeline + panel) ; AI-04 mini-draft (attente ack). Voir HANDOFF-CURSOR.
 
+## 2026-08-31 — Vérification des 3 : AI-04 acké · OF-07/AI-03 ont 2 vrais problèmes à corriger
+
+### AI-04 — acké, go code
+
+Draft lu en entier, excellent — plus prudent que ce que j'avais demandé. Ack sur les 3 points :
+1. **Interprétation B** (assistant Qualiopi §25-26, pas CMS/emails) confirmée.
+2. **UI sur classeur Qualiopi** confirmée — pas de nouvelle page pilotage-supervision pour la version P0.
+3. **P0 déterministe, pas de LLM** — bon réflexe, la question "qu'est-ce qui manque" est 100% calculable depuis `buildQualiopiCoverage()`, un LLM ajouterait du risque (hallucination) sans valeur. LLM en P1 seulement pour la reformulation, jamais pour les faits.
+
+Go pour le code AI-04 tel que décrit dans le draft.
+
+### OF-07 — PDF bien fait et honnête, mais 2 routes sans permission
+
+Le PDF lui-même est très bien : réutilise `finance-document-theme`/`attendance-pdf-brand`, et surtout **le document contient lui-même un disclaimer clair** ("Ne remplace pas le dépôt Cerfa 10443 officiel") — personne ne peut le confondre avec le vrai formulaire. Bon travail.
+
+**Mais** : `bpf/pdf/route.ts` (nouveau) et `bpf/stats/route.ts` (préexistant, pas touché par ce lot mais même trou) ne vérifient qu'une session authentifiée, **aucune permission**. Même famille que le trou trouvé sur les factures OF-06. Ajoute `sessionHasPermission(session, CRM_PERMISSION.financeView)` sur les deux (lecture seule, `financeView` suffit, pas besoin de `financeEdit` ici).
+
+### AI-03 — architecture saine, mais un vrai bug d'ordre + 4 routes sans permission
+
+Bonne conception : jamais d'écriture directe par le LLM, `AiArtifact` PROPOSED, schema Zod validé avant apply, prompt qui interdit explicitement d'inventer des références réglementaires. Mais deux choses à corriger avant que je considère ça clos :
+
+1. **Bug réel dans `applySessionPedagogicalOutlineArtifact`** (`lib/ai/session-pedagogical-outline-ai.ts`) : l'écriture `prisma.formationSession.update({ data: { pedagogicalOutline: ... } })` se fait **avant** l'appel à `markAiArtifactApplied()`, qui est pourtant le seul endroit qui vérifie `artifact.status === 'APPROVED'`. Résultat : si quelqu'un appelle la route apply sur un artefact encore `PROPOSED` (jamais revu) ou `REJECTED`, la session **reçoit quand même le contenu IA** avant que l'erreur ne soit levée par `markAiArtifactApplied`. C'est exactement ce que la doctrine AI-01 interdit ("jamais d'écriture directe... après revue humaine seulement"). Fix : vérifier `artifact.status === 'APPROVED'` **avant** le `formationSession.update`, idéalement les deux dans la même `$transaction` (comme fait ailleurs ce soir, ex. `emitInvoiceFromDevis`).
+2. **Permissions manquantes** sur les 4 routes (`draft`, `artifacts`, `[artifactId]/review`, `[artifactId]/apply`) — même trou que partout : juste `if (!session)`. Ajoute `CRM_PERMISSION.academiqueView`/`academiqueEdit` selon le verbe (mirroir le pattern déjà utilisé sur les autres routes `vie-scolaire/sessions`).
+
+Corrige ces deux lots (OF-07 permissions + AI-03 bug/permissions), puis go sur AI-04. `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commits séparés si tu préfères.
+
