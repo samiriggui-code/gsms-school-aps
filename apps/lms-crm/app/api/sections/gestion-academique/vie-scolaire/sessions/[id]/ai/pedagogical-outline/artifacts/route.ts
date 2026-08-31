@@ -4,6 +4,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { AI_PEDAGOGICAL_OUTLINE_USE_CASE } from '@/lib/ai/session-pedagogical-outline-ai';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -11,6 +12,9 @@ type Ctx = { params: Promise<{ id: string }> };
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await context.params;
   if (!id?.trim()) return fail('Session id manquant.', 400);

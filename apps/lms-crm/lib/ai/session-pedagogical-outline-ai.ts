@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { runStructuredAiTask } from '@/lib/ai/run-structured-ai-task';
-import { markAiArtifactApplied } from '@/lib/ai/ai-run-service';
 import type { Prisma } from '@repo/database';
 
 export const AI_PEDAGOGICAL_OUTLINE_USE_CASE = 'session.pedagogical_outline.draft';
@@ -124,19 +123,31 @@ export async function applySessionPedagogicalOutlineArtifact(input: { artifactId
   if (artifact.targetEntityType !== TARGET_ENTITY_TYPE || !artifact.targetEntityId) {
     throw new Error('Artefact non lié à une session.');
   }
+  if (artifact.status !== 'APPROVED') {
+    throw new Error(
+      `Artefact non approuvé (statut actuel : ${artifact.status}) — application refusée.`,
+    );
+  }
 
   const parsed = PedagogicalOutlineDraftSchema.safeParse(artifact.payload);
   if (!parsed.success) {
     throw new Error("Contenu de l'artefact invalide — impossible d'appliquer.");
   }
 
-  await prisma.formationSession.update({
-    where: { id: artifact.targetEntityId },
-    data: {
-      pedagogicalOutline: parsed.data.days as unknown as Prisma.InputJsonValue,
-    },
+  const sessionId = artifact.targetEntityId;
+
+  await prisma.$transaction(async (tx) => {
+    await tx.formationSession.update({
+      where: { id: sessionId },
+      data: {
+        pedagogicalOutline: parsed.data.days as unknown as Prisma.InputJsonValue,
+      },
+    });
+    await tx.aiArtifact.update({
+      where: { id: input.artifactId },
+      data: { status: 'APPLIED', appliedAt: new Date() },
+    });
   });
 
-  await markAiArtifactApplied(input.artifactId);
-  return { sessionId: artifact.targetEntityId };
+  return { sessionId };
 }
