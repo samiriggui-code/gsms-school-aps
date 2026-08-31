@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { buildQualiopiCoverageGaps } from '@/lib/of/qualiopi-gaps';
-import { requireGestionRessourcesView } from '../../../_lib/require-gestion-ressources-auth';
+import { requireGestionRessourcesView } from '../../_lib/require-gestion-ressources-auth';
 
 /** GET — AI-04 P0 : gaps couverture Qualiopi (déterministe, lecture seule). */
 export async function GET() {
