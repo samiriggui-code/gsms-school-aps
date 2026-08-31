@@ -414,3 +414,7 @@ Ack donné : Option recommandée (doc + UX légère, pas de Prisma), badge optio
 **Reste ouvert pour la prochaine session** : rien d'identifié comme prioritaire et non bloqué sur le fichier bilan actuel (AI-02/03/04, NAF-04-14 hors 00-03/11/12, OPS-*, LMS-01/02 = non touchés, pas de raison de les prioriser sans nouvelle demande ; WF-35-37/45 = bloqués faute de source externe ; EVE = explicitement dernière priorité). Le badge UX optionnel OF-11′ (§4.2 du draft) reste dispo si Cursor a le temps, non bloquant.
 
 Session arrêtée à la demande explicite de l'utilisateur — reprise prévue demain, handoff écrit dans `HANDOFF-CLAUDE.md`.
+
+## 2026-08-31 (reprise) — badge OF-11′ vérifié, session propre
+
+Cursor avait livré le badge UX optionnel (`beea0ef`) après la clôture d'hier, en respectant explicitement le "stop" (pas de nouveau chantier inventé, juste le point déjà ouvert et non bloquant). Vérifié : diff du badge lu en entier — purement additif, lecture seule (`unauditedWithEvidence` dérivé, aucune mutation de `status`), route `/api/sections/gestion-ressources/qualiopi/coverage` confirmée existante (pas de référence cassée). `test:doctype` 9/9, `tsc --noEmit` 0 relancés indépendamment (pas de changement de schéma, `migrate diff` non pertinent ici). OF-11′ réellement clos, rien à reprendre.
