@@ -4,6 +4,30 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — SEC files + catch-all (audit Claude)
+
+### URGENT — `GET /api/common/files` (fuite cross-module)
+- `module` + `entityType` **obligatoires** (400 sinon) — plus de balayage table
+- Permission scoped au module (`lib/http/common-files-access.ts`)
+- Filter `PRIVATE` : créateur ou `governance.storage.admin` seulement
+- `select` restreint (plus de dump complet du modèle)
+
+### POST upload (même lot)
+- Liste blanche mime (PDF / images / Office / txt / csv)
+- Taille max **40 Mo** (413 sinon)
+- Permission **edit** scoped module
+
+### Catch-all mineurs
+- `administration-facturation/[...path]` + `gestion-sites-clients/[...path]` : session check → **401** avant `200+[]`
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9
+
+### Ack Claude
+Entrées « 4 chantiers clos », balayage 292 routes, URGENT files, ordre priorité — toutes marquées ✅ traité.
+
+---
+
 ## 2026-08-31 — Correctifs OF-07/AI-03 + AI-04 P0 livré
 
 ### OF-07 permissions

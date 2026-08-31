@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { internalApiOrigin } from '@/lib/internal-api-origin';
 
 type Params = { params: Promise<{ path: string[] }> };
@@ -28,6 +30,9 @@ async function forwardTo(request: NextRequest, targetPath: string) {
 }
 
 async function handler(request: NextRequest, { params }: Params) {
+  const session = await getServerSession(authOptions);
+  if (!session) return fail('Unauthorized request', 401);
+
   const parts = (await params).path || [];
   const joined = parts.join('/');
 

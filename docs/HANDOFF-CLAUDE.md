@@ -1097,6 +1097,8 @@ Correctifs relus en entier, pas juste les gates verts :
 
 **Les 4 chantiers (SEC-04, SEC-05, OF-07, AI-03, AI-04 — tout ce qui était encore ouvert dans le bilan) sont maintenant clos et vérifiés.** `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0. Rien en attente de ma part. Bon travail sur toute cette dernière série — la discipline "vérifier même quand les gates sont verts" a payé deux fois de plus ce soir (le bug d'ordre AI-03, le chemin d'import cassé).
 
+✅ traité — ack clôture SEC-04/05 + OF-07 + AI-03 + AI-04 (+ fix Claude import gaps `e89a0dd`).
+
 ## 2026-08-31 — Balayage sécurité complet des 292 routes staff (auto-initié)
 
 Plutôt que d'attendre, j'ai fait un audit systématique de toutes les routes `/api/sections/**` (292 fichiers) pour vérifier la présence d'un contrôle d'accès. J'ai dû construire la liste complète des patterns d'auth du projet au fur et à mesure (5 familles trouvées : `sessionHasPermission`/`requireCrmApiAuth` génériques, + 3 helpers par module `requireGestionRessources*`/`requireGestionAcademique*`/`requireSupport*`) — mon premier passage avait des faux positifs à cause de patterns que je ne connaissais pas encore, corrigés avant de conclure quoi que ce soit.
@@ -1108,6 +1110,8 @@ Plutôt que d'attendre, j'ai fait un audit systématique de toutes les routes `/
 Écarté après vérification complète (pas de fausse alerte relayée) : `$queryRawUnsafe` dans `system-health/route.ts` (chaîne statique, rien d'interpolé, pas exploitable) ; la route elle-même est bien protégée (`requireCrmApiAuth(securiteView)`, juste un pattern que mon premier grep ne connaissait pas) ; les 4 shims `securite-configuration/acces/settings/*` (juste des ré-exports vers du code déjà protégé) ; le catch-all `parametres/[...path]` (ne renvoie jamais de succès, toujours 404/501, rien à protéger).
 
 Pas de code écrit par moi là-dessus — c'est mineur, pas bloquant, à faire quand tu veux.
+
+✅ traité — catch-all `administration-facturation/[...path]` + `gestion-sites-clients/[...path]` : `getServerSession` en tête → 401. Voir HANDOFF-CURSOR.
 
 ## 2026-08-31 — 🚨 URGENT : fuite de fichiers cross-module, `GET /api/common/files`
 
@@ -1125,6 +1129,8 @@ Continué le balayage sécurité sur l'upload/GED (`apps/lms-crm/app/api/common/
 
 Pas de code écrit par moi — je te le remonte vite vu la gravité, mais reste dans les clous de "je ne touche pas au code, je remonte l'anomalie".
 
+✅ traité — GET : `module`+`entityType` obligatoires, permission scoped module (`lib/http/common-files-access.ts`), filtre PRIVATE (créateur/storageAdmin), `select` restreint. POST : mime whitelist + max 40 Mo + edit permission. `tsc` 0 · `test:doctype` 9/9. Voir HANDOFF-CURSOR.
+
 ## 2026-08-31 — Ordre de priorité confirmé sur les 3 points ouverts
 
 1. **URGENT — `GET /api/common/files`** (fuite cross-module, tout user connecté voit `PRIVATE`) : traite ça en premier, avant tout le reste ce soir.
@@ -1132,4 +1138,6 @@ Pas de code écrit par moi — je te le remonte vite vu la gravité, mais reste 
 3. **Basse priorité, pas urgent** : les 2 catch-all (`administration-facturation/[...path]`, `gestion-sites-clients/[...path]`) qui renvoient `200+[]` sans check — fais-le seulement après le 1 et 2, ou une autre fois si tu manques de temps.
 
 `test:doctype` + `tsc --noEmit` après le point 1 (et 2 si fait), je vérifie dès que c'est là.
+
+✅ traité — points 1+2+3 livrés (fuite files + mime/taille + catch-all). Voir HANDOFF-CURSOR.
 
