@@ -1317,3 +1317,11 @@ if (!sessionHasPermission(session, IAM_PERMISSION.rolesEdit)) { ... } // PUT, DE
 **Vérifié comme non concernés, ne pas toucher** : `account/route.ts` et `account/profile/route.ts` (POST) sont correctement scopés sur `session.user.id`/`session.user.email` (auto-service, pas de fuite cross-utilisateur) ; `settings/general|notifications|social/route.ts` sont des ré-exports dépréciés vers `parametres/settings/*` qui, eux, vérifient déjà `CRM_PERMISSION.securiteEdit` via `requireCrmApiAuth`.
 
 Pas de code écrit par moi — mais celle-ci est plus grave que les 4 précédentes réunies, à traiter en tout premier.
+
+## 2026-09-01 — Fin de session, on reprend demain
+
+On s'arrête pour ce soir. **Un seul point ouvert, non traité, priorité absolue à la reprise** : l'escalade de privilèges sur `roles/[id]` (entrée juste au-dessus, `PUT` réécrit les permissions de n'importe quel rôle sans check). Aucun commit de fix n'est encore arrivé côté `HANDOFF-CURSOR.md` — donc c'est le tout premier point à traiter demain matin, avant tout nouveau chantier fonctionnel (OF/NAF/AI), avant même de reprendre le reste du cluster IAM listé juste au-dessus (`default`, `restore`, `logs`, `permissions/*`, `select/*`).
+
+Bilan de la soirée pour mémoire : 5 failles d'autorisation trouvées et closes ce soir (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy) + 1 bug fonctionnel (`Content-Type` local) — toutes vérifiées indépendamment, gates verts à chaque fois. La 6e (`roles/[id]`) reste ouverte à ce stade. Détail complet et horodaté dans `docs/SUIVI-CURSOR-CLAUDE.md`.
+
+À demain.
