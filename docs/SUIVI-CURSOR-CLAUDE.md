@@ -505,3 +505,15 @@ Utilisateur a refusé la clôture ("ya encore du taf verfie") — bonne pioche, 
 - **Aggravant** : `randomId()` (`packages/storage/src/index.ts`) génère les clés via `Date.now()+Math.random()` — pas un CSPRNG, prévisible dans une certaine mesure si on connaît une fenêtre temporelle (ex. via `createdAt` exposé ailleurs).
 
 Remonté à Cursor en priorité maximale (avant tout le reste) : ajouter un vrai contrôle d'accès sur `app/uploads/[[...path]]/route.ts` en réutilisant `lib/http/common-files-access.ts` qu'on vient de créer, + remplacer `randomId()` par un vrai générateur crypto (`crypto.randomUUID()`). Pas de code écrit par moi, anomalie signalée seulement.
+
+### Fix `/uploads` livré et vérifié en profondeur (commit `2eab87d`)
+Lu le diff complet (4 fichiers), pas fait confiance au résumé de Cursor :
+- `/uploads/[[...path]]` : lookup `FileAsset`/`FileAssetVersion` par `storageKey` (`@unique` en base, confirmé dans le schema — pas d'ambiguïté). `canServeFileAsset` (nouveau, `common-files-access.ts`) : PUBLIC → libre sans session ; sinon session + `canAccessFilesModule(view)` + `canListFileAssetRow` (mêmes règles que la liste). Aucun `FileAsset` trouvé pour la clé → 404 fail-closed, sauf préfixes historiques non trackés `avatars|company|misc`.
+- `/api/public/storage` aligné sur le même helper. Vérifié que ça **resserre** par rapport à l'ancien `canReadFileAsset` (celui-ci laissait tout utilisateur connecté lire un fichier `INTERNAL` sans check de module — la nouvelle fonction exige en plus la permission du module réel). Pas de régression de permissivité.
+- `randomId()` (`packages/storage/src/index.ts`) : `crypto.randomBytes(16).toString('hex')` — CSPRNG correct, remplace `Date.now()+Math.random()`.
+
+Gates rejoués indépendamment (pas seulement lu le rapport Cursor) : `tsc --noEmit` → 0 erreur, suite `@repo/doctype` → 9/9, `prisma migrate diff --exit-code` → vide (pas de drift schéma, cohérent puisque cette passe ne touche pas Prisma).
+
+**Point mineur noté, non bloquant** : ni l'ancien ni le nouveau code ne filtrent `status`/`deletedAt` du `FileAsset` avant de servir le binaire (contrairement à `common/files` qui filtre `status: 'ACTIVE', deletedAt: null`). Un fichier soft-deleted resterait donc récupérable si le fichier disque existe encore et que le `storageKey` est connu. Comportement préexistant, pas introduit par ce commit — à garder en tête si on retravaille la suppression de fichiers, pas urgent.
+
+**Dossier `/uploads` fermé.** Les deux vulnérabilités critiques de la soirée (`common/files` liste + `/uploads` binaire) sont maintenant corrigées et vérifiées indépendamment aux deux couches.
