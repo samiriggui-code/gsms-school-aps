@@ -20,7 +20,7 @@ function euro(n: number): string {
   }).format(n);
 }
 
-/** G11 — Bilan pédagogique & financier : agrégats déterministes (pas de PDF Cerfa). */
+/** G11 / OF-07 — Bilan pédagogique & financier : agrégats déterministes + export PDF synthèse. */
 export default async function BpfPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const current = new Date().getUTCFullYear();
@@ -39,13 +39,24 @@ export default async function BpfPage({ searchParams }: PageProps) {
         <ToolbarHeading>
           <ToolbarTitle>BPF</ToolbarTitle>
           <ToolbarDescription>
-            Agrégats Cerfa déterministes (G11) — exercice {data.year} ({data.periodStart} →{' '}
-            {data.periodEnd}). Pas d’export PDF officiel dans cette passe.
+            Agrégats Cerfa déterministes — exercice {data.year} ({data.periodStart} →{' '}
+            {data.periodEnd}). Export PDF synthèse (OF-07).
           </ToolbarDescription>
         </ToolbarHeading>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/administration-facturation/finance">Retour finance</Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="primary" size="sm" asChild>
+            <a
+              href={`/api/sections/administration-facturation/finance/bpf/pdf?year=${year}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Export PDF
+            </a>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/administration-facturation/finance">Retour finance</Link>
+          </Button>
+        </div>
       </Toolbar>
 
       <div className="mb-6 flex flex-wrap gap-2">

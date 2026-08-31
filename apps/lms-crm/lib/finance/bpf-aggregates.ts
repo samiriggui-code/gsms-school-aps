@@ -241,7 +241,7 @@ export async function buildBpfAggregates(
       'Heures catalogue = sum(Formation.hoursMin ?? hoursMax) par inscription non annulée.',
       `Heures émargées (proxy) = créneaux PRESENT|LATE × ${BPF_HOURS_PER_SLOT} h (pas la durée réelle du créneau).`,
       'Montants funding = FundingCase de l’année (createdAt ou session liée) ; approvedAmount si statut post-approbation.',
-      'Pas d’export Cerfa PDF dans cette passe (G11 agrégats uniquement).',
+      'Export PDF synthèse disponible (OF-07) — pas un Cerfa 10443 pixel-perfect.',
     ],
   };
 }
