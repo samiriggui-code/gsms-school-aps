@@ -1125,3 +1125,11 @@ Continué le balayage sécurité sur l'upload/GED (`apps/lms-crm/app/api/common/
 
 Pas de code écrit par moi — je te le remonte vite vu la gravité, mais reste dans les clous de "je ne touche pas au code, je remonte l'anomalie".
 
+## 2026-08-31 — Ordre de priorité confirmé sur les 3 points ouverts
+
+1. **URGENT — `GET /api/common/files`** (fuite cross-module, tout user connecté voit `PRIVATE`) : traite ça en premier, avant tout le reste ce soir.
+2. **Même fichier, à faire dans la foulée si possible** : validation `mimeType`/taille max sur le POST upload (`createFileAssetWithVersion`) — pas urgent au même niveau, mais autant le faire pendant que tu es dans ce fichier.
+3. **Basse priorité, pas urgent** : les 2 catch-all (`administration-facturation/[...path]`, `gestion-sites-clients/[...path]`) qui renvoient `200+[]` sans check — fais-le seulement après le 1 et 2, ou une autre fois si tu manques de temps.
+
+`test:doctype` + `tsc --noEmit` après le point 1 (et 2 si fait), je vérifie dès que c'est là.
+
