@@ -1024,3 +1024,33 @@ Diffs relus en entier, pas juste les gates verts : `GoogleProvider`/`allowDanger
 
 **Plus aucun P0 sécurité ouvert.** Rien en attente de ma part sur ce front.
 
+## 2026-08-31 — 3 chantiers lancés d'un coup : AI-03, OF-07, AI-04
+
+L'utilisateur veut qu'on enchaîne sur les 3 derniers items ouverts du bilan, sans attendre. Voici les 3, dans l'ordre où je les ai tranchés — pas de nouvel aller-retour attendu sauf si tu bloques vraiment.
+
+### 1. GSMS-OF-07 — export Cerfa PDF (go direct, le plus cadré des 3)
+
+Les agrégats existent déjà et sont réels : `apps/lms-crm/lib/finance/bpf-aggregates.ts`. Ce qui manque : le rendu PDF Cerfa lui-même. Mirroir le pattern déjà utilisé pour les devis : `apps/lms-crm/lib/finance/finance-devis-pdf.ts` + `load-finance-devis-pdf-row.ts` (génération PDF + chargement des données associées). Crée l'équivalent `bpf-cerfa-pdf.ts` qui prend la sortie de `bpf-aggregates.ts` et produit le PDF Cerfa (formulaire officiel BPF — cherche le format Cerfa réel si tu l'as déjà croisé dans les docs regulatory-sources, sinon structure logique proche des sections du Cerfa officiel). Route de téléchargement sur la page `/administration-facturation/finance/bpf` existante (déjà 153 lignes, juste ajouter le bouton/action). Pas de pilote garde-fous (`erreur_ctrl` tarif/durée/heures) dans ce lot — P2, on le fera après si besoin réel.
+
+### 2. GSMS-AI-03 — déroulé pédagogique généré par session (go direct, suite logique d'AI-02)
+
+Réutilise **exactement** le pipeline `AiRun`/`AiArtifact` déjà en place (jamais d'écriture directe par le LLM — `payload` PROPOSED, review humaine, puis fonction `apply*` déterministe). Référence à suivre à la lettre : `apps/lms-crm/lib/ai/formation-program-modules-ai.ts` (AI-02, déjà fait et vérifié cette nuit).
+
+- Nouveau `useCase` (ex. `'session-pedagogical-outline'`), `targetEntityType: 'FormationSession'`.
+- Le brouillon génère un déroulé jour par jour / créneau par créneau (contenu, objectifs, activités) à partir du programme (`Formation.programModules`, déjà généré par AI-02) + des infos de la session (dates, durée, modalité).
+- Vérifie où stocker le résultat appliqué — regarde `FormationSessionDay` (déjà utilisé pour `journalNotesMorning/Evening`, WF-20) ou une nouvelle colonne Json dédiée si rien n'existe. Ne fabrique pas un nouveau modèle si un champ existant convient.
+- UI review/apply : mirroir `pilotage-supervision/ia/brouillons` existant (déjà 190 lignes, patterns de review PROPOSED→APPROVED/REJECTED déjà là).
+
+### 3. GSMS-AI-04 — je tranche l'interprétation (doc source ambiguë, je le dis clairement)
+
+Le bilan dit juste "à définir (copies emails / contenus CMS)" — trop vague pour coder tel quel. Mais `docs/GSMS SCHOOL — ARCHITECTURE QUALIOPI, PREUVES, SESSIONS ET AUDIT.md` §25-26 décrit un concept précis et déjà doctriné : **Assistant IA Qualiopi** — répond en langage naturel à des questions du staff sur l'état de conformité ("Pourquoi l'indicateur X est à contrôler ?", "Qu'est-ce qui manque pour la session Y ?"), toujours avec justification traçable (raisonnement → règle → preuve → donnée source), **jamais** n'invente une conformité. Je retiens cette interprétation plutôt que "copies emails/CMS" — c'est doctrinée en détail sur 2 sections entières, pas juste une ligne vague, et c'est cohérent avec tout ce qu'on vient de construire (Evidence Engine, coverage Qualiopi).
+
+**Cadrage avant code cette fois** (contrairement aux deux autres, c'est plus nouveau/large) — mini-draft attendu, pas de gros document :
+1. Périmètre P0 réaliste : commence par UNE question type (ex. "qu'est-ce qui manque pour la session X ?") plutôt que le champ complet du §25. Regarde `buildQualiopiCoverage()` (déjà fait) comme donnée source principale.
+2. Où ça vit dans l'UI (nouvelle page IA, ou intégré au classeur Qualiopi existant) ?
+3. Toujours : jamais d'écriture, lecture seule + citations vers la donnée source — comme le reste des principes AI-01 déjà en place.
+
+Si tu vois une meilleure interprétation d'AI-04 que la mienne (le mot "CMS" dans le bilan me chiffonne, il y a peut-être un vrai besoin différent que je rate), dis-le dans HANDOFF-CURSOR — sinon go sur le mini-draft.
+
+**Les 3 en parallèle si tu veux, indépendants entre eux.** Comme d'habitude : `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` (si schema touché) après chaque lot, commits séparés.
+
