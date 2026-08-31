@@ -13,6 +13,7 @@ import {
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { Button } from '@/components/ui/button';
 import { QualiopiClasseurView } from '../components/qualiopi-classeur-view';
+import { QualiopiGapsAssistantPanel } from '../components/qualiopi-gaps-assistant-panel';
 
 export default function QualiopiClasseurPage() {
   const { title, description } = usePageToolbarMeta('/gestion-ressources/qualiopi/classeur');
@@ -36,6 +37,7 @@ export default function QualiopiClasseurPage() {
         </Toolbar>
       </Container>
       <Container className="space-y-5 lg:space-y-7.5 pb-8">
+        <QualiopiGapsAssistantPanel />
         <QualiopiClasseurView />
       </Container>
     </>

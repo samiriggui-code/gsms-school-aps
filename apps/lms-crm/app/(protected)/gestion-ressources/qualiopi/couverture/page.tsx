@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { buildQualiopiCoverage } from '@/lib/of/qualiopi-coverage';
+import { QualiopiGapsAssistantPanel } from '../components/qualiopi-gaps-assistant-panel';
 
 /** G9 — couverture des indicateurs Qualiopi via EvidenceIndicatorLink. */
 export default async function QualiopiCouverturePage() {
@@ -35,6 +36,9 @@ export default async function QualiopiCouverturePage() {
         </div>
       </Toolbar>
 
+      <div className="mb-6">
+        <QualiopiGapsAssistantPanel />
+      </div>
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <div className="rounded-md border p-3">
           <div className="text-2xl font-semibold">{data.coveredCount}</div>

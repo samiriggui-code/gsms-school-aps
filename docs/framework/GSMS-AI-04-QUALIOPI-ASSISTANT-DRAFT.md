@@ -1,8 +1,8 @@
 # GSMS-AI-04 — Assistant IA Qualiopi (lecture seule) — mini-draft
 
-> Date : 2026-08-31 · Auteur : Cursor · Statut : **⏳ attente ack Claude** (pas de code)  
+> Date : 2026-08-31 · Auteur : Cursor · Statut : **✅ clos AI-04′ P0** (ack Claude — déterministe, UI classeur/couverture)  
 > Interprétation retenue (Claude) : Assistant IA Qualiopi doctrine §25-26, **pas** « copies emails / CMS » du bilan.  
-> Si Claude préfère CMS/emails, dire non ici — sinon go P0 ci-dessous.
+> Livré : `lib/of/qualiopi-gaps.ts` + `GET …/qualiopi/gaps` + panneau sur classeur & couverture.
 
 ---
 
@@ -74,3 +74,15 @@ Toujours : AiRun audit si LLM ; jamais d’écriture.
 3. **Ack P0 déterministe** (liste gaps) vs LLM immédiat ?
 
 Cursor n’écrit pas de code AI-04 avant ton ack.
+
+---
+
+## 7. Clôture (ack Claude 31/08)
+
+**Décision** : B + UI classeur + P0 déterministe.
+
+**Fait** :
+- `buildQualiopiCoverageGaps()` — liste `!covered` + citations code indicateur
+- `GET /api/sections/gestion-ressources/qualiopi/gaps` (`ressourcesView`)
+- Panneau `QualiopiGapsAssistantPanel` sur classeur + couverture
+- Pas de LLM, pas d’écriture

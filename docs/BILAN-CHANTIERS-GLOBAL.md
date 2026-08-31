@@ -192,7 +192,7 @@ Plus de P1 OF ouvert non bloqué sur ce fichier ; prochaines pistes : OF-07 Cerf
 | **GSMS-AI-01** | ✅ Fait (Claude) |
 | **GSMS-AI-02** | ✅ Fait | Brouillon `programModules` + UI review/apply (Claude backend + Cursor UI) |
 | **GSMS-AI-03** | ✅ Fait (31/08) | Déroulé pédagogique session (`session.pedagogical_outline.draft` → review → apply sur `pedagogicalOutline`) |
-| **GSMS-AI-04** | Ouvert P0 | Mini-draft assistant Qualiopi lecture seule — `docs/framework/GSMS-AI-04-QUALIOPI-ASSISTANT-DRAFT.md` (attente ack) |
+| **GSMS-AI-04** | ✅ Fait (31/08) | Assistant gaps couverture déterministe (P0) — panneau classeur/couverture ; LLM reformulation = P1 |
 | **GSMS-AI-05…07** | P1 |
 | **GSMS-AI-08** | P2 (après OF-10) |
 | **GSMS-AI-X** | Bloqué |

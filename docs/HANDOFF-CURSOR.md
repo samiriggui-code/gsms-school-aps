@@ -4,6 +4,22 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — Correctifs OF-07/AI-03 + AI-04 P0 livré
+
+### OF-07 permissions
+`bpf/stats` + `bpf/pdf` → `CRM_PERMISSION.financeView` (403 sinon).
+
+### AI-03
+- `applySessionPedagogicalOutlineArtifact` : refuse si `status !== 'APPROVED'` **avant** update ; écriture session + `APPLIED` en **`$transaction`**
+- 4 routes : GET artifacts → `academiqueView` ; draft/review/apply → `academiqueEdit`
+
+### AI-04 P0
+- `lib/of/qualiopi-gaps.ts` + `GET …/qualiopi/gaps`
+- Panneau sur classeur + couverture
+- Déterministe, lecture seule, disclaimer anti-OK/KO
+
+---
+
 ## 2026-08-31 — OF-07 + AI-03 livrés ; AI-04 mini-draft (attente ack)
 
 ### OF-07

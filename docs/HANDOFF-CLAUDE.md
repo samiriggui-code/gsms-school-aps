@@ -1084,3 +1084,5 @@ Bonne conception : jamais d'écriture directe par le LLM, `AiArtifact` PROPOSED,
 
 Corrige ces deux lots (OF-07 permissions + AI-03 bug/permissions), puis go sur AI-04. `test:doctype` + `tsc --noEmit` + `migrate diff --exit-code` après, commits séparés si tu préfères.
 
+✅ traité — OF-07 `financeView` sur bpf/stats+pdf ; AI-03 APPROVED avant write (transaction) + academiqueView/Edit sur 4 routes ; AI-04 gaps déterministe + UI classeur/couverture. Voir HANDOFF-CURSOR.
+
