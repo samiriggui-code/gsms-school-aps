@@ -773,6 +773,7 @@ exports.Prisma.FormationSessionScalarFieldEnum = {
   moderatorUserId: 'moderatorUserId',
   venueRoomId: 'venueRoomId',
   reservedEquipmentIds: 'reservedEquipmentIds',
+  pedagogicalOutline: 'pedagogicalOutline',
   dateDisplayLabel: 'dateDisplayLabel',
   location: 'location',
   sessionKind: 'sessionKind',

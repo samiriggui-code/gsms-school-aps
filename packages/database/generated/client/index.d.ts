@@ -63927,6 +63927,7 @@ export namespace Prisma {
     moderatorUserId: number
     venueRoomId: number
     reservedEquipmentIds: number
+    pedagogicalOutline: number
     dateDisplayLabel: number
     location: number
     sessionKind: number
@@ -64021,6 +64022,7 @@ export namespace Prisma {
     moderatorUserId?: true
     venueRoomId?: true
     reservedEquipmentIds?: true
+    pedagogicalOutline?: true
     dateDisplayLabel?: true
     location?: true
     sessionKind?: true
@@ -64136,6 +64138,7 @@ export namespace Prisma {
     moderatorUserId: string | null
     venueRoomId: string | null
     reservedEquipmentIds: JsonValue
+    pedagogicalOutline: JsonValue
     dateDisplayLabel: string
     location: string
     sessionKind: $Enums.FormationVitrineSessionKind
@@ -64183,6 +64186,7 @@ export namespace Prisma {
     moderatorUserId?: boolean
     venueRoomId?: boolean
     reservedEquipmentIds?: boolean
+    pedagogicalOutline?: boolean
     dateDisplayLabel?: boolean
     location?: boolean
     sessionKind?: boolean
@@ -64232,6 +64236,7 @@ export namespace Prisma {
     moderatorUserId?: boolean
     venueRoomId?: boolean
     reservedEquipmentIds?: boolean
+    pedagogicalOutline?: boolean
     dateDisplayLabel?: boolean
     location?: boolean
     sessionKind?: boolean
@@ -64265,6 +64270,7 @@ export namespace Prisma {
     moderatorUserId?: boolean
     venueRoomId?: boolean
     reservedEquipmentIds?: boolean
+    pedagogicalOutline?: boolean
     dateDisplayLabel?: boolean
     location?: boolean
     sessionKind?: boolean
@@ -64298,6 +64304,7 @@ export namespace Prisma {
     moderatorUserId?: boolean
     venueRoomId?: boolean
     reservedEquipmentIds?: boolean
+    pedagogicalOutline?: boolean
     dateDisplayLabel?: boolean
     location?: boolean
     sessionKind?: boolean
@@ -64311,7 +64318,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type FormationSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "formationId" | "startDate" | "endDate" | "registrationClosesAt" | "examDate" | "examVenueRoomId" | "examReservedEquipmentIds" | "traineesMin" | "traineesMax" | "trainerUserId" | "moderatorUserId" | "venueRoomId" | "reservedEquipmentIds" | "dateDisplayLabel" | "location" | "sessionKind" | "readinessStatus" | "venueBrandPrefix" | "sessionSubtitle" | "sortOrder" | "bookingEnabled" | "bookingUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSession"]>
+  export type FormationSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "formationId" | "startDate" | "endDate" | "registrationClosesAt" | "examDate" | "examVenueRoomId" | "examReservedEquipmentIds" | "traineesMin" | "traineesMax" | "trainerUserId" | "moderatorUserId" | "venueRoomId" | "reservedEquipmentIds" | "pedagogicalOutline" | "dateDisplayLabel" | "location" | "sessionKind" | "readinessStatus" | "venueBrandPrefix" | "sessionSubtitle" | "sortOrder" | "bookingEnabled" | "bookingUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["formationSession"]>
   export type FormationSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     formation?: boolean | FormationDefaultArgs<ExtArgs>
     examVenueRoom?: boolean | FormationSession$examVenueRoomArgs<ExtArgs>
@@ -64419,6 +64426,10 @@ export namespace Prisma {
        * Identifiants `Equipment` réservés pour la session (JSON : tableau d’UUID).
        */
       reservedEquipmentIds: Prisma.JsonValue
+      /**
+       * GSMS-AI-03 — déroulé pédagogique appliqué (jours × créneaux), distinct du journal WF-20.
+       */
+      pedagogicalOutline: Prisma.JsonValue
       /**
        * Libellé affiché (ex. « 04 Mai au 12 Juin 2026 ») tant que les dates ne sont pas renseignées partout.
        */
@@ -64893,6 +64904,7 @@ export namespace Prisma {
     readonly moderatorUserId: FieldRef<"FormationSession", 'String'>
     readonly venueRoomId: FieldRef<"FormationSession", 'String'>
     readonly reservedEquipmentIds: FieldRef<"FormationSession", 'Json'>
+    readonly pedagogicalOutline: FieldRef<"FormationSession", 'Json'>
     readonly dateDisplayLabel: FieldRef<"FormationSession", 'String'>
     readonly location: FieldRef<"FormationSession", 'String'>
     readonly sessionKind: FieldRef<"FormationSession", 'FormationVitrineSessionKind'>
@@ -171386,6 +171398,7 @@ export namespace Prisma {
     moderatorUserId: 'moderatorUserId',
     venueRoomId: 'venueRoomId',
     reservedEquipmentIds: 'reservedEquipmentIds',
+    pedagogicalOutline: 'pedagogicalOutline',
     dateDisplayLabel: 'dateDisplayLabel',
     location: 'location',
     sessionKind: 'sessionKind',
@@ -178393,6 +178406,7 @@ export namespace Prisma {
     moderatorUserId?: StringNullableFilter<"FormationSession"> | string | null
     venueRoomId?: StringNullableFilter<"FormationSession"> | string | null
     reservedEquipmentIds?: JsonFilter<"FormationSession">
+    pedagogicalOutline?: JsonFilter<"FormationSession">
     dateDisplayLabel?: StringFilter<"FormationSession"> | string
     location?: StringFilter<"FormationSession"> | string
     sessionKind?: EnumFormationVitrineSessionKindFilter<"FormationSession"> | $Enums.FormationVitrineSessionKind
@@ -178441,6 +178455,7 @@ export namespace Prisma {
     moderatorUserId?: SortOrderInput | SortOrder
     venueRoomId?: SortOrderInput | SortOrder
     reservedEquipmentIds?: SortOrder
+    pedagogicalOutline?: SortOrder
     dateDisplayLabel?: SortOrder
     location?: SortOrder
     sessionKind?: SortOrder
@@ -178492,6 +178507,7 @@ export namespace Prisma {
     moderatorUserId?: StringNullableFilter<"FormationSession"> | string | null
     venueRoomId?: StringNullableFilter<"FormationSession"> | string | null
     reservedEquipmentIds?: JsonFilter<"FormationSession">
+    pedagogicalOutline?: JsonFilter<"FormationSession">
     dateDisplayLabel?: StringFilter<"FormationSession"> | string
     location?: StringFilter<"FormationSession"> | string
     sessionKind?: EnumFormationVitrineSessionKindFilter<"FormationSession"> | $Enums.FormationVitrineSessionKind
@@ -178540,6 +178556,7 @@ export namespace Prisma {
     moderatorUserId?: SortOrderInput | SortOrder
     venueRoomId?: SortOrderInput | SortOrder
     reservedEquipmentIds?: SortOrder
+    pedagogicalOutline?: SortOrder
     dateDisplayLabel?: SortOrder
     location?: SortOrder
     sessionKind?: SortOrder
@@ -178576,6 +178593,7 @@ export namespace Prisma {
     moderatorUserId?: StringNullableWithAggregatesFilter<"FormationSession"> | string | null
     venueRoomId?: StringNullableWithAggregatesFilter<"FormationSession"> | string | null
     reservedEquipmentIds?: JsonWithAggregatesFilter<"FormationSession">
+    pedagogicalOutline?: JsonWithAggregatesFilter<"FormationSession">
     dateDisplayLabel?: StringWithAggregatesFilter<"FormationSession"> | string
     location?: StringWithAggregatesFilter<"FormationSession"> | string
     sessionKind?: EnumFormationVitrineSessionKindWithAggregatesFilter<"FormationSession"> | $Enums.FormationVitrineSessionKind
@@ -191032,6 +191050,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -191080,6 +191099,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -191118,6 +191138,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -191166,6 +191187,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -191209,6 +191231,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -191232,6 +191255,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -191260,6 +191284,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -203319,6 +203344,7 @@ export namespace Prisma {
     moderatorUserId?: SortOrder
     venueRoomId?: SortOrder
     reservedEquipmentIds?: SortOrder
+    pedagogicalOutline?: SortOrder
     dateDisplayLabel?: SortOrder
     location?: SortOrder
     sessionKind?: SortOrder
@@ -223912,6 +223938,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -223958,6 +223985,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -224006,6 +224034,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -224052,6 +224081,7 @@ export namespace Prisma {
     trainerUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -226580,6 +226610,7 @@ export namespace Prisma {
     moderatorUserId?: StringNullableFilter<"FormationSession"> | string | null
     venueRoomId?: StringNullableFilter<"FormationSession"> | string | null
     reservedEquipmentIds?: JsonFilter<"FormationSession">
+    pedagogicalOutline?: JsonFilter<"FormationSession">
     dateDisplayLabel?: StringFilter<"FormationSession"> | string
     location?: StringFilter<"FormationSession"> | string
     sessionKind?: EnumFormationVitrineSessionKindFilter<"FormationSession"> | $Enums.FormationVitrineSessionKind
@@ -236582,6 +236613,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -236629,6 +236661,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -237057,6 +237090,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -237104,6 +237138,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -239642,6 +239677,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -239688,6 +239724,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -241276,6 +241313,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -241322,6 +241360,7 @@ export namespace Prisma {
     trainerUserId?: string | null
     moderatorUserId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -241370,6 +241409,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -241416,6 +241456,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -244868,6 +244909,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -244915,6 +244957,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -244968,6 +245011,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -245015,6 +245059,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -245189,6 +245234,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -245236,6 +245282,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -245432,6 +245479,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -245479,6 +245527,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -245894,6 +245943,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -245941,6 +245991,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -246681,6 +246732,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -246728,6 +246780,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -247033,6 +247086,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -247080,6 +247134,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -247643,6 +247698,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -247690,6 +247746,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -248793,6 +248850,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -248840,6 +248898,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -248969,6 +249028,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -249016,6 +249076,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -249761,6 +249822,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -249808,6 +249870,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -249997,6 +250060,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -250044,6 +250108,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -250229,6 +250294,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -250276,6 +250342,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -250368,6 +250435,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -250415,6 +250483,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -250932,6 +251001,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -250979,6 +251049,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -251485,6 +251556,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -251532,6 +251604,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -262350,6 +262423,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -262397,6 +262471,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -262819,6 +262894,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -262866,6 +262942,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -275645,6 +275722,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -275692,6 +275770,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -275876,6 +275955,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -275923,6 +276003,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -281643,6 +281724,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -281690,6 +281772,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -281804,6 +281887,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -281851,6 +281935,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -282293,6 +282378,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -282340,6 +282426,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -282796,6 +282883,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -282843,6 +282931,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -284423,6 +284512,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -284470,6 +284560,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -285203,6 +285294,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -285250,6 +285342,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -286087,6 +286180,7 @@ export namespace Prisma {
     traineesMin?: number | null
     traineesMax?: number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -286134,6 +286228,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -286187,6 +286282,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -286234,6 +286330,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -286649,6 +286746,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -286676,6 +286774,7 @@ export namespace Prisma {
     trainerUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -288374,6 +288473,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -288420,6 +288520,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -288462,6 +288563,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -288485,6 +288587,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -288531,6 +288634,7 @@ export namespace Prisma {
     trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -288573,6 +288677,7 @@ export namespace Prisma {
     trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -291756,6 +291861,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -291900,6 +292006,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -291946,6 +292053,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -291988,6 +292096,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -292406,6 +292515,7 @@ export namespace Prisma {
     trainerUserId?: string | null
     moderatorUserId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -292433,6 +292543,7 @@ export namespace Prisma {
     moderatorUserId?: string | null
     venueRoomId?: string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel: string
     location: string
     sessionKind?: $Enums.FormationVitrineSessionKind
@@ -292492,6 +292603,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -292538,6 +292650,7 @@ export namespace Prisma {
     trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -292580,6 +292693,7 @@ export namespace Prisma {
     trainerUserId?: NullableStringFieldUpdateOperationsInput | string | null
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -292603,6 +292717,7 @@ export namespace Prisma {
     traineesMin?: NullableIntFieldUpdateOperationsInput | number | null
     traineesMax?: NullableIntFieldUpdateOperationsInput | number | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -292649,6 +292764,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
@@ -292691,6 +292807,7 @@ export namespace Prisma {
     moderatorUserId?: NullableStringFieldUpdateOperationsInput | string | null
     venueRoomId?: NullableStringFieldUpdateOperationsInput | string | null
     reservedEquipmentIds?: JsonNullValueInput | InputJsonValue
+    pedagogicalOutline?: JsonNullValueInput | InputJsonValue
     dateDisplayLabel?: StringFieldUpdateOperationsInput | string
     location?: StringFieldUpdateOperationsInput | string
     sessionKind?: EnumFormationVitrineSessionKindFieldUpdateOperationsInput | $Enums.FormationVitrineSessionKind
