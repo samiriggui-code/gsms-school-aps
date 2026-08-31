@@ -517,3 +517,18 @@ Gates rejoués indépendamment (pas seulement lu le rapport Cursor) : `tsc --noE
 **Point mineur noté, non bloquant** : ni l'ancien ni le nouveau code ne filtrent `status`/`deletedAt` du `FileAsset` avant de servir le binaire (contrairement à `common/files` qui filtre `status: 'ACTIVE', deletedAt: null`). Un fichier soft-deleted resterait donc récupérable si le fichier disque existe encore et que le `storageKey` est connu. Comportement préexistant, pas introduit par ce commit — à garder en tête si on retravaille la suppression de fichiers, pas urgent.
 
 **Dossier `/uploads` fermé.** Les deux vulnérabilités critiques de la soirée (`common/files` liste + `/uploads` binaire) sont maintenant corrigées et vérifiées indépendamment aux deux couches.
+
+### Bug fonctionnel `Content-Type` (mode local) + 3e faille trouvée (module gouvernance storage) — livrés ensemble (`8e6535e`), les deux vérifiés
+
+En continuant à chercher (« cherche cherche pas de pause »), deux trouvailles distinctes remontées le même soir :
+
+1. **Bug fonctionnel** (pas sécu) : `readLocalStoredFile` renvoyait toujours `application/octet-stream` en mode local, cassant l'aperçu inline (`target="_blank"`) sur ~12 composants du CRM (Qualiopi, dossiers admin, factures, devis, suivi formations, examens…).
+2. **3e faille fichier, la plus large de la soirée** : module `securite-configuration/gouvernance-donnees/storage` — presque tous les GET (+ un POST) ne vérifiaient que la session, jamais `GOVERNANCE_PERMISSION.storageAdmin`, alors que les routes sœurs de mutation dans les mêmes dossiers l'avaient déjà. Le plus grave : `preview/route.ts` (lecture du contenu réel de n'importe quel fichier par id, bypass total de `canServeFileAsset`) et `versions/route.ts` POST (n'importe quel utilisateur connecté pouvait ajouter une version à n'importe quel fichier — écriture, pas juste lecture).
+
+**Vérifié en profondeur, pas sur parole** — diff complet relu (`8e6535e`, 12 fichiers) :
+- `/uploads` + `/api/public/storage` : `ASSET_SELECT` étendu à `mimeType`/`status`/`deletedAt`, nouvelle fonction `isServableAsset()` (404 si `deletedAt` non nul ou `status !== 'ACTIVE'`) — **corrige aussi le point mineur que j'avais noté non bloquant** (fichier soft-deleted restait servable). `Content-Type` = `record?.mimeType || file.contentType` — bon ordre de priorité (DB authentique en premier).
+- Les 8 routes du module gouvernance : **les 9 points d'insertion demandés sont tous là** (`preview` GET, `versions` GET+POST, `storage` GET, `corbeille` GET, `demandes` GET, `audit` GET, `dashboard` GET, `socle` GET+POST), exactement le même bloc `sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)` que la route sœur qui l'avait déjà — cohérent, rien d'oublié dans la liste que j'avais donnée.
+
+Gates rejoués moi-même : `tsc --noEmit` → 0, `test:doctype` → 9/9, `migrate diff --exit-code` → vide.
+
+**Les 3 failles fichiers de la soirée sont closes et vérifiées indépendamment.** Je continue à chercher (consigne explicite : pas de pause).
