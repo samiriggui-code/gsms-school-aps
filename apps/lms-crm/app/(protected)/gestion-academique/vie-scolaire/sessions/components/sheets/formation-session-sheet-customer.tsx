@@ -37,6 +37,7 @@ import { FormationSessionDetailParticipantsGrid } from '@/app/(protected)/gestio
 import { SessionCircuitTriggerButton } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-circuit-trigger-button';
 import { SessionDocumentsMenuButton } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-documents-menu-button';
 import { SessionPublishabilityChecklist } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-publishability-checklist';
+import { SessionPedagogicalOutlineAiPanel } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-pedagogical-outline-ai-panel';
 import { useTranslation } from '@/hooks/useTranslation';
 import { cn } from '@/lib/utils';
 
@@ -205,6 +206,7 @@ export function FormationSessionSheetCustomer({
                         <div className="space-y-4">
                           <Separator />
                           <FormationSessionPlanningTimeline row={row} />
+                          <SessionPedagogicalOutlineAiPanel sessionId={row.id} />
                         </div>
                       </TabsContent>
 

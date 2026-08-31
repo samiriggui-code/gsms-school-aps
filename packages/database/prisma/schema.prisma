@@ -1383,6 +1383,9 @@ model FormationSession {
   /// Identifiants `Equipment` réservés pour la session (JSON : tableau d’UUID).
   reservedEquipmentIds Json @default("[]")
 
+  /// GSMS-AI-03 — déroulé pédagogique appliqué (jours × créneaux), distinct du journal WF-20.
+  pedagogicalOutline Json @default("[]")
+
   /// Libellé affiché (ex. « 04 Mai au 12 Juin 2026 ») tant que les dates ne sont pas renseignées partout.
   dateDisplayLabel String @db.Text
   location         String
