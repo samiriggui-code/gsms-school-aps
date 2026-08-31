@@ -16,6 +16,7 @@ import {
 import prisma from '@/lib/prisma';
 import { allocateUniqueProEmail } from '@/lib/user-email-routing';
 import { afterCandidatureCreated } from '@/lib/of/candidature-assessment-bootstrap';
+import { assertPublicRateLimit } from '@/lib/http/public-rate-limit';
 
 type PreinscriptionPayload = {
   firstName?: string;
@@ -66,6 +67,9 @@ function toBool(value: unknown) {
 }
 
 export async function POST(request: NextRequest) {
+  const limited = await assertPublicRateLimit(request, 'preinscription', 'preinscription');
+  if (limited) return limited;
+
   let body: PreinscriptionPayload;
 
   try {

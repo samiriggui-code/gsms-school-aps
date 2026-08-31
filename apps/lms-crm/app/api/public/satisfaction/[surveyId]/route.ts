@@ -7,6 +7,7 @@ import {
   questionsForSurveyTiming,
 } from '@/lib/of/satisfaction-survey-template';
 import { SatisfactionSurveyValidationError, submitSurveyAnswers } from '@/lib/of/satisfaction-survey-service';
+import { assertPublicRateLimit } from '@/lib/http/public-rate-limit';
 
 type Ctx = { params: Promise<{ surveyId: string }> };
 
@@ -39,6 +40,9 @@ export async function GET(request: NextRequest, context: Ctx) {
 
 /** Soumission des réponses par le stagiaire (lien public signé). */
 export async function POST(request: NextRequest, context: Ctx) {
+  const limited = await assertPublicRateLimit(request, 'satisfaction-submit');
+  if (limited) return limited;
+
   const { surveyId } = await context.params;
   const gate = verifySatisfactionSurveyTokenForSurvey(request, surveyId);
   if (!gate.ok) return fail(gate.message, gate.status);

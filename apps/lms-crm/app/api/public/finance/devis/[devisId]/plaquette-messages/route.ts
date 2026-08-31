@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { verifyPlaquetteTokenForDevis } from '@/lib/devis-plaquette-public-request';
 import { createPlaquetteMessageRow, listPlaquetteMessagesForDevis } from '@/lib/devis-plaquette-messages-query';
+import { assertPublicRateLimit } from '@/lib/http/public-rate-limit';
 
 type Ctx = { params: Promise<{ devisId: string }> };
 
@@ -33,6 +34,9 @@ export async function GET(request: NextRequest, context: Ctx) {
 type PostBody = { body?: string };
 
 export async function POST(request: NextRequest, context: Ctx) {
+  const limited = await assertPublicRateLimit(request, 'plaquette-message');
+  if (limited) return limited;
+
   const { devisId } = await context.params;
   const gate = verifyPlaquetteTokenForDevis(request, devisId);
   if (!gate.ok) return fail(gate.message, gate.status);

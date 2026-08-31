@@ -4,6 +4,17 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — SEC-04 + SEC-05 clos
+
+| ID | Livré |
+|---|---|
+| **SEC-04** | `GoogleProvider` retiré — NextAuth **Credentials only** ; pas de bouton Google sur `/signin` (déjà absent) |
+| **SEC-05** | `assertPublicRateLimit` (`@repo/redis`) — preinscription 5/15min ; token-gated 30/15min sur assessment, satisfaction, plaquette accept/messages |
+
+Fichiers : `auth-options.ts`, `lib/http/public-rate-limit.ts`, 5 routes POST publiques. BILAN §3.1 mis à jour.
+
+---
+
 ## 2026-08-31 — Qualiopi Q3/Q4 : choix assumé (pas de refactor)
 
 Ack croisement doc. Vérifié : `qualiopi/items/[itemId]/route.ts` = Prisma brut + `recompute()` local + `requireGestionRessourcesEdit` — bien à côté du DocType.

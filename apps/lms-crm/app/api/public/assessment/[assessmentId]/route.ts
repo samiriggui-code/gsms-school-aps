@@ -7,6 +7,7 @@ import {
   CandidatureAssessmentValidationError,
   submitAssessmentAnswers,
 } from '@/lib/of/candidature-assessment-service';
+import { assertPublicRateLimit } from '@/lib/http/public-rate-limit';
 
 type Ctx = { params: Promise<{ assessmentId: string }> };
 
@@ -50,6 +51,9 @@ export async function GET(request: NextRequest, context: Ctx) {
 }
 
 export async function POST(request: NextRequest, context: Ctx) {
+  const limited = await assertPublicRateLimit(request, 'assessment-submit');
+  if (limited) return limited;
+
   const { assessmentId } = await context.params;
   const gate = verifyGate(request, assessmentId);
   if (!gate.ok) return fail(gate.message, gate.status);

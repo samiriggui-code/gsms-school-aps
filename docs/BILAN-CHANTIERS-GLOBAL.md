@@ -157,8 +157,8 @@ Plus de P1 OF ouvert non bloqué sur ce fichier ; prochaines pistes : OF-07 Cerf
 | **GSMS-SEC-01** | ✅ Fait | Storage public verrouillé |
 | **GSMS-SEC-02** | ✅ Fait | IDOR files |
 | **GSMS-SEC-03** | ✅ Fait (30/08) | Permissions CRM par action (`PermissionEngine`/`DocPermission`), audit P1-P10 clos, legacy supprimé (G1-E) |
-| **GSMS-SEC-04** | Ouvert | OAuth vs signup off |
-| **GSMS-SEC-05** | Ouvert P1 | Rate limit publics |
+| **GSMS-SEC-04** | ✅ Fait (31/08) | Google OAuth retiré — login Credentials uniquement (comptes staff en base) |
+| **GSMS-SEC-05** | ✅ Fait (31/08) | Rate limit Redis routes POST publiques (`preinscriptions`, assessment, satisfaction, plaquette) |
 
 ### 3.2 VF — Veille
 

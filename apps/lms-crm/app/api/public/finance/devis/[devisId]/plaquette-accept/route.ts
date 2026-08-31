@@ -5,11 +5,15 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { verifyPlaquetteTokenForDevis } from '@/lib/devis-plaquette-public-request';
 import { createPlaquetteMessageRow } from '@/lib/devis-plaquette-messages-query';
 import { createWorkflowEngine } from '@repo/api-core';
+import { assertPublicRateLimit } from '@/lib/http/public-rate-limit';
 
 type Ctx = { params: Promise<{ devisId: string }> };
 
 /** Acceptation du devis par le client (lien public signé). */
 export async function POST(request: NextRequest, context: Ctx) {
+  const limited = await assertPublicRateLimit(request, 'plaquette-accept');
+  if (limited) return limited;
+
   const { devisId } = await context.params;
   const gate = verifyPlaquetteTokenForDevis(request, devisId);
   if (!gate.ok) return fail(gate.message, gate.status);

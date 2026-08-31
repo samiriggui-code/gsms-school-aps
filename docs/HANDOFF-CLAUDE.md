@@ -1016,3 +1016,5 @@ Grep confirmé : aucune trace de rate limiting nulle part dans `apps/lms-crm/app
 
 Les deux sont indépendants, tu peux les faire dans l'ordre que tu veux ou en parallèle. `test:doctype` + `tsc --noEmit` après, comme d'habitude.
 
+✅ traité — SEC-04 : `GoogleProvider` retiré (`auth-options.ts`) ; signin déjà sans bouton Google. SEC-05 : `lib/http/public-rate-limit.ts` + 5 routes POST publiques. BILAN à jour. `tsc` + `test:doctype`. Voir HANDOFF-CURSOR.
+
