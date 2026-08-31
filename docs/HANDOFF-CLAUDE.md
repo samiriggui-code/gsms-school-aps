@@ -1208,3 +1208,30 @@ En mode `local` (le mode actif aujourd'hui, confirmé plus tôt), **chaque fichi
 **Correctif demandé, borné** : dans les deux routes qui servent les fichiers (`app/uploads/[[...path]]/route.ts` et `app/api/public/storage/[[...path]]/route.ts`, toutes deux déjà modifiées ce soir pour l'auth), ajoute `mimeType: true` aux deux `select` Prisma (`fileAsset` et `fileAssetVersion.fileAsset`), puis remplace `file.contentType` par `record?.mimeType ?? file.contentType` dans le header `Content-Type` de la réponse (fallback sur la valeur de `getStoredFile` pour les chemins non trackés `avatars|company|misc`, qui n'ont pas de `record`). Le `mimeType` en base est déjà validé au moment de l'upload (`COMMON_FILES_ALLOWED_MIME` côté `common/files`, ou l'équivalent des autres endpoints d'upload) donc c'est une source fiable, pas une donnée client non vérifiée à la volée.
 
 Pas de code écrit par moi — anomalie fonctionnelle réelle et vérifiée (pas de sécurité, mais casse une fonctionnalité transverse en dev), signalée avec le point d'insertion exact.
+
+## 2026-08-31 — 🚨🚨🚨 LE PLUS GRAVE DE LA SOIRÉE : module `gouvernance-donnees/storage` — presque tous les GET (et une écriture) sans permission `storageAdmin`
+
+Toujours en train de chercher (« cherche cherche pas de pause »). En regardant qui d'autre appelle `getStoredFile`/sert des fichiers dans le repo, j'ai trouvé un troisième point de fuite fichier — **plus large que les deux fermés ce soir**, dans le module de gouvernance stockage lui-même (`securite-configuration/gouvernance-donnees/storage`), censé être réservé à `GOVERNANCE_PERMISSION.storageAdmin`.
+
+**Le pattern qui prouve que c'est un oubli, pas un choix** : dans `storage/files/[id]/route.ts`, le `GET` (métadonnées) ET le `POST` (archivage) vérifient correctement `sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)`. Même chose dans `corbeille/[fileId]/route.ts` (`PATCH`). Mais **tous les autres GET du même module, dans les mêmes dossiers, à côté de ces routes protégées, ne vérifient que `getServerSession` — jamais la permission** :
+
+| Route | Méthode | Ce qu'elle expose/permet sans permission |
+|---|---|---|
+| `storage/files/[id]/preview/route.ts` | GET | **Le plus grave** : renvoie les octets réels de n'importe quel `FileAsset` par `id` — `loadAssetBytes()` ne fait aucun filtre visibility/module/owner. Bypass total de `canServeFileAsset` qu'on vient d'installer sur `/uploads`. |
+| `storage/files/[id]/versions/route.ts` | **POST** | **Aussi grave, en écriture** : n'importe quel utilisateur connecté peut ajouter une nouvelle version à n'importe quel `FileAsset` (`addFileAssetVersion`), donc altérer un document existant (finance, Qualiopi, RH…) qui n'est pas le sien. |
+| `storage/files/[id]/versions/route.ts` | GET | Liste les versions (avec `storageKey`, `checksum`) de n'importe quel fichier par id, aucun filtre. |
+| `storage/route.ts` | GET | Liste jusqu'à 100 `FileAsset` par page, cross-module, cross-visibility (metadata : `originalName`, `module`, `entityType`, `url`, `storageKey`…), sans filtre de permission ni de visibility. |
+| `corbeille/route.ts` | GET | Liste le contenu de la corbeille (fichiers archivés/supprimés), aucune vérification. |
+| `demandes/route.ts`, `audit/route.ts`, `dashboard/route.ts`, `storage/socle/route.ts` (GET+POST) | — | Même schéma : session seule, pas de `storageAdmin`. Sévérité moindre (stats, config infra) mais même trou de logique — à corriger pour la cohérence du module. |
+
+Vérifié que `GOVERNANCE_PERMISSION.storageAdmin` (`governance.storage.admin`) est bien la permission voulue pour tout ce module — c'est exactement ce que les routes soeurs (`[id]/route.ts`, `corbeille/[fileId]/route.ts`) utilisent déjà.
+
+**Correctif demandé, priorité maximale (avant OF-07/autre)** : ajouter dans chacune des routes du tableau ci-dessus, juste après le `if (!session) return fail('Unauthorized request', 401);` existant, exactement le même bloc que dans `storage/files/[id]/route.ts` :
+```ts
+if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.storageAdmin)) {
+  return fail('Forbidden', 403);
+}
+```
+(import `GOVERNANCE_PERMISSION, sessionHasPermission` depuis `@/lib/auth/crm-permissions`, déjà fait dans `storage/files/[id]/route.ts` à copier tel quel). Aucun nouveau modèle, aucune nouvelle route — uniquement ajouter la vérification manquante, 8 endroits. Priorise `preview` et `versions` POST (les deux qui touchent au contenu réel des fichiers), le reste peut suivre dans la foulée du même commit vu que c'est mécanique.
+
+Pas de code écrit par moi.
