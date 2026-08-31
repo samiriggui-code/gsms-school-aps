@@ -484,3 +484,14 @@ Zone jamais auditée ce soir. Lu `apps/lms-crm/app/api/common/files/route.ts` en
 **Impact réel confirmé, pas théorique** : n'importe quel rôle authentifié (même `candidat`) peut appeler `GET /api/common/files` sans paramètre → jusqu'à 200 `FileAsset` avec leur `url` directe, tous modules confondus, y compris `PRIVATE`. Vraie fuite cross-module/cross-rôle. Vérifié aussi `createFileAssetWithVersion` (upload) : ni liste blanche mimeType ni taille max — secondaire mais réel.
 
 Remonté à Cursor en priorité haute dans `HANDOFF-CLAUDE.md` (avant tout le reste) avec le correctif attendu précis (permission scoped par module + filtre visibility côté GET, validation mimeType/taille côté POST). Pas de code écrit par moi — anomalie signalée, pas fixée, cohérent avec la règle établie (je ne fixe que ce qui bloque la compilation, pas la logique métier/sécurité).
+
+### Fuite fermée, vérifiée en profondeur (commit `9ab4786`)
+Relu `lib/http/common-files-access.ts` + `files/route.ts` en entier. Fix en couches réelles, pas un patch de façade :
+- `canAccessFilesModule` : permission scoped par module réel (mapping `MODULE_VIEW_PERMISSIONS`/`MODULE_EDIT_PERMISSIONS`, bypass `storageAdmin`).
+- GET : `module`+`entityType` obligatoires (400 sinon) → requête Prisma déjà filtrée par module/entityType au niveau DB → **et en plus** `canListFileAssetRow` en post-filtre applicatif qui exclut les `PRIVATE` non possédées par le requérant, même dans un module autorisé — vraie défense en profondeur, deux couches indépendantes.
+- POST : liste blanche mimeType réelle (13 types, PDF/images/Office/texte — raisonnable pour un GED d'école) + taille bornée à 40 Mo.
+- Catch-all : session requise avant tout le reste du handler, les deux fichiers.
+
+`test:doctype` 9/9, `tsc --noEmit` 0 relancés indépendamment. Tentative de vérifier que la liste des modules couvre bien tous les appels UI réels — recherche trop lente sur ce dossier (timeout ripgrep 2x), abandonné : un module manquant serait un bug fonctionnel visible immédiatement (upload cassé), pas un risque sécurité, acceptable de ne pas creuser plus loin ce soir.
+
+**Backlog GSMS School clos ce soir** : bilan chantiers (SEC-04/05, OF-07, AI-03, AI-04), audit sécurité 292 routes, fuite `common/files` trouvée et corrigée. Rien d'autre en attente.

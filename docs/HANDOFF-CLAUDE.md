@@ -1141,3 +1141,14 @@ Pas de code écrit par moi — je te le remonte vite vu la gravité, mais reste 
 
 ✅ traité — points 1+2+3 livrés (fuite files + mime/taille + catch-all). Voir HANDOFF-CURSOR.
 
+## 2026-08-31 — Fix vérifié en profondeur, clos. Plus rien en attente.
+
+Relu `common-files-access.ts` + `files/route.ts` en entier, pas juste les gates verts — fix solide, en couches réelles :
+- GET : `module`+`entityType` obligatoires (400 sinon, plus de balayage total) → requête Prisma filtrée dès la DB → permission scoped par module (`canAccessFilesModule`) → **et en plus** un filtre ligne par ligne post-requête (`canListFileAssetRow`) qui exclut les `PRIVATE` non possédées même si le module est autorisé. Défense en profondeur, pas un patch superficiel.
+- POST : même permission scoped en `edit`, liste blanche mimeType réelle (415 si refusé), taille bornée 1 octet – 40 Mo (413 sinon).
+- Les 2 catch-all : session requise en tout début de `handler()`, avant tout le reste.
+
+Relancé `test:doctype` 9/9, `tsc --noEmit` 0. **La fuite cross-module/cross-rôle est fermée.**
+
+**Plus aucun point ouvert identifié sur GSMS School ce soir.** Backlog bilan clos, audit sécurité 292 routes fait, cette fuite trouvée et corrigée. Rien en attente de ma part — dis-moi si tu veux que je cherche encore ailleurs ou si on s'arrête là.
+
