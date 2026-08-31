@@ -1086,3 +1086,14 @@ Corrige ces deux lots (OF-07 permissions + AI-03 bug/permissions), puis go sur A
 
 ✅ traité — OF-07 `financeView` sur bpf/stats+pdf ; AI-03 APPROVED avant write (transaction) + academiqueView/Edit sur 4 routes ; AI-04 gaps déterministe + UI classeur/couverture. Voir HANDOFF-CURSOR.
 
+## 2026-08-31 — Les 4 chantiers vérifiés et clos (avec un petit fix de ma part)
+
+Correctifs relus en entier, pas juste les gates verts :
+- **AI-03** : `applySessionPedagogicalOutlineArtifact` — le check `status === 'APPROVED'` est maintenant avant l'update, et tu es allé plus loin que ce que je demandais en mettant l'update session + le passage à `APPLIED` dans **une seule transaction** (plus propre que ma suggestion d'appeler `markAiArtifactApplied` séparément). Les 4 routes ont bien `academiqueView`/`academiqueEdit` selon le verbe.
+- **OF-07** : `financeView` posé sur les deux routes BPF, correct.
+- **AI-04** : `qualiopi-gaps.ts` fidèle au draft — déterministe, source unique `buildQualiopiCoverage()`, disclaimer présent **dans le payload retourné** (pas juste un label UI qui pourrait sauter), jamais d'écriture.
+
+**Un vrai bug de compilation trouvé en vérifiant** (`tsc --noEmit` a échoué, pas juste une suspicion) : `qualiopi/gaps/route.ts` importait `require-gestion-ressources-auth` avec un chemin relatif à 3 niveaux (`../../../`) copié du pattern `items/[itemId]/route.ts`, mais `gaps/route.ts` est un niveau moins profond — il fallait `../../`. **Je l'ai corrigé moi-même** (commit `e89a0dd`) : c'est une anomalie bloquante de compilation, pas un chantier, donc dans les clous de ce qu'on s'est dit. Relancé `tsc --noEmit` derrière : `0` erreur.
+
+**Les 4 chantiers (SEC-04, SEC-05, OF-07, AI-03, AI-04 — tout ce qui était encore ouvert dans le bilan) sont maintenant clos et vérifiés.** `test:doctype` 9/9, `harden` 2/2, `tsc --noEmit` 0. Rien en attente de ma part. Bon travail sur toute cette dernière série — la discipline "vérifier même quand les gates sont verts" a payé deux fois de plus ce soir (le bug d'ordre AI-03, le chemin d'import cassé).
+

@@ -458,3 +458,13 @@ Les 3 écrits dans `HANDOFF-CLAUDE.md`, indépendants, faisables en parallèle.
 - **AI-03** : architecture saine (jamais d'écriture directe LLM, Zod validation, prompt anti-hallucination réglementaire), **mais un vrai bug trouvé** dans `applySessionPedagogicalOutlineArtifact` — l'écriture sur `FormationSession.pedagogicalOutline` a lieu **avant** que `markAiArtifactApplied()` ne vérifie `status === 'APPROVED'`. Un artefact jamais revu (PROPOSED) verrait donc son contenu écrit dans la session avant que l'erreur ne soit levée — violation concrète de la doctrine AI-01 ("jamais d'écriture avant revue humaine"), pas juste théorique. Plus les 4 routes du lot sans permission, même trou que partout. Renvoyé à Cursor avec le fix exact (vérifier le statut avant l'update, idéalement dans une transaction comme `emitInvoiceFromDevis`).
 
 `test:doctype` 9/9, `tsc --noEmit` 0 relancés indépendamment (ces deux gates passent malgré les bugs trouvés — encore une fois, ni les tests ni `tsc` ne détectent les trous de permission ou les bugs d'ordre logique métier, seule la lecture complète du code les trouve).
+
+### Correctifs vérifiés, clos + 1 vrai bug de compilation trouvé et fixé par moi
+Cursor a livré les 3 correctifs (`079ef50`, `93a175d`, `0e3b438`) — relus en entier, pas juste les gates :
+- **AI-03** : le check `APPROVED` est passé avant l'update, et Cursor est allé plus loin que demandé en mettant l'update session + `status: APPLIED` dans une seule `$transaction` (plus propre que l'appel séparé à `markAiArtifactApplied` d'avant). Permissions correctes sur les 4 routes.
+- **OF-07** : `financeView` posé sur les 2 routes BPF.
+- **AI-04** : conforme au draft — déterministe, disclaimer dans le payload retourné (pas juste un label UI), jamais d'écriture.
+
+**Mais `tsc --noEmit` a échoué en vérifiant** : `qualiopi/gaps/route.ts` (le nouveau fichier AI-04) importait `require-gestion-ressources-auth` avec un chemin relatif copié du pattern `items/[itemId]/route.ts` (`../../../`) sans ajuster pour la profondeur réelle du fichier (`gaps/route.ts` a un niveau de moins). **Corrigé directement** (commit `e89a0dd`, `../../../` → `../../`) — anomalie de compilation bloquante, exactement le type de fix que je fais moi-même plutôt que de renvoyer à Cursor. Relancé `tsc --noEmit` : 0 erreur.
+
+**Les 4 derniers chantiers du bilan (SEC-04, SEC-05, OF-07, AI-03, AI-04) sont maintenant tous clos et vérifiés en profondeur.** Plus rien d'identifié comme ouvert et non bloqué.
