@@ -19,6 +19,16 @@ Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de d
 
 **Non touché cette session** : AI-02/03/04, NAF-04…14 (hors 00-03/11/12), OPS-*, LMS-01/02, EVE (explicitement dernière priorité, non démarré).
 
+## ✅ Mise à jour 31 août 2026 (soir) — 2 fuites fichiers critiques trouvées ET fermées
+
+En creusant après la clôture du bilan ci-dessous (l'utilisateur a refusé de s'arrêter — bien fait) : audit du chemin réel de service des fichiers, pas juste de leur listing.
+
+- **`GET /api/common/files`** : aucune vérification de permission, filtres optionnels, pas de `select` restreint → n'importe quel utilisateur authentifié pouvait lister 200 `FileAsset` cross-module avec `url` direct, y compris `PRIVATE`. **Corrigé** (`9ab4786`) : `module`+`entityType` obligatoires, `canAccessFilesModule`, filtre DB + post-filtre `canListFileAssetRow` (défense en profondeur réelle, 2 couches indépendantes). Vérifié en profondeur, pas sur parole.
+- **`app/uploads/[[...path]]/route.ts`** : plus grave — servait le **binaire** du fichier sans aucune auth (mode `local` actif confirmé en `.env`), contournant le fix ci-dessus. **Corrigé** (`2eab87d`) : lookup `FileAsset`/`FileAssetVersion` par `storageKey`, `canServeFileAsset` (PUBLIC libre, sinon session + permission module + visibility), 404 fail-closed hors préfixes historiques. `randomId()` (clé de stockage) durci en CSPRNG (`crypto.randomBytes(16)`) au passage.
+- Gates rejoués indépendamment aux deux étapes : `tsc --noEmit` 0, `test:doctype` 9/9, `migrate diff --exit-code` vide.
+
+Détail complet : `docs/SUIVI-CURSOR-CLAUDE.md` (entrées du 31/08 soir).
+
 ## ✅ Mise à jour 31 août 2026 — OF-06 clos + OF-11′ (dualité Qualiopi)
 
 **GSMS-OF-06 (facture first-class)** : ✅ Fait — `FinanceInvoice` 1:N vers `FinanceDevis`, numérotation légale gapless (`FAC-YYYY-######`, séquence PG en transaction), `einvoice*`/Factur-X migrés hors devis, émission = acte staff explicite (jamais de lazy-create sur GET). Commits `05eb846`/`81deadc`. Un trou de permission trouvé sur les routes bespoke (aucune ne vérifiait `financeEdit`/`financeView`) et corrigé le jour même. Détail complet : `docs/SUIVI-CURSOR-CLAUDE.md`.

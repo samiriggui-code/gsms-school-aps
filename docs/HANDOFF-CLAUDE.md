@@ -1172,3 +1172,18 @@ Pas de code écrit par moi, je remonte vite vu la gravité — mais je reste sur
 
 ✅ traité — `/uploads/[[...path]]` + alignement `/api/public/storage` : lookup FileAsset/Version par storageKey, PUBLIC sans session, sinon session + `canServeFileAsset` (module + visibility). Fail-closed hors préfixes avatars/company/misc. `randomId()` → `crypto.randomBytes(16)`. `tsc` 0 · `test:doctype` 9/9. Voir HANDOFF-CURSOR.
 
+## 2026-08-31 — Les 2 fuites fichiers fermées, prochain chantier : OF-07 garde-fous `erreur_ctrl`
+
+Vérifié en profondeur indépendamment (diff complet relu, `tsc`/`test:doctype`/`migrate diff` rejoués moi-même) : `common/files` + `/uploads` sont clos, cohérents, pas de régression. Point mineur noté non bloquant : ni l'ancien ni le nouveau code ne filtrent `status`/`deletedAt` du `FileAsset` avant de servir le binaire (un fichier soft-deleted resterait récupérable si le fichier disque existe encore et que la clé fuite) — pas introduit par ce commit, à garder en tête, pas urgent.
+
+**Prochain chantier proposé : GSMS-OF-07, le point encore 🟡 dans `docs/BILAN-CHANTIERS-GLOBAL.md`.** Lu `bpf-aggregates.ts` + `bpf-cerfa-pdf.ts` en entier. Les agrégats déterministes existent déjà avec 4 contrôles (`EMPTY_YEAR`, `SESSION_NO_DATES`, `NO_EMARGEMENT`, `APPROVED_AMOUNT_NULL`) — solide. Ce qui manque vs l'idée OPAGA #2 retenue au bilan (« pilote BPF avec garde-fous `erreur_ctrl` : tarif/durée/heures ») : des contrôles de **cohérence inter-champs**, pas juste de complétude. Concrètement, ajoute ces contrôles à `buildBpfAggregates` (même pattern `BpfControl`, même tableau `controls`) :
+
+1. `HOURS_OVER_CATALOG` (warn) : si `hoursAttendedProxy > hoursCatalog` pour un exercice — un stagiaire ne peut pas être émargé plus d'heures que le catalogue de sa formation ne prévoit ; symptôme typique d'un `hoursMin`/`hoursMax` mal saisi ou d'un émargement dupliqué.
+2. `APPROVED_OVER_REQUESTED` (warn) : si `amountApproved > amountRequested` sur un `FundingCase` individuel (pas seulement l'agrégat global) — un montant accordé ne devrait jamais dépasser le montant demandé ; à calculer par dossier dans la boucle existante, pas seulement sur les totaux.
+3. `SESSION_DATES_INCOHERENT` (warn) : `endDate < startDate` sur une session de l'exercice — incohérence de saisie qui fausserait tout calcul d'heures/période.
+4. `ZERO_HOURS_FORMATION` (warn) : session rattachée à une `Formation` où `hoursMin` et `hoursMax` sont tous les deux `null`/`0` mais qui a des stagiaires inscrits — impossible de calculer des heures catalogue fiables pour cette session.
+
+Pas de nouveau modèle Prisma, pas de nouvelle route — uniquement enrichir la fonction pure existante + son test si un test existe déjà pour `bpf-aggregates`. Garde le PDF (`bpf-cerfa-pdf.ts`) tel quel, il affiche déjà `aggregates.controls` automatiquement donc rien à toucher côté rendu.
+
+**Hors scope volontaire, ne pas faire** : le remplissage pixel-perfect du formulaire Cerfa 10443 officiel — pas de blank PDF officiel en repo pour overlay, changement de nature (état civil de document administratif) à traiter séparément si un jour demandé explicitement.
+
