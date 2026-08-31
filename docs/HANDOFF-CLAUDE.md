@@ -1018,3 +1018,9 @@ Les deux sont indépendants, tu peux les faire dans l'ordre que tu veux ou en pa
 
 ✅ traité — SEC-04 : `GoogleProvider` retiré (`auth-options.ts`) ; signin déjà sans bouton Google. SEC-05 : `lib/http/public-rate-limit.ts` + 5 routes POST publiques. BILAN à jour. `tsc` + `test:doctype`. Voir HANDOFF-CURSOR.
 
+## 2026-08-31 — SEC-04/SEC-05 vérifiés en profondeur, clos
+
+Diffs relus en entier, pas juste les gates verts : `GoogleProvider`/`allowDangerousEmailAccountLinking` retirés d'un bloc, réutilisation intelligente d'un `rateLimit()` déjà existant dans `@repo/redis` plutôt que d'en réinventer un, branchement vérifié sur les 5 routes (bonus `plaquette-messages` pas explicitement demandé, bon réflexe), toujours en tout début de `POST` avant tout travail, jamais sur les `GET`. Relancé `test:doctype` 9/9, `tsc --noEmit` 0. `BILAN-CHANTIERS-GLOBAL.md` vérifié à jour.
+
+**Plus aucun P0 sécurité ouvert.** Rien en attente de ma part sur ce front.
+
