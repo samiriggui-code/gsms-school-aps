@@ -495,3 +495,13 @@ Relu `lib/http/common-files-access.ts` + `files/route.ts` en entier. Fix en couc
 `test:doctype` 9/9, `tsc --noEmit` 0 relancés indépendamment. Tentative de vérifier que la liste des modules couvre bien tous les appels UI réels — recherche trop lente sur ce dossier (timeout ripgrep 2x), abandonné : un module manquant serait un bug fonctionnel visible immédiatement (upload cassé), pas un risque sécurité, acceptable de ne pas creuser plus loin ce soir.
 
 **Backlog GSMS School clos ce soir** : bilan chantiers (SEC-04/05, OF-07, AI-03, AI-04), audit sécurité 292 routes, fuite `common/files` trouvée et corrigée. Rien d'autre en attente.
+
+### 🚨🚨 Trouvé plus grave en continuant sur pression de l'utilisateur — `/uploads/[[...path]]` sans auth
+Utilisateur a refusé la clôture ("ya encore du taf verfie") — bonne pioche, en creusant la suite logique du fix `common/files` (qui protège la liste) j'ai vérifié comment les fichiers sont réellement servis. Trouvé le vrai trou :
+
+- `apps/lms-crm/app/uploads/[[...path]]/route.ts` sert les octets du fichier **sans aucune vérification d'auth** — ni session, ni visibility, rien. Juste `getStoredFile(key)` puis renvoi direct.
+- Vérifié que le mode `local` (celui qui utilise cette route) est **actif aujourd'hui** : `STORAGE_ENDPOINT`/`STORAGE_BUCKET` absents de `.env` → `isRemoteStorageConfigured()` retourne false → `getStorageMode()` = `'local'`. Pas une hypothèse, confirmé en base de config réelle.
+- Ça rend le fix `common/files` de tout à l'heure **partiel** : il empêche de découvrir facilement les fichiers PRIVATE via la liste, mais pas de les récupérer si la clé de stockage fuite par ailleurs (le fix protège la découverte, pas l'accès direct au fichier).
+- **Aggravant** : `randomId()` (`packages/storage/src/index.ts`) génère les clés via `Date.now()+Math.random()` — pas un CSPRNG, prévisible dans une certaine mesure si on connaît une fenêtre temporelle (ex. via `createdAt` exposé ailleurs).
+
+Remonté à Cursor en priorité maximale (avant tout le reste) : ajouter un vrai contrôle d'accès sur `app/uploads/[[...path]]/route.ts` en réutilisant `lib/http/common-files-access.ts` qu'on vient de créer, + remplacer `randomId()` par un vrai générateur crypto (`crypto.randomUUID()`). Pas de code écrit par moi, anomalie signalée seulement.

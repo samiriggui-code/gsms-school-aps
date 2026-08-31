@@ -1152,3 +1152,19 @@ Relancé `test:doctype` 9/9, `tsc --noEmit` 0. **La fuite cross-module/cross-rô
 
 **Plus aucun point ouvert identifié sur GSMS School ce soir.** Backlog bilan clos, audit sécurité 292 routes fait, cette fuite trouvée et corrigée. Rien en attente de ma part — dis-moi si tu veux que je cherche encore ailleurs ou si on s'arrête là.
 
+## 2026-08-31 — 🚨🚨 PLUS GRAVE QUE LE PRÉCÉDENT : `/uploads/[[...path]]` sert les fichiers sans AUCUNE auth
+
+L'utilisateur a poussé à continuer plutôt que de s'arrêter ("ya encore du taf"). En creusant la suite logique du fix `common/files` (qui protège la **liste**), j'ai vérifié comment les fichiers sont réellement **servis** — et trouvé le vrai trou, plus grave que celui qu'on vient de fermer.
+
+**`apps/lms-crm/app/uploads/[[...path]]/route.ts`** — la route qui sert le contenu binaire des fichiers en mode stockage local (`STORAGE_ENDPOINT` absent de `.env` → mode `local` **confirmé actif aujourd'hui**, pas juste en théorie) — **n'a strictement aucune vérification d'auth**. `GET` : prend le chemin, appelle `getStoredFile(key)`, renvoie les octets. Aucun `getServerSession`, aucun contrôle de visibilité, rien.
+
+**Conséquence** : le fix de tout à l'heure sur `common/files` protège qui peut **lister** les fichiers via l'API — mais le fichier réel reste servable **par n'importe qui, même non connecté**, à partir du moment où il connaît (ou devine) la clé de stockage. Ça rend le fix précédent partiel : il empêche de découvrir facilement les fichiers `PRIVATE`, mais pas de les récupérer si la clé fuite ailleurs (logs, un ancien lien partagé, un autre endpoint qui expose encore `storageKey`/`url`).
+
+**Aggravant trouvé en creusant** : `randomId()` dans `packages/storage/src/index.ts` (utilisé pour générer la clé de fichier) = `` `${Date.now()}-${Math.random().toString(36).slice(2, 10)}` `` — **pas cryptographiquement sûr**. `Date.now()` est prévisible (fenêtre temporelle connue si on a un `createdAt` par ailleurs), `Math.random()` n'est pas un CSPRNG en Node. Ça rend les clés plus devinables qu'elles ne devraient l'être pour un identifiant censé faire office de contrôle d'accès de facto.
+
+**Correctif attendu, priorité maximale, avant tout le reste** :
+1. `app/uploads/[[...path]]/route.ts` : ajoute une vraie vérification — retrouve le `FileAsset` par `storageKey` (ou stocke un mapping clé→asset si ce n'est pas direct), vérifie `getServerSession` + réutilise `canListFileAssetRow`/`canAccessFilesModule` de `lib/http/common-files-access.ts` (le fichier qu'on vient de créer) avant de streamer les octets. Si le fichier est `PUBLIC`, laisse passer sans session ; sinon, exige une session + les mêmes règles que la liste.
+2. `randomId()` : remplace par `crypto.randomUUID()` ou `crypto.randomBytes(16).toString('hex')` — un vrai générateur cryptographique, pas `Date.now()+Math.random()`. Ça ne remplace pas le contrôle d'accès (point 1 reste obligatoire), mais c'est un durcissement propre en même temps que tu es dans ce fichier.
+
+Pas de code écrit par moi, je remonte vite vu la gravité — mais je reste sur "je ne touche pas au code, je signale l'anomalie".
+
