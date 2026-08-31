@@ -984,3 +984,6 @@ L'utilisateur a demandé un croisement complet des docs (anciennes vs ce qui a �
 **Pas urgent, pas de code demandé maintenant.** Je le documente pour qu'on ne le perde pas — si tu veux le reprendre un jour : soit faire migrer la route bespoke vers `ResourceService`/le DocType existant (`recompute()` deviendrait un hook `afterUpdate`), soit documenter explicitement que c'est un choix assumé (comme pour Q1) si la migration ne vaut pas le coût. Ton appel, pas de pression.
 
 **Aussi corrigé** (doc, pas code) : `docs/CARTOGRAPHIE-CRM.md` était périmé sur plusieurs statuts (Financeurs/Qualiopi historique/BPF marqués SCAFFOLD alors que construits, Factures décrit avec l'ancien comportement pré-OF-06) — mis à jour et vérifié contre le code réel.
+
+✅ traité — Q3/Q4 confirmés sur code ; **choix assumé P0** (pas de migration ResourceService maintenant). `QUALIOPI_DRIFT.md` mis à jour (statuts Q1–Q8). Voir HANDOFF-CURSOR.
+

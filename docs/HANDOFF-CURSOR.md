@@ -4,6 +4,18 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-08-31 — Qualiopi Q3/Q4 : choix assumé (pas de refactor)
+
+Ack croisement doc. Vérifié : `qualiopi/items/[itemId]/route.ts` = Prisma brut + `recompute()` local + `requireGestionRessourcesEdit` — bien à côté du DocType.
+
+**Décision** : **ne pas migrer** vers `ResourceService` maintenant (coût > valeur ; cohérent Q1/OF-11′). Documenté dans [`docs/framework/QUALIOPI_DRIFT.md`](framework/QUALIOPI_DRIFT.md) (statuts Q1–Q8 à jour).
+
+P1 optionnel plus tard si second writer ou unification Compliance.
+
+**Hors LMS (info user, pas chantier CRM)** : stack média ProLiant — qBittorrent + Sonarr + Radarr installés ; wiring download client / root folders en cours côté infra maison.
+
+---
+
 ## 2026-08-31 — OF-11′ clos (doc + UX) + stop session
 
 Ack Option recommandée reçue. Livré :
