@@ -1602,3 +1602,45 @@ Diff `_helpers.mjs`/`index.mjs` relu en entier avant de committer : `normalizeWe
 Committé (`b065c20`) — j'ai pris le commit moi-même vu que le diff était déjà entièrement vérifié, pas besoin d'un aller-retour de plus.
 
 **OPS-02/04 réellement clos** : infra n8n prod fonctionnelle de bout en bout, prouvé par un vrai run et pas juste un statut HTTP. Bon travail sur ce chantier — la trouvaille `$json.body` est le genre de bug qui aurait pu rester invisible longtemps (webhook répondait 200, tout semblait marcher, mais rien ne s'exécutait vraiment derrière).
+
+## 2026-09-01 — 3 nouveaux chantiers, choisis par l'utilisateur (LMS-01/02, OPS-03, NAF-04-14)
+
+Backlog sécurité + OPS-02/04 clos. Demandé à l'utilisateur la direction (pas un choix résolu par le plan verrouillé), il a dit **les trois**. Cadrés après investigation du code existant, pas des noms en l'air — indépendants, peuvent être faits dans l'ordre que tu veux.
+
+### 1. LMS-01/02 — Devoirs (assignments) + Discussions, côté staff/admin CRM
+
+**Bonne nouvelle : zéro nouveau modèle Prisma.** `Assignment`/`AssignmentSubmission` (ligne ~2488) et `Community`/`Discussion`/`Comment`/`DiscussionVote`/`CommentVote` (ligne ~2400) existent déjà en entier dans `schema.prisma`, complets (grade/feedback sur submission, isPinned/isLocked sur discussion, votes, réponses imbriquées sur Comment) — **mais zéro route API ne les touche aujourd'hui**, table dormante depuis le schéma d'origine. `Assignment.activityId` → `Activity`/`Course` (le système LMS e-learning, volontairement séparé de `Formation`/`FormationSession` — cf. WF-21, ne pas faire de pont).
+
+Périmètre P0, miroir du pattern déjà posé pour `LmsCourse`/`LmsChapter` (`domains/lms/doctypes.ts`, table Prisma existante, pas de `tenantId`) :
+1. DocTypes `LmsAssignment`/`LmsDiscussion` (ou noms de ton choix, cohérents avec `LmsCourse`/`LmsChapter`) dans `domains/lms/doctypes.ts`.
+2. Permissions : `LMS_PERMISSION` (`lib/auth/crm-permissions.ts`) n'a rien de dédié assignments/discussions aujourd'hui — réutilise `contentDraft`/`contentReview`/`courseView` si ça suffit sémantiquement, ou ajoute `lms.assignment.*`/`lms.discussion.moderate` si tu juges que c'est plus propre. Ton appel.
+3. UI staff dans `gestion-academique/vie-scolaire` (même zone que G12 déjà livré, admin cours/inscriptions) : côté Assignments, staff crée un devoir sur une Activity, liste/note les soumissions. Côté Discussions, staff modère (pin/lock/supprimer) — pas d'auteur staff, ce sont les apprenants qui créent (portail, hors périmètre P0 si pas déjà câblé).
+4. `domains/lms/*` reste isolé du framework, jamais l'inverse (règle L17-22 déjà actée) — ne touche pas au reste.
+
+`test:doctype` + `tsc --noEmit` après, comme d'habitude.
+
+### 2. OPS-03 — Workers AI (exécution async, pas juste le nom)
+
+Vérifié avant d'écrire la consigne : `AiRun.status` (`AiRunStatus`, défaut `PENDING`) est clairement pensé pour de l'async, mais **toutes les features AI livrées cette semaine (AI-02/03/04) appellent le LLM en synchrone dans la route API** (`await draftSessionPedagogicalOutline(...)` directement dans `sessions/[id]/ai/pedagogical-outline/draft/route.ts`, même chose ailleurs) — la requête HTTP bloque jusqu'à la fin de l'appel LLM. Pas un bug aujourd'hui (ça marche), mais un vrai risque de timeout à mesure que les prompts grossissent, et `packages/workers/` existe déjà (`report-generator.ts`, `compliance-auditor.ts`, etc.) sans équivalent AI.
+
+Périmètre P0, un seul cas d'usage réel pour prouver le pattern plutôt que de la plomberie abstraite :
+1. Nouveau `packages/workers/src/ai-run-executor.ts` (même structure que les workers existants) : poll les `AiRun` en statut `PENDING`, exécute la génération (réutilise la logique déjà dans `lib/ai/session-pedagogical-outline-ai.ts`, ne la duplique pas), écrit le résultat (`AiArtifact`) et passe le statut à `COMPLETED`/`FAILED`.
+2. La route `draft` correspondante crée juste le `AiRun` en `PENDING` et retourne (plus d'attente LLM dans la requête HTTP).
+3. UI review/apply (déjà existante pour AI-03) : vérifie si elle gère déjà l'état `PENDING` proprement (probablement pas testé), ajoute un polling/refresh si besoin.
+4. **Ne généralise pas** aux autres AI-0x tout de suite — un seul flux migré et vérifié de bout en bout (créer → PENDING → worker → COMPLETED → artifact visible) prouve le pattern ; les autres suivront une fois celui-ci éprouvé.
+
+`test:doctype` + `tsc --noEmit` après.
+
+### 3. OPS-05 — Démo 15 min : pas cadré, propose avant de coder
+
+Le bilan dit juste « démo 15 min », rien de plus — je ne vais pas deviner un périmètre sur du vide (même logique que pour AI-04 la semaine dernière). **Avant tout code** : propose ici ton interprétation (parcours guidé staff+portail ? jeu de données de démo scriptée ? mode démo isolé de la vraie DB ?) avec une justification, comme pour AI-04. J'ackerai ou je contre-proposerai, mais je ne cadre pas un vide à ta place.
+
+### 4. NAF-04…14 — framework, mais ancré sur un vrai besoin, pas de la plomberie abstraite
+
+Ces items sont marqués P1 depuis le début parce que rien ne les réclamait concrètement — je ne veux pas que tu codes des capacités génériques jamais utilisées. Un seul point a un vrai ancrage trouvé en creusant :
+
+**NAF-14 (User Permission par enregistrement)** : `packages/doctype/src/types.ts` + `permission-engine.ts` ont déjà les champs `ifOwner`/`condition` (typés, jamais lus par `hasPermission` — trouvé et documenté dans le draft P5/P6 du 29/08). Cas réel qui en bénéficierait : `FormationSession`/formateur, aujourd'hui protégé par un contrôle applicatif ad-hoc (`assertInstructorOwnsSession`) plutôt que déclaratif. Périmètre : brancher `ifOwner`/`condition` dans `hasPermission`, puis migrer **ce cas précis** (pas tous les DocTypes) pour prouver que ça marche en remplaçant l'ad-hoc par du déclaratif.
+
+**NAF-04-09 (hooks, field ACL, child tables) et NAF-13 (Print Format générique)** : pas de cas d'usage concret identifié pour l'instant. Plutôt que d'inventer, si tu vois toi-même un DocType existant qui bénéficierait clairement d'un hook `beforeSave`/`afterSave` (par ex. un calcul dérivé fait à la main aujourd'hui) ou d'un champ avec `permlevel` réellement utile, dis-le et on cadre sur ce cas précis. Sinon, je préfère qu'on laisse ces deux P1 de côté plutôt que de construire une abstraction que personne n'utilise — dis-moi si tu vois un vrai besoin, sinon go direct sur NAF-14 seul.
+
+Comme d'habitude, pas de nouvel ack nécessaire pour lancer les chantiers 1/2 (cadrés, indépendants) — je vérifierai chaque livraison en profondeur. Pour 3, attends ma réponse à ta proposition avant de coder.

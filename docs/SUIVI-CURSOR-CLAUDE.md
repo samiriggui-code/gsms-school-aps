@@ -688,4 +688,15 @@ Committé moi-même (`b065c20`, diff déjà entièrement vérifié, pas de round
 
 **Bilan complet de la campagne OPS** : common/health enrichi, n8n prod re-provisionné (27→32 workflows), 404 webhook corrigé (URL inversée), build client/server cassé par `pg` trouvé et fermé (4 fichiers), 500 « Unused Respond to Webhook » diagnostiqué et fermé, et enfin ce bug d'envelope — le plus sournois des cinq, invisible tant qu'on ne vérifiait que le code HTTP. **OPS-02/04 clos pour de vrai, prouvé par un run réel de bout en bout, pas par un statut.**
 
+### 3 nouveaux chantiers cadrés — utilisateur a choisi « les trois » plutôt qu'un seul
+
+Backlog vidé, demandé la direction à l'utilisateur (comme après la campagne sécurité) — a répondu « on fait les 3 » (LMS-01/02, OPS-03/05, NAF-04-14) plutôt que d'en choisir un. Investigué le code avant d'écrire quoi que ce soit, pas des noms de bilan recopiés tels quels :
+
+- **LMS-01/02** : bonne surprise, `Assignment`/`AssignmentSubmission`/`Discussion`/`Comment`/`DiscussionVote`/`CommentVote`/`Community` existent déjà en entier dans `schema.prisma` (dormants, zéro route API dessus) — zéro nouveau Prisma nécessaire. Cadré comme un DocType de plus dans `domains/lms/doctypes.ts`, même pattern que `LmsCourse`/`LmsChapter`, UI staff dans `gestion-academique/vie-scolaire` (admin devoirs + modération discussions, pas d'auteur staff sur les discussions).
+- **OPS-03** : vérifié que toutes les features AI de la semaine (AI-02/03/04) tournent en synchrone dans la route API malgré un modèle `AiRun.status` clairement pensé pour l'async (défaut `PENDING`, jamais exploité comme tel) — risque de timeout latent, pas un bug aujourd'hui. Cadré sur **un seul flux migré** (pedagogical-outline) plutôt que tout généraliser d'un coup, nouveau worker `packages/workers/src/ai-run-executor.ts` miroir des workers existants.
+- **OPS-05** : « démo 15 min » n'a aucun contenu dans le bilan au-delà du nom — pas deviné de périmètre sur du vide (même principe qu'AI-04 la semaine dernière). Demandé à Cursor de proposer une interprétation avant tout code.
+- **NAF-04-14** : refusé de cadrer des capacités framework génériques sans consommateur réel identifié (mon propre principe anti-sur-ingénierie appliqué à ce que je délègue, pas juste à mon propre code). Un seul point a un vrai ancrage trouvé en creusant : NAF-14 (`ifOwner`/`condition`, déjà typés dans `permission-engine.ts` mais jamais lus par `hasPermission`, trouvé dans le draft P5/P6 du 29/08) — cas réel identifié (`FormationSession`/formateur, aujourd'hui protégé par un contrôle ad-hoc `assertInstructorOwnsSession` plutôt que déclaratif). NAF-04-09/13 laissés de côté sauf si Cursor voit lui-même un cas concret — pas de plomberie sans utilisateur.
+
+Écrit dans `HANDOFF-CLAUDE.md`, chantiers 1 et 2 lancés directement (cadrés, indépendants), 3 en attente de la proposition de Cursor, NAF limité à un seul point cadré.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
