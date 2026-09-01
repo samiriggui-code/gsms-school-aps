@@ -1355,3 +1355,41 @@ Les 5 fuites fermées cette semaine (`common/files`, `/uploads`, gouvernance sto
 **Le reste de la liste (105 fichiers)**, essentiellement `gestion-academique/vie-scolaire/*` (examens, sessions, formations, suivi-formations, planning, qcm-banks…), `communication-contenu/*` (CMS, marketing, SEO), `pilotage-supervision/*` (rapports, indicateurs), `gestion-sites-clients`, `securite-configuration/acces/account*` : à trier avec le même principe que le module finance — si une route est légitimement accessible à tout staff connecté (dashboard transverse, self-service), documente-le et laisse tel quel plutôt que de sur-restreindre ; si c'est de la donnée métier/RGPD/Qualiopi qui devrait être scopée à une permission précise (cohérent avec le `CRM_PERMISSION`/`domain.action` déjà utilisé ailleurs dans le même module), corrige avec le pattern habituel juste après le `if (!session)`.
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après (build complet si la RAM le permet), pas de nouvel ack nécessaire pour ce périmètre — je vérifierai le résultat en profondeur comme pour les 5 précédents, pas sur ton rapport seul. Si un fichier de la liste s'avère être un faux positif de mon grep (ex. protégé autrement, par un wrapper que je n'ai pas repéré), note-le simplement plutôt que de le bricoler.
+
+## 2026-09-01 — triage manuel de la liste 109 : 2 faux positifs confirmés, 1 vraie faille trouvée (module compliance entier)
+
+Pendant que tu démarres, j'ai lu moi-même les candidats les plus probables (lecture seule, pas de code) pour affiner la liste avant que tu n'y passes du temps.
+
+**Faux positifs confirmés — ne pas toucher :**
+1. `resource/[doctype]/route.ts`, `resource/[doctype]/[name]/route.ts`, `meta/[doctype]/route.ts` : session-only en apparence, mais délèguent à `getResourceService()` qui applique `PermissionEngine`/`DocPermission` en interne par DocType (`Permission denied` → 403 catché). Protection réelle au niveau framework, confirmée par doctrine (G1-E). Mon grep ne voit pas ce genre de gate indirect — normal que ça ressorte, mais c'est bon tel quel.
+2. `acces/permissions/delete/route.ts` : renvoie toujours 403 « catalogue en lecture seule », aucune donnée touchée — rien à protéger.
+3. `acces/permissions/[id]/roles/route.ts` (PATCH) et `acces/roles/[id]/permissions/route.ts` (PATCH) : gate bien présent, mais **inline** (`session.user.permissionSlugs.includes('iam.roles.edit') / 'crm.securite.edit'`) plutôt qu'un helper nommé — c'est exactement pourquoi mon grep les a comptés à tort. Permissions cohérentes avec `roles/[id]` (le fix qu'on vient de fermer). Rien à corriger.
+4. `common/files/[id]/route.ts` (PATCH/DELETE) : gate présent via `canManageFileAsset(session, asset)` (ownership + permission, `lib/file-asset-service`) — encore un helper que mon grep ne connaissait pas. Bon.
+
+**Correction à retenir pour la suite du triage (109 → moins, mais pas zéro) :** deux autres motifs de gate valides à reconnaître avant de conclure à un trou — un check inline `session.user.permissionSlugs.includes('slug')` (pas seulement les helpers nommés), et les fonctions `can*(session, entity)` scoped-ownership du style `canManageFileAsset`/`canManageX`. Si tu vois l'un des deux dans un fichier de la liste, c'est probablement un faux positif comme ci-dessus — vérifie le slug utilisé plutôt que de rajouter un `sessionHasPermission` par-dessus.
+
+**Vraie faille trouvée, priorité haute — tout le module `gouvernance-donnees/compliance/*` (11 fichiers) :** zéro fichier du sous-dossier n'a de check de permission au-delà de la session — même schéma exactement que le trou `finance` legacy et le trou `gouvernance-donnees/storage` déjà fermés cette semaine (les constantes existent, `governance.conformite.view`/`.edit`, déjà utilisées ailleurs pour `SubcontractorRecord` — juste jamais posées ici). Le plus grave : `items/[id]/validate/route.ts` et `items/[id]/reject/route.ts` (POST) appellent directement `ComplianceService.validateDossierItem`/`rejectDossierItem` — **n'importe quel staff connecté peut valider ou rejeter une pièce de conformité Qualiopi**, donc altérer le jugement d'audit officiel, sans aucune vérification de rôle.
+
+Liste complète, avec le gate attendu (copier le pattern déjà posé sur `gouvernance-donnees/storage/*`, import `GOVERNANCE_PERMISSION, sessionHasPermission` depuis `@/lib/auth/crm-permissions`) :
+
+| Fichier | Méthode | Gate |
+|---|---|---|
+| `dossiers/route.ts` | GET | `conformiteView` |
+| `dossiers/route.ts` | POST | `conformiteEdit` |
+| `dossiers/[id]/route.ts` | GET | `conformiteView` |
+| `dossiers/[id]/route.ts` | POST | `conformiteEdit` |
+| `dossiers/[id]/notify/route.ts` | POST | `conformiteEdit` |
+| `items/[id]/validate/route.ts` | POST | `conformiteEdit` |
+| `items/[id]/reject/route.ts` | POST | `conformiteEdit` |
+| `requests/route.ts` | GET | `conformiteView` |
+| `requests/route.ts` | POST | `conformiteEdit` |
+| `templates/route.ts` | GET | `conformiteView` |
+| `templates/route.ts` | POST | `conformiteEdit` |
+| `users/route.ts` | GET | `conformiteView` |
+| `users/[id]/route.ts` | GET | `conformiteView` |
+| `users/[id]/notify/route.ts` | POST | `conformiteEdit` |
+| `users/stats/route.ts` | GET | `conformiteView` |
+
+Priorise `items/[id]/validate` et `items/[id]/reject` (écriture sur le jugement d'audit) avant le reste du module. Pas de code écrit par moi.
+
+Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Le reste des ~100 candidats restants (hors les 4 faux positifs ci-dessus et hors compliance déjà traité ici) reste à trier de ton côté avec la méthode habituelle — pas besoin de me repasser par un nouvel ack pour ce périmètre.
