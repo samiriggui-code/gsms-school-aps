@@ -8,6 +8,7 @@ import { Footer } from './components/footer';
 import { Header } from './components/header';
 import { Sidebar } from './components/sidebar';
 import { UserManagementSupportSection } from '@/app/(protected)/securite-configuration/components/user-management-support-section';
+import { EveAssistant } from '@/components/eve/eve-assistant';
 
 export function Demo1Layout({ children }: { children: ReactNode }) {
   const isMobile = useIsMobile();
@@ -71,6 +72,7 @@ export function Demo1Layout({ children }: { children: ReactNode }) {
 
         <Footer />
       </div>
+      <EveAssistant />
     </>
   );
 }

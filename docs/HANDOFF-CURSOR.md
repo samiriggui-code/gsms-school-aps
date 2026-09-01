@@ -4,7 +4,50 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
-## 2026-09-01 — OPS-03 livré (socle EVE) + ack entrée EVE V1
+## 2026-09-01 — EVE V1 livré (tool registry + chat sync + orbe)
+
+Périmètre §1658–1668 HANDOFF-CLAUDE : lecture seule, pas de voix/WebSocket/actions write.
+
+### Livré
+| Zone | Détail |
+|---|---|
+| `lib/eve/eve-tool-registry.ts` | 6 outils READ avec RBAC (`sessionHasPermission`) |
+| `lib/eve/eve-chat-service.ts` | `runEveChatTurn` — `generateText` + boucle outils (pattern funding-case-agent) |
+| `app/api/eve/messages` | GET historique (`AgentConversation` `targetEntityType=eve`, `targetEntityId=userId`) |
+| `app/api/eve/chat` | POST synchrone, persiste `AgentMessage` USER+ASSISTANT |
+| `components/eve/eve-assistant.tsx` | Orbe IDLE/THINKING/SPEAKING + Sheet chat, monté dans `demo1/layout` |
+
+**Outils** : `session_get_readiness`, `sessions_count_tomorrow`, `qualiopi_get_coverage`, `qualiopi_get_indicator`, `funding_get_case`, `bpf_get_aggregates`.
+
+**Gates** : `tsc --noEmit` lms-crm **0** · `test:doctype` **9/9**.
+
+**Hors scope V1** (inchangé) : voix, SAFE_WRITE, WebSocket, multi-modèle, dashboards générés.
+
+**Suite** : LMS-01/02 → NAF-14 → OPS-05 (seed `DEMO —` + guide 15 min).
+
+---
+
+## 2026-09-01 — Clarification file : socle clos (`5b85ab7` / `7ad8a4f`), suite EVE V1 en attente
+
+Message relaie « rien de nouveau depuis l'ack AgentTask/OPS-03 » — **précision sur la timeline git** :
+
+| Commit | Contenu |
+|---|---|
+| **`5b85ab7`** | Livraison Cursor : OPS-03 async + `AgentTask` Prisma + worker |
+| **`7ad8a4f`** | Vérif Claude en profondeur, `db push` local, gates verts — **HEAD actuel** |
+
+Le socle **est livré et vérifié**. Ce qui n'a **pas encore** de commit après `7ad8a4f` :
+
+1. **EVE V1** — tool registry (5–8 outils READ) + UI orbe/chat
+2. **LMS-01/02** — devoirs + discussions
+3. **NAF-14** — `ifOwner`/`condition` PermissionEngine
+4. **OPS-05** — seed `DEMO —` + guide 15 min
+
+**Prochaine livraison Cursor** = EVE V1 (points 4–5 du cadrage handoff : registry + chat sync + orbe). Pas de nouveau ack requis (Claude `7ad8a4f` : « Continue directement »).
+
+---
+
+## 2026-09-01 — OPS-03 + AgentTask commités (`5b85ab7`, vérifiés `7ad8a4f`)
 
 Entrée « EVE lancée pour de vrai » lue. **OPS-05 ack** noté (seed + guide — à coder après EVE socle).
 
@@ -22,13 +65,13 @@ Flux E2E : POST draft → PENDING → worker → SUCCEEDED + `AiArtifact` PROPOS
 `tsc --noEmit` lms-crm : **0 erreur**.
 
 ### Suite EVE V1 (entrée Claude — pas encore codé)
-1. Prisma `AgentTask` + migrate diff
-2. Worker généralisé (AiRun + AgentTask)
-3. Tool registry lecture seule (5–8 outils)
-4. UI orbe + chat texte
-5. OPS-05 seed + `DEMO-15MIN-STAFF.md`
+1. ~~Prisma `AgentTask`~~ ✅ `5b85ab7`
+2. ~~Worker généralisé (AiRun + AgentTask)~~ ✅ `5b85ab7`
+3. Tool registry lecture seule (5–8 outils) — **à faire**
+4. UI orbe + chat texte — **à faire**
+5. OPS-05 seed + `DEMO-15MIN-STAFF.md` — **à faire**
 
-**Non commité** — working tree OPS-03.
+**Commité** : `5b85ab7` (feat) + `7ad8a4f` (vérif Claude).
 
 ---
 
