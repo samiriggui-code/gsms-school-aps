@@ -1691,3 +1691,31 @@ Relu tout le diff fichier par fichier, pas juste le résumé :
 ✅ traité — EVE V1 livré : 6 outils READ + `runEveChatTurn` sync + API `/api/eve/*` + orbe/Sheet UI ; `tsc` 0 · `test:doctype` 9/9. Voir HANDOFF-CURSOR.
 
 ✅ traité — LMS-01/02 (devoirs + modération discussions) + NAF-14 (`condition`/`ifOwner` moteur + FormationSession formateur) + OPS-05 (`pnpm demo:seed` + `DEMO-15MIN-STAFF.md`) livrés sur demande « tout les 3 ». Voir HANDOFF-CURSOR.
+
+## 2026-09-02 — étape 1 du plan clean-up faite, cadrage des étapes 2 et 3
+
+Étape 1 (supprimer le mort) close hier : 229 fichiers, `79d729c`+`dd1ae0c`, vérifié par graphe de dépendances complet + `tsc` + `test:doctype` 12/12 + build production complet (exit 0, toutes les pages générées).
+
+Avant de cadrer 2 et 3, vérifié l'ampleur réelle plutôt que de deviner :
+
+### Étape 2 — `packages/ui` + codemod imports
+
+- `apps/lms-crm/components/ui/` = **102 fichiers**.
+- Importé par **823 fichiers** à travers l'app (`grep -rl "from '@/components/ui/"` ) — c'est le vrai chiffre du blast radius, pas une estimation.
+- `packages/ui` n'existe pas encore.
+- **Piège trouvé en échantillonnant** (`button.tsx`) : les composants `components/ui/*` importent `@/lib/utils` (pour `cn()`) — un chemin app-local. Un déplacement brut vers `packages/ui` cassera la compilation du package tant que `cn()` (et tout autre import `@/...` similaire dans `components/ui/*`) n'a pas été déplacé avec, ou re-exporté proprement. Vérifie systématiquement les imports internes de `components/ui/*` avant de bouger quoi que ce soit, pas juste `button.tsx`.
+
+Périmètre :
+1. `packages/ui/package.json` — même structure que `packages/api-core` (`name: @repo/ui`, `main`/`types: src/index.ts`, `private: true`). Dépendances : `class-variance-authority`, `radix-ui`, `lucide-react`, etc. — reprends ce que `components/ui/*` utilise réellement (`package.json` racine de `apps/lms-crm` a déjà ces deps, à dupliquer/déclarer côté package).
+2. Déplace `components/ui/*` → `packages/ui/src/*`, avec `cn()`/`lib/utils` (et tout autre import interne app-local) déplacé ou réexporté avec.
+3. Codemod des 823 fichiers : `@/components/ui/X` → `@repo/ui` (ou le sous-chemin choisi, à toi de voir l'export map). Fais-le en un script (jscodeshift, ou un simple script Node regex-based sur les imports — le volume ne justifie pas de le faire à la main), pas fichier par fichier.
+4. `tsc --noEmit` + build complet après — le build est le seul juge fiable ici vu le volume, comme pour le clean-up d'hier.
+5. Un seul commit si possible (même logique qu'hier : facile à revert d'un coup si un import a été mal réécrit).
+
+### Étape 3 — découper `formation-session-add-sheet.tsx`
+
+1. **1 218 lignes** confirmées. Contenu réel (pas supposé) : schéma zod + validation, 6 `useQuery` (catalog/eleves/formateurs/equipment/venueRooms/sessionsForEquipment), `createMutation`/`updateMutation`, plusieurs fonctions de logique pure (`buildSessionExtrasPayload`, `sessionKindDerivedFromFormationParcours`, `indexVenueRoomConflictsForRange`, `isoOrNull`, etc.) mélangées avec le rendu JSX dans le même fichier.
+2. Découpage proposé (à toi d'ajuster si tu vois mieux en l'ouvrant en entier) : extraire le schéma + les queries/mutations + les fonctions de logique pure dans un hook dédié (`use-formation-session-add-sheet.ts` ou équivalent, à côté du fichier) ; garder le composant `FormationSessionAddSheet` pour la composition visuelle uniquement, consommant le hook + les primitives `@repo/ui` (une fois l'étape 2 faite — fais 2 avant 3, dans cet ordre, comme tu le proposais).
+3. Pas de changement de comportement — c'est un refactor pur, `tsc` + test manuel du formulaire (création + édition de session) après.
+
+Comme d'habitude : pas de nouvel ack nécessaire pour lancer 2 puis 3, cadrage posé. Je vérifierai chaque étape en profondeur (diff complet + gates + build), pas sur le rapport seul.

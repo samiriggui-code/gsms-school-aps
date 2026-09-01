@@ -720,3 +720,21 @@ Migration d'AI-03 vers l'async : logique prompt/schema Anthropic d'origine inté
 `tsc` 0, `test:doctype` 9/9, `harden` 2/2, `migrate diff` vide. Rien à corriger — commit propre et soigné. Cursor continue directement sur la suite EVE V1 (tool registry, UI orbe/chat), cadrage déjà posé, pas de nouvel aller-retour nécessaire.
 
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
+
+## 2026-09-02
+
+### Nettoyage template mort (229 fichiers) — étape 1 du plan de refactor
+
+L'utilisateur a rappelé un plan en 3 étapes discuté ailleurs (pas dans ce fichier) : supprimer le mort → migrer `components/ui` vers `packages/ui` (codemod imports) → découper `formation-session-add-sheet.tsx` (logique vs visuel). Étape 1 : `_deprecated-metronic/` (100 fichiers) confirmé mort par un vrai graphe de dépendances (script maison, part de toutes les pages/routes/layouts réels, suit les imports en profondeur — pas un sondage grep). En creusant qui référence encore ce dossier, trouvé que la modale "détails formation" de la page tarifs publique (`pricing.tsx` → `CustomerDetailsSheet`) ressemblait à un consommateur vivant — vérifié en entier avant de conclure : elle utilise un jeu de fichiers parallèle déjà réécrit pour GSMS (vraies données via `/api/catalog/formation`), aucun chemin vers `_deprecated-metronic`. Pas un bug produit, juste un nom de composant hérité du template.
+
+En élargissant le graphe à `components/customers/` et à toute une famille parallèle de sheets par catégorie (`asra-details-sheet.tsx`, `ssiap-details-sheet.tsx`, etc. + leurs dossiers privés `asra-d/`, `ssiap/`...), trouvé 229 fichiers morts au total (pas 129 comme estimé au départ) — un premier jet par catégorie de formation, abandonné le 19/06 au profit de l'approche générique aujourd'hui en prod. Confirmé par git log (aucune activité depuis 2,5 mois) que c'est du superseded, pas du travail oublié en cours.
+
+Supprimé en un commit (`79d729c`) + nettoyage `tsconfig.json` (`dd1ae0c`, référence `exclude` orpheline). Vérifié après coup : `tsc` 0, `test:doctype` 12/12, **build production complet réussi** (pas juste tsc — le seul juge fiable sur un volume pareil), toutes les pages générées y compris la page tarifs publique.
+
+### Cadrage étapes 2 et 3
+
+Avant d'écrire quoi que ce soit pour Cursor, mesuré l'ampleur réelle plutôt que de deviner : `components/ui/` = 102 fichiers, importé par **823 fichiers** dans l'app (chiffre réel, pas une estimation). `packages/ui` n'existe pas encore. Piège trouvé en échantillonnant `button.tsx` : les composants `components/ui/*` importent `@/lib/utils` (app-local) — un déplacement brut cassera la compilation du package tant que ces imports internes n'ont pas été traités aussi, pas juste les fichiers eux-mêmes. Signalé explicitement à Cursor pour qu'il vérifie systématiquement, pas juste sur `button.tsx`.
+
+`formation-session-add-sheet.tsx` : 1 218 lignes confirmées, contenu réel inspecté (schéma zod, 6 `useQuery`, 2 mutations, plusieurs fonctions de logique pure mélangées au JSX) — découpage proposé en hook dédié + composant visuel pur, à faire après l'étape 2 (pour consommer `@repo/ui` directement plutôt que l'ancien chemin).
+
+Écrit dans `HANDOFF-CLAUDE.md`. Pas de code écrit par moi pour ces deux étapes — chantiers réels (migration de package + refactor), pas des anomalies mécaniques, du ressort de Cursor.
