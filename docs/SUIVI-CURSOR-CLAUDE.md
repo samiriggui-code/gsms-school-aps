@@ -699,4 +699,16 @@ Backlog vidé, demandé la direction à l'utilisateur (comme après la campagne 
 
 Écrit dans `HANDOFF-CLAUDE.md`, chantiers 1 et 2 lancés directement (cadrés, indépendants), 3 en attente de la proposition de Cursor, NAF limité à un seul point cadré.
 
+### Décision utilisateur : EVE lancée pour de vrai — pas juste un addendum doc
+
+Cursor a acké les 3 chantiers et proposé OPS-05 (seed démo préfixé, guide staff, bonne proposition — ackée directement). Puis l'utilisateur a proposé d'enrichir EVE avec des idées tirées d'un CRM IA externe (Comp AI CRM). Lu `docs/GSMS SCHOOL — EVE.md` en entier avant de répondre (70 sections, doctrine déjà très détaillée) — la plupart des idées proposées existaient déjà sous une forme plus précise (gating par risque + confirmation §41-42/66-68 = exactement le principe « preuve forte auto / preuve faible suggestion »). Le vrai point neuf : EVE doit pouvoir tourner en tâche de fond sur une file (`AgentTask`), pas juste répondre à un tour voix/texte. Ajouté en addendum §72 de `EVE.md`.
+
+Question posée : enrichir la doc pour plus tard (EVE reste dernière priorité) ou lancer maintenant. **L'utilisateur a choisi de lancer EVE maintenant, pour de vrai** — changement de priorité explicite, `BILAN-CHANTIERS-GLOBAL.md` mis à jour en tête pour refléter la décision (l'ancienne ligne « EVE dernière priorité » du 30/08 reste dans le fichier comme trace historique, pas effacée, juste notée périmée).
+
+**Reframing du travail déjà en cours** : Cursor avait déjà démarré OPS-03 (worker `ai-run-executor`) au moment de la décision — pas jeté, recadré comme le socle du futur exécuteur `AgentTask` d'EVE, à élargir plutôt qu'à refaire.
+
+**Périmètre EVE V1 cadré délibérément étroit** (cohérent avec §65 de la doctrine EVE elle-même : « pas multi-agent au départ ») — explicitement hors périmètre : voix/STT/TTS/ElevenLabs, OpenRouter multi-modèle, WebSocket, recherche web, toute action qui écrit (`SAFE_WRITE`/`HIGH_RISK`/`CRITICAL`, V1 = lecture seule uniquement). Dedans : un seul nouveau modèle Prisma (`AgentTask`, distinct de `AiRun` et de `AgentConversation`/`AgentMessage` déjà existants — vérifié que ces deux derniers modèles existent déjà, posés sur FundingCase par une session Claude tierce plus tôt cette semaine, à réutiliser plutôt que dupliquer), chat interactif synchrone (pas besoin de file pour une question posée en direct), `AgentTask` réservé au proactif, 5-8 outils lecture seule qui enveloppent du code déjà construit cette semaine (readiness, couverture Qualiopi, FundingCase, BPF) avec RBAC hérité du système de permissions existant — pas de nouveau système de droits.
+
+Écrit dans `HANDOFF-CLAUDE.md`. C'est le chantier le plus gros ouvert cette semaine — j'ai dit explicitement à Cursor de revenir avec des questions plutôt que de deviner sur un sujet de cette taille.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.

@@ -1,5 +1,11 @@
 # Bilan de chantiers — GSMS
 
+## 🚀 Mise à jour 1er septembre 2026 (soir) — EVE priorisée, lancement V1
+
+**Décision utilisateur explicite** : EVE (`docs/GSMS SCHOOL — EVE.md`) n'est plus « dernière priorité, non démarrée ». Lancée maintenant, en V1 bornée (voir handoff `docs/HANDOFF-CLAUDE.md` du 01/09 pour le périmètre exact). Contexte : campagne sécurité (9 failles) + OPS-02/04 (n8n prod) closes le même jour, l'utilisateur a proposé d'enrichir l'architecture EVE avec des principes tirés d'un projet externe (Comp AI CRM) avant de trancher pour un vrai lancement plutôt qu'un simple addendum doc.
+
+Le reste de ce fichier (au-dessous) documente l'état au 30-31/08 — toujours valable pour tout ce qui n'est pas EVE/LMS-01-02/OPS-03/NAF-14, mais désormais périmé sur la ligne EVE « dernière priorité » du §20.
+
 ## ✅ Mise à jour 30 août 2026 — rattrapage workflows Qualiopi + framework IAM
 
 Session marathon (29-30/08) centrée sur l'audit exhaustif des 50 workflows de doctrine (`docs/GSMS SCHOOL — WORKFLOWS OF COMPLETS.md`) et la fermeture du framework DocType V2/IAM. Chaque item ci-dessous a été **vérifié indépendamment** (code relu en entier, `test:doctype`/`harden`/`tsc --noEmit`/`migrate diff --exit-code` relancés), pas accepté sur parole — détail complet dans `docs/AUDIT-WORKFLOWS-50-COMPLET.md` et `docs/SUIVI-CURSOR-CLAUDE.md`.

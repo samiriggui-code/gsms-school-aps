@@ -2297,3 +2297,17 @@ EVE
 Objectif final :
 
 > EVE doit donner l’impression qu’une assistante compétente connaît l’intégralité de GSMS, comprend immédiatement la page sur laquelle travaille l’utilisateur, peut l’emmener naturellement vers n’importe quelle information, peut chercher à l’extérieur lorsque GSMS ne possède pas la réponse, lui parler avec une voix naturelle, lui déposer les détails et les sources dans son chat et exécuter les opérations autorisées sans jamais remplacer les moteurs métier déterministes qui garantissent la fiabilité du système.
+
+---
+
+# 72. ADDENDUM (01/09/2026) — l'agent tourne à part, pas juste en requête/réponse
+
+Ajouté suite à une comparaison avec l'architecture d'un CRM IA externe (Comp AI CRM). La plupart des principes qu'il propose existent déjà ci-dessus sous une autre forme (§41-42/§66-68 = gating par risque + confirmation, équivalent du « preuve forte auto / preuve faible suggestion » ; §51 = séparation intelligence/API déjà dans l'esprit). Un point manquait vraiment :
+
+**EVE Core ne doit pas être uniquement une fonction appelée pendant un tour voix/texte et qui meurt à la fin de la réponse.** Elle doit aussi pouvoir traiter une file de tâches en tâche de fond (`AgentTask`), au même titre que les workers `packages/workers/` existants (`report-generator.ts`, etc.) — utile pour tout ce qui est proactif (§37, §40, §64 Daily Brief) ou trop long pour tenir dans le tour de réponse d'une requête HTTP.
+
+Deux autres principes à retenir pour l'implémentation, pas de nouveau concept mais bons réflexes pratiques :
+- **Clé API optionnelle jamais bloquante** : chaque intégration externe (OpenRouter, ElevenLabs, web search) doit être desactivable sans faire planter EVE — dégradée, pas en erreur, si la clé n'est pas configurée.
+- **Outil = fichier, skill = fichier markdown** : dans l'esprit du Tool Registry (§66), garder les définitions d'outils et de compétences comme des fichiers chargés à la demande plutôt que codés en dur dans un prompt système monolithique.
+
+`AgentTask` est distinct de `AiRun` (une génération LLM ponctuelle, déjà utilisé par AI-02/03/04) et de `AgentConversation` (chat par entité, déjà utilisé sur FundingCase) — c'est la file de travail générale d'EVE, les deux autres restent des briques qu'EVE peut utiliser.
