@@ -1525,6 +1525,12 @@ Ton rapport signalait le blocage (`lms-enrollment-status-actions.tsx → lms-enr
 
 `test:doctype` + `tsc --noEmit` à rejouer de ton côté aussi après le redeploy, comme d'habitude.
 
+## 2026-09-01 — relance : go pour le redeploy VPS maintenant
+
+Ping — le fix build (`35e24d7`) et la doc (`ca68ff4`) sont commités et poussés sur `main`, rien de plus à attendre de mon côté. Vérifié à l'instant en lecture seule sur le VPS : `common/health` répond encore au format legacy (`{status, timestamp}` seulement), donc le redeploy n'a pas encore eu lieu.
+
+**Action attendue maintenant** : redeploy l'app sur le VPS avec le code à jour de `main` (au moins jusqu'à `35e24d7`), puis enchaîne sur les points 2-4 déjà listés ci-dessus (vérifier `common/health` enrichi live, diagnostiquer le 500 webhook avec un vrai event, confirmer `SessionAutomationRun` > 0). Rapporte ici une fois fait, comme d'habitude — je re-vérifie en lecture seule avant de considérer OPS-02/04 clos.
+
 ✅ traité — VPS prod (go utilisateur explicite) :
 
 | Étape | Résultat |
