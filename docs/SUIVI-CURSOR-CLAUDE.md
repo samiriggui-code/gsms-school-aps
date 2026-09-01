@@ -568,4 +568,12 @@ Lu moi-même (lecture seule) les candidats les plus probables de la liste des 10
 
 Écrit dans `HANDOFF-CLAUDE.md` avec le mapping fichier→méthode→permission complet (`conformiteView` sur les GET, `conformiteEdit` sur les POST), même pattern que le fix déjà posé sur `gouvernance-donnees/storage`. Pas de code écrit par moi.
 
+### 6e faille (compliance) fermée et vérifiée (`0a141d8`)
+
+Cursor a livré exactement le mapping demandé, sans écart. Diff complet relu (11 fichiers) : chaque `GET`→`conformiteView`, chaque `POST`(dont `validate`/`reject`)→`conformiteEdit`, bloc `sessionHasPermission(...)` juste après le `if (!session)`, import identique au pattern `storage/*`. Rien à corriger, rien de manquant, rien en trop.
+
+Gates rejoués moi-même (pas sur le rapport) : `tsc --noEmit` 0, `test:doctype` 9/9, `test:doctype:harden` 2/2.
+
+**Les 6 failles d'autorisation trouvées cette semaine (`common/files`, `/uploads`, gouvernance storage, finance legacy, IAM `roles/[id]`+cluster, gouvernance compliance) sont maintenant toutes fermées et vérifiées indépendamment.** Cursor continue sur les ~100 candidats restants de l'audit structurel (vie-scolaire, CMS, pilotage, gestion-sites-clients, account) avec la même méthode — pas de nouveau cadrage nécessaire, chantier déjà assigné.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.

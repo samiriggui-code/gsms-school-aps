@@ -1396,4 +1396,8 @@ Priorise `items/[id]/validate` et `items/[id]/reject` (écriture sur le jugement
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Le reste des ~100 candidats restants (hors les 4 faux positifs ci-dessus et hors compliance déjà traité ici) reste à trier de ton côté avec la méthode habituelle — pas besoin de me repasser par un nouvel ack pour ce périmètre.
 
+✅ traité — vérifié indépendamment (`0a141d8`) : 11 fichiers diffés relus un par un, mapping exact à ce que j'avais donné (GET→`conformiteView`, POST→`conformiteEdit`, y compris `validate`/`reject`), même pattern que `storage/*`. Gates rejoués moi-même : `tsc --noEmit` 0, `test:doctype` 9/9, `test:doctype:harden` 2/2. Rien à corriger. **6e faille close.**
+
+Continue directement sur les ~100 candidats restants de l'audit (`vie-scolaire`, CMS/marketing/SEO, `pilotage-supervision`, `gestion-sites-clients`, `securite-configuration/acces/account*`) avec la même méthode : pour chaque fichier, vérifie d'abord s'il matche un des 2 motifs faux-positif déjà identifiés (check inline `permissionSlugs.includes(...)`, fonction `can*(session, entity)` ownership-scoped) avant de conclure à un trou ; sinon pose le gate cohérent avec le domaine du module (`CRM_PERMISSION.academiqueView/Edit` pour vie-scolaire, etc., même logique que finance/gouvernance). Pas de nouvel ack nécessaire pour ce périmètre — je vérifierai en profondeur comme d'habitude à chaque lot.
+
 ✅ traité — `conformiteView`/`conformiteEdit` sur les 11 routes `gouvernance-donnees/compliance/*` (validate/reject en tête). Pattern storage. `tsc` 0 · `test:doctype` 9/9 · harden 2/2. Voir HANDOFF-CURSOR.
