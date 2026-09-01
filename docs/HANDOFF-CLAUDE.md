@@ -1440,4 +1440,8 @@ J'ai lu moi-même les 6 fichiers de ta liste « reste à trancher » avant de te
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Pas de nouvel ack nécessaire — priorise le n°1 (`workspace/[viewKey]`) et le n°2 (`reports/jobs`), ce sont les deux qui rouvrent des trous qu'on vient de fermer ailleurs.
 
+✅ traité — vérifié indépendamment (`0ebb187`) : diff complet des 5 fichiers relu, exactement le mapping demandé (`permissionForViewKey`/`permissionForTemplateKey`/`permissionForOfficialTemplate`, fail-closed par défaut — préfixe inconnu → refusé, pas autorisé). Vérifié à la main que les 18 `viewKey` et les 9 `templateKey` réels du registre sont tous couverts par les préfixes posés, aucun orphelin. Gates rejoués : `tsc --noEmit` 0, `test:doctype` 9/9, `harden` 2/2. Rien à corriger.
+
+**Les 9 failles d'autorisation de la semaine sont maintenant toutes fermées et vérifiées indépendamment.** Continue sur les ~100 candidats restants de l'audit structurel avec la même méthode — toujours pas de nouvel ack nécessaire pour ce périmètre.
+
 ✅ traité — bypasses fermés : workspace viewKey→permission domaine ; reports/jobs POST + official-preview par préfixe template ; sync POST→securiteEdit ; email-templates→communicationView. Presence/export preview laissés (FP confirmés). Voir HANDOFF-CURSOR.

@@ -590,4 +590,12 @@ Cursor avait laissé 6 fichiers « à trancher » plutôt que de deviner — lu 
 
 Écrit dans `HANDOFF-CLAUDE.md` avec les deux tables de mapping préfixe→permission (viewKey et templateKey). Pas de code écrit par moi — priorité donnée aux deux qui rouvrent des trous déjà fermés (`workspace`, `reports/jobs`).
 
+### Les 3 bypass + 2 mineurs fermés et vérifiés (`0ebb187`)
+
+Cursor a livré exactement le mapping demandé sur les 5 fichiers. Diff complet relu : `permissionForViewKey`/`permissionForTemplateKey`/`permissionForOfficialTemplate` avec **fail-closed par défaut** (préfixe inconnu → `null` → refusé), pas un `if` qui autoriserait par erreur un cas non prévu. Vérifié à la main contre les registres réels (`MODULE_WORKSPACE_VIEW_KEYS` 18 entrées, `report-engine/registry.ts` 9 `templateKey`) : tous couverts par les préfixes posés, aucun orphelin qui se retrouverait bloqué par erreur ou, pire, oublié et resté ouvert.
+
+Gates rejoués : `tsc --noEmit` 0, `test:doctype` 9/9, `harden` 2/2.
+
+**Bilan de la campagne sécurité de la semaine : 9 failles d'autorisation trouvées et fermées, toutes vérifiées indépendamment** (`common/files`, `/uploads`, gouvernance storage, finance legacy, IAM `roles/[id]`+cluster, gouvernance compliance, gros lot 80 routes, `workspace/[viewKey]`, `reports/jobs`+`official-preview`). Cursor continue sur les ~100 candidats restants de l'audit structurel, même méthode, pas de nouveau cadrage.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
