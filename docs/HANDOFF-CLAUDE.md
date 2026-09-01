@@ -1453,4 +1453,23 @@ Pas juste lu ton tableau de classification — j'ai refait le rescan moi-même a
 
 **Aucune vraie faille restante sur le motif structurel. L'audit des 109 candidats (finalement ~9 failles réelles + le reste légitimement classé) est clos, vérifié indépendamment de bout en bout.**
 
+## 2026-09-01 — nouveau chantier : OPS-02 (n8n prod) + OPS-04 (observabilité), choisi par l'utilisateur
+
+Backlog sécurité clos. Demandé à l'utilisateur ce qui suit (pas un choix technique que le plan verrouillé tranchait tout seul, contrairement aux enchaînements précédents) — il a choisi **OPS**.
+
+Avant de coder quoi que ce soit, j'ai relu ce qui existe déjà (`docs/BILAN-CHANTIERS-GLOBAL.md` §3.8, `deploy/gsms/n8n/*`, le CH-8 audit factuel de la nuit du 29/08 dans `SUIVI-CURSOR-CLAUDE.md`) : les scripts de provisioning existent (`provision-n8n.sh`, `provision.mjs`, `wire-n8n-network.sh`), appelés par `deploy.sh` **sur le vrai VPS Hostinger** (`/opt/gsms-school`, réseau Docker `gsms`, `/docker/n8n-*`) — ce n'est pas un sujet que je peux vérifier depuis mon environnement (pas d'accès VPS). Donc trois volets distincts :
+
+**1. D'abord un état des lieux factuel, pas du code** (comme pour le CH-8 audit du 29/08) — réponds ici avant de coder :
+- Est-ce que `provision-n8n.sh` a déjà tourné sur le VPS réel au moins une fois ? Si oui, les 26 sous-workflows + le router `GSMS — Router événements` sont-ils visibles dans l'instance n8n prod (nombre exact, pas juste "ça a dû marcher") ?
+- `N8N_WEBHOOK_STANDARD_URL`/`N8N_WEBHOOK_BASE`/les secrets sont-ils réellement définis dans le `.env` du VPS (`GSMS_ENV` dans le script) ? Vérifiable via SSH si tu as l'accès, sinon dis-le clairement plutôt que de deviner.
+- `SessionAutomationRun.count()` **en base prod** (pas locale, on sait déjà que c'est 0 en local) — un seul run enregistré suffirait à prouver qu'au moins un circuit a été déclenché pour de vrai.
+
+**2. Pendant ce temps, 2 chantiers code que je peux déjà cadrer sans attendre la réponse VPS :**
+- **Trou connu depuis le CH-8 audit (29/08), jamais fermé** : `satisfaction-cold-followup` (`GET /api/internal/n8n/cron/satisfaction-cold-followup`, catalogue `crm.satisfaction.cold.followup`) existe côté CRM mais n'a **jamais été ajouté** au provisioner `deploy/gsms/n8n/workflows/index.mjs` — contrairement à son pendant HOT (`GSMS — Satisfaction à chaud`, déjà provisionné). WF-31 reste partiellement orphelin à cause de ça. Fix : ajoute l'entrée manquante dans `index.mjs`, même pattern que le cron HOT (`30 10 * * *` déjà pris par HOT, donc un autre horaire cron cohérent avec "froid" — J+45, pas de contrainte d'heure précise documentée, choisis un créneau raisonnable genre `0 9 * * *`).
+- **OPS-04 observabilité, version minimale vérifiable en code** : `wire-n8n-network.sh` teste déjà `GET /api/common/health` — vérifie ce que cette route renvoie aujourd'hui (juste un statut générique, ou déjà des détails utiles ?). Si c'est un stub minimal, enrichis-le avec ce qui permettrait de répondre aux questions du point 1 sans SSH la prochaine fois : `N8N_WEBHOOK_STANDARD_URL` configuré (booléen, jamais la valeur en clair), nombre de `SessionAutomationRun` sur les dernières 24h, DB up. Pas de nouvelle route si `common/health` existe déjà et est facilement extensible — réutilise-la.
+
+**3. OPS-03 (workers AI) et OPS-05 (démo 15 min) restent hors périmètre pour cette passe** — pas cadrés, pas demandés explicitement par l'utilisateur au-delà du choix général "OPS", je ne veux pas deviner leur contenu sans un vrai besoin identifié. On y reviendra si l'état des lieux du point 1 le justifie.
+
+Comme d'habitude : `test:doctype` + `tsc --noEmit` après le point 2. Le point 1 n'est pas un ack à attendre avant de coder le point 2 (les deux sont indépendants) — mais ne touche pas au VPS réel (pas de `provision-n8n.sh` lancé en prod) sans un vrai go explicite, ça sort du cadre "je code, tu vérifies" habituel puisque c'est irréversible sur un système partagé.
+
 ✅ traité — bypasses fermés (`0ebb187`). Rescan post-lot : **17 candidats restants**, tous FP/intentionnels déjà documentés (presence, export/preview, resource/meta PermissionEngine, portal self-service + `isPortalRole`, account self-service, IAM inline/`delete` 403, reports/jobs/[id] scopé `requestedById`, proxy facturation). **Audit structurel session-only : clos.** Voir HANDOFF-CURSOR.
