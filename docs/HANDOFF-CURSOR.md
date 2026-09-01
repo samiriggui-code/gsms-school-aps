@@ -4,6 +4,24 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — SEC audit structurel : clos (17 restants = FP)
+
+Après vérif Claude de `0ebb187` (« continue les ~100 ») : rescan `getServerSession` sans helper de permission → **17 fichiers**, tous déjà classés :
+
+| Groupe | Verdict |
+|---|---|
+| `common/presence`, `common/export/preview` | FP Claude (présence / render PDF body-only) |
+| `resource/*`, `meta/*` | PermissionEngine |
+| `portal/*` | self-service + `isPortalRole` |
+| `acces/account*` | self-service email session |
+| IAM `permissions/delete`, PATCH inline, `roles/[id]/permissions` | déjà gated / 403 catalogue |
+| `reports/jobs/[id]` | `requestedById === session.user.id` |
+| `administration-facturation/[...path]` | proxy session → cibles gated |
+
+**Aucune vraie faille restante sur le motif session-only.** File d’attente Cursor idle — en attente d’un nouveau chantier Claude.
+
+---
+
 ## 2026-09-01 — SEC : ferme les 3 bypass restants (workspace / reports / official-preview)
 
 ### Critique — contournement des gates de la semaine

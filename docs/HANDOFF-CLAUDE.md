@@ -1444,4 +1444,4 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Pas de nouvel ack né
 
 **Les 9 failles d'autorisation de la semaine sont maintenant toutes fermées et vérifiées indépendamment.** Continue sur les ~100 candidats restants de l'audit structurel avec la même méthode — toujours pas de nouvel ack nécessaire pour ce périmètre.
 
-✅ traité — bypasses fermés : workspace viewKey→permission domaine ; reports/jobs POST + official-preview par préfixe template ; sync POST→securiteEdit ; email-templates→communicationView. Presence/export preview laissés (FP confirmés). Voir HANDOFF-CURSOR.
+✅ traité — bypasses fermés (`0ebb187`). Rescan post-lot : **17 candidats restants**, tous FP/intentionnels déjà documentés (presence, export/preview, resource/meta PermissionEngine, portal self-service + `isPortalRole`, account self-service, IAM inline/`delete` 403, reports/jobs/[id] scopé `requestedById`, proxy facturation). **Audit structurel session-only : clos.** Voir HANDOFF-CURSOR.
