@@ -1474,4 +1474,10 @@ Avant de coder quoi que ce soit, j'ai relu ce qui existe déjà (`docs/BILAN-CHA
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après le point 2. Le point 1 n'est pas un ack à attendre avant de coder le point 2 (les deux sont indépendants) — mais ne touche pas au VPS réel (pas de `provision-n8n.sh` lancé en prod) sans un vrai go explicite, ça sort du cadre "je code, tu vérifies" habituel puisque c'est irréversible sur un système partagé.
 
+✅ traité — vérifié indépendamment (`6b9465f`) : `common/health` enrichi exactement comme demandé (`db` up/down, `n8nWebhookConfigured` en **booléen seulement**, jamais l'URL en clair, `sessionAutomationRunsLast24h`). Vérifié qu'aucune auth n'a été ajoutée sur cette route — bon réflexe, un healthcheck doit rester public (appelé par `wire-n8n-network.sh` sans session, potentiellement par un load balancer) ; l'info exposée (booléen + compteur, pas de PII/secret) est acceptable en public. `tsc --noEmit` 0, `test:doctype` 9/9 rejoués moi-même.
+
+**Correction de ma part** : `satisfaction-cold-followup` n'était PAS un trou — vérifié `git log -S "Satisfaction à froid" -- deploy/gsms/n8n/workflows/index.mjs` : ajouté le 29/08 21:44 (`2d4a13f`), la même nuit que l'audit CH-8 qui l'avait signalé. Mon information venait d'une relecture de l'historique qui n'avait pas recoupé ce commit contre le point ouvert — Cursor a eu raison de vérifier avant de dupliquer. Bien joué d'avoir contrôlé plutôt que de recoder à l'aveugle.
+
+**Sur l'état VPS prod (point 1)** : question transmise à l'utilisateur — ni Cursor ni moi n'avons d'accès SSH à l'infra Hostinger. En attente de sa décision : accès à donner, ou go explicite pour `provision-n8n.sh`, ou changement de chantier.
+
 ✅ traité — OPS-02/04 point 2 : `common/health` enrichi (db up/down, `n8nWebhookConfigured` bool, `sessionAutomationRunsLast24h`). Cold followup **déjà** dans `index.mjs` (`GSMS — Satisfaction à froid`, cron `0 10 * * *`) — pas de trou code à fermer. Point 1 VPS : pas d’accès SSH depuis Cursor ; local `.env` sans `N8N_WEBHOOK_*` ; DB locale inaccessible pour le count (Prisma error). Pas de `provision-n8n.sh` prod. Voir HANDOFF-CURSOR.

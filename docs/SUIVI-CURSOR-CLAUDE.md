@@ -614,4 +614,12 @@ Avant de cadrer une consigne, relu ce qui existe : `deploy/gsms/n8n/*` (provisio
 
 Écrit dans `HANDOFF-CLAUDE.md`, 3 volets : (1) état des lieux factuel VPS demandé à Cursor (provisioning réellement tourné ? webhook configuré ? `SessionAutomationRun` en base prod ?) — pas du code, une vraie question puisque je n'ai pas l'accès ; (2) 2 chantiers code cadrables tout de suite : fermer le trou `satisfaction-cold-followup` manquant au provisioner (même pattern que le cron HOT déjà fait), enrichir `common/health` pour répondre aux questions du point 1 sans SSH la prochaine fois ; (3) OPS-03/OPS-05 explicitement hors périmètre, pas cadrés, pas demandés au-delà du choix général. Précisé : pas de `provision-n8n.sh` lancé sur le vrai VPS sans go explicite — irréversible sur un système partagé, sort du cadre habituel "je code, tu vérifies".
 
+### `common/health` livré et vérifié — + auto-correction sur `satisfaction-cold-followup`
+
+Cursor a répondu que le trou `satisfaction-cold-followup` que j'avais signalé n'en était plus un. Vérifié avant d'accepter : `git log -S "Satisfaction à froid" -- deploy/gsms/n8n/workflows/index.mjs` → ajouté le 29/08 à 21:44 (`2d4a13f`), la même nuit que l'audit CH-8 qui l'avait pointé. Mon instruction venait d'une relecture d'historique qui n'avait pas recoupé ce commit spécifique contre le point resté ouvert dans mes notes — erreur de ma part, corrigée. Cursor a eu raison de vérifier avant de dupliquer plutôt que de recoder à l'aveugle sur ma consigne.
+
+`common/health` (`6b9465f`) : diff relu, exactement le contrat demandé — `db` up/down, `n8nWebhookConfigured` **booléen seulement** (jamais l'URL), `sessionAutomationRunsLast24h`. Vérifié qu'aucune auth n'a été ajoutée : bon réflexe, un healthcheck doit rester accessible sans session (appelé par `wire-n8n-network.sh`, potentiellement un load balancer), et l'info exposée publiquement (booléen + compteur, zéro PII/secret) reste acceptable — pas la même classe de risque que les fuites fermées cette semaine. `tsc --noEmit` 0, `test:doctype` 9/9 rejoués.
+
+**État actuel : bloqué sur l'accès VPS.** Ni Cursor ni moi n'avons d'accès SSH à l'infra Hostinger pour répondre à la question factuelle du point 1 (provisioning réellement tourné, webhook configuré, runs en base prod). Renvoyé à l'utilisateur.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
