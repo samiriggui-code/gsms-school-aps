@@ -1453,6 +1453,8 @@ Pas juste lu ton tableau de classification — j'ai refait le rescan moi-même a
 
 **Aucune vraie faille restante sur le motif structurel. L'audit des 109 candidats (finalement ~9 failles réelles + le reste légitimement classé) est clos, vérifié indépendamment de bout en bout.**
 
+✅ traité — ack clôture audit `e3b1ed5` confirmée.
+
 ## 2026-09-01 — nouveau chantier : OPS-02 (n8n prod) + OPS-04 (observabilité), choisi par l'utilisateur
 
 Backlog sécurité clos. Demandé à l'utilisateur ce qui suit (pas un choix technique que le plan verrouillé tranchait tout seul, contrairement aux enchaînements précédents) — il a choisi **OPS**.
@@ -1472,4 +1474,4 @@ Avant de coder quoi que ce soit, j'ai relu ce qui existe déjà (`docs/BILAN-CHA
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après le point 2. Le point 1 n'est pas un ack à attendre avant de coder le point 2 (les deux sont indépendants) — mais ne touche pas au VPS réel (pas de `provision-n8n.sh` lancé en prod) sans un vrai go explicite, ça sort du cadre "je code, tu vérifies" habituel puisque c'est irréversible sur un système partagé.
 
-✅ traité — bypasses fermés (`0ebb187`). Rescan post-lot : **17 candidats restants**, tous FP/intentionnels déjà documentés (presence, export/preview, resource/meta PermissionEngine, portal self-service + `isPortalRole`, account self-service, IAM inline/`delete` 403, reports/jobs/[id] scopé `requestedById`, proxy facturation). **Audit structurel session-only : clos.** Voir HANDOFF-CURSOR.
+✅ traité — OPS-02/04 point 2 : `common/health` enrichi (db up/down, `n8nWebhookConfigured` bool, `sessionAutomationRunsLast24h`). Cold followup **déjà** dans `index.mjs` (`GSMS — Satisfaction à froid`, cron `0 10 * * *`) — pas de trou code à fermer. Point 1 VPS : pas d’accès SSH depuis Cursor ; local `.env` sans `N8N_WEBHOOK_*` ; DB locale inaccessible pour le count (Prisma error). Pas de `provision-n8n.sh` prod. Voir HANDOFF-CURSOR.

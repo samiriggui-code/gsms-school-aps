@@ -2,6 +2,7 @@
 
 Zone reservee aux checks de sante applicative:
 
-- db
-- dependances externes
-- etat applicatif global
+- `status` / HTTP 200|503
+- `db` up|down
+- `n8nWebhookConfigured` (booléen, jamais l'URL)
+- `sessionAutomationRunsLast24h`

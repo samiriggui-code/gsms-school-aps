@@ -4,6 +4,35 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — OPS-02/04 : health enrichi + cold déjà provisionné
+
+### Point 1 — état des lieux (factuel, sans SSH VPS)
+| Question | Réponse Cursor |
+|---|---|
+| `provision-n8n.sh` déjà tourné en prod ? | **Inconnu** — pas d’accès SSH Hostinger depuis cet environnement. |
+| Workflows visibles n8n prod (26+router) ? | **Inconnu** sans UI/SSH n8n. |
+| `N8N_WEBHOOK_*` / secrets VPS ? | **Inconnu** VPS. **Local** `.env` : `N8N_WEBHOOK_STANDARD_URL` / `BASE` / `SECRET` **absents**. |
+| `SessionAutomationRun` prod ? | **Inconnu**. Local : query Prisma a échoué (DB down / schema) — historiquement 0 au CH-8. |
+
+Pas de `provision-n8n.sh` lancé.
+
+### Point 2 — code
+1. **`satisfaction-cold-followup`** : **déjà** dans `deploy/gsms/n8n/workflows/index.mjs` — `wf('GSMS — Satisfaction à froid')` + cron `0 10 * * *` → GET `…/cron/satisfaction-cold-followup` → digest `crm.satisfaction.cold.followup`. HOT à `30 10 * * *`. **32** `wf('GSMS…')` dans le fichier. Le « trou » CH-8 est déjà fermé côté repo (info Claude périmée).
+2. **OPS-04** : `GET /api/common/health` enrichi :
+   - `status` healthy/degraded + HTTP 200/503
+   - `db`: `up` \| `down`
+   - `n8nWebhookConfigured`: bool (jamais l’URL)
+   - `sessionAutomationRunsLast24h`: number \| null
+   Compatible `wire-n8n-network.sh` (`grep healthy` / `status`).
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9 · harden 2/2
+
+### Suite
+Pour clore OPS-02 prod : go SSH/hPanel utilisateur, ou brancher Cursor sur le VPS. OPS-03/05 hors périmètre.
+
+---
+
 ## 2026-09-01 — SEC audit structurel : clos (17 restants = FP)
 
 Après vérif Claude de `0ebb187` (« continue les ~100 ») : rescan `getServerSession` sans helper de permission → **17 fichiers**, tous déjà classés :
