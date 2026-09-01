@@ -1547,16 +1547,17 @@ Ping — le fix build (`35e24d7`) et la doc (`ca68ff4`) sont commités et pouss�
 
 Pas de nouvel ack nécessaire pour ce périmètre — je vérifierai le résultat comme d'habitude.
 
-✅ traité — redeploy VPS (35e24d7 + deploy fixes) :
+✅ traité — router n8n : `Respond OK` supprimé dans `buildRouter`, provision VPS, webhook POST → **HTTP 200** (était 500). `SessionAutomationRun` prod toujours **0** sur probe.
+
+✅ traité — redeploy VPS (`86b183c` deploy + `35e24d7` build) :
 
 | Étape | Résultat |
 |---|---|
-| Archive + sync /opt/gsms-school | OK (tar ~67 Mo) |
-| db push prod | **130 tables** (était 111) — FundingCase, EvidenceIndicatorLink, etc. |
-| Build Docker | OK après 3 correctifs deploy : DATABASE_URL build-arg + --network gsms + DOCKER_BUILDKIT=0 |
-| Stack | gsms-app / gsms-worker recréés |
-| **common/health prod** | **Enrichi live** : db: up, n8nWebhookConfigured: true, sessionAutomationRunsLast24h: 0 |
-| Webhook 500 router | **Toujours ouvert** — pas testé avec event CRM réel post-deploy |
-| SessionAutomationRun | **0** (24h) |
+| Archive + sync `/opt/gsms-school` | OK |
+| `db push` prod | **130 tables** (était 111) |
+| Build Docker | OK — `DATABASE_URL` + `--network gsms` + `DOCKER_BUILDKIT=0` |
+| **`common/health` prod** | **Enrichi live** |
+| Webhook router | **200** après fix router (ci-dessus) |
+| `SessionAutomationRun` | **0** — à confirmer avec event CRM métier réel |
 
-Fix deploy local (non commité) : Dockerfile.app, deploy.sh. Voir HANDOFF-CURSOR.
+Voir HANDOFF-CURSOR.

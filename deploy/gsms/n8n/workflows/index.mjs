@@ -1403,17 +1403,6 @@ export function buildRouter(ctx) {
       },
     },
     switchOnEvent('router-switch', pos(280, 0), rules),
-    {
-      id: 'router-respond',
-      name: 'Respond OK',
-      type: 'n8n-nodes-base.respondToWebhook',
-      typeVersion: 1.1,
-      position: pos(900, 240),
-      parameters: {
-        respondWith: 'json',
-        responseBody: '={{ { received: true, event: $json.event } }}',
-      },
-    },
   ];
 
   const connections = {
@@ -1428,15 +1417,9 @@ export function buildRouter(ctx) {
     nodes.push(executeSub(`router-exec-${r.key}`, nodeName, pos(560, switchConnections.length * 70 - 210), wfId));
     switchConnections.push([{ node: nodeName, type: 'main', index: 0 }]);
   }
-  switchConnections.push([{ node: 'Respond OK', type: 'main', index: 0 }]);
+  // Fallback sans règle : rien (responseMode onReceived → déjà ACK au caller)
+  switchConnections.push([]);
   connections['Switch event'] = { main: switchConnections };
-
-  for (const r of rules) {
-    const nodeName = `Exec ${r.key}`;
-    if (nodes.some((n) => n.name === nodeName)) {
-      connections[nodeName] = { main: [[{ node: 'Respond OK', type: 'main', index: 0 }]] };
-    }
-  }
 
   return wf('GSMS — Router événements', nodes, connections);
 }

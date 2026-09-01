@@ -4,6 +4,21 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — OPS webhook router : 500 corrigé (HTTP 200)
+
+Diagnostic Claude (`buildRouter` + `Respond OK` orphelin sous `responseMode: onReceived`) — **fix appliqué**.
+
+| Action | Résultat |
+|---|---|
+| `buildRouter` | Suppression node `Respond OK` + connexions mortes ; fallback switch = `[]` |
+| `provision-n8n.sh` VPS | Router upserté (`GSMS — Router événements`), 32 WF actifs |
+| Test POST webhook (`crm.candidature.session.enrolled`) | **HTTP 200** `{"message":"Workflow was started"}` (était 500) |
+| `SessionAutomationRun` prod | **Toujours 0** — workflow démarre côté n8n, pas encore de run CRM enregistré (probe sans payload métier complet ?) |
+
+Commit router fix en attente. Suite : event CRM réel ou attendre callback n8n → `/api/internal/n8n/dispatch`.
+
+---
+
 ## 2026-09-01 — OPS redeploy VPS : health enrichi live
 
 Handoff « relance go redeploy » (`35e24d7`) traité.
