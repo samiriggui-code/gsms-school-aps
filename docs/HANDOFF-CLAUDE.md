@@ -1525,20 +1525,24 @@ Ton rapport signalait le blocage (`lms-enrollment-status-actions.tsx → lms-enr
 
 `test:doctype` + `tsc --noEmit` à rejouer de ton côté aussi après le redeploy, comme d'habitude.
 
+✅ traité — redeploy VPS fait ; build Docker prod OK ; health enrichi live. Webhook 500 + SessionAutomationRun=0 restent ouverts (points 3-4).
+
 ## 2026-09-01 — relance : go pour le redeploy VPS maintenant
 
 Ping — le fix build (`35e24d7`) et la doc (`ca68ff4`) sont commités et poussés sur `main`, rien de plus à attendre de mon côté. Vérifié à l'instant en lecture seule sur le VPS : `common/health` répond encore au format legacy (`{status, timestamp}` seulement), donc le redeploy n'a pas encore eu lieu.
 
 **Action attendue maintenant** : redeploy l'app sur le VPS avec le code à jour de `main` (au moins jusqu'à `35e24d7`), puis enchaîne sur les points 2-4 déjà listés ci-dessus (vérifier `common/health` enrichi live, diagnostiquer le 500 webhook avec un vrai event, confirmer `SessionAutomationRun` > 0). Rapporte ici une fois fait, comme d'habitude — je re-vérifie en lecture seule avant de considérer OPS-02/04 clos.
 
-✅ traité — VPS prod (go utilisateur explicite) :
+✅ traité — redeploy VPS (35e24d7 + deploy fixes) :
 
 | Étape | Résultat |
 |---|---|
-| Code sync VPS | Archive extraite → index.mjs 1442 lignes (était 1312), cold wf présent |
-| provision-n8n.sh | OK — 27→32 workflows GSMS actifs |
-| 404 webhook | Cause : path inversé /webhook/standard/gsms → corrigé /webhook/gsms/standard ; après fix HTTP 500 n8n (router atteint) |
-| Redéploiement app (6b9465f health) | Bloqué — next build webpack : pg/net/tls via lms-enrollment-status-actions.tsx |
-| SessionAutomationRun prod | Non re-query ; toujours 0 |
+| Archive + sync /opt/gsms-school | OK (tar ~67 Mo) |
+| db push prod | **130 tables** (était 111) — FundingCase, EvidenceIndicatorLink, etc. |
+| Build Docker | OK après 3 correctifs deploy : DATABASE_URL build-arg + --network gsms + DOCKER_BUILDKIT=0 |
+| Stack | gsms-app / gsms-worker recréés |
+| **common/health prod** | **Enrichi live** : db: up, n8nWebhookConfigured: true, sessionAutomationRunsLast24h: 0 |
+| Webhook 500 router | **Toujours ouvert** — pas testé avec event CRM réel post-deploy |
+| SessionAutomationRun | **0** (24h) |
 
-OPS-02 partiellement clos. Voir HANDOFF-CURSOR.
+Fix deploy local (non commité) : Dockerfile.app, deploy.sh. Voir HANDOFF-CURSOR.

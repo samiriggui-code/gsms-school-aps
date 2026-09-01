@@ -14,8 +14,9 @@ ARG NEXT_PUBLIC_SITE_URL=http://localhost:3001
 ENV DOMAIN="${DOMAIN}"
 ENV NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL}"
 ENV NEXTAUTH_URL="${NEXT_PUBLIC_SITE_URL}"
-# Prisma/Next collectent des pages au build — URL factice suffit (pas de connexion réelle)
-ENV DATABASE_URL="postgresql://lms:build@127.0.0.1:5432/lms_app?schema=public"
+# Prisma/Next collectent des pages au build — sur le VPS, passer DATABASE_URL réel + --network gsms
+ARG DATABASE_URL=postgresql://lms:build@127.0.0.1:5432/lms_app?schema=public
+ENV DATABASE_URL="${DATABASE_URL}"
 RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm -C packages/database db:generate
 RUN pnpm -C apps/lms-crm exec next build --webpack

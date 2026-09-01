@@ -95,10 +95,18 @@ build_images() {
   fi
 
   cd "$APP_ROOT"
+  local db_url
+  db_url="$(read_env DATABASE_URL)"
+  if [[ -z "$db_url" ]]; then
+    echo "AVERTISSEMENT: DATABASE_URL absent — build Next.js sans DB (peut échouer sur pages SSG)"
+  fi
   echo "==> Docker build gsms-app (Next.js standalone, DOMAIN=${domain}) ..."
-  docker build "${build_args[@]}" \
+  # BuildKit ne supporte pas --network custom ; legacy builder requis pour joindre postgres (SSG build).
+  DOCKER_BUILDKIT=0 docker build "${build_args[@]}" \
+    --network gsms \
     --build-arg "DOMAIN=${domain}" \
     --build-arg "NEXT_PUBLIC_SITE_URL=${site_url}" \
+    ${db_url:+--build-arg "DATABASE_URL=${db_url}"} \
     -f deploy/gsms/Dockerfile.app \
     -t gsms-app:latest \
     .

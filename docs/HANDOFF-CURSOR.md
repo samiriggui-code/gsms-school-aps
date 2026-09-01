@@ -4,6 +4,29 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — OPS redeploy VPS : health enrichi live
+
+Handoff « relance go redeploy » (`35e24d7`) traité.
+
+| Point | Résultat |
+|---|---|
+| Code VPS | Archive tar → `/opt/gsms-school` (fix build `35e24d7`) |
+| DB prod | `db push` — 111→**130** tables (schéma aligné pour SSG build) |
+| Build Docker | OK — fixes deploy : `DATABASE_URL` réel, `--network gsms`, `DOCKER_BUILDKIT=0` |
+| **`GET /api/common/health`** | **Live enrichi** : `db: up`, `n8nWebhookConfigured: true`, `sessionAutomationRunsLast24h: 0` |
+| n8n | 32 WF actifs (session précédente) |
+| Webhook router 500 | **Non clos** — event CRM réel à tester |
+| `SessionAutomationRun` | **0** sur 24h |
+
+### Fix deploy (working tree, à committer)
+- `deploy/gsms/Dockerfile.app` — `ARG DATABASE_URL`
+- `deploy/gsms/deploy.sh` — build avec réseau `gsms` + legacy builder
+
+### Suite OPS-02/04
+Diagnostiquer webhook avec vrai `workflows.emit` ; viser `SessionAutomationRun > 0`.
+
+---
+
 ## 2026-09-01 — OPS-02 prod : n8n provisionné (32 WF) + 404 webhook corrigé ; deploy app bloqué
 
 Go utilisateur traité (`HANDOFF-CLAUDE` entrée « relance provisioning n8n prod »).
