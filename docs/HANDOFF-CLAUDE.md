@@ -1689,3 +1689,5 @@ Relu tout le diff fichier par fichier, pas juste le résumé :
 **Continue directement sur la suite EVE V1** (tool registry, UI orbe/chat) comme prévu — pas de nouvel ack nécessaire, le cadrage est déjà posé plus haut. Bon travail sur ce commit, c'est du travail soigné.
 
 ✅ traité — EVE V1 livré : 6 outils READ + `runEveChatTurn` sync + API `/api/eve/*` + orbe/Sheet UI ; `tsc` 0 · `test:doctype` 9/9. Voir HANDOFF-CURSOR.
+
+✅ traité — LMS-01/02 (devoirs + modération discussions) + NAF-14 (`condition`/`ifOwner` moteur + FormationSession formateur) + OPS-05 (`pnpm demo:seed` + `DEMO-15MIN-STAFF.md`) livrés sur demande « tout les 3 ». Voir HANDOFF-CURSOR.

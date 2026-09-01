@@ -1,3 +1,6 @@
+import { hasPermission } from '@repo/doctype';
+import { formationSessionMeta } from '@/lib/doctype/formation-session-meta';
+import { principalFromUserId } from '@/lib/doctype/principal-from-user';
 import { prisma } from '@/lib/prisma';
 
 export async function listInstructorSessionIds(trainerUserId: string): Promise<string[]> {
@@ -45,6 +48,19 @@ export async function assertInstructorOwnsSession(
   });
 
   if (!session) {
+    return { ok: false, message: 'Session introuvable ou non assignée.', status: 404 };
+  }
+
+  const principal = await principalFromUserId(trainerUserId);
+  if (
+    !principal ||
+    !hasPermission({
+      meta: formationSessionMeta,
+      principal,
+      action: 'read',
+      document: session as Record<string, unknown>,
+    })
+  ) {
     return { ok: false, message: 'Session introuvable ou non assignée.', status: 404 };
   }
 

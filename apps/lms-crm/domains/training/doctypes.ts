@@ -150,6 +150,17 @@ export const formationSessionDocType: DocTypeDefinition = {
   ],
   permissions: [
     {
+      role: 'formateur',
+      permlevel: 0,
+      read: true,
+      write: true,
+      condition: {
+        type: 'fieldEqualsPrincipal',
+        fieldname: 'trainerUserId',
+        principalClaim: 'id',
+      },
+    },
+    {
       role: '*',
       permlevel: 0,
       read: true,

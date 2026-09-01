@@ -44,6 +44,8 @@
 
     "smoke:doctype": "pnpm -C apps/lms-crm exec -- tsx --env-file=../../.env ./scripts/smoke-doctype-g1d.ts",
 
+    "demo:seed": "pnpm -C apps/lms-crm exec -- tsx --env-file=../../.env ./scripts/seed-demo-walkthrough.ts",
+
     "db:push": "pnpm -C packages/database run db:push",
     "db:push:accept": "pnpm -C packages/database run db:push:accept",
     "db:backfill-file-versions": "pnpm -C packages/database run db:backfill-file-versions",

@@ -4,6 +4,37 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — LMS-01/02 + NAF-14 + OPS-05 livrés (3 chantiers)
+
+### LMS-01/02
+| Zone | Détail |
+|---|---|
+| DocTypes | `LmsAssignment`, `LmsDiscussion` dans `domains/lms/doctypes.ts` |
+| API | `…/vie-scolaire/devoirs` (+ `[id]`, submissions PATCH grade) · `…/discussions` (+ modération PATCH/DELETE) |
+| UI | `/vie-scolaire/devoirs`, `/devoirs/[id]`, `/discussions` + menu |
+| Permissions | `lms.course.view`, `lms.content.draft`, `lms.content.review` (existants) |
+
+### NAF-14
+| Zone | Détail |
+|---|---|
+| `permission-engine.ts` | `ifOwner` + `condition` évalués quand `document` passé à `hasPermission` |
+| `FormationSession` DocType | règle `formateur` + `fieldEqualsPrincipal` sur `trainerUserId` |
+| Migration | `assertInstructorOwnsSession` → `hasPermission` + `principalFromUserId` |
+| Tests | `permission-engine.test.ts` (2 cas NAF-14) |
+
+### OPS-05
+| Zone | Détail |
+|---|---|
+| Script | `apps/lms-crm/scripts/seed-demo-walkthrough.ts` — idempotent, préfixe `DEMO —` |
+| Commande | `pnpm demo:seed` |
+| Guide | `docs/DEMO-15MIN-STAFF.md` |
+
+**Gates** : `tsc --noEmit` 0 · `test:doctype` 11/11 · `test:doctype:harden` 2/2.
+
+**Suite** : rien de bloqué dans le cadrage actuel.
+
+---
+
 ## 2026-09-01 — EVE V1 livré (tool registry + chat sync + orbe)
 
 Périmètre §1658–1668 HANDOFF-CLAUDE : lecture seule, pas de voix/WebSocket/actions write.

@@ -133,6 +133,14 @@ export const MENU_SIDEBAR: MenuConfig = [
             path: '/gestion-academique/vie-scolaire/cours',
           },
           {
+            title: 'Devoirs LMS',
+            path: '/gestion-academique/vie-scolaire/devoirs',
+          },
+          {
+            title: 'Discussions LMS',
+            path: '/gestion-academique/vie-scolaire/discussions',
+          },
+          {
             title: 'Inscriptions LMS',
             path: '/gestion-academique/vie-scolaire/inscriptions-lms',
           },

@@ -4,7 +4,58 @@ import type {
   DocPermission,
   EffectiveDocPermissions,
   PermissionPrincipal,
+  RecordPermissionCondition,
 } from '../types';
+
+function evaluateRecordCondition(
+  condition: RecordPermissionCondition,
+  document: Record<string, unknown>,
+  principal: PermissionPrincipal,
+  ownerField?: string,
+): boolean {
+  switch (condition.type) {
+    case 'owner': {
+      if (!ownerField) return false;
+      const owner = document[ownerField];
+      return owner != null && String(owner) === principal.id;
+    }
+    case 'fieldEqualsPrincipal': {
+      const fieldValue = document[condition.fieldname];
+      const principalValue =
+        condition.principalClaim === 'id' ? principal.id : principal.roleSlug;
+      return fieldValue != null && String(fieldValue) === String(principalValue);
+    }
+    default: {
+      const _exhaustive: never = condition;
+      return _exhaustive;
+    }
+  }
+}
+
+function matchesRecordScope(
+  perm: DocPermission,
+  document: Record<string, unknown> | undefined,
+  ownerField: string | undefined,
+  principal: PermissionPrincipal,
+): boolean {
+  const hasRecordConstraint = perm.ifOwner === true || perm.condition != null;
+  if (!hasRecordConstraint) return true;
+  if (!document) return false;
+
+  if (perm.ifOwner && ownerField) {
+    const owner = document[ownerField];
+    if (owner != null && String(owner) === principal.id) return true;
+  }
+
+  if (
+    perm.condition &&
+    evaluateRecordCondition(perm.condition, document, principal, ownerField)
+  ) {
+    return true;
+  }
+
+  return false;
+}
 
 function actionAllowed(perm: DocPermission, action: DocAction): boolean {
   switch (action) {
@@ -58,22 +109,37 @@ function matchesRequires(perm: DocPermission, principal: PermissionPrincipal): b
   return true;
 }
 
+function permissionMatches(
+  perm: DocPermission,
+  principal: PermissionPrincipal,
+  action: DocAction,
+  document: Record<string, unknown> | undefined,
+  ownerField: string | undefined,
+): boolean {
+  return (
+    matchesRole(perm, principal) &&
+    matchesRequires(perm, principal) &&
+    actionAllowed(perm, action) &&
+    matchesRecordScope(perm, document, ownerField, principal)
+  );
+}
+
 export function hasPermission(input: {
   meta: DocMeta;
   principal: PermissionPrincipal;
   action: DocAction;
+  /** When set, record-scoped rules (`ifOwner`, `condition`) are evaluated. */
+  document?: Record<string, unknown>;
 }): boolean {
-  const { meta, principal, action } = input;
+  const { meta, principal, action, document } = input;
   if (principal.isSystemManager) return true;
   if (meta.flags.isChild) {
     // Child inherits parent — caller must check parent. Fail closed if checked alone.
     return false;
   }
-  return meta.permissions.some(
-    (perm) =>
-      matchesRole(perm, principal) &&
-      matchesRequires(perm, principal) &&
-      actionAllowed(perm, action),
+  const ownerField = meta.persistence?.ownerField;
+  return meta.permissions.some((perm) =>
+    permissionMatches(perm, principal, action, document, ownerField),
   );
 }
 
