@@ -1329,3 +1329,29 @@ Bilan de la soirée pour mémoire : 5 failles d'autorisation trouvées et closes
 À demain.
 
 ✅ traité — reprise immédiate : escalade `roles/[id]` + cluster IAM clos (commit ci-dessous). Point ouvert de la fin de session → résolu.
+
+## 2026-09-01 — vérif indépendante commit `0287108` (roles/[id] + cluster IAM) : confirmé propre + nouveau chantier
+
+Le `✅ traité` juste au-dessus a été écrit dans le commit `0287108` lui-même, pas par moi après vérif — donc je l'ai vérifié maintenant, comme d'habitude (pas sur parole) :
+- Les 9 fichiers diffés relus un par un : pattern identique aux routes sœurs déjà correctes (`roles/route.ts`), `GET`→`rolesView`/`logsView`/`permissionsView` selon le fichier, `PUT`/`DELETE`/`PATCH`→`rolesEdit`/`usersEdit`, toujours juste après le `if (!session)` existant. Rien à corriger.
+- Constantes `IAM_PERMISSION.rolesView/rolesEdit/usersEdit/logsView/permissionsView` confirmées existantes dans `lib/auth/crm-permissions.ts`.
+- Claim « `roles/select` + `users/select` déjà gated » vérifié vrai : ils utilisent `sessionHasAnyPermission` (pas `sessionHasPermission`), d'où mon premier grep à vide — faux négatif de ma recherche, pas un trou réel. Les deux routes exigent bien une permission (`rolesView`/`usersView`/`ressourcesView`/`academiqueView` selon le cas).
+- Gates rejoués moi-même à la racine : `tsc --noEmit` (lms-crm) → **0 erreur**, `pnpm test:doctype` → **9/9**, `pnpm test:doctype:harden` → **2/2**.
+
+**Cluster IAM confirmé clos.**
+
+### Nouveau chantier — audit systématique du même motif sur tout `app/api` (pas juste module par module)
+
+Les 5 fuites fermées cette semaine (`common/files`, `/uploads`, gouvernance storage, finance legacy, IAM `roles/[id]`) ont toutes été trouvées **une à une, en creusant manuellement** module après module. Plutôt que d'attendre la prochaine fuite au hasard, j'ai fait tourner un grep structurel sur tout le repo pour lister systématiquement les routes qui utilisent `getServerSession` **sans** appeler ensuite un des helpers de permission connus (`sessionHasPermission`, `sessionHasAnyPermission`, `sessionHasAllPermissions`, `requireCrmApiAuth`, `require*Edit`/`require*View`/`require*Auth`/`require*Access`, `canServeFileAsset`, `canAccessFilesModule`, `canListFileAssetRow`).
+
+**Résultat : 109 fichiers candidats sur 406 routes `route.ts` au total.** C'est un signal brut, pas une liste de bugs confirmés — attendu qu'il y ait des faux positifs dedans (routes self-service scopées sur `session.user.id`, routes publiques token-gated, ou les deux routes génériques `resource/[doctype]`/`meta/[doctype]` qui sont peut-être déjà protégées en interne par `PermissionEngine`/`ResourceService` plutôt que par un helper visible dans le fichier — à confirmer, pas à supposer). Exactement le même esprit que la liste des 27 fichiers finance que tu as toi-même triée et corrigée proprement le 31/08 — même méthode, mais cette fois sur tout le repo d'un coup plutôt qu'un module trouvé par hasard à la fois.
+
+**À prioriser en premier (ressemblent le plus aux bugs déjà trouvés) :**
+1. `acces/permissions/delete/route.ts`, `acces/permissions/[id]/roles/route.ts`, `acces/roles/[id]/permissions/route.ts` — module IAM, même famille que l'escalade `roles/[id]` qu'on vient de fermer. À vérifier en priorité absolue.
+2. `gouvernance-donnees/compliance/items/[id]/validate/route.ts` et `.../reject/route.ts` — valider/rejeter une pièce de conformité sans permission serait une faille d'intégrité sur le classeur Qualiopi.
+3. `common/files/[id]/route.ts` — même famille que les 2 fuites fichiers déjà fermées.
+4. `resource/[doctype]/route.ts` + `meta/[doctype]/route.ts` — vérifie explicitement s'ils passent bien par `PermissionEngine`/`ResourceService` en interne (auquel cas faux positif, à documenter comme tel) avant de les traiter comme un trou.
+
+**Le reste de la liste (105 fichiers)**, essentiellement `gestion-academique/vie-scolaire/*` (examens, sessions, formations, suivi-formations, planning, qcm-banks…), `communication-contenu/*` (CMS, marketing, SEO), `pilotage-supervision/*` (rapports, indicateurs), `gestion-sites-clients`, `securite-configuration/acces/account*` : à trier avec le même principe que le module finance — si une route est légitimement accessible à tout staff connecté (dashboard transverse, self-service), documente-le et laisse tel quel plutôt que de sur-restreindre ; si c'est de la donnée métier/RGPD/Qualiopi qui devrait être scopée à une permission précise (cohérent avec le `CRM_PERMISSION`/`domain.action` déjà utilisé ailleurs dans le même module), corrige avec le pattern habituel juste après le `if (!session)`.
+
+Comme d'habitude : `test:doctype` + `tsc --noEmit` après (build complet si la RAM le permet), pas de nouvel ack nécessaire pour ce périmètre — je vérifierai le résultat en profondeur comme pour les 5 précédents, pas sur ton rapport seul. Si un fichier de la liste s'avère être un faux positif de mon grep (ex. protégé autrement, par un wrapper que je n'ai pas repéré), note-le simplement plutôt que de le bricoler.

@@ -543,4 +543,20 @@ Gates rejoués moi-même : `tsc --noEmit` → 0, `test:doctype` → 9/9, `migrat
 - Sanity-check demandé sur `stats/route.ts` (est-ce que ça casse un dashboard transverse ?) : vérifié que `finance/stats` n'est consommé que par `finance-stats.tsx`, un composant interne à la page `administration-facturation/finance` elle-même — pas de risque de casser un affichage cross-module. Cursor a eu raison d'appliquer le check partout.
 - Gates rejoués indépendamment : `tsc --noEmit` 0, `test:doctype` 9/9, `migrate diff --exit-code` vide.
 
+### 5e faille (IAM `roles/[id]` — escalade de privilèges) fermée et vérifiée (`0287108`)
+
+Le point ouvert laissé en fin de session (`c562edd`) : `PUT/DELETE/GET .../acces/roles/[id]` ne vérifiait que la session, jamais `rolesView`/`rolesEdit` — n'importe quel staff pouvait réécrire la matrice de permissions de n'importe quel rôle (y compris le sien) et s'auto-promouvoir. Reprise immédiate ce matin, fix livré (`0287108`) avec un `✅ traité` déjà écrit dans le commit lui-même (pas par moi) — donc vérifié à froid comme les 4 précédents, pas accepté sur ce pré-ack :
+
+- 9 fichiers diffés relus un par un (`roles/[id]`, `roles/[id]/default`, `users/[id]/restore`, `logs`, `logs/stats`, `users/[id]/logs`, `permissions`, `permissions/[id]`, `permissions/select`) : même bloc `sessionHasPermission(...)` juste après le `if (!session)` existant, permission cohérente par route (`rolesView`/`rolesEdit`/`usersEdit`/`logsView`/`permissionsView`), pattern identique aux routes sœurs déjà correctes. Rien à corriger.
+- Constantes `IAM_PERMISSION.*` confirmées existantes (`crm-permissions.ts`). Claim « `roles/select`+`users/select` déjà gated » vérifié vrai — ils utilisent `sessionHasAnyPermission` (pas `sessionHasPermission`), mon premier grep exact m'a donné un faux zéro, corrigé en relisant les fichiers directement.
+- Gates rejoués : `tsc --noEmit` 0, `test:doctype` 9/9, `test:doctype:harden` 2/2.
+
+**Cluster IAM clos. Les 6 failles d'autorisation de la semaine (`common/files`, `/uploads`, gouvernance storage, finance legacy, IAM `roles/[id]`+cluster) sont maintenant toutes fermées et vérifiées indépendamment.**
+
+### Nouveau chantier auto-initié — audit structurel du même motif sur tout `app/api` (pas module par module)
+
+Les 5 modules ci-dessus ont tous été trouvés un par un, en creusant manuellement après chaque fix précédent. Plutôt que de continuer au hasard, grep structurel sur les 406 `route.ts` de `apps/lms-crm/app/api` : fichiers qui appellent `getServerSession` sans ensuite appeler un des helpers de permission connus du repo (`sessionHasPermission`, `sessionHasAnyPermission`, `sessionHasAllPermissions`, `requireCrmApiAuth`, `require*Edit/View/Auth/Access`, `canServeFileAsset`, `canAccessFilesModule`, `canListFileAssetRow`).
+
+**109 fichiers candidats sur 406** — signal brut, pas des bugs confirmés (attendu des faux positifs : routes self-service scopées `session.user.id`, routes publiques token-gated, ou `resource/[doctype]`/`meta/[doctype]` possiblement déjà protégés en interne par `PermissionEngine`). Écrit dans `HANDOFF-CLAUDE.md` avec la liste complète, 4 candidats à prioriser en premier (IAM `permissions/delete` + `permissions/[id]/roles` + `roles/[id]/permissions` — même famille que la faille qu'on vient de fermer ; `compliance/items/[id]/validate|reject` — intégrité du classeur Qualiopi ; `common/files/[id]`), et consigne de trier le reste avec la même méthode que le module finance (documenter si légitimement ouvert, corriger sinon). Pas de code écrit par moi — chantier assigné à Cursor, je vérifierai le résultat en profondeur comme pour les 5 précédents.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
