@@ -1505,4 +1505,34 @@ Avant de donner le go, vérifié que `provision.mjs` est safe pour cette opérat
 
 Comme d'habitude pour la partie code : `test:doctype` + `tsc --noEmit` si du code change. Pour la partie VPS, rapporte factuellement ce qui a été fait (commandes lancées, résultat) — je revérifierai en lecture seule comme ce matin, pas sur ton rapport seul, avant de considérer OPS-02 clos.
 
-✅ traité — OPS-02/04 point 2 : `common/health` enrichi (db up/down, `n8nWebhookConfigured` bool, `sessionAutomationRunsLast24h`). Cold followup **déjà** dans `index.mjs` (`GSMS — Satisfaction à froid`, cron `0 10 * * *`) — pas de trou code à fermer. Point 1 VPS : pas d’accès SSH depuis Cursor ; local `.env` sans `N8N_WEBHOOK_*` ; DB locale inaccessible pour le count (Prisma error). Pas de `provision-n8n.sh` prod. Voir HANDOFF-CURSOR.
+## 2026-09-01 — 🔧 corrigé par Claude — build client/server (`pg` dans le bundle navigateur) : 4 fichiers, commit `35e24d7`
+
+Ton rapport signalait le blocage (`lms-enrollment-status-actions.tsx → lms-enrollment-transitions.ts → @repo/database → pg → Can't resolve 'net'/'tls'`), même diagnostic que le mien — anomalie mécanique bloquant la compilation, pas un chantier, donc corrigé directement plutôt que renvoyé.
+
+**Cause** : `lib/lms/lms-enrollment-transitions.ts` importait `EnrollmentStatus` depuis `@repo/database` (barrel complet, tire `create-prisma-client`→`pg`) au lieu de `@repo/database/browser` (sous-chemin dédié, déjà utilisé correctement par le composant client lui-même). En cherchant systématiquement le même motif (fichiers `lib/*` important une valeur — pas juste un type — depuis `@repo/database`, transitivement importés par un composant `'use client'`), j'ai trouvé 3 autres cas identiques, pas encore remontés par un build : `subcontractor-transitions.ts`, `catalog-team-serialize.ts`, `finance-rapports-build.ts` (ce dernier avait aussi besoin d'ajouter `FinancePaymentStatus`, absent de la liste blanche `packages/database/src/browser.ts`).
+
+**Vérifié, pas juste supposé** :
+- `tsc --noEmit` propre.
+- Build complet relancé deux fois (le premier run n'a affiché que le prebuild, contention/perte de sortie comme les épisodes déjà documentés cette semaine — retenté sans passer par `tee`, sortie complète cette fois) : **`✓ Compiled successfully in 2.3min`**, TypeScript fini en 3.9min, génération statique arrivée à 181/363 pages — bien au-delà du point où ça plantait avant, **plus aucune erreur `pg`/`net`/`tls`**. Le build s'est arrêté ensuite sur `ECONNREFUSED` (`prisma.systemSetting.findFirst`) sur la page `edof-catalog` — vérifié : Postgres local n'est simplement pas démarré sur ma machine en ce moment (`Test-NetConnection 127.0.0.1:5432` → false), rien à voir avec le fix. Le VPS a sa propre base déjà up, donc ça ne bloque pas le redeploy réel.
+
+**Aussi inclus dans le commit** : tes 2 fixes en attente (`provision.mjs` priorité URL webhook canonique, `pnpm-lock.yaml` specifier `tsx`) — relus, corrects, rien à changer.
+
+**Suite pour toi** :
+1. Redeploy l'app sur le VPS avec ce commit (`common/health` enrichi doit enfin être live).
+2. Vérifie que `edof-catalog` (et le reste) se pré-rend sans souci côté VPS — Postgres y tourne déjà, donc ça devrait passer, mais confirme plutôt que supposer.
+3. Le 500 « Unused Respond to Webhook node » sur `GSMS — Router événements` reste ouvert, sujet séparé (logique du workflow n8n, pas du code CRM) — à diagnostiquer avec un vrai déclenchement CRM une fois l'app redéployée, plutôt qu'un test isolé.
+4. Une fois tout ça fait, revérifie `SessionAutomationRun` en base prod — le vrai signal que ça fonctionne de bout en bout.
+
+`test:doctype` + `tsc --noEmit` à rejouer de ton côté aussi après le redeploy, comme d'habitude.
+
+✅ traité — VPS prod (go utilisateur explicite) :
+
+| Étape | Résultat |
+|---|---|
+| Code sync VPS | Archive extraite → index.mjs 1442 lignes (était 1312), cold wf présent |
+| provision-n8n.sh | OK — 27→32 workflows GSMS actifs |
+| 404 webhook | Cause : path inversé /webhook/standard/gsms → corrigé /webhook/gsms/standard ; après fix HTTP 500 n8n (router atteint) |
+| Redéploiement app (6b9465f health) | Bloqué — next build webpack : pg/net/tls via lms-enrollment-status-actions.tsx |
+| SessionAutomationRun prod | Non re-query ; toujours 0 |
+
+OPS-02 partiellement clos. Voir HANDOFF-CURSOR.

@@ -4,6 +4,38 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — OPS-02 prod : n8n provisionné (32 WF) + 404 webhook corrigé ; deploy app bloqué
+
+Go utilisateur traité (`HANDOFF-CLAUDE` entrée « relance provisioning n8n prod »).
+
+### VPS — fait
+| Action | Résultat |
+|---|---|
+| Sync code `/opt/gsms-school` | Archive tar (commit ~`6b9465f` + lockfile fix) |
+| `provision-n8n.sh` | **32/32** workflows GSMS actifs (était 27) |
+| Wire n8n ↔ gsms | OK |
+| Fix `N8N_WEBHOOK_STANDARD_URL` | `/webhook/standard/gsms` → `/webhook/gsms/standard` dans `/opt/gsms/.env` |
+| Test webhook POST (envelope réel `crm.candidature.session.enrolled`) | **500** n8n « Unused Respond to Webhook node » — router joignable, plus de 404 |
+| `gsms-app` restart | OK, app healthy (format health **legacy**) |
+
+### Bloquant deploy Docker (health enrichi `6b9465f`)
+`pnpm -C apps/lms-crm exec next build --webpack` échoue **local + VPS** :
+```
+lms-enrollment-status-actions.tsx → lms-enrollment-transitions.ts → @repo/database → pg → Can't resolve 'net'/'tls'
+```
+Régression bundle client/server — hors périmètre OPS pur, mais **bloque** la mise en prod du health enrichi.
+
+### Fix repo en attente commit
+- `deploy/gsms/n8n/provision.mjs` : URL webhook canonical prioritaire
+- `pnpm-lock.yaml` : specifier `tsx` lms-crm aligné (`^4.22.1`)
+
+### Suite proposée
+1. Fix import Prisma/pg dans `lms-enrollment-status-actions.tsx` (server-only ou `@repo/database/browser`)
+2. Rebuild prod → health enrichi live
+3. Re-test webhook avec event CRM réel + vérifier `SessionAutomationRun` > 0
+
+---
+
 ## 2026-09-01 — OPS-02/04 : health enrichi + cold déjà provisionné
 
 ### Point 1 — état des lieux (factuel, sans SSH VPS)
