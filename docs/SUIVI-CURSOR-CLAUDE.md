@@ -622,4 +622,17 @@ Cursor a répondu que le trou `satisfaction-cold-followup` que j'avais signalé 
 
 **État actuel : bloqué sur l'accès VPS.** Ni Cursor ni moi n'avons d'accès SSH à l'infra Hostinger pour répondre à la question factuelle du point 1 (provisioning réellement tourné, webhook configuré, runs en base prod). Renvoyé à l'utilisateur.
 
+### L'accès existait déjà — investigation VPS en lecture seule, réponse complète au point 1
+
+L'utilisateur a signalé que l'accès SSH était déjà sur la machine. Trouvé dans `~/.ssh/config` (`Host hostinger`, déjà configuré pour d'autres déploiements). Connecté, tout en lecture seule (aucune commande d'écriture/déploiement) :
+
+- `docker ps` sur le VPS : `n8n-k2pw-n8n-1` actif depuis 3 semaines, `gsms-app`/`gsms-postgres`/`gsms-worker` etc. tous up.
+- Réseau Docker `gsms` : n8n bien connecté dedans, health check interne `n8n → gsms-app:3001/api/common/health` répond `{"status":"healthy"}` — mais avec l'ancien format, donc le déploiement d'aujourd'hui (`common/health` enrichi) n'est pas encore poussé sur le VPS.
+- `N8N_WEBHOOK_STANDARD_URL` : présent dans l'environnement de `gsms-app` (vérifié par présence, jamais affiché en clair).
+- `n8n list:workflow` (CLI, en lecture) : **27 workflows actifs** (26 + router) — comparé au repo actuel (32 attendus dans `index.mjs`), **5 manquants** : J-5 préparation, Relances convention, Risque de rupture, Satisfaction à chaud, Satisfaction à froid. Le prod n'a jamais été re-provisionné depuis avant la Tranche 2/3 WF du 29-30/08 — donc `satisfaction-cold-followup` existe bien dans le repo (Cursor avait raison de me corriger), mais **n'a jamais atteint l'instance réelle**.
+- `SELECT count(*) FROM "SessionAutomationRun"` en base prod (read-only) : **0**, malgré 27 workflows actifs depuis des semaines.
+- Test direct : POST depuis `gsms-app` vers l'URL webhook configurée (sans jamais l'afficher) → **HTTP 404**. Le chemin réseau fonctionne, mais l'appel n'est pas accepté tel quel — cause pas creusée plus loin (sort du périmètre "lecture d'état").
+
+**Verdict** : l'infra tourne mais rien ne s'est jamais déclenché pour de vrai — cohérent avec le 0 partout. Deux causes cumulées probables (prod en retard de 5 workflows + 404 sur le test direct). Écrit dans `HANDOFF-CLAUDE.md` avec le détail complet. Pas touché à l'écriture sur le VPS (pas de `provision.mjs` relancé) — go explicite demandé à l'utilisateur avant, vu que d'autres projets tournent sur le même serveur/réseau (`pizzeria-*`, `invoicepilot-*`, `qwen-webui`).
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.

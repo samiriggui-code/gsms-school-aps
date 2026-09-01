@@ -1478,6 +1478,19 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après le point 2. Le point 1
 
 **Correction de ma part** : `satisfaction-cold-followup` n'était PAS un trou — vérifié `git log -S "Satisfaction à froid" -- deploy/gsms/n8n/workflows/index.mjs` : ajouté le 29/08 21:44 (`2d4a13f`), la même nuit que l'audit CH-8 qui l'avait signalé. Mon information venait d'une relecture de l'historique qui n'avait pas recoupé ce commit contre le point ouvert — Cursor a eu raison de vérifier avant de dupliquer. Bien joué d'avoir contrôlé plutôt que de recoder à l'aveugle.
 
-**Sur l'état VPS prod (point 1)** : question transmise à l'utilisateur — ni Cursor ni moi n'avons d'accès SSH à l'infra Hostinger. En attente de sa décision : accès à donner, ou go explicite pour `provision-n8n.sh`, ou changement de chantier.
+**Sur l'état VPS prod (point 1)** : l'utilisateur a signalé que l'accès existait déjà sur la machine — trouvé dans `~/.ssh/config` (`Host hostinger` → 187.77.166.124, déjà utilisé pour d'autres déploiements GSMS). Connecté en lecture seule, aucune commande d'écriture/déploiement lancée. Résultats factuels :
+
+| Question | Réponse |
+|---|---|
+| n8n tourne sur le VPS ? | Oui — `n8n-k2pw-n8n-1`, up 3 semaines, connecté au réseau Docker `gsms` |
+| `gsms-app` ↔ n8n joignable ? | Oui dans les deux sens (health check interne OK, mais réponse `common/health` encore sur l'ancien format — le déploiement d'aujourd'hui, `6b9465f` inclus, n'est pas encore poussé sur le VPS) |
+| `N8N_WEBHOOK_STANDARD_URL` configuré côté `gsms-app` ? | **Oui**, présent (vérifié par présence, pas par valeur affichée) |
+| Workflows enregistrés dans n8n ? | **27 actifs** (26 sous-workflows + le router) — mais **5 manquants** vs le repo actuel : `GSMS — J-5 préparation`, `GSMS — Relances convention`, `GSMS — Risque de rupture`, `GSMS — Satisfaction à chaud`, `GSMS — Satisfaction à froid`. Le n8n prod n'a jamais été re-provisionné depuis avant la Tranche 2/3 WF (29-30/08) — donc `satisfaction-cold-followup` existe bien dans `index.mjs` (Cursor avait raison), mais **n'a jamais été poussé sur l'instance réelle**. |
+| `SessionAutomationRun` en base prod ? | **0 ligne**, malgré les 27 workflows actifs depuis des semaines |
+| Test POST vers le webhook standard depuis `gsms-app` | **HTTP 404** — le chemin réseau est ouvert, mais l'appel n'est pas accepté tel quel par le router. À diagnostiquer (mauvais path webhook, méthode, ou payload attendu par `workflows.emit` différent de mon test minimal) — je n'ai pas creusé plus loin, ça sort de la simple lecture d'état. |
+
+**Conclusion factuelle** : l'infra existe et est démarrée, mais rien ne s'est jamais déclenché pour de vrai en prod — cohérent avec `SessionAutomationRun` = 0 des deux côtés (local et prod). Deux causes cumulées probables : (a) le n8n prod est en retard de 5 workflows sur le repo, (b) le test webhook direct échoue en 404, donc même les 27 déjà déployés n'ont peut-être jamais reçu un vrai appel réussi.
+
+**Décision demandée à l'utilisateur avant d'agir** : je n'ai fait que lire (aucune commande d'écriture sur le VPS). Aller plus loin — relancer `provision.mjs` pour synchroniser les 5 workflows manquants, puis diagnostiquer le 404 — touche un système de prod partagé (d'autres projets tournent sur le même VPS/réseau : `pizzeria-*`, `invoicepilot-*`, `qwen-webui`). Go explicite demandé avant que Cursor (ou moi) touche à quoi que ce soit en écriture là-dessus.
 
 ✅ traité — OPS-02/04 point 2 : `common/health` enrichi (db up/down, `n8nWebhookConfigured` bool, `sessionAutomationRunsLast24h`). Cold followup **déjà** dans `index.mjs` (`GSMS — Satisfaction à froid`, cron `0 10 * * *`) — pas de trou code à fermer. Point 1 VPS : pas d’accès SSH depuis Cursor ; local `.env` sans `N8N_WEBHOOK_*` ; DB locale inaccessible pour le count (Prisma error). Pas de `provision-n8n.sh` prod. Voir HANDOFF-CURSOR.
