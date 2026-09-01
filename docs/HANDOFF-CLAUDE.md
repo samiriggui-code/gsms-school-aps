@@ -1575,3 +1575,15 @@ Diff `70a9a84` relu en entier : exactement ce que je recommandais — node `Resp
 **La seule façon de vraiment cocher cette case** : déclencher une vraie action CRM qui appelle `trigger-circuit` (ex. inscrire un candidat réel — ou de test — dans une session). Je ne le fais pas moi-même : ça crée de la donnée dans la prod, décision qui revient à l'utilisateur (test délibéré maintenant, ou attendre un premier usage réel organique). Question posée.
 
 **Verdict sur OPS-02/04** : infra prouvée fonctionnelle de bout en bout (health enrichi, 32 workflows actifs, webhook 200, router structurellement correct). Le dernier `SessionAutomationRun > 0` n'est plus un sujet technique ouvert — c'est en attente d'un vrai déclenchement, pas d'un fix.
+
+## 2026-09-01 — ✅ décision utilisateur : test délibéré, dernière case à cocher
+
+L'utilisateur a tranché : test délibéré maintenant plutôt qu'attendre un usage réel organique.
+
+**Périmètre demandé** :
+1. Crée une inscription de test qui déclenche réellement `trigger-circuit` (candidature/session clairement identifiables comme test — ex. nom du candidat préfixé `TEST —` ou équivalent, pas une donnée qui pourrait passer pour un vrai apprenant).
+2. Vérifie que ça produit bien un `SessionAutomationRun` en base prod (`count > 0`), et que le webhook/router traite l'event sans erreur.
+3. **Nettoie la donnée de test après coup** — supprime la candidature/inscription de test créée pour ce probe (le `SessionAutomationRun` lui-même peut rester comme preuve, ou être nettoyé aussi si tu préfères, à toi de voir ce qui est le plus propre).
+4. Rapporte ici le résultat (run créé, event traité, nettoyage fait).
+
+Une fois ça confirmé, **OPS-02/04 est clos** — plus rien à cocher sur ce chantier. Je vérifierai le résultat comme d'habitude (lecture seule sur la base) avant de le déclarer terminé.
