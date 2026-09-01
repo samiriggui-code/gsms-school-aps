@@ -1493,4 +1493,16 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après le point 2. Le point 1
 
 **Décision demandée à l'utilisateur avant d'agir** : je n'ai fait que lire (aucune commande d'écriture sur le VPS). Aller plus loin — relancer `provision.mjs` pour synchroniser les 5 workflows manquants, puis diagnostiquer le 404 — touche un système de prod partagé (d'autres projets tournent sur le même VPS/réseau : `pizzeria-*`, `invoicepilot-*`, `qwen-webui`). Go explicite demandé avant que Cursor (ou moi) touche à quoi que ce soit en écriture là-dessus.
 
+## 2026-09-01 — ✅ go utilisateur — relance le provisioning n8n prod
+
+Avant de donner le go, vérifié que `provision.mjs` est safe pour cette opération précise (lu le script en entier, pas supposé) : `upsertWorkflow` matche par `definition.name` (GET `/api/v1/workflows` puis PUT si le nom existe déjà, POST sinon) — **idempotent, aucun risque de doublon** sur les 27 déjà en place, juste création des 5 manquants + activation. Tous les noms sont préfixés `GSMS — `, donc zéro risque de toucher un workflow d'un autre projet (`pizzeria-*`/`invoicepilot-*`) même s'ils partagent la même instance n8n.
+
+**Go donné par l'utilisateur.** Périmètre exact pour Cursor :
+1. Lance `provision-n8n.sh` (ou directement `provision.mjs` avec le bon `GSMS_ENV`) sur le VPS réel — ça doit créer les 5 workflows manquants (`J-5 préparation`, `Relances convention`, `Risque de rupture`, `Satisfaction à chaud`, `Satisfaction à froid`) et les activer, sans toucher aux 27 déjà là (upsert par nom).
+2. Vérifie après coup (`n8n list:workflow --onlyActive | grep -c GSMS` → doit passer de 27 à 32) que ça a bien pris.
+3. Diagnostique le 404 sur le test webhook direct que j'ai fait ce matin — soit c'est un artefact de mon payload de test minimal (`{event:"health.probe", data:{}}`) qui ne matche pas le contrat attendu par le node webhook du router (`GSMS — Router événements`), soit c'est un vrai bug de routing à corriger. Vérifie avec un vrai event réel (ex. `crm.candidature.session.enrolled` via `workflows.emit` déclenché par une action CRM de test) plutôt que mon curl synthétique.
+4. Une fois les 32 workflows actifs et le 404 expliqué (corrigé ou compris comme un faux problème), redéploie aussi le code applicatif du jour (`common/health` enrichi, `6b9465f`, pas encore sur le VPS d'après le format de réponse que j'ai vu) — sinon l'observabilité qu'on vient de construire ne sert à rien en prod.
+
+Comme d'habitude pour la partie code : `test:doctype` + `tsc --noEmit` si du code change. Pour la partie VPS, rapporte factuellement ce qui a été fait (commandes lancées, résultat) — je revérifierai en lecture seule comme ce matin, pas sur ton rapport seul, avant de considérer OPS-02 clos.
+
 ✅ traité — OPS-02/04 point 2 : `common/health` enrichi (db up/down, `n8nWebhookConfigured` bool, `sessionAutomationRunsLast24h`). Cold followup **déjà** dans `index.mjs` (`GSMS — Satisfaction à froid`, cron `0 10 * * *`) — pas de trou code à fermer. Point 1 VPS : pas d’accès SSH depuis Cursor ; local `.env` sans `N8N_WEBHOOK_*` ; DB locale inaccessible pour le count (Prisma error). Pas de `provision-n8n.sh` prod. Voir HANDOFF-CURSOR.

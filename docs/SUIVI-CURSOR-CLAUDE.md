@@ -635,4 +635,10 @@ L'utilisateur a signalé que l'accès SSH était déjà sur la machine. Trouvé 
 
 **Verdict** : l'infra tourne mais rien ne s'est jamais déclenché pour de vrai — cohérent avec le 0 partout. Deux causes cumulées probables (prod en retard de 5 workflows + 404 sur le test direct). Écrit dans `HANDOFF-CLAUDE.md` avec le détail complet. Pas touché à l'écriture sur le VPS (pas de `provision.mjs` relancé) — go explicite demandé à l'utilisateur avant, vu que d'autres projets tournent sur le même serveur/réseau (`pizzeria-*`, `invoicepilot-*`, `qwen-webui`).
 
+### Go utilisateur reçu — vérifié que l'opération est sûre avant de la déléguer
+
+Avant de transmettre le go à Cursor, lu `provision.mjs` en entier : `upsertWorkflow` matche par nom (`GET /api/v1/workflows` puis `PUT` si le nom existe déjà, `POST` sinon) — confirmé idempotent, aucun risque de dupliquer les 27 déjà en place. Tous les noms `GSMS — *`, donc zéro risque de toucher un workflow d'un autre projet même sur la même instance n8n partagée.
+
+Écrit la consigne précise dans `HANDOFF-CLAUDE.md` : relancer le provisioning (doit passer de 27 à 32 workflows actifs), vérifier le compte après coup, diagnostiquer le 404 avec un vrai event plutôt que mon test synthétique, et redéployer le code du jour (`common/health` enrichi pas encore sur le VPS). Je re-vérifierai en lecture seule comme ce matin avant de clore OPS-02, pas sur le rapport de Cursor seul.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
