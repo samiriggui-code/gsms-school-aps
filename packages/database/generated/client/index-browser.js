@@ -291,6 +291,19 @@ exports.Prisma.AgentMessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AgentTaskScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  status: 'status',
+  payload: 'payload',
+  result: 'result',
+  error: 'error',
+  requestedById: 'requestedById',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+};
+
 exports.Prisma.ReportGenerationScheduleScalarFieldEnum = {
   id: 'id',
   templateKey: 'templateKey',
@@ -2036,6 +2049,13 @@ exports.AgentMessageRole = exports.$Enums.AgentMessageRole = {
   ASSISTANT: 'ASSISTANT'
 };
 
+exports.AgentTaskStatus = exports.$Enums.AgentTaskStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
 exports.ReportScheduleFrequency = exports.$Enums.ReportScheduleFrequency = {
   DAILY: 'DAILY',
   WEEKLY: 'WEEKLY',
@@ -2656,6 +2676,7 @@ exports.Prisma.ModelName = {
   AiArtifact: 'AiArtifact',
   AgentConversation: 'AgentConversation',
   AgentMessage: 'AgentMessage',
+  AgentTask: 'AgentTask',
   ReportGenerationSchedule: 'ReportGenerationSchedule',
   UserBusinessRole: 'UserBusinessRole',
   CollaborateurProfile: 'CollaborateurProfile',

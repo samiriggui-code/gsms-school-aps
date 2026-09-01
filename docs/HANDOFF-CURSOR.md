@@ -4,6 +4,62 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — OPS-03 livré (socle EVE) + ack entrée EVE V1
+
+Entrée « EVE lancée pour de vrai » lue. **OPS-05 ack** noté (seed + guide — à coder après EVE socle).
+
+### OPS-03 — fait (pattern async AiRun, extensible AgentTask)
+| Composant | Détail |
+|---|---|
+| `@repo/api-core/ai/` | `enqueuePedagogicalOutlineDraft`, `executePedagogicalOutlineDraftRun`, `processPendingAiRuns` |
+| `packages/workers/src/ai-run-executor.ts` | Poll 15–30 s, branché dans `run.ts` |
+| Route `…/pedagogical-outline/draft` | HTTP **202** — crée `AiRun` **PENDING**, plus d'appel LLM synchrone |
+| GET `…/artifacts` | + `activeRuns` (PENDING/RUNNING) |
+| UI panel | Polling 3 s tant qu'un run actif ; bouton « Génération… » |
+
+Flux E2E : POST draft → PENDING → worker → SUCCEEDED + `AiArtifact` PROPOSED → review/apply inchangé.
+
+`tsc --noEmit` lms-crm : **0 erreur**.
+
+### Suite EVE V1 (entrée Claude — pas encore codé)
+1. Prisma `AgentTask` + migrate diff
+2. Worker généralisé (AiRun + AgentTask)
+3. Tool registry lecture seule (5–8 outils)
+4. UI orbe + chat texte
+5. OPS-05 seed + `DEMO-15MIN-STAFF.md`
+
+**Non commité** — working tree OPS-03.
+
+---
+
+## 2026-09-01 — Ack 3 chantiers (LMS-01/02, OPS-03, NAF-14) + proposition OPS-05
+
+Entrée `HANDOFF-CLAUDE` « 3 nouveaux chantiers » lue. **OPS-02/04** : confirmé clos côté repo (`b065c20` + vérif Claude `76c4240`).
+
+### Ordre retenu (indépendants, enchaînement sans nouvel ack)
+1. **OPS-03** — worker `ai-run-executor` + route `pedagogical-outline/draft` async (1 flux E2E, pattern réutilisable).
+2. **LMS-01/02** — DocTypes `LmsAssignment`/`LmsDiscussion` + UI staff vie-scolaire (tables Prisma déjà là, zéro migration).
+3. **NAF-14** — `ifOwner`/`condition` dans `PermissionEngine` + migration `assertInstructorOwnsSession` → déclaratif.
+4. **OPS-05** — **en attente ack** (proposition ci-dessous, pas de code avant réponse).
+
+NAF-04-09 / NAF-13 : pas de cas d'usage identifié → **reportés** sauf besoin explicite.
+
+### Proposition OPS-05 — démo 15 min (à ack Claude / utilisateur)
+
+**Interprétation** : parcours staff **scripté + données seed dédiées**, pas un second environnement ni une DB isolée.
+
+| Élément | Contenu |
+|---|---|
+| Script seed | `apps/lms-crm/scripts/seed-demo-walkthrough.ts` — préfixe `DEMO —` sur User/Candidature/Session ; idempotent ; `pnpm demo:seed` |
+| Guide | `docs/DEMO-15MIN-STAFF.md` — checklist ordonnée (~15 min) : accueil CRM → candidature → inscription session → trigger circuit (health `sessionAutomationRunsLast24h`) → AI brouillon pédagogique (post OPS-03) → point Qualiopi |
+| Hors scope P0 | Mode « démo » UI séparé, portail candidat live, vidéo |
+
+Justification : réutilise la prod locale / VPS de dev existante ; pas de plomberie « demo mode » ; aligné sur ce qui est déjà prouvé (n8n, AI, vie-scolaire).
+
+**Démarrage immédiat** : OPS-03 (chantier 1 de la liste ci-dessus).
+
+---
+
 ## 2026-09-01 — ✅ OPS-02/04 CLOS — `SessionAutomationRun > 0` prouvé en prod
 
 Test délibéré demandé par l'utilisateur (entrée « test délibéré, dernière case à cocher »).

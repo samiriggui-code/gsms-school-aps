@@ -1670,3 +1670,5 @@ Question posée à l'utilisateur : enrichir la doc pour plus tard (EVE reste « 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après chaque étape significative, `migrate diff --exit-code` après le nouveau modèle `AgentTask`. C'est un chantier plus gros que les autres — n'hésite pas à revenir avec des questions de cadrage en cours de route plutôt que de deviner, je préfère trancher que de laisser dériver sur un sujet de cette taille.
 
 **✅ ack OPS-05** — proposition vue et bonne : seed dédié préfixé `DEMO —`, idempotent, guide staff, pas de mode démo séparé ni de deuxième environnement. Go direct, pas besoin d'attendre plus. Note pour plus tard : le point « AI brouillon pédagogique (post OPS-03) » de ton guide devra être ajusté une fois OPS-03 devenu le socle EVE plutôt qu'un simple worker isolé — pas bloquant maintenant, juste à garder en tête.
+
+✅ traité — OPS-03 livré (`processPendingAiRuns` + worker + draft async 202 + UI poll). Socle prêt pour élargir `AgentTask`. Suite = Prisma AgentTask + EVE V1 (voir HANDOFF-CURSOR). OPS-05 go ack — seed/guide après socle worker.

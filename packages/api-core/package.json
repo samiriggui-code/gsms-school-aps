@@ -14,10 +14,13 @@
     "./user-email-routing": "./src/user-email-routing.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.44",
     "@repo/database": "workspace:*",
     "@repo/mail": "workspace:*",
     "@repo/redis": "workspace:*",
     "@repo/realtime": "workspace:*",
-    "@repo/report-engine": "workspace:*"
+    "@repo/report-engine": "workspace:*",
+    "ai": "^7.0.82",
+    "zod": "^3.25.76"
   }
 }

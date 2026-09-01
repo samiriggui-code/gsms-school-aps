@@ -8,6 +8,7 @@ import { setupReportScheduler } from './report-scheduler';
 import { setupComplianceAuditor } from './compliance-auditor';
 import { setupSessionTeamLifecycle } from './session-team-lifecycle';
 import { setupSupportBacklogMonitor } from './support-backlog';
+import { setupAiRunExecutor } from './ai-run-executor';
 import { waitForDatabase } from './wait-for-database';
 
 async function main() {
@@ -32,9 +33,10 @@ async function main() {
   setupComplianceAuditor(prisma);
   setupSessionTeamLifecycle(prisma);
   setupSupportBacklogMonitor(prisma);
+  setupAiRunExecutor(prisma);
 
   console.log(
-    '[Worker] Stats (hourly) + CRM events (1 min) + RH absences + équipements + rapports PDF (30s) + planifications (15 min) + conformité (15 min) + équipes session (hourly) + backlog support (daily 8h).',
+    '[Worker] Stats (hourly) + CRM events (1 min) + RH absences + équipements + rapports PDF (30s) + planifications (15 min) + conformité (15 min) + équipes session (hourly) + backlog support (daily 8h) + AiRun/AgentTask (15–30s).',
   );
 
   process.on('SIGTERM', async () => {

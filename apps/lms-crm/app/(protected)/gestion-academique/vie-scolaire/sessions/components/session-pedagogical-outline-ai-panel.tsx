@@ -33,6 +33,18 @@ type ArtifactRow = {
   run: { model: string; createdAt: string };
 };
 
+type ActiveRunRow = {
+  id: string;
+  status: 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';
+  createdAt: string;
+  errorMessage: string | null;
+};
+
+type ArtifactsResponse = {
+  artifacts: ArtifactRow[];
+  activeRuns: ActiveRunRow[];
+};
+
 const STATUS_LABEL: Record<ArtifactRow['status'], string> = {
   PROPOSED: 'Proposé',
   APPROVED: 'Approuvé',
@@ -57,11 +69,18 @@ export function SessionPedagogicalOutlineAiPanel({ sessionId }: { sessionId: str
     queryFn: async () => {
       const res = await apiFetch(`${apiBase(sessionId)}/artifacts`);
       if (!res.ok) throw new Error('fetch');
-      const data = unwrapSectionApiData<{ artifacts: ArtifactRow[] }>(await res.json());
-      return data?.artifacts ?? [];
+      const data = unwrapSectionApiData<ArtifactsResponse>(await res.json());
+      return {
+        artifacts: data?.artifacts ?? [],
+        activeRuns: data?.activeRuns ?? [],
+      };
     },
     staleTime: 15_000,
     enabled: Boolean(sessionId),
+    refetchInterval: (query) => {
+      const runs = query.state.data?.activeRuns ?? [];
+      return runs.some((r) => r.status === 'PENDING' || r.status === 'RUNNING') ? 3000 : false;
+    },
   });
 
   const invalidateAll = () => {
@@ -79,10 +98,10 @@ export function SessionPedagogicalOutlineAiPanel({ sessionId }: { sessionId: str
             : 'Génération impossible',
         );
       }
-      return unwrapSectionApiData<{ artifactId: string }>(json);
+      return unwrapSectionApiData<{ runId: string; status: string }>(json);
     },
     onSuccess: () => {
-      toast.success('Brouillon déroulé généré — revue requise avant application.');
+      toast.success('Génération lancée — le brouillon apparaîtra dans quelques instants.');
       invalidateAll();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -131,7 +150,9 @@ export function SessionPedagogicalOutlineAiPanel({ sessionId }: { sessionId: str
   });
 
   const pending = draftMutation.isPending || reviewMutation.isPending || applyMutation.isPending;
-  const artifacts = artifactsQuery.data ?? [];
+  const artifacts = artifactsQuery.data?.artifacts ?? [];
+  const activeRuns = artifactsQuery.data?.activeRuns ?? [];
+  const generating = activeRuns.some((r) => r.status === 'PENDING' || r.status === 'RUNNING');
 
   return (
     <Card className="border-dashed border-primary/30 bg-primary/5 shadow-none">
@@ -144,15 +165,15 @@ export function SessionPedagogicalOutlineAiPanel({ sessionId }: { sessionId: str
           type="button"
           size="sm"
           variant="outline"
-          disabled={pending}
+          disabled={pending || generating}
           onClick={() => draftMutation.mutate()}
         >
-          {draftMutation.isPending ? (
+          {draftMutation.isPending || generating ? (
             <Loader2 className="size-3.5 animate-spin" aria-hidden />
           ) : (
             <Sparkles className="size-3.5" aria-hidden />
           )}
-          Générer brouillon
+          {generating ? 'Génération…' : 'Générer brouillon'}
         </Button>
       </CardHeader>
       <CardContent className="space-y-3 pt-0">
@@ -160,6 +181,13 @@ export function SessionPedagogicalOutlineAiPanel({ sessionId }: { sessionId: str
           Proposition jour / créneau à partir du programme formation — aucune écriture automatique.
           Approuvez puis appliquez pour stocker le déroulé sur la session.
         </p>
+
+        {generating ? (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Loader2 className="size-3.5 animate-spin" aria-hidden />
+            Génération IA en cours (worker)…
+          </div>
+        ) : null}
 
         {artifactsQuery.isLoading ? (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">

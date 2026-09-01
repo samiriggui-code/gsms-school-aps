@@ -40,7 +40,23 @@ export async function GET(_request: NextRequest, context: Ctx) {
       },
     });
 
-    return ok({ artifacts });
+    const activeRuns = await prisma.aiRun.findMany({
+      where: {
+        useCase: AI_PEDAGOGICAL_OUTLINE_USE_CASE,
+        status: { in: ['PENDING', 'RUNNING'] },
+        inputSummary: { path: ['sessionId'], equals: row.id },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        errorMessage: true,
+      },
+    });
+
+    return ok({ artifacts, activeRuns });
   } catch (e) {
     console.error('[ai/pedagogical-outline artifacts]', e);
     return fail('Liste des brouillons impossible.', 500, e);

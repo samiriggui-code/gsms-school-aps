@@ -67,6 +67,11 @@ export type AgentConversation = $Result.DefaultSelection<Prisma.$AgentConversati
  */
 export type AgentMessage = $Result.DefaultSelection<Prisma.$AgentMessagePayload>
 /**
+ * Model AgentTask
+ * 
+ */
+export type AgentTask = $Result.DefaultSelection<Prisma.$AgentTaskPayload>
+/**
  * Model ReportGenerationSchedule
  * Planification automatique des rapports (quotidien, mensuel, trimestriel).
  */
@@ -948,6 +953,16 @@ export const AgentMessageRole: {
 export type AgentMessageRole = (typeof AgentMessageRole)[keyof typeof AgentMessageRole]
 
 
+export const AgentTaskStatus: {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+};
+
+export type AgentTaskStatus = (typeof AgentTaskStatus)[keyof typeof AgentTaskStatus]
+
+
 export const RhOrgUnitType: {
   DIRECTION: 'DIRECTION',
   SERVICE: 'SERVICE',
@@ -1741,6 +1756,10 @@ export type AgentMessageRole = $Enums.AgentMessageRole
 
 export const AgentMessageRole: typeof $Enums.AgentMessageRole
 
+export type AgentTaskStatus = $Enums.AgentTaskStatus
+
+export const AgentTaskStatus: typeof $Enums.AgentTaskStatus
+
 export type RhOrgUnitType = $Enums.RhOrgUnitType
 
 export const RhOrgUnitType: typeof $Enums.RhOrgUnitType
@@ -2199,6 +2218,16 @@ export class PrismaClient<
     * ```
     */
   get agentMessage(): Prisma.AgentMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.agentTask`: Exposes CRUD operations for the **AgentTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AgentTasks
+    * const agentTasks = await prisma.agentTask.findMany()
+    * ```
+    */
+  get agentTask(): Prisma.AgentTaskDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.reportGenerationSchedule`: Exposes CRUD operations for the **ReportGenerationSchedule** model.
@@ -3822,6 +3851,7 @@ export namespace Prisma {
     AiArtifact: 'AiArtifact',
     AgentConversation: 'AgentConversation',
     AgentMessage: 'AgentMessage',
+    AgentTask: 'AgentTask',
     ReportGenerationSchedule: 'ReportGenerationSchedule',
     UserBusinessRole: 'UserBusinessRole',
     CollaborateurProfile: 'CollaborateurProfile',
@@ -3955,7 +3985,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "candidatureAssessment" | "formationSessionParticipant" | "formativeAssessment" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeNumberSequence" | "financeInvoice" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
+      modelProps: "landingConfig" | "user" | "fileAsset" | "fileAssetVersion" | "reportGenerationJob" | "aiRun" | "aiArtifact" | "agentConversation" | "agentMessage" | "agentTask" | "reportGenerationSchedule" | "userBusinessRole" | "collaborateurProfile" | "formateurProfile" | "userRole" | "userPermission" | "userRolePermission" | "account" | "session" | "verificationToken" | "systemLog" | "systemSetting" | "clientSite" | "rhOrgUnit" | "rhTeam" | "rhTeamMember" | "rhAbsence" | "rhPosition" | "rhQualification" | "equipment" | "equipmentMaintenance" | "stockMovement" | "formation" | "formationCatalogOffer" | "landingTeamOffer" | "formationVenueRoom" | "venueRoomFixedEquipment" | "venueRoomBooking" | "formationSession" | "sessionAutomationRun" | "portalSessionAnnouncement" | "candidature" | "candidatureAssessment" | "formationSessionParticipant" | "formativeAssessment" | "formationSessionDay" | "formationSessionEmargement" | "formationSessionConvention" | "formationExam" | "formationAttestation" | "course" | "category" | "attachment" | "chapter" | "activity" | "muxData" | "quizQuestionBank" | "quizQuestionBankItem" | "userProgress" | "quizAttempt" | "purchase" | "stripeCustomer" | "trainingSession" | "enrollment" | "attendance" | "grade" | "lead" | "financeDevis" | "financeNumberSequence" | "financeInvoice" | "financeDevisPlaquetteMessage" | "financeCatalogLine" | "certification" | "userCertificate" | "community" | "discussion" | "comment" | "discussionVote" | "commentVote" | "assignment" | "assignmentSubmission" | "productPack" | "usageEvent" | "trail" | "trailStep" | "trailRun" | "collection" | "apiToken" | "webhookEndpoint" | "webhookDeliveryLog" | "courseEmbedding" | "collaborationDocument" | "supportTicket" | "ticketComment" | "ticketAttachment" | "qualityIncident" | "helpArticle" | "userNotificationPreference" | "moduleSetting" | "marketingCampaign" | "seoRedirect" | "financePayment" | "financeBudgetLine" | "crmEventOutbox" | "inAppNotification" | "chatConversation" | "chatInvitation" | "chatParticipant" | "chatMessage" | "documentRequirementTemplate" | "documentRequirementTemplateItem" | "complianceDossier" | "complianceDossierItem" | "documentRequest" | "complianceItemEvent" | "satisfactionSurvey" | "fundingProvider" | "fundingCase" | "fundingCaseEvent" | "fundingDocument" | "company" | "subcontractorRecord" | "subcontractorStatusEvent" | "contact" | "trainingRequest" | "evidence" | "evidenceIndicatorLink" | "sessionReadinessEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4622,6 +4652,80 @@ export namespace Prisma {
           count: {
             args: Prisma.AgentMessageCountArgs<ExtArgs>
             result: $Utils.Optional<AgentMessageCountAggregateOutputType> | number
+          }
+        }
+      }
+      AgentTask: {
+        payload: Prisma.$AgentTaskPayload<ExtArgs>
+        fields: Prisma.AgentTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AgentTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AgentTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.AgentTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AgentTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>
+          }
+          findMany: {
+            args: Prisma.AgentTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>[]
+          }
+          create: {
+            args: Prisma.AgentTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>
+          }
+          createMany: {
+            args: Prisma.AgentTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AgentTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.AgentTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>
+          }
+          update: {
+            args: Prisma.AgentTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.AgentTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AgentTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AgentTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.AgentTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AgentTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.AgentTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAgentTask>
+          }
+          groupBy: {
+            args: Prisma.AgentTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AgentTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AgentTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<AgentTaskCountAggregateOutputType> | number
           }
         }
       }
@@ -13474,6 +13578,7 @@ export namespace Prisma {
     aiArtifact?: AiArtifactOmit
     agentConversation?: AgentConversationOmit
     agentMessage?: AgentMessageOmit
+    agentTask?: AgentTaskOmit
     reportGenerationSchedule?: ReportGenerationScheduleOmit
     userBusinessRole?: UserBusinessRoleOmit
     collaborateurProfile?: CollaborateurProfileOmit
@@ -13716,6 +13821,7 @@ export namespace Prisma {
     createdFileAssetVersions: number
     requestedReportJobs: number
     requestedAiRuns: number
+    requestedAgentTasks: number
     reviewedAiArtifacts: number
     assignedSupportTickets: number
     createdSupportTickets: number
@@ -13783,6 +13889,7 @@ export namespace Prisma {
     createdFileAssetVersions?: boolean | UserCountOutputTypeCountCreatedFileAssetVersionsArgs
     requestedReportJobs?: boolean | UserCountOutputTypeCountRequestedReportJobsArgs
     requestedAiRuns?: boolean | UserCountOutputTypeCountRequestedAiRunsArgs
+    requestedAgentTasks?: boolean | UserCountOutputTypeCountRequestedAgentTasksArgs
     reviewedAiArtifacts?: boolean | UserCountOutputTypeCountReviewedAiArtifactsArgs
     assignedSupportTickets?: boolean | UserCountOutputTypeCountAssignedSupportTicketsArgs
     createdSupportTickets?: boolean | UserCountOutputTypeCountCreatedSupportTicketsArgs
@@ -14122,6 +14229,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRequestedAiRunsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AiRunWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRequestedAgentTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AgentTaskWhereInput
   }
 
   /**
@@ -17912,6 +18026,7 @@ export namespace Prisma {
     createdFileAssetVersions?: boolean | User$createdFileAssetVersionsArgs<ExtArgs>
     requestedReportJobs?: boolean | User$requestedReportJobsArgs<ExtArgs>
     requestedAiRuns?: boolean | User$requestedAiRunsArgs<ExtArgs>
+    requestedAgentTasks?: boolean | User$requestedAgentTasksArgs<ExtArgs>
     reviewedAiArtifacts?: boolean | User$reviewedAiArtifactsArgs<ExtArgs>
     assignedSupportTickets?: boolean | User$assignedSupportTicketsArgs<ExtArgs>
     createdSupportTickets?: boolean | User$createdSupportTicketsArgs<ExtArgs>
@@ -18142,6 +18257,7 @@ export namespace Prisma {
     createdFileAssetVersions?: boolean | User$createdFileAssetVersionsArgs<ExtArgs>
     requestedReportJobs?: boolean | User$requestedReportJobsArgs<ExtArgs>
     requestedAiRuns?: boolean | User$requestedAiRunsArgs<ExtArgs>
+    requestedAgentTasks?: boolean | User$requestedAgentTasksArgs<ExtArgs>
     reviewedAiArtifacts?: boolean | User$reviewedAiArtifactsArgs<ExtArgs>
     assignedSupportTickets?: boolean | User$assignedSupportTicketsArgs<ExtArgs>
     createdSupportTickets?: boolean | User$createdSupportTicketsArgs<ExtArgs>
@@ -18233,6 +18349,7 @@ export namespace Prisma {
       createdFileAssetVersions: Prisma.$FileAssetVersionPayload<ExtArgs>[]
       requestedReportJobs: Prisma.$ReportGenerationJobPayload<ExtArgs>[]
       requestedAiRuns: Prisma.$AiRunPayload<ExtArgs>[]
+      requestedAgentTasks: Prisma.$AgentTaskPayload<ExtArgs>[]
       reviewedAiArtifacts: Prisma.$AiArtifactPayload<ExtArgs>[]
       assignedSupportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
       createdSupportTickets: Prisma.$SupportTicketPayload<ExtArgs>[]
@@ -18750,6 +18867,7 @@ export namespace Prisma {
     createdFileAssetVersions<T extends User$createdFileAssetVersionsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdFileAssetVersionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileAssetVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     requestedReportJobs<T extends User$requestedReportJobsArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedReportJobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReportGenerationJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     requestedAiRuns<T extends User$requestedAiRunsArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedAiRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    requestedAgentTasks<T extends User$requestedAgentTasksArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedAgentTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviewedAiArtifacts<T extends User$reviewedAiArtifactsArgs<ExtArgs> = {}>(args?: Subset<T, User$reviewedAiArtifactsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AiArtifactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     assignedSupportTickets<T extends User$assignedSupportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedSupportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdSupportTickets<T extends User$createdSupportTicketsArgs<ExtArgs> = {}>(args?: Subset<T, User$createdSupportTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -20396,6 +20514,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AiRunScalarFieldEnum | AiRunScalarFieldEnum[]
+  }
+
+  /**
+   * User.requestedAgentTasks
+   */
+  export type User$requestedAgentTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    where?: AgentTaskWhereInput
+    orderBy?: AgentTaskOrderByWithRelationInput | AgentTaskOrderByWithRelationInput[]
+    cursor?: AgentTaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AgentTaskScalarFieldEnum | AgentTaskScalarFieldEnum[]
   }
 
   /**
@@ -29585,6 +29727,1126 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: AgentMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AgentTask
+   */
+
+  export type AggregateAgentTask = {
+    _count: AgentTaskCountAggregateOutputType | null
+    _min: AgentTaskMinAggregateOutputType | null
+    _max: AgentTaskMaxAggregateOutputType | null
+  }
+
+  export type AgentTaskMinAggregateOutputType = {
+    id: string | null
+    kind: string | null
+    status: $Enums.AgentTaskStatus | null
+    error: string | null
+    requestedById: string | null
+    createdAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type AgentTaskMaxAggregateOutputType = {
+    id: string | null
+    kind: string | null
+    status: $Enums.AgentTaskStatus | null
+    error: string | null
+    requestedById: string | null
+    createdAt: Date | null
+    startedAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type AgentTaskCountAggregateOutputType = {
+    id: number
+    kind: number
+    status: number
+    payload: number
+    result: number
+    error: number
+    requestedById: number
+    createdAt: number
+    startedAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type AgentTaskMinAggregateInputType = {
+    id?: true
+    kind?: true
+    status?: true
+    error?: true
+    requestedById?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+  }
+
+  export type AgentTaskMaxAggregateInputType = {
+    id?: true
+    kind?: true
+    status?: true
+    error?: true
+    requestedById?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+  }
+
+  export type AgentTaskCountAggregateInputType = {
+    id?: true
+    kind?: true
+    status?: true
+    payload?: true
+    result?: true
+    error?: true
+    requestedById?: true
+    createdAt?: true
+    startedAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type AgentTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AgentTask to aggregate.
+     */
+    where?: AgentTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentTasks to fetch.
+     */
+    orderBy?: AgentTaskOrderByWithRelationInput | AgentTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AgentTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AgentTasks
+    **/
+    _count?: true | AgentTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AgentTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AgentTaskMaxAggregateInputType
+  }
+
+  export type GetAgentTaskAggregateType<T extends AgentTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateAgentTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAgentTask[P]>
+      : GetScalarType<T[P], AggregateAgentTask[P]>
+  }
+
+
+
+
+  export type AgentTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AgentTaskWhereInput
+    orderBy?: AgentTaskOrderByWithAggregationInput | AgentTaskOrderByWithAggregationInput[]
+    by: AgentTaskScalarFieldEnum[] | AgentTaskScalarFieldEnum
+    having?: AgentTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AgentTaskCountAggregateInputType | true
+    _min?: AgentTaskMinAggregateInputType
+    _max?: AgentTaskMaxAggregateInputType
+  }
+
+  export type AgentTaskGroupByOutputType = {
+    id: string
+    kind: string
+    status: $Enums.AgentTaskStatus
+    payload: JsonValue
+    result: JsonValue | null
+    error: string | null
+    requestedById: string
+    createdAt: Date
+    startedAt: Date | null
+    completedAt: Date | null
+    _count: AgentTaskCountAggregateOutputType | null
+    _min: AgentTaskMinAggregateOutputType | null
+    _max: AgentTaskMaxAggregateOutputType | null
+  }
+
+  type GetAgentTaskGroupByPayload<T extends AgentTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AgentTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AgentTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AgentTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], AgentTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AgentTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kind?: boolean
+    status?: boolean
+    payload?: boolean
+    result?: boolean
+    error?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["agentTask"]>
+
+  export type AgentTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kind?: boolean
+    status?: boolean
+    payload?: boolean
+    result?: boolean
+    error?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["agentTask"]>
+
+  export type AgentTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kind?: boolean
+    status?: boolean
+    payload?: boolean
+    result?: boolean
+    error?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["agentTask"]>
+
+  export type AgentTaskSelectScalar = {
+    id?: boolean
+    kind?: boolean
+    status?: boolean
+    payload?: boolean
+    result?: boolean
+    error?: boolean
+    requestedById?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type AgentTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kind" | "status" | "payload" | "result" | "error" | "requestedById" | "createdAt" | "startedAt" | "completedAt", ExtArgs["result"]["agentTask"]>
+  export type AgentTaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AgentTaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type AgentTaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    requestedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $AgentTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AgentTask"
+    objects: {
+      requestedBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      kind: string
+      status: $Enums.AgentTaskStatus
+      payload: Prisma.JsonValue
+      result: Prisma.JsonValue | null
+      error: string | null
+      requestedById: string
+      createdAt: Date
+      startedAt: Date | null
+      completedAt: Date | null
+    }, ExtArgs["result"]["agentTask"]>
+    composites: {}
+  }
+
+  type AgentTaskGetPayload<S extends boolean | null | undefined | AgentTaskDefaultArgs> = $Result.GetResult<Prisma.$AgentTaskPayload, S>
+
+  type AgentTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AgentTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AgentTaskCountAggregateInputType | true
+    }
+
+  export interface AgentTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AgentTask'], meta: { name: 'AgentTask' } }
+    /**
+     * Find zero or one AgentTask that matches the filter.
+     * @param {AgentTaskFindUniqueArgs} args - Arguments to find a AgentTask
+     * @example
+     * // Get one AgentTask
+     * const agentTask = await prisma.agentTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AgentTaskFindUniqueArgs>(args: SelectSubset<T, AgentTaskFindUniqueArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AgentTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AgentTaskFindUniqueOrThrowArgs} args - Arguments to find a AgentTask
+     * @example
+     * // Get one AgentTask
+     * const agentTask = await prisma.agentTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AgentTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, AgentTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AgentTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentTaskFindFirstArgs} args - Arguments to find a AgentTask
+     * @example
+     * // Get one AgentTask
+     * const agentTask = await prisma.agentTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AgentTaskFindFirstArgs>(args?: SelectSubset<T, AgentTaskFindFirstArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AgentTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentTaskFindFirstOrThrowArgs} args - Arguments to find a AgentTask
+     * @example
+     * // Get one AgentTask
+     * const agentTask = await prisma.agentTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AgentTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, AgentTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AgentTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AgentTasks
+     * const agentTasks = await prisma.agentTask.findMany()
+     * 
+     * // Get first 10 AgentTasks
+     * const agentTasks = await prisma.agentTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const agentTaskWithIdOnly = await prisma.agentTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AgentTaskFindManyArgs>(args?: SelectSubset<T, AgentTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AgentTask.
+     * @param {AgentTaskCreateArgs} args - Arguments to create a AgentTask.
+     * @example
+     * // Create one AgentTask
+     * const AgentTask = await prisma.agentTask.create({
+     *   data: {
+     *     // ... data to create a AgentTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends AgentTaskCreateArgs>(args: SelectSubset<T, AgentTaskCreateArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AgentTasks.
+     * @param {AgentTaskCreateManyArgs} args - Arguments to create many AgentTasks.
+     * @example
+     * // Create many AgentTasks
+     * const agentTask = await prisma.agentTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AgentTaskCreateManyArgs>(args?: SelectSubset<T, AgentTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AgentTasks and returns the data saved in the database.
+     * @param {AgentTaskCreateManyAndReturnArgs} args - Arguments to create many AgentTasks.
+     * @example
+     * // Create many AgentTasks
+     * const agentTask = await prisma.agentTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AgentTasks and only return the `id`
+     * const agentTaskWithIdOnly = await prisma.agentTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AgentTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, AgentTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AgentTask.
+     * @param {AgentTaskDeleteArgs} args - Arguments to delete one AgentTask.
+     * @example
+     * // Delete one AgentTask
+     * const AgentTask = await prisma.agentTask.delete({
+     *   where: {
+     *     // ... filter to delete one AgentTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AgentTaskDeleteArgs>(args: SelectSubset<T, AgentTaskDeleteArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AgentTask.
+     * @param {AgentTaskUpdateArgs} args - Arguments to update one AgentTask.
+     * @example
+     * // Update one AgentTask
+     * const agentTask = await prisma.agentTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AgentTaskUpdateArgs>(args: SelectSubset<T, AgentTaskUpdateArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AgentTasks.
+     * @param {AgentTaskDeleteManyArgs} args - Arguments to filter AgentTasks to delete.
+     * @example
+     * // Delete a few AgentTasks
+     * const { count } = await prisma.agentTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AgentTaskDeleteManyArgs>(args?: SelectSubset<T, AgentTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AgentTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AgentTasks
+     * const agentTask = await prisma.agentTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AgentTaskUpdateManyArgs>(args: SelectSubset<T, AgentTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AgentTasks and returns the data updated in the database.
+     * @param {AgentTaskUpdateManyAndReturnArgs} args - Arguments to update many AgentTasks.
+     * @example
+     * // Update many AgentTasks
+     * const agentTask = await prisma.agentTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AgentTasks and only return the `id`
+     * const agentTaskWithIdOnly = await prisma.agentTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AgentTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, AgentTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AgentTask.
+     * @param {AgentTaskUpsertArgs} args - Arguments to update or create a AgentTask.
+     * @example
+     * // Update or create a AgentTask
+     * const agentTask = await prisma.agentTask.upsert({
+     *   create: {
+     *     // ... data to create a AgentTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AgentTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AgentTaskUpsertArgs>(args: SelectSubset<T, AgentTaskUpsertArgs<ExtArgs>>): Prisma__AgentTaskClient<$Result.GetResult<Prisma.$AgentTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AgentTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentTaskCountArgs} args - Arguments to filter AgentTasks to count.
+     * @example
+     * // Count the number of AgentTasks
+     * const count = await prisma.agentTask.count({
+     *   where: {
+     *     // ... the filter for the AgentTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends AgentTaskCountArgs>(
+      args?: Subset<T, AgentTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AgentTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AgentTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AgentTaskAggregateArgs>(args: Subset<T, AgentTaskAggregateArgs>): Prisma.PrismaPromise<GetAgentTaskAggregateType<T>>
+
+    /**
+     * Group by AgentTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AgentTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AgentTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AgentTaskGroupByArgs['orderBy'] }
+        : { orderBy?: AgentTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AgentTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAgentTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AgentTask model
+   */
+  readonly fields: AgentTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AgentTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AgentTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    requestedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AgentTask model
+   */
+  interface AgentTaskFieldRefs {
+    readonly id: FieldRef<"AgentTask", 'String'>
+    readonly kind: FieldRef<"AgentTask", 'String'>
+    readonly status: FieldRef<"AgentTask", 'AgentTaskStatus'>
+    readonly payload: FieldRef<"AgentTask", 'Json'>
+    readonly result: FieldRef<"AgentTask", 'Json'>
+    readonly error: FieldRef<"AgentTask", 'String'>
+    readonly requestedById: FieldRef<"AgentTask", 'String'>
+    readonly createdAt: FieldRef<"AgentTask", 'DateTime'>
+    readonly startedAt: FieldRef<"AgentTask", 'DateTime'>
+    readonly completedAt: FieldRef<"AgentTask", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AgentTask findUnique
+   */
+  export type AgentTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentTask to fetch.
+     */
+    where: AgentTaskWhereUniqueInput
+  }
+
+  /**
+   * AgentTask findUniqueOrThrow
+   */
+  export type AgentTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentTask to fetch.
+     */
+    where: AgentTaskWhereUniqueInput
+  }
+
+  /**
+   * AgentTask findFirst
+   */
+  export type AgentTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentTask to fetch.
+     */
+    where?: AgentTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentTasks to fetch.
+     */
+    orderBy?: AgentTaskOrderByWithRelationInput | AgentTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AgentTasks.
+     */
+    cursor?: AgentTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AgentTasks.
+     */
+    distinct?: AgentTaskScalarFieldEnum | AgentTaskScalarFieldEnum[]
+  }
+
+  /**
+   * AgentTask findFirstOrThrow
+   */
+  export type AgentTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentTask to fetch.
+     */
+    where?: AgentTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentTasks to fetch.
+     */
+    orderBy?: AgentTaskOrderByWithRelationInput | AgentTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AgentTasks.
+     */
+    cursor?: AgentTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AgentTasks.
+     */
+    distinct?: AgentTaskScalarFieldEnum | AgentTaskScalarFieldEnum[]
+  }
+
+  /**
+   * AgentTask findMany
+   */
+  export type AgentTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * Filter, which AgentTasks to fetch.
+     */
+    where?: AgentTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AgentTasks to fetch.
+     */
+    orderBy?: AgentTaskOrderByWithRelationInput | AgentTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AgentTasks.
+     */
+    cursor?: AgentTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AgentTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AgentTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AgentTasks.
+     */
+    distinct?: AgentTaskScalarFieldEnum | AgentTaskScalarFieldEnum[]
+  }
+
+  /**
+   * AgentTask create
+   */
+  export type AgentTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AgentTask.
+     */
+    data: XOR<AgentTaskCreateInput, AgentTaskUncheckedCreateInput>
+  }
+
+  /**
+   * AgentTask createMany
+   */
+  export type AgentTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AgentTasks.
+     */
+    data: AgentTaskCreateManyInput | AgentTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AgentTask createManyAndReturn
+   */
+  export type AgentTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many AgentTasks.
+     */
+    data: AgentTaskCreateManyInput | AgentTaskCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AgentTask update
+   */
+  export type AgentTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AgentTask.
+     */
+    data: XOR<AgentTaskUpdateInput, AgentTaskUncheckedUpdateInput>
+    /**
+     * Choose, which AgentTask to update.
+     */
+    where: AgentTaskWhereUniqueInput
+  }
+
+  /**
+   * AgentTask updateMany
+   */
+  export type AgentTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AgentTasks.
+     */
+    data: XOR<AgentTaskUpdateManyMutationInput, AgentTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which AgentTasks to update
+     */
+    where?: AgentTaskWhereInput
+    /**
+     * Limit how many AgentTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AgentTask updateManyAndReturn
+   */
+  export type AgentTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update AgentTasks.
+     */
+    data: XOR<AgentTaskUpdateManyMutationInput, AgentTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which AgentTasks to update
+     */
+    where?: AgentTaskWhereInput
+    /**
+     * Limit how many AgentTasks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AgentTask upsert
+   */
+  export type AgentTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AgentTask to update in case it exists.
+     */
+    where: AgentTaskWhereUniqueInput
+    /**
+     * In case the AgentTask found by the `where` argument doesn't exist, create a new AgentTask with this data.
+     */
+    create: XOR<AgentTaskCreateInput, AgentTaskUncheckedCreateInput>
+    /**
+     * In case the AgentTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AgentTaskUpdateInput, AgentTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * AgentTask delete
+   */
+  export type AgentTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
+    /**
+     * Filter which AgentTask to delete.
+     */
+    where: AgentTaskWhereUniqueInput
+  }
+
+  /**
+   * AgentTask deleteMany
+   */
+  export type AgentTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AgentTasks to delete
+     */
+    where?: AgentTaskWhereInput
+    /**
+     * Limit how many AgentTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AgentTask without action
+   */
+  export type AgentTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AgentTask
+     */
+    select?: AgentTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AgentTask
+     */
+    omit?: AgentTaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AgentTaskInclude<ExtArgs> | null
   }
 
 
@@ -170832,6 +172094,22 @@ export namespace Prisma {
   export type AgentMessageScalarFieldEnum = (typeof AgentMessageScalarFieldEnum)[keyof typeof AgentMessageScalarFieldEnum]
 
 
+  export const AgentTaskScalarFieldEnum: {
+    id: 'id',
+    kind: 'kind',
+    status: 'status',
+    payload: 'payload',
+    result: 'result',
+    error: 'error',
+    requestedById: 'requestedById',
+    createdAt: 'createdAt',
+    startedAt: 'startedAt',
+    completedAt: 'completedAt'
+  };
+
+  export type AgentTaskScalarFieldEnum = (typeof AgentTaskScalarFieldEnum)[keyof typeof AgentTaskScalarFieldEnum]
+
+
   export const ReportGenerationScheduleScalarFieldEnum: {
     id: 'id',
     templateKey: 'templateKey',
@@ -173109,6 +174387,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AgentTaskStatus'
+   */
+  export type EnumAgentTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgentTaskStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AgentTaskStatus[]'
+   */
+  export type ListEnumAgentTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AgentTaskStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'ReportScheduleFrequency'
    */
   export type EnumReportScheduleFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportScheduleFrequency'>
@@ -174412,6 +175704,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionListRelationFilter
     requestedReportJobs?: ReportGenerationJobListRelationFilter
     requestedAiRuns?: AiRunListRelationFilter
+    requestedAgentTasks?: AgentTaskListRelationFilter
     reviewedAiArtifacts?: AiArtifactListRelationFilter
     assignedSupportTickets?: SupportTicketListRelationFilter
     createdSupportTickets?: SupportTicketListRelationFilter
@@ -174533,6 +175826,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionOrderByRelationAggregateInput
     requestedReportJobs?: ReportGenerationJobOrderByRelationAggregateInput
     requestedAiRuns?: AiRunOrderByRelationAggregateInput
+    requestedAgentTasks?: AgentTaskOrderByRelationAggregateInput
     reviewedAiArtifacts?: AiArtifactOrderByRelationAggregateInput
     assignedSupportTickets?: SupportTicketOrderByRelationAggregateInput
     createdSupportTickets?: SupportTicketOrderByRelationAggregateInput
@@ -174657,6 +175951,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionListRelationFilter
     requestedReportJobs?: ReportGenerationJobListRelationFilter
     requestedAiRuns?: AiRunListRelationFilter
+    requestedAgentTasks?: AgentTaskListRelationFilter
     reviewedAiArtifacts?: AiArtifactListRelationFilter
     assignedSupportTickets?: SupportTicketListRelationFilter
     createdSupportTickets?: SupportTicketListRelationFilter
@@ -175500,6 +176795,86 @@ export namespace Prisma {
     role?: EnumAgentMessageRoleWithAggregatesFilter<"AgentMessage"> | $Enums.AgentMessageRole
     content?: StringWithAggregatesFilter<"AgentMessage"> | string
     createdAt?: DateTimeWithAggregatesFilter<"AgentMessage"> | Date | string
+  }
+
+  export type AgentTaskWhereInput = {
+    AND?: AgentTaskWhereInput | AgentTaskWhereInput[]
+    OR?: AgentTaskWhereInput[]
+    NOT?: AgentTaskWhereInput | AgentTaskWhereInput[]
+    id?: StringFilter<"AgentTask"> | string
+    kind?: StringFilter<"AgentTask"> | string
+    status?: EnumAgentTaskStatusFilter<"AgentTask"> | $Enums.AgentTaskStatus
+    payload?: JsonFilter<"AgentTask">
+    result?: JsonNullableFilter<"AgentTask">
+    error?: StringNullableFilter<"AgentTask"> | string | null
+    requestedById?: StringFilter<"AgentTask"> | string
+    createdAt?: DateTimeFilter<"AgentTask"> | Date | string
+    startedAt?: DateTimeNullableFilter<"AgentTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"AgentTask"> | Date | string | null
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type AgentTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    payload?: SortOrder
+    result?: SortOrderInput | SortOrder
+    error?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    requestedBy?: UserOrderByWithRelationInput
+  }
+
+  export type AgentTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AgentTaskWhereInput | AgentTaskWhereInput[]
+    OR?: AgentTaskWhereInput[]
+    NOT?: AgentTaskWhereInput | AgentTaskWhereInput[]
+    kind?: StringFilter<"AgentTask"> | string
+    status?: EnumAgentTaskStatusFilter<"AgentTask"> | $Enums.AgentTaskStatus
+    payload?: JsonFilter<"AgentTask">
+    result?: JsonNullableFilter<"AgentTask">
+    error?: StringNullableFilter<"AgentTask"> | string | null
+    requestedById?: StringFilter<"AgentTask"> | string
+    createdAt?: DateTimeFilter<"AgentTask"> | Date | string
+    startedAt?: DateTimeNullableFilter<"AgentTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"AgentTask"> | Date | string | null
+    requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type AgentTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    payload?: SortOrder
+    result?: SortOrderInput | SortOrder
+    error?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    _count?: AgentTaskCountOrderByAggregateInput
+    _max?: AgentTaskMaxOrderByAggregateInput
+    _min?: AgentTaskMinOrderByAggregateInput
+  }
+
+  export type AgentTaskScalarWhereWithAggregatesInput = {
+    AND?: AgentTaskScalarWhereWithAggregatesInput | AgentTaskScalarWhereWithAggregatesInput[]
+    OR?: AgentTaskScalarWhereWithAggregatesInput[]
+    NOT?: AgentTaskScalarWhereWithAggregatesInput | AgentTaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AgentTask"> | string
+    kind?: StringWithAggregatesFilter<"AgentTask"> | string
+    status?: EnumAgentTaskStatusWithAggregatesFilter<"AgentTask"> | $Enums.AgentTaskStatus
+    payload?: JsonWithAggregatesFilter<"AgentTask">
+    result?: JsonNullableWithAggregatesFilter<"AgentTask">
+    error?: StringNullableWithAggregatesFilter<"AgentTask"> | string | null
+    requestedById?: StringWithAggregatesFilter<"AgentTask"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"AgentTask"> | Date | string
+    startedAt?: DateTimeNullableWithAggregatesFilter<"AgentTask"> | Date | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"AgentTask"> | Date | string | null
   }
 
   export type ReportGenerationScheduleWhereInput = {
@@ -186328,6 +187703,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -186447,6 +187823,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -186566,6 +187943,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -186685,6 +188063,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -187671,6 +189050,96 @@ export namespace Prisma {
     role?: EnumAgentMessageRoleFieldUpdateOperationsInput | $Enums.AgentMessageRole
     content?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AgentTaskCreateInput = {
+    id?: string
+    kind: string
+    status?: $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+    requestedBy: UserCreateNestedOneWithoutRequestedAgentTasksInput
+  }
+
+  export type AgentTaskUncheckedCreateInput = {
+    id?: string
+    kind: string
+    status?: $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    requestedById: string
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+  }
+
+  export type AgentTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    status?: EnumAgentTaskStatusFieldUpdateOperationsInput | $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    requestedBy?: UserUpdateOneRequiredWithoutRequestedAgentTasksNestedInput
+  }
+
+  export type AgentTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    status?: EnumAgentTaskStatusFieldUpdateOperationsInput | $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AgentTaskCreateManyInput = {
+    id?: string
+    kind: string
+    status?: $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    requestedById: string
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+  }
+
+  export type AgentTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    status?: EnumAgentTaskStatusFieldUpdateOperationsInput | $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AgentTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    status?: EnumAgentTaskStatusFieldUpdateOperationsInput | $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ReportGenerationScheduleCreateInput = {
@@ -199933,6 +201402,12 @@ export namespace Prisma {
     none?: AiRunWhereInput
   }
 
+  export type AgentTaskListRelationFilter = {
+    every?: AgentTaskWhereInput
+    some?: AgentTaskWhereInput
+    none?: AgentTaskWhereInput
+  }
+
   export type AiArtifactListRelationFilter = {
     every?: AiArtifactWhereInput
     some?: AiArtifactWhereInput
@@ -200200,6 +201675,10 @@ export namespace Prisma {
   }
 
   export type AiRunOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AgentTaskOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -201158,6 +202637,58 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAgentMessageRoleFilter<$PrismaModel>
     _max?: NestedEnumAgentMessageRoleFilter<$PrismaModel>
+  }
+
+  export type EnumAgentTaskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgentTaskStatus | EnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAgentTaskStatusFilter<$PrismaModel> | $Enums.AgentTaskStatus
+  }
+
+  export type AgentTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    payload?: SortOrder
+    result?: SortOrder
+    error?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type AgentTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    error?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type AgentTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    kind?: SortOrder
+    status?: SortOrder
+    error?: SortOrder
+    requestedById?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type EnumAgentTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgentTaskStatus | EnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAgentTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.AgentTaskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAgentTaskStatusFilter<$PrismaModel>
+    _max?: NestedEnumAgentTaskStatusFilter<$PrismaModel>
   }
 
   export type EnumReportScheduleFrequencyFilter<$PrismaModel = never> = {
@@ -209088,6 +210619,13 @@ export namespace Prisma {
     connect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
   }
 
+  export type AgentTaskCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<AgentTaskCreateWithoutRequestedByInput, AgentTaskUncheckedCreateWithoutRequestedByInput> | AgentTaskCreateWithoutRequestedByInput[] | AgentTaskUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AgentTaskCreateOrConnectWithoutRequestedByInput | AgentTaskCreateOrConnectWithoutRequestedByInput[]
+    createMany?: AgentTaskCreateManyRequestedByInputEnvelope
+    connect?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+  }
+
   export type AiArtifactCreateNestedManyWithoutReviewedByInput = {
     create?: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput> | AiArtifactCreateWithoutReviewedByInput[] | AiArtifactUncheckedCreateWithoutReviewedByInput[]
     connectOrCreate?: AiArtifactCreateOrConnectWithoutReviewedByInput | AiArtifactCreateOrConnectWithoutReviewedByInput[]
@@ -209564,6 +211102,13 @@ export namespace Prisma {
     connectOrCreate?: AiRunCreateOrConnectWithoutRequestedByInput | AiRunCreateOrConnectWithoutRequestedByInput[]
     createMany?: AiRunCreateManyRequestedByInputEnvelope
     connect?: AiRunWhereUniqueInput | AiRunWhereUniqueInput[]
+  }
+
+  export type AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput = {
+    create?: XOR<AgentTaskCreateWithoutRequestedByInput, AgentTaskUncheckedCreateWithoutRequestedByInput> | AgentTaskCreateWithoutRequestedByInput[] | AgentTaskUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AgentTaskCreateOrConnectWithoutRequestedByInput | AgentTaskCreateOrConnectWithoutRequestedByInput[]
+    createMany?: AgentTaskCreateManyRequestedByInputEnvelope
+    connect?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
   }
 
   export type AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput = {
@@ -210408,6 +211953,20 @@ export namespace Prisma {
     update?: AiRunUpdateWithWhereUniqueWithoutRequestedByInput | AiRunUpdateWithWhereUniqueWithoutRequestedByInput[]
     updateMany?: AiRunUpdateManyWithWhereWithoutRequestedByInput | AiRunUpdateManyWithWhereWithoutRequestedByInput[]
     deleteMany?: AiRunScalarWhereInput | AiRunScalarWhereInput[]
+  }
+
+  export type AgentTaskUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<AgentTaskCreateWithoutRequestedByInput, AgentTaskUncheckedCreateWithoutRequestedByInput> | AgentTaskCreateWithoutRequestedByInput[] | AgentTaskUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AgentTaskCreateOrConnectWithoutRequestedByInput | AgentTaskCreateOrConnectWithoutRequestedByInput[]
+    upsert?: AgentTaskUpsertWithWhereUniqueWithoutRequestedByInput | AgentTaskUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: AgentTaskCreateManyRequestedByInputEnvelope
+    set?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    disconnect?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    delete?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    connect?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    update?: AgentTaskUpdateWithWhereUniqueWithoutRequestedByInput | AgentTaskUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: AgentTaskUpdateManyWithWhereWithoutRequestedByInput | AgentTaskUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: AgentTaskScalarWhereInput | AgentTaskScalarWhereInput[]
   }
 
   export type AiArtifactUpdateManyWithoutReviewedByNestedInput = {
@@ -211356,6 +212915,20 @@ export namespace Prisma {
     deleteMany?: AiRunScalarWhereInput | AiRunScalarWhereInput[]
   }
 
+  export type AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput = {
+    create?: XOR<AgentTaskCreateWithoutRequestedByInput, AgentTaskUncheckedCreateWithoutRequestedByInput> | AgentTaskCreateWithoutRequestedByInput[] | AgentTaskUncheckedCreateWithoutRequestedByInput[]
+    connectOrCreate?: AgentTaskCreateOrConnectWithoutRequestedByInput | AgentTaskCreateOrConnectWithoutRequestedByInput[]
+    upsert?: AgentTaskUpsertWithWhereUniqueWithoutRequestedByInput | AgentTaskUpsertWithWhereUniqueWithoutRequestedByInput[]
+    createMany?: AgentTaskCreateManyRequestedByInputEnvelope
+    set?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    disconnect?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    delete?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    connect?: AgentTaskWhereUniqueInput | AgentTaskWhereUniqueInput[]
+    update?: AgentTaskUpdateWithWhereUniqueWithoutRequestedByInput | AgentTaskUpdateWithWhereUniqueWithoutRequestedByInput[]
+    updateMany?: AgentTaskUpdateManyWithWhereWithoutRequestedByInput | AgentTaskUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: AgentTaskScalarWhereInput | AgentTaskScalarWhereInput[]
+  }
+
   export type AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput = {
     create?: XOR<AiArtifactCreateWithoutReviewedByInput, AiArtifactUncheckedCreateWithoutReviewedByInput> | AiArtifactCreateWithoutReviewedByInput[] | AiArtifactUncheckedCreateWithoutReviewedByInput[]
     connectOrCreate?: AiArtifactCreateOrConnectWithoutReviewedByInput | AiArtifactCreateOrConnectWithoutReviewedByInput[]
@@ -212210,6 +213783,24 @@ export namespace Prisma {
     upsert?: AgentConversationUpsertWithoutMessagesInput
     connect?: AgentConversationWhereUniqueInput
     update?: XOR<XOR<AgentConversationUpdateToOneWithWhereWithoutMessagesInput, AgentConversationUpdateWithoutMessagesInput>, AgentConversationUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserCreateNestedOneWithoutRequestedAgentTasksInput = {
+    create?: XOR<UserCreateWithoutRequestedAgentTasksInput, UserUncheckedCreateWithoutRequestedAgentTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRequestedAgentTasksInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumAgentTaskStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AgentTaskStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutRequestedAgentTasksNestedInput = {
+    create?: XOR<UserCreateWithoutRequestedAgentTasksInput, UserUncheckedCreateWithoutRequestedAgentTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRequestedAgentTasksInput
+    upsert?: UserUpsertWithoutRequestedAgentTasksInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRequestedAgentTasksInput, UserUpdateWithoutRequestedAgentTasksInput>, UserUncheckedUpdateWithoutRequestedAgentTasksInput>
   }
 
   export type EnumReportScheduleFrequencyFieldUpdateOperationsInput = {
@@ -221193,6 +222784,23 @@ export namespace Prisma {
     _max?: NestedEnumAgentMessageRoleFilter<$PrismaModel>
   }
 
+  export type NestedEnumAgentTaskStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgentTaskStatus | EnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAgentTaskStatusFilter<$PrismaModel> | $Enums.AgentTaskStatus
+  }
+
+  export type NestedEnumAgentTaskStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AgentTaskStatus | EnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AgentTaskStatus[] | ListEnumAgentTaskStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAgentTaskStatusWithAggregatesFilter<$PrismaModel> | $Enums.AgentTaskStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAgentTaskStatusFilter<$PrismaModel>
+    _max?: NestedEnumAgentTaskStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumReportScheduleFrequencyFilter<$PrismaModel = never> = {
     equals?: $Enums.ReportScheduleFrequency | EnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
     in?: $Enums.ReportScheduleFrequency[] | ListEnumReportScheduleFrequencyFieldRefInput<$PrismaModel>
@@ -224847,6 +226455,40 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AgentTaskCreateWithoutRequestedByInput = {
+    id?: string
+    kind: string
+    status?: $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+  }
+
+  export type AgentTaskUncheckedCreateWithoutRequestedByInput = {
+    id?: string
+    kind: string
+    status?: $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    completedAt?: Date | string | null
+  }
+
+  export type AgentTaskCreateOrConnectWithoutRequestedByInput = {
+    where: AgentTaskWhereUniqueInput
+    create: XOR<AgentTaskCreateWithoutRequestedByInput, AgentTaskUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type AgentTaskCreateManyRequestedByInputEnvelope = {
+    data: AgentTaskCreateManyRequestedByInput | AgentTaskCreateManyRequestedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AiArtifactCreateWithoutReviewedByInput = {
     id?: string
     status?: $Enums.AiArtifactStatus
@@ -227305,6 +228947,38 @@ export namespace Prisma {
     completedAt?: DateTimeNullableFilter<"AiRun"> | Date | string | null
   }
 
+  export type AgentTaskUpsertWithWhereUniqueWithoutRequestedByInput = {
+    where: AgentTaskWhereUniqueInput
+    update: XOR<AgentTaskUpdateWithoutRequestedByInput, AgentTaskUncheckedUpdateWithoutRequestedByInput>
+    create: XOR<AgentTaskCreateWithoutRequestedByInput, AgentTaskUncheckedCreateWithoutRequestedByInput>
+  }
+
+  export type AgentTaskUpdateWithWhereUniqueWithoutRequestedByInput = {
+    where: AgentTaskWhereUniqueInput
+    data: XOR<AgentTaskUpdateWithoutRequestedByInput, AgentTaskUncheckedUpdateWithoutRequestedByInput>
+  }
+
+  export type AgentTaskUpdateManyWithWhereWithoutRequestedByInput = {
+    where: AgentTaskScalarWhereInput
+    data: XOR<AgentTaskUpdateManyMutationInput, AgentTaskUncheckedUpdateManyWithoutRequestedByInput>
+  }
+
+  export type AgentTaskScalarWhereInput = {
+    AND?: AgentTaskScalarWhereInput | AgentTaskScalarWhereInput[]
+    OR?: AgentTaskScalarWhereInput[]
+    NOT?: AgentTaskScalarWhereInput | AgentTaskScalarWhereInput[]
+    id?: StringFilter<"AgentTask"> | string
+    kind?: StringFilter<"AgentTask"> | string
+    status?: EnumAgentTaskStatusFilter<"AgentTask"> | $Enums.AgentTaskStatus
+    payload?: JsonFilter<"AgentTask">
+    result?: JsonNullableFilter<"AgentTask">
+    error?: StringNullableFilter<"AgentTask"> | string | null
+    requestedById?: StringFilter<"AgentTask"> | string
+    createdAt?: DateTimeFilter<"AgentTask"> | Date | string
+    startedAt?: DateTimeNullableFilter<"AgentTask"> | Date | string | null
+    completedAt?: DateTimeNullableFilter<"AgentTask"> | Date | string | null
+  }
+
   export type AiArtifactUpsertWithWhereUniqueWithoutReviewedByInput = {
     where: AiArtifactWhereUniqueInput
     update: XOR<AiArtifactUpdateWithoutReviewedByInput, AiArtifactUncheckedUpdateWithoutReviewedByInput>
@@ -228016,6 +229690,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -228134,6 +229809,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -228555,6 +230231,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -228673,6 +230350,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -229097,6 +230775,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -229215,6 +230894,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -229511,6 +231191,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -229629,6 +231310,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -229747,6 +231429,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -229865,6 +231548,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -230074,6 +231758,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -230192,6 +231877,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -230391,6 +232077,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -230509,6 +232196,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -230679,6 +232367,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -230797,6 +232486,7 @@ export namespace Prisma {
     createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -230971,6 +232661,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -231089,6 +232780,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -231268,6 +232960,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -231386,6 +233079,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -231503,6 +233197,498 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type UserCreateWithoutRequestedAgentTasksInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    role: UserRoleCreateNestedOneWithoutUsersInput
+    jobPosition?: RhPositionCreateNestedOneWithoutUsersInput
+    systemLog?: SystemLogCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    Session?: SessionCreateNestedManyWithoutUserInput
+    courses?: CourseCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressCreateNestedManyWithoutUserInput
+    purchases?: PurchaseCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentCreateNestedManyWithoutUserInput
+    attendances?: AttendanceCreateNestedManyWithoutUserInput
+    grades?: GradeCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseCreateNestedManyWithoutLearnerUserInput
+    evidenceAsLearner?: EvidenceCreateNestedManyWithoutLearnerInput
+    evidenceAsTrainer?: EvidenceCreateNestedManyWithoutTrainerInput
+    documentRequestsRequested?: DocumentRequestCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateCreateNestedManyWithoutUserInput
+    discussions?: DiscussionCreateNestedManyWithoutAuthorInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteCreateNestedManyWithoutUserInput
+    trails?: TrailCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentCreateNestedManyWithoutRecordedByInput
+    notificationPreference?: UserNotificationPreferenceCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserUncheckedCreateWithoutRequestedAgentTasksInput = {
+    id?: string
+    email: string
+    password?: string | null
+    country?: string | null
+    timezone?: string | null
+    name?: string | null
+    roleId: string
+    status?: $Enums.UserStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lastSignInAt?: Date | string | null
+    emailVerifiedAt?: Date | string | null
+    isTrashed?: boolean
+    avatar?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    phone?: string | null
+    proEmail?: string | null
+    userCategory?: $Enums.UserCategory
+    subcontractorId?: string | null
+    jobFunction?: string | null
+    jobPositionId?: string | null
+    qualification?: string | null
+    birthDate?: Date | string | null
+    birthPlace?: string | null
+    nationality?: string | null
+    socialSecurityNumber?: string | null
+    cniNumber?: string | null
+    residencePermitNumber?: string | null
+    residencePermitExpiry?: Date | string | null
+    contractType?: $Enums.ContractType | null
+    workTimeType?: $Enums.WorkTimeType | null
+    contractStartDate?: Date | string | null
+    contractEndDate?: Date | string | null
+    address?: string | null
+    city?: string | null
+    postalCode?: string | null
+    carteProNumber?: string | null
+    carteProExpiry?: Date | string | null
+    isSchedulable?: boolean
+    landingPresentation?: string | null
+    documentCni?: string | null
+    documentAssurance?: string | null
+    documentResidencePermit?: string | null
+    documentCartePro?: string | null
+    invitedByUserId?: string | null
+    isProtected?: boolean
+    systemLog?: SystemLogUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    Session?: SessionUncheckedCreateNestedManyWithoutUserInput
+    courses?: CourseUncheckedCreateNestedManyWithoutCreatedByInput
+    userProgress?: UserProgressUncheckedCreateNestedManyWithoutUserInput
+    purchases?: PurchaseUncheckedCreateNestedManyWithoutUserInput
+    stripeCustomer?: StripeCustomerUncheckedCreateNestedOneWithoutUserInput
+    activitiesModified?: ActivityUncheckedCreateNestedManyWithoutLastModifiedByInput
+    chaptersReviewed?: ChapterUncheckedCreateNestedManyWithoutReviewedByInput
+    activitiesReviewed?: ActivityUncheckedCreateNestedManyWithoutReviewedByInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedCreateNestedManyWithoutCreatedByInput
+    instructorSessions?: TrainingSessionUncheckedCreateNestedManyWithoutInstructorInput
+    enrollments?: EnrollmentUncheckedCreateNestedManyWithoutUserInput
+    attendances?: AttendanceUncheckedCreateNestedManyWithoutUserInput
+    grades?: GradeUncheckedCreateNestedManyWithoutUserInput
+    submissions?: AssignmentSubmissionUncheckedCreateNestedManyWithoutUserInput
+    quizAttempts?: QuizAttemptUncheckedCreateNestedManyWithoutUserInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedCreateNestedManyWithoutUserInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedCreateNestedManyWithoutMarkedByInput
+    formationAttestations?: FormationAttestationUncheckedCreateNestedManyWithoutUserInput
+    candidatures?: CandidatureUncheckedCreateNestedManyWithoutUserInput
+    complianceDossiers?: ComplianceDossierUncheckedCreateNestedManyWithoutUserInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedCreateNestedManyWithoutValidatedByInput
+    fundingCasesAsLearner?: FundingCaseUncheckedCreateNestedManyWithoutLearnerUserInput
+    evidenceAsLearner?: EvidenceUncheckedCreateNestedManyWithoutLearnerInput
+    evidenceAsTrainer?: EvidenceUncheckedCreateNestedManyWithoutTrainerInput
+    documentRequestsRequested?: DocumentRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    complianceEventsActed?: ComplianceItemEventUncheckedCreateNestedManyWithoutActorInput
+    formationSessionsTrained?: FormationSessionUncheckedCreateNestedManyWithoutTrainerInput
+    formationSessionsModerated?: FormationSessionUncheckedCreateNestedManyWithoutModeratorInput
+    certificates?: UserCertificateUncheckedCreateNestedManyWithoutUserInput
+    discussions?: DiscussionUncheckedCreateNestedManyWithoutAuthorInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    discussionVotes?: DiscussionVoteUncheckedCreateNestedManyWithoutUserInput
+    commentVotes?: CommentVoteUncheckedCreateNestedManyWithoutUserInput
+    trails?: TrailUncheckedCreateNestedManyWithoutUserInput
+    trailRuns?: TrailRunUncheckedCreateNestedManyWithoutUserInput
+    apiTokens?: ApiTokenUncheckedCreateNestedManyWithoutUserInput
+    webhooks?: WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+    businessRoles?: UserBusinessRoleUncheckedCreateNestedManyWithoutUserInput
+    collaborateurProfile?: CollaborateurProfileUncheckedCreateNestedOneWithoutUserInput
+    formateurProfile?: FormateurProfileUncheckedCreateNestedOneWithoutUserInput
+    landingTeamOffer?: LandingTeamOfferUncheckedCreateNestedOneWithoutUserInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedCreateNestedManyWithoutManagerInput
+    createdFileAssets?: FileAssetUncheckedCreateNestedManyWithoutCreatedByInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
+    requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
+    assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
+    createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
+    ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
+    ticketAttachments?: TicketAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    helpArticlesAuthored?: HelpArticleUncheckedCreateNestedManyWithoutAuthorInput
+    assignedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutAssignedToInput
+    reportedQualityIncidents?: QualityIncidentUncheckedCreateNestedManyWithoutReportedByInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedCreateNestedManyWithoutRecordedByInput
+    notificationPreference?: UserNotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+    inAppNotifications?: InAppNotificationUncheckedCreateNestedManyWithoutUserInput
+    chatParticipants?: ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+    chatMessages?: ChatMessageUncheckedCreateNestedManyWithoutSenderInput
+    chatInvitationsReceived?: ChatInvitationUncheckedCreateNestedManyWithoutInviteeInput
+    chatInvitationsSent?: ChatInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+    rhTeamsLed?: RhTeamUncheckedCreateNestedManyWithoutLeaderInput
+    rhTeamMemberships?: RhTeamMemberUncheckedCreateNestedManyWithoutUserInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedCreateNestedManyWithoutManagerInput
+    rhAbsences?: RhAbsenceUncheckedCreateNestedManyWithoutUserInput
+    rhAbsencesValidated?: RhAbsenceUncheckedCreateNestedManyWithoutValidatedByInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedCreateNestedManyWithoutOrganizerInput
+  }
+
+  export type UserCreateOrConnectWithoutRequestedAgentTasksInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRequestedAgentTasksInput, UserUncheckedCreateWithoutRequestedAgentTasksInput>
+  }
+
+  export type UserUpsertWithoutRequestedAgentTasksInput = {
+    update: XOR<UserUpdateWithoutRequestedAgentTasksInput, UserUncheckedUpdateWithoutRequestedAgentTasksInput>
+    create: XOR<UserCreateWithoutRequestedAgentTasksInput, UserUncheckedCreateWithoutRequestedAgentTasksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRequestedAgentTasksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRequestedAgentTasksInput, UserUncheckedUpdateWithoutRequestedAgentTasksInput>
+  }
+
+  export type UserUpdateWithoutRequestedAgentTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    role?: UserRoleUpdateOneRequiredWithoutUsersNestedInput
+    jobPosition?: RhPositionUpdateOneWithoutUsersNestedInput
+    systemLog?: SystemLogUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    Session?: SessionUpdateManyWithoutUserNestedInput
+    courses?: CourseUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUpdateManyWithoutUserNestedInput
+    grades?: GradeUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUpdateManyWithoutLearnerUserNestedInput
+    evidenceAsLearner?: EvidenceUpdateManyWithoutLearnerNestedInput
+    evidenceAsTrainer?: EvidenceUpdateManyWithoutTrainerNestedInput
+    documentRequestsRequested?: DocumentRequestUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUpdateManyWithoutUserNestedInput
+    trails?: TrailUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUpdateManyWithoutRecordedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUpdateManyWithoutOrganizerNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRequestedAgentTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: NullableStringFieldUpdateOperationsInput | string | null
+    timezone?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    roleId?: StringFieldUpdateOperationsInput | string
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastSignInAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isTrashed?: BoolFieldUpdateOperationsInput | boolean
+    avatar?: NullableStringFieldUpdateOperationsInput | string | null
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    proEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    userCategory?: EnumUserCategoryFieldUpdateOperationsInput | $Enums.UserCategory
+    subcontractorId?: NullableStringFieldUpdateOperationsInput | string | null
+    jobFunction?: NullableStringFieldUpdateOperationsInput | string | null
+    jobPositionId?: NullableStringFieldUpdateOperationsInput | string | null
+    qualification?: NullableStringFieldUpdateOperationsInput | string | null
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    birthPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    nationality?: NullableStringFieldUpdateOperationsInput | string | null
+    socialSecurityNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    cniNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    residencePermitExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractType?: NullableEnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType | null
+    workTimeType?: NullableEnumWorkTimeTypeFieldUpdateOperationsInput | $Enums.WorkTimeType | null
+    contractStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contractEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    postalCode?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    carteProExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isSchedulable?: BoolFieldUpdateOperationsInput | boolean
+    landingPresentation?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCni?: NullableStringFieldUpdateOperationsInput | string | null
+    documentAssurance?: NullableStringFieldUpdateOperationsInput | string | null
+    documentResidencePermit?: NullableStringFieldUpdateOperationsInput | string | null
+    documentCartePro?: NullableStringFieldUpdateOperationsInput | string | null
+    invitedByUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    isProtected?: BoolFieldUpdateOperationsInput | boolean
+    systemLog?: SystemLogUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    Session?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    courses?: CourseUncheckedUpdateManyWithoutCreatedByNestedInput
+    userProgress?: UserProgressUncheckedUpdateManyWithoutUserNestedInput
+    purchases?: PurchaseUncheckedUpdateManyWithoutUserNestedInput
+    stripeCustomer?: StripeCustomerUncheckedUpdateOneWithoutUserNestedInput
+    activitiesModified?: ActivityUncheckedUpdateManyWithoutLastModifiedByNestedInput
+    chaptersReviewed?: ChapterUncheckedUpdateManyWithoutReviewedByNestedInput
+    activitiesReviewed?: ActivityUncheckedUpdateManyWithoutReviewedByNestedInput
+    quizQuestionBanksCreated?: QuizQuestionBankUncheckedUpdateManyWithoutCreatedByNestedInput
+    instructorSessions?: TrainingSessionUncheckedUpdateManyWithoutInstructorNestedInput
+    enrollments?: EnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    attendances?: AttendanceUncheckedUpdateManyWithoutUserNestedInput
+    grades?: GradeUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: AssignmentSubmissionUncheckedUpdateManyWithoutUserNestedInput
+    quizAttempts?: QuizAttemptUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionParticipants?: FormationSessionParticipantUncheckedUpdateManyWithoutUserNestedInput
+    formationSessionEmargementsMarked?: FormationSessionEmargementUncheckedUpdateManyWithoutMarkedByNestedInput
+    formationAttestations?: FormationAttestationUncheckedUpdateManyWithoutUserNestedInput
+    candidatures?: CandidatureUncheckedUpdateManyWithoutUserNestedInput
+    complianceDossiers?: ComplianceDossierUncheckedUpdateManyWithoutUserNestedInput
+    complianceItemsValidated?: ComplianceDossierItemUncheckedUpdateManyWithoutValidatedByNestedInput
+    fundingCasesAsLearner?: FundingCaseUncheckedUpdateManyWithoutLearnerUserNestedInput
+    evidenceAsLearner?: EvidenceUncheckedUpdateManyWithoutLearnerNestedInput
+    evidenceAsTrainer?: EvidenceUncheckedUpdateManyWithoutTrainerNestedInput
+    documentRequestsRequested?: DocumentRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    complianceEventsActed?: ComplianceItemEventUncheckedUpdateManyWithoutActorNestedInput
+    formationSessionsTrained?: FormationSessionUncheckedUpdateManyWithoutTrainerNestedInput
+    formationSessionsModerated?: FormationSessionUncheckedUpdateManyWithoutModeratorNestedInput
+    certificates?: UserCertificateUncheckedUpdateManyWithoutUserNestedInput
+    discussions?: DiscussionUncheckedUpdateManyWithoutAuthorNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    discussionVotes?: DiscussionVoteUncheckedUpdateManyWithoutUserNestedInput
+    commentVotes?: CommentVoteUncheckedUpdateManyWithoutUserNestedInput
+    trails?: TrailUncheckedUpdateManyWithoutUserNestedInput
+    trailRuns?: TrailRunUncheckedUpdateManyWithoutUserNestedInput
+    apiTokens?: ApiTokenUncheckedUpdateManyWithoutUserNestedInput
+    webhooks?: WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+    businessRoles?: UserBusinessRoleUncheckedUpdateManyWithoutUserNestedInput
+    collaborateurProfile?: CollaborateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    formateurProfile?: FormateurProfileUncheckedUpdateOneWithoutUserNestedInput
+    landingTeamOffer?: LandingTeamOfferUncheckedUpdateOneWithoutUserNestedInput
+    managedCollaborateurs?: CollaborateurProfileUncheckedUpdateManyWithoutManagerNestedInput
+    createdFileAssets?: FileAssetUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
+    requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
+    assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
+    createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
+    ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
+    ticketAttachments?: TicketAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    helpArticlesAuthored?: HelpArticleUncheckedUpdateManyWithoutAuthorNestedInput
+    assignedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutAssignedToNestedInput
+    reportedQualityIncidents?: QualityIncidentUncheckedUpdateManyWithoutReportedByNestedInput
+    formativeAssessmentsRecorded?: FormativeAssessmentUncheckedUpdateManyWithoutRecordedByNestedInput
+    notificationPreference?: UserNotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+    inAppNotifications?: InAppNotificationUncheckedUpdateManyWithoutUserNestedInput
+    chatParticipants?: ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+    chatMessages?: ChatMessageUncheckedUpdateManyWithoutSenderNestedInput
+    chatInvitationsReceived?: ChatInvitationUncheckedUpdateManyWithoutInviteeNestedInput
+    chatInvitationsSent?: ChatInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+    rhTeamsLed?: RhTeamUncheckedUpdateManyWithoutLeaderNestedInput
+    rhTeamMemberships?: RhTeamMemberUncheckedUpdateManyWithoutUserNestedInput
+    rhOrgUnitsManaged?: RhOrgUnitUncheckedUpdateManyWithoutManagerNestedInput
+    rhAbsences?: RhAbsenceUncheckedUpdateManyWithoutUserNestedInput
+    rhAbsencesValidated?: RhAbsenceUncheckedUpdateManyWithoutValidatedByNestedInput
+    venueRoomBookingsOrganized?: VenueRoomBookingUncheckedUpdateManyWithoutOrganizerNestedInput
+  }
+
   export type UserCreateWithoutBusinessRolesInput = {
     id?: string
     email: string
@@ -231598,6 +233784,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -231716,6 +233903,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -231850,6 +234038,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -231968,6 +234157,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -232086,6 +234276,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -232204,6 +234395,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -232327,6 +234519,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -232445,6 +234638,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -232579,6 +234773,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -232697,6 +234892,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -232826,6 +235022,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -232944,6 +235141,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -233062,6 +235260,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -233180,6 +235379,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -233314,6 +235514,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -233432,6 +235633,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -233550,6 +235752,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -233668,6 +235871,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -234071,6 +236275,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -234189,6 +236394,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -234323,6 +236529,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -234441,6 +236648,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -234559,6 +236767,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -234677,6 +236886,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -234811,6 +237021,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -234929,6 +237140,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -235047,6 +237259,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -235165,6 +237378,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -235299,6 +237513,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -235417,6 +237632,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -235737,6 +237953,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -235855,6 +238072,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -236113,6 +238331,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -236231,6 +238450,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -236458,6 +238678,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -236576,6 +238797,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -236929,6 +239151,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -237047,6 +239270,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -237348,6 +239572,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -237466,6 +239691,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -237647,6 +239873,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -237765,6 +239992,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -237883,6 +240111,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -238001,6 +240230,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -238124,6 +240354,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -238242,6 +240473,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -238376,6 +240608,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -238494,6 +240727,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -238623,6 +240857,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -238741,6 +240976,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -238858,6 +241094,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -238976,6 +241213,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -240910,6 +243148,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -241028,6 +243267,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -241162,6 +243402,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -241280,6 +243521,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -242011,6 +244253,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -242129,6 +244372,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -242308,6 +244552,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -242426,6 +244671,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -242719,6 +244965,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -242837,6 +245084,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -242960,6 +245208,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -243078,6 +245327,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -244086,6 +246336,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -244204,6 +246455,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -244333,6 +246585,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -244451,6 +246704,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -245650,6 +247904,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -245768,6 +248023,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -246427,6 +248683,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -246545,6 +248802,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -247262,6 +249520,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -247380,6 +249639,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -247880,6 +250140,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -247998,6 +250259,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -248348,6 +250610,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -248466,6 +250729,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -248700,6 +250964,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -248818,6 +251083,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -249319,6 +251585,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -249437,6 +251704,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -249671,6 +251939,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -249789,6 +252058,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -250651,6 +252921,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -250769,6 +253040,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -251188,6 +253460,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -251306,6 +253579,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -251844,6 +254118,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -251962,6 +254237,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -252616,6 +254892,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -252734,6 +255011,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -253412,6 +255690,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -253530,6 +255809,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -253852,6 +256132,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -253970,6 +256251,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -254238,6 +256520,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -254356,6 +256639,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -254609,6 +256893,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -254727,6 +257012,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -254861,6 +257147,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -254979,6 +257266,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -255226,6 +257514,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -255344,6 +257633,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -255756,6 +258046,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -255874,6 +258165,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -256248,6 +258540,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -256366,6 +258659,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -256703,6 +258997,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -256821,6 +259116,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -257008,6 +259304,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -257126,6 +259423,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -257244,6 +259542,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -257362,6 +259661,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -257545,6 +259845,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -257663,6 +259964,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -257893,6 +260195,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -258011,6 +260314,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -258208,6 +260512,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -258326,6 +260631,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -258444,6 +260750,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -258562,6 +260869,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -258696,6 +261004,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -258814,6 +261123,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -258932,6 +261242,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -259050,6 +261361,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -259340,6 +261652,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -259458,6 +261771,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -259687,6 +262001,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -259805,6 +262120,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -260031,6 +262347,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -260149,6 +262466,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -260371,6 +262689,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -260489,6 +262808,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -260658,6 +262978,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -260776,6 +263097,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -260935,6 +263257,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -261053,6 +263376,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -261244,6 +263568,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -261362,6 +263687,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -263838,6 +266164,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -263956,6 +266283,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -264111,6 +266439,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -264229,6 +266558,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -264550,6 +266880,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -264668,6 +266999,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -264879,6 +267211,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -264997,6 +267330,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -265211,6 +267545,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -265329,6 +267664,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -265585,6 +267921,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -265703,6 +268040,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -265921,6 +268259,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -266039,6 +268378,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -266214,6 +268554,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -266332,6 +268673,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -266477,6 +268819,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -266595,6 +268938,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -266762,6 +269106,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -266880,6 +269225,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -267177,6 +269523,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -267295,6 +269642,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -267462,6 +269810,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -267580,6 +269929,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -267698,6 +270048,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -267816,6 +270167,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -267998,6 +270350,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -268116,6 +270469,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -268467,6 +270821,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -268585,6 +270940,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -268750,6 +271106,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -268868,6 +271225,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -269059,6 +271417,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -269177,6 +271536,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -269311,6 +271671,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -269429,6 +271790,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -269547,6 +271909,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -269665,6 +272028,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -269831,6 +272195,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -269949,6 +272314,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -270428,6 +272794,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -270546,6 +272913,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -270669,6 +273037,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     ticketComments?: TicketCommentCreateNestedManyWithoutAuthorInput
@@ -270787,6 +273156,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     ticketComments?: TicketCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -271084,6 +273454,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -271202,6 +273573,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -271331,6 +273703,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     ticketComments?: TicketCommentUpdateManyWithoutAuthorNestedInput
@@ -271449,6 +273822,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     ticketComments?: TicketCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -271658,6 +274032,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -271776,6 +274151,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -271995,6 +274371,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -272113,6 +274490,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -272390,6 +274768,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -272508,6 +274887,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -272803,6 +275183,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -272921,6 +275302,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -273121,6 +275503,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -273239,6 +275622,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -273362,6 +275746,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -273480,6 +275865,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -273708,6 +276094,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -273826,6 +276213,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -273955,6 +276343,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -274073,6 +276462,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -274191,6 +276581,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -274309,6 +276700,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -274443,6 +276835,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -274561,6 +276954,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -274679,6 +277073,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -274797,6 +277192,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -274931,6 +277327,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -275049,6 +277446,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -275279,6 +277677,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -275397,6 +277796,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -275531,6 +277931,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -275649,6 +278050,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -276204,6 +278606,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -276322,6 +278725,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -276445,6 +278849,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -276563,6 +278968,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -276732,6 +279138,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -276850,6 +279257,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -276979,6 +279387,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -277097,6 +279506,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -277244,6 +279654,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -277362,6 +279773,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -277531,6 +279943,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -277649,6 +280062,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -277796,6 +280210,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -277914,6 +280329,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -278083,6 +280499,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -278201,6 +280618,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -278523,6 +280941,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -278641,6 +281060,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -278983,6 +281403,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -279101,6 +281522,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -279518,6 +281940,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -279636,6 +282059,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -280009,6 +282433,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -280127,6 +282552,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -280371,6 +282797,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -280489,6 +282916,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -280729,6 +283157,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -280847,6 +283276,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -281059,6 +283489,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -281177,6 +283608,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -281492,6 +283924,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -281610,6 +284043,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -282222,6 +284656,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -282340,6 +284775,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -282721,6 +285157,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -282839,6 +285276,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -284825,6 +287263,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -284943,6 +287382,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -285066,6 +287506,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketCreateNestedManyWithoutCreatedByInput
@@ -285184,6 +287625,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedCreateNestedManyWithoutCreatedByInput
     requestedReportJobs?: ReportGenerationJobUncheckedCreateNestedManyWithoutRequestedByInput
     requestedAiRuns?: AiRunUncheckedCreateNestedManyWithoutRequestedByInput
+    requestedAgentTasks?: AgentTaskUncheckedCreateNestedManyWithoutRequestedByInput
     reviewedAiArtifacts?: AiArtifactUncheckedCreateNestedManyWithoutReviewedByInput
     assignedSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutAssignedToInput
     createdSupportTickets?: SupportTicketUncheckedCreateNestedManyWithoutCreatedByInput
@@ -285619,6 +288061,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -285737,6 +288180,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -285866,6 +288310,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -285984,6 +288429,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -286985,6 +289431,18 @@ export namespace Prisma {
     errorMessage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type AgentTaskCreateManyRequestedByInput = {
+    id?: string
+    kind: string
+    status?: $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
     completedAt?: Date | string | null
   }
 
@@ -289321,6 +291779,42 @@ export namespace Prisma {
     completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type AgentTaskUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    status?: EnumAgentTaskStatusFieldUpdateOperationsInput | $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AgentTaskUncheckedUpdateWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    status?: EnumAgentTaskStatusFieldUpdateOperationsInput | $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type AgentTaskUncheckedUpdateManyWithoutRequestedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    status?: EnumAgentTaskStatusFieldUpdateOperationsInput | $Enums.AgentTaskStatus
+    payload?: JsonNullValueInput | InputJsonValue
+    result?: NullableJsonNullValueInput | InputJsonValue
+    error?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type AiArtifactUpdateWithoutReviewedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     status?: EnumAiArtifactStatusFieldUpdateOperationsInput | $Enums.AiArtifactStatus
@@ -290722,6 +293216,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -290840,6 +293335,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -291412,6 +293908,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUpdateManyWithoutCreatedByNestedInput
@@ -291530,6 +294027,7 @@ export namespace Prisma {
     createdFileAssetVersions?: FileAssetVersionUncheckedUpdateManyWithoutCreatedByNestedInput
     requestedReportJobs?: ReportGenerationJobUncheckedUpdateManyWithoutRequestedByNestedInput
     requestedAiRuns?: AiRunUncheckedUpdateManyWithoutRequestedByNestedInput
+    requestedAgentTasks?: AgentTaskUncheckedUpdateManyWithoutRequestedByNestedInput
     reviewedAiArtifacts?: AiArtifactUncheckedUpdateManyWithoutReviewedByNestedInput
     assignedSupportTickets?: SupportTicketUncheckedUpdateManyWithoutAssignedToNestedInput
     createdSupportTickets?: SupportTicketUncheckedUpdateManyWithoutCreatedByNestedInput

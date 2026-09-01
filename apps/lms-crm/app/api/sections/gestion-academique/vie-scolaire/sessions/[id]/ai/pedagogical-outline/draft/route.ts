@@ -3,12 +3,12 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { draftSessionPedagogicalOutline } from '@/lib/ai/session-pedagogical-outline-ai';
+import { enqueueSessionPedagogicalOutlineDraft } from '@/lib/ai/session-pedagogical-outline-ai';
 import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ id: string }> };
 
-/** GSMS-AI-03 — brouillon déroulé pédagogique (AiArtifact PROPOSED uniquement). */
+/** GSMS-AI-03 — enfile un brouillon déroulé (AiRun PENDING, exécution worker). */
 export async function POST(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
@@ -26,13 +26,21 @@ export async function POST(_request: NextRequest, context: Ctx) {
     });
     if (!row) return fail('Session introuvable.', 404);
 
-    const result = await draftSessionPedagogicalOutline({
+    const run = await enqueueSessionPedagogicalOutlineDraft({
       sessionId: row.id,
       requestedById: session.user.id,
     });
-    return ok(result, 201);
+
+    return ok(
+      {
+        runId: run.id,
+        status: run.status,
+        message: 'Génération en cours — le brouillon apparaîtra dans quelques instants.',
+      },
+      202,
+    );
   } catch (e) {
     console.error('[ai/pedagogical-outline draft]', e);
-    return fail('Génération du brouillon impossible.', 500, e);
+    return fail('Mise en file de la génération impossible.', 500, e);
   }
 }

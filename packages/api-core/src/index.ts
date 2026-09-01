@@ -83,3 +83,22 @@ export {
   complianceSubjectTypeLabel,
   formatDateFr,
 } from './compliance-urls';
+export {
+  DEFAULT_AI_MODEL,
+  DEFAULT_AI_PROVIDER,
+  AI_PEDAGOGICAL_OUTLINE_USE_CASE,
+  FORMATION_SESSION_ENTITY_TYPE,
+} from './ai/constants';
+export {
+  PedagogicalOutlineDraftSchema,
+  enqueuePedagogicalOutlineDraft,
+  executePedagogicalOutlineDraftRun,
+  type PedagogicalOutlineDraft,
+} from './ai/pedagogical-outline-draft';
+export { processPendingAiRuns } from './ai/ai-run-processor';
+export {
+  AGENT_TASK_KIND_SESSION_READINESS_SCAN,
+  AGENT_TASK_KINDS,
+  type AgentTaskKind,
+} from './ai/agent-task-kinds';
+export { createAgentTask, processPendingAgentTasks, type CreateAgentTaskInput } from './ai/agent-task-processor';

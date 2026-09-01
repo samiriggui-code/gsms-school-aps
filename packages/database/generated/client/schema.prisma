@@ -324,6 +324,7 @@ model User {
   createdFileAssetVersions     FileAssetVersion[]          @relation("FileAssetVersionCreatedBy")
   requestedReportJobs          ReportGenerationJob[]       @relation("ReportJobsRequested")
   requestedAiRuns              AiRun[]                     @relation("AiRunsRequested")
+  requestedAgentTasks          AgentTask[]                 @relation("AgentTasksRequested")
   reviewedAiArtifacts          AiArtifact[]                @relation("AiArtifactReviewed")
   assignedSupportTickets       SupportTicket[]             @relation("SupportTicketAssignee")
   createdSupportTickets        SupportTicket[]             @relation("SupportTicketCreatedBy")
@@ -546,6 +547,34 @@ model AgentMessage {
   conversation AgentConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId, createdAt])
+}
+
+/// File de tâches EVE (proactif, long-running) — distinct de AiRun (génération LLM) et
+/// AgentConversation (chat par entité). Traité par le worker async (packages/workers).
+enum AgentTaskStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+model AgentTask {
+  id            String          @id @default(uuid())
+  kind          String
+  status        AgentTaskStatus @default(PENDING)
+  payload       Json            @default("{}")
+  result        Json?
+  error         String?
+  requestedById String
+  createdAt     DateTime        @default(now())
+  startedAt     DateTime?
+  completedAt   DateTime?
+
+  requestedBy User @relation("AgentTasksRequested", fields: [requestedById], references: [id])
+
+  @@index([status, createdAt])
+  @@index([kind])
+  @@index([requestedById])
 }
 
 /// Planification automatique des rapports (quotidien, mensuel, trimestriel).
