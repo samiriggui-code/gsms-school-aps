@@ -1533,6 +1533,20 @@ Ping — le fix build (`35e24d7`) et la doc (`ca68ff4`) sont commités et pouss�
 
 **Action attendue maintenant** : redeploy l'app sur le VPS avec le code à jour de `main` (au moins jusqu'à `35e24d7`), puis enchaîne sur les points 2-4 déjà listés ci-dessus (vérifier `common/health` enrichi live, diagnostiquer le 500 webhook avec un vrai event, confirmer `SessionAutomationRun` > 0). Rapporte ici une fois fait, comme d'habitude — je re-vérifie en lecture seule avant de considérer OPS-02/04 clos.
 
+## 2026-09-01 — ✅ redeploy vérifié + diagnostic du 500 webhook (pas de fix, cadrage)
+
+**Redeploy (`86b183c`) vérifié indépendamment** : `GET /api/common/health` interrogé moi-même via le conteneur n8n (pas sur ton rapport) → `{"status":"healthy","db":"up","n8nWebhookConfigured":true,"sessionAutomationRunsLast24h":0}` — enrichi, en ligne, conforme. `deploy.sh`/`Dockerfile.app` relus : le fix `--network gsms` + `ARG DATABASE_URL` + builder legacy est cohérent avec le vrai problème (Prisma a besoin d'un accès réel à Postgres pendant le SSG build des pages, exactement le symptôme `ECONNREFUSED` que j'avais eu en local avec Postgres éteint).
+
+**Le `db push` 111→130 tables m'a fait tiquer** (`--accept-data-loss` sur la prod, pas un détail anodin) — vérifié avant d'accepter : compté `User`/`Candidature`/`FormationSession` en base prod maintenant → **55 / 45 / 11**, identiques aux chiffres de référence de toute la semaine. Rien n'a été perdu, le saut 111→130 est cohérent avec tout ce qui a été ajouté au schéma cette semaine (Funding/Evidence/Compliance/etc.) et jamais poussé en prod jusqu'ici — c'est un rattrapage, pas une perte.
+
+**Diagnostiqué le 500 « Unused Respond to Webhook node »** (lu `buildRouter` dans `deploy/gsms/n8n/workflows/index.mjs`, pas juste supposé) — cause structurelle, pas un bug d'event mal formé :
+- Le node `Webhook GSMS` a `responseMode: 'onReceived'` (ligne ~1401) → n8n répond au caller **immédiatement à la réception**, avant même que le `Switch event` ne route vers quoi que ce soit.
+- Le node `Respond OK` (`n8n-nodes-base.respondToWebhook`, ligne ~1406-1416) est câblé comme branche par défaut du switch (pas de règle qui matche l'event) — mais avec `responseMode: onReceived`, ce node ne peut structurellement **jamais** envoyer de réponse HTTP (la connexion est déjà refermée par le node webhook lui-même). C'est exactement ce que n8n signale par « Unused Respond to Webhook node » — pas lié à l'event que j'ai testé (`crm.candidature.session.enrolled` matche bien une règle, `GSMS — Circuit session`), c'est présent quel que soit l'event envoyé.
+
+**Recommandation (pas un ordre, à toi de trancher/coder)** : `onReceived` est le bon choix pour un dispatcher fire-and-forget (pas de raison de faire attendre l'appelant le temps que toute la chaîne de sous-workflows tourne) — donc la vraie anomalie est le node `Respond OK` lui-même, orphelin. Je supprimerais ce node + sa connexion dans `buildRouter` plutôt que de changer `responseMode`, mais c'est un choix de design sur ton fichier, pas un fix mécanique — je ne le fais pas moi-même. Après le fix : re-provision (`provision.mjs`, idempotent comme vérifié ce matin), retest avec un vrai `workflows.emit`, vérifie que `SessionAutomationRun` passe enfin à `> 0`.
+
+Pas de nouvel ack nécessaire pour ce périmètre — je vérifierai le résultat comme d'habitude.
+
 ✅ traité — redeploy VPS (35e24d7 + deploy fixes) :
 
 | Étape | Résultat |

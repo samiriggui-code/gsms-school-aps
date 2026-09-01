@@ -651,4 +651,16 @@ Cursor a livré le provisioning (32/32 workflows actifs, 404 webhook corrigé �
 
 Commité avec les 2 fixes de Cursor déjà relus (`provision.mjs`, `pnpm-lock.yaml`). Renvoyé à Cursor pour le redeploy VPS + le diagnostic du 500 « Unused Respond to Webhook node » (sujet séparé, logique du router n8n) + revérifier `SessionAutomationRun` > 0 en bout de chaîne.
 
+### Redeploy VPS livré et vérifié (`86b183c`) + diagnostic (pas fix) du 500 webhook
+
+Cursor a livré : archive tar → VPS, `db push --accept-data-loss` (111→130 tables), build Docker avec `Dockerfile.app`/`deploy.sh` corrigés (`ARG DATABASE_URL` réel + `--network gsms` + builder legacy, nécessaire pour que Prisma ait un accès DB réel pendant le SSG build — même cause que mon `ECONNREFUSED` local).
+
+**Vérifié, pas accepté sur le rapport** :
+- `common/health` interrogé moi-même (via le conteneur n8n, pas les mots de Cursor) → enrichi et en ligne, conforme au contrat.
+- Le `db push --accept-data-loss` sur la prod m'a fait m'arrêter avant de valider : compté `User`/`Candidature`/`FormationSession` en base prod → 55/45/11, identiques aux références de toute la semaine. Rien perdu — le saut de tables est un rattrapage de schéma (tout ce qui a été ajouté cette semaine et jamais poussé en prod avant), pas une casse.
+
+**Diagnostiqué le 500 « Unused Respond to Webhook node »** en lisant `buildRouter` (`deploy/gsms/n8n/workflows/index.mjs`), pas en supposant : le node `Webhook GSMS` a `responseMode: 'onReceived'` (répond immédiatement à la réception), mais le graphe contient aussi un node `Respond OK` (`respondToWebhook`) câblé comme branche par défaut du switch — structurellement mort avec `onReceived`, puisque la réponse HTTP est déjà partie avant que ce node ne puisse s'exécuter. C'est exactement ce que n8n signale, indépendamment de l'event testé. Recommandation donnée (supprimer le node orphelin plutôt que changer `responseMode`, `onReceived` est le bon choix pour un dispatcher fire-and-forget) mais pas codée moi-même — choix de design sur un fichier que Cursor possède, pas une anomalie mécanique bloquante comme le bug `pg`/`net`/`tls`.
+
+Écrit dans `HANDOFF-CLAUDE.md`. Reste ouvert : le fix du node + re-provision + retest avec un vrai `workflows.emit` + `SessionAutomationRun > 0`.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
