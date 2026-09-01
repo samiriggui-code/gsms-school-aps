@@ -1,5 +1,5 @@
 import type { DocData, DocMeta, PermissionPrincipal } from '../types';
-import { checkPermission } from '../permissions/permission-engine';
+import { checkPermission, checkListPermission, buildRecordScopeWhere } from '../permissions/permission-engine';
 import type { DocTypeRegistry } from '../registry/doc-type-registry';
 import type { PersistenceAdapter, PersistenceOrderBy } from '../persistence/adapter';
 import { Document, type DocControllerHooks } from './document';
@@ -66,7 +66,7 @@ export class ResourceService {
     params: ResourceListParams = {},
   ): Promise<ResourceListResult> {
     const meta = this.registry.getMeta(doctype);
-    checkPermission({ meta, principal, action: 'read' });
+    checkListPermission({ meta, principal, action: 'read' });
 
     const page = Math.max(1, params.page ?? 1);
     const maxPage = meta.list.maxPageSize ?? 100;
@@ -95,11 +95,14 @@ export class ResourceService {
       headers: params.headers,
     });
 
+    const recordScopeWhere = buildRecordScopeWhere({ meta, principal, action: 'read' });
+
     const where = mergeWhere([
       soft,
       buildSearchWhere(meta, params.query ?? ''),
       filterWhere,
       listOverride?.where,
+      recordScopeWhere,
     ]);
 
     const sortField =

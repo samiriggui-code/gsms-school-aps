@@ -88,7 +88,50 @@ export async function buildBpfCerfaPdfBuffer(
   }
   y += 6;
 
-  doc.font('Helvetica-Bold').fontSize(10).fillColor(T.primary).text('Ventilation par type financeur', MARGIN, y);
+  const { cerfa } = aggregates;
+
+  doc.font('Helvetica-Bold').fontSize(10).fillColor(T.primary).text('Cadre C — Produits (HT)', MARGIN, y);
+  y = doc.y + 6;
+  for (const row of cerfa.cadreC) {
+    if (row.amountHt <= 0) continue;
+    doc.font('Helvetica').fontSize(8.5).fillColor(T.textMuted).text(row.label, MARGIN, y, { width: 320 });
+    doc.font('Helvetica-Bold').fillColor(T.text).text(euro(row.amountHt), MARGIN + 330, y, { width: 170, align: 'right' });
+    y = Math.max(doc.y, y) + 8;
+  }
+  if (!cerfa.cadreC.some((r) => r.amountHt > 0)) {
+    doc.font('Helvetica').fontSize(9).fillColor(T.textMuted).text('Aucun produit post-approbation sur l’exercice.', MARGIN, y);
+    y = doc.y + 10;
+  }
+  y += 4;
+
+  doc.font('Helvetica-Bold').fontSize(10).fillColor(T.primary).text('Cadre E — Formateurs', MARGIN, y);
+  y = doc.y + 4;
+  doc.font('Helvetica').fontSize(8.5).fillColor(T.textBody);
+  doc.text(
+    `Internes : ${cerfa.cadreE.internalTrainers} · Externes : ${cerfa.cadreE.externalTrainers} · Heures pédagogiques (proxy) : ${cerfa.cadreE.pedagogicalHoursProxy} h`,
+    MARGIN,
+    y,
+    { width: WIDTH },
+  );
+  y = doc.y + 12;
+
+  doc.font('Helvetica-Bold').fontSize(10).fillColor(T.primary).text('Cadre F — Stagiaires', MARGIN, y);
+  y = doc.y + 6;
+  for (const row of cerfa.cadreF.byAudience) {
+    if (row.trainees === 0 && row.hours === 0) continue;
+    doc.font('Helvetica').fontSize(8.5).fillColor(T.textBody);
+    doc.text(`${row.label} — ${row.trainees} stagiaire(s), ${row.hours} h`, MARGIN, y, { width: WIDTH });
+    y = doc.y + 4;
+  }
+  doc.text(
+    `Présentiel ${cerfa.cadreF.hoursPresentiel} h · Distanciel ${cerfa.cadreF.hoursDistanciel} h · Apprentis ${cerfa.cadreF.apprentices}`,
+    MARGIN,
+    y,
+    { width: WIDTH },
+  );
+  y = doc.y + 12;
+
+  doc.font('Helvetica-Bold').fontSize(10).fillColor(T.primary).text('Ventilation par type financeur (technique)', MARGIN, y);
   y = doc.y + 6;
 
   if (aggregates.byFunderType.length === 0) {

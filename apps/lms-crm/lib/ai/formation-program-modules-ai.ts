@@ -1,86 +1,38 @@
-import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
-import { runStructuredAiTask } from '@/lib/ai/run-structured-ai-task';
+import {
+  AI_PROGRAM_MODULES_USE_CASE,
+  FORMATION_ENTITY_TYPE,
+  ProgramModuleDraftSchema,
+  enqueueProgramModulesDraft,
+} from '@repo/api-core';
 import { markAiArtifactApplied } from '@/lib/ai/ai-run-service';
 import { invalidateFormationCatalogCaches } from '@/lib/catalog-public-cache';
 
-export const AI_PROGRAM_MODULES_USE_CASE = 'formation.program_modules.draft';
-const TARGET_ENTITY_TYPE = 'formation';
+export {
+  AI_PROGRAM_MODULES_USE_CASE,
+  ProgramModuleDraftSchema,
+  type ProgramModuleDraft,
+} from '@repo/api-core';
 
-export const ProgramModuleDraftSchema = z.object({
-  modules: z
-    .array(
-      z.object({
-        id: z.string().describe('Identifiant court, ex. "M1", "M2"…'),
-        title: z.string().min(1),
-        details: z.array(z.string().min(1)).min(1).max(8),
-      }),
-    )
-    .min(1)
-    .max(12),
-});
-
-export type ProgramModuleDraft = z.infer<typeof ProgramModuleDraftSchema>;
+const TARGET_ENTITY_TYPE = FORMATION_ENTITY_TYPE;
 
 /**
- * Brouillon IA du programme d'une formation (GSMS-AI-02) — écrit uniquement dans
- * AiArtifact (statut PROPOSED). Aucune écriture sur `Formation.programModules` ici :
- * voir `applyFormationProgramModulesArtifact` pour l'application, qui exige un
- * artefact APPROVED par un humain au préalable.
+ * Enfile un brouillon IA du programme (GSMS-AI-02) — AiRun PENDING, exécution worker.
  */
+export async function enqueueFormationProgramModulesDraft(input: {
+  formationId: string;
+  requestedById: string;
+}) {
+  return enqueueProgramModulesDraft(prisma, input);
+}
+
+/** @deprecated Synchrone supprimé — préférer enqueueFormationProgramModulesDraft + worker. */
 export async function draftFormationProgramModules(input: {
   formationId: string;
   requestedById: string;
 }) {
-  const formation = await prisma.formation.findUnique({
-    where: { id: input.formationId },
-    select: {
-      id: true,
-      name: true,
-      tag: true,
-      track: true,
-      duration: true,
-      description: true,
-      longDescription: true,
-      hoursMin: true,
-      hoursMax: true,
-      programModules: true,
-    },
-  });
-  if (!formation) throw new Error('Formation introuvable.');
-
-  const existingModules = Array.isArray(formation.programModules) ? formation.programModules : [];
-
-  const system =
-    "Tu es un ingénieur pédagogique pour un organisme de formation à la sécurité privée (agents de sécurité, SSIAP, télésurveillance…) en France. " +
-    'Tu proposes un découpage en modules de programme de formation, factuel et vérifiable, sans jamais inventer de références réglementaires précises ' +
-    '(articles de loi, numéros de décret) que tu ne peux pas garantir exactes. Reste générique sur la réglementation, précis sur le contenu pédagogique.';
-
-  const prompt = [
-    `Formation : « ${formation.name} » (${formation.tag}, filière ${formation.track}).`,
-    `Durée indicative : ${formation.duration}${formation.hoursMin ? ` (${formation.hoursMin}${formation.hoursMax ? `-${formation.hoursMax}` : ''}h)` : ''}.`,
-    formation.description ? `Résumé existant : ${formation.description}` : null,
-    formation.longDescription ? `Description longue existante : ${formation.longDescription}` : null,
-    existingModules.length
-      ? `Modules déjà en place (à améliorer/compléter, pas nécessairement à l'identique) : ${JSON.stringify(existingModules)}`
-      : 'Aucun module existant — propose un découpage complet.',
-    'Propose entre 3 et 8 modules de programme, chacun avec un titre court et 2 à 5 points de contenu (details).',
-  ]
-    .filter(Boolean)
-    .join('\n');
-
-  const result = await runStructuredAiTask({
-    useCase: AI_PROGRAM_MODULES_USE_CASE,
-    requestedById: input.requestedById,
-    schema: ProgramModuleDraftSchema,
-    system,
-    prompt,
-    inputSummary: { formationId: formation.id, formationName: formation.name },
-    targetEntityType: TARGET_ENTITY_TYPE,
-    targetEntityId: formation.id,
-  });
-
-  return result;
+  const run = await enqueueFormationProgramModulesDraft(input);
+  return { runId: run.id, status: run.status, artifactId: null as string | null };
 }
 
 /**

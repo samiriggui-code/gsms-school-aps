@@ -26,7 +26,8 @@ Compte démo créé : `demo.walkthrough.candidat@ecole.local` / `DemoWalk2026!`
 | 5 | **AI brouillon pédagogique** | Session → panneau déroulé IA | POST draft → **202 PENDING** → worker → artifact PROPOSED (polling UI 3 s) |
 | 6 | **Qualiopi** | Gouvernance → Couverture Qualiopi | % couverture + indicateur (ex. Q-I-1) |
 | 7 | **EVE (bonus)** | Orbe bas-droite | « Combien de sessions demain ? » ou couverture Qualiopi |
-| 8 | **LMS staff (bonus)** | Vie scolaire → Devoirs / Discussions | Création devoir, modération discussion |
+| 8 | **BPF (bonus)** | Finance → BPF | Exercice N-1 : cadres Cerfa C/E/F + export PDF (après `pnpm demo:seed`) |
+| 9 | **LMS staff (bonus)** | Vie scolaire → Devoirs / Discussions | Création devoir, modération discussion |
 
 ---
 

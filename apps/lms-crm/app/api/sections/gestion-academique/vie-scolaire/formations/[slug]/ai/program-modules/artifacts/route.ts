@@ -41,7 +41,23 @@ export async function GET(_request: NextRequest, context: Ctx) {
       },
     });
 
-    return ok({ artifacts });
+    const activeRuns = await prisma.aiRun.findMany({
+      where: {
+        useCase: AI_PROGRAM_MODULES_USE_CASE,
+        status: { in: ['PENDING', 'RUNNING'] },
+        inputSummary: { path: ['formationId'], equals: formation.id },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        errorMessage: true,
+      },
+    });
+
+    return ok({ artifacts, activeRuns });
   } catch (e) {
     console.error('[ai/program-modules artifacts]', e);
     return fail('Liste des brouillons impossible.', 500, e);

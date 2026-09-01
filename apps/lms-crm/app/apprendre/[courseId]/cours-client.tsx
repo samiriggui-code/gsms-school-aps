@@ -8,6 +8,7 @@ import { lmsAccessLabel, type LmsAccessTier } from '@/lib/portal/lms-access-shar
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { LmsCourseSidebar } from '@/components/portal/lms/lms-course-sidebar';
 import { Button } from '@/components/ui/button';
+import { LmsCourseDiscussions } from '@/components/portal/lms/lms-course-discussions';
 import type { LmsSyllabusItem } from '@/lib/portal/lms-types';
 
 type CoursePayload = {
@@ -116,6 +117,8 @@ export function CoursClient({ courseId }: { courseId: string }) {
           </div>
         </div>
       </div>
+
+      <LmsCourseDiscussions courseId={courseId} />
     </div>
   );
 }

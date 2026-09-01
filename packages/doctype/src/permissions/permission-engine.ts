@@ -124,6 +124,100 @@ function permissionMatches(
   );
 }
 
+function hasRecordConstraint(perm: DocPermission): boolean {
+  return perm.ifOwner === true || perm.condition != null;
+}
+
+function permissionMatchesForList(
+  perm: DocPermission,
+  principal: PermissionPrincipal,
+  action: DocAction,
+): boolean {
+  return (
+    matchesRole(perm, principal) &&
+    matchesRequires(perm, principal) &&
+    actionAllowed(perm, action)
+  );
+}
+
+function conditionToWhere(
+  perm: DocPermission,
+  principal: PermissionPrincipal,
+  ownerField: string | undefined,
+): Record<string, unknown> | undefined {
+  const parts: Record<string, unknown>[] = [];
+
+  if (perm.ifOwner && ownerField) {
+    parts.push({ [ownerField]: principal.id });
+  }
+
+  if (perm.condition?.type === 'owner' && ownerField) {
+    parts.push({ [ownerField]: principal.id });
+  }
+
+  if (perm.condition?.type === 'fieldEqualsPrincipal') {
+    const value =
+      perm.condition.principalClaim === 'id' ? principal.id : principal.roleSlug;
+    parts.push({ [perm.condition.fieldname]: value });
+  }
+
+  if (!parts.length) return undefined;
+  if (parts.length === 1) return parts[0]!;
+  return { OR: parts };
+}
+
+/** List gate — role/requires/action only (record scope applied separately in SQL). */
+export function hasListPermission(input: {
+  meta: DocMeta;
+  principal: PermissionPrincipal;
+  action: DocAction;
+}): boolean {
+  const { meta, principal, action } = input;
+  if (principal.isSystemManager) return true;
+  if (meta.flags.isChild) return false;
+  return meta.permissions.some((perm) =>
+    permissionMatchesForList(perm, principal, action),
+  );
+}
+
+/** OR-filters for record-scoped read rules; undefined when user sees all rows. */
+export function buildRecordScopeWhere(input: {
+  meta: DocMeta;
+  principal: PermissionPrincipal;
+  action: DocAction;
+}): Record<string, unknown> | undefined {
+  const { meta, principal, action } = input;
+  if (principal.isSystemManager) return undefined;
+
+  const ownerField = meta.persistence?.ownerField;
+  const matching = meta.permissions.filter((perm) =>
+    permissionMatchesForList(perm, principal, action),
+  );
+  if (!matching.length) return undefined;
+
+  if (matching.some((perm) => !hasRecordConstraint(perm))) return undefined;
+
+  const orParts: Record<string, unknown>[] = [];
+  for (const perm of matching) {
+    const clause = conditionToWhere(perm, principal, ownerField);
+    if (clause) orParts.push(clause);
+  }
+
+  if (!orParts.length) return { id: '__none__' };
+  if (orParts.length === 1) return orParts[0]!;
+  return { OR: orParts };
+}
+
+export function checkListPermission(input: {
+  meta: DocMeta;
+  principal: PermissionPrincipal;
+  action: DocAction;
+}): void {
+  if (!hasListPermission(input)) {
+    throw new Error(`Permission denied: ${input.action} on ${input.meta.name}`);
+  }
+}
+
 export function hasPermission(input: {
   meta: DocMeta;
   principal: PermissionPrincipal;

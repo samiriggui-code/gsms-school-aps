@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { compileDocMeta, hasPermission, type DocTypeDefinition } from '../index';
+import { compileDocMeta, hasPermission, hasListPermission, buildRecordScopeWhere, type DocTypeDefinition } from '../index';
 
 const formationSessionLike: DocTypeDefinition = {
   name: 'FormationSession',
@@ -72,4 +72,21 @@ test('NAF-14: staff with academique.view reads any session without document', ()
   };
 
   assert.equal(hasPermission({ meta, principal: staff, action: 'read' }), true);
+  assert.equal(hasListPermission({ meta, principal: staff, action: 'read' }), true);
+  assert.equal(buildRecordScopeWhere({ meta, principal: staff, action: 'read' }), undefined);
+});
+
+test('NAF-14 list: formateur list scoped to trainerUserId', () => {
+  const meta = compileDocMeta(formationSessionLike);
+  const trainer = {
+    id: 'trainer-1',
+    roleSlug: 'formateur',
+    permissionSlugs: new Set<string>(),
+    isSystemManager: false,
+  };
+
+  assert.equal(hasListPermission({ meta, principal: trainer, action: 'read' }), true);
+  assert.deepEqual(buildRecordScopeWhere({ meta, principal: trainer, action: 'read' }), {
+    trainerUserId: 'trainer-1',
+  });
 });

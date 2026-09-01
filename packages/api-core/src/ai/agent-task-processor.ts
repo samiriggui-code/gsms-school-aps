@@ -1,5 +1,6 @@
 import type { Prisma, PrismaClient } from '@repo/database';
 import { AGENT_TASK_KIND_SESSION_READINESS_SCAN } from './agent-task-kinds';
+import { scanSessionReadiness } from './session-readiness-scan';
 
 export type CreateAgentTaskInput = {
   kind: string;
@@ -53,29 +54,8 @@ async function executeSessionReadinessScan(
     throw new Error('sessionId requis dans payload.');
   }
 
-  const session = await prisma.formationSession.findUnique({
-    where: { id: sessionId.trim() },
-    select: {
-      id: true,
-      dateDisplayLabel: true,
-      startDate: true,
-      participants: { select: { id: true } },
-    },
-  });
-  if (!session) throw new Error('Session introuvable.');
-
-  // Placeholder V1 — score readiness réel branché avec les routes readiness existantes.
-  const participantCount = session.participants.length;
-  const summary = {
-    sessionId: session.id,
-    sessionLabel: session.dateDisplayLabel,
-    participantCount,
-    readinessScore: participantCount > 0 ? 85 : 0,
-    scannedAt: new Date().toISOString(),
-    taskId,
-  };
-
-  return summary;
+  const summary = await scanSessionReadiness(prisma, sessionId.trim(), taskId);
+  return summary as unknown as Record<string, unknown>;
 }
 
 async function executeTask(prisma: PrismaClient, taskId: string, kind: string, payload: unknown) {

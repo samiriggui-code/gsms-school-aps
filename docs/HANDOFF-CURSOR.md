@@ -4,6 +4,61 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — BPF Cerfa C–G (OF-07 suite)
+
+### Livré
+| Zone | Détail |
+|---|---|
+| Mappings | `bpf-cerfa-mappings.ts` — FundingFunderType → cadre C, public cadre F, modalité |
+| Sections | `bpf-cerfa-sections.ts` — `buildCerfaSections` (cadres C, D placeholder, E, F, G) |
+| Agrégats | `bpf-aggregates.ts` expose `cerfa` dans la réponse API/stats |
+| UI | Page BPF — tableaux Cadre C + Cadre F + KPI Cadre E |
+| PDF | `bpf-cerfa-pdf.ts` — sections Cerfa avant ventilation technique |
+| Démo | `seed-demo-walkthrough.ts` — session BPF exercice N-1 + FundingCase CPF + émargement |
+| Tests | `bpf-cerfa-mappings.test.ts` 4/4 |
+
+**Hors scope** (inchangé) : remplissage pixel-perfect Cerfa 10443 / portail MAF ; cadre D charges comptables.
+
+**Gates** : `tsc --noEmit` lms-crm 0 · tests BPF 4/4.
+
+---
+
+## 2026-09-01 — Ordre backlog : AI-02 async + LMS portail + EVE proactif + NAF-14 list
+
+### AI-02 async (pattern OPS-03 / AI-03)
+| Zone | Détail |
+|---|---|
+| Core | `packages/api-core/src/ai/program-modules-draft.ts` — enqueue + `executeProgramModulesDraftRun` |
+| API | `program-modules/draft` → **202** + `runId` ; `artifacts` expose `activeRuns` |
+| UI | `formation-program-modules-ai-panel.tsx` — poll 3s PENDING/RUNNING |
+
+### LMS portail (boucle apprenant)
+| Zone | Détail |
+|---|---|
+| API | `…/assignments/[activityId]/submit` GET+POST · `…/courses/[courseId]/discussions` GET+POST |
+| Chapter | `chapters/[chapterId]/route.ts` — sérialise devoirs + soumissions utilisateur |
+| UI | `LmsAssignmentBlock`, `LmsCourseDiscussions` monté dans `cours-client.tsx` |
+
+### EVE proactif — readiness_scan réel
+| Zone | Détail |
+|---|---|
+| Core | `packages/api-core/src/ai/session-readiness-scan.ts` — checklist déterministe 0–100 |
+| Worker | `agent-task-processor.ts` — plus de placeholder score 85 |
+| Checks | formateur, dates, lieu, salle, participants, déroulé, planning, financeur, statut SD-06 |
+
+### NAF-14 list (record scope SQL)
+| Zone | Détail |
+|---|---|
+| Engine | `hasListPermission`, `buildRecordScopeWhere`, `checkListPermission` |
+| ResourceService | `list()` applique le filtre OR (ex. `trainerUserId` formateur) |
+| Tests | +2 cas `permission-engine.test.ts` (formateur scoped, staff sans filtre) |
+
+**Gates** : `test:doctype` 12/12 · `test:doctype:harden` 2/2 · `tsc --noEmit` lms-crm 0.
+
+**Suite suggérée** : BPF Cerfa · WF-35–37/45 · NAF-04–09/13 · AI-04 async · EVE V2 (voix/écriture).
+
+---
+
 ## 2026-09-01 — LMS-01/02 + NAF-14 + OPS-05 livrés (3 chantiers)
 
 ### LMS-01/02

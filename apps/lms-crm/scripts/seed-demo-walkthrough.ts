@@ -13,6 +13,7 @@ import {
 const DEMO_PREFIX = 'DEMO — ';
 const DEMO_CANDIDATE_EMAIL = 'demo.walkthrough.candidat@ecole.local';
 const DEMO_SESSION_LABEL = `${DEMO_PREFIX}Session TFP APS (walkthrough)`;
+const DEMO_BPF_SESSION_LABEL = `${DEMO_PREFIX}Session BPF (exercice démo)`;
 
 async function main() {
   const prisma = createPrismaClient('demo-seed');
@@ -121,10 +122,125 @@ async function main() {
       update: { candidatureId: candidature.id },
     });
 
+    const bpfYear = new Date().getUTCFullYear() - 1;
+    const bpfStart = new Date(Date.UTC(bpfYear, 5, 10));
+    const bpfEnd = new Date(Date.UTC(bpfYear, 5, 14));
+
+    let bpfSession = await prisma.formationSession.findFirst({
+      where: { dateDisplayLabel: DEMO_BPF_SESSION_LABEL },
+      select: { id: true },
+    });
+
+    if (!bpfSession) {
+      bpfSession = await prisma.formationSession.create({
+        data: {
+          formationId: formation.id,
+          dateDisplayLabel: DEMO_BPF_SESSION_LABEL,
+          location: `${DEMO_PREFIX}Centre GSMS`,
+          startDate: bpfStart,
+          endDate: bpfEnd,
+          sortOrder: 998,
+        },
+        select: { id: true },
+      });
+    } else {
+      await prisma.formationSession.update({
+        where: { id: bpfSession.id },
+        data: { startDate: bpfStart, endDate: bpfEnd },
+      });
+    }
+
+    const bpfParticipant = await prisma.formationSessionParticipant.upsert({
+      where: {
+        sessionId_userId: { sessionId: bpfSession.id, userId: demoUser.id },
+      },
+      create: {
+        sessionId: bpfSession.id,
+        userId: demoUser.id,
+        candidatureId: candidature.id,
+        fundingMode: 'CPF',
+      },
+      update: { candidatureId: candidature.id, fundingMode: 'CPF' },
+    });
+
+    const bpfDay = await prisma.formationSessionDay.upsert({
+      where: {
+        sessionId_dayDate: { sessionId: bpfSession.id, dayDate: bpfStart },
+      },
+      create: { sessionId: bpfSession.id, dayDate: bpfStart },
+      update: {},
+    });
+
+    await prisma.formationSessionEmargement.upsert({
+      where: {
+        dayId_participantId_slot: {
+          dayId: bpfDay.id,
+          participantId: bpfParticipant.id,
+          slot: 'MORNING',
+        },
+      },
+      create: {
+        dayId: bpfDay.id,
+        participantId: bpfParticipant.id,
+        slot: 'MORNING',
+        status: 'PRESENT',
+        markedAt: bpfStart,
+      },
+      update: { status: 'PRESENT' },
+    });
+
+    await prisma.formation.update({
+      where: { id: formation.id },
+      data: { hoursMin: 35, hoursMax: 35 },
+    });
+
+    let cpfProvider = await prisma.fundingProvider.findFirst({
+      where: { funderType: 'CPF' },
+      select: { id: true },
+    });
+    if (!cpfProvider) {
+      cpfProvider = await prisma.fundingProvider.create({
+        data: {
+          code: 'DEMO_CPF',
+          label: `${DEMO_PREFIX}CPF démo`,
+          funderType: 'CPF',
+          transport: 'MANUAL_PORTAL',
+        },
+        select: { id: true },
+      });
+    }
+
+    const existingFunding = await prisma.fundingCase.findFirst({
+      where: {
+        sessionId: bpfSession.id,
+        participantId: bpfParticipant.id,
+        notes: { contains: DEMO_PREFIX },
+      },
+      select: { id: true },
+    });
+
+    if (!existingFunding) {
+      await prisma.fundingCase.create({
+        data: {
+          providerId: cpfProvider.id,
+          sessionId: bpfSession.id,
+          participantId: bpfParticipant.id,
+          learnerUserId: demoUser.id,
+          funderType: 'CPF',
+          transport: 'MANUAL_PORTAL',
+          status: 'APPROVED',
+          requestedAmount: 1200,
+          approvedAmount: 1200,
+          notes: `${DEMO_PREFIX}Dossier CPF pour démo BPF exercice ${bpfYear}`,
+        },
+      });
+    }
+
     console.log('✅ Demo walkthrough seed OK');
     console.log(`   User: ${demoUser.email} / DemoWalk2026!`);
     console.log(`   Candidature: ${candidature.id}`);
     console.log(`   Session: ${session.id} (${DEMO_SESSION_LABEL})`);
+    console.log(`   BPF demo: session ${bpfSession.id} — exercice ${bpfYear}`);
   } finally {
     await prisma.$disconnect();
   }

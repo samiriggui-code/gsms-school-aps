@@ -30,6 +30,18 @@ type ArtifactRow = {
   run: { model: string; createdAt: string };
 };
 
+type ActiveRunRow = {
+  id: string;
+  status: 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';
+  createdAt: string;
+  errorMessage: string | null;
+};
+
+type ArtifactsResponse = {
+  artifacts: ArtifactRow[];
+  activeRuns: ActiveRunRow[];
+};
+
 const STATUS_LABEL: Record<ArtifactRow['status'], string> = {
   PROPOSED: 'Proposé',
   APPROVED: 'Approuvé',
@@ -54,10 +66,17 @@ export function FormationProgramModulesAiPanel({ formationSlug }: { formationSlu
     queryFn: async () => {
       const res = await apiFetch(`${apiBase(formationSlug)}/artifacts`);
       if (!res.ok) throw new Error('fetch');
-      const data = unwrapSectionApiData<{ artifacts: ArtifactRow[] }>(await res.json());
-      return data?.artifacts ?? [];
+      const data = unwrapSectionApiData<ArtifactsResponse>(await res.json());
+      return {
+        artifacts: data?.artifacts ?? [],
+        activeRuns: data?.activeRuns ?? [],
+      };
     },
     staleTime: 15_000,
+    refetchInterval: (query) => {
+      const runs = query.state.data?.activeRuns ?? [];
+      return runs.some((r) => r.status === 'PENDING' || r.status === 'RUNNING') ? 3000 : false;
+    },
   });
 
   const invalidateAll = () => {
@@ -76,7 +95,7 @@ export function FormationProgramModulesAiPanel({ formationSlug }: { formationSlu
       return unwrapSectionApiData<{ artifactId: string }>(json);
     },
     onSuccess: () => {
-      toast.success('Brouillon IA généré — revue requise avant application.');
+      toast.success('Génération en file — le brouillon apparaîtra sous peu.');
       invalidateAll();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -121,7 +140,9 @@ export function FormationProgramModulesAiPanel({ formationSlug }: { formationSlu
   });
 
   const pending = draftMutation.isPending || reviewMutation.isPending || applyMutation.isPending;
-  const artifacts = artifactsQuery.data ?? [];
+  const artifacts = artifactsQuery.data?.artifacts ?? [];
+  const activeRuns = artifactsQuery.data?.activeRuns ?? [];
+  const generating = activeRuns.some((r) => r.status === 'PENDING' || r.status === 'RUNNING');
 
   return (
     <Card className="border-dashed border-primary/30 bg-primary/5 shadow-none">
@@ -134,15 +155,15 @@ export function FormationProgramModulesAiPanel({ formationSlug }: { formationSlu
           type="button"
           size="sm"
           variant="outline"
-          disabled={pending}
+          disabled={pending || generating}
           onClick={() => draftMutation.mutate()}
         >
-          {draftMutation.isPending ? (
+          {draftMutation.isPending || generating ? (
             <Loader2 className="size-3.5 animate-spin" aria-hidden />
           ) : (
             <Sparkles className="size-3.5" aria-hidden />
           )}
-          Générer brouillon
+          {generating ? 'Génération…' : 'Générer brouillon'}
         </Button>
       </CardHeader>
       <CardContent className="space-y-3 pt-0">

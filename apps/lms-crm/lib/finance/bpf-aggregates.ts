@@ -1,21 +1,9 @@
-import type { FundingCaseStatus, PrismaClient } from '@repo/database';
+import type { PrismaClient } from '@repo/database';
+import { BPF_APPROVED_STATUSES, BPF_HOURS_PER_SLOT } from './bpf-cerfa-mappings';
+import { buildCerfaSections, type BpfCerfaSections } from './bpf-cerfa-sections';
 
-/** Heures proxy par créneau émargé PRESENT/LATE (matin ou soir). Documenté dans methodology. */
-export const BPF_HOURS_PER_SLOT = 3.5;
-
-/** Statuts où le montant accordé compte pour le BPF (post-décision financeur). */
-export const BPF_APPROVED_STATUSES: FundingCaseStatus[] = [
-  'APPROVED',
-  'PARTIALLY_APPROVED',
-  'SERVICE_IN_PROGRESS',
-  'SERVICE_COMPLETED',
-  'JUSTIFICATION_REQUIRED',
-  'READY_TO_INVOICE',
-  'INVOICED',
-  'PAYMENT_PENDING',
-  'PAID',
-  'CLOSED',
-];
+export { BPF_HOURS_PER_SLOT, BPF_APPROVED_STATUSES } from './bpf-cerfa-mappings';
+export type { BpfCerfaSections } from './bpf-cerfa-sections';
 
 export type BpfControl = {
   code: string;
@@ -42,6 +30,7 @@ export type BpfAggregates = {
   amountRequested: number;
   amountApproved: number;
   byFunderType: BpfFunderRow[];
+  cerfa: BpfCerfaSections;
   controls: BpfControl[];
   methodology: string[];
 };
@@ -99,12 +88,16 @@ export async function buildBpfAggregates(
         id: true,
         startDate: true,
         endDate: true,
-        formation: { select: { hoursMin: true, hoursMax: true } },
+        trainerUserId: true,
+        formation: {
+          select: { hoursMin: true, hoursMax: true, deliveryMode: true },
+        },
         participants: {
           where: { enrollmentStatus: { not: 'CANCELLED' } },
           select: {
             id: true,
             userId: true,
+            fundingMode: true,
             emargements: {
               where: {
                 status: { in: ['PRESENT', 'LATE'] },
@@ -179,6 +172,7 @@ export async function buildBpfAggregates(
       funderType: true,
       requestedAmount: true,
       approvedAmount: true,
+      participantId: true,
     },
   });
 
@@ -212,6 +206,29 @@ export async function buildBpfAggregates(
     if (countsAsApproved) row.approved += approved;
     byType.set(c.funderType, row);
   }
+
+  const cerfaSessions = sessionsInYear.map((session) => {
+    const hoursMin = session.formation.hoursMin;
+    const hoursMax = session.formation.hoursMax;
+    const catalogHours = hoursMin ?? hoursMax ?? 0;
+    return {
+      trainerUserId: session.trainerUserId,
+      deliveryMode: session.formation.deliveryMode,
+      participants: session.participants.map((p) => ({
+        id: p.id,
+        userId: p.userId,
+        fundingMode: p.fundingMode,
+        attendedSlots: p.emargements.length,
+        catalogHours,
+      })),
+    };
+  });
+
+  const cerfa = buildCerfaSections({
+    fundingCases,
+    sessions: cerfaSessions,
+    hoursAttendedProxy,
+  });
 
   const controls: BpfControl[] = [];
   if (sessionsInYear.length === 0 && fundingCases.length === 0) {
@@ -283,12 +300,14 @@ export async function buildBpfAggregates(
     amountRequested: Math.round(amountRequested * 100) / 100,
     amountApproved: Math.round(amountApproved * 100) / 100,
     byFunderType: [...byType.values()].sort((a, b) => a.funderType.localeCompare(b.funderType)),
+    cerfa,
     controls,
     methodology: [
       'Stagiaires = userId distincts avec enrollmentStatus ≠ CANCELLED sur sessions chevauchant l’année.',
       'Heures catalogue = sum(Formation.hoursMin ?? hoursMax) par inscription non annulée.',
       `Heures émargées (proxy) = créneaux PRESENT|LATE × ${BPF_HOURS_PER_SLOT} h (pas la durée réelle du créneau).`,
       'Montants funding = FundingCase de l’année (createdAt ou session liée) ; approvedAmount si statut post-approbation.',
+      'Cadres Cerfa C–G : ventilation logique Cerfa 10443 (produits, public, formateurs) — pas un remplissage MAF.',
       'Garde-fous erreur_ctrl (OF-07) : HOURS_OVER_CATALOG, APPROVED_OVER_REQUESTED, SESSION_DATES_INCOHERENT, ZERO_HOURS_FORMATION.',
       'Export PDF synthèse disponible (OF-07) — pas un Cerfa 10443 pixel-perfect.',
     ],

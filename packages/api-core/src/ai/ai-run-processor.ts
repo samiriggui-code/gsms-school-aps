@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@repo/database';
-import { AI_PEDAGOGICAL_OUTLINE_USE_CASE } from './constants';
+import { AI_PEDAGOGICAL_OUTLINE_USE_CASE, AI_PROGRAM_MODULES_USE_CASE } from './constants';
 import { executePedagogicalOutlineDraftRun } from './pedagogical-outline-draft';
+import { executeProgramModulesDraftRun } from './program-modules-draft';
 
 async function failRun(prisma: PrismaClient, runId: string, message: string) {
   await prisma.aiRun.update({
@@ -17,6 +18,9 @@ async function executeRun(prisma: PrismaClient, runId: string, useCase: string) 
   switch (useCase) {
     case AI_PEDAGOGICAL_OUTLINE_USE_CASE:
       await executePedagogicalOutlineDraftRun(prisma, runId);
+      return;
+    case AI_PROGRAM_MODULES_USE_CASE:
+      await executeProgramModulesDraftRun(prisma, runId);
       return;
     default:
       throw new Error(`Use case non pris en charge par le worker : ${useCase}`);

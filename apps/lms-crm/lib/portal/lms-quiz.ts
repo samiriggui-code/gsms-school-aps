@@ -1,4 +1,4 @@
-import type { LmsActivityRow } from './lms-types';
+import type { LmsActivityRow, LmsAssignmentContent } from './lms-types';
 
 export type QuizQuestionKey = {
   id: string;
@@ -136,9 +136,51 @@ export function serializePortalActivity(
     position: number;
     content: unknown;
     details?: unknown;
+    assignment?: {
+      id: string;
+      title: string;
+      description: string | null;
+      dueDate: Date | null;
+      maxPoints: number;
+    } | null;
   },
   quizAttempt?: { score: number; passed: boolean; createdAt: Date } | null,
+  assignmentSubmission?: {
+    content: string | null;
+    fileUrl: string | null;
+    grade: number | null;
+    feedback: string | null;
+    updatedAt: Date;
+  } | null,
 ): LmsActivityRow {
+  if (activity.type === 'ASSIGNMENT' && activity.assignment) {
+    const a = activity.assignment;
+    const assignmentPayload: LmsAssignmentContent = {
+      assignmentId: a.id,
+      title: a.title,
+      description: a.description,
+      dueDate: a.dueDate?.toISOString() ?? null,
+      maxPoints: a.maxPoints,
+      submission: assignmentSubmission
+        ? {
+            content: assignmentSubmission.content,
+            fileUrl: assignmentSubmission.fileUrl,
+            grade: assignmentSubmission.grade,
+            feedback: assignmentSubmission.feedback,
+            updatedAt: assignmentSubmission.updatedAt.toISOString(),
+          }
+        : null,
+    };
+    return {
+      id: activity.id,
+      name: activity.name,
+      type: activity.type,
+      subType: activity.subType,
+      position: activity.position,
+      content: assignmentPayload,
+    };
+  }
+
   if (activity.subType === 'QUIZ_MULTIPLE_CHOICE') {
     const quiz = sanitizeQuizForClient(activity.content, activity.details ?? null, quizAttempt);
     return {

@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
-import { draftFormationProgramModules } from '@/lib/ai/formation-program-modules-ai';
+import { enqueueFormationProgramModulesDraft } from '@/lib/ai/formation-program-modules-ai';
 import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 
@@ -27,12 +27,19 @@ export async function POST(_request: NextRequest, context: Ctx) {
     });
     if (!formation) return fail('Formation introuvable.', 404);
 
-    const result = await draftFormationProgramModules({
+    const run = await enqueueFormationProgramModulesDraft({
       formationId: formation.id,
       requestedById: session.user.id,
     });
 
-    return ok(result, 201);
+    return ok(
+      {
+        runId: run.id,
+        status: run.status,
+        message: 'Génération en cours — le brouillon apparaîtra dans quelques instants.',
+      },
+      202,
+    );
   } catch (e) {
     console.error('[ai/program-modules draft]', e);
     return fail('Génération du brouillon impossible.', 500, e);

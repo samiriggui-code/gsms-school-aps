@@ -142,6 +142,16 @@ export async function GET(_request: Request, { params }: Ctx) {
 
           details: true,
 
+          assignment: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              dueDate: true,
+              maxPoints: true,
+            },
+          },
+
         },
 
       },
@@ -168,9 +178,15 @@ export async function GET(_request: Request, { params }: Ctx) {
 
     .map((a) => a.id);
 
+  const assignmentIds = chapter.activities
+
+    .filter((a) => a.type === 'ASSIGNMENT' && a.assignment)
+
+    .map((a) => a.assignment!.id);
 
 
-  const [progress, completedIds, quizAttempts] = await Promise.all([
+
+  const [progress, completedIds, quizAttempts, assignmentSubmissions] = await Promise.all([
 
     prisma.userProgress.findUnique({
 
@@ -198,11 +214,28 @@ export async function GET(_request: Request, { params }: Ctx) {
 
     latestQuizAttempts(userId, quizActivityIds),
 
+    assignmentIds.length
+      ? prisma.assignmentSubmission.findMany({
+          where: { userId, assignmentId: { in: assignmentIds } },
+          select: {
+            assignmentId: true,
+            content: true,
+            fileUrl: true,
+            grade: true,
+            feedback: true,
+            updatedAt: true,
+          },
+        })
+      : Promise.resolve([]),
+
   ]);
 
 
 
   const attemptByActivity = new Map(quizAttempts.map((a) => [a.activityId, a]));
+  const submissionByAssignment = new Map(
+    assignmentSubmissions.map((s) => [s.assignmentId, s]),
+  );
 
   const done = new Set(completedIds.map((p) => p.chapterId));
 
@@ -237,15 +270,11 @@ export async function GET(_request: Request, { params }: Ctx) {
 
 
   const activities = chapter.activities.map((a) =>
-
     serializePortalActivity(
-
       a,
-
       a.subType === 'QUIZ_MULTIPLE_CHOICE' ? attemptByActivity.get(a.id) ?? null : null,
-
+      a.assignment ? submissionByAssignment.get(a.assignment.id) ?? null : null,
     ),
-
   );
 
 

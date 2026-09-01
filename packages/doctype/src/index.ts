@@ -3,7 +3,10 @@ export { compileDocMeta } from './meta/compile-doc-meta';
 export { DocTypeRegistry, type DocTypeRegistration, type DocController } from './registry/doc-type-registry';
 export {
   hasPermission,
+  hasListPermission,
+  buildRecordScopeWhere,
   checkPermission,
+  checkListPermission,
   effectivePermissions,
   buildMetaResponse,
 } from './permissions/permission-engine';

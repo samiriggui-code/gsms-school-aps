@@ -9,6 +9,21 @@ export type LmsQuizContent = {
   questions: LmsQuizQuestion[];
   lastAttempt?: { score: number; passed: boolean; createdAt: string } | null;
 };
+export type LmsAssignmentContent = {
+  assignmentId: string;
+  title: string;
+  description: string | null;
+  dueDate: string | null;
+  maxPoints: number;
+  submission: {
+    content: string | null;
+    fileUrl: string | null;
+    grade: number | null;
+    feedback: string | null;
+    updatedAt: string;
+  } | null;
+};
+
 export type LmsActivityRow = {
   id: string;
   name: string;

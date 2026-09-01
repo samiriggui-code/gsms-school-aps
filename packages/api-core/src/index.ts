@@ -87,7 +87,9 @@ export {
   DEFAULT_AI_MODEL,
   DEFAULT_AI_PROVIDER,
   AI_PEDAGOGICAL_OUTLINE_USE_CASE,
+  AI_PROGRAM_MODULES_USE_CASE,
   FORMATION_SESSION_ENTITY_TYPE,
+  FORMATION_ENTITY_TYPE,
 } from './ai/constants';
 export {
   PedagogicalOutlineDraftSchema,
@@ -95,6 +97,12 @@ export {
   executePedagogicalOutlineDraftRun,
   type PedagogicalOutlineDraft,
 } from './ai/pedagogical-outline-draft';
+export {
+  ProgramModuleDraftSchema,
+  enqueueProgramModulesDraft,
+  executeProgramModulesDraftRun,
+  type ProgramModuleDraft,
+} from './ai/program-modules-draft';
 export { processPendingAiRuns } from './ai/ai-run-processor';
 export {
   AGENT_TASK_KIND_SESSION_READINESS_SCAN,

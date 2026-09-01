@@ -10,8 +10,10 @@ import {
   parseMarkdownContent,
   parseYoutubeContent,
   type LmsActivityRow,
+  type LmsAssignmentContent,
 } from '@/lib/portal/lms-types';
 import { LmsQuizBlock } from '@/components/portal/lms/lms-quiz-block';
+import { LmsAssignmentBlock } from '@/components/portal/lms/lms-assignment-block';
 
 const MuxPlayer = dynamic(() => import('@mux/mux-player-react'), { ssr: false });
 
@@ -185,6 +187,13 @@ export function LmsActivityList({
               activityId={activity.id}
               content={activity.content}
               onPassed={reloadAfterQuiz}
+            />
+          ) : null}
+          {activity.type === 'ASSIGNMENT' ? (
+            <LmsAssignmentBlock
+              activityId={activity.id}
+              assignment={activity.content as LmsAssignmentContent}
+              onSubmitted={reloadAfterQuiz}
             />
           ) : null}
         </section>
