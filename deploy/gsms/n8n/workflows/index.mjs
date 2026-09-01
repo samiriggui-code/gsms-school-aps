@@ -15,6 +15,7 @@ import {
   executeSub,
   switchOnEvent,
   switchOnField,
+  normalizeWebhookEnvelopeNode,
   unwrapDataNode,
 } from './_helpers.mjs';
 
@@ -1402,11 +1403,13 @@ export function buildRouter(ctx) {
         options: {},
       },
     },
+    normalizeWebhookEnvelopeNode('router-normalize', 'Normaliser envelope', pos(140, 0)),
     switchOnEvent('router-switch', pos(280, 0), rules),
   ];
 
   const connections = {
-    'Webhook GSMS': { main: [[{ node: 'Switch event', type: 'main', index: 0 }]] },
+    'Webhook GSMS': { main: [[{ node: 'Normaliser envelope', type: 'main', index: 0 }]] },
+    'Normaliser envelope': { main: [[{ node: 'Switch event', type: 'main', index: 0 }]] },
   };
 
   const switchConnections = [];

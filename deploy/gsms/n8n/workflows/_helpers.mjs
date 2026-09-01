@@ -263,6 +263,18 @@ export function switchOnField(id, name, position, fieldExpr, rules) {
   };
 }
 
+/** Webhook v2 expose l'envelope dans `$json.body` — les Switch/Exec attendent `$json.event`. */
+export function normalizeWebhookEnvelopeNode(id, name, position) {
+  return codeNode(
+    id,
+    name,
+    position,
+    `const raw = $input.first().json;
+const envelope = raw.body ?? raw;
+return [{ json: envelope }];`,
+  );
+}
+
 export function unwrapDataNode(id, name, position, triggerNodeName = 'Execute Workflow Trigger') {
   return codeNode(
     id,
