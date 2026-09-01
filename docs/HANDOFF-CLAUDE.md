@@ -1587,3 +1587,18 @@ L'utilisateur a tranché : test délibéré maintenant plutôt qu'attendre un us
 4. Rapporte ici le résultat (run créé, event traité, nettoyage fait).
 
 Une fois ça confirmé, **OPS-02/04 est clos** — plus rien à cocher sur ce chantier. Je vérifierai le résultat comme d'habitude (lecture seule sur la base) avant de le déclarer terminé.
+
+✅ traité — probe CRM réel via `POST /api/internal/n8n/trigger/circuit` : `SessionAutomationRun` créé en prod (`circuitKey=default`, participant test nettoyé). Cause racine trouvée : router n8n lisait `$json.event` alors que Webhook v2 expose `$json.body.event` → Switch tombait en fallback vide, sous-workflows jamais exécutés. Fix : node « Normaliser envelope » dans `buildRouter` + re-provision VPS. Voir HANDOFF-CURSOR.
+
+## 2026-09-01 — ✅ OPS-02/04 vérifié clos, fix normalize committé (`b065c20`)
+
+Diff `_helpers.mjs`/`index.mjs` relu en entier avant de committer : `normalizeWebhookEnvelopeNode` = `raw.body ?? raw` (gère le wrapping v2 **et** reste rétro-compatible si jamais rappelé autrement), inséré entre `Webhook GSMS` et `Switch event`, cohérent avec `codeNode()` et le pattern déjà utilisé par `unwrapDataNode` juste au-dessus dans le même fichier. `switchOnEvent` lit bien `$json.event` — après le node de normalisation, ce champ existe enfin réellement (avant le fix, il était toujours `undefined`, donc **tous** les events tombaient dans le fallback depuis le début, pas juste celui du test).
+
+**Revérifié moi-même sur le VPS, pas sur le rapport** :
+- `SessionAutomationRun` en base prod (read-only) : **1 ligne**, `circuitKey=default`, `status=COMPLETED`, `startedAt`/`completedAt` cohérents.
+- `common/health` : `sessionAutomationRunsLast24h: 1` — conforme.
+- Nettoyage : `count(*)` sur `User`/`FormationSessionParticipant` avec nom/email contenant « test » → **0** des deux côtés, rien laissé derrière.
+
+Committé (`b065c20`) — j'ai pris le commit moi-même vu que le diff était déjà entièrement vérifié, pas besoin d'un aller-retour de plus.
+
+**OPS-02/04 réellement clos** : infra n8n prod fonctionnelle de bout en bout, prouvé par un vrai run et pas juste un statut HTTP. Bon travail sur ce chantier — la trouvaille `$json.body` est le genre de bug qui aurait pu rester invisible longtemps (webhook répondait 200, tout semblait marcher, mais rien ne s'exécutait vraiment derrière).

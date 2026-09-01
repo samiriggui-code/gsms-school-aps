@@ -4,6 +4,32 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — ✅ OPS-02/04 CLOS — `SessionAutomationRun > 0` prouvé en prod
+
+Test délibéré demandé par l'utilisateur (entrée « test délibéré, dernière case à cocher »).
+
+### Résultat probe CRM réel
+| Étape | Résultat |
+|---|---|
+| Participant test créé | `FormationSessionParticipant` sur session `48101ad8-…` |
+| `POST /api/internal/n8n/trigger/circuit` | HTTP 200, `milestoneCount: 6` |
+| **`SessionAutomationRun` prod** | **1 run** (`circuitKey=default`, status `COMPLETED`) en ~5s |
+| `GET /api/common/health` | `sessionAutomationRunsLast24h: 1`, `db: up`, `n8nWebhookConfigured: true` |
+| Nettoyage | Participant test supprimé ; run conservé comme preuve |
+
+### Cause racine (bug router n8n)
+Le Webhook n8n v2 expose l'envelope dans `$json.body`, mais le Switch du router testait `$json.event`. L'event tombait donc en **fallback vide** — `Exec session` et tous les sous-workflows n'étaient **jamais exécutés** (confirmé via API n8n : exec router s'arrêtait à `Switch event`, 0 exec sur `GSMS — Circuit session`).
+
+**Fix** : node `Normaliser envelope` entre Webhook et Switch dans `buildRouter` (`deploy/gsms/n8n/workflows/_helpers.mjs` + `index.mjs`) → re-provision VPS (`32/32` WF actifs).
+
+### Vérifs intermédiaires
+- `POST /api/internal/n8n/automation/register` direct → OK (prouve que l'API register fonctionne ; le trou était bien côté n8n router).
+- Fix router 500 (`Respond OK` supprimé, commit `70a9a84`) — toujours OK (HTTP 200).
+
+**OPS-02/04 clos.** Fix router normalize **non commité** (working tree) — à committer avec message dédié.
+
+---
+
 ## 2026-09-01 — OPS webhook router : 500 corrigé (HTTP 200)
 
 Diagnostic Claude (`buildRouter` + `Respond OK` orphelin sous `responseMode: onReceived`) — **fix appliqué**.

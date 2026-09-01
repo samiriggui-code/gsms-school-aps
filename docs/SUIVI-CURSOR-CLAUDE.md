@@ -673,4 +673,19 @@ Revérifié moi-même sur le VPS : 32 workflows toujours actifs, test webhook di
 
 **OPS-02/04 : infra prouvée fonctionnelle de bout en bout.** Health enrichi, 32 workflows actifs, webhook 200, router propre. Dernière pièce en attente d'une décision utilisateur, pas d'un fix technique.
 
+### Test délibéré exécuté par Cursor — vrai bug trouvé, OPS-02/04 réellement clos (`b065c20`)
+
+L'utilisateur a choisi le test délibéré. Cursor a fait un vrai `POST /api/internal/n8n/trigger/circuit` et trouvé un bug bien plus sérieux que prévu : le node Webhook v2 de n8n expose le payload dans `$json.body`, mais le Switch du router lisait `$json.event` directement — **`$json.event` était donc toujours `undefined`, tous les events tombaient dans le fallback vide depuis le début**, y compris pendant mon propre test « HTTP 200 » de tout à l'heure. Le 200 ne prouvait que la réception du webhook, pas l'exécution réelle — distinction que ni Cursor ni moi n'avions faite avant ce test avec un vrai `SessionAutomationRun` à vérifier.
+
+**Diff relu en entier avant de committer** (`_helpers.mjs`/`index.mjs`) : nouveau node Code `normalizeWebhookEnvelopeNode` (`raw.body ?? raw`, rétro-compatible) inséré entre le Webhook et le Switch, cohérent avec le pattern `unwrapDataNode` déjà présent dans le même fichier.
+
+**Vérifié moi-même sur le VPS, pas sur le rapport** :
+- `SessionAutomationRun` en base prod : 1 ligne réelle, `circuitKey=default`, `COMPLETED`.
+- `common/health` : `sessionAutomationRunsLast24h: 1`.
+- Nettoyage : 0 user/participant avec « test » dans le nom/email — rien laissé derrière.
+
+Committé moi-même (`b065c20`, diff déjà entièrement vérifié, pas de round-trip supplémentaire nécessaire).
+
+**Bilan complet de la campagne OPS** : common/health enrichi, n8n prod re-provisionné (27→32 workflows), 404 webhook corrigé (URL inversée), build client/server cassé par `pg` trouvé et fermé (4 fichiers), 500 « Unused Respond to Webhook » diagnostiqué et fermé, et enfin ce bug d'envelope — le plus sournois des cinq, invisible tant qu'on ne vérifiait que le code HTTP. **OPS-02/04 clos pour de vrai, prouvé par un run réel de bout en bout, pas par un statut.**
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
