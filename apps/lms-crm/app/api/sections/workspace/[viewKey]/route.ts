@@ -8,11 +8,25 @@ import {
   ModuleWorkspaceService,
   type ModuleWorkspaceViewKey,
 } from '@repo/api-core';
+import {
+  CRM_PERMISSION,
+  GOVERNANCE_PERMISSION,
+  sessionHasPermission,
+} from '@/lib/auth/crm-permissions';
 
 type Ctx = { params: Promise<{ viewKey: string }> };
 
 function isViewKey(value: string): value is ModuleWorkspaceViewKey {
   return (MODULE_WORKSPACE_VIEW_KEYS as readonly string[]).includes(value);
+}
+
+function permissionForViewKey(viewKey: ModuleWorkspaceViewKey): string | null {
+  if (viewKey.startsWith('finance-')) return CRM_PERMISSION.financeView;
+  if (viewKey.startsWith('comm-')) return CRM_PERMISSION.communicationView;
+  if (viewKey.startsWith('support-')) return CRM_PERMISSION.supportView;
+  if (viewKey.startsWith('gouvernance-')) return GOVERNANCE_PERMISSION.storageAdmin;
+  if (viewKey.startsWith('pilotage-')) return CRM_PERMISSION.pilotageView;
+  return null;
 }
 
 export async function GET(request: NextRequest, context: Ctx) {
@@ -22,6 +36,11 @@ export async function GET(request: NextRequest, context: Ctx) {
   const { viewKey } = await context.params;
   if (!isViewKey(viewKey)) {
     return fail('Vue workspace inconnue.', 404);
+  }
+
+  const needed = permissionForViewKey(viewKey);
+  if (!needed || !sessionHasPermission(session, needed)) {
+    return fail('Forbidden', 403);
   }
 
   const sp = request.nextUrl.searchParams;

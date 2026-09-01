@@ -8,6 +8,7 @@ import {
   scopesForPreset,
   type DatagridSyncPreset,
 } from '@repo/api-core';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 const PRESETS = new Set<string>([
   'rhAbsences',
@@ -24,6 +25,9 @@ const PRESETS = new Set<string>([
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.securiteEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: { preset?: string };
   try {

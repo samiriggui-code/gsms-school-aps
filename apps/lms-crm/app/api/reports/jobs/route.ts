@@ -7,9 +7,23 @@ import { normalizeCustomDateRange } from '@repo/report-engine';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
+import {
+  CRM_PERMISSION,
+  GOVERNANCE_PERMISSION,
+  sessionHasPermission,
+} from '@/lib/auth/crm-permissions';
 
 const PERIODS = new Set<ReportPeriod>(['day', 'week', 'month', 'quarter', 'year', 'custom']);
 const FORMATS = new Set<ReportOutputFormat>(['PDF', 'EXCEL', 'CSV']);
+
+function permissionForTemplateKey(templateKey: string): string | null {
+  if (templateKey.startsWith('rh.')) return CRM_PERMISSION.ressourcesView;
+  if (templateKey.startsWith('finance.')) return CRM_PERMISSION.financeView;
+  if (templateKey.startsWith('academic.')) return CRM_PERMISSION.academiqueView;
+  if (templateKey.startsWith('qualiopi.')) return GOVERNANCE_PERMISSION.conformiteView;
+  if (templateKey.startsWith('pilotage.')) return CRM_PERMISSION.pilotageView;
+  return null;
+}
 
 function parseCustomRange(body: {
   customRange?: { start?: string; end?: string };
@@ -51,6 +65,11 @@ export async function POST(request: NextRequest) {
   if (!PERIODS.has(period)) return fail('period invalide.', 400);
   if (period === 'custom' && !parseCustomRange(body)) {
     return fail('customRange { start, end } requis pour period=custom.', 400);
+  }
+
+  const needed = permissionForTemplateKey(templateKey);
+  if (!needed || !sessionHasPermission(session, needed)) {
+    return fail('Forbidden', 403);
   }
 
   try {

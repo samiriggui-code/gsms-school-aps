@@ -10,6 +10,7 @@ import {
   type OfficialExportJob,
   type OfficialExportPreviewRequest,
 } from '@/lib/official-export/types';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 const ALLOWED_KEYS = new Set<OfficialExportJob['templateKey']>([
   'rh.fiche-collaborateur',
@@ -17,6 +18,11 @@ const ALLOWED_KEYS = new Set<OfficialExportJob['templateKey']>([
   'rh.contrat-travail',
   'academic.fiche-etudiant',
 ]);
+
+function permissionForOfficialTemplate(templateKey: OfficialExportJob['templateKey']): string {
+  if (templateKey.startsWith('rh.')) return CRM_PERMISSION.ressourcesView;
+  return CRM_PERMISSION.academiqueView;
+}
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -31,6 +37,10 @@ export async function POST(request: Request) {
 
   if (!body.userId?.trim() || !ALLOWED_KEYS.has(body.templateKey)) {
     return fail('Modèle ou utilisateur invalide', 400);
+  }
+
+  if (!sessionHasPermission(session, permissionForOfficialTemplate(body.templateKey))) {
+    return fail('Forbidden', 403);
   }
 
   const sessionUser = session.user as {

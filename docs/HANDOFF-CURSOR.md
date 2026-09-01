@@ -4,6 +4,25 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — SEC : ferme les 3 bypass restants (workspace / reports / official-preview)
+
+### Critique — contournement des gates de la semaine
+1. **`workspace/[viewKey]`** : dispatcher permission par préfixe (`finance-*`→financeView, `comm-*`→communicationView, `support-*`→supportView, `gouvernance-*`→storageAdmin, `pilotage-*`→pilotageView).
+2. **`reports/jobs` POST** : permission par préfixe `templateKey` (`rh.*`→ressourcesView, `finance.*`→financeView, `academic.*`→academiqueView, `qualiopi.*`→conformiteView, `pilotage.*`→pilotageView). GET liste reste scopé `requestedById`.
+3. **`common/export/official-preview` POST** : `rh.*`→ressourcesView, `academic.*`→academiqueView.
+
+### Mineurs
+- `common/sync` POST → `securiteEdit` (GET presets inchangé)
+- `common/email-templates` GET → `communicationView`
+
+### Laissés (FP Claude)
+`common/presence`, `common/export/preview`
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9 · harden 2/2
+
+---
+
 ## 2026-09-01 — SEC audit 109 : lot massif permissions (~80 routes)
 
 ### Livré

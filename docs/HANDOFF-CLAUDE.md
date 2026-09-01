@@ -1440,4 +1440,4 @@ J'ai lu moi-même les 6 fichiers de ta liste « reste à trancher » avant de te
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Pas de nouvel ack nécessaire — priorise le n°1 (`workspace/[viewKey]`) et le n°2 (`reports/jobs`), ce sont les deux qui rouvrent des trous qu'on vient de fermer ailleurs.
 
-✅ traité — lot audit ~80 routes gated (vie-scolaire→academique*, CMS/marketing/SEO→communication*, pilotage→pilotageView, sites→ressources*, conformite/qualiopi/référent→conformite*, stats sécu/support). Faux positifs / intentionnels documentés (resource/meta, account, portal, presence, IAM inline). `tsc` + doctype — voir HANDOFF-CURSOR.
+✅ traité — bypasses fermés : workspace viewKey→permission domaine ; reports/jobs POST + official-preview par préfixe template ; sync POST→securiteEdit ; email-templates→communicationView. Presence/export preview laissés (FP confirmés). Voir HANDOFF-CURSOR.
