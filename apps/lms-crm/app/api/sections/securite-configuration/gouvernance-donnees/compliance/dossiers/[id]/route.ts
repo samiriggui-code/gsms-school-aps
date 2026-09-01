@@ -4,12 +4,16 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { ComplianceService } from '@repo/api-core';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, context: RouteContext) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.conformiteView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await context.params;
 
@@ -26,6 +30,9 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 export async function POST(_request: NextRequest, context: RouteContext) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.conformiteEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await context.params;
 

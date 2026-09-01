@@ -4,6 +4,36 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — SEC compliance : `conformiteView`/`conformiteEdit` sur module entier
+
+### Critique — jugement Qualiopi fail-open
+`gouvernance-donnees/compliance/*` : session seule → tout staff pouvait lister/créer dossiers **et valider/rejeter** des pièces (`items/[id]/validate|reject`).
+
+Fix (pattern `storage/*`) : `GOVERNANCE_PERMISSION.conformiteView` (GET) / `conformiteEdit` (POST) juste après `if (!session)`.
+
+| Route | Gate |
+|---|---|
+| `items/[id]/validate` POST | `conformiteEdit` |
+| `items/[id]/reject` POST | `conformiteEdit` |
+| `dossiers` GET / POST | view / edit |
+| `dossiers/[id]` GET / POST | view / edit |
+| `dossiers/[id]/notify` POST | edit |
+| `requests` GET / POST | view / edit |
+| `templates` GET / POST | view / edit |
+| `users` GET, `users/[id]` GET, `users/stats` GET | view |
+| `users/[id]/notify` POST | edit |
+
+### Faux positifs note (audit 109)
+Confirmés côté Cursor : `resource`/`meta` (PermissionEngine), `permissions/delete` (403 catalogue), IAM permissions PATCH inline, `common/files/[id]` via `canManageFileAsset`.
+
+### Suite ouverte
+~100 candidats restants (vie-scolaire, CMS, pilotage, sites-clients, account*) — triage même méthode, hors ack.
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9 · `test:doctype:harden` 2/2
+
+---
+
 ## 2026-09-01 — SEC IAM : escalade `roles/[id]` + cluster
 
 ### Critique — privilege escalation

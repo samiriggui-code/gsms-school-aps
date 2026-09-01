@@ -4,12 +4,16 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import type { RhComplianceStatus } from '@/lib/gestion-ressources/rh-conformite-compliance';
 import { listGlobalComplianceUsers } from '@/lib/governance/global-user-compliance';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 const STATUSES = new Set<RhComplianceStatus>(['COMPLIANT', 'WARNING', 'NON_COMPLIANT']);
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.conformiteView)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const page = Math.max(1, Number(sp.get('page') || 1));

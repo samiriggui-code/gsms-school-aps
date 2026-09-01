@@ -1356,6 +1356,8 @@ Les 5 fuites fermées cette semaine (`common/files`, `/uploads`, gouvernance sto
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après (build complet si la RAM le permet), pas de nouvel ack nécessaire pour ce périmètre — je vérifierai le résultat en profondeur comme pour les 5 précédents, pas sur ton rapport seul. Si un fichier de la liste s'avère être un faux positif de mon grep (ex. protégé autrement, par un wrapper que je n'ai pas repéré), note-le simplement plutôt que de le bricoler.
 
+✅ traité — ack audit 109 + priorité IAM/resource/files confirmées. Suite = module compliance (entrée suivante) puis triage reste candidats.
+
 ## 2026-09-01 — triage manuel de la liste 109 : 2 faux positifs confirmés, 1 vraie faille trouvée (module compliance entier)
 
 Pendant que tu démarres, j'ai lu moi-même les candidats les plus probables (lecture seule, pas de code) pour affiner la liste avant que tu n'y passes du temps.
@@ -1393,3 +1395,5 @@ Liste complète, avec le gate attendu (copier le pattern déjà posé sur `gouve
 Priorise `items/[id]/validate` et `items/[id]/reject` (écriture sur le jugement d'audit) avant le reste du module. Pas de code écrit par moi.
 
 Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Le reste des ~100 candidats restants (hors les 4 faux positifs ci-dessus et hors compliance déjà traité ici) reste à trier de ton côté avec la méthode habituelle — pas besoin de me repasser par un nouvel ack pour ce périmètre.
+
+✅ traité — `conformiteView`/`conformiteEdit` sur les 11 routes `gouvernance-donnees/compliance/*` (validate/reject en tête). Pattern storage. `tsc` 0 · `test:doctype` 9/9 · harden 2/2. Voir HANDOFF-CURSOR.
