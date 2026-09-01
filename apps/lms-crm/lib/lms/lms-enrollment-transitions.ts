@@ -1,4 +1,4 @@
-import { EnrollmentStatus } from '@repo/database';
+import { EnrollmentStatus } from '@repo/database/browser';
 
 /** Transitions staff CRM pour Enrollment LMS (G12). */
 const ALLOWED: Partial<Record<EnrollmentStatus, EnrollmentStatus[]>> = {

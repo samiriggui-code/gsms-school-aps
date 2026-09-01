@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@repo/database';
-import { FinanceDevisStatus, FinancePaymentStatus } from '@repo/database';
+import { FinanceDevisStatus, FinancePaymentStatus } from '@repo/database/browser';
 import { financeDecimalNum } from '@/lib/finance/finance-decimal';
 import { countPendingInvoices } from '@/lib/finance/finance-alerts';
 

@@ -1,5 +1,5 @@
 import type { SchoolInternalService } from '@repo/database';
-import { LandingTeamVolet } from '@repo/database';
+import { LandingTeamVolet } from '@repo/database/browser';
 import type { PublicCatalogTeamMember } from '@/lib/catalog-public-types';
 import { getAvatarUrl } from '@/lib/helpers';
 

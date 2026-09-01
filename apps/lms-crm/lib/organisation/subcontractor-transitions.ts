@@ -1,4 +1,4 @@
-import { SubcontractorQualificationStatus } from '@repo/database';
+import { SubcontractorQualificationStatus } from '@repo/database/browser';
 
 /** WF-39 transitions staff (happy path + branches). */
 const ALLOWED: Partial<

@@ -171,8 +171,8 @@ async function main() {
   }
 
   const webhookStandardUrl =
-    (env.N8N_WEBHOOK_STANDARD_URL || '').trim() ||
-    (n8nPublic ? `${n8nPublic}/webhook/gsms/standard` : '');
+    (n8nPublic ? `${n8nPublic}/webhook/gsms/standard` : '') ||
+    (env.N8N_WEBHOOK_STANDARD_URL || '').trim();
 
   const envUpdates = {
     WORKFLOWS_N8N_STANDARD_ENABLED: 'true',

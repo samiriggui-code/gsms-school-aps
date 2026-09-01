@@ -8,6 +8,7 @@ export {
   EnrollmentStatus,
   FormationSessionEnrollmentStatus,
   FinanceDevisStatus,
+  FinancePaymentStatus,
   LeadStatus,
   ComplianceItemStatus,
   SubcontractorQualificationStatus,
