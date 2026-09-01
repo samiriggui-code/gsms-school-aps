@@ -711,4 +711,12 @@ Question posée : enrichir la doc pour plus tard (EVE reste dernière priorité)
 
 Écrit dans `HANDOFF-CLAUDE.md`. C'est le chantier le plus gros ouvert cette semaine — j'ai dit explicitement à Cursor de revenir avec des questions plutôt que de deviner sur un sujet de cette taille.
 
+### AgentTask + OPS-03 livrés et vérifiés en profondeur (`5b85ab7`)
+
+Diff relu fichier par fichier. `AgentTask` (Prisma) exactement conforme à la spec, `migrate diff` propre avant (1 diff additif) et vide après application locale (`db push` fait moi-même pour vérifier, pas supposé). `agent-task-processor.ts`/`ai-run-processor.ts` utilisent un claim atomique (`updateMany` conditionnel sur le statut avant exécution) pour éviter le double-traitement — pas demandé explicitement, bon réflexe d'ingénierie de Cursor. Le scan readiness du premier `kind` EVE est honnêtement marqué placeholder dans le code, pas déguisé en calcul réel.
+
+Migration d'AI-03 vers l'async : logique prompt/schema Anthropic d'origine intégralement conservée (juste scindée enqueue/exécution), route à 202 correct, ancienne fonction synchrone gardée en `@deprecated` plutôt que supprimée sèchement (pas de caller cassé). UI avec polling conditionnel intelligent (3s seulement pendant qu'un run est actif, arrêt sinon).
+
+`tsc` 0, `test:doctype` 9/9, `harden` 2/2, `migrate diff` vide. Rien à corriger — commit propre et soigné. Cursor continue directement sur la suite EVE V1 (tool registry, UI orbe/chat), cadrage déjà posé, pas de nouvel aller-retour nécessaire.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.

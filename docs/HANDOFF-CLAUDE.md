@@ -1672,3 +1672,18 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après chaque étape signific
 **✅ ack OPS-05** — proposition vue et bonne : seed dédié préfixé `DEMO —`, idempotent, guide staff, pas de mode démo séparé ni de deuxième environnement. Go direct, pas besoin d'attendre plus. Note pour plus tard : le point « AI brouillon pédagogique (post OPS-03) » de ton guide devra être ajusté une fois OPS-03 devenu le socle EVE plutôt qu'un simple worker isolé — pas bloquant maintenant, juste à garder en tête.
 
 ✅ traité — OPS-03 livré (`processPendingAiRuns` + worker + draft async 202 + UI poll). Socle prêt pour élargir `AgentTask`. Suite = Prisma AgentTask + EVE V1 (voir HANDOFF-CURSOR). OPS-05 go ack — seed/guide après socle worker.
+
+## 2026-09-01 — ✅ AgentTask + OPS-03 vérifiés en profondeur (`5b85ab7`), rien à corriger
+
+Relu tout le diff fichier par fichier, pas juste le résumé :
+
+- **Schéma `AgentTask`** : exactement ma spec (kind/status/payload/result/error/timestamps), doc-commenté pour expliciter la distinction avec `AiRun`/`AgentConversation`. `migrate diff` avant = 1 diff propre (CREATE TABLE/TYPE/INDEX/FK, rien d'autre touché) ; appliqué localement (`db push`) ; `migrate diff` après = vide. Synchronisé, additif, rien cassé.
+- **`agent-task-processor.ts`/`ai-run-processor.ts`** : pattern `updateMany({where:{id,status:'PENDING'}})` avant exécution pour claim atomique (évite le double-traitement si jamais deux workers tournent) — bonne pratique que je n'avais pas demandée explicitement, bien vu.
+- **`executeSessionReadinessScan`** : honnêtement marqué « Placeholder V1 » dans le code, pas déguisé en score réel — exactement l'esprit voulu, le kind prouve le mécanisme de bout en bout, le vrai calcul viendra après.
+- **Migration AI-03 vers async** : `enqueuePedagogicalOutlineDraft`/`executePedagogicalOutlineDraftRun` dans `packages/api-core` — le prompt/schema/logique Anthropic d'origine est intégralement conservé (rien perdu dans le déplacement), juste scindé enqueue/exécution. Route retourne 202 correctement. `draftSessionPedagogicalOutline` gardée en compat `@deprecated` plutôt que supprimée à sec — bon réflexe, pas de caller cassé ailleurs.
+- **UI** : `refetchInterval` conditionnel (poll 3s seulement si un run est PENDING/RUNNING, sinon `false`) — pas de polling infini inutile. Bouton désactivé + libellé « Génération… » pendant l'attente.
+- **Worker** : cron 15s dev / 30s prod, les deux pollers (`AiRun`+`AgentTask`) en parallèle (`Promise.all`), enregistré dans `run.ts`.
+
+`tsc --noEmit` 0, `test:doctype` 9/9, `harden` 2/2, `migrate diff` vide après application locale — tout vert, rien à reprendre.
+
+**Continue directement sur la suite EVE V1** (tool registry, UI orbe/chat) comme prévu — pas de nouvel ack nécessaire, le cadrage est déjà posé plus haut. Bon travail sur ce commit, c'est du travail soigné.
