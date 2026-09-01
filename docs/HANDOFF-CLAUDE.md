@@ -1692,6 +1692,8 @@ Relu tout le diff fichier par fichier, pas juste le résumé :
 
 ✅ traité — LMS-01/02 (devoirs + modération discussions) + NAF-14 (`condition`/`ifOwner` moteur + FormationSession formateur) + OPS-05 (`pnpm demo:seed` + `DEMO-15MIN-STAFF.md`) livrés sur demande « tout les 3 ». Voir HANDOFF-CURSOR.
 
+✅ traité — lot ordonné utilisateur (AI-02 async → LMS portail → EVE readiness_scan → NAF-14 list → BPF Cerfa) + commit `2acc3cf`. Voir HANDOFF-CURSOR §2026-09-02.
+
 ## 2026-09-02 — étape 1 du plan clean-up faite, cadrage des étapes 2 et 3
 
 Étape 1 (supprimer le mort) close hier : 229 fichiers, `79d729c`+`dd1ae0c`, vérifié par graphe de dépendances complet + `tsc` + `test:doctype` 12/12 + build production complet (exit 0, toutes les pages générées).
@@ -1701,14 +1703,14 @@ Avant de cadrer 2 et 3, vérifié l'ampleur réelle plutôt que de deviner :
 ### Étape 2 — `packages/ui` + codemod imports
 
 - `apps/lms-crm/components/ui/` = **102 fichiers**.
-- Importé par **823 fichiers** à travers l'app (`grep -rl "from '@/components/ui/"` ) — c'est le vrai chiffre du blast radius, pas une estimation.
+- Importé par **901 fichiers** à travers l'app. **Correction** : j'avais d'abord annoncé 823, mais mon grep ne cherchait que les imports en guillemets simples (`from '@/components/ui/`) — le repo mélange guillemets simples et doubles, et ~78 fichiers importent avec des doubles (`from "@/components/ui/card"`). Recompté avec `grep -rlE "from ['\"]@/components/ui/"` (les deux styles) : **901**, confirmé stable en recomptant deux fois. Le codemod doit gérer les deux styles de guillemets, pas juste un.
 - `packages/ui` n'existe pas encore.
 - **Piège trouvé en échantillonnant** (`button.tsx`) : les composants `components/ui/*` importent `@/lib/utils` (pour `cn()`) — un chemin app-local. Un déplacement brut vers `packages/ui` cassera la compilation du package tant que `cn()` (et tout autre import `@/...` similaire dans `components/ui/*`) n'a pas été déplacé avec, ou re-exporté proprement. Vérifie systématiquement les imports internes de `components/ui/*` avant de bouger quoi que ce soit, pas juste `button.tsx`.
 
 Périmètre :
 1. `packages/ui/package.json` — même structure que `packages/api-core` (`name: @repo/ui`, `main`/`types: src/index.ts`, `private: true`). Dépendances : `class-variance-authority`, `radix-ui`, `lucide-react`, etc. — reprends ce que `components/ui/*` utilise réellement (`package.json` racine de `apps/lms-crm` a déjà ces deps, à dupliquer/déclarer côté package).
 2. Déplace `components/ui/*` → `packages/ui/src/*`, avec `cn()`/`lib/utils` (et tout autre import interne app-local) déplacé ou réexporté avec.
-3. Codemod des 823 fichiers : `@/components/ui/X` → `@repo/ui` (ou le sous-chemin choisi, à toi de voir l'export map). Fais-le en un script (jscodeshift, ou un simple script Node regex-based sur les imports — le volume ne justifie pas de le faire à la main), pas fichier par fichier.
+3. Codemod des 901 fichiers (guillemets simples **et** doubles) : `@/components/ui/X` → `@repo/ui` (ou le sous-chemin choisi, à toi de voir l'export map). Fais-le en un script (jscodeshift, ou un simple script Node regex-based sur les imports — le volume ne justifie pas de le faire à la main), pas fichier par fichier.
 4. `tsc --noEmit` + build complet après — le build est le seul juge fiable ici vu le volume, comme pour le clean-up d'hier.
 5. Un seul commit si possible (même logique qu'hier : facile à revert d'un coup si un import a été mal réécrit).
 
