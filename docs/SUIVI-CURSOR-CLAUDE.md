@@ -576,4 +576,18 @@ Gates rejoués moi-même (pas sur le rapport) : `tsc --noEmit` 0, `test:doctype`
 
 **Les 6 failles d'autorisation trouvées cette semaine (`common/files`, `/uploads`, gouvernance storage, finance legacy, IAM `roles/[id]`+cluster, gouvernance compliance) sont maintenant toutes fermées et vérifiées indépendamment.** Cursor continue sur les ~100 candidats restants de l'audit structurel (vie-scolaire, CMS, pilotage, gestion-sites-clients, account) avec la même méthode — pas de nouveau cadrage nécessaire, chantier déjà assigné.
 
+### Gros lot audit (80 fichiers, `8c3d8f3`) vérifié — clean, + triage du reste laissé « à trancher » : 3 vraies failles, plus larges que le reste
+
+Vérifié par tally sur le diff complet (grep des constantes de permission utilisées, pas juste le tableau du rapport Cursor) : cohérent par domaine, toutes les constantes existent. Échantillon de 9 fichiers relus en entier sur les cas limites (catch-all sites-clients, download PDF pilotage, split GET/PATCH formations et qcm-banks) — rien à corriger. Gates rejoués : `tsc` 0, `test:doctype` 9/9, `harden` 2/2.
+
+Cursor avait laissé 6 fichiers « à trancher » plutôt que de deviner — lu chacun (pas juste la route HTTP, aussi le service appelé derrière) avant de répondre :
+- 2 faux positifs confirmés (`common/presence` : pas de PII, écriture toujours scopée à soi-même ; `common/export/preview` générique : le serveur ne fetch rien, les données viennent du corps de la requête déjà vues par l'appelant côté page).
+- **3 vraies failles, plus significatives que le lot d'hier** parce qu'elles *contournent* les gates qu'on vient de poser :
+  1. `workspace/[viewKey]/route.ts` — route générique unique donnant accès à 18 vues sur 5 domaines (`finance-*`, `comm-*`, `support-*`, `gouvernance-*`, `pilotage-*`, trouvé dans `packages/api-core/src/module-workspace.ts:1245`), zéro permission. Peut lire le budget finance ou la corbeille gouvernance sans les gates dédiés qu'on vient d'installer sur les routes directes — un vrai contournement, pas juste un oubli isolé.
+  2. `reports/jobs` POST — `ReportJobService.createJob` (`packages/api-core/src/report-jobs.ts`) ne vérifie que l'existence du `templateKey`, jamais de permission. Le registre (`packages/report-engine/src/registry.ts`) contient `rh.contrat-travail` avec un `userId` **libre** (pas restreint à soi-même) et `finance.monthly-summary` (CA, impayés). Le `[id]` GET est bien scopé par `requestedById`, donc correct une fois la création gated.
+  3. `common/export/official-preview` — même bug, périmètre plus petit (4 templateKeys RH/academic, `userId` libre). Token `randomUUID()` correct (pas le bug `randomId()` prévisible fermé plus tôt), le problème est la génération elle-même, pas le token.
+- 2 points mineurs notés pour cohérence : `common/sync` (resync multi-module sur session seule, recommandé `securiteEdit`) et `common/email-templates` (catalogue interne, recommandé `communicationView`).
+
+Écrit dans `HANDOFF-CLAUDE.md` avec les deux tables de mapping préfixe→permission (viewKey et templateKey). Pas de code écrit par moi — priorité donnée aux deux qui rouvrent des trous déjà fermés (`workspace`, `reports/jobs`).
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.

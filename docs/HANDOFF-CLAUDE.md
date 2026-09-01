@@ -1400,4 +1400,44 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Le reste des ~100 can
 
 Continue directement sur les ~100 candidats restants de l'audit (`vie-scolaire`, CMS/marketing/SEO, `pilotage-supervision`, `gestion-sites-clients`, `securite-configuration/acces/account*`) avec la même méthode : pour chaque fichier, vérifie d'abord s'il matche un des 2 motifs faux-positif déjà identifiés (check inline `permissionSlugs.includes(...)`, fonction `can*(session, entity)` ownership-scoped) avant de conclure à un trou ; sinon pose le gate cohérent avec le domaine du module (`CRM_PERMISSION.academiqueView/Edit` pour vie-scolaire, etc., même logique que finance/gouvernance). Pas de nouvel ack nécessaire pour ce périmètre — je vérifierai en profondeur comme d'habitude à chaque lot.
 
+✅ traité — vérifié indépendamment (`8c3d8f3`) : tally des constantes utilisées sur les 80 fichiers (grep sur le diff complet, pas juste ton résumé) confirme la cohérence par domaine (`academiqueView/Edit` ×61, `communicationView/Edit` ×25, `pilotageView` ×12, `conformiteView/Edit` ×5, `ressourcesView/Edit` ×3, `supportView`/`securiteView` ×1 chacun), toutes les constantes existent bien dans `crm-permissions.ts`. Échantillon relu en entier sur les cas limites (catch-all `gestion-sites-clients/[...path]` avec split GET→View/mutation→Edit par méthode, `rapports/[id]/download` avec permission avant le stream du PDF, `formations/[slug]` GET/PATCH split correct, `qcm-banks/[bankId]` GET/PATCH/DELETE) : rien à corriger. Gates rejoués moi-même : `tsc --noEmit` 0, `test:doctype` 9/9, `harden` 2/2.
+
+## 2026-09-01 — le point « reste à trancher » : 3 vraies failles dedans, plus significatives que le reste du lot
+
+J'ai lu moi-même les 6 fichiers de ta liste « reste à trancher » avant de te renvoyer une décision (lecture seule, pas de code) :
+
+**Faux positifs confirmés — ne pas toucher :**
+- `common/presence` : statut en ligne/occupé/absent, cross-user en lecture mais aucune PII, écriture toujours scopée sur `session.user.id`. Légitimement partagé portail/CRM/formateur, rien à protéger.
+- `common/export/preview` (export datagrid générique) : le serveur ne va rien chercher lui-même — `rows`/`headers` viennent du corps de la requête, donc c'est un render PDF de données que l'appelant a déjà sous les yeux (page déjà gated ailleurs). Pas un vecteur d'accès.
+
+**3 vraies failles, plus larges en impact que la plupart du lot d'hier — toutes vérifiées en lisant le code appelé, pas juste la route HTTP :**
+
+1. **`app/api/sections/workspace/[viewKey]/route.ts` — la plus grave des trois.** Route générique unique, `ModuleWorkspaceService.getView(viewKey, …)`, session seule. `MODULE_WORKSPACE_VIEW_KEYS` (`packages/api-core/src/module-workspace.ts:1245`) couvre **18 vues sur 5 domaines** : `finance-budget/paiements/rapports`, `comm-cms-pages/contenus/campagnes/seo-*`, `support-tickets/incidents`, `gouvernance-storage/demandes/corbeille/audit`, `pilotage-alertes/indicateurs/rapports/risques`. Concrètement : cette route **contourne tous les gates qu'on vient de poser cette semaine** sur les routes dédiées (`finance/budget`, `gouvernance-donnees/storage/*`…) — n'importe quel staff connecté peut lire le budget finance ou la corbeille de gouvernance via `GET /api/sections/workspace/gouvernance-corbeille` sans la permission dédiée. Fix : dispatcher la permission par préfixe du `viewKey`, même table que le reste de l'audit :
+
+| Préfixe `viewKey` | Permission |
+|---|---|
+| `finance-*` | `CRM_PERMISSION.financeView` |
+| `comm-*` | `CRM_PERMISSION.communicationView` |
+| `support-*` | `CRM_PERMISSION.supportView` |
+| `gouvernance-*` | `GOVERNANCE_PERMISSION.storageAdmin` |
+| `pilotage-*` | `CRM_PERMISSION.pilotageView` |
+
+2. **`app/api/reports/jobs/route.ts` (POST) — même famille de contournement.** `ReportJobService.createJob` (`packages/api-core/src/report-jobs.ts`) ne vérifie **aucune permission**, juste que le `templateKey` existe (`getReportTemplate`, `packages/report-engine/src/registry.ts`). Le registre contient `rh.fiche-collaborateur`, `rh.contrat-travail` (**avec `userId` en paramètre libre, pas restreint à soi-même**), `finance.monthly-summary` (« CA encaissé, impayés, indicateurs pipeline »), `academic.fiche-candidat`, `qualiopi.checklist`, etc. Le GET liste + `[id]` GET sont bien scopés `requestedById === session.user.id` (auto-service correct, laisse tel quel), mais **la création elle-même n'est pas gated** — donc n'importe quel staff peut générer (et ensuite consulter, puisque c'est lui qui l'a demandé) un contrat de travail de n'importe quel collègue ou la synthèse financière mensuelle, juste en connaissant le `templateKey`. Fix : sur le POST, avant `createJob`, vérifier une permission selon le préfixe de `templateKey` :
+
+| Préfixe `templateKey` | Permission |
+|---|---|
+| `rh.*` | `CRM_PERMISSION.ressourcesView` |
+| `finance.*` | `CRM_PERMISSION.financeView` |
+| `academic.*` | `CRM_PERMISSION.academiqueView` |
+| `qualiopi.*` | `GOVERNANCE_PERMISSION.conformiteView` |
+| `pilotage.*` | `CRM_PERMISSION.pilotageView` |
+
+3. **`app/api/common/export/official-preview/route.ts` (POST) — même bug exact, périmètre plus petit.** `ALLOWED_KEYS` = `rh.fiche-collaborateur`, `rh.fiche-formateur`, `rh.contrat-travail`, `academic.fiche-etudiant`, avec `body.userId` totalement libre (pas de contrôle que l'appelant a le droit de voir ce dossier). Le token de preview est un vrai `randomUUID()` (pas prévisible, contrairement au bug `randomId()` fermé plus tôt cette semaine) donc pas un problème de ce côté — le problème est la **génération** elle-même, ouverte à tout staff. Fix : `rh.*` → `CRM_PERMISSION.ressourcesView`, `academic.*` → `CRM_PERMISSION.academiqueView`, avant de créer le job et le token.
+
+**2 points mineurs, à corriger dans la foulée pour la cohérence (pas urgents) :**
+- `common/sync` (POST) : déclenche un resync multi-modules (RH, finance, vie scolaire, candidats, équipements) sur simple session — recommande `CRM_PERMISSION.securiteEdit` (même permission « élevée » que celle déjà utilisée en alternative sur `roles/[id]/permissions`). GET (liste des presets, informationnel) peut rester tel quel.
+- `common/email-templates` (GET) : catalogue de templates e-mail + mapping événements, pas de PII mais de la config interne — aligne sur `CRM_PERMISSION.communicationView` par cohérence avec le reste du domaine communication traité hier.
+
+Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Pas de nouvel ack nécessaire — priorise le n°1 (`workspace/[viewKey]`) et le n°2 (`reports/jobs`), ce sont les deux qui rouvrent des trous qu'on vient de fermer ailleurs.
+
 ✅ traité — lot audit ~80 routes gated (vie-scolaire→academique*, CMS/marketing/SEO→communication*, pilotage→pilotageView, sites→ressources*, conformite/qualiopi/référent→conformite*, stats sécu/support). Faux positifs / intentionnels documentés (resource/meta, account, portal, presence, IAM inline). `tsc` + doctype — voir HANDOFF-CURSOR.
