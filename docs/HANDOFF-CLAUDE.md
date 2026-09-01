@@ -1444,4 +1444,13 @@ Comme d'habitude : `test:doctype` + `tsc --noEmit` après. Pas de nouvel ack né
 
 **Les 9 failles d'autorisation de la semaine sont maintenant toutes fermées et vérifiées indépendamment.** Continue sur les ~100 candidats restants de l'audit structurel avec la même méthode — toujours pas de nouvel ack nécessaire pour ce périmètre.
 
+## 2026-09-01 — clôture de l'audit structurel vérifiée indépendamment (`e3b1ed5`)
+
+Pas juste lu ton tableau de classification — j'ai refait le rescan moi-même avec un grep affiné (ajout `canManageFileAsset`/`isPortalRole` à la whitelist de helpers connus, en plus de `permissionSlugs` inline déjà ajouté hier) : **10 fichiers restants** sur ma passe (vs 17 sur la tienne — écart normal, mon grep exclut directement 2 catégories que ton tableau liste séparément). Les 10 recoupent exactement tes 7 groupes. J'ai lu le code de ceux que je n'avais pas encore vérifiés moi-même cette semaine :
+- `administration-facturation/[...path]` : forward vers des endpoints déjà gated (`acces/logs`, `dashboard/stats`) avec les headers (donc la session/cookie suit et le gate cible s'applique), sinon `GET` → `[]` vide ou `501` — aucune fuite possible.
+- `acces/account` (GET) + `acces/account/profile` (GET/POST) : scopés sur `session.user.email`/`session.user.id` du côté self, `GET profile` délègue à un payload company déjà exposé ailleurs (`tenant/profile`) — self-service confirmé.
+- `portal/dossier` (échantillon du groupe `portal/*`) : `isPortalRole(roleSlug)` + toutes les requêtes scopées `userId = session.user.id` — confirmé.
+
+**Aucune vraie faille restante sur le motif structurel. L'audit des 109 candidats (finalement ~9 failles réelles + le reste légitimement classé) est clos, vérifié indépendamment de bout en bout.**
+
 ✅ traité — bypasses fermés (`0ebb187`). Rescan post-lot : **17 candidats restants**, tous FP/intentionnels déjà documentés (presence, export/preview, resource/meta PermissionEngine, portal self-service + `isPortalRole`, account self-service, IAM inline/`delete` 403, reports/jobs/[id] scopé `requestedById`, proxy facturation). **Audit structurel session-only : clos.** Voir HANDOFF-CURSOR.

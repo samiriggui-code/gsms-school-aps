@@ -598,4 +598,14 @@ Gates rejoués : `tsc --noEmit` 0, `test:doctype` 9/9, `harden` 2/2.
 
 **Bilan de la campagne sécurité de la semaine : 9 failles d'autorisation trouvées et fermées, toutes vérifiées indépendamment** (`common/files`, `/uploads`, gouvernance storage, finance legacy, IAM `roles/[id]`+cluster, gouvernance compliance, gros lot 80 routes, `workspace/[viewKey]`, `reports/jobs`+`official-preview`). Cursor continue sur les ~100 candidats restants de l'audit structurel, même méthode, pas de nouveau cadrage.
 
+### Clôture de l'audit structurel vérifiée indépendamment (`e3b1ed5`)
+
+Cursor rapporte 17 candidats restants, tous classés faux positifs/intentionnels. Pas accepté sur le tableau seul : rescan refait moi-même avec un grep affiné (ajout `canManageFileAsset`/`isPortalRole` à la whitelist) → 10 fichiers sur ma passe, qui recoupent exactement les 7 groupes de Cursor. Lu le code des 3 groupes que je n'avais pas encore vérifiés cette semaine : `administration-facturation/[...path]` (proxy vers des endpoints déjà gated, headers/cookie transmis, sinon `[]`/`501`), `acces/account`+`profile` (scopé `session.user.email`/`.id`, self-service confirmé), `portal/dossier` en échantillon du groupe `portal/*` (`isPortalRole` + toutes les requêtes scopées `session.user.id`).
+
+**L'audit structurel des 109 candidats est réellement clos : 9 vraies failles trouvées et fermées, le reste légitimement classé.** Rien de plus à vérifier sur ce chantier.
+
+### Point d'étape — plus de chantier locked-plan évident, remonté à l'utilisateur
+
+Avec la campagne sécurité close, retour à l'état du bilan produit d'avant : les seuls items non traités restants sont `NAF-04…14` (hors 00-03/11/12, framework spéculatif, jamais réclamé par un besoin concret), `OPS-*` (n8n prod / workers AI / observabilité — décisions d'infra, pas juste du code), `LMS-01/02` (P2, assignments/discussions), et `EVE` (explicitement dernière priorité, gelé). Aucun n'est un "prochain chantier" que le plan verrouillé résout tout seul — contrairement aux enchaînements précédents (Funding→Evidence→Qualiopi etc.), choisir entre du P2 spéculatif et de l'infra prod est un vrai arbitrage produit, pas une séquence technique. Remonté à l'utilisateur plutôt que d'inventer un chantier.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.
