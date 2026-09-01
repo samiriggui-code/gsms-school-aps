@@ -5,12 +5,17 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { getStoredFile } from '@repo/storage';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.pilotageView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await params;
   const asset = await prisma.fileAsset.findFirst({

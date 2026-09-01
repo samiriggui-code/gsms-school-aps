@@ -5,6 +5,8 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import type { FormationSessionDaySlot } from '@repo/database';
 import { loadEmargementReportPayload } from '@/lib/suivi-formations/emargement-report-payload';
 import { loadDayDetail } from '@/lib/suivi-formations/session-emargement-service';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ sessionId: string; dayId: string }> };
 
@@ -16,6 +18,9 @@ function isValidSlot(value: string | null): value is FormationSessionDaySlot {
 export async function GET(request: NextRequest, context: Ctx) {
   const sessionAuth = await getServerSession(authOptions);
   if (!sessionAuth) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(sessionAuth, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { sessionId, dayId } = await context.params;
   const slotParam = request.nextUrl.searchParams.get('slot');

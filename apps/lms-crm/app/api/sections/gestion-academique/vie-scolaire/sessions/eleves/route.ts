@@ -4,6 +4,8 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { listEligibleSessionLearners } from '../_eligible-session-learners';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 /**
  * Apprenants éligibles à l'inscription session :
@@ -14,6 +16,9 @@ import { listEligibleSessionLearners } from '../_eligible-session-learners';
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const url = new URL(request.url);

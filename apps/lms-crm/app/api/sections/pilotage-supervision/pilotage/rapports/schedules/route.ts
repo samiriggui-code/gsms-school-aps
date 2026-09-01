@@ -4,10 +4,15 @@ import { ReportScheduleService, ReportGenerationSkippedError } from '@repo/api-c
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.pilotageView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const service = new ReportScheduleService(prisma);
@@ -22,6 +27,9 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.pilotageView)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: { id?: string; enabled?: boolean };
   try {
@@ -48,6 +56,9 @@ export async function PATCH(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.pilotageView)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: { id?: string };
   try {

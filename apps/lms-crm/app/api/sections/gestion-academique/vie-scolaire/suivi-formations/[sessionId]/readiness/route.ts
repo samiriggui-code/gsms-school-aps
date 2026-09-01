@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { SessionReadinessStatus } from '@repo/database';
 import { nextSessionReadiness } from '@/lib/session/session-readiness-transitions';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const STATUSES = new Set(Object.values(SessionReadinessStatus));
 
@@ -18,6 +20,9 @@ type RouteParams = { params: Promise<{ sessionId: string }> };
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { sessionId } = await params;
   try {
@@ -107,6 +112,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 export async function GET(_request: NextRequest, { params }: RouteParams) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { sessionId } = await params;
   const row = await prisma.formationSession.findUnique({

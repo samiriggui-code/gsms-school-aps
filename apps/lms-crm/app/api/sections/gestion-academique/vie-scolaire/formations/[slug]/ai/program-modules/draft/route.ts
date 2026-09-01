@@ -4,6 +4,8 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { draftFormationProgramModules } from '@/lib/ai/formation-program-modules-ai';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ slug: string }> };
 
@@ -11,6 +13,9 @@ type Ctx = { params: Promise<{ slug: string }> };
 export async function POST(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { slug } = await context.params;
   if (!slug?.trim()) return fail('Slug manquant.', 400);

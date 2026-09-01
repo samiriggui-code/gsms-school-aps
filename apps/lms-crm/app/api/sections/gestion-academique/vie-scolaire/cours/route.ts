@@ -2,12 +2,17 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 /** G12 — registre CRM LmsCourse (Prisma Course). */
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const courses = await prisma.course.findMany({
@@ -55,6 +60,9 @@ export async function GET() {
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: { title?: string; description?: string };
   try {

@@ -5,12 +5,17 @@ import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { MarketingCampaignStatus } from '@repo/database';
 import { createWorkflowEngine } from '@repo/api-core';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ campaignId: string }> };
 
 export async function PATCH(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { campaignId } = await context.params;
   let body: Record<string, unknown>;
@@ -64,6 +69,9 @@ export async function PATCH(request: NextRequest, context: Ctx) {
 export async function DELETE(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { campaignId } = await context.params;
   try {

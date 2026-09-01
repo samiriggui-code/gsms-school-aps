@@ -10,6 +10,7 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 
 import { DEFAULT_LANDING_SECTIONS, type Prisma } from '@repo/database';
 import { createWorkflowEngine } from '@repo/api-core';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 
 
@@ -53,6 +54,10 @@ export async function GET() {
 
   if (!session) return fail('Unauthorized request', 401);
 
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationView)) {
+    return fail('Forbidden', 403);
+  }
+
 
 
   try {
@@ -88,6 +93,10 @@ export async function PATCH(request: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session) return fail('Unauthorized request', 401);
+
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
 
 

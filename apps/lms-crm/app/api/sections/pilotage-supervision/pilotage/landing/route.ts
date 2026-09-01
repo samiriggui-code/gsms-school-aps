@@ -3,6 +3,7 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { PilotageHubService } from '@repo/api-core';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
 
 async function requireSession() {
   const session = await getServerSession(authOptions);
@@ -13,6 +14,9 @@ async function requireSession() {
 export async function GET() {
   const session = await requireSession();
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.pilotageView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const service = new PilotageHubService(prisma);

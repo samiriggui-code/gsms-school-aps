@@ -8,6 +8,8 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { serializeLandingTeamOfferForCrm } from '@/lib/catalog-team-serialize';
 import { invalidateCatalogTeamListCache } from '@/lib/catalog-public-cache';
 import { landingTeamUserSelect } from '../_user-select';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const PatchSchema = z.object({
   catalogStatus: z.enum(['ACTIVE', 'DRAFT', 'ARCHIVED']).optional(),
@@ -29,6 +31,9 @@ export async function GET(
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { userId } = await context.params;
   if (!userId?.trim()) return fail('Identifiant manquant.', 400);
@@ -51,6 +56,9 @@ export async function PATCH(
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { userId } = await context.params;
   if (!userId?.trim()) return fail('Identifiant manquant.', 400);
@@ -113,6 +121,9 @@ export async function DELETE(
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { userId } = await context.params;
   if (!userId?.trim()) return fail('Identifiant manquant.', 400);

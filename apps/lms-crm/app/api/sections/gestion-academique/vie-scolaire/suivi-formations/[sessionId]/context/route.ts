@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { loadSuiviSessionContext } from '@/lib/suivi-formations/session-suivi-context';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ sessionId: string }> };
 
@@ -10,6 +12,9 @@ type Ctx = { params: Promise<{ sessionId: string }> };
 export async function GET(_request: NextRequest, context: Ctx) {
   const sessionAuth = await getServerSession(authOptions);
   if (!sessionAuth) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(sessionAuth, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { sessionId } = await context.params;
 

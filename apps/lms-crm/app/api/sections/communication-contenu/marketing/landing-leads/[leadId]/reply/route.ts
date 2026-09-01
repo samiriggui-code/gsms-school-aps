@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { sendEmail } from '@/services/send-email';
 import { LANDING_LEAD_SOURCES } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ leadId: string }> };
 
@@ -16,6 +18,9 @@ type Body = {
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { leadId } = await context.params;
 

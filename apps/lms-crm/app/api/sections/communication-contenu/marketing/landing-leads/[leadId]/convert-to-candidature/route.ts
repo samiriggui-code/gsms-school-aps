@@ -10,6 +10,8 @@ import {
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { createWorkflowEngine } from '@repo/api-core';
 import { afterCandidatureCreated } from '@/lib/of/candidature-assessment-bootstrap';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ leadId: string }> };
 
@@ -20,6 +22,9 @@ type Ctx = { params: Promise<{ leadId: string }> };
 export async function POST(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { leadId } = await context.params;
 

@@ -6,10 +6,15 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import type { FormationLibraryApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/types/catalog-api';
 import type { FormationVitrineTrack } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/data/formation-vitrine-catalog';
 import { effectiveTraineesBandForFormationScalars } from '@/lib/formation-trainee-band';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 export async function GET(_request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const [formations, offers] = await Promise.all([

@@ -11,12 +11,17 @@ import {
 import { resolveFormationSessionLocation } from '@/lib/suivi-formations/session-location';
 import { summarizeSlotDocumentsForDay } from '@/lib/suivi-formations/session-slot-documents';
 import { loadSuiviSessionContext } from '@/lib/suivi-formations/session-suivi-context';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ sessionId: string; dayId: string }> };
 
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { sessionId, dayId } = await context.params;
 

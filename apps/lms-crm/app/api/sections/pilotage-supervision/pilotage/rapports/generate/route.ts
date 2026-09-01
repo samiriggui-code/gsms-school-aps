@@ -17,6 +17,8 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { prisma } from '@/lib/prisma';
 import { uploadFile } from '@repo/storage';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const PERIODS = new Set<PilotagePeriod>(['day', 'week', 'month', 'quarter', 'year']);
 
@@ -28,6 +30,9 @@ function parsePeriod(raw: unknown): PilotagePeriod {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.pilotageView)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: { templateId?: string; period?: string; label?: string; description?: string };
   try {

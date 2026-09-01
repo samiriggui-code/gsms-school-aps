@@ -5,10 +5,15 @@ import { issueFormationAttestation, createWorkflowEngine } from '@repo/api-core'
 import { Prisma } from '@repo/database';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { searchParams } = new URL(request.url);
   const page = Math.max(1, Number(searchParams.get('page') || 1));
@@ -63,6 +68,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== 'object') return fail('Corps JSON attendu.', 400);

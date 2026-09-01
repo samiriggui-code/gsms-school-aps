@@ -3,12 +3,17 @@ import { getServerSession } from 'next-auth/next';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const META_FIELDS = ['name', 'companyCity', 'siret', 'directorFullName', 'mainActivityDescription'] as const;
 
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const [setting, landing] = await Promise.all([
@@ -40,6 +45,9 @@ export async function GET() {
 export async function PATCH(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: Record<string, unknown>;
   try {

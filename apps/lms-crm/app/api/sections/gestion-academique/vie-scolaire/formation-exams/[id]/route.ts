@@ -9,12 +9,17 @@ import {
   formationExamDetailInclude,
 } from '../_serialize-formation-exam';
 import { loadFormationExamDetail } from '@/lib/vie-scolaire/formation-exam-detail-loader';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await context.params;
   const item = await loadFormationExamDetail(id);
@@ -25,6 +30,9 @@ export async function GET(_request: NextRequest, context: Ctx) {
 export async function PATCH(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id } = await context.params;
   const body = await request.json().catch(() => null);

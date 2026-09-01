@@ -3,12 +3,17 @@ import { EnrollmentStatus } from '@repo/database';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 /** G12 — admin inscriptions LMS (Prisma Enrollment / DocType LmsEnrollment). */
 
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { searchParams } = new URL(request.url);
   const courseId = searchParams.get('courseId')?.trim() || undefined;

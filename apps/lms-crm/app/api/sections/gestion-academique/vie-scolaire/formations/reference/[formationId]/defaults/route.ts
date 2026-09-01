@@ -4,6 +4,8 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { effectiveTraineesBandForFormationScalars } from '@/lib/formation-trainee-band';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 /** Gabarits financement / prérequis issus de la fiche référence `Formation` (pour menus CRM). */
 export async function GET(
@@ -12,6 +14,9 @@ export async function GET(
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { formationId } = await context.params;
   if (!formationId?.trim()) return fail('Identifiant formation manquant.', 400);

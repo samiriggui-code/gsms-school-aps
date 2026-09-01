@@ -3,11 +3,16 @@ import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { buildComplianceDashboard } from '@/lib/of/compliance-dashboard';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 /** GET — agrégats lecture seule tableau de bord conformité organisme. */
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.conformiteView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const data = await buildComplianceDashboard(prisma);

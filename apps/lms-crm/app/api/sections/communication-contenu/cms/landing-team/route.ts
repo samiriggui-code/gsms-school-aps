@@ -11,6 +11,8 @@ import {
 } from '@/lib/catalog-team-serialize';
 import { invalidateCatalogTeamListCache } from '@/lib/catalog-public-cache';
 import { landingTeamUserSelect } from './_user-select';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const CreateSchema = z.object({
   userId: z.string().uuid(),
@@ -28,6 +30,9 @@ function catalogOffersWhere(scope: string | null): Prisma.LandingTeamOfferWhereI
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const scope = request.nextUrl.searchParams.get('scope');
@@ -48,6 +53,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let json: unknown;
   try {

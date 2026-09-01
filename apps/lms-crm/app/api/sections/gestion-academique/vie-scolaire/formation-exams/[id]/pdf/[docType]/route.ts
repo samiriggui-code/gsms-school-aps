@@ -10,6 +10,8 @@ import {
 } from '@/lib/vie-scolaire/formation-exam-pdf';
 import { storeFormationExamPdfAsset } from '@/lib/vie-scolaire/formation-exam-document-store';
 import type { FormationExamOfficialDocType } from '@/lib/vie-scolaire/formation-exam-documents';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ id: string; docType: string }> };
 
@@ -55,6 +57,9 @@ const examPdfInclude = {
 export async function GET(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { id, docType } = await context.params;
   if (!DOC_TYPES.includes(docType as FormationExamPdfDocType)) {

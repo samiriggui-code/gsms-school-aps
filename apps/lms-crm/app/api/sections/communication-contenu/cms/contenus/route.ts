@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { FormationLifecycleStatus, Prisma } from '@repo/database';
 import { serializeCmsCatalogRow } from '@/lib/cms-catalog-serialize';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const formationSelect = {
   id: true,
@@ -56,6 +58,9 @@ const formationSelect = {
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationView)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const q = (sp.get('q') ?? '').trim();

@@ -9,6 +9,8 @@ import { mapCatalogOfferToApiRow } from '@/app/api/sections/gestion-academique/v
 import { FormationCatalogOfferCreateSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-catalog-api-schemas';
 import { invalidateFormationCatalogCaches } from '@/lib/catalog-public-cache';
 import { nextSessionLabelByFormationIds } from '@/lib/formation-session-dates';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const formationSelect = {
   id: true,
@@ -66,6 +68,9 @@ function catalogOffersWhere(scope: string | null): Prisma.FormationCatalogOfferW
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const scope = request.nextUrl.searchParams.get('scope');
@@ -103,6 +108,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let json: unknown;
   try {

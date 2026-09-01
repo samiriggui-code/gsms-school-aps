@@ -5,6 +5,8 @@ import { prisma } from '@/lib/prisma';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import type { FormationCatalogStatsApi } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/types/catalog-api';
 import type { FormationVitrineTrack } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/data/formation-vitrine-catalog';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const TRACK_KEYS: FormationVitrineTrack[] = [
   'surete',
@@ -18,6 +20,9 @@ const TRACK_KEYS: FormationVitrineTrack[] = [
 export async function GET(_request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     const [totalFormations, activeFormations, draftFormations, archivedFormations, activeOffers, totalVitrineSessions] =

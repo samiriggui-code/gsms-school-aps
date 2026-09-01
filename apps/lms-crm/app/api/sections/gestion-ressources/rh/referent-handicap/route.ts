@@ -12,6 +12,8 @@ import { ok, fail } from '@/app/api/_shared/http/response';
 import { QUALIOPI_SCHOOL_SUBJECT_ID } from '@/lib/of/qualiopi-indicators';
 import { ensureDisabilityReferentTemplate } from '@/lib/organisation/ensure-disability-referent-template';
 import { recordStatusEvidence } from '@/lib/evidence/record-status-evidence';
+import { GOVERNANCE_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 const SATISFIED: ComplianceItemStatus[] = ['RECEIVED', 'VALIDATED', 'WAIVED'];
 
@@ -37,6 +39,9 @@ async function recompute(dossierId: string) {
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.conformiteView)) {
+    return fail('Forbidden', 403);
+  }
 
   try {
     await ensureDisabilityReferentTemplate();
@@ -104,6 +109,9 @@ export async function GET() {
 export async function PATCH(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.conformiteEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: {
     disabilityReferentName?: string | null;
@@ -162,6 +170,9 @@ export async function PATCH(request: Request) {
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, GOVERNANCE_PERMISSION.conformiteEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   let body: { itemId?: string; note?: string | null };
   try {

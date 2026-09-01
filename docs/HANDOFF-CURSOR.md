@@ -4,6 +4,35 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-01 — SEC audit 109 : lot massif permissions (~80 routes)
+
+### Livré
+Gates `sessionHasPermission` juste après `if (!session)` sur **80 fichiers** (76 auto + 4 manuels : landing-config, sites `[...path]`, pilotage indicateurs/landing).
+
+| Domaine | Gate |
+|---|---|
+| `vie-scolaire/*` | `academiqueView` / `academiqueEdit` |
+| CMS / marketing / SEO | `communicationView` / `communicationEdit` |
+| `pilotage-supervision/*` | `pilotageView` (pas de Edit dans CRM_PERMISSION) |
+| `gestion-sites-clients` | `ressourcesView` / `ressourcesEdit` |
+| conformite dashboard, qualiopi coverage, référent handicap | `conformiteView` / `conformiteEdit` |
+| `securite-configuration/stats` | `securiteView` |
+| `support-qualite/stats` | `supportView` |
+
+### Faux positifs / intentionnels (non touchés)
+- `resource/*`, `meta/*` — PermissionEngine
+- IAM `permissions/delete`, PATCH inline `permissionSlugs.includes`
+- `acces/account*` — self-service
+- `portal/*` — self-service
+- `common/presence` — présence cross-app pour tout staff connecté
+- `administration-facturation/[...path]` — proxy session-only (cibles déjà gated)
+- `workspace/[viewKey]`, `reports/jobs`, `common/export|sync|email-templates` — **encore à trancher** au prochain lot
+
+### Gates
+`tsc --noEmit` 0 · `test:doctype` 9/9 · `test:doctype:harden` 2/2
+
+---
+
 ## 2026-09-01 — SEC compliance : `conformiteView`/`conformiteEdit` sur module entier
 
 ### Critique — jugement Qualiopi fail-open

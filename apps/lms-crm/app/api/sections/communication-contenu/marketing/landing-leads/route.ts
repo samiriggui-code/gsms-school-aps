@@ -9,10 +9,15 @@ import {
 } from '@repo/database';
 import { ok, fail } from '@/app/api/_shared/http/response';
 import { Prisma } from '@repo/database';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.communicationView)) {
+    return fail('Forbidden', 403);
+  }
 
   const sp = request.nextUrl.searchParams;
   const kind = sp.get('kind') ?? 'all';

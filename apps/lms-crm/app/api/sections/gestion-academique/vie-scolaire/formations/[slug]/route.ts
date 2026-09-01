@@ -8,6 +8,8 @@ import { serializeCatalogOfferMerged } from '@/app/api/sections/gestion-academiq
 import { FormationCatalogOfferPatchSchema } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-catalog-api-schemas';
 import { invalidateFormationCatalogCaches } from '@/lib/catalog-public-cache';
 import { nextSessionLabelForFormation } from '@/lib/formation-session-dates';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 export async function GET(
   _request: NextRequest,
@@ -15,6 +17,9 @@ export async function GET(
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { slug } = await context.params;
   if (!slug?.trim()) return fail('Slug manquant.', 400);
@@ -55,6 +60,9 @@ export async function PATCH(
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueEdit)) {
+    return fail('Forbidden', 403);
+  }
 
   const { slug } = await context.params;
   if (!slug?.trim()) return fail('Slug manquant.', 400);

@@ -8,12 +8,17 @@ import {
   loadSessionCourseBundle,
 } from '@/lib/suivi-formations/session-progress';
 import { resolveParticipantFunding } from '@/lib/suivi-formations/resolve-participant-funding';
+import { CRM_PERMISSION, sessionHasPermission } from '@/lib/auth/crm-permissions';
+
 
 type Ctx = { params: Promise<{ sessionId: string }> };
 
 export async function GET(request: NextRequest, context: Ctx) {
   const session = await getServerSession(authOptions);
   if (!session) return fail('Unauthorized request', 401);
+  if (!sessionHasPermission(session, CRM_PERMISSION.academiqueView)) {
+    return fail('Forbidden', 403);
+  }
 
   const { sessionId } = await context.params;
   const page = Math.max(1, Number(request.nextUrl.searchParams.get('page') ?? '1') || 1);
