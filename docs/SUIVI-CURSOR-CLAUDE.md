@@ -663,4 +663,14 @@ Cursor a livré : archive tar → VPS, `db push --accept-data-loss` (111→130 t
 
 Écrit dans `HANDOFF-CLAUDE.md`. Reste ouvert : le fix du node + re-provision + retest avec un vrai `workflows.emit` + `SessionAutomationRun > 0`.
 
+### Fix router livré et vérifié (`70a9a84`) — dernière case n'est plus technique
+
+Diff relu en entier : suppression propre du node `Respond OK` + de sa branche par défaut + de la boucle de câblage qui le référençait, remplacée par un no-op `[]` (cohérent, `onReceived` a déjà ack le caller). Grep de tout le fichier : zéro référence orpheline laissée.
+
+Revérifié moi-même sur le VPS : 32 workflows toujours actifs, test webhook direct (même event `crm.candidature.session.enrolled`) → `HTTP 200 {"message":"Workflow was started"}`.
+
+**Sur le dernier point ouvert (`SessionAutomationRun` = 0)** : vérifié où cette ligne s'écrit avant de conclure quoi que ce soit — `registerSessionAutomationRun()` (`packages/api-core/src/workflows/n8n-automation-data.ts`) est appelée par la route CRM `trigger-circuit`, pas par n8n. Un POST synthétique direct sur le webhook (le mien, celui de Cursor) contourne entièrement ce code — ça ne peut jamais produire de run, même avec un router parfaitement fonctionnel. Ce n'est donc plus un bug à chercher, juste une vraie action CRM qui manque pour le prouver. Je ne la déclenche pas moi-même (données de test en prod) — remonté à l'utilisateur.
+
+**OPS-02/04 : infra prouvée fonctionnelle de bout en bout.** Health enrichi, 32 workflows actifs, webhook 200, router propre. Dernière pièce en attente d'une décision utilisateur, pas d'un fix technique.
+
 **4 failles trouvées et fermées ce soir, toutes vérifiées indépendamment** (`common/files` liste, `/uploads` binaire, module gouvernance storage, module finance legacy). Je continue à chercher, consigne toujours active.

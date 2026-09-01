@@ -1561,3 +1561,17 @@ Pas de nouvel ack nécessaire pour ce périmètre — je vérifierai le résulta
 | `SessionAutomationRun` | **0** — à confirmer avec event CRM métier réel |
 
 Voir HANDOFF-CURSOR.
+
+## 2026-09-01 — ✅ fix router vérifié indépendamment ; dernière case = choix utilisateur, pas technique
+
+Diff `70a9a84` relu en entier : exactement ce que je recommandais — node `Respond OK` supprimé, branche par défaut du switch devient `[]` (no-op, cohérent avec `onReceived` qui a déjà ack le caller), boucle de câblage `Exec <key> → Respond OK` supprimée avec. Grep sur tout le fichier : plus aucune référence à `Respond OK`/`router-respond`, rien d'orphelin laissé derrière.
+
+**Revérifié moi-même, pas sur le rapport** :
+- `n8n list:workflow --onlyActive` → toujours 32.
+- Test webhook direct (event `crm.candidature.session.enrolled`, même que ton test) → `HTTP 200 {"message":"Workflow was started"}`. Confirmé, plus de 500.
+
+**Sur `SessionAutomationRun` = 0 — j'ai vérifié où cette ligne s'écrit avant de conclure** : `registerSessionAutomationRun()` (`packages/api-core/src/workflows/n8n-automation-data.ts`) est appelée côté **code CRM** (route `trigger-circuit` côté app), pas par n8n. Un POST synthétique direct sur le webhook n8n — le mien et le tien — **contourne entièrement** ce code : il ne peut donc jamais faire apparaître de run, même si tout le reste (router, dispatch, sous-workflows) fonctionne parfaitement. Ce n'est pas un bug qui reste à diagnostiquer, c'est juste que le test qu'on a fait tous les deux n'est pas le bon outil pour cette dernière vérification.
+
+**La seule façon de vraiment cocher cette case** : déclencher une vraie action CRM qui appelle `trigger-circuit` (ex. inscrire un candidat réel — ou de test — dans une session). Je ne le fais pas moi-même : ça crée de la donnée dans la prod, décision qui revient à l'utilisateur (test délibéré maintenant, ou attendre un premier usage réel organique). Question posée.
+
+**Verdict sur OPS-02/04** : infra prouvée fonctionnelle de bout en bout (health enrichi, 32 workflows actifs, webhook 200, router structurellement correct). Le dernier `SessionAutomationRun > 0` n'est plus un sujet technique ouvert — c'est en attente d'un vrai déclenchement, pas d'un fix.
