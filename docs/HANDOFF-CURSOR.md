@@ -4,6 +4,16 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-02 — Commit `56d04be` — `@repo/ui` + split session sheet
+
+**Commit** : `56d04be` — `feat: extract @repo/ui and split formation-session-add-sheet` (1000 fichiers, +4704/−3795).
+
+Inclut étapes 2–3 HANDOFF-CLAUDE : package `packages/ui`, codemod imports, hook `use-formation-session-add-sheet`, handoffs. Gates déjà verts (`tsc` + build) avant commit.
+
+Hors commit : `.tmp-*`, docs audit/export (json/pdf/xlsx).
+
+---
+
 ## 2026-09-02 — Étape 3 — split `formation-session-add-sheet` (non commitée)
 
 **Refactor pur** (comportement inchangé) :
