@@ -4,6 +4,44 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-02 — Étape 4 + ownership hooks + règle UI hierarchy
+
+**Commit** : étape 4 refactor UI/tuyauterie (hooks pilotes, couverture Qualiopi via API, composition classeur Qualiopi).
+
+| Élément | Détail |
+|---|---|
+| Hooks ownership | `classeur/hooks/`, `collaborateur-add-sheet/hooks/`, `devis-detail-sheet/hooks/` |
+| Qualiopi classeur | composition : Summary, Criterion, IndicatorCard, Loading/Error |
+| Couverture | `qualiopi-couverture-page-client.tsx` — plus de prisma RSC |
+| Règle agent | `.cursor/rules/gsms-ui-hierarchy.mdc` |
+
+**Gates** : `tsc --noEmit` lms-crm **0**. Refactor ≠ redesign.
+
+**Stop** : pas de pilotes landing/list/sheet supplémentaires avant validation visuelle du classeur.
+
+---
+
+## 2026-09-02 — Étape 4 — séparation UI/tuyauterie (pilotes Qualiopi + RH + devis)
+
+**Refactor pur** (comportement inchangé) — suite naturelle des étapes 1–3 (@repo/ui + split session sheet).
+
+| Pilote | Hook | Effet |
+|---|---|---|
+| Qualiopi classeur | `qualiopi/hooks/use-qualiopi-classeur.ts` | bootstrap + coverage queries, dérivés (counts, itemsByCode) |
+| Couverture Qualiopi | `qualiopi-couverture-page-client.tsx` | page RSC sans prisma — `GET .../qualiopi/coverage` |
+| RH collaborateur | `rh/collaborateurs/hooks/use-collaborateur-add-sheet.tsx` | form, presets, mutation POST, completion |
+| Devis détail | `devis/hooks/use-devis-detail-sheet.ts` | tabs, envoi e-mail, plaquette, patch (s’appuie sur hooks existants) |
+
+**Gates** : `tsc --noEmit` lms-crm **0**.
+
+**DocType** : ~35 entités enregistrées (`domains/*/register.ts`) = couche serveur ResourceService, **pas** l’UI entière. Production reste `apiFetch` + sheets ; lab EntityTable = `framework-lab` seulement.
+
+**Chantier clean-up (5 j)** : étapes 1–3 ✅ ; étape 4 (pilotes hook) ✅ non commitée. Backlog features (AI-02, EVE, BPF, n8n financeurs) = hors scope refactor.
+
+**État** : attente commit explicite utilisateur + test manuel classeur / couverture / création collaborateur / fiche devis.
+
+---
+
 ## 2026-09-02 — Commit `56d04be` — `@repo/ui` + split session sheet
 
 **Commit** : `56d04be` — `feat: extract @repo/ui and split formation-session-add-sheet` (1000 fichiers, +4704/−3795).

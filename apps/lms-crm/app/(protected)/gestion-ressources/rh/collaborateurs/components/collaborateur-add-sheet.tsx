@@ -1,14 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { RiCheckboxCircleFill, RiErrorWarningFill, RiRefreshLine } from '@remixicon/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { buildAppLoginEmail, appLoginEmailPatternLabel } from '@/lib/app-login-email';
-import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { RiRefreshLine } from '@remixicon/react';
+import { appLoginEmailPatternLabel } from '@/lib/app-login-email';
 import { Button } from '@repo/ui/button';
 import {
   Sheet,
@@ -59,26 +52,16 @@ import {
   CloudUpload
 } from 'lucide-react';
 import { UserRole } from '@/app/models/user';
-import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
-import { useSubcontractorSelectQuery } from '../hooks/use-subcontractor-select-query';
-import { CollaborateurAddSchema, CollaborateurAddSchemaType } from '../forms/collaborateur-add-schema';
 import { ScrollArea } from '@repo/ui/scroll-area';
 import { Separator } from '@repo/ui/separator';
 import { Badge, BadgeDot } from '@repo/ui/badge';
-import { agrementMandatoryForCollaborator, agrementUiLabels } from '@/lib/rh-agrement';
 import {
   SCHOOL_USER_CATEGORY_LABELS,
-  combineQualificationFromParts,
 } from '@/lib/rh-school-profile-fields';
 import { RhMetierQualificationPicker } from '@/components/rh/metier-qualification-picker';
 import { isFormateurRole } from '@/lib/rh-agrement';
 import { Avatar, AvatarFallback } from '@repo/ui/avatar';
-import { useRhPositionSelectQuery } from '../../hooks/use-rh-position-select-query';
-import { useRhQualificationSelectQuery } from '../../hooks/use-rh-qualification-select-query';
-import {
-  buildQualificationPresetCatalog,
-  resolveRhMetierServiceFilter,
-} from '@/lib/rh-metier-referential';
+import { useCollaborateurAddSheet } from './collaborateur-add-sheet/hooks/use-collaborateur-add-sheet';
 
 const CollaborateurAddSheet = ({
   open,
@@ -87,230 +70,35 @@ const CollaborateurAddSheet = ({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
-  const queryClient = useQueryClient();
-  const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState('identity');
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const { data: roleList } = useSchoolRoleSelectQuery();
-  const { data: subcontractorList } = useSubcontractorSelectQuery();
-
-  const form = useForm<CollaborateurAddSchemaType>({
-    resolver: zodResolver(CollaborateurAddSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      proEmail: '',
-      password: '',
-      roleId: '',
-      userCategory: 'INTERNAL',
-      subcontractorId: '',
-      schoolInternalService: undefined,
-      jobFunction: '',
-      jobPositionId: '',
-      qualification: '',
-      birthPlace: '',
-      nationality: 'Française',
-      socialSecurityNumber: '',
-      cniNumber: '',
-      address: '',
-      city: '',
-      postalCode: '',
-      contractType: '',
-      workTimeType: 'FULL_TIME',
-      isSchedulable: true,
-      carteProNumber: '',
-      carteProExpiry: '',
-      birthDate: '',
-      residencePermitNumber: '',
-      residencePermitExpiry: '',
-      documentCni: '',
-      documentAssurance: '',
-      documentResidencePermit: '',
-      documentCartePro: '',
-      avatar: '',
-    },
-    mode: 'onChange',
-  });
-
-  const { watch, setValue } = form;
-  const firstName = watch('firstName');
-  const lastName = watch('lastName');
-  const fullName = `${firstName} ${lastName}`.trim();
-  const email = watch('email');
-  const phone = watch('phone');
-  const roleId = watch('roleId');
-  const password = watch('password');
-  const jobFunction = watch('jobFunction');
-  const qualification = watch('qualification');
-  const contractType = watch('contractType');
-  const cniNumber = watch('cniNumber');
-  const socialSecurityNumber = watch('socialSecurityNumber');
-  const carteProNumber = watch('carteProNumber');
-  const carteProExpiry = watch('carteProExpiry');
-
-  const selectedRoleSlug = useMemo(
-    () => (roleList || []).find((r: UserRole | { id: string; slug?: string }) => r.id === roleId)?.slug as
-      | string
-      | undefined,
-    [roleList, roleId],
-  );
-  const agr = agrementUiLabels(selectedRoleSlug);
-  const requireDirectorAgrement = agrementMandatoryForCollaborator(selectedRoleSlug);
-  const documentCni = watch('documentCni');
-  const documentAssurance = watch('documentAssurance');
-  const documentCartePro = watch('documentCartePro');
-
-  const selectedCategory = watch('userCategory');
-  const schoolInternalService = watch('schoolInternalService');
-  const filteredRoles = (roleList || []).filter((role: any) => 
-    !role.targetCategory || role.targetCategory === selectedCategory
-  );
-
-  const metierServiceFilter = useMemo(
-    () => resolveRhMetierServiceFilter(schoolInternalService, selectedRoleSlug, selectedCategory),
-    [schoolInternalService, selectedRoleSlug, selectedCategory],
-  );
-  const { data: positionList } = useRhPositionSelectQuery(metierServiceFilter);
-  const { data: qualificationList } = useRhQualificationSelectQuery(metierServiceFilter);
-
-  const presetCatalog = useMemo(
-    () =>
-      buildQualificationPresetCatalog(
-        qualificationList?.map((q) => q.label),
-        selectedRoleSlug,
-        metierServiceFilter,
-      ),
-    [qualificationList, selectedRoleSlug, metierServiceFilter],
-  );
-  const [qualPresetHits, setQualPresetHits] = useState<string[]>([]);
-
-  const catalogKey = useMemo(() => presetCatalog.join('|'), [presetCatalog]);
-  useEffect(() => {
-    const allowed = new Set(presetCatalog);
-    setQualPresetHits((hits) => hits.filter((h) => allowed.has(h)));
-  }, [catalogKey, presetCatalog]);
-  const prevSlugRef = useRef<string | null>(null);
-  useEffect(() => {
-    const slug = selectedRoleSlug ?? '';
-    const became =
-      slug === 'formateur' &&
-      prevSlugRef.current !== null &&
-      prevSlugRef.current !== 'formateur';
-    prevSlugRef.current = slug || null;
-    const jf = String(jobFunction || '').trim();
-    if (became && !jf) {
-      setValue('jobFunction', 'Formateur', { shouldValidate: true });
-    }
-  }, [selectedRoleSlug, jobFunction, setValue]);
-
-  const togglePreset = (label: string, checked: boolean) => {
-    setQualPresetHits((hits) => {
-      const ns = new Set(hits);
-      if (checked) ns.add(label);
-      else ns.delete(label);
-      return presetCatalog.filter((p) => ns.has(p));
-    });
-  };
-
-  const completion = {
-    identity: Boolean(firstName && lastName && email && phone),
-    account: Boolean(roleId && password && watch('proEmail')),
-    profile: Boolean(
-      jobFunction && (Boolean(qualification?.trim()) || qualPresetHits.length > 0),
-    ),
-    contract: Boolean(contractType && watch('workTimeType')),
-    compliance: Boolean(
-      Boolean(cniNumber?.trim()) &&
-        Boolean(socialSecurityNumber?.trim()) &&
-        (!requireDirectorAgrement ||
-          (Boolean(carteProNumber?.trim()) && Boolean(carteProExpiry))),
-    ),
-    documents: Boolean(documentCni || documentAssurance || documentCartePro),
-  };
-
-  const completedBlocks = Object.values(completion).filter(Boolean).length;
-  const totalBlocks = Object.keys(completion).length;
-
-  // Auto-generate Pro Email
-  useEffect(() => {
-    if (firstName && lastName) {
-      setValue('proEmail', buildAppLoginEmail(firstName, lastName));
-    }
-  }, [firstName, lastName, setValue]);
-
-  const generatePassword = () => {
-    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-    let password = "";
-    for (let i = 0; i < 14; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setValue('password', password, { shouldValidate: true });
-    setShowPassword(true);
-  };
-
-
-
-  const mutation = useMutation({
-    mutationFn: async (values: CollaborateurAddSchemaType) => {
-      const slug = (roleList || []).find((r: UserRole) => r.id === values.roleId)?.slug ?? '';
-      const mergedQual = combineQualificationFromParts(qualPresetHits, values.qualification || '');
-      const payload = { ...values, qualification: mergedQual };
-      const formData = new FormData();
-
-      Object.entries(payload).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (value instanceof File) {
-            formData.append(key, value);
-          } else if (value instanceof Date) {
-            formData.append(key, value.toISOString());
-          } else {
-            formData.append(key, String(value));
-          }
-        }
-      });
-
-      if (isFormateurRole(slug)) {
-        formData.append('specialties', JSON.stringify(qualPresetHits));
-      }
-      const response = await apiFetch('/api/sections/gestion-ressources/rh/collaborateurs', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const { message } = await response.json();
-        throw new Error(message);
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      toast.custom(() => (
-        <Alert variant="mono" icon="success" close={false}>
-          <AlertIcon><RiCheckboxCircleFill /></AlertIcon>
-          <AlertTitle>Collaborateur ajouté et accès créés</AlertTitle>
-        </Alert>
-      ), { position: 'top-center' });
-
-      queryClient.invalidateQueries({ queryKey: ['rh-collaborators'] });
-      queryClient.invalidateQueries({ queryKey: ['dashboard-stats', 'rh'] });
-      queryClient.invalidateQueries({ queryKey: ['structure-staff'] });
-      queryClient.invalidateQueries({ queryKey: ['structure-equipe'] });
-      onOpenChange(false);
-      form.reset();
-      setQualPresetHits([]);
-      setActiveTab('identity');
-    },
-    onError: (error: Error) => {
-      toast.custom(() => (
-        <Alert variant="mono" icon="destructive" close={false}>
-          <AlertIcon><RiErrorWarningFill /></AlertIcon>
-          <AlertTitle>{error.message}</AlertTitle>
-        </Alert>
-      ), { position: 'top-center' });
-    },
-  });
+  const {
+    form,
+    showPassword,
+    setShowPassword,
+    activeTab,
+    setActiveTab,
+    avatarPreview,
+    roleList,
+    subcontractorList,
+    filteredRoles,
+    selectedRoleSlug,
+    agr,
+    positionList,
+    presetCatalog,
+    qualPresetHits,
+    togglePreset,
+    completion,
+    completedBlocks,
+    totalBlocks,
+    fullName,
+    generatePassword,
+    handleAvatarFileChange,
+    clearAvatar,
+    mutation,
+    submit,
+    watch,
+    setValue,
+    selectedCategory,
+  } = useCollaborateurAddSheet({ open, onOpenChange });
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -327,7 +115,7 @@ const CollaborateurAddSheet = ({
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit((v) => mutation.mutate(v))} className="flex min-h-0 flex-1 flex-col">
+          <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col">
             <SheetBody className="flex min-h-0 flex-1 flex-col overflow-hidden p-0 bg-background">
               <div className="flex justify-between flex-wrap gap-2 border-b border-border px-5 py-5 bg-background shrink-0">
                 <div className="flex flex-col gap-3">
@@ -372,10 +160,7 @@ const CollaborateurAddSheet = ({
                             size="icon" 
                             className="absolute top-2 right-2 size-7 opacity-0 group-hover:opacity-100 transition-opacity"
                             type="button"
-                            onClick={() => {
-                              setValue('avatar', '');
-                              setAvatarPreview(null);
-                            }}
+                            onClick={clearAvatar}
                           >
                             <RiRefreshLine className="size-4" />
                           </Button>
@@ -406,12 +191,7 @@ const CollaborateurAddSheet = ({
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) {
-                          setValue('avatar', file as any);
-                          const reader = new FileReader();
-                          reader.onload = (event) => setAvatarPreview(event.target?.result as string);
-                          reader.readAsDataURL(file);
-                        }
+                        if (file) handleAvatarFileChange(file);
                       }}
                     />
                     <p className="text-[11px] text-muted-foreground leading-tight">

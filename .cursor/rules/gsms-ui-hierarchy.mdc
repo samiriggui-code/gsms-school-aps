@@ -1,0 +1,78 @@
+---
+description: Hiérarchie UI GSMS — module, section, page, ownership, composition (refactor ≠ redesign)
+alwaysApply: true
+---
+
+# GSMS — architecture UI frontend
+
+Ne pas créer `src/modules/` ni migrer le monorepo pour le principe. Normaliser **dans** l'App Router existant :
+
+```
+apps/lms-crm/app/(protected)/{section}/...  → MODULE / SECTION
+  page.tsx                                  → PAGE
+  components/                               → composants page ou section
+  hooks/                                    → uniquement si partagés par plusieurs pages
+  {feature}/components/ + {feature}/hooks/  → ownership page/feature (préféré)
+```
+
+## 4 niveaux composants
+
+| Niveau | Emplacement | Exemples |
+|--------|-------------|----------|
+| UI primitives | `@repo/ui` | Button, Sheet, Tabs, Card |
+| Patterns GSMS | `components/common/` (pas de rename cosmétique vers `patterns/` sans audit) | Container, Toolbar, StatCard |
+| Module / section | composants domaine colocalisés | `components/rh/`, section `qualiopi/components/` |
+| Page | `{page}/components/` ou `{feature}/components/` | `QualiopiClasseurSummary` |
+
+**Promotion** : page → section → pattern → `@repo/ui` **uniquement** quand la réutilisation est réelle. Local par défaut.
+
+## Ownership (obligatoire avant création)
+
+Répondre : **« Qui possède ce fichier ? »**
+
+- Hook/composant utilisé par **une seule** page ou sheet → sous le dossier de cette page/feature.
+- Partagé par plusieurs pages **de la même section** → `section/hooks/` ou `section/components/`.
+- Plusieurs modules → analyser pattern GSMS dans `components/common/`.
+- Primitive générique → `@repo/ui`.
+
+**Hook extrait ≠ hook global.** Ne pas placer dans `module/hooks/` par défaut.
+
+## Page = composition
+
+Le fichier Page/Sheet principal doit lire comme le **plan de l'écran** (~80–150 lignes indicatif, pas loi).
+
+Interdit : header + stats + filters + table + dialogs + forms dans un seul fichier monolithique.
+
+Objectif : ouvrir le fichier → comprendre la structure immédiatement.
+
+## Avant tout refactor ou feature UI
+
+1. Module ? Section ? Page ?
+2. Page GSMS existante de référence visuelle ?
+3. Composants / hooks / patterns déjà présents ?
+4. Source data (DocType, api-core, endpoint métier) ?
+5. Quels fichiers créer — et **qui en est propriétaire** ?
+
+Puis coder.
+
+## Refactor ≠ redesign
+
+Autorisé : extraction composants/hooks, types, organisation dossiers, simplification page.
+
+Interdit sans demande explicite : layout, couleurs, espacements, typo, navigation, densité, remplacement de patterns existants.
+
+Reproduire les Landing Pages / listes / sheets existants — remplacer le **contenu métier**, pas le **pattern visuel**.
+
+## DocType ≠ frontend
+
+DocType = couture serveur (ResourceService, permissions, CRUD). N'influence pas l'organisation UI.
+
+Pages consomment DocType, `@repo/api-core` ou endpoints spécialisés avec la **même** architecture : Page → components → hooks → data.
+
+## `@repo/ui`
+
+Uniquement primitives réellement génériques. Jamais de composants métier (QualiopiCoverage, DevisStatusPanel, etc.).
+
+## Référence composition
+
+`gestion-ressources/qualiopi/classeur/components/qualiopi-classeur-view.tsx` — orchestrateur visuel ; sous-composants par responsabilité claire.

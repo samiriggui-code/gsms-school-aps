@@ -12,7 +12,7 @@ import {
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { Button } from '@repo/ui/button';
-import { QualiopiClasseurView } from '../components/qualiopi-classeur-view';
+import { QualiopiClasseurView } from './components/qualiopi-classeur-view';
 import { QualiopiGapsAssistantPanel } from '../components/qualiopi-gaps-assistant-panel';
 
 export default function QualiopiClasseurPage() {

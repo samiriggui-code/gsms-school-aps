@@ -1,17 +1,15 @@
 'use client';
 
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AlertCircle, CheckCircle2, Loader2, ShieldAlert, Upload } from 'lucide-react';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
-import { apiFetch, unwrapSectionApiData } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 import { Badge } from '@repo/ui/badge';
 import { Button } from '@repo/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui/card';
 import { Textarea } from '@repo/ui/textarea';
 import { Label } from '@repo/ui/label';
-import { Separator } from '@repo/ui/separator';
 import {
   Select,
   SelectContent,
@@ -19,96 +17,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@repo/ui/select';
-import { cn } from '@/lib/utils';
 import {
   QUALIOPI_AUDIT_STATUSES,
-  qualiopiIndicatorsByCriterion,
   type QualiopiAuditStatus,
   type QualiopiIndicator,
 } from '@/lib/of/qualiopi-indicators';
-import type { QualiopiCoveragePayload } from '@/lib/of/qualiopi-coverage';
+import {
+  AUDIT_STATUS_LABEL,
+  QUALIOPI_CLASSEUR_QUERY_KEY,
+  STATUS_TO_AUDIT,
+  type ComplianceItemRow,
+} from '../hooks/use-qualiopi-classeur';
+import { QualiopiIndicatorStatusBadge } from './qualiopi-indicator-status-badge';
 
-type DossierBootstrap = {
-  dossierId: string;
-  summary: {
-    completenessPct: number;
-    status: string;
-    missingRequired: string[];
-  };
-};
-
-type ItemStatus =
-  | 'MISSING'
-  | 'REQUESTED'
-  | 'RECEIVED'
-  | 'VALIDATED'
-  | 'REJECTED'
-  | 'EXPIRED'
-  | 'WAIVED';
-
-type ComplianceItemRow = {
-  id: string;
-  code: string;
-  label: string;
-  status: ItemStatus;
-  fileCategory: string;
-  fileAssetId: string | null;
-  rejectionReason: string | null;
-  fileAsset: { id: string; url: string; originalName: string } | null;
-};
-
-const STATUS_TO_AUDIT: Partial<Record<ItemStatus, QualiopiAuditStatus>> = {
-  VALIDATED: 'OK',
-  REJECTED: 'KO',
-  WAIVED: 'NA',
-  REQUESTED: 'TO_FIX',
-};
-
-const AUDIT_STATUS_LABEL: Record<QualiopiAuditStatus, string> = {
-  OK: 'OK',
-  KO: 'KO',
-  TO_FIX: 'À réparer',
-  NA: 'N/A',
-};
-
-const QUERY_KEY = 'qualiopi-classeur';
-
-function statusBadge(status: ItemStatus) {
-  switch (status) {
-    case 'VALIDATED':
-      return (
-        <Badge className="bg-success/10 text-success border-success/20 font-bold text-[10px]">
-          OK
-        </Badge>
-      );
-    case 'REJECTED':
-      return (
-        <Badge variant="destructive" className="font-bold text-[10px]">
-          KO
-        </Badge>
-      );
-    case 'REQUESTED':
-      return (
-        <Badge className="bg-warning/10 text-warning border-warning/20 font-bold text-[10px]">
-          À réparer
-        </Badge>
-      );
-    case 'WAIVED':
-      return (
-        <Badge variant="outline" className="font-bold text-[10px]">
-          N/A
-        </Badge>
-      );
-    default:
-      return (
-        <Badge variant="outline" className="font-bold text-[10px] text-muted-foreground">
-          À auditer
-        </Badge>
-      );
-  }
-}
-
-function IndicatorCard({
+export function QualiopiIndicatorCard({
   indicator,
   item,
   disabled,
@@ -157,7 +79,7 @@ function IndicatorCard({
     },
     onSuccess: () => {
       toast.success('Indicateur mis à jour');
-      void queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+      void queryClient.invalidateQueries({ queryKey: [QUALIOPI_CLASSEUR_QUERY_KEY] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -192,7 +114,7 @@ function IndicatorCard({
     },
     onSuccess: () => {
       toast.success('Preuve jointe et indicateur validé');
-      void queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+      void queryClient.invalidateQueries({ queryKey: [QUALIOPI_CLASSEUR_QUERY_KEY] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -208,7 +130,7 @@ function IndicatorCard({
             <CardDescription className="text-sm leading-relaxed">{indicator.description}</CardDescription>
           </div>
           <div className="flex flex-col items-end gap-1">
-            {item ? statusBadge(item.status) : null}
+            {item ? <QualiopiIndicatorStatusBadge status={item.status} /> : null}
             {unauditedWithEvidence ? (
               <Badge
                 variant="secondary"
@@ -307,154 +229,5 @@ function IndicatorCard({
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-export function QualiopiClasseurView() {
-  const bootstrapQuery = useQuery({
-    queryKey: [QUERY_KEY, 'bootstrap'],
-    queryFn: async () => {
-      const res = await apiFetch('/api/sections/gestion-ressources/qualiopi');
-      if (!res.ok) throw new Error('fetch');
-      return unwrapSectionApiData<DossierBootstrap & { items: ComplianceItemRow[] }>(
-        await res.json(),
-      );
-    },
-    staleTime: 1000 * 30,
-  });
-
-  const coverageQuery = useQuery({
-    queryKey: [QUERY_KEY, 'coverage'],
-    queryFn: async () => {
-      const res = await apiFetch('/api/sections/gestion-ressources/qualiopi/coverage');
-      if (!res.ok) throw new Error('coverage');
-      return unwrapSectionApiData<QualiopiCoveragePayload>(await res.json());
-    },
-    staleTime: 1000 * 60,
-  });
-
-  const dossierId = bootstrapQuery.data?.dossierId;
-  const items = bootstrapQuery.data?.items ?? [];
-
-  const itemsByCode = useMemo(() => {
-    const map = new Map<string, ComplianceItemRow>();
-    for (const row of items) map.set(row.code, row);
-    return map;
-  }, [items]);
-
-  const coveredByCode = useMemo(() => {
-    const map = new Map<string, boolean>();
-    for (const ind of coverageQuery.data?.indicators ?? []) {
-      map.set(ind.code, ind.covered);
-    }
-    return map;
-  }, [coverageQuery.data]);
-
-  const grouped = useMemo(() => qualiopiIndicatorsByCriterion(), []);
-
-  const counts = useMemo(() => {
-    const total = items.length;
-    const ok = items.filter((r) => r.status === 'VALIDATED').length;
-    const ko = items.filter((r) => r.status === 'REJECTED').length;
-    const toFix = items.filter((r) => r.status === 'REQUESTED').length;
-    const na = items.filter((r) => r.status === 'WAIVED').length;
-    const pending = total - ok - ko - toFix - na;
-    return { total, ok, ko, toFix, na, pending };
-  }, [items]);
-
-  const isLoading = bootstrapQuery.isLoading;
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-border/80 py-20 text-sm text-muted-foreground">
-        <Loader2 className="size-5 animate-spin" />
-        Chargement du classeur Qualiopi…
-      </div>
-    );
-  }
-
-  if (bootstrapQuery.isError || !dossierId) {
-    return (
-      <Card className="border-destructive/40 bg-destructive/5">
-        <CardContent className="py-10 text-center text-sm">
-          <p className="font-medium text-destructive">Impossible de charger le dossier Qualiopi.</p>
-          <Button type="button" variant="outline" size="sm" className="mt-4" onClick={() => void bootstrapQuery.refetch()}>
-            Réessayer
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const globalOk = counts.ko === 0 && counts.pending === 0;
-
-  return (
-    <div className="space-y-10">
-      <div
-        className={cn(
-          'flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3',
-          globalOk
-            ? 'border-green-200 bg-green-50 dark:bg-green-950/20'
-            : counts.ko > 0
-              ? 'border-destructive/30 bg-destructive/5'
-              : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-950/20',
-        )}
-      >
-        <div className="flex items-center gap-2.5">
-          {globalOk ? (
-            <CheckCircle2 className="size-4 text-green-600" />
-          ) : counts.ko > 0 ? (
-            <ShieldAlert className="size-4 text-destructive" />
-          ) : (
-            <AlertCircle className="size-4 text-yellow-600" />
-          )}
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest">
-              {counts.ok}/{counts.total} indicateurs OK
-            </p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
-              {counts.ko > 0 ? `${counts.ko} KO · ` : ''}
-              {counts.toFix > 0 ? `${counts.toFix} à réparer · ` : ''}
-              {counts.na > 0 ? `${counts.na} N/A · ` : ''}
-              {counts.pending} à auditer
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button type="button" variant="outline" size="sm" asChild>
-            <Link href="/gestion-ressources/qualiopi/couverture">Couverture Evidence</Link>
-          </Button>
-          <Badge variant="outline" className="text-xs font-bold">
-            {bootstrapQuery.data?.summary.completenessPct ?? 0}% complet
-          </Badge>
-        </div>
-      </div>
-
-      {[1, 2, 3, 4, 5, 6, 7].map((criterion) => {
-        const indicators = grouped.get(criterion);
-        if (!indicators?.length) return null;
-        return (
-          <section key={criterion} className="space-y-4">
-            <div className="border-b border-border/60 pb-3">
-              <h2 className="text-lg font-bold tracking-tight text-foreground md:text-xl">
-                Critère {criterion}
-              </h2>
-            </div>
-            <div className="grid gap-5 lg:grid-cols-2">
-              {indicators.map((indicator) => (
-                <IndicatorCard
-                  key={indicator.code}
-                  indicator={indicator}
-                  item={itemsByCode.get(indicator.code)}
-                  disabled={false}
-                  evidenceCovered={coveredByCode.get(indicator.code) === true}
-                />
-              ))}
-            </div>
-            <Separator className="opacity-40" />
-          </section>
-        );
-      })}
-    </div>
   );
 }
