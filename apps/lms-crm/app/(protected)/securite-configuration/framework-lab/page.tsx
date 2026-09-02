@@ -10,7 +10,7 @@ import {
 } from '@/components/common/toolbar';
 import { EntityTable } from '@/components/framework/entity-table';
 import { EntityForm } from '@/components/framework/entity-form';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 /** Lab — ordre mental OF d’abord (LMS_DRIFT L2), noms canoniques Lms* (L3/L7). */
 const ENTITIES = [

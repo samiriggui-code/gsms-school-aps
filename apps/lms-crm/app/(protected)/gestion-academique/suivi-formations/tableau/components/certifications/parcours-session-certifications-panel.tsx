@@ -11,22 +11,22 @@ import {
 import { Search, Info } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertIcon } from '@/components/ui/alert';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Alert, AlertDescription, AlertIcon } from '@repo/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
 import { ModuleDataGridShell } from '@/components/common/module-data-grid-shell';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 

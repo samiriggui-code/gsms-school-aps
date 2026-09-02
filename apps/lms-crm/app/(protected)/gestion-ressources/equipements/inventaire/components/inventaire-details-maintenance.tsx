@@ -14,16 +14,16 @@ import { apiFetch } from '@/lib/api';
 import { buildDataGridListResponse } from '@/lib/gestion-ressources/datagrid-response';
 import { Equipment } from '@/app/models/equipment';
 import { formatDateTime } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 import { MaintenanceCompleteActions } from '../../components/maintenance-complete-actions';
 import {
   DataGrid,
   DataGridApiFetchParams,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
 
 interface MaintenanceItem {
   id: string;

@@ -13,8 +13,8 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
-} from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -22,7 +22,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Form,
   FormControl,
@@ -30,10 +30,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Textarea } from '@repo/ui/textarea';
 import { UserPermission, UserRole } from '@/app/models/user';
 import { usePermissionSelectQuery } from '../../permissions/hooks/use-permission-select-query';
 import { RoleSchema, RoleSchemaType } from '../forms/role-schema';

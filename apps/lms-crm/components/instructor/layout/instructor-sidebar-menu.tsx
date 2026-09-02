@@ -17,8 +17,8 @@ import {
   AccordionMenuGroup,
   AccordionMenuItem,
   AccordionMenuLabel,
-} from '@/components/ui/accordion-menu';
-import { Badge } from '@/components/ui/badge';
+} from '@repo/ui/accordion-menu';
+import { Badge } from '@repo/ui/badge';
 import { useNavigationLoading } from '@/providers/navigation-loading-provider';
 
 export function InstructorSidebarMenu() {

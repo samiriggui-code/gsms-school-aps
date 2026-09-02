@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
-import { Scrollspy } from '@/components/ui/scrollspy';
+import { Scrollspy } from '@repo/ui/scrollspy';
 import { WorkspaceSettingsNav } from './workspace-settings-nav';
 import type { WorkspaceAccountSettingsDef } from '@/config/workspace-settings.config';
 

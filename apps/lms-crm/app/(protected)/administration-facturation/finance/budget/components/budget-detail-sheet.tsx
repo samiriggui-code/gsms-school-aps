@@ -18,14 +18,14 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Progress } from '@/components/ui/progress';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Progress } from '@repo/ui/progress';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -33,7 +33,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Table,
   TableBody,
@@ -41,9 +41,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Textarea } from '@repo/ui/textarea';
 import { apiFetch } from '@/lib/api';
 import { PILOTAGE_CHART_COLORS } from '@/lib/pilotage/chart-colors';
 import { cn } from '@/lib/utils';

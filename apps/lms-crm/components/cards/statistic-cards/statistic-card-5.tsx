@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
 import { BanknoteArrowUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

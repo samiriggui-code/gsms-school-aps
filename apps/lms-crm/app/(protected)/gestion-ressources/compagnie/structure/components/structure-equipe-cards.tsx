@@ -5,11 +5,11 @@ import { Award, BookOpen, Linkedin, Users } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { getInitials, getAvatarUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import {
   inferBio,
   inferCertifications,

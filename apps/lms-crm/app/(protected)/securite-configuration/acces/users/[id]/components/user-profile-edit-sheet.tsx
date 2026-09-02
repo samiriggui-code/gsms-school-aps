@@ -13,9 +13,9 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
-} from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/alert';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -23,7 +23,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Form,
   FormControl,
@@ -31,9 +31,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -41,8 +41,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+} from '@repo/ui/select';
+import { Separator } from '@repo/ui/separator';
 import { User, UserRole } from '@/app/models/user';
 import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import {

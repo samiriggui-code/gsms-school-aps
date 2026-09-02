@@ -13,14 +13,14 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { Progress } from '@/components/ui/progress';
+} from '@repo/ui/collapsible';
+import { Progress } from '@repo/ui/progress';
 import { useTranslation } from '@/hooks/useTranslation';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 

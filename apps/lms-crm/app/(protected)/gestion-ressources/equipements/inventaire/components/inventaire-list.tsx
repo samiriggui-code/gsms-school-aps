@@ -29,13 +29,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { DataGridApiFetchParams, DataGridApiResponse } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTableRowSelect, DataGridTableRowSelectAll } from '@/components/ui/data-grid-table';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@repo/ui/card';
+import { DataGridApiFetchParams, DataGridApiResponse } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTableRowSelect, DataGridTableRowSelectAll } from '@repo/ui/data-grid-table';
 import { EquipmentDataGridCard } from '../../components/equipment-datagrid-card';
 import { EquipmentRowActions } from '../../components/equipment-row-actions';
 import { EquipmentDeleteDialog } from '../../components/equipment-delete-dialog';
@@ -50,10 +50,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/dropdown-menu';
+import { Input } from '@repo/ui/input';
 import { toast } from 'sonner';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { InventaireDetailsSheet } from './inventaire-details-sheet';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 import { EquipmentStockStatsCell } from './equipment-stock-stats-cell';

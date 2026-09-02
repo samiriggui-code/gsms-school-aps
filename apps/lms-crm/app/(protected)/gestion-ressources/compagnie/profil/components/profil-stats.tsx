@@ -8,7 +8,7 @@ import {
   DoorOpen,
   type LucideIcon,
 } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { SchoolStatsPayload } from '@/lib/company-profile';
 

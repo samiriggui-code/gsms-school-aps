@@ -8,7 +8,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from '@repo/ui/collapsible';
 
 function fmtDate(iso: string): string {
   try {

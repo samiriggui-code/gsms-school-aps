@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { useModuleWorkspaceQuery } from '@/hooks/use-module-workspace-query';
 import {
   moduleDonutCardClass,

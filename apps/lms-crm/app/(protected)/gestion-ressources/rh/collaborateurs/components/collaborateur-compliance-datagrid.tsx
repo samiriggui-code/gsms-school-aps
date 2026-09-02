@@ -24,14 +24,14 @@ import {
   ShieldAlert,
   XCircle,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
 import {
   USER_MANAGEMENT_TABLE_CLASSNAMES,
   USER_MANAGEMENT_TABLE_LAYOUT,

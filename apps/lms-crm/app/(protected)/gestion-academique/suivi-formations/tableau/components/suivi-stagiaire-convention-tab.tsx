@@ -5,9 +5,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Skeleton } from '@repo/ui/skeleton';
 
 const STATUS_LABEL: Record<string, string> = {
   GENERATED: 'Générée',

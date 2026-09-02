@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@repo/ui/button';
+import { Textarea } from '@repo/ui/textarea';
 import { nextPublicPathPrefix } from '@/lib/next-public-path-prefix';
 import { toast } from 'sonner';
 

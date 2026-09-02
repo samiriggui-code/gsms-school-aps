@@ -5,7 +5,7 @@ import { EtudiantOverviewStats } from "./details/etudiant-overview-stats";
 import { EtudiantRecentActivity } from "./details/etudiant-recent-activity";
 import { EtudiantReliabilityTier } from "./details/etudiant-reliability-tier";
 import { EtudiantHRInfo } from "./details/etudiant-hr-info";
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@repo/ui/alert";
 import { CalendarX2 } from "lucide-react";
 import { isUserCurrentlyAbsent, userAbsenceAlertPeriod } from '@/lib/rh/user-absence-ui';
 import { CandidatFormationViseeCard } from "./candidat-formation-visee-card";

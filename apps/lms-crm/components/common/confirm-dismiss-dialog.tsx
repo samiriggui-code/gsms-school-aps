@@ -9,7 +9,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@repo/ui/alert-dialog';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface ConfirmDismissDialogProps {

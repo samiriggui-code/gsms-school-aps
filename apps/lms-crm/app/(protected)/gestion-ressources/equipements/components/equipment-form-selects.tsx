@@ -7,15 +7,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   EQUIPMENT_TYPE_LABELS,
   EQUIPMENT_TYPE_VALUES,

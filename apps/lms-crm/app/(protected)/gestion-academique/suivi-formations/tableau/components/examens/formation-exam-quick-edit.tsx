@@ -5,9 +5,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Pencil } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 

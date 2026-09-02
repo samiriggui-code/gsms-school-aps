@@ -6,7 +6,7 @@ import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
 import type { CrmDashboardPayload } from '@/lib/crm/crm-dashboard-types';
 import { crmDashboardKpis } from '@/lib/crm/crm-kpi-stats';
 import { MenuCardsSection } from '@/app/(protected)/accueil/components/menu-cards-section';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { CrmDashboardHighlights } from './crm-dashboard-highlights';
 import { CrmWelcomeCallout } from './crm-welcome-callout';
 import { useDashboardLayout } from '@/hooks/use-dashboard-layout';

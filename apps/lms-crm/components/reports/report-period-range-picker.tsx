@@ -3,10 +3,10 @@
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Button } from '@repo/ui/button';
+import { Calendar } from '@repo/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/toggle-group';
 import { cn } from '@/lib/utils';
 import type { ReportPeriod } from '@repo/report-engine';
 

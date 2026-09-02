@@ -2,21 +2,21 @@
 
 import { useId, useState } from 'react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input, InputWrapper } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Rating } from '@/components/ui/rating';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Checkbox } from '@repo/ui/checkbox';
+import { Input, InputWrapper } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Rating } from '@repo/ui/rating';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -24,9 +24,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '@repo/ui/sheet';
+import { Switch } from '@repo/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 
 // Interface for current stock data
 interface CurrentStockData {

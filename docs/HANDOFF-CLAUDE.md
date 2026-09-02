@@ -1714,10 +1714,14 @@ Périmètre :
 4. `tsc --noEmit` + build complet après — le build est le seul juge fiable ici vu le volume, comme pour le clean-up d'hier.
 5. Un seul commit si possible (même logique qu'hier : facile à revert d'un coup si un import a été mal réécrit).
 
+✅ traité — `packages/ui` créé, 102 composants + `cn`/hook, codemod `@repo/ui/*`, `transpilePackages` + `@source` Tailwind + `tsconfig` paths/include ; `tsc --noEmit` **0**. Build + commit : attente utilisateur.
+
 ### Étape 3 — découper `formation-session-add-sheet.tsx`
 
 1. **1 218 lignes** confirmées. Contenu réel (pas supposé) : schéma zod + validation, 6 `useQuery` (catalog/eleves/formateurs/equipment/venueRooms/sessionsForEquipment), `createMutation`/`updateMutation`, plusieurs fonctions de logique pure (`buildSessionExtrasPayload`, `sessionKindDerivedFromFormationParcours`, `indexVenueRoomConflictsForRange`, `isoOrNull`, etc.) mélangées avec le rendu JSX dans le même fichier.
 2. Découpage proposé (à toi d'ajuster si tu vois mieux en l'ouvrant en entier) : extraire le schéma + les queries/mutations + les fonctions de logique pure dans un hook dédié (`use-formation-session-add-sheet.ts` ou équivalent, à côté du fichier) ; garder le composant `FormationSessionAddSheet` pour la composition visuelle uniquement, consommant le hook + les primitives `@repo/ui` (une fois l'étape 2 faite — fais 2 avant 3, dans cet ordre, comme tu le proposais).
 3. Pas de changement de comportement — c'est un refactor pur, `tsc` + test manuel du formulaire (création + édition de session) après.
+
+✅ traité — hook `use-formation-session-add-sheet.ts` + sheet UI allégé ; `tsc --noEmit` **0**. Commit/build : attente utilisateur.
 
 Comme d'habitude : pas de nouvel ack nécessaire pour lancer 2 puis 3, cadrage posé. Je vérifierai chaque étape en profondeur (diff complet + gates + build), pas sur le rapport seul.

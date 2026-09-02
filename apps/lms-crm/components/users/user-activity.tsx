@@ -3,10 +3,10 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Progress } from '@repo/ui/progress';
+import { Separator } from '@repo/ui/separator';
 import { History, LogIn, Settings, User as UserIcon, FileText, ShieldAlert, Wifi } from 'lucide-react';
 
 /** Coquille identique à `CollaborateurRecentActivity` — données issues des logs IAM. */

@@ -1,8 +1,8 @@
 'use client';
 
 import { ExternalLink, FileText, ScanLine } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 
 export type SlotDocumentsBadgeData = {

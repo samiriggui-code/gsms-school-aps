@@ -11,7 +11,7 @@ import {
   ToolbarActions,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { QualiopiClasseurView } from '../components/qualiopi-classeur-view';
 import { QualiopiGapsAssistantPanel } from '../components/qualiopi-gaps-assistant-panel';
 

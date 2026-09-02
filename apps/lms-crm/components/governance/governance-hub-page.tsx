@@ -19,10 +19,10 @@ import {
   ToolbarTitle,
   ToolbarDescription,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Card, CardContent, CardHeader } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';

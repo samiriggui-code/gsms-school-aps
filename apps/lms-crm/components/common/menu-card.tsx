@@ -2,8 +2,8 @@
 
 import { Fragment } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
 import { ArrowRight, LucideIcon } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';

@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -19,8 +19,8 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+} from '@repo/ui/sheet';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
 import { User as Etudiant, UserStatus } from '@/app/models/user';
 import { getEtudiantStatusProps } from '../constants/status';
 import { usePusher } from '@/hooks/use-pusher';

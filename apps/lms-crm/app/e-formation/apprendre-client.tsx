@@ -18,7 +18,7 @@ import { E_FORMATION_API, E_FORMATION_BASE, eFormationModulePath } from '@/lib/p
 import { lmsAccessLabel, type LmsAccessTier } from '@/lib/portal/lms-access-shared';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalStatGrid } from '@/components/portal/layout/portal-stat-grid';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 
 type CourseRow = {

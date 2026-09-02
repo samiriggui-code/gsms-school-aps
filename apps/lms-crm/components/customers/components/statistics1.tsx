@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { TrendingUp } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 import { useTranslation } from '@/hooks/useTranslation';
 
 type CatalogFormationStats = {

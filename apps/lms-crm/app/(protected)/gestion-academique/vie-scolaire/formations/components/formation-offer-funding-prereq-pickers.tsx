@@ -1,10 +1,10 @@
 'use client';
 
 import { ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Checkbox } from '@repo/ui/checkbox';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import type { FundingBlockRow, PrerequisiteRow } from '../utils/formation-offer-template-helpers';
 import {
   fundingOptionKey,

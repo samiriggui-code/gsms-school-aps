@@ -5,7 +5,7 @@ import {
   type MetricStatTone,
 } from '@/components/common/stat-card-metric-layout';
 import { MessageSquare, CheckCircle, Clock, AlertTriangle, Zap } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { useSupportQualiteStats } from '../hooks/use-support-qualite-stats';
 
 const ICON_MAP: Record<string, typeof MessageSquare> = {

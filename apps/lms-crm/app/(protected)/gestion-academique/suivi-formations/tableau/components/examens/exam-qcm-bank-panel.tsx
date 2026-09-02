@@ -4,18 +4,18 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BookOpen, Download, Plus } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { toast } from 'sonner';
 
 type BankRow = {

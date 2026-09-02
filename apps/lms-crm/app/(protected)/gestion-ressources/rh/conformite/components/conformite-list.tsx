@@ -36,28 +36,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime, getInitials } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@repo/ui/avatar';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
 import {
   DataGrid,
   DataGridApiFetchParams,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable, DataGridTableRowSelect, DataGridTableRowSelectAll } from '@/components/ui/data-grid-table';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable, DataGridTableRowSelect, DataGridTableRowSelectAll } from '@repo/ui/data-grid-table';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/select';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+} from '@repo/ui/dropdown-menu';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
 import { User as Conformite, UserStatus } from '@/app/models/user';
 
 type ConformiteListRow = Conformite & {
@@ -67,7 +67,7 @@ type ConformiteListRow = Conformite & {
 };
 import { getConformiteStatusProps, getComplianceDocumentStatusProps } from '../constants/status';
 import { toast } from 'sonner';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { ConformiteDetailsSheet } from './conformite-details-sheet';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 

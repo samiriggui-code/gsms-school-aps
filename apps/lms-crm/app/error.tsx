@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import * as Sentry from '@sentry/nextjs';
 
 export default function Error({

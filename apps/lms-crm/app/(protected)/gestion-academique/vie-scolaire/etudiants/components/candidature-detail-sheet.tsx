@@ -23,16 +23,16 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { formatDateTime, getAvatarUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { Loader2, UserIcon, AlertCircle, Printer } from 'lucide-react';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Textarea } from '@repo/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -40,10 +40,10 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '@repo/ui/sheet';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Separator } from '@repo/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import {
   candidatHubDetailQueryKey,
   candidatHubListQueryKey,

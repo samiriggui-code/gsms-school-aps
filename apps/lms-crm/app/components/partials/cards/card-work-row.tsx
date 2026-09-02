@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { EllipsisVertical, Heart, Mails } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
 import { DropdownMenu2 } from '../dropdown-menu/dropdown-menu-2';
 import { IWorkProps } from './card-work';
 

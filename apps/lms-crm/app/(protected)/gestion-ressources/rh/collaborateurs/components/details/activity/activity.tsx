@@ -1,9 +1,9 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Progress } from '@repo/ui/progress';
+import { Separator } from '@repo/ui/separator';
 import { History, Settings, Trash2, UserPlus, Wifi } from 'lucide-react';
 import { User as Collaborateur } from '@/app/models/user';
 import { useCollaborateurHistory } from '../../../hooks/use-collaborateur-history';

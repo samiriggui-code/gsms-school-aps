@@ -34,22 +34,22 @@ import { RiCheckboxCircleFill } from '@remixicon/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime, getAvatarUrl, getInitials } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
 import {
   DataGrid,
   DataGridApiFetchParams,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable, DataGridTableRowSelect, DataGridTableRowSelectAll } from '@/components/ui/data-grid-table';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable, DataGridTableRowSelect, DataGridTableRowSelectAll } from '@repo/ui/data-grid-table';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
+import { Tabs, TabsContent } from '@repo/ui/tabs';
 import { Team } from '@/app/models/team';
 import { toast } from 'sonner';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { cn } from '@/lib/utils';
 import TeamDetailsSheet from './team-details-sheet';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
@@ -58,9 +58,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+} from '@repo/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Badge } from '@repo/ui/badge';
 import {
   resolveTeamLeader,
   resolveTeamSectorMeta,

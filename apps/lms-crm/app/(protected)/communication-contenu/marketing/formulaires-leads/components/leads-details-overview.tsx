@@ -5,7 +5,7 @@ import { EtudiantOverviewStats } from "./details/leads-overview-stats";
 import { EtudiantRecentActivity } from "./details/leads-recent-activity";
 import { EtudiantReliabilityTier } from "./details/leads-reliability-tier";
 import { EtudiantHRInfo } from "./details/leads-hr-info";
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@repo/ui/alert";
 import { CalendarX2 } from "lucide-react";
 import { CandidatFormationViseeCard } from "./leads-formation-visee-card";
 import type { LeadsHubListRow } from "./leads-hub-list";

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { apiFetch } from '@/lib/api';
 
 type CaseOption = { id: string; reference: string | null; status: string; providerLabel: string };

@@ -13,10 +13,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Textarea } from '@repo/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/select';
 import { TeamSchema, TeamSchemaType } from '../forms/team-schema';
 import { TEAM_TYPES, TEAM_SECTORS, TEAM_ILLUSTRATION_OPTIONS } from '../constants';
 import { teamIllustrationSrc } from '../lib/team-display';

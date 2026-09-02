@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 import { PERMISSION_DOMAINS } from '@/lib/auth/permission-domains';
 import { cn } from '@/lib/utils';
 

@@ -14,11 +14,11 @@ import { FormationLogoThumb } from '@/app/(protected)/gestion-academique/vie-sco
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { ModuleLandingDataGridShell } from '@/components/common/module-landing-datagrid-shell';
 import { UserAvatar } from '@/components/common/user-avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { Progress } from '@repo/ui/progress';
+import { Tabs, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import type {
   InstructorAnnouncementRow,
   InstructorDashboardPayload,

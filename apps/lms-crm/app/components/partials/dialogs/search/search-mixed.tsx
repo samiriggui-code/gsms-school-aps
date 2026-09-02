@@ -3,7 +3,7 @@
 import {
   AccordionMenu,
   AccordionMenuGroup,
-} from '@/components/ui/accordion-menu';
+} from '@repo/ui/accordion-menu';
 import { SearchIntegrations } from './search-integrations';
 import { SearchSettingsItems } from './search-settings-items';
 import { SearchUsers } from './search-users';

@@ -4,9 +4,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Label } from '@repo/ui/label';
+import { Switch } from '@repo/ui/switch';
 import type { VenueRoomRow } from '../types';
 
 export function SalleActiveToggle({

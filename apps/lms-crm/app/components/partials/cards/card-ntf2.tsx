@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import { Copy, Settings } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from '@/components/ui/card';
+} from '@repo/ui/card';
 import { AvatarSingle } from '../common/avatar-single';
 import { DropdownMenu4 } from '../dropdown-menu/dropdown-menu-4';
 import { IAvatar } from './card-author';

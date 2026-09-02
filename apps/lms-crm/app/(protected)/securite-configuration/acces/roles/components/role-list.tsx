@@ -14,28 +14,28 @@ import {
 import { Pencil, Plus, Search, ShieldAlert, Trash, UserRound, X } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardFooter, CardHeader, CardTable, CardToolbar } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardFooter, CardHeader, CardTable, CardToolbar } from '@repo/ui/card';
 import {
   DataGrid,
   DataGridApiFetchParams,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridColumnVisibility } from '@/components/ui/data-grid-column-visibility';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridColumnVisibility } from '@repo/ui/data-grid-column-visibility';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@repo/ui/select';
+import { Skeleton } from '@repo/ui/skeleton';
 import { UserRole } from '@/app/models/user';
 import {
   USER_MANAGEMENT_TABLE_CLASSNAMES,

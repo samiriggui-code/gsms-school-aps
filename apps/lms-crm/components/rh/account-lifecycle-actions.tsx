@@ -6,8 +6,8 @@ import { Archive, Loader2, RotateCcw, ShieldOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { User as CollaborateurModel } from '@/app/models/user';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,8 +17,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Badge } from '@/components/ui/badge';
+} from '@repo/ui/alert-dialog';
+import { Badge } from '@repo/ui/badge';
 import type { AccountLifecycleAction } from '@/lib/rh/account-lifecycle';
 
 type Props = {

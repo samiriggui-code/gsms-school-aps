@@ -1,8 +1,8 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 
 type SheetStatBadgeVariant = 'success' | 'warning' | 'destructive' | 'outline' | 'secondary';
 

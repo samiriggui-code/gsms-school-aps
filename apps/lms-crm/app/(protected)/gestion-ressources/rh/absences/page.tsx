@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/hooks/useTranslation';
 import { useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { CalendarPlus } from 'lucide-react';
 import AbsenceList from './components/absence-list';
 import { AbsenceStats } from './components/absence-stats';

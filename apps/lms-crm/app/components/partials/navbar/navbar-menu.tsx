@@ -15,7 +15,7 @@ import {
   MenubarSubContent,
   MenubarSubTrigger,
   MenubarTrigger,
-} from '@/components/ui/menubar';
+} from '@repo/ui/menubar';
 
 const NavbarMenu = ({ items }: { items: MenuConfig }) => {
   const pathname = usePathname();

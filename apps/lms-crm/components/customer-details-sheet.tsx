@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import { Loader2 } from 'lucide-react';
 import {
   Sheet,
@@ -13,8 +13,8 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+} from '@repo/ui/sheet';
+import { Tabs, TabsContent } from '@repo/ui/tabs';
 import { FormationSheetTabsList } from '@/components/formation-sheet-tabs';
 import { useFormationSheetLabels } from '@/hooks/useFormationSheetLabels';
 import { useTranslation } from '@/hooks/useTranslation';

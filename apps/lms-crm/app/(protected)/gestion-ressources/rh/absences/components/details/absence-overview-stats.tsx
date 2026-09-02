@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@repo/ui/card";
 import { CalendarDays, FileText } from "lucide-react";
 
 export function AbsenceOverviewStats({ absence }: { absence: any }) {

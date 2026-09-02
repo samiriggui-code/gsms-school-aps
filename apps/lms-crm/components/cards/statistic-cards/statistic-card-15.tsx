@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { ArrowRight, ChartNoAxesCombined, TrendingUp, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

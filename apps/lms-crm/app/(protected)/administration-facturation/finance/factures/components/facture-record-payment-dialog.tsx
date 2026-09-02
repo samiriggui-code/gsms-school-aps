@@ -5,17 +5,17 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/dialog';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import { financeFactureDetailQueryKey, financeFactureListQueryKey } from '../constants/query-keys';
 
 type Props = {

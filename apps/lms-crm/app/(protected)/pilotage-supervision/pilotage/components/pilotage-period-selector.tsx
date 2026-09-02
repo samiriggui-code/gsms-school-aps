@@ -1,6 +1,6 @@
 'use client';
 
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/toggle-group';
 import { PILOTAGE_PERIOD_OPTIONS, type PilotagePeriod } from '@/lib/pilotage/modules';
 
 type Props = {

@@ -3,8 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { HelpCircle, Loader2 } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import type { QualiopiGapsPayload } from '@/lib/of/qualiopi-gaps';
 
 /** GSMS-AI-04 — assistant gaps couverture (déterministe, lecture seule). */

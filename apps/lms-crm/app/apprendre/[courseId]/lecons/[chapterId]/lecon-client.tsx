@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { LmsActivityList } from '@/components/portal/lms/lms-activity-list';
 import { LmsCourseSidebar } from '@/components/portal/lms/lms-course-sidebar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import type { LmsActivityRow, LmsSyllabusItem } from '@/lib/portal/lms-types';
 import type { LmsAccessTier } from '@/lib/portal/lms-access-shared';
 

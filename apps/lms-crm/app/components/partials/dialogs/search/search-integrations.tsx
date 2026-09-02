@@ -7,8 +7,8 @@ import {
   AccordionMenu,
   AccordionMenuGroup,
   AccordionMenuItem,
-} from '@/components/ui/accordion-menu';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/accordion-menu';
+import { Button } from '@repo/ui/button';
 import { SearchIntegrationsItem } from './types';
 
 export function SearchIntegrations({

@@ -1,8 +1,8 @@
 'use client';
 
 import { TrendingUp } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardHeading, CardTitle, CardToolbar } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { Card, CardContent, CardHeader, CardHeading, CardTitle, CardToolbar } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
 import { Area, AreaChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { PilotageIndicateursPayload } from '@repo/api-core';
 import { PILOTAGE_CHART_COLORS } from '@/lib/pilotage/chart-colors';

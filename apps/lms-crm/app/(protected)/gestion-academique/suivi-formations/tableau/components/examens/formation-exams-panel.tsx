@@ -14,19 +14,19 @@ import {
   formationExamStatusBadgeVariant,
   formationExamStatusLabel,
 } from '@/lib/vie-scolaire/formation-exam-labels';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
 import { ModuleDataGridShell } from '@/components/common/module-data-grid-shell';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,7 +36,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@repo/ui/alert-dialog';
 import type { FormationExamApiRow } from '@/lib/vie-scolaire/formation-exam-api-types';
 import { FormationExamDetailSheet } from './formation-exam-detail-sheet';
 import { FormationExamRowActions } from './formation-exam-row-actions';

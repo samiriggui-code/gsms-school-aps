@@ -8,13 +8,13 @@ import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { getInitials } from '@/lib/helpers';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
-} from '@/components/ui/card';
+} from '@repo/ui/card';
 import {
   Form,
   FormControl,
@@ -22,24 +22,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { LoaderCircleIcon, Briefcase, Mail, User as UserIcon, ShieldCheck, Calendar, Hash, MapPin, CreditCard, FileText, Clock, Fingerprint, Shield, CloudUpload, Info } from 'lucide-react';
 import { User as Collaborateur, UserRole } from '@/app/models/user';
 import { FormateurEditSchema, FormateurEditSchemaType } from '../forms/formateur-edit-schema';
 import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { useSubcontractorSelectQuery } from '../hooks/use-subcontractor-select-query';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import { agrementUiLabels } from '@/lib/rh-agrement';
 import { cn } from '@/lib/utils';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from '@repo/ui/checkbox';
 import {
   FORMATEUR_TEACHING_SPECIALTY_PRESETS,
   SCHOOL_USER_CATEGORY_LABELS,

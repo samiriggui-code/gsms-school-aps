@@ -9,9 +9,9 @@ import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { fetchSessionRoleSlug, resolvePostLoginDestination } from '@/lib/auth/app-routing';
 import { useForm } from 'react-hook-form';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
+import { Checkbox } from '@repo/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -19,8 +19,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import { LoaderCircleIcon } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getSigninSchema, SigninSchemaType } from '../forms/signin-schema';

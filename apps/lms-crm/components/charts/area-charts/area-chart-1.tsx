@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { CircleDollarSign, TrendingUp, UserPlus } from 'lucide-react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
 

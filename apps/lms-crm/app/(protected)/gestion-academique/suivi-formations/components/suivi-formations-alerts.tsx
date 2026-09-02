@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { AlertTriangle, ArrowRight, ClipboardList, Workflow } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 
 type StatsPayload = {
   surveysPending: number;

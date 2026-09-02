@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import { CheckCircle2, ClipboardCheck, GraduationCap, ListTodo } from 'lucide-react';
 import type { CertificationStepRow } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/utils/formation-catalog-sheet-view-model';
 

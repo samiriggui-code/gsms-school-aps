@@ -4,10 +4,10 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import { COMPANY_PROFILE_SETTINGS_HREF } from '@/lib/company-profile';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
 import { Building, FolderOpen, Network } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 export function CompagnieWelcomeCallout() {
   return (

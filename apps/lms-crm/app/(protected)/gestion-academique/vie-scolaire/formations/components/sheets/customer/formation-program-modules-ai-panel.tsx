@@ -5,9 +5,9 @@ import { formatDateTime } from '@/lib/helpers';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { toast } from 'sonner';
 import { Loader2, Sparkles, Check, X, Upload } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   formationDetailQueryKey,
 } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/hooks/use-formation-detail-query';

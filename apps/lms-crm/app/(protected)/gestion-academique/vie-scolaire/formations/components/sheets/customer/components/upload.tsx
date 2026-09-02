@@ -1,6 +1,6 @@
 'use client';
 
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import Link from 'next/link';
 
 const DEMO_LOGO_SRC = '/formations/tfp-aps.png';

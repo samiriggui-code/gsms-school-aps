@@ -10,7 +10,7 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@repo/ui/card';
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';

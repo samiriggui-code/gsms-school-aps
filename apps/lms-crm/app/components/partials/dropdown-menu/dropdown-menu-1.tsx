@@ -21,7 +21,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 
 export function DropdownMenu1({ trigger }: { trigger: ReactNode }) {
   return (

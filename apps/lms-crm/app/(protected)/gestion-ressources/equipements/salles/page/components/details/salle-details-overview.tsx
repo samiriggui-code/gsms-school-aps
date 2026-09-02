@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { Ban } from 'lucide-react';
 import type { VenueRoomRow } from '../../types';
 import { SalleOverviewStats } from './salle-overview-stats';

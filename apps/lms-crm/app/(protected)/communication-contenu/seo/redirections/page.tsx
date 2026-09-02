@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { SimpleCrudModulePage } from '@/components/crud/simple-crud-module-page';
 import { useTranslation } from '@/hooks/useTranslation';
 import { workspaceActionLabel } from '@/lib/workspace-labels';

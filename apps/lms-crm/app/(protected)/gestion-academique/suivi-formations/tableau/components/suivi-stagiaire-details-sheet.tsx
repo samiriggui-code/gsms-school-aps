@@ -1,10 +1,10 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@repo/ui/badge';
+import { Progress } from '@repo/ui/progress';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import {
   Sheet,
   SheetBody,
@@ -12,9 +12,9 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@repo/ui/sheet';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Skeleton } from '@repo/ui/skeleton';
 import { formatDateTime, getAvatarUrl, getInitials } from '@/lib/helpers';
 import { apiFetch } from '@/lib/api';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../vie-scolaire/constants/sheet-shell-classes';

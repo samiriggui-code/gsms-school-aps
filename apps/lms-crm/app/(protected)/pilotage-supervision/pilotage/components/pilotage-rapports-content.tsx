@@ -30,17 +30,17 @@ import {
   X,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,11 +50,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable, DataGridTableRowSelect, DataGridTableRowSelectAll } from '@/components/ui/data-grid-table';
+} from '@repo/ui/alert-dialog';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable, DataGridTableRowSelect, DataGridTableRowSelectAll } from '@repo/ui/data-grid-table';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
 import { Container } from '@/components/common/container';
 import {

@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@repo/ui/card";
 
 export function UserAccessDetails({ user }: { user: any }) {
   const items = [

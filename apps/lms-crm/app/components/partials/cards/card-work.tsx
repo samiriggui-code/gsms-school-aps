@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Heart, Mails } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card } from '@/components/ui/card';
+import { Card } from '@repo/ui/card';
 
 interface IWorkProps {
   image: string;

@@ -6,8 +6,8 @@ import type { FormationSheetViewModel } from '@/app/(protected)/gestion-academiq
 import { BillingDetails } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/billing-details';
 import { PaymentMethods } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/payment-methods';
 import { portalLabel, portalMuted, portalSectionTitle } from '@/components/portal/layout/portal-ui';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 
 type DevisRow = {

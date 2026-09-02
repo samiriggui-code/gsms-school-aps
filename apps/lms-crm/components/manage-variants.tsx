@@ -3,29 +3,29 @@
 import { useState } from 'react';
 import { GripVertical, Minus, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardToolbar,
-} from '@/components/ui/card';
+} from '@repo/ui/card';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/collapsible';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -33,12 +33,12 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Sortable,
   SortableItem,
   SortableItemHandle,
-} from '@/components/ui/sortable';
+} from '@repo/ui/sortable';
 
 interface OptionValue {
   id: string;

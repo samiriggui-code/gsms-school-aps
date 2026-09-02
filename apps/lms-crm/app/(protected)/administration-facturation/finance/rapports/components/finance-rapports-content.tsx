@@ -22,15 +22,15 @@ import {
   ToolbarTitle,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Skeleton } from '@repo/ui/skeleton';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import type { FinanceRapportsPayload } from '@/lib/finance/finance-rapports-build';
 import { cn } from '@/lib/utils';

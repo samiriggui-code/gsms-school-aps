@@ -5,23 +5,23 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link2, Package, Plus, Trash2, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Table,
   TableBody,
@@ -29,7 +29,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@repo/ui/table';
 import type { SerializedRoomFixedEquipmentRow } from '@/app/api/sections/gestion-ressources/equipements/salles/_lib/serialize-room-fixed-equipment';
 import { RoomEquipmentDispatchGuide } from './room-equipment-dispatch-guide';
 

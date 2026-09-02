@@ -5,7 +5,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from '@repo/ui/accordion';
 import type { SheetProgramModule } from '@/lib/sheet-content-types';
 
 type Props = {

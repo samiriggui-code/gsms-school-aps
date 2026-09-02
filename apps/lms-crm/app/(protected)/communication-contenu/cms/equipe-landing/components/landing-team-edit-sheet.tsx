@@ -13,18 +13,18 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+} from '@repo/ui/sheet';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Textarea } from '@repo/ui/textarea';
+import { Label } from '@repo/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 
 type FormValues = {
   catalogStatus: 'ACTIVE' | 'DRAFT' | 'ARCHIVED';

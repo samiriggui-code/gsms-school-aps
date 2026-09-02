@@ -8,8 +8,8 @@ import {
   CardHeading,
   CardTitle,
   CardToolbar,
-} from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+} from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
 import {
   Bar,
   BarChart,

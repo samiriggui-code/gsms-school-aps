@@ -4,27 +4,27 @@ import React, { useId, useState } from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon, X } from 'lucide-react';
 import Link from 'next/link';
-import { BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input, InputWrapper } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Calendar } from '@repo/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Checkbox } from '@repo/ui/checkbox';
+import { Input, InputWrapper } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/popover';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+} from '@repo/ui/select';
+import { Separator } from '@repo/ui/separator';
 import {
   Sheet,
   SheetBody,
@@ -32,8 +32,8 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '@repo/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { toAbsoluteUrl } from '@/lib/helpers';
 
 interface Item {

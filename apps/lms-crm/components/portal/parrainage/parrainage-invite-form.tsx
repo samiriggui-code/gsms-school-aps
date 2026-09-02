@@ -5,17 +5,17 @@ import { useSession } from 'next-auth/react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
 import { SquarePlus, Link2, Users } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+} from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Badge } from '@repo/ui/badge';
 
 type StoredInvite = {
   id: string;

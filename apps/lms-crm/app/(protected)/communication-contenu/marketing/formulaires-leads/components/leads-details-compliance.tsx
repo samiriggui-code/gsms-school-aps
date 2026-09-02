@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { User as Etudiant } from '@/app/models/user';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import { 
   ShieldCheck, 
   ShieldAlert, 
@@ -30,13 +30,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/dropdown-menu";
 
 interface Document {
   id: string;

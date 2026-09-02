@@ -1,8 +1,8 @@
 'use client';
 
 import { Download, ExternalLink, FileText } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -10,7 +10,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { formatDateTime } from '@/lib/helpers';
 import { moduleLabelFromKey } from '@/lib/pilotage/modules';
 import { pilotageReportDownloadUrl } from '@/lib/pilotage/api';

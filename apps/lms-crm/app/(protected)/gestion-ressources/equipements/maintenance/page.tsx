@@ -12,7 +12,7 @@ import {
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { Wrench } from 'lucide-react';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
 import { maintenanceExportConfig } from '@/lib/datagrid/export-presets';

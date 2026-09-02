@@ -5,16 +5,16 @@ import { useTheme } from 'next-themes';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { I18N_LANGUAGES } from '@/i18n/config';
 import { useLanguage } from '@/providers/i18n-provider';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Label } from '@repo/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
 
 export function AccountAppearanceSection() {

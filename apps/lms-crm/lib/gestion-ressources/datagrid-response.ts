@@ -1,4 +1,4 @@
-import type { DataGridApiResponse } from '@/components/ui/data-grid';
+import type { DataGridApiResponse } from '@repo/ui/data-grid';
 
 /** Normalise une réponse liste DataGrid (propriété `empty` requise). */
 export function buildDataGridListResponse<T>(

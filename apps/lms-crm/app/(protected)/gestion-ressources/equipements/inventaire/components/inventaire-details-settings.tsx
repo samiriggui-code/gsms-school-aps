@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { normalizeEquipmentType } from '@/lib/equipment-constants';
 import {
   normalizeEquipmentMetadata,
@@ -19,12 +19,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
-} from '@/components/ui/card';
+} from '@repo/ui/card';
 import {
   Form,
   FormControl,
@@ -32,20 +32,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { Package, Hash, MapPin, Settings, Info, ShieldCheck, CloudUpload, Package as PackageIcon } from 'lucide-react';
 import { Equipment as Inventaire } from '@/app/models/equipment';
 import { EquipmentEditSchema, EquipmentEditSchemaType } from '../forms/equipment-edit-schema';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Separator } from '@repo/ui/separator';
+import { Avatar, AvatarFallback } from '@repo/ui/avatar';
 import { getInitials } from '@/lib/helpers';
 import { getCatalogBaseSerial } from '@/lib/equipment-catalog';
 

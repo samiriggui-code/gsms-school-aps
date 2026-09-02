@@ -5,8 +5,8 @@ import {
   TrendingDown,
   type LucideIcon,
 } from 'lucide-react';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { getIcon } from '@/lib/icons';
 import { useTranslation } from '@/hooks/useTranslation';
 

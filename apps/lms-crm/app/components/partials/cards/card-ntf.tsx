@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { SquareSigma } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card } from '@/components/ui/card';
+import { Card } from '@repo/ui/card';
 
 interface INFTProps {
   image: string;

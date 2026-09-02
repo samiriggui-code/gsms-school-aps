@@ -21,7 +21,7 @@
     "^@/hooks/(.*)$",
     "^@/providers/(.*)$",
     "^@/services/(.*)$",
-    "^@/components/ui/(.*)$",
+    "^@repo/ui/(.*)$",
     "^@/components/(.*)$",
     "^@/app/(.*)$",
     "^[./]",

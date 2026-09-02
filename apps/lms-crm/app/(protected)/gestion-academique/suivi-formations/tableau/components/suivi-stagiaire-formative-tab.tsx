@@ -6,19 +6,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@repo/ui/select';
+import { Skeleton } from '@repo/ui/skeleton';
 
 type Item = {
   id: string;

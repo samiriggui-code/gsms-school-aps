@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import {
   MODULE_LANDING_STATS_GRID_ROW,
   SECTION_KPI_CARD_ACCENTS,
 } from '@/components/common/stat-card-metric-layout';
 import { FileCheck, Clock, AlertCircle, FileStack, FileX } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import type { DossierAdministratifResponse } from './dossier-types';

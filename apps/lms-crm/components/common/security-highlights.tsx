@@ -13,8 +13,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const iconMap: Record<string, LucideIcon> = {

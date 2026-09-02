@@ -8,8 +8,8 @@ import { INSTRUCTOR_ATTENDANCE_API } from '@/lib/instructor/instructor-paths';
 import type { SessionAttendanceAssetRow } from '@/lib/instructor/instructor-types';
 import { PortalSection } from '@/components/portal/layout/portal-section';
 import { portalMuted, portalSectionTitle } from '@/components/portal/layout/portal-ui';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 

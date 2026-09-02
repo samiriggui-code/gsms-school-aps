@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { MapPin, TrendingUp, Users } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 import { SessionUserAvatar } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-user-avatar';
 
 export type FormationSessionOverviewMetricsProps = {

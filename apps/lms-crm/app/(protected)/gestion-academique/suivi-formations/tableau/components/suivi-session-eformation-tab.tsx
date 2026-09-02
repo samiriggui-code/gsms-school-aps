@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { formatDateTime } from '@/lib/helpers';
 import { apiFetch } from '@/lib/api';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Alert, AlertDescription } from '@repo/ui/alert';
 import { LmsContentReviewPanel } from './eformation';
 import { SuiviSessionStagiairesDatagrid } from './suivi-session-stagiaires-datagrid';
 

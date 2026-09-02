@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/select';
 import { CreditCard, Eye, ShoppingCart, Store, TrendingDown, TrendingUp } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { cn } from '@/lib/utils';

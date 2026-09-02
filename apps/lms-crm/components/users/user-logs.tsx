@@ -6,7 +6,7 @@ import { formatDateTime } from "@/lib/helpers";
 import { 
     Card, 
     CardContent, 
-} from "@/components/ui/card";
+} from "@repo/ui/card";
 import {
     Table,
     TableBody,
@@ -14,12 +14,12 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@repo/ui/table";
+import { Badge } from "@repo/ui/badge";
+import { Skeleton } from "@repo/ui/skeleton";
+import { ScrollArea } from "@repo/ui/scroll-area";
 import { Terminal, User as UserIcon, Monitor, Clock } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@repo/ui/avatar";
 import { getInitials } from "@/lib/helpers";
 
 export function UserLogs({ user }: { user: any }) {

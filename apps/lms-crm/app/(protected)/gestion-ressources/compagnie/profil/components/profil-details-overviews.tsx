@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   Award,
   Building2,
@@ -23,7 +23,7 @@ import {
   Coins,
   type LucideIcon,
 } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
 import { getInitials } from '@/lib/helpers';
 import type { CompanyProfileView, PrimaryAdminContactPayload } from '@/lib/company-profile';
 import { cn } from '@/lib/utils';

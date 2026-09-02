@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { EllipsisVertical } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
 import { AvatarGroup } from '../common/avatar-group';
 import { DropdownMenu1 } from '../dropdown-menu/dropdown-menu-1';
 import {

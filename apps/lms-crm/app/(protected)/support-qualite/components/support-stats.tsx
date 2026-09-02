@@ -9,8 +9,8 @@ import {
   type MetricStatTone,
 } from '@/components/common/stat-card-metric-layout';
 import { SECTION_LANDING_STATS_GRID_CLASS } from '@/lib/section-stats-card-bg';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { useSupportQualiteStats } from '../hooks/use-support-qualite-stats';
 
 const ICON_MAP: Record<string, typeof MessageSquare> = {

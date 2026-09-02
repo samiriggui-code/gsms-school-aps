@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 
 export function WelcomeMessageDialog({
   open,

@@ -1,7 +1,7 @@
 'use client';
 
 import { User as RhUser } from '@/app/models/user';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 import { Mail, Phone, Briefcase, User as UserIcon, Network } from 'lucide-react';
 import { SCHOOL_USER_CATEGORY_LABELS } from '@/lib/rh-school-profile-fields';
 import { RhDetailFieldRow } from '@/components/rh/rh-detail-field-row';

@@ -5,7 +5,7 @@ import { ConformiteOverviewStats } from "./details/conformite-overview-stats";
 import { ConformiteRecentActivity } from "./details/conformite-recent-activity";
 import { ConformiteReliabilityTier } from "./details/conformite-reliability-tier";
 import { ConformiteHRInfo } from "./details/conformite-hr-info";
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@repo/ui/alert";
 import { CalendarX2 } from "lucide-react";
 
 export function ConformiteDetailsOverview({ conformite }: { conformite: Conformite }) {

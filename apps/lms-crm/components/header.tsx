@@ -10,14 +10,14 @@ import {
   DrawerContent,
   DrawerTrigger,
   DrawerDescription,
-} from '@/components/ui/drawer';
+} from '@repo/ui/drawer';
 import Logo from '@/components/logo';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { cn } from '@/lib/utils';
 import { isFormFieldFocused, useIsIOS } from '@/lib/platform';
 import { navigateToPricingTab, type LandingPricingTab } from '@/lib/landing-pricing-navigation';
 import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const LANDING_PHONE_HREF = 'tel:+33171113963';

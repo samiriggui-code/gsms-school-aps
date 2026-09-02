@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input, InputWrapper } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input, InputWrapper } from '@repo/ui/input';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -14,13 +14,13 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { CircleCheck } from 'lucide-react';
 import { Circle } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import React from 'react';
 import Link from 'next/link';
-import { Stepper, StepperItem, StepperNav, StepperTrigger } from '@/components/ui/stepper'; 
+import { Stepper, StepperItem, StepperNav, StepperTrigger } from '@repo/ui/stepper'; 
 
 // Interface for current stock data
 interface CurrentStockData {

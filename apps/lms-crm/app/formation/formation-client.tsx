@@ -29,9 +29,9 @@ import { DetailsOrdersTable } from '@/app/(protected)/gestion-academique/vie-sco
 import { SheetPrerequisitesTable } from '@/components/sheet-shared/prerequisites-table';
 import type { FormationOverviewMetrics } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/statistics1';
 import type { FormationSheetViewModel } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/utils/formation-catalog-sheet-view-model';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { cn } from '@/lib/utils';
 
 type FormationPayload = {

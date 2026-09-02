@@ -8,8 +8,8 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { buildAppLoginEmail, appLoginEmailPatternLabel } from '@/lib/app-login-email';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -17,7 +17,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Form,
   FormControl,
@@ -25,18 +25,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { candidatHubListQueryKey, candidatHubStatsQueryKey } from '../constants/query-keys';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../constants/sheet-shell-classes';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
 import { 
   LoaderCircleIcon, 
   UserPlus, 
@@ -61,13 +61,13 @@ import { UserRole } from '@/app/models/user';
 import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { useSubcontractorSelectQuery } from '@/app/(protected)/gestion-ressources/rh/formateurs/hooks/use-subcontractor-select-query';
 import { EtudiantAddSchema, EtudiantAddSchemaType } from '../forms/etudiant-add-schema';
-import { Separator } from '@/components/ui/separator';
-import { Badge, BadgeDot } from '@/components/ui/badge';
+import { Separator } from '@repo/ui/separator';
+import { Badge, BadgeDot } from '@repo/ui/badge';
 import { cn } from '@/lib/utils';
 import { getInitials } from '@/lib/helpers';
 import * as RhAgrement from '@/lib/rh-agrement';
 import { SCHOOL_USER_CATEGORY_LABELS } from '@/lib/rh-school-profile-fields';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@repo/ui/avatar';
 
 const EtudiantAddSheet = ({
   open,

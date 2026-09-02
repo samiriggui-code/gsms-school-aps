@@ -23,9 +23,9 @@ import {
   ToolbarActions,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
 type ArtifactRow = {

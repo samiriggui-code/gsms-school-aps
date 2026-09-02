@@ -1,7 +1,7 @@
 'use client';
 
 import { Printer } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Dialog,
   DialogBody,
@@ -10,7 +10,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 import {
   RhEmargementSessionReport,
   type EmargementReportData,

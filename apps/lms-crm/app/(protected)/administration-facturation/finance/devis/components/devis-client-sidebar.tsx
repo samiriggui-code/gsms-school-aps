@@ -1,7 +1,7 @@
 'use client';
 
 import { Building2, GraduationCap, Mail, MapPin, Phone, UserRound } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import type { FinanceDevisDetail } from '../hooks/use-finance-devis-detail-query';
 
 function strSnap(s: Record<string, unknown>, key: string): string | undefined {

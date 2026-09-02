@@ -3,7 +3,7 @@
 import { Award, BookOpen, CalendarDays, GraduationCap, Mail, Phone } from 'lucide-react';
 import { SessionUserAvatar } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-user-avatar';
 import type { PortalFormationInstructor } from '@/lib/portal/portal-formation-instructor';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
 type Props = {
   instructor: PortalFormationInstructor;

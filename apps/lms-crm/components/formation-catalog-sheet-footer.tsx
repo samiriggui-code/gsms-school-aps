@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ClipboardList } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { CentralPreinscriptionSheet } from '@/components/central-preinscription-sheet';
 import { FormationQuoteFooter } from '@/components/formation-quote-footer';
 import { useTranslation } from '@/hooks/useTranslation';

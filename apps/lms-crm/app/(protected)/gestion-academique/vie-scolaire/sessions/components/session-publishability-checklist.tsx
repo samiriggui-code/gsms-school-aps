@@ -3,8 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Loader2, XCircle } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader } from '@repo/ui/card';
 import { cn } from '@/lib/utils';
 import type { FormationSessionApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 

@@ -2,9 +2,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@repo/ui/badge';
+import { Skeleton } from '@repo/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@repo/ui/alert';
 import { candidatHubDetailQueryKey } from '../constants/query-keys';
 import { BookOpen } from 'lucide-react';
 

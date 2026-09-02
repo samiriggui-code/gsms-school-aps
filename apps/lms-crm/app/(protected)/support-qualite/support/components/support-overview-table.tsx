@@ -13,9 +13,9 @@ import {
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Eye } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { ModuleLandingDataGridShell } from '@/components/common/module-landing-datagrid-shell';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';

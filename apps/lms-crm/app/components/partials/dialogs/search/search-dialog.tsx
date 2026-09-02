@@ -12,7 +12,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from '@repo/ui/command';
 
 export function SearchDialog({ trigger }: { trigger: ReactNode }) {
   const [open, setOpen] = useState(false);

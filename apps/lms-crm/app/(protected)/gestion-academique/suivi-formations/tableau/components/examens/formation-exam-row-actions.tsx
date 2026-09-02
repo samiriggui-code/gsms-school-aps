@@ -1,13 +1,13 @@
 'use client';
 
 import { Eye, Printer, SquarePen, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 import { FORMATION_EXAM_OFFICIAL_DOCUMENTS } from '@/lib/vie-scolaire/formation-exam-documents';
 import { cn } from '@/lib/utils';
 

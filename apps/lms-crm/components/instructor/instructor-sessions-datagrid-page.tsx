@@ -22,17 +22,17 @@ import { INSTRUCTOR_SESSIONS_API } from '@/lib/instructor/instructor-paths';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
 import { portalMuted, portalSectionTitle } from '@/components/portal/layout/portal-ui';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { Input } from '@/components/ui/input';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   INSTRUCTOR_DATAGRID_PAGE_SIZE,
   PortalDataGrid,

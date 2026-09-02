@@ -2,7 +2,7 @@
 
 import { useLandingLeadsQuery } from '../hooks/use-landing-leads-query';
 import { Users, FileText, UserCheck, Clock3, ListChecks } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
   MODULE_LANDING_STATS_GRID_ROW,

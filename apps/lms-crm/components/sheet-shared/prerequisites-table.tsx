@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@repo/ui/table';
 import type { SheetPrerequisiteRow } from '@/lib/sheet-content-types';
 
 type Props = {

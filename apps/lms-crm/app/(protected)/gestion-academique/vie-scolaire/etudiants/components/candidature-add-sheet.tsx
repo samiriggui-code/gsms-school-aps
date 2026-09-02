@@ -26,7 +26,7 @@ import {
   UserIcon,
   UserPlus,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Form,
   FormControl,
@@ -35,15 +35,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -51,13 +51,13 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+} from '@repo/ui/sheet';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Separator } from '@repo/ui/separator';
+import { Textarea } from '@repo/ui/textarea';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Avatar, AvatarFallback } from '@repo/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getInitials } from '@/lib/helpers';

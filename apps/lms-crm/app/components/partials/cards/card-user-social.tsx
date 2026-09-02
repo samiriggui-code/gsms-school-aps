@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { RiFacebookBoxLine, RiInstagramLine } from '@remixicon/react';
 import { Dribbble, Mails } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
 import { AvatarSingle } from '../common/avatar-single';
 import { IAvatar } from './card-author';
 

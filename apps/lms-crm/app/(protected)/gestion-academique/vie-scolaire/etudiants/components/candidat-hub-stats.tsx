@@ -9,7 +9,7 @@ import {
   kpiStatsGridClass,
 } from '@/components/common/stat-card-metric-layout';
 import { Users, CalendarCheck, FileCheck, Timer, FileX } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { apiFetch } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { candidatHubStatsQueryKey } from '../constants/query-keys';

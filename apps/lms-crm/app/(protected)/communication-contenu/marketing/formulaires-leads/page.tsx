@@ -3,7 +3,7 @@
 import { useTranslation } from '@/hooks/useTranslation';
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { UserPlus } from 'lucide-react';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
 import { leadsExportConfig } from '@/lib/datagrid/export-presets';

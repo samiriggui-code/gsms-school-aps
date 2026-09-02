@@ -8,13 +8,13 @@ import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { getInitials } from '@/lib/helpers';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
-} from '@/components/ui/card';
+} from '@repo/ui/card';
 import {
   Form,
   FormControl,
@@ -22,20 +22,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { LoaderCircleIcon, Briefcase, Mail, User as UserIcon, ShieldCheck, Calendar, Hash, MapPin, CreditCard, FileText, Clock, Fingerprint, Shield, CloudUpload, Info } from 'lucide-react';
 import { User as Etudiant, UserRole } from '@/app/models/user';
 import { EtudiantEditSchema, EtudiantEditSchemaType } from '../forms/etudiant-edit-schema';
 import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import { cn } from '@/lib/utils';
 import { agrementUiLabels, showsCollaboratorAgrementSchedulingSection, isParcoursApprenantRole, showsUserStaffEmployerFields } from '@/lib/rh-agrement';
 import {

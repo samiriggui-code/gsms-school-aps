@@ -3,26 +3,26 @@
 import { useState } from 'react';
 import { CircleX } from 'lucide-react';
 import Link from 'next/link';
-import { Badge, BadgeButton } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge, BadgeButton } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardToolbar,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+} from '@repo/ui/select';
+import { Separator } from '@repo/ui/separator';
 import {
   Sheet,
   SheetBody,
@@ -30,9 +30,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/sheet';
+import { Switch } from '@repo/ui/switch';
+import { Textarea } from '@repo/ui/textarea';
 import { ProductFormImageUpload } from './product-form-image-upload';
 import { ProductFormVariants } from './product-form-variants';
 

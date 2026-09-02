@@ -6,8 +6,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -15,7 +15,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
 import {
   Form,
@@ -24,23 +24,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@repo/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/select';
+import { Input } from '@repo/ui/input';
+import { Textarea } from '@repo/ui/textarea';
 import { Calendar, FileText, Info, LoaderCircle, User as UserIcon, Clock, CheckCircle2 } from 'lucide-react';
 import { RiCheckboxCircleFill } from '@remixicon/react';
 import { AbsenceAddSchema, AbsenceAddSchemaType } from '../forms/absence-schema';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
+import { Avatar, AvatarFallback } from '@repo/ui/avatar';
+import { Badge } from '@repo/ui/badge';
 import { formatDate, getInitials } from '@/lib/helpers';
 import { ABSENCE_TYPES } from '../constants';
 import { cn } from '@/lib/utils';

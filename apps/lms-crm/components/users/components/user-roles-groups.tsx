@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
 import { Smartphone, LoaderCircleIcon } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
@@ -15,7 +15,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_COMPACT } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import {
   Select,
@@ -23,7 +23,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { roleHasMobilePortalAccess } from '@/lib/rh-iam-roles';
 import { RoleToggleBadges } from '@/components/iam/role-toggle-badges';

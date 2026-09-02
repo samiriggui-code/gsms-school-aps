@@ -2,15 +2,15 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { UseMutationResult } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@repo/ui/table';
 import { Building2, CalendarRange, Hash, ListPlus, Pencil, Trash2 } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import type { FinanceCatalogLineRow } from '@/lib/finance-catalog-line-types';
 import type { FinanceFactureDetail } from '../hooks/use-finance-facture-detail-query';
 import { useFinanceCatalogLinesQuery } from '../hooks/use-finance-catalog-lines-query';

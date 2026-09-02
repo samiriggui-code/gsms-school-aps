@@ -12,8 +12,8 @@ import {
   type UserPresenceStatus,
 } from '@/components/common/user-presence-ui';
 import { patchPresence, useUserPresence } from '@/components/common/user-presence-picker';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Card, CardHeader, CardTitle } from '@repo/ui/card';
+import { RadioGroup, RadioGroupItem } from '@repo/ui/radio-group';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
 import { cn } from '@/lib/utils';
 

@@ -2,9 +2,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 
 type QualiopiBootstrap = {
   items: { status: string }[];

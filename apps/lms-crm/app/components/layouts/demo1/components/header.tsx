@@ -24,21 +24,21 @@ import { TopbarBadge } from '@/partials/topbar/topbar-badge';
 import { I18N_LANGUAGES, Language } from '@/i18n/config';
 import { useLanguage } from '@/providers/i18n-provider';
 import { useTheme } from 'next-themes';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 import {
   Sheet,
   SheetBody,
   SheetContent,
   SheetHeader,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { Container } from '@/components/common/container';
 import { Breadcrumb } from './breadcrumb';
 import { SidebarMenu } from './sidebar-menu';

@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardHeading, CardTitle, CardToolbar } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { Card, CardContent, CardHeader, CardHeading, CardTitle, CardToolbar } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
 import { TrendingUp } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, Tooltip, XAxis, YAxis } from 'recharts';
 import type { PilotageRisquesPayload } from '@repo/api-core';

@@ -2,8 +2,8 @@
 
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import { User as Collaborateur } from '@/app/models/user';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
 
 export function RhStaffOverviewStats({ collaborateur }: { collaborateur: Collaborateur }) {
   const items = [

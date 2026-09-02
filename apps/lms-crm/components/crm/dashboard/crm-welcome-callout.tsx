@@ -4,8 +4,8 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import { Building2, GraduationCap } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
 import type { CrmDashboardPayload } from '@/lib/crm/crm-dashboard-types';
 import { formatPortalDate } from '@/lib/portal/format-portal-date';
 

@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { Bolt, FolderSymlink, Radar, TrendingUp } from 'lucide-react';
 import { User as Collaborateur } from '@/app/models/user';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Slider, SliderThumb } from '@/components/ui/slider';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
+import { Slider, SliderThumb } from '@repo/ui/slider';
+import { Separator } from '@repo/ui/separator';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 
 const tiers = [
   { name: 'Niveau 1', points: 0, nextGoal: 1000 },

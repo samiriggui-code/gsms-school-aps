@@ -1,9 +1,9 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Progress } from '@repo/ui/progress';
+import { Separator } from '@repo/ui/separator';
 import { History, Settings, Trash2, PackagePlus, Wifi } from 'lucide-react';
 import { Equipment } from '@/app/models/equipment';
 import {

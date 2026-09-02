@@ -16,24 +16,24 @@ import {
 import Link from 'next/link';
 import { toast } from 'sonner';
 
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Badge, BadgeProps } from '@/components/ui/badge';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Badge, BadgeProps } from '@repo/ui/badge';
 import {
   Card,
   CardTable,
-} from '@/components/ui/card';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+} from '@repo/ui/card';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import {
   DataGridTable,
-} from '@/components/ui/data-grid-table';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/data-grid-table';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@repo/ui/tooltip';
 import { Info } from 'lucide-react';
 
 interface IColumnFilterProps<TData, TValue> {

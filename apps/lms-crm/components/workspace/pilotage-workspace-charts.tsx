@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { ApexOptions } from 'apexcharts';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import type { WorkspaceCharts } from '@repo/api-core';
 import {
   moduleAreaCardClass,

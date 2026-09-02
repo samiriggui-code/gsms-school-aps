@@ -2,7 +2,7 @@
 
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { TrendingUp } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   ChartContainer,
   ChartLegend,
@@ -10,7 +10,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from '@/components/ui/chart';
+} from '@repo/ui/chart';
 import type { CohortActivityPayload } from '@/lib/instructor/instructor-types';
 import { cn } from '@/lib/utils';
 

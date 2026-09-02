@@ -1,10 +1,10 @@
 ﻿'use client';
 
 import React, { useState, useRef } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Badge } from '@repo/ui/badge';
 import { FileText, Download, ExternalLink, Loader2, ShieldCheck, Printer } from 'lucide-react';
 import { User as Collaborateur } from '@/app/models/user';
 import { formatDateTime, toAbsoluteUrl, getAvatarUrl, getInitials } from '@/lib/helpers';

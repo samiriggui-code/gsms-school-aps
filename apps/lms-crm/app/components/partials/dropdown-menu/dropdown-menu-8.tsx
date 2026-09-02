@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 
 export function DropdownMenu8({ trigger }: { trigger: ReactNode }) {
   return (

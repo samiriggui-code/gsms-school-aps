@@ -8,8 +8,8 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -17,7 +17,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Form,
   FormControl,
@@ -25,8 +25,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import { VIE_SCOLAIRE_SHEET_COMPACT } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import { User } from '@/app/models/user';
 

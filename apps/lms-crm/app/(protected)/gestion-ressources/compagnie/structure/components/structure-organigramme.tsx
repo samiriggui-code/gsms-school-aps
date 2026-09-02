@@ -7,11 +7,11 @@ import { apiFetch } from '@/lib/api';
 import { getInitials, getAvatarUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { structurePersonName } from './structure-display';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 
 type SchoolService = 'TRAINER_POOL' | 'PEDAGOGICAL' | 'HR_ADMIN' | 'DIRECTION';
 

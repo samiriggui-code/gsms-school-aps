@@ -7,9 +7,9 @@ import {
   AccordionMenu,
   AccordionMenuGroup,
   AccordionMenuItem,
-} from '@/components/ui/accordion-menu';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/accordion-menu';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import { SearchUsersItem } from './types';
 
 export function SearchUsers({

@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { SimpleCrudModulePage } from '@/components/crud/simple-crud-module-page';
 import { Container } from '@/components/common/container';
 import { useTranslation } from '@/hooks/useTranslation';

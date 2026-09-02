@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Slider, SliderThumb } from "@/components/ui/slider"
+import { Card, CardContent } from "@repo/ui/card"
+import { Button } from "@repo/ui/button"
+import { Badge } from "@repo/ui/badge"
+import { Slider, SliderThumb } from "@repo/ui/slider"
 import { Bolt, FolderSymlink, Radar, TrendingUp } from "lucide-react"
-import { Separator } from "@/components/ui/separator" 
+import { Separator } from "@repo/ui/separator" 
 import { Equipment } from "@/app/models/equipment";
 
 const tiers = [

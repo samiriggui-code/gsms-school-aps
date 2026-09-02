@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { Package, Wrench, ArrowLeftRight, ShieldCheck } from 'lucide-react';
 
 const activities = [

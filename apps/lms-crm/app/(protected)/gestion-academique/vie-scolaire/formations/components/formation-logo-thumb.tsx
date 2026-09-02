@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@repo/ui/avatar';
 import { getInitials } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { resolveFormationCatalogLogoUrl } from '../utils/formation-logo-public-url';

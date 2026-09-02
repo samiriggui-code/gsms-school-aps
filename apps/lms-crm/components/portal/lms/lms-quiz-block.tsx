@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { CheckCircle2, CircleHelp, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
 import { E_FORMATION_API } from '@/lib/portal/e-formation-paths';

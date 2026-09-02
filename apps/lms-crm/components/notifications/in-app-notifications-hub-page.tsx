@@ -5,7 +5,7 @@ import { Settings } from 'lucide-react';
 import { AccountNotificationsDatagrid } from '@/app/(protected)/account/notifications/components/account-notifications-datagrid';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import type { WorkspaceAccountKind } from '@/config/workspace-settings.config';
 import { WORKSPACE_ACCOUNT_SETTINGS } from '@/config/workspace-settings.config';
 

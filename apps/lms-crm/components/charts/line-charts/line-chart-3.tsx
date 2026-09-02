@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@repo/ui/chart';
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/toggle-group';
 import { ChartNoAxesCombined, Info } from 'lucide-react';
 import { CartesianGrid, Line, LineChart } from 'recharts';
 

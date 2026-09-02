@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { FileText, ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Skeleton } from '@repo/ui/skeleton';
 import { useFinanceDevisQuery } from '@/app/(protected)/administration-facturation/finance/devis/hooks/use-finance-devis-query';
 import { DEVIS_STATUS_LABEL_FR } from '@/app/(protected)/administration-facturation/finance/devis/constants/status-labels';
 import { CRM_FINANCE_DEVIS_PATH } from '../constants/crm-paths';

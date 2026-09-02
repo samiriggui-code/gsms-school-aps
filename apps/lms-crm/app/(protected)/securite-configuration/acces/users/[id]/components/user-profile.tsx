@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { formatDateTime } from '@/lib/helpers';
-import { Badge, BadgeDot, BadgeProps } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Badge, BadgeDot, BadgeProps } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { User, UserStatus } from '@/app/models/user';
 import { getUserStatusProps } from '../../constants/status';
 import UserProfileEditSheet from './user-profile-edit-sheet';

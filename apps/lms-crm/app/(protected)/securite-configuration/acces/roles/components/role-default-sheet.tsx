@@ -5,8 +5,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { LoaderCircleIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -14,7 +14,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { UserRole } from '@/app/models/user';
 import {
   IAM_SHEET_BODY,

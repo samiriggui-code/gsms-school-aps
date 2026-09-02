@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
+import { Progress } from '@repo/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/select';
 
 export function StatisticCard9() {
   const [progress, setProgress] = useState(13);

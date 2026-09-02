@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Skeleton } from '@repo/ui/skeleton';
 import { formatDateTime } from '@/lib/helpers';
 import type { User } from '@/app/models/user';
 import { UserStatus } from '@/app/models/user';

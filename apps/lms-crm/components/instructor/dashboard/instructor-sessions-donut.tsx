@@ -1,7 +1,7 @@
 'use client';
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import type { InstructorChartSlice } from '@/lib/instructor/instructor-types';
 import { cn } from '@/lib/utils';
 

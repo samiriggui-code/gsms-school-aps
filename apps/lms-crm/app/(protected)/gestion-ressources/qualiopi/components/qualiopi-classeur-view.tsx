@@ -6,19 +6,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle2, Loader2, ShieldAlert, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@repo/ui/card';
+import { Textarea } from '@repo/ui/textarea';
+import { Label } from '@repo/ui/label';
+import { Separator } from '@repo/ui/separator';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { cn } from '@/lib/utils';
 import {
   QUALIOPI_AUDIT_STATUSES,

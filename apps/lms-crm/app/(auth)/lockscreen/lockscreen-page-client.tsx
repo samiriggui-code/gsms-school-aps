@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { AlertCircle, LoaderCircleIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 
 export default function LockscreenPageClient() {
   const router = useRouter();

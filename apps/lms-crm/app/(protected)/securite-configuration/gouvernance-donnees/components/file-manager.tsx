@@ -30,16 +30,16 @@ import {
   ToolbarHeading,
   ToolbarTitle,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Card, CardContent, CardHeader } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '@/components/ui/resizable';
+} from '@repo/ui/resizable';
 import {
   Dialog,
   DialogBody,
@@ -47,9 +47,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/dialog';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import { useTranslation } from '@/hooks/useTranslation';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { visibleTreeNodes } from '@/lib/storage-governance-tree';

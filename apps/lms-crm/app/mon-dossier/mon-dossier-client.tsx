@@ -34,9 +34,9 @@ import {
 
 import { apiFetch } from '@/lib/api';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
 import { cn } from '@/lib/utils';
 

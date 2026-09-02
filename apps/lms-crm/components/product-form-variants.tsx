@@ -10,18 +10,18 @@ import {
   Trash2,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input, InputWrapper } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input, InputWrapper } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Table,
   TableBody,
@@ -29,8 +29,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '@repo/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 
 interface Variant {
   id: string;

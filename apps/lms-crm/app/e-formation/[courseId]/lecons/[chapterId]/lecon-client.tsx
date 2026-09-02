@@ -11,7 +11,7 @@ import {
 } from '@/lib/portal/e-formation-paths';
 import { LmsActivityList } from '@/components/portal/lms/lms-activity-list';
 import { LmsCourseSidebar } from '@/components/portal/lms/lms-course-sidebar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import type { LmsActivityRow, LmsSyllabusItem } from '@/lib/portal/lms-types';
 import type { LmsAccessTier } from '@/lib/portal/lms-access-shared';
 

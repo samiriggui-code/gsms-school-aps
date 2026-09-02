@@ -3,9 +3,9 @@
 import { useMemo, useState } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { Activity, DoorOpen, RefreshCw, ShieldCheck, Users, Wrench } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { Container } from '@/components/common/container';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
 import { MODULE_LANDING_STATS_GRID_ROW } from '@/components/common/stat-card-metric-layout';

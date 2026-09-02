@@ -3,9 +3,9 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@repo/ui/card';
 import { useEquipmentDashboardStats } from '@/lib/hooks/gestion-ressources/equipements/use-dashboard-stats';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { getEquipmentStatusLabel } from './equipment-status-labels';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });

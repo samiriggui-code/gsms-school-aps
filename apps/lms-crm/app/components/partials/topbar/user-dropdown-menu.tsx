@@ -11,15 +11,15 @@ import {
 } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { UserAvatar } from '@/components/common/user-avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 import { UserPresenceDot, UserPresencePicker } from '@/components/common/user-presence-picker';
 import { useTranslation } from '@/hooks/useTranslation';
 import { generalSettings } from '@/config/general.config';

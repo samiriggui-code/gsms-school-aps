@@ -15,7 +15,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { cn } from '@/lib/utils';
 
 const MuxPlayer = dynamic(() => import('@mux/mux-player-react'), { ssr: false });

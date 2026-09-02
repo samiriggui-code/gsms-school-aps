@@ -16,9 +16,9 @@ import { INSTRUCTOR_STAGIAIRE_DETAIL_API } from '@/lib/instructor/instructor-pat
 import type { InstructorTraineeDetail } from '@/lib/instructor/instructor-types';
 import { UserAvatar } from '@/components/common/user-avatar';
 import { portalLabel, portalMuted, portalSectionTitle } from '@/components/portal/layout/portal-ui';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Progress } from '@repo/ui/progress';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -26,9 +26,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 import { formatPortalDate } from '@/lib/portal/format-portal-date';
 

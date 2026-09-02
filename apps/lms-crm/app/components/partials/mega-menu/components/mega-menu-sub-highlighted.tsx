@@ -6,8 +6,8 @@ import { usePathname } from 'next/navigation';
 import { MenuConfig } from '@/config/types';
 import { cn } from '@/lib/utils';
 import { useMenu } from '@/hooks/use-menu';
-import { Badge } from '@/components/ui/badge';
-import { NavigationMenuLink } from '@/components/ui/navigation-menu';
+import { Badge } from '@repo/ui/badge';
+import { NavigationMenuLink } from '@repo/ui/navigation-menu';
 
 const MegaMenuSubHighlighted = (items: MenuConfig) => {
   const pathname = usePathname();

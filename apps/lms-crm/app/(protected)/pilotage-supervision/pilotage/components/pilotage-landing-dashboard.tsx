@@ -10,11 +10,11 @@ import {
   TrendingDown,
   TrendingUp,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardHeading, CardTitle, CardToolbar } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardHeading, CardTitle, CardToolbar } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@repo/ui/chart';
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/toggle-group';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { fetchPilotageLanding } from '@/lib/pilotage/api';
 import type { PilotageLandingPayload, PilotagePeriod } from '@repo/api-core';

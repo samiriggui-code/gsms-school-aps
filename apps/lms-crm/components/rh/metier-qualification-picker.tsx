@@ -1,8 +1,8 @@
 'use client';
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Checkbox } from '@repo/ui/checkbox';
+import { Label } from '@repo/ui/label';
+import { ScrollArea } from '@repo/ui/scroll-area';
 
 export function RhMetierQualificationPicker({
   presets,

@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Loader2, Workflow } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 
 export function SessionCircuitTriggerButton({

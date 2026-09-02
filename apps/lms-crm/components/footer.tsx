@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Facebook, Github, X, Linkedin, Mail } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import Logo from '@/components/logo';
 import { CgvSheet } from '@/components/cgv-sheet';
 import { useTranslation } from '@/hooks/useTranslation';

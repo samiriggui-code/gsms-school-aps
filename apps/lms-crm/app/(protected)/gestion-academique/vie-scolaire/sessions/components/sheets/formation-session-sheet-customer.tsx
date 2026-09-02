@@ -1,8 +1,8 @@
 'use client';
 
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -10,10 +10,10 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_SESSION } from '../../../constants/sheet-shell-classes';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@repo/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { Package, Pencil, Users } from 'lucide-react';
 import type { FormationSessionApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 import {

@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { User as Conformite } from '@/app/models/user';
 import { SCHOOL_USER_CATEGORY_LABELS } from '@/lib/rh-school-profile-fields';
 import { roleHasMobilePortalAccess } from '@/lib/rh-iam-roles';

@@ -1,5 +1,5 @@
 import { Phone, Mail, MessageCircle, Book, Shield } from 'lucide-react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { generalSettings } from '@/config/general.config';
 

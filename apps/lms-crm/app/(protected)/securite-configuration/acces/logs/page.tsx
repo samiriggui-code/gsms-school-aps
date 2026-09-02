@@ -10,13 +10,13 @@ import {
 } from '@/partials/common/toolbar';
 import { useSettings } from '@/providers/settings-provider';
 import { Container } from '@/components/common/container';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
 import { accessLogsExportConfig } from '@/lib/datagrid/export-presets';
 import { AccountSecurityLogContent } from '../security-log/content';

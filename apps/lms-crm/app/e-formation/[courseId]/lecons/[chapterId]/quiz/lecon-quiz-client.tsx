@@ -9,7 +9,7 @@ import {
   eFormationModulePath,
 } from '@/lib/portal/e-formation-paths';
 import { LmsQuizBlock } from '@/components/portal/lms/lms-quiz-block';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import type { LmsActivityRow } from '@/lib/portal/lms-types';
 
 type LessonPayload = {

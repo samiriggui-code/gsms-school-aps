@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 
 export function ClassicLayout({ children }: { children: ReactNode }) {
   return (

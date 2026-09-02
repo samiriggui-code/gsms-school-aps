@@ -1,11 +1,11 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Input, InputAddon, InputGroup } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@repo/ui/card";
+import { Switch } from "@repo/ui/switch";
+import { Button } from "@repo/ui/button";
+import { Input, InputAddon, InputGroup } from "@repo/ui/input";
+import { Label } from "@repo/ui/label";
+import { Separator } from "@repo/ui/separator";
 import { Mail } from "lucide-react";
 import { useState } from "react";
 

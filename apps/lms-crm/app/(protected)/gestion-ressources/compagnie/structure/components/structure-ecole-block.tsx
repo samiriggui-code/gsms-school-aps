@@ -1,7 +1,7 @@
 'use client';
 
 import { Building2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 
 export function StructureEcoleBlock() {
   return (

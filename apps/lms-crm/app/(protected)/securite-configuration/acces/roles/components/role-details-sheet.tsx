@@ -6,9 +6,9 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { ShieldAlert, UserRound } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -16,9 +16,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@repo/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Skeleton } from '@repo/ui/skeleton';
 import { UserRole } from '@/app/models/user';
 import { permissionSlugsFromRole } from '@/components/iam/role-permissions-matrix';
 import { PermissionToggleMatrix } from '@/components/iam/permission-toggle-matrix';

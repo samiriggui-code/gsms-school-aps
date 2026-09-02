@@ -2,9 +2,9 @@
 
 import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Skeleton } from '@repo/ui/skeleton';
 import { AlertTriangle, ArrowRight, Clock, Clock3, ShieldAlert } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';

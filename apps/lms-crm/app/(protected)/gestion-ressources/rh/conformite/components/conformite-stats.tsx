@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import {
   MODULE_LANDING_STATS_GRID_ROW,
   SECTION_KPI_CARD_ACCENTS,
 } from '@/components/common/stat-card-metric-layout';
 import { Users, UserCheck, AlertTriangle, FileWarning, UserMinus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
 

@@ -2,11 +2,11 @@
 
 import type { ReactNode } from 'react';
 import type { Table } from '@tanstack/react-table';
-import { Card, CardFooter, CardHeader, CardTable, CardTitle } from '@/components/ui/card';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Card, CardFooter, CardHeader, CardTable, CardTitle } from '@repo/ui/card';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import {
   USER_MANAGEMENT_TABLE_CLASSNAMES,
   USER_MANAGEMENT_TABLE_LAYOUT,

@@ -1,9 +1,9 @@
 ﻿
 import React, { useState, useRef } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Badge } from '@repo/ui/badge';
 import { FileText, Download, ExternalLink, Loader2, ShieldCheck, Printer, X } from 'lucide-react';
 import { User as Etudiant } from '@/app/models/user';
 import { formatDateTime, toAbsoluteUrl, getAvatarUrl, getInitials } from '@/lib/helpers';
@@ -11,8 +11,8 @@ import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { apiFetch } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
-import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@repo/ui/dialog';
+import { ScrollArea } from '@repo/ui/scroll-area';
 
 interface EtudiantDetailsDocumentsProps {
   Etudiant: Etudiant;

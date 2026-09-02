@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { FileText, FileClock, Send, Banknote, Calculator } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
   MODULE_LANDING_STATS_GRID_ROW,

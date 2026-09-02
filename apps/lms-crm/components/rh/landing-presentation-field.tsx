@@ -9,8 +9,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/form';
+import { Textarea } from '@repo/ui/textarea';
 
 type Props<T extends FieldValues> = {
   control: Control<T>;

@@ -8,8 +8,8 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { buildAppLoginEmail, appLoginEmailPatternLabel } from '@/lib/app-login-email';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -17,7 +17,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
 import { cn } from '@/lib/utils';
 import { getInitials } from '@/lib/helpers';
@@ -28,16 +28,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+} from '@repo/ui/select';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
 import { 
   LoaderCircleIcon, 
   UserPlus, 
@@ -62,9 +62,9 @@ import { UserRole } from '@/app/models/user';
 import { useSchoolRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
 import { useSubcontractorSelectQuery } from '../hooks/use-subcontractor-select-query';
 import { CollaborateurAddSchema, CollaborateurAddSchemaType } from '../forms/collaborateur-add-schema';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Badge, BadgeDot } from '@/components/ui/badge';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Separator } from '@repo/ui/separator';
+import { Badge, BadgeDot } from '@repo/ui/badge';
 import { agrementMandatoryForCollaborator, agrementUiLabels } from '@/lib/rh-agrement';
 import {
   SCHOOL_USER_CATEGORY_LABELS,
@@ -72,7 +72,7 @@ import {
 } from '@/lib/rh-school-profile-fields';
 import { RhMetierQualificationPicker } from '@/components/rh/metier-qualification-picker';
 import { isFormateurRole } from '@/lib/rh-agrement';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@repo/ui/avatar';
 import { useRhPositionSelectQuery } from '../../hooks/use-rh-position-select-query';
 import { useRhQualificationSelectQuery } from '../../hooks/use-rh-qualification-select-query';
 import {

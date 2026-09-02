@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { AlertTriangle, BarChart3, FileDown, ShieldAlert } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
 import { useModuleWorkspaceQuery } from '@/hooks/use-module-workspace-query';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { ModuleWorkspaceViewKey } from '@repo/api-core';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 
 const HUB: {
   href: string;

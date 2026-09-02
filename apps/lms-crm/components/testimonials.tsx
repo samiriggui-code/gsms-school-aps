@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Marquee from '@/components/ui/marquee';
+import Marquee from '@repo/ui/marquee';
 import { CustomBadge } from '@/components/custom/badge';
 import { CustomTitle } from '@/components/custom/title';
 import { CustomSubtitle } from '@/components/custom/subtitle';

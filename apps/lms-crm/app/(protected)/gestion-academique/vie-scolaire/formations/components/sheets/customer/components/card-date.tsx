@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@repo/ui/card";
+import { Badge } from "@repo/ui/badge";
+import { Button } from "@repo/ui/button";
 import { Calendar, MapPin } from "lucide-react";
 
 const sessions = [

@@ -5,17 +5,17 @@ import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@repo/ui/alert';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -23,7 +23,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@repo/ui/table';
 
 type LogActor = {
   id: string;

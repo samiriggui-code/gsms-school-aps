@@ -8,7 +8,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 
 export function QueryProvider({ children }: { children: ReactNode }) {
   const [queryClient] = useState(

@@ -7,18 +7,18 @@ import {
   Layers,
   Archive,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import {
   MODULE_LANDING_STATS_GRID_ROW,
   MODULE_PAGE_KPI_COUNT,
   SECTION_KPI_CARD_ACCENTS,
   kpiStatsGridClass,
 } from '@/components/common/stat-card-metric-layout';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useFormationsStatsQuery } from '../hooks/use-formations-stats-query';
 import type { FormationCatalogStatsApi } from '../types/catalog-api';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 interface FormationStat {
   icon: React.ComponentType<{ className?: string }>;

@@ -1,6 +1,6 @@
 'use client';
 
-import { AccordionMenuItem } from '@/components/ui/accordion-menu';
+import { AccordionMenuItem } from '@repo/ui/accordion-menu';
 import { SearchSettingsItem } from './types';
 
 export function SearchSettingsItems({

@@ -35,41 +35,41 @@ import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { userIamLoginSubtitle } from '@/lib/user-email-routing';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Badge, BadgeProps } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Badge, BadgeProps } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardFooter,
   CardHeader,
   CardTable,
   CardToolbar,
-} from '@/components/ui/card';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridColumnVisibility } from '@/components/ui/data-grid-column-visibility';
+} from '@repo/ui/card';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridColumnVisibility } from '@repo/ui/data-grid-column-visibility';
 
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
 import {
   DataGridTable,
   DataGridTableRowSelect,
   DataGridTableRowSelectAll,
-} from '@/components/ui/data-grid-table';
+} from '@repo/ui/data-grid-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input, InputWrapper } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/dropdown-menu';
+import { Input, InputWrapper } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { UserDetailsSheet } from '../user-details-sheet';
 import type { UserSheetSeed } from '@/app/models/user';
 import { CustomerFormSheet } from '../customer-form-sheet';
@@ -81,11 +81,11 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_COMPACT } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
-import { Avatar, AvatarImage, AvatarFallback, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback, AvatarIndicator, AvatarStatus } from '@repo/ui/avatar';
 import { VariantProps } from 'class-variance-authority';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 
 interface IColumnFilterProps<TData, TValue> {
   column: Column<TData, TValue>;

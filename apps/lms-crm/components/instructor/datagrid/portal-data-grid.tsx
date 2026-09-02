@@ -2,10 +2,10 @@
 
 import type { ReactNode } from 'react';
 import type { Table } from '@tanstack/react-table';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 const PORTAL_TABLE_LAYOUT = {

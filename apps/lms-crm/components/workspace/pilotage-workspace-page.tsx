@@ -11,8 +11,8 @@ import {
   ToolbarTitle,
   ToolbarDescription,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
   MODULE_LANDING_STATS_GRID_ROW,

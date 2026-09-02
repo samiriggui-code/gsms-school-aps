@@ -3,8 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Info, Loader2 } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -12,7 +12,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import type { SuiviSessionContext } from '@/lib/suivi-formations/session-suivi-context-types';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../vie-scolaire/constants/sheet-shell-classes';
 import { SuiviSessionContextPanel } from './suivi-session-context-panel';

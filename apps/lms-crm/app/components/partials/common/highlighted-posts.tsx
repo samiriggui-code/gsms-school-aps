@@ -3,8 +3,8 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import { LucideIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
 import { HexagonBadge } from './hexagon-badge';
 
 export interface HighlightedPostsItem {

@@ -7,8 +7,8 @@ import { AlertCircle, ArrowLeft, Check } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Form,
   FormControl,
@@ -16,8 +16,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import { LoaderCircleIcon } from 'lucide-react';
 
 export default function ResetPasswordPage() {

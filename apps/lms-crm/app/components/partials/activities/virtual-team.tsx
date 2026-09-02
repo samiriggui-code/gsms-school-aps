@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { BadgeCheck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { TimelineItem } from './timeline-item';
 
 const ActivitiesVirtualTeam = () => {

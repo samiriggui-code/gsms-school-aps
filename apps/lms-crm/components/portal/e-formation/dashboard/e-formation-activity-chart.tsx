@@ -12,7 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from '@/components/ui/chart';
+} from '@repo/ui/chart';
 import { PortalSection } from '@/components/portal/layout/portal-section';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
 

@@ -20,25 +20,25 @@ import {
   ToolbarTitle,
   ToolbarDescription,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Card, CardHeader } from '@repo/ui/card';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/dialog';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';

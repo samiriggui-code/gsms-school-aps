@@ -11,16 +11,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/dialog';
+import { Button } from '@repo/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+} from '@repo/ui/select';
+import { Label } from '@repo/ui/label';
 
 type Candidate = {
   id: string;

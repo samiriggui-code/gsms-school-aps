@@ -6,7 +6,7 @@ import {
 } from '@/components/common/stat-card-metric-layout';
 import { Archive, FileText, FolderOpen, HardDrive, Inbox } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
 type DashboardStats = {

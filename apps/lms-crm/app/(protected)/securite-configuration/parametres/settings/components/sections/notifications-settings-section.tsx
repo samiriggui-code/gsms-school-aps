@@ -14,17 +14,17 @@ import {
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
+} from '@repo/ui/card';
+import { Checkbox } from '@repo/ui/checkbox';
 import {
   Command,
   CommandCheck,
@@ -33,15 +33,15 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/command';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/popover';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -49,7 +49,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@repo/ui/table';
 import { useSettings } from '../settings-context';
 import {
   NotificationSettingsSchema,

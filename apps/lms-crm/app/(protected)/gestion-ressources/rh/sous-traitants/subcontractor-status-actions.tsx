@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { SubcontractorQualificationStatus } from '@repo/database/browser';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { apiFetch } from '@/lib/api';
 import { subcontractorStatusActions } from '@/lib/organisation/subcontractor-transitions';
 

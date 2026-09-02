@@ -25,14 +25,14 @@ import {
   ADMIN_DOC_MODULE,
   ADMIN_DOCUMENT_GROUPS,
 } from '@/lib/admin-document-slots';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@repo/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -40,7 +40,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,7 +50,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@repo/ui/alert-dialog';
 import { VIE_SCOLAIRE_SHEET_LARGE_1000 } from '../../../constants/sheet-shell-classes';
 import type { DossierActor, DossierSlotPayload } from './dossier-types';
 import { DossierFileViewerDialog, type DossierViewerFile } from './dossier-file-viewer-dialog';

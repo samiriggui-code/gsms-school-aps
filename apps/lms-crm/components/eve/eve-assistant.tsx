@@ -6,15 +6,15 @@ import { Loader2, MessageCircle, Send, Sparkles, X } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@repo/ui/button';
+import { Textarea } from '@repo/ui/textarea';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import type { EveOrbState } from '@/lib/eve/eve-types';
 
 type ChatMessage = {

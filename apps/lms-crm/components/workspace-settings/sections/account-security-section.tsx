@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { KeyRound, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
 
 export function AccountSecuritySection() {

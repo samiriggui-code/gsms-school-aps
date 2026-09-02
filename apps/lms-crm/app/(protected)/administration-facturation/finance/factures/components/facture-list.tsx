@@ -12,11 +12,11 @@ import {
 import { Eye, RefreshCw, Search, Banknote, Printer, Pencil, Send } from 'lucide-react';
 import { formatDateTime } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardHeader } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { FinanceModuleDataGrid } from '../../components/finance-module-datagrid';
 import { useFinanceFactureQuery } from '../hooks/use-finance-facture-query';

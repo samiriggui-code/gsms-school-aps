@@ -4,8 +4,8 @@ import { useCallback, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
 type Dataset = { id: string; label: string; description: string };

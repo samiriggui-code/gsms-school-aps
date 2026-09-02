@@ -3,8 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });

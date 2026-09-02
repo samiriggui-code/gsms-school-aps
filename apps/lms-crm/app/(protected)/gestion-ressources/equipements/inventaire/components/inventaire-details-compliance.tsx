@@ -8,9 +8,9 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Card, CardContent } from '@/components/ui/card';
-import { Form } from '@/components/ui/form';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Card, CardContent } from '@repo/ui/card';
+import { Form } from '@repo/ui/form';
 import { Equipment as Inventaire } from '@/app/models/equipment';
 import {
   EquipmentMetadataSchema,

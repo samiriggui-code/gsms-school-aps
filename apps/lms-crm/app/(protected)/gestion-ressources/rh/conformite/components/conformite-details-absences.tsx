@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import { apiFetch } from '@/lib/api';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';

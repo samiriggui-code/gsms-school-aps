@@ -22,27 +22,27 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardHeader } from '@/components/ui/card';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardHeader } from '@repo/ui/card';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/dialog';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { MODULE_LANDING_STATS_GRID_ROW, SECTION_KPI_CARD_ACCENTS } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';

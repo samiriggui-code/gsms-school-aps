@@ -5,8 +5,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Equipment as Inventaire } from '@/app/models/equipment';
 import { Upload } from './details/upload';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
 import { 
   FileText, 
   Upload as UploadIcon, 
@@ -19,7 +19,7 @@ import {
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { formatDateTime } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
 interface InventaireDetailsDocumentsProps {
   inventaire: Inventaire;

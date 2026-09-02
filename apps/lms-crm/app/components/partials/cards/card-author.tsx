@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { BadgeCheck } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/card';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { AvatarSingle } from '../common/avatar-single';
 
 interface IAvatar {

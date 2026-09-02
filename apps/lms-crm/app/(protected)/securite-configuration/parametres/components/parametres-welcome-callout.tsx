@@ -3,9 +3,9 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
 import { Activity, Settings } from 'lucide-react';
 
 export function ParametresWelcomeCallout() {

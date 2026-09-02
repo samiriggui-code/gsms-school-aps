@@ -1,9 +1,9 @@
 'use client';
 
 import React, { Fragment, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/toggle-group';
 import { CheckCircle, Clock, TrendingUp } from 'lucide-react';
 import { Area, AreaChart, XAxis, YAxis } from 'recharts';
 

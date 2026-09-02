@@ -1,8 +1,8 @@
 'use client';
 
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -20,9 +20,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
 import { User as Collaborateur, UserStatus } from '@/app/models/user';
 import { getCollaborateurStatusProps } from '../constants/status';
 import { usePusher } from '@/hooks/use-pusher';
@@ -41,7 +41,7 @@ import { CollaborateurDetailsSettings } from './collaborateur-details-settings';
 import { CollaborateurDetailsAbsences } from './collaborateur-details-absences';
 import { CollaborateurDetailsCompliance } from './collaborateur-details-compliance';
 import { CollaborateurDetailsDocuments } from './collaborateur-details-documents';
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { useMaxWidthLg } from '@/hooks/use-max-width-lg';
 import { useOfficialDocumentPreview } from '@/hooks/use-official-document-preview';
 

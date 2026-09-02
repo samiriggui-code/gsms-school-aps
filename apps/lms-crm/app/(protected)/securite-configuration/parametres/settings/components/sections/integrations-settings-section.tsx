@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { ExternalLink, LoaderCircleIcon } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
+import { Switch } from '@repo/ui/switch';
+import { Button } from '@repo/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 
 type IntegrationItem = {

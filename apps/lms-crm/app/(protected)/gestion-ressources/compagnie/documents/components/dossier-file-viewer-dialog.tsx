@@ -1,13 +1,13 @@
 'use client';
 
 import { ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 
 export type DossierViewerFile = {
   url: string;

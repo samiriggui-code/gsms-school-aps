@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { EllipsisVertical } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
 import { DropdownMenu3 } from '../dropdown-menu/dropdown-menu-3';
 import { ICampaignItem, ICampaignProps } from './card-campaign';
 

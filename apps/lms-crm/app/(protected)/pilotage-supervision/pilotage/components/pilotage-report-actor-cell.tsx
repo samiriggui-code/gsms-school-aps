@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@repo/ui/avatar';
 import { formatDateTime, getAvatarUrl, getInitials } from '@/lib/helpers';
 import type { PilotageReportActor } from '@repo/api-core';
 

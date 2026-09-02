@@ -5,8 +5,8 @@ import Link from 'next/dist/client/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AlertCircle } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import { LoaderCircleIcon } from 'lucide-react';
 
 export default function VerifyEmailPage() {

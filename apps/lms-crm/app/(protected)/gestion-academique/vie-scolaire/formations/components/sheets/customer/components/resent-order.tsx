@@ -1,11 +1,11 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Separator } from '@repo/ui/separator';
 import { ShoppingCart, TrendingUp } from 'lucide-react';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@repo/ui/tooltip';
 import Link from 'next/link';
 import type { FormationSheetViewModel } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/utils/formation-catalog-sheet-view-model';
 

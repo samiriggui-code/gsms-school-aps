@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Separator } from '@repo/ui/separator';
 import { Banknote, Building2, GraduationCap, Landmark } from 'lucide-react';
 import type { FundingChannelRow } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/utils/formation-catalog-sheet-view-model';
 

@@ -5,9 +5,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Check, Loader2, X } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Textarea } from '@repo/ui/textarea';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 

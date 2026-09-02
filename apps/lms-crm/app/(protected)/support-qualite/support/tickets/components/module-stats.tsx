@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@repo/ui/card";
 import { Package, TrendingUp, Calendar, CreditCard } from "lucide-react";
 
 export function ModuleStats() {

@@ -1,7 +1,7 @@
 'use client';
 
 import { Megaphone } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@repo/ui/alert';
 
 export function CampagnesScopeCallout() {
   return (

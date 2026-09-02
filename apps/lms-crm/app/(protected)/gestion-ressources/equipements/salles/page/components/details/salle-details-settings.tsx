@@ -9,9 +9,9 @@ import { RiCheckboxCircleFill, RiErrorWarningFill, RiRefreshLine } from '@remixi
 import { CloudUpload, Hash, MapPin, Package, Theater } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { getAvatarUrl, getInitials } from '@/lib/helpers';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Avatar, AvatarFallback } from '@repo/ui/avatar';
+import { Button } from '@repo/ui/button';
 import {
   Form,
   FormControl,
@@ -19,9 +19,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Separator } from '@repo/ui/separator';
 import { SalleFormSchema, type SalleFormValues } from '../../forms/salle-form-schema';
 import type { VenueRoomRow } from '../../types';
 

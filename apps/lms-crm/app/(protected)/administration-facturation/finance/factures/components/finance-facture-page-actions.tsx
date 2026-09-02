@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FileText, ReceiptText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 import { apiFetch } from '@/lib/api';
 import { CRM_MARKETING_LEADS_PATH } from '@/app/(protected)/communication-contenu/marketing/formulaires-leads/constants/crm-paths';
 import { financeFactureListQueryKey } from '../constants/query-keys';

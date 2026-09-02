@@ -4,7 +4,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { Suspense, useMemo, useState } from 'react';
 import CollaborateurList from './components/collaborateur-list';
 import { CollaborateurStats } from './components/collaborateur-stats';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { UserPlus } from 'lucide-react';
 import CollaborateurAddSheet from './components/collaborateur-add-sheet';
 import { Container } from '@/components/common/container';

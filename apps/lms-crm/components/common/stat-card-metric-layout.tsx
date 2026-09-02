@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, type ComponentType, type ReactNode } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { cn } from '@/lib/utils';
 import { sectionStatCardToneClasses } from '@/lib/section-stat-card-styles';
 import {

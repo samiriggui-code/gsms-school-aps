@@ -33,9 +33,9 @@ import { toast } from 'sonner';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 import {
 
@@ -51,15 +51,15 @@ import {
 
   CardToolbar,
 
-} from '@/components/ui/card';
+} from '@repo/ui/card';
 
-import { DataGrid, useDataGrid } from '@/components/ui/data-grid';
+import { DataGrid, useDataGrid } from '@repo/ui/data-grid';
 
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 
-import { DataGridColumnVisibility } from '@/components/ui/data-grid-column-visibility';
+import { DataGridColumnVisibility } from '@repo/ui/data-grid-column-visibility';
 
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
 
 import {
 
@@ -69,13 +69,13 @@ import {
 
   DataGridTableRowSelectAll,
 
-} from '@/components/ui/data-grid-table';
+} from '@repo/ui/data-grid-table';
 
-import { Input } from '@/components/ui/input';
+import { Input } from '@repo/ui/input';
 
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@repo/ui/tabs';
 
 import { USER_MANAGEMENT_TABLE_LAYOUT } from '../../../components/datagrid-standards';
 

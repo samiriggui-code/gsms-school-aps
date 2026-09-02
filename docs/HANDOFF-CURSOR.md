@@ -4,6 +4,79 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-02 — Étape 3 — split `formation-session-add-sheet` (non commitée)
+
+**Refactor pur** (comportement inchangé) :
+- `use-formation-session-add-sheet.ts` — schéma zod, helpers, 6 queries, mutations create/update, état + dérivés
+- `formation-session-add-sheet.tsx` — composition visuelle uniquement (consomme le hook + `@repo/ui`)
+
+**Gates** : `tsc --noEmit` lms-crm **0**. Test manuel création/édition session recommandé.
+
+**État** : `@repo/ui` + split sheet prêts ; commit + push = attente utilisateur.
+
+---
+
+## 2026-09-02 — `@repo/ui` (étape 2 HANDOFF-CLAUDE) — migration terminée, non commitée
+
+**Périmètre** : extraction `apps/lms-crm/components/ui/*` (102 fichiers) → `packages/ui` (`@repo/ui`), codemod imports `@/components/ui/*` → `@repo/ui/*`.
+
+### Livré
+| Élément | Détail |
+|---|---|
+| **Package** | `packages/ui` — `package.json` exports par composant, deps scannées depuis l'app, peer `react`/`react-dom` |
+| **Utils / hook** | `src/lib/utils.ts` (`cn`), `src/hooks/use-copy-to-clipboard.ts` |
+| **App** | ~900 fichiers codemodés ; `lib/utils.ts` re-exporte `cn` depuis `@repo/ui/lib/utils` |
+| **Config** | `next.config.mjs` `transpilePackages: @repo/ui` ; `css/styles.css` `@source` Tailwind v4 ; `components.json` alias `ui` → `@repo/ui` ; `tsconfig.json` paths + include `packages/ui/src` |
+| **Scripts** | `scripts/migrate-repo-ui.mjs`, `scripts/fix-repo-ui-imports.mjs` |
+
+### Gates
+- `pnpm install` OK
+- `tsc --noEmit` lms-crm **0** (nécessite `paths` + `include` packages/ui dans `apps/lms-crm/tsconfig.json`)
+- `pnpm --filter @lms-crm build` **exit 0** (~13 min, 369 pages)
+
+### Suite (étape 3 HANDOFF-CLAUDE)
+Split `formation-session-add-sheet.tsx` (~1218 lignes) → hook + composant visuel.
+
+**État** : attente commit explicite utilisateur + build vert.
+
+---
+
+## 2026-09-02 — Clôture lot backlog ordonné + BPF Cerfa — commit `2acc3cf`
+
+**Commit** : `2acc3cf` — `feat: AI-02 async, portail LMS, EVE readiness, NAF-14 list, BPF Cerfa` (32 fichiers, +1800/−137).
+
+### Récap livré (un seul commit)
+| Chantier | Résumé |
+|---|---|
+| **AI-02 async** | `program-modules-draft.ts` + worker AiRun ; route draft **202** + poll UI 3s |
+| **LMS portail** | Soumissions devoirs (`assignments/…/submit`) + discussions cours ; chapter route + `cours-client` |
+| **EVE proactif** | `session-readiness-scan.ts` — checklist réelle 0–100 (plus de score 85 placeholder) |
+| **NAF-14 list** | `hasListPermission` / `buildRecordScopeWhere` sur `ResourceService.list()` |
+| **BPF Cerfa C–G** | `bpf-cerfa-mappings` + `bpf-cerfa-sections` ; UI/PDF ; seed démo exercice N−1 |
+
+### Gates (session)
+- `test:doctype` **12/12** · `test:doctype:harden` **2/2**
+- `tsc --noEmit` lms-crm **0**
+- `bpf-cerfa-mappings.test.ts` **4/4**
+
+### Hors commit (volontaire)
+- `.tmp-*` scripts SQL/shell
+- Docs import ponctuels (`docs/*.json`, `*.pdf`, `*.xlsx`, audits VisioFormation…)
+
+### Suite suggérée (priorité utilisateur précédente)
+1. **WF-35–37 / WF-45** — circuits financeurs / n8n (si deadline)
+2. **NAF-04–09 / NAF-13** — hooks / field ACL (si cas concret identifié)
+3. **AI-04 async** — même pattern AiRun que AI-02/03
+4. **EVE V2** — voix / écriture (hors scope V1)
+5. **BPF** — cadre D charges compta + Cerfa 10443 pixel-perfect MAF (hors scope OF-07 actuel)
+
+### Point Claude `2026-09-02` (étapes 2–3 clean-up)
+Étape 1 mort Metronic close (`79d729c`). **Pas démarré** côté Cursor : `packages/ui` codemod 823 imports + split `formation-session-add-sheet.tsx`. Go implicite dans HANDOFF-CLAUDE — à enchaîner si l'utilisateur confirme la priorité clean-up vs backlog ci-dessus.
+
+**État** : idle — attente prochaine consigne (push `aps/main` ? étape 2 `packages/ui` ? WF financeurs ?).
+
+---
+
 ## 2026-09-01 — BPF Cerfa C–G (OF-07 suite)
 
 ### Livré

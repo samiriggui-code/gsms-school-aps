@@ -5,18 +5,18 @@ import { Loader2, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { SUIVI_FUNDING_MODE_OPTIONS } from '@/lib/suivi-formations/funding-modes';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { SuiviFundingPayload, SuiviStagiaireRow } from '../types/suivi-formations-api';

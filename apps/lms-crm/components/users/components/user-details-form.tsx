@@ -8,13 +8,13 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { getInitials, getAvatarUrl } from '@/lib/helpers';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
-} from '@/components/ui/card';
+} from '@repo/ui/card';
 import {
   Form,
   FormControl,
@@ -22,20 +22,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { LoaderCircleIcon, Mail, MapPin, Fingerprint, Shield, CloudUpload } from 'lucide-react';
 import { User } from '@/app/models/user';
 import { CollaborateurEditSchema, CollaborateurEditSchemaType } from '@/app/(protected)/gestion-ressources/rh/collaborateurs/forms/collaborateur-edit-schema';
 import { useRoleSelectQuery } from '@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query';
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import {
   showsCollaboratorAgrementSchedulingSection,
   showsUserStaffEmployerFields,

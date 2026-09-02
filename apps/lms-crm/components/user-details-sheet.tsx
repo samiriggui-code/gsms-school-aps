@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -13,7 +13,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { cn } from '@/lib/utils';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import { useMaxWidthLg } from '@/hooks/use-max-width-lg';

@@ -6,7 +6,7 @@ import { BookOpen, Menu, Search } from 'lucide-react';
 import { ReactNode, useEffect, useState } from 'react';
 import { DocsGroupIcon } from '@/components/docs/docs-group-icon';
 import { DocsThemeToggle } from '@/components/docs/docs-theme-toggle';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -14,7 +14,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { cn } from '@/lib/utils';
 import { getDocsBrandName, getDocsNavigation, resolveDocsLocale, slugToTitle } from '@/lib/docs-navigation';
 import type { DocsLocale, DocsNavGroup } from '@/lib/docs-types';

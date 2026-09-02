@@ -1,14 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { ArrowRight, Play, GraduationCap } from 'lucide-react';
-import HeroVideoDialog from '@/components/ui/hero-video-dialog';
+import HeroVideoDialog from '@repo/ui/hero-video-dialog';
 import { WordRotate, type WordRotateItem } from '@/components/magicui/word-rotate';
 import { useState, useEffect, useMemo } from 'react';
 import { useIsIOS } from '@/lib/platform';
 import Link from 'next/link';
-import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
+import { AnimatedTooltip } from '@repo/ui/animated-tooltip';
 import { Star } from '@/components/custom/star';
 import { useTranslation } from '@/hooks/useTranslation';
 

@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { BookOpen, Bell, ExternalLink, FolderOpen, GraduationCap, Lock, LogOut, Settings, UserCircle, UserPlus } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { UserAvatar } from '@/components/common/user-avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import { UserPresencePicker } from '@/components/common/user-presence-picker';
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 
 export function PortalUserMenu({ trigger }: { trigger: ReactNode }) {
   const { data: session } = useSession();

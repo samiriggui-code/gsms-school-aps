@@ -2,8 +2,8 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { CandidatureStatus } from '@repo/database/browser';

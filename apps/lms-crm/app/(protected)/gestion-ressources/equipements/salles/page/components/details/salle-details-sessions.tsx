@@ -12,16 +12,16 @@ import {
 import Link from 'next/link';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { User, ExternalLink } from 'lucide-react';
 import {
   DataGrid,
   DataGridApiFetchParams,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
 import type { VenueRoomRow, VenueRoomSessionRow } from '../../types';
 
 export function SalleDetailsSessions({ room }: { room: VenueRoomRow }) {

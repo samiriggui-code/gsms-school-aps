@@ -44,8 +44,8 @@ import {
   EFormationUvKpiRow,
   type UvProgressBreakdown,
 } from '@/components/portal/e-formation/dashboard/e-formation-uv-donut';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 import { formatPortalDate } from '@/lib/portal/format-portal-date';
 

@@ -19,8 +19,8 @@ import {
   AvatarImage,
   AvatarIndicator,
   AvatarStatus,
-} from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/avatar';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,8 +30,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/dropdown-menu';
+import { Input } from '@repo/ui/input';
 import {
   Sheet,
   SheetBody,
@@ -39,7 +39,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { AvatarGroup } from '../common/avatar-group';
 
 interface Message {

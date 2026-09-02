@@ -5,16 +5,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Textarea } from '@repo/ui/textarea';
 import { useCompanyProfileSettings } from '../company-profile-context';
 import { SettingsFormFooter } from '../settings-form-footer';
 import { buildCompanyProfileDefaults } from '@/lib/company-profile';

@@ -2,14 +2,14 @@
 import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
 
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import type { FinanceAlertRow } from '@/lib/finance/finance-alerts';
 import { AlertCircle, Clock, ShieldAlert, ArrowRight } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import Link from 'next/link';
 
 const KIND_LABEL: Record<FinanceAlertRow['kind'], string> = {

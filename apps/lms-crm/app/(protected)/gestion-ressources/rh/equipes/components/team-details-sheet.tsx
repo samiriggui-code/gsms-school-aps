@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import type { Team } from '@/app/models/team';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -14,7 +14,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
 import { GESTION_RESSOURCES_SHEET_TABS_LIST } from '@/lib/gestion-ressources/ui';
 import { useMaxWidthLg } from '@/hooks/use-max-width-lg';
@@ -29,9 +29,9 @@ import {
   MapPin,
   Briefcase
 } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
+import { Badge } from '@repo/ui/badge';
 import { formatDate } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { TEAM_TYPES, TEAM_SECTORS } from '../constants';

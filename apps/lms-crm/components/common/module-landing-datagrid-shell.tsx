@@ -3,18 +3,18 @@
 import type { ReactNode } from 'react';
 import type { Table } from '@tanstack/react-table';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardFooter,
   CardHeader,
   CardTable,
   CardTitle,
-} from '@/components/ui/card';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/card';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import {
   USER_MANAGEMENT_TABLE_LAYOUT,
   USER_MANAGEMENT_TABLE_CLASSNAMES,

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from '@repo/ui/badge';
+import { Card } from '@repo/ui/card';
+import { Progress } from '@repo/ui/progress';
 
 interface ITournamentProps {
   image: string;

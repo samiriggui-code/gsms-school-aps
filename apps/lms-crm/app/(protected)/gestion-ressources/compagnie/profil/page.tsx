@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 import { ProfilStats } from './components/profil-stats';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@repo/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { ProfilDetailsOverviews } from './components/profil-details-overviews';
 import { Container } from '@/components/common/container';
 import {

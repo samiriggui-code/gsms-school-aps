@@ -7,7 +7,7 @@ import {
   ToolbarHeading,
   ToolbarTitle,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { prisma } from '@/lib/prisma';
 import { CreateSubcontractorForm } from './create-subcontractor-form';
 import { SubcontractorStatusActions } from './subcontractor-status-actions';

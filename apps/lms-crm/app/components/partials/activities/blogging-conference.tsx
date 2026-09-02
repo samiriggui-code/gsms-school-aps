@@ -3,9 +3,9 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { Printer } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
 import { TimelineItem } from './timeline-item';
 
 interface IBloggingConferenceProps {

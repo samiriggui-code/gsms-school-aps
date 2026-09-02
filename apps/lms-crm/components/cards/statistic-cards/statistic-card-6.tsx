@@ -1,17 +1,17 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+} from '@repo/ui/dropdown-menu';
+import { Progress } from '@repo/ui/progress';
+import { Separator } from '@repo/ui/separator';
 import {
   BadgeAlertIcon,
   CheckCircle,

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { CircleCheck, LucideIcon, Users } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
 import { AvatarGroup } from '../common/avatar-group';
 import { Rating } from '../common/rating';
 

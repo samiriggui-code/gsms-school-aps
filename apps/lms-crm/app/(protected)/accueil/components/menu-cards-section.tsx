@@ -8,7 +8,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { translateMenuTitle } from '@/lib/menu-i18n';
 import { Lock } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import {
   GraduationCap,
   Users,

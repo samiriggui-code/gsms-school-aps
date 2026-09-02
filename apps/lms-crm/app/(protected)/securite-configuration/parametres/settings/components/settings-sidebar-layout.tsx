@@ -4,7 +4,7 @@ import { useEffect, useRef, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSettings as useThemeSettings } from '@/providers/settings-provider';
-import { Scrollspy } from '@/components/ui/scrollspy';
+import { Scrollspy } from '@repo/ui/scrollspy';
 import { SettingsSidebarNav } from './settings-sidebar-nav';
 
 const stickySidebarClasses: Record<string, string> = {

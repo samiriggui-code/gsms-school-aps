@@ -1,6 +1,6 @@
 'use client';
 
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import Link from 'next/link';
 import { formationLogos } from '@/lib/certification-logos';
 import { useTranslation } from '@/hooks/useTranslation';

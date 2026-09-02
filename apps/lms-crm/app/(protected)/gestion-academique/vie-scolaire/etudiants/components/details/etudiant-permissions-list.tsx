@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@repo/ui/card";
+import { Badge } from "@repo/ui/badge";
 import { ShieldCheck, Info } from "lucide-react";
 import { User as Etudiant } from "@/app/models/user";
 

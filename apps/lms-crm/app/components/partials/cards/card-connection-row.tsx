@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { BadgeCheck, CircleCheck, Mail, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
 import { AvatarGroup } from '../common/avatar-group';
 import { AvatarSingle } from '../common/avatar-single';
 import { IConnectionItem, IConnectionProps } from './card-connection';

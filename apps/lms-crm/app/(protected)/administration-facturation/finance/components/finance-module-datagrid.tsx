@@ -5,11 +5,11 @@ import {
   USER_MANAGEMENT_TABLE_CLASSNAMES,
 } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { ModuleDataGridShell, type ModuleDataGridShellProps } from '@/components/common/module-data-grid-shell';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { Card, CardFooter, CardTable } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { Card, CardFooter, CardTable } from '@repo/ui/card';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 /** Shell DataGrid module finance — layout simplifié, sans pin/drag colonnes. */

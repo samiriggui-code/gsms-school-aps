@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
+import { Textarea } from '@repo/ui/textarea';
+import { Label } from '@repo/ui/label';
 import { apiFetch } from '@/lib/api';
 import { useSettings } from '../settings-context';
 

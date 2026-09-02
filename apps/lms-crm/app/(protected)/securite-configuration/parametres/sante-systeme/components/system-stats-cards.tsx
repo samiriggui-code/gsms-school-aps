@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { Server, Database, Zap, Cpu, Clock, type LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

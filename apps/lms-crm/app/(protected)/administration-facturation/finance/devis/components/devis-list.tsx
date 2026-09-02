@@ -12,11 +12,11 @@ import {
 } from '@tanstack/react-table';
 import { RefreshCw, Search, MessageCircle, Trash2, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardHeader } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,8 +26,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+} from '@repo/ui/alert-dialog';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import {
   createModuleLandingPagination,
 } from '@/app/(protected)/securite-configuration/components/datagrid-standards';

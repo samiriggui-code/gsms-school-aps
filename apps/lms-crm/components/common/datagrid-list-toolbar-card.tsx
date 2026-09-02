@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Card, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader } from '@repo/ui/card';
 import { cn } from '@/lib/utils';
 
 type DatagridListToolbarCardProps = {

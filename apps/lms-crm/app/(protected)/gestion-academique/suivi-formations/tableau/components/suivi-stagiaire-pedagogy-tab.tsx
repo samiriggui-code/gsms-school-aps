@@ -8,10 +8,10 @@ import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { AlertTriangle } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Skeleton } from '@repo/ui/skeleton';
 import { formatDateTime } from '@/lib/helpers';
 import {
   SUIVI_DAY_SLOT_LABELS,

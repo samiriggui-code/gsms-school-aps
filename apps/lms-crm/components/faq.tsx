@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@repo/ui/accordion';
 import { CustomBadge } from '@/components/custom/badge';
 import { CustomTitle } from '@/components/custom/title';
 import { CustomSubtitle } from '@/components/custom/subtitle';

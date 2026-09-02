@@ -7,26 +7,26 @@ import Link from 'next/link';
 import { Paperclip, Send, Lock, Globe, AlertTriangle, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
+import { Switch } from '@repo/ui/switch';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetContent,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Separator } from '@/components/ui/separator';
+} from '@repo/ui/sheet';
+import { Separator } from '@repo/ui/separator';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
 const STATUS_LABEL: Record<string, string> = {

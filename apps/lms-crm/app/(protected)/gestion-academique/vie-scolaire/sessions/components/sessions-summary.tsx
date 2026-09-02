@@ -9,7 +9,7 @@ import {
   kpiStatsGridClass,
 } from '@/components/common/stat-card-metric-layout';
 import { CalendarRange, GraduationCap, Layers, UserRound, UserMinus } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 type SessionsStatsPayload = {

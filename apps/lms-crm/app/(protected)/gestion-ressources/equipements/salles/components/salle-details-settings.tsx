@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import {
   Form,
   FormControl,
@@ -15,9 +15,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Switch } from '@repo/ui/switch';
 import { Package } from 'lucide-react';
 import { SalleFormSchema, type SalleFormValues } from '../forms/salle-form-schema';
 import type { VenueRoomRow } from '../types';

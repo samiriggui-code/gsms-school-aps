@@ -4,9 +4,9 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
 import { Archive, Database, FileSearch, Files, HardDrive, ShieldAlert } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 

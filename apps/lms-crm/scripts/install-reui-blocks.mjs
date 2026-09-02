@@ -27,7 +27,7 @@ function resolveOutDir(name) {
 
 function transformSource(content, blockName) {
   let out = content
-    .replaceAll("@/registry/default/ui/", '@/components/ui/')
+    .replaceAll("@/registry/default/ui/", '@repo/ui/')
     .replaceAll('@/registry/default/', '@/components/');
 
   const exportName = blockName

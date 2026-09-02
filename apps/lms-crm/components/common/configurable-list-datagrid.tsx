@@ -9,7 +9,7 @@ import {
   PaginationState,
   useReactTable,
 } from '@tanstack/react-table';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { ModuleDataGridShell } from '@/components/common/module-data-grid-shell';
 import { cn } from '@/lib/utils';
 

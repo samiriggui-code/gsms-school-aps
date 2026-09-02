@@ -3,8 +3,8 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { EllipsisVertical } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
 import { HexagonBadge } from '../common/hexagon-badge';
 import { DropdownMenu5 } from '../dropdown-menu/dropdown-menu-5';
 

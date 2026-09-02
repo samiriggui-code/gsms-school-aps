@@ -14,15 +14,15 @@ import { apiFetch } from '@/lib/api';
 import { buildDataGridListResponse } from '@/lib/gestion-ressources/datagrid-response';
 import { formatDateTime } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { CardHeader } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { CardHeader } from '@repo/ui/card';
 import {
   DataGridApiFetchParams,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { Input } from '@repo/ui/input';
 import { AffectationEquipmentSheet } from './affectation-equipment-sheet';
 import { EquipmentDataGridCard } from '../../components/equipment-datagrid-card';
 import { EquipmentRowActions } from '../../components/equipment-row-actions';

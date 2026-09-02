@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { BadgeCheck, MapPin } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { AvatarSingle } from '../common/avatar-single';
 import { IAuthorProps, IWork } from './card-author';
 

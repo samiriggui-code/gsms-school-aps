@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Line, LineChart, XAxis, YAxis } from 'recharts';
 import { cn } from '@/lib/utils';

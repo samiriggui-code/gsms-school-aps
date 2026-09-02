@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@repo/ui/select';
 import { TrendingUp } from 'lucide-react';
 import { Area, CartesianGrid, ComposedChart, Line, XAxis, YAxis } from 'recharts';
 

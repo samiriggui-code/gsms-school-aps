@@ -18,8 +18,8 @@ import { Columns3, Eye, MapPin, Package, Search, SquarePen, Trash } from 'lucide
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,21 +29,21 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Card, CardFooter, CardTable } from '@/components/ui/card';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
+} from '@repo/ui/alert-dialog';
+import { Card, CardFooter, CardTable } from '@repo/ui/card';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/dropdown-menu';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import type { Equipment as Inventaire } from '@/app/models/equipment';
 import { InventaireDetailsSheet } from '@/app/(protected)/gestion-ressources/equipements/inventaire/components/inventaire-details-sheet';
 import { getEquipmentStatusProps } from '@/app/(protected)/gestion-ressources/equipements/inventaire/constants/status';

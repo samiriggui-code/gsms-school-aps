@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { ExternalLink, FileStack, FolderOpen, Mail } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -13,8 +13,8 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/sheet';
+import { Textarea } from '@repo/ui/textarea';
 import { formatDateTime } from '@/lib/helpers';
 import type { DemandeDocumentRow } from '@/lib/governance/demandes-documents-api';
 

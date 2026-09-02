@@ -3,13 +3,13 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Switch } from '@/components/ui/switch';
+} from '@repo/ui/dropdown-menu';
+import { Switch } from '@repo/ui/switch';
 
 interface DropdownAppsItem {
   logo: string;

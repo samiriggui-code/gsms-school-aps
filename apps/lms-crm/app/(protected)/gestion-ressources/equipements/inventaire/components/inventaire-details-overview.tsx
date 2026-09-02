@@ -5,7 +5,7 @@ import { InventaireOverviewStats } from "./details/inventaire-overview-stats";
 import { InventaireRecentActivity } from "./details/inventaire-recent-activity";
 import { InventaireReliabilityTier } from "./details/inventaire-reliability-tier";
 import { InventaireTechnicalInfo } from "./details/inventaire-technical-info";
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@repo/ui/alert";
 import { Wrench } from "lucide-react";
 import { MaintenanceCompleteActions } from "../../components/maintenance-complete-actions";
 

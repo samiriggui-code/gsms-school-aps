@@ -3,8 +3,8 @@
 import { Fragment } from 'react';
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
 import { FolderOpen, History, ShieldCheck } from 'lucide-react';
 
 export function QualiopiWelcomeCallout() {

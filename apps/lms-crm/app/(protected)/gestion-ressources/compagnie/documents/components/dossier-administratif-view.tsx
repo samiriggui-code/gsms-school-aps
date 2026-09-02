@@ -23,13 +23,13 @@ import {
   type AdminDocumentGroupId,
   type AdminDocumentSlot,
 } from '@/lib/admin-document-slots';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
+import { Separator } from '@repo/ui/separator';
 
 type FileSummary = {
   id: string;

@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@repo/ui/tooltip';
 import { ImageInput, ImageInputFile } from '@/components/image-input';
 
 export function AvatarInput() {

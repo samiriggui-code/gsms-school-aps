@@ -7,7 +7,7 @@ import { Suspense, useMemo, useState } from 'react';
 
 import { UserPlus } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
 import { sessionsExportConfig } from '@/lib/datagrid/export-presets';
 

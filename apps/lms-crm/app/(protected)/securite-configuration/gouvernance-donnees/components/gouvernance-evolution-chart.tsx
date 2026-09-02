@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';

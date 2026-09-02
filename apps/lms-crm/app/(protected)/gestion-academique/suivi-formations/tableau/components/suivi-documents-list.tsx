@@ -34,11 +34,11 @@ import { apiFetch } from '@/lib/api';
 
 import { formatDateTime } from '@/lib/helpers';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
-import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
 
 import {
 
@@ -46,15 +46,15 @@ import {
 
   DataGridApiResponse,
 
-} from '@/components/ui/data-grid';
+} from '@repo/ui/data-grid';
 
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
 
-import { DataGridTable } from '@/components/ui/data-grid-table';
+import { DataGridTable } from '@repo/ui/data-grid-table';
 
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 
 import { MODULE_LANDING_DATAGRID_PAGE_SIZE } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 
@@ -74,7 +74,7 @@ import {
 
   DropdownMenuTrigger,
 
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 
 import { SUIVI_DAY_SLOT_LABELS } from '@/lib/suivi-formations/session-location';
 

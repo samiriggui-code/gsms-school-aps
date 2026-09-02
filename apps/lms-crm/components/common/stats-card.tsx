@@ -2,7 +2,7 @@
 
 import { Fragment } from 'react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { LucideIcon } from 'lucide-react';
 
 import { cn } from '@/lib/utils';

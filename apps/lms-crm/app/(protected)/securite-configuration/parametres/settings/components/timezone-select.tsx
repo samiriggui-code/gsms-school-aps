@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { getTimeZones } from '@/i18n/timezones';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button, ButtonArrow } from '@/components/ui/button';
+import { Button, ButtonArrow } from '@repo/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -12,13 +12,13 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from '@repo/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/popover';
+import { ScrollArea } from '@repo/ui/scroll-area';
 
 const TimezoneSelect = ({
   defaultValue = '',

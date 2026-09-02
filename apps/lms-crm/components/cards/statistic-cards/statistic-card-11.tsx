@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardToolbar } from '@repo/ui/card';
+import { Progress } from '@repo/ui/progress';
 
 export function StatisticCard11() {
   const used = 2000;

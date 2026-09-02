@@ -12,15 +12,15 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
-} from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 import {
   Form,
   FormControl,
@@ -28,8 +28,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
@@ -37,7 +37,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { LoaderCircleIcon } from 'lucide-react';
 import { User, UserRole } from '@/app/models/user';
 import { useRoleSelectQuery } from '../../../roles/hooks/use-role-select-query';

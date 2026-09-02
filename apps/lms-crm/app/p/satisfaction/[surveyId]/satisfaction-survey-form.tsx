@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { CheckCircle2, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { RadioGroup, RadioGroupItem } from '@repo/ui/radio-group';
 import { nextPublicPathPrefix } from '@/lib/next-public-path-prefix';
 
 type SurveyQuestion = {

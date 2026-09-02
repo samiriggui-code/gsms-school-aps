@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Card, CardContent } from "@repo/ui/card";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@repo/ui/tooltip";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import Link from 'next/link';
-import { Rating } from "@/components/ui/rating";
-import { Separator } from "@/components/ui/separator";
+import { Rating } from "@repo/ui/rating";
+import { Separator } from "@repo/ui/separator";
 
 const cardData = [
   {

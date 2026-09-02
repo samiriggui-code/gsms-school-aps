@@ -21,19 +21,19 @@ import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
 import { PortalSection } from '@/components/portal/layout/portal-section';
 import { portalMuted, portalSectionTitle } from '@/components/portal/layout/portal-ui';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/select';
+import { Switch } from '@repo/ui/switch';
+import { Textarea } from '@repo/ui/textarea';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { InstructorCoursePreview } from './parcours/instructor-course-preview';

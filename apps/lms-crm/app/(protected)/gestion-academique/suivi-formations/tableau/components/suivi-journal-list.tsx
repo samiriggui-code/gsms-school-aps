@@ -15,17 +15,17 @@ import { CalendarPlus, Eye, RefreshCw } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
 import {
   DataGrid,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { MODULE_LANDING_DATAGRID_PAGE_SIZE } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 import { cn } from '@/lib/utils';

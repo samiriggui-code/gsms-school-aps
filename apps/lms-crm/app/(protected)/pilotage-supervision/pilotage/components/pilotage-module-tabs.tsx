@@ -1,8 +1,8 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@repo/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { PILOTAGE_ALERT_MODULE_PERMISSIONS } from '@repo/api-core/notification-audience';
 import { sessionHasPermission } from '@/lib/auth/crm-permissions';
 import { cn } from '@/lib/utils';

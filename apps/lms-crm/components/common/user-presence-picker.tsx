@@ -13,8 +13,8 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+} from '@repo/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
 import { cn } from '@/lib/utils';
 
 const OPTIONS: UserPresenceStatus[] = ['online', 'busy', 'away', 'offline'];

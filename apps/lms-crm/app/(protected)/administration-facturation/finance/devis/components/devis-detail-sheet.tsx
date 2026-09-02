@@ -5,16 +5,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+} from '@repo/ui/dropdown-menu';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
 import {
   Sheet,
   SheetBody,
@@ -22,9 +22,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+} from '@repo/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   Table,
   TableBody,
@@ -32,9 +32,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/table';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Textarea } from '@repo/ui/textarea';
 import { cn } from '@/lib/utils';
 import {
   Banknote,

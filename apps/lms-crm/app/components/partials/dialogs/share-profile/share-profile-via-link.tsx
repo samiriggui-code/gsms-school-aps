@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { Copy, Info } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
 
 export function ShareProfileViaLink() {
   const [linkInput, setLinkInput] = useState('');

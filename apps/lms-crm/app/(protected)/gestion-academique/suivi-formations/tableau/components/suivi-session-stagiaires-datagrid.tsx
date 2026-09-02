@@ -14,21 +14,21 @@ import {
 import { Eye, RefreshCw, Search } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime, getAvatarUrl, getInitials } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
 import {
   DataGrid,
   DataGridApiFetchParams,
   DataGridApiResponse,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Progress } from '@/components/ui/progress';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Progress } from '@repo/ui/progress';
 import { MODULE_LANDING_DATAGRID_PAGE_SIZE } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 import { cn } from '@/lib/utils';

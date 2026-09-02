@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
 import { FileText, Download, ExternalLink, ShieldCheck, AlertCircle } from "lucide-react";
 import { toAbsoluteUrl } from "@/lib/helpers";
 

@@ -9,7 +9,7 @@ import { QueryProvider } from '@/providers/query-provider';
 import { SettingsProvider } from '@/providers/settings-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { TooltipsProvider } from '@/providers/tooltips-provider';
-import { Toaster } from '@/components/ui/sonner';
+import { Toaster } from '@repo/ui/sonner';
 
 type Props = {
   children: ReactNode;

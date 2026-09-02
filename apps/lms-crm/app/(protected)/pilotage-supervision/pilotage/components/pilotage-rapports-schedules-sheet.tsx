@@ -3,9 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CalendarClock, Loader2, Play } from 'lucide-react';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Switch } from '@repo/ui/switch';
 import {
   Sheet,
   SheetBody,
@@ -13,7 +13,7 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { formatDateTime } from '@/lib/helpers';
 import {
   fetchPilotageReportSchedules,

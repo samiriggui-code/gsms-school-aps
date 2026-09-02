@@ -2,18 +2,18 @@
 
 import { type ComponentProps, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Checkbox } from '@repo/ui/checkbox';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -22,9 +22,9 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Textarea } from '@repo/ui/textarea';
 import type { CatalogSessionRow } from '@/components/catalog/catalog-sessions-panel';
 import {
   PREINSCRIPTION_FORMATION_OPTIONS,

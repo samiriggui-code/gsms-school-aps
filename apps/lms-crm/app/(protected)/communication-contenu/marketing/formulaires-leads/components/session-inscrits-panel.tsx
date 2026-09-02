@@ -12,13 +12,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { apiFetch } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { SessionUserAvatar } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-user-avatar';
 import {
   Select,
@@ -26,7 +26,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import type { FormationSessionApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 
 type ParticipantRow = FormationSessionApiRow['participants'][number];

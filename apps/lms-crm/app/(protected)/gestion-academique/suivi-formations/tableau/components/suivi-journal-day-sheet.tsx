@@ -16,17 +16,17 @@ import { apiFetch } from '@/lib/api';
 
 import { getAvatarUrl } from '@/lib/helpers';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
-import { Textarea } from '@/components/ui/textarea';
+import { Textarea } from '@repo/ui/textarea';
 
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@repo/ui/scroll-area';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
 
 import {
 
@@ -40,7 +40,7 @@ import {
 
   SelectValue,
 
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 
 import {
 
@@ -58,7 +58,7 @@ import {
 
   SheetTitle,
 
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../vie-scolaire/constants/sheet-shell-classes';
 

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Card } from '@/components/ui/card';
+import { Card } from '@repo/ui/card';
 import { AvatarSingle } from '../common/avatar-single';
 import { IAvatar } from './card-author';
 

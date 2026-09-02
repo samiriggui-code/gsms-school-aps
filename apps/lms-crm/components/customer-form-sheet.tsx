@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import { X, User } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -20,8 +20,8 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/sheet';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '@/app/(protected)/gestion-academique/vie-scolaire/constants/sheet-shell-classes';
 import {
@@ -32,8 +32,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+} from '@repo/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
 
 // Country data for phone number input
 const countries = [

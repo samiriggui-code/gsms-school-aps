@@ -2,8 +2,8 @@
 
 import { Fragment, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { getIcon } from '@/lib/icons';
 import {
   SectionLandingHexStatCard,

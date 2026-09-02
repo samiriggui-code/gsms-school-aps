@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
 import { getAvatarUrl, getInitials } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 

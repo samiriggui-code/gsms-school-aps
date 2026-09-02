@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@repo/ui/alert';
 import { ParcoursSessionCertificationsPanel } from './certifications';
 
 export function SuiviSessionCertificationsTab({ sessionId }: { sessionId: string | null }) {

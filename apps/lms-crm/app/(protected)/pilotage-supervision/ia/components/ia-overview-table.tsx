@@ -11,8 +11,8 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { Badge } from '@/components/ui/badge';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { Badge } from '@repo/ui/badge';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { ModuleLandingDataGridShell } from '@/components/common/module-landing-datagrid-shell';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';

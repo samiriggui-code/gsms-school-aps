@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { PilotageWorkspacePage } from '@/components/workspace/pilotage-workspace-page';
 import { Container } from '@/components/common/container';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { ExternalLink } from 'lucide-react';
 import type { ModuleWorkspaceViewKey } from '@repo/api-core';
 

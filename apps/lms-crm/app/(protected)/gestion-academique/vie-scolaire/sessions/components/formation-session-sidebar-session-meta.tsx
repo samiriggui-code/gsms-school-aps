@@ -1,6 +1,6 @@
 'use client';
 
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@repo/ui/separator';
 import type { FormationSessionApiRow } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 
 function formatSessionDateTime(iso: string | null): string {

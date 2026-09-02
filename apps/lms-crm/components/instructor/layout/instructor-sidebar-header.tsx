@@ -5,7 +5,7 @@ import { ChevronFirst } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { cn } from '@/lib/utils';
 import { useSettings } from '@/providers/settings-provider';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 export function InstructorSidebarHeader() {
   const { settings, storeOption } = useSettings();

@@ -1,8 +1,8 @@
 'use client'; 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input, InputAddon, InputGroup, InputWrapper } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"; 
+import { Button } from "@repo/ui/button";
+import { Card, CardContent } from "@repo/ui/card";
+import { Input, InputAddon, InputGroup, InputWrapper } from "@repo/ui/input";
+import { Label } from "@repo/ui/label"; 
 import { toAbsoluteUrl } from "@/lib/helpers";
 import { CircleCheck, SquarePlus } from "lucide-react"; 
 

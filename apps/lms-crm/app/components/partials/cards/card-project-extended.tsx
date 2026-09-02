@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { EllipsisVertical } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
+import { Progress } from '@repo/ui/progress';
 import { AvatarGroup } from '../common/avatar-group';
 import { DropdownMenu5 } from '../dropdown-menu/dropdown-menu-5';
 

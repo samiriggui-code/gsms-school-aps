@@ -4,8 +4,8 @@ import { RiCheckboxCircleFill, RiErrorWarningFill } from '@remixicon/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 import { LoaderCircleIcon } from 'lucide-react';
 
 const PermissionGroupDeleteDialog = ({

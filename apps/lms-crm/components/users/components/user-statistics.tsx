@@ -1,8 +1,8 @@
 'use client';
 
 import { TrendingUp, Clock, ShieldCheck, Activity } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
 
 export function UserStatistics({ user }: { user: { id?: string } }) {
   void user;

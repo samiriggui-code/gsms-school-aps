@@ -5,17 +5,17 @@ import { SquarePen, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardToolbar,
-} from '@/components/ui/card';
-import { Rating } from '@/components/ui/rating';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/card';
+import { Rating } from '@repo/ui/rating';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -23,7 +23,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Table,
   TableBody,
@@ -31,8 +31,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+} from '@repo/ui/table';
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/toggle-group';
 
 export function ProductDetailsAnalyticsSheet({
   open,

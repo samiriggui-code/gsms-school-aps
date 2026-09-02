@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Textarea } from '@repo/ui/textarea';
 import { apiFetch } from '@/lib/api';
 
 export function CreateLmsAssignmentForm({

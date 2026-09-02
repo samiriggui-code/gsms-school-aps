@@ -1,7 +1,7 @@
 'use client';
 
 import { MenuConfig, MenuItem } from '@/config/types';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 import {
   MegaMenuFooter,
   MegaMenuSubDefault,

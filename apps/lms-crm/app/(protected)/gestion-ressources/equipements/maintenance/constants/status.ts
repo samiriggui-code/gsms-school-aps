@@ -1,4 +1,4 @@
-import { badgeVariants } from '@/components/ui/badge';
+import { badgeVariants } from '@repo/ui/badge';
 import { VariantProps } from 'class-variance-authority';
 
 type BadgeVariant = VariantProps<typeof badgeVariants>['variant'];

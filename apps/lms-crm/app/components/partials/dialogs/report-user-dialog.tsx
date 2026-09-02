@@ -3,16 +3,16 @@
 import { useId, useState } from 'react';
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+} from '@repo/ui/dialog';
+import { Label } from '@repo/ui/label';
+import { RadioGroup, RadioGroupItem } from '@repo/ui/radio-group';
 
 export function ReportUserDialog({
   open,

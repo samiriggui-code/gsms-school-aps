@@ -12,9 +12,9 @@ import { signOut, useSession } from 'next-auth/react';
 
 import { UserAvatar } from '@/components/common/user-avatar';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 import {
 
@@ -28,7 +28,7 @@ import {
 
   DropdownMenuTrigger,
 
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 
 import { UserPresenceDot, UserPresencePicker } from '@/components/common/user-presence-picker';
 

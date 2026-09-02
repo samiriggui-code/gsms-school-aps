@@ -3,9 +3,9 @@
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CalendarDays, Clock, GraduationCap, MapPin, Users } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
+import { Separator } from '@repo/ui/separator';
 import { FormationSessionTrainerSummary } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-trainer-summary';
 import { FormationSessionVenueRoomSummary } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-venue-room-summary';
 import {

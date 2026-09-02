@@ -8,8 +8,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -17,7 +17,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../constants/sheet-shell-classes';
 import {
   Form,
@@ -26,18 +26,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Textarea } from '@repo/ui/textarea';
 import { LoaderCircleIcon, Users, Info, FileText, LayoutGrid, Check, ChevronsUpDown, Search, UserPlus, MapPin } from 'lucide-react';
 import { TeamSchema, TeamSchemaType } from '../forms/team-schema';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
+import { Badge } from '@repo/ui/badge';
 import { cn } from '@/lib/utils';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/select';
+import { Checkbox } from '@repo/ui/checkbox';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
 import { User as Collaborateur } from '@/app/models/user';
 import { TEAM_TYPES, TEAM_SECTORS, TEAM_ILLUSTRATION_OPTIONS } from '../constants';
 import { teamIllustrationSrc } from '../lib/team-display';

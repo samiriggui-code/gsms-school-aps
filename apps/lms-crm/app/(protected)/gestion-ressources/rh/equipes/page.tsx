@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Container } from '@/components/common/container';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@repo/ui/alert';
 import {
   Toolbar,
   ToolbarActions,
@@ -20,14 +20,14 @@ import { OrgUnitManager } from './components/org-unit-manager';
 import { BookOpen, FolderTree, Landmark } from 'lucide-react';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
 import { equipesExportConfig } from '@/lib/datagrid/export-presets';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import type { RhSessionTeamPhase } from '@/lib/rh-team-list-scope';
 import { RH_SESSION_TEAM_PHASE_LABELS } from '@/lib/rh-team-list-scope';
 

@@ -44,7 +44,7 @@ const nextConfig = {
     root: monorepoRoot,
   },
   staticPageGenerationTimeout: 180,
-  transpilePackages: ['@repo/i18n', '@repo/api-core', '@repo/realtime'],
+  transpilePackages: ['@repo/i18n', '@repo/api-core', '@repo/realtime', '@repo/ui'],
   basePath: basePath || '',
   ...(assetPrefix ? { assetPrefix } : {}),
   images: {

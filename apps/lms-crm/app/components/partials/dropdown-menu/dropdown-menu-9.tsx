@@ -7,8 +7,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Switch } from '@/components/ui/switch';
+} from '@repo/ui/dropdown-menu';
+import { Switch } from '@repo/ui/switch';
 import { GiveAwardDialog } from '../dialogs/give-award-dialog';
 import { ReportUserDialog } from '../dialogs/report-user-dialog';
 import { ShareProfileDialog } from '../dialogs/share-profile';

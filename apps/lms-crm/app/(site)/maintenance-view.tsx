@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from 'react';
 import { Loader2, RefreshCw } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import { Container } from '@/components/common/container';
 import { Engage } from '@/app/components/partials/common/engage';
 import { toAbsoluteUrl } from '@/lib/helpers';

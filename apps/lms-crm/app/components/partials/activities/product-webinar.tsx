@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { CalendarCheck2, SquareDashedBottomCode } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
+import { Progress } from '@repo/ui/progress';
 import { AvatarGroup } from '../common/avatar-group';
 import { TimelineItem } from './timeline-item';
 

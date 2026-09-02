@@ -6,7 +6,7 @@ import {
   SECTION_KPI_CARD_ACCENTS,
 } from '@/components/common/stat-card-metric-layout';
 import { Users, UserCheck, AlertTriangle, FileWarning, UserMinus } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { cn } from '@/lib/utils';
 

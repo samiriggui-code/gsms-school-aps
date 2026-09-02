@@ -32,25 +32,25 @@ import { RiCheckboxCircleFill } from '@remixicon/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { apiFetch } from '@/lib/api';
 import { formatDate, formatDateTime, getInitials } from '@/lib/helpers';
-import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardFooter, CardHeader, CardTable } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@repo/ui/avatar';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardFooter, CardHeader, CardTable } from '@repo/ui/card';
 import {
   DataGrid,
-} from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
+} from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
 import {
   DataGridTable,
   DataGridTableRowSelect,
   DataGridTableRowSelectAll,
-} from '@/components/ui/data-grid-table';
-import { Input } from '@/components/ui/input';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+} from '@repo/ui/data-grid-table';
+import { Input } from '@repo/ui/input';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { Absence, AbsenceStatus } from '@/app/models/absence';
 import { toast } from 'sonner';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { cn } from '@/lib/utils';
 import {
   AlertDialog,
@@ -61,11 +61,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@repo/ui/alert-dialog';
 import AbsenceDetailsSheet from './absence-details-sheet';
 import { ABSENCE_TYPES, ABSENCE_STATUSES } from '../constants';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@repo/ui/dropdown-menu';
+import { Tabs, TabsContent } from '@repo/ui/tabs';
 import { useDatagridSync } from '@/hooks/use-datagrid-sync';
 
 const AbsenceList = () => {

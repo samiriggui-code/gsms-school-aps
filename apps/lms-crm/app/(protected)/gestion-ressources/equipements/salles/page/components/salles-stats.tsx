@@ -13,7 +13,7 @@ import {
   CalendarDays,
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
 

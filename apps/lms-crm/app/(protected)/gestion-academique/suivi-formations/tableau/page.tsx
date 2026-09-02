@@ -23,15 +23,15 @@ import {
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { useTranslation } from '@/hooks/useTranslation';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
+} from '@repo/ui/select';
+import { Badge } from '@repo/ui/badge';
 import { SessionCircuitTriggerButton } from '../../vie-scolaire/sessions/components/session-circuit-trigger-button';
 import { SuiviFormationsStats } from './components/suivi-formations-stats';
 import { SuiviStagiairesList } from './components/suivi-stagiaires-list';

@@ -4,7 +4,7 @@ import { FileText, Loader2, Printer, Send } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const SESSION_DOCUMENT_TYPES = [

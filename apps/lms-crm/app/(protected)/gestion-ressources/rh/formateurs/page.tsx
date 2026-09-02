@@ -4,7 +4,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useMemo, useState } from 'react';
 import FormateurList from './components/formateur-list';
 import { FormateurStats } from './components/formateur-stats';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { UserPlus } from 'lucide-react';
 import FormateurAddSheet from './components/formateur-add-sheet';
 import { Container } from '@/components/common/container';

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { History } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Button } from '@repo/ui/button';
+import { Badge } from '@repo/ui/badge';
 import { MODULE_LANDING_TABLE_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
 
 /** Rangée 3 — lien vers feuille Historique (OF-11) tant que la timeline n’est pas branchée. */

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Marquee from '@/components/ui/marquee';
+import Marquee from '@repo/ui/marquee';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const CERT = '/images/certifications';

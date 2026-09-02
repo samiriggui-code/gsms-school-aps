@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { User } from '@/app/models/user';
 import UserDeleteDialog from './user-delete-dialog';
 import UserRestoreDialog from './user-restore-dialog';

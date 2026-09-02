@@ -7,10 +7,10 @@ import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, MoveLeft } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { useSession } from 'next-auth/react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { Container } from '@/components/common/container';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { SheetBody, SheetHeader } from '@/components/ui/sheet';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { SheetBody, SheetHeader } from '@repo/ui/sheet';
 import {
   Toolbar,
   ToolbarActions,

@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/button";
 import { Package, Loader2, Check } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@repo/ui/separator";
 import { toast } from "sonner";
 import { apiFetch } from "@/lib/api";
 

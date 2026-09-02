@@ -5,11 +5,11 @@ import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CalendarIcon, CheckCircle2, ChevronLeft, ChevronRight, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@repo/ui/button';
+import { Calendar } from '@repo/ui/calendar';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
 import {
   Sheet,
   SheetBody,
@@ -17,7 +17,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api';
 

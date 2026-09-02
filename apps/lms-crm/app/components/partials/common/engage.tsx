@@ -2,8 +2,8 @@
 
 import { ReactElement } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
 
 export interface EngageProps {
   title: string;

@@ -3,9 +3,9 @@
 import { useCallback, useId, useState, type ReactNode } from 'react';
 import { Mail, MapPin, Phone, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Textarea } from '@repo/ui/textarea';
 import { CustomBadge } from '@/components/custom/badge';
 import { CustomSubtitle } from '@/components/custom/subtitle';
 import { CustomTitle } from '@/components/custom/title';

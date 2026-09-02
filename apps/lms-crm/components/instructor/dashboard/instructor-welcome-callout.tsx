@@ -10,9 +10,9 @@ import {
   Users,
 } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardFooter } from '@repo/ui/card';
 import type { InstructorDashboardPayload } from '@/lib/instructor/instructor-types';
 import { formatPortalDate } from '@/lib/portal/format-portal-date';
 

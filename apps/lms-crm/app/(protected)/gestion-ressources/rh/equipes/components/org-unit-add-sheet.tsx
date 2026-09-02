@@ -15,7 +15,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_COMPACT } from '../../../constants/sheet-shell-classes';
 import {
   Form,
@@ -24,10 +24,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Button } from '@repo/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/select';
 import { Building2, LayoutGrid, Loader2, UserPlus, Shield } from 'lucide-react';
 
 const OrgUnitSchema = z.object({

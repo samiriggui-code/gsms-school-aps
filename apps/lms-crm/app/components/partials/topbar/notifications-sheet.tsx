@@ -8,10 +8,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { Image as ImageIcon, Archive, CheckCheck, LoaderCircleIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -20,15 +20,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
   AvatarIndicator,
   AvatarStatus,
-} from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '@repo/ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { getDateFnsLocale } from '@/i18n/date-locale';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/providers/i18n-provider';

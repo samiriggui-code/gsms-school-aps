@@ -8,7 +8,7 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { Theater } from 'lucide-react';
 import { DataGridExportMenu } from '@/components/datagrid/datagrid-export-menu';
 import { sallesExportConfig } from '@/lib/datagrid/export-presets';

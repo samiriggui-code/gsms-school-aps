@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { SquareDashedBottomCode, Users, Volleyball } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/card';
 import { AvatarGroup } from '../common/avatar-group';
 import { Rating } from '../common/rating';
 import { TimelineItem } from './timeline-item';

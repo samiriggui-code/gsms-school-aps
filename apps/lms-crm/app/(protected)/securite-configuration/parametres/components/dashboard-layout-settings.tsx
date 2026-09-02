@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
+import { Label } from '@repo/ui/label';
+import { Switch } from '@repo/ui/switch';
+import { Button } from '@repo/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import {
   DASHBOARD_WIDGET_CATALOG,

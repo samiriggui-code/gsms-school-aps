@@ -2,9 +2,9 @@
 
 import { LucideIcon, Mail, MessageCircle, Monitor, Bell } from 'lucide-react';
 import { CardNotification } from '@/partials/cards/card-notification';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import { Card, CardHeader, CardTitle } from '@repo/ui/card';
+import { Label } from '@repo/ui/label';
+import { Switch } from '@repo/ui/switch';
 import { useNotificationPrefs } from '@/hooks/use-notification-prefs';
 
 function ChannelRow({

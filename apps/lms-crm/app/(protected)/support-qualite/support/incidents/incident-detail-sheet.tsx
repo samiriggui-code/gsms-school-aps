@@ -3,25 +3,25 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetContent,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { SupportEntityCombobox } from '../../components/support-entity-combobox';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 

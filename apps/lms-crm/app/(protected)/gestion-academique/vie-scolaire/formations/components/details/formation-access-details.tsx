@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@repo/ui/card";
 import { User as Formation } from "@/app/models/user";
 
 export function FormationAccessDetails({ Formation }: { Formation: Formation }) {

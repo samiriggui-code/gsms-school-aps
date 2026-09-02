@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Calendar, LayoutGrid } from 'lucide-react';
 import { Container } from '@/components/common/container';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { SallesPageToolbar } from './components/salles-page-toolbar';
 import { SallesStats } from './components/salles-stats';
 import { SallesList } from './components/salles-list';

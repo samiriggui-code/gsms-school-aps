@@ -3,10 +3,10 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@repo/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 

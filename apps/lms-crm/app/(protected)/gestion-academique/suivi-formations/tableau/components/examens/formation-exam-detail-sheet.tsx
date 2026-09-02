@@ -27,14 +27,14 @@ import type {
 } from '@/lib/vie-scolaire/formation-exam-detail-loader';
 import { FormationExamContextPanel } from './formation-exam-context-panel';
 import { SessionEquipmentDispatchGuide } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-equipment-dispatch-guide';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
 import {
   Sheet,
   SheetBody,
@@ -43,14 +43,14 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import { VIE_SCOLAIRE_SHEET_LARGE } from '../../../../vie-scolaire/constants/sheet-shell-classes';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';

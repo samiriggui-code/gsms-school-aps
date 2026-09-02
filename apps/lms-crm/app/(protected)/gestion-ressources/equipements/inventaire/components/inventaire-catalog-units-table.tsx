@@ -12,13 +12,13 @@ import {
 } from '@tanstack/react-table';
 import { apiFetch } from '@/lib/api';
 import { formatDateTime } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardFooter, CardTable } from '@/components/ui/card';
-import { DataGrid } from '@/components/ui/data-grid';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { DataGridPagination } from '@/components/ui/data-grid-pagination';
-import { DataGridTable } from '@/components/ui/data-grid-table';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardFooter, CardTable } from '@repo/ui/card';
+import { DataGrid } from '@repo/ui/data-grid';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { DataGridPagination } from '@repo/ui/data-grid-pagination';
+import { DataGridTable } from '@repo/ui/data-grid-table';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import {
   createModuleLandingPagination,
   USER_MANAGEMENT_TABLE_CLASSNAMES,
@@ -27,7 +27,7 @@ import {
 import { getInventaireStatusProps } from '../constants/status';
 import { Loader2, ChevronRight, MapPin, Settings } from 'lucide-react';
 import { EquipmentThumbnail } from './equipment-thumbnail';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import type { EquipmentStatus } from '@/app/models/equipment';
 import {
   EQUIPMENT_HEADQUARTERS_SITE_NAME,

@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ExternalLink, FolderOpen, Mail, ShieldAlert, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -14,8 +14,8 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/sheet';
+import { Textarea } from '@repo/ui/textarea';
 import {
   fetchGlobalComplianceUserDetail,
   notifyGlobalComplianceUser,

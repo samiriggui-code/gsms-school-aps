@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { Printer } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 export function DevisPlaquettePrintBar({ autoPrint }: { autoPrint: boolean }) {
   useEffect(() => {

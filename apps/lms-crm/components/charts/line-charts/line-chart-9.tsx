@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { Card, CardContent } from '@repo/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip } from '@repo/ui/chart';
 import { TrendingUp } from 'lucide-react';
 import { CartesianGrid, ComposedChart, Line, ReferenceLine, XAxis, YAxis } from 'recharts';
 

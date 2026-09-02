@@ -1,8 +1,8 @@
 'use client';
 
 import { User as Etudiant } from '@/app/models/user';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { formatDateTime } from '@/lib/helpers';
 import {
   lmsAccessBadgeVariant,

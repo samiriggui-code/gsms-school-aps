@@ -4,15 +4,15 @@ import { Fragment, useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import {
   MODULE_LANDING_STATS_GRID_ROW,
   SECTION_KPI_CARD_ACCENTS,
 } from '@/components/common/stat-card-metric-layout';
 import { cn } from '@/lib/utils';
 import { Clock, CheckCircle2, XCircle, ListFilter, Scale } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
+import { Skeleton } from '@repo/ui/skeleton';
+import { Button } from '@repo/ui/button';
 
 interface AbsenceStat {
   icon: React.ComponentType<{ className?: string }>;

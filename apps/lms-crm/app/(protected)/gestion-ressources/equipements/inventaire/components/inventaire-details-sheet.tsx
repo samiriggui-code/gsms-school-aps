@@ -1,8 +1,8 @@
 'use client';
 
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -19,10 +19,10 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../constants/sheet-shell-classes';
 import { GESTION_RESSOURCES_SHEET_TABS_LIST } from '@/lib/gestion-ressources/ui';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@repo/ui/tabs';
 import { Equipment as Inventaire, EquipmentStatus } from '@/app/models/equipment';
 import { cn } from '@/lib/utils';
 import { getInventaireStatusProps } from '../constants/status';

@@ -10,8 +10,8 @@ import {
 } from '@tanstack/react-table';
 import Link from 'next/link';
 import { Calendar, Eye } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { Button } from '@repo/ui/button';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { useRecentEquipmentAffectations, type EquipmentAffectationRow } from '@/lib/hooks/equipment';
 import { formatDateTime } from '@/lib/helpers';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';

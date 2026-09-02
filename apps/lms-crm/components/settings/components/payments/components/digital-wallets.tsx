@@ -1,7 +1,7 @@
 'use client';
 
-import { Card } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
+import { Card } from "@repo/ui/card";
+import { Switch } from "@repo/ui/switch";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import { useState } from "react";
 

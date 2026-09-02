@@ -2,8 +2,8 @@
 
 import { useRef } from 'react';
 import { User as Etudiant } from '@/app/models/user';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
 import { ExternalLink, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';

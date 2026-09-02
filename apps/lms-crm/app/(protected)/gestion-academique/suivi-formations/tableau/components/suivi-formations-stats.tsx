@@ -23,7 +23,7 @@ import {
   Workflow,
   XCircle,
 } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import type { SuiviFormationsStatsPayload } from '../types/suivi-formations-api';
 

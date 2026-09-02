@@ -8,8 +8,8 @@ import {
   Puzzle,
   Settings,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import {
   SETTINGS_ANCHOR_IDS,
   SETTINGS_BASE_PATH,

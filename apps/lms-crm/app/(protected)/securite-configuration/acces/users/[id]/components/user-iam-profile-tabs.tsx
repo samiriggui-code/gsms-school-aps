@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { UserIamTabs, type UserIamTabKey } from '@/components/users/user-iam-tabs';
 import { useUser } from './user-context';
 import { useMaxWidthLg } from '@/hooks/use-max-width-lg';

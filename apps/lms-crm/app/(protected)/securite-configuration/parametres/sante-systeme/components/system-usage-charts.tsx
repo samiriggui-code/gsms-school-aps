@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 
 const SystemUsageCharts = () => {
   const [data, setData] = useState<any>(null);

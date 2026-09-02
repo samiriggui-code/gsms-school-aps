@@ -3,15 +3,15 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import { 
   LayoutGrid, Plus, FolderTree, ChevronRight, ChevronDown, MoreVertical, 
   Edit2, Trash2, Building2, List, PlusSquare, MinusSquare, Users, MapPin, 
   Shield, Info, Users2
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@repo/ui/badge';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import {
@@ -19,7 +19,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@repo/ui/dropdown-menu';
 import { OrgUnitAddSheet } from './org-unit-add-sheet';
 import {
   Table,
@@ -28,8 +28,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+} from "@repo/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
 import { getAvatarUrl, getInitials } from '@/lib/helpers';
 import { orgUnitVisualSrc, resolveTeamTypeMeta } from '../lib/team-display';
 import { TeamPhoto } from './team-photo';

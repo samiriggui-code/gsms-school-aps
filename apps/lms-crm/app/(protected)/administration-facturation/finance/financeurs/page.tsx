@@ -8,7 +8,7 @@ import {
   ToolbarHeading,
   ToolbarTitle,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { prisma } from '@/lib/prisma';
 import { CreateFundingCaseForm } from './create-funding-case-form';
 import { EdofDossierChecklistPanel } from './edof-dossier-checklist-panel';

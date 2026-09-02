@@ -1,7 +1,7 @@
 'use client';
 
 import { Eye, SquarePen, Trash } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 
 type EquipmentRowActionsProps = {

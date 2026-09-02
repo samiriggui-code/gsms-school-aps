@@ -9,7 +9,7 @@ import {
 } from '@/config/workspace-settings.config';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import { WorkspaceSettingsShell } from './workspace-settings-shell';
 import { AccountSecuritySection } from './sections/account-security-section';
 import { AccountPresenceSection } from './sections/account-presence-section';

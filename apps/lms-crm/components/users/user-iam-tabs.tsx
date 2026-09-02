@@ -1,8 +1,8 @@
 'use client';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
+import { Separator } from '@repo/ui/separator';
+import { Badge } from '@repo/ui/badge';
 import type { User } from '@/app/models/user';
 import { CollaborateurDetailsPermissions } from '@/app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-permissions';
 import UserProfile from '@/app/(protected)/securite-configuration/acces/users/[id]/components/user-profile';

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import type { CrmDashboardHighlight } from '@/lib/crm/crm-dashboard-types';
 
 export function CrmDashboardHighlights({ highlights }: { highlights: CrmDashboardHighlight[] }) {

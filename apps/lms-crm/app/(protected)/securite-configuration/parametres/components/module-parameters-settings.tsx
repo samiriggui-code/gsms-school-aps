@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Switch } from '@repo/ui/switch';
+import { Button } from '@repo/ui/button';
+import { Separator } from '@repo/ui/separator';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 
 type ModuleSettingRow = {

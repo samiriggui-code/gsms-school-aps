@@ -6,7 +6,7 @@ import {
   ToolbarHeading,
   ToolbarTitle,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { prisma } from '@/lib/prisma';
 import { buildQualiopiCoverage } from '@/lib/of/qualiopi-coverage';
 import { QualiopiGapsAssistantPanel } from '../components/qualiopi-gaps-assistant-panel';

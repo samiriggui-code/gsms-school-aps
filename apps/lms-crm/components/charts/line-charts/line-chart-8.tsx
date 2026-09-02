@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
 
 // Business Case 1: SaaS Revenue Tracking (Detailed wavy pattern with micro-fluctuations)

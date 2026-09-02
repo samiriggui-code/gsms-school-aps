@@ -2,10 +2,10 @@
 
 import { AvatarInput } from '@/partials/common/avatar-input';
 import { SquarePen } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Table, TableBody, TableCell, TableRow } from '@repo/ui/table';
 import {
   userIamLoginSubtitle,
   userPersonalMailbox,

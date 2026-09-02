@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Library } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 
 type BankItem = {

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { User as Etudiant } from '@/app/models/user';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Badge } from '@repo/ui/badge';
 import { ExternalLink, FileDown, Info, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';

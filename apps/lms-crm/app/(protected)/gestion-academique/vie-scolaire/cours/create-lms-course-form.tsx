@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { apiFetch } from '@/lib/api';
 
 export function CreateLmsCourseForm() {

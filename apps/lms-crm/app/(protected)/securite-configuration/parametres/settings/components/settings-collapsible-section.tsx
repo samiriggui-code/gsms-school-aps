@@ -6,7 +6,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from '@repo/ui/collapsible';
 import { cn } from '@/lib/utils';
 import {
   SETTINGS_SECTION_SCROLL_MARGIN,

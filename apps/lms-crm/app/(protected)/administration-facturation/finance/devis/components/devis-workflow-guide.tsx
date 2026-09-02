@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowRight, CheckCircle2, FileText, Send, Wallet } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { cn } from '@/lib/utils';
 
 const STEPS = [

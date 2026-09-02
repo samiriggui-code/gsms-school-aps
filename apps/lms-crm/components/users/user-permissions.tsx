@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import { Info } from 'lucide-react';
 import { PermissionToggleMatrix } from '@/components/iam/permission-toggle-matrix';
 import { resolveRolePermissionRows } from '@/lib/iam/serialize-user-role';

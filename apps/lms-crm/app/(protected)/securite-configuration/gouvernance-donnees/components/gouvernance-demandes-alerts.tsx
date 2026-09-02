@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRight, FileWarning } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Skeleton } from '@repo/ui/skeleton';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
 

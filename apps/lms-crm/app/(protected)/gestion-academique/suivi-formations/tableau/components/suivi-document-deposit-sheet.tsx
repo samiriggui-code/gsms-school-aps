@@ -11,19 +11,19 @@ import {
   Loader2,
 } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
+import { Checkbox } from '@repo/ui/checkbox';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@repo/ui/select';
 import {
   Sheet,
   SheetBody,
@@ -32,7 +32,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_MEDIUM } from '../../../vie-scolaire/constants/sheet-shell-classes';
 import { SESSION_DOCUMENT_CATEGORY_LABELS } from '@/lib/formation-session-document-storage';
 import { SUIVI_DAY_SLOT_LABELS } from '@/lib/suivi-formations/session-location';

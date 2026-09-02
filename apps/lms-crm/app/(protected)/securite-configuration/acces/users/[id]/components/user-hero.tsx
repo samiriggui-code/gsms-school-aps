@@ -4,15 +4,15 @@ import { useState } from 'react';
 import { Check } from 'lucide-react';
 import { getAvatarUrl, getInitials } from '@/lib/helpers';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
+import { Badge } from '@repo/ui/badge';
+import { Skeleton } from '@repo/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@repo/ui/tooltip';
 import { User } from '@/app/models/user';
 import { userIamLoginSubtitle } from '@/lib/user-email-routing';
 import { IamUserSheetSidebar } from '@/components/users/iam-user-sheet-sidebar';

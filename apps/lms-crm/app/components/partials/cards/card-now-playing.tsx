@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card } from '@repo/ui/card';
 import { AvatarGroup } from '../common/avatar-group';
 
 interface INowPlayingItem {

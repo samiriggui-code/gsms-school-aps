@@ -10,10 +10,10 @@ import { apiFetch } from '@/lib/api';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Skeleton } from '@repo/ui/skeleton';
 import { getCollaborateurStatusProps } from '@/app/(protected)/gestion-ressources/rh/collaborateurs/constants/status';
 
 export function InstructorProfilPage() {

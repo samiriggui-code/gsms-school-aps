@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { AlertCircle } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 
 /**

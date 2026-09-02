@@ -22,21 +22,21 @@ import {
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { useTranslation } from '@/hooks/useTranslation';
 import { workspaceActionLabel, workspaceStatusLabel } from '@/lib/workspace-labels';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Card, CardHeader } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Textarea } from '@/components/ui/textarea';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+} from '@repo/ui/dialog';
+import { Label } from '@repo/ui/label';
+import { Checkbox } from '@repo/ui/checkbox';
+import { Textarea } from '@repo/ui/textarea';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { FinanceModuleDataGrid } from '../../components/finance-module-datagrid';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';

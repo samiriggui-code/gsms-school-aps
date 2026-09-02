@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
 import type { PilotageLandingSparkline } from '@repo/api-core';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 

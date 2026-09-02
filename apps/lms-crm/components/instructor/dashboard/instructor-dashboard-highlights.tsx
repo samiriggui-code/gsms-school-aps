@@ -9,8 +9,8 @@ import {
   Users,
   type LucideIcon,
 } from 'lucide-react';
-import { Badge, BadgeDot } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge, BadgeDot } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import type { InstructorDashboardPayload } from '@/lib/instructor/instructor-types';
 
 const ICON_MAP: Record<string, LucideIcon> = {

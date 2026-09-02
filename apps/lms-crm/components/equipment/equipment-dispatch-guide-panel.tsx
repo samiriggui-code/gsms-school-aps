@@ -1,10 +1,10 @@
 'use client';
 
 import { AlertCircle, CheckCircle2, CircleDashed, Link2, Package } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Progress } from '@repo/ui/progress';
 import type { DispatchGuideLine } from '@/lib/equipment-dispatch-guide';
 import { cn } from '@/lib/utils';
 

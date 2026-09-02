@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { FilePlus2, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { toast } from 'sonner';
 import { CRM_MARKETING_LEADS_PATH } from '@/app/(protected)/communication-contenu/marketing/formulaires-leads/constants/crm-paths';

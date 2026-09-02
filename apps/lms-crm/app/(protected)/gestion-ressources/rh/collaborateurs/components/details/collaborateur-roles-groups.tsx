@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent } from "@repo/ui/card";
+import { Button } from "@repo/ui/button";
+import { Badge } from "@repo/ui/badge";
+import { Separator } from "@repo/ui/separator";
 import { ShieldCheck, Smartphone, LoaderCircleIcon } from "lucide-react";
 import { User as Collaborateur, UserRole } from "@/app/models/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,14 +17,14 @@ import {
   DialogTitle, 
   DialogFooter,
   DialogBody
-} from "@/components/ui/dialog";
+} from "@repo/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/select";
 import { useSchoolRoleSelectQuery } from "@/app/(protected)/securite-configuration/acces/roles/hooks/use-role-select-query";
 import { PORTAL_MOBILE_ACCESS_PERMISSION, roleHasMobilePortalAccess } from "@/lib/rh-iam-roles";
 

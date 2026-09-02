@@ -19,10 +19,10 @@ import {
   ToolbarTitle,
   ToolbarDescription,
 } from '@/components/common/toolbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Card, CardHeader } from '@repo/ui/card';
+import { Skeleton } from '@repo/ui/skeleton';
 import { cn } from '@/lib/utils';
 import {
   MODULE_LANDING_STATS_GRID_ROW,

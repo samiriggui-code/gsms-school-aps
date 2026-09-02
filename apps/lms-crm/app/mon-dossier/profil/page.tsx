@@ -8,8 +8,8 @@ import { apiFetch } from '@/lib/api';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
 import { PortalProfileCard, type PortalProfileData } from '@/components/portal/portal-profile-card';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@repo/ui/button';
+import { Skeleton } from '@repo/ui/skeleton';
 import { portalMuted } from '@/components/portal/layout/portal-ui';
 
 type ApiProfile = Omit<PortalProfileData, 'roleName'> & {

@@ -5,7 +5,7 @@ import {
   type MetricStatTone,
 } from '@/components/common/stat-card-metric-layout';
 import { Activity, Users, Clock, AlertTriangle } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { useModuleWorkspaceQuery } from '@/hooks/use-module-workspace-query';
 import { useTranslation } from '@/hooks/useTranslation';
 import { workspaceStatLabel } from '@/lib/workspace-labels';

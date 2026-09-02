@@ -9,7 +9,7 @@ import { FormateurOverviewStats } from '../../formateurs/components/details/form
 import { FormateurRecentActivity } from '../../formateurs/components/details/formateur-recent-activity';
 import { FormateurReliabilityTier } from '../../formateurs/components/details/formateur-reliability-tier';
 import { FormateurHRInfo } from '../../formateurs/components/details/formateur-hr-info';
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertIcon, AlertTitle, AlertDescription } from '@repo/ui/alert';
 import { CalendarX2 } from 'lucide-react';
 import { isUserCurrentlyAbsent, userAbsenceAlertPeriod } from '@/lib/rh/user-absence-ui';
 

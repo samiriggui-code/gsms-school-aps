@@ -2,8 +2,8 @@
 
 import { ReactNode } from 'react';
 import { LucideIcon, SquarePen } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { CardContent } from '@/components/ui/card';
+import { Button } from '@repo/ui/button';
+import { CardContent } from '@repo/ui/card';
 import { HexagonBadge } from '../common/hexagon-badge';
 
 interface INotificationProps {

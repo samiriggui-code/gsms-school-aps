@@ -20,12 +20,12 @@ import {
   ToolbarTitle,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { Card, CardHeader } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Progress } from '@repo/ui/progress';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { FinanceModuleDataGrid } from '../../components/finance-module-datagrid';
 import {
@@ -34,16 +34,16 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+} from '@repo/ui/dropdown-menu';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { PiggyBank, Target, TrendingDown, Wallet, BarChart3 } from 'lucide-react';

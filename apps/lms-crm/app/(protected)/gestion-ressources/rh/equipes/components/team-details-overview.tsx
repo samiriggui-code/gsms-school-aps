@@ -5,16 +5,16 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useTranslation } from '@/hooks/useTranslation';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+} from '@repo/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/avatar';
 import { 
   Search, 
   UserPlus, 
@@ -34,10 +34,10 @@ import {
 } from 'lucide-react';
 import { getInitials, getAvatarUrl } from '@/lib/helpers';
 import { Team } from '@/app/models/team';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 import { TEAM_TYPES, TEAM_SECTORS } from '../constants';
 import { cn } from '@/lib/utils';
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@repo/ui/card";
 import {
   SESSION_TEAM_ROLE_LABELS,
   groupSessionTeamMembers,

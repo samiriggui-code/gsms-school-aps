@@ -10,7 +10,7 @@ import { formatPortalDate } from '@/lib/portal/format-portal-date';
 
 import { UserAvatar } from '@/components/common/user-avatar';
 
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@repo/ui/badge';
 
 import {
 

@@ -17,7 +17,7 @@ import { apiFetch } from '@/lib/api';
 import { lmsAccessLabel, type LmsAccessTier } from '@/lib/portal/lms-access-shared';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalStatGrid } from '@/components/portal/layout/portal-stat-grid';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { cn } from '@/lib/utils';
 
 type CourseRow = {

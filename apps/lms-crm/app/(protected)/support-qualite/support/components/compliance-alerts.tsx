@@ -2,10 +2,10 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardHeader, CardTitle, CardContent } from '@repo/ui/card';
+import { Badge } from '@repo/ui/badge';
 import { AlertTriangle, LifeBuoy, ArrowRight } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import { MODULE_LANDING_ALERTS_CARD_CLASS } from '@/components/common/module-landing-panel-styles';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 

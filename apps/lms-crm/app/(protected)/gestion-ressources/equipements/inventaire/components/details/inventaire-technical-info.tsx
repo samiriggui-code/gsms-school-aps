@@ -1,8 +1,8 @@
 'use client';
 
 import { Equipment } from "@/app/models/equipment";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/card";
+import { Badge } from "@repo/ui/badge";
 import { 
   Calendar, 
   MapPin, 

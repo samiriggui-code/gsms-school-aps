@@ -1,10 +1,10 @@
 'use client';
 
 import { Fragment } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { Loader2 } from 'lucide-react';
 import { getIcon } from '@/lib/icons';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import {
   SectionLandingHexStatCard,
   SectionStatsCardBackgroundStyles,

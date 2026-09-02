@@ -1,8 +1,8 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
 import { CheckCircle2, LifeBuoy, Smile } from 'lucide-react';
 
 const cards = [

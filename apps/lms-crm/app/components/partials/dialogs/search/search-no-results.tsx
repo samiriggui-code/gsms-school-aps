@@ -1,7 +1,7 @@
 'use client';
 
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 
 export function SearchNoResults() {
   return (

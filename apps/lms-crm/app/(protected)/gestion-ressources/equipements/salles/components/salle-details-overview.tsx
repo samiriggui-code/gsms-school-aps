@@ -1,7 +1,7 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent } from '@repo/ui/card';
 import { getSalleStatusProps } from '../constants/status';
 import type { VenueRoomRow } from '../types';
 import { Calendar, MapPin, Users } from 'lucide-react';

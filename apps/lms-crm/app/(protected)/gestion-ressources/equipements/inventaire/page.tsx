@@ -4,7 +4,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useMemo, useState } from 'react';
 import InventaireList from './components/inventaire-list';
 import { InventaireStats } from './components/inventaire-stats';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { PackagePlus } from 'lucide-react';
 import InventaireAddSheet from './components/inventaire-add-sheet';
 import { Container } from '@/components/common/container';

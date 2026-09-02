@@ -16,7 +16,7 @@ import {
   Puzzle,
   LayoutGrid,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
 import { useTranslation } from '@/hooks/useTranslation';
 import {
   SETTINGS_ANCHOR_IDS,

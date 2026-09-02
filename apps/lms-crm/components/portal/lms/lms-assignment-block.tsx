@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+import { Button } from '@repo/ui/button';
+import { Textarea } from '@repo/ui/textarea';
+import { Input } from '@repo/ui/input';
 
 export type LmsAssignmentContent = {
   assignmentId: string;

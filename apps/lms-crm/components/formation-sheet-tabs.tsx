@@ -1,6 +1,6 @@
 'use client';
 
-import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { useFormationSheetLabels } from '@/hooks/useFormationSheetLabels';
 
 type Props = {

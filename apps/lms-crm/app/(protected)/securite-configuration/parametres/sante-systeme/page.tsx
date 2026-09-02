@@ -9,7 +9,7 @@ import {
   ToolbarDescription,
 } from '@/components/common/toolbar';
 import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { RefreshCw, LayoutGrid, Monitor } from 'lucide-react';
 import { SystemStatsCards } from './components/system-stats-cards';
 import { SystemUsageCharts } from './components/system-usage-charts';

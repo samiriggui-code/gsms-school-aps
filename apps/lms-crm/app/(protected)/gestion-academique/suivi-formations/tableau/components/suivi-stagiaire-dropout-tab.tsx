@@ -6,10 +6,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Label } from '@repo/ui/label';
+import { Textarea } from '@repo/ui/textarea';
 import type { SuiviStagiaireRow } from '../types/suivi-formations-api';
 
 const STATUS_LABEL: Record<string, string> = {

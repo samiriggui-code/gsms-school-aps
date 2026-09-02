@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -11,9 +11,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Label } from '@/components/ui/label';
+} from '@repo/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover';
+import { Label } from '@repo/ui/label';
 import { cn } from '@/lib/utils';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 

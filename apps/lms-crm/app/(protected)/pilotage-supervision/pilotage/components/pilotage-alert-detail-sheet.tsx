@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { ExternalLink, ShieldAlert } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
 import {
   Sheet,
   SheetBody,
@@ -13,7 +13,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { formatDateTime } from '@/lib/helpers';
 import type { InAppNotificationItem } from '@/lib/topbar-api';
 import { moduleHrefFromKey, moduleLabelFromKey } from '@/lib/pilotage/modules';

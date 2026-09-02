@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Button } from '@/components/ui/button';
-import { Boxes } from '@/components/ui/background-boxes';
+import { Button } from '@repo/ui/button';
+import { Boxes } from '@repo/ui/background-boxes';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks/useTranslation';
 

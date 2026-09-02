@@ -8,7 +8,7 @@ import { E_FORMATION_API, E_FORMATION_BASE, eFormationModulePath } from '@/lib/p
 import { lmsAccessLabel, type LmsAccessTier } from '@/lib/portal/lms-access-shared';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { LmsCourseSidebar } from '@/components/portal/lms/lms-course-sidebar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import type { LmsSyllabusItem } from '@/lib/portal/lms-types';
 
 type CoursePayload = {

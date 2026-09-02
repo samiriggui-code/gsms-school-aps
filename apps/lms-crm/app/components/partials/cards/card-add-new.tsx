@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Rocket } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { HexagonBadge } from '../common/hexagon-badge';
 import { IAddNewProps } from './card-add-new-row';
 

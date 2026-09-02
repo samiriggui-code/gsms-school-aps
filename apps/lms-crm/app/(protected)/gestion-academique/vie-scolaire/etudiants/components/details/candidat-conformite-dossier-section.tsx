@@ -1,10 +1,10 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@repo/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card';
 import { FileUp, Info } from 'lucide-react';
-import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import {
   CNAPS_DOSSIER_SLOTS,
   fetchUserRhDocuments,

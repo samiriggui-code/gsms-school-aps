@@ -6,8 +6,8 @@ import {
   AccordionMenu,
   AccordionMenuGroup,
   AccordionMenuItem,
-} from '@/components/ui/accordion-menu';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/accordion-menu';
+import { Button } from '@repo/ui/button';
 import { SearchDocsItem } from './types';
 
 export function SearchDocs({ items }: { items: SearchDocsItem[] }) {

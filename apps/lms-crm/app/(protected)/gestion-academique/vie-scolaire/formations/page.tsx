@@ -4,7 +4,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useMemo, useState } from 'react';
 import FormationList from './components/formation-list';
 import { FormationStats } from './components/formation-stats';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { UserPlus } from 'lucide-react';
 import FormationAddCatalogSheet from './components/formation-add-catalog-sheet';
 import { Container } from '@/components/common/container';

@@ -11,8 +11,8 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+} from '@repo/ui/dropdown-menu';
+import { Button } from '@repo/ui/button';
 
 type LanguageSwitcherProps = {
   variant?: 'icon' | 'pill';

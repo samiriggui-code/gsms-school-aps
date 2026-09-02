@@ -16,11 +16,11 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { VIE_SCOLAIRE_SHEET_AUTO } from '../../../../constants/sheet-shell-classes';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
 import {
   Form,
   FormControl,
@@ -28,9 +28,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Switch } from '@repo/ui/switch';
 import { SalleFormSchema, type SalleFormValues } from '../forms/salle-form-schema';
 
 const DEFAULT_VALUES: SalleFormValues = {

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, PlayCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { portalLabel, portalMuted, portalSectionTitle } from '@/components/portal/layout/portal-ui';
 import { cn } from '@/lib/utils';
 

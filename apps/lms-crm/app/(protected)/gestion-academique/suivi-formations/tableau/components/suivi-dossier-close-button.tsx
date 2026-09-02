@@ -6,9 +6,9 @@ import { Archive, Loader2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { Button } from '@repo/ui/button';
+import { Textarea } from '@repo/ui/textarea';
+import { Label } from '@repo/ui/label';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,7 +18,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@repo/ui/alert-dialog';
 import { toast } from 'sonner';
 
 type DossierStatus = {

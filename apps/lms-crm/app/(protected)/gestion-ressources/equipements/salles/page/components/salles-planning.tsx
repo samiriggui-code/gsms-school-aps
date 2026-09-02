@@ -21,9 +21,9 @@ import {
   type VenueRoomUsageKind,
 } from '@repo/api-core/venue-room-usage';
 import { apiFetch } from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader } from '@repo/ui/card';
+import { ScrollArea, ScrollBar } from '@repo/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import {
   frenchPublicHolidayLabel,

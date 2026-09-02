@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@repo/ui/skeleton';
 import {
   SectionLandingHexStatCard,
   SectionStatsCardBackgroundStyles,
@@ -11,7 +11,7 @@ import {
 } from '@/components/common/stat-card-metric-layout';
 import { SECTION_LANDING_STATS_GRID_CLASS } from '@/lib/section-stats-card-bg';
 import { Shield, Users, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@repo/ui/card';
 import { useTranslation } from '@/hooks/useTranslation';
 
 interface SecurityStatDef {

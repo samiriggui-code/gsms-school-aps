@@ -1,9 +1,9 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Badge } from '@repo/ui/badge';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent } from '@repo/ui/card';
+import { Separator } from '@repo/ui/separator';
 import type { FormationSessionVitrineOverview } from '@/app/(protected)/gestion-academique/vie-scolaire/sessions/types/formation-session-api-row';
 import { Bolt, FolderSymlink, GraduationCap, Radar, ShoppingCart, TrendingUp } from 'lucide-react';
 

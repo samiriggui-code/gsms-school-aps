@@ -1,9 +1,9 @@
 'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { FormationExamsPanel, ParcoursSessionExamensPanel, ExamQcmBankPanel } from './examens';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@repo/ui/alert';
 
 export function SuiviSessionExamensTab({ sessionId }: { sessionId: string | null }) {
   const { t } = useTranslation();

@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@repo/ui/button';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -10,7 +10,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import { CgvDocument } from '@/components/legal/cgv-document';
 
 /** Même gabarit que les sheets « détail formation » (largeur, hauteur, coins arrondis). */

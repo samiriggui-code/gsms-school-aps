@@ -22,10 +22,10 @@ import {
   FORMATION_TRACK_LABELS,
   type FormationVitrineTrack,
 } from '@/app/(protected)/gestion-academique/vie-scolaire/formations/data/formation-vitrine-catalog';
-import { Button } from '@/components/ui/button';
-import { Badge, badgeVariants } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Button } from '@repo/ui/button';
+import { Badge, badgeVariants } from '@repo/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
+import { Input } from '@repo/ui/input';
 import { cn } from '@/lib/utils';
 
 export const cmsCatalogQueryKey = ['cms-catalog-vitrine'] as const;

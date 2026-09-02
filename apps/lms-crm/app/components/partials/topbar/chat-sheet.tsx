@@ -35,10 +35,10 @@ import {
   AvatarImage,
   AvatarIndicator,
   AvatarStatus,
-} from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@repo/ui/avatar';
+import { Button } from '@repo/ui/button';
+import { Input } from '@repo/ui/input';
+import { ScrollArea } from '@repo/ui/scroll-area';
 import {
   Sheet,
   SheetBody,
@@ -47,7 +47,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from '@repo/ui/sheet';
 import {
   Dialog,
   DialogBody,
@@ -55,7 +55,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@repo/ui/dialog';
 import { getDateFnsLocale } from '@/i18n/date-locale';
 import { useTranslation } from '@/hooks/useTranslation';
 import { usePusher, isPusherClientConfigured } from '@/hooks/use-pusher';
@@ -75,7 +75,7 @@ import {
   type ChatMessageItem,
   type ChatParticipantOption,
 } from '@/lib/topbar-api';
-import { Label } from '@/components/ui/label';
+import { Label } from '@repo/ui/label';
 import { presenceDotClass } from '@/components/common/user-presence-ui';
 
 function ParticipantAvatarStack({

@@ -7,7 +7,7 @@ import { apiFetch } from '@/lib/api';
 import { lmsAccessLabel, type LmsAccessTier } from '@/lib/portal/lms-access-shared';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { LmsCourseSidebar } from '@/components/portal/lms/lms-course-sidebar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { LmsCourseDiscussions } from '@/components/portal/lms/lms-course-discussions';
 import type { LmsSyllabusItem } from '@/lib/portal/lms-types';
 

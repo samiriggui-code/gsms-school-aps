@@ -10,9 +10,9 @@ import {
 } from '@tanstack/react-table';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { ModuleDataGridShell } from '@/components/common/module-data-grid-shell';
-import { Badge } from '@/components/ui/badge';
-import { DataGridColumnHeader } from '@/components/ui/data-grid-column-header';
-import { Progress } from '@/components/ui/progress';
+import { Badge } from '@repo/ui/badge';
+import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
+import { Progress } from '@repo/ui/progress';
 import type { FinanceRapportsPayload } from '@/lib/finance/finance-rapports-build';
 
 function fmtEuro(n: number) {

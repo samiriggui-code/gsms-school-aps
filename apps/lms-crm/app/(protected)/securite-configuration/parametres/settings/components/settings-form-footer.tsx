@@ -1,7 +1,7 @@
 'use client';
 
 import { LoaderCircleIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@repo/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 
 type Props = {

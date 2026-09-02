@@ -7,18 +7,18 @@ import { FieldErrors, useForm } from 'react-hook-form';
 import { LoaderCircleIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/lib/api';
-import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertIcon, AlertTitle } from '@repo/ui/alert';
+import { Button } from '@repo/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/card';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@repo/ui/form';
+import { Input } from '@repo/ui/input';
+import { Label } from '@repo/ui/label';
 import { useSettings } from '../settings-context';
 import {
   SocialSettingsSchema,
