@@ -40,7 +40,6 @@
     "../../packages/ui/src/**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "components/_deprecated-metronic"
+    "node_modules"
   ]
 }
