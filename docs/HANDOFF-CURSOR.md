@@ -4,6 +4,521 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-03 — Complément Tencent + AIInvoicePilot + discovery (pas de code structurel)
+
+**Demande :** figer Tencent = mémoire Eve ; AIInvoicePilot = façade publique ; auditer avant fusion/API.
+
+**Livré (docs only) sous `gsms-platform/docs/` :**
+- `ARCHITECTURE-COMPLEMENT-TENCENT-INVOICEPILOT.md`
+- `AIINVOICEPILOT_INVENTORY.md` · `AIINVOICEPILOT_REFACTOR_MATRIX.md`
+- `GSMS_CRM_CAPABILITY_MAP.md` · `GSMS_INTEGRATION_MAP.md` · `GSMS_TENCENT_MEMORY_MAP.md`
+- `AIINVOICEPILOT_CRM_INTEGRATION_DECISION.md` — **reco OPTION D (hybride / front séparé + adapter CRM)**
+
+**Faits code :**
+- IP = Vite/TanStack · CRM = Next+Nest/tRPC+Eve → fusion A risquée
+- CRM : Company/Contact/Deal · pas Mission/Lead model · intake webhook stub
+- Eve : `schedule_recheck` + AgentTask réels · pas n8n
+- Public CRM ready aujourd’hui : surtout `/api/t/*` · lead public **MISSING** (adapter)
+
+**Handoff user 2026-09-03 19:28 :** docs MD **terminées côté Cursor**. **Refonte AIInvoicePilot = Claude prend le relais.** Cursor n’enchaîne pas sur le code structurel.
+
+---
+
+## 2026-09-03 — Architecture plateforme figée (avant tout nouveau code)
+
+**Demande user :** figer l'architecture GSMS (résumé long collé dans le chat).
+
+**Livré :**
+- `gsms-platform/docs/ARCHITECTURE.md` — document canonique complet
+- `DOCTRINE.md` §2 réécrit : circuit = Core/Eve → Xacta ↕ Grace → QAtrial ; SimpleRisk hors ; School hors audit auto
+- `README.md` pointe vers ARCHITECTURE
+- SimpleRisk déjà purgé NUC plus tôt dans la session
+
+**Priorité suivante (user §15) :** cartographie CAPABILITY → OWNER (CRM, Eve tools/skills/schedules, APIs Xacta/Grace/QAtrial/Tender) — **pas** de Circuit Worker tant que les trous réels ne sont pas listés.
+
+**Décision :** ne rien coder tant que cette cartographie n'est pas faite.
+
+---
+
+## 2026-09-03 — TenderAI OLD → MAX (NUC)
+
+**Demande :** remplacer `dbugom/tenderai-mcp-server` par `tenderai-mcp-server-max` sans casser le NUC.
+
+**Livré :**
+- Backup `/backups/tenderai-pre-max-20260903-1424/`
+- MAX cloné `/opt/gsms/tenderai-mcp-server-max` @ `772335c`
+- OLD archivé `/opt/gsms/tenderai-mcp-server-legacy` @ `d84e2ea` (pas supprimé)
+- Symlink `/opt/gsms/tenderai` → MAX · systemd `gsms-tenderai` :8090
+- Patches GSMS : optional LLM (data-tool), indexing OLD (20 tools), `mcp<2`
+- Docs : `gsms-platform/docs/TENDERAI_MAX_MIGRATION.md` + `GSMS_STACK_STATUS.md` MAJ
+- Autres services health OK
+
+**Note critique :** stock MAX = plus ancien que OLD + LLM toujours on ; marketing « No API key » faux sans patch. Doctrine Eve/Agent = LLM, TenderAI = tools.
+
+---
+
+## 2026-09-03 — Stack GSMS NUC : Xacta + RiskManager + TenderAI + QAtrial UP
+
+**Demande user :** installer/lancer engines sur NUC (pas Eve, pas GRACE, pas VPS).
+
+**Livré :**
+- Xacta validé `/opt/xacta` — UI `:3000` API `:8000`
+- RiskManager (SimpleRisk all-in-one) `/opt/gsms/riskmanager` — `:8081`/`:8444` healthy
+- TenderAI MCP `/opt/gsms/tenderai` — systemd `:8090` · tools/list OK · **pas de LICENSE upstream**
+- QAtrial `/opt/gsms/qatrial` — `:3001` 200 (patch Prisma 7)
+- Rapport : `gsms-platform/docs/GSMS_STACK_STATUS.md`
+- **Pas** Eve/n8n · **pas** touch GRACE/School/InvoicePilot
+
+**Ouvrir LAN :** http://192.168.1.37:3000 · https://192.168.1.37:8444 · http://192.168.1.37:3001 · MCP `:8090`
+
+---
+
+## 2026-09-03 — Analyses : Report metadata / Recommendations / History FR
+
+**Demande user :** screenshot analyses encore EN (REPORT METADATA, RECOMMENDATIONS, History).
+
+**Cause :** composants hors wizard page (`ApproverPicker`, `RecommendationsEditor`, `HistoryPanel`) 100 % hardcodés EN + rôles bruts `LEAD_ASSESSOR`.
+
+**Fix :**
+- Clés `assessment.reportMeta|recommendations|history` + `enum.userRole` + `enum.snapshotReason`
+- 3 composants + AuditLogPage branchés i18n
+- `tsc --noEmit` OK
+
+**Vérif :** hard-refresh analyse → Métadonnées du rapport / Recommandations direction / Historique.
+
+---
+
+**Demande user :** `/cluster-scopes/{id}` pas traduit — frustration détection pages EN.
+
+**Cause réelle :**
+1. Chrome UI builder déjà partiellement i18n, mais **en-têtes de groupe** = `sourceLabel` généré EN côté API (`Asset:`, `Threat: NATURAL/…`).
+2. Liste + drawer create (`ClusterSurveyScopesPage`) encore hardcodé EN (`New scope`, `All`, evidence `.replace('_',' ')`…).
+
+**Fix (gsms-platform) :**
+- API : champs structurés source* sur items scope + aaaScores ; client `formatScopeSourceLabel` + `format.scopeSource.*`
+- Builder groupe via labels FR ; listes/drawer scopes câblés `page.surveyScopes.*`
+- SurveyRun AAA breakdown i18n
+- Redémarrer API grace si besoin pour les nouveaux champs
+
+**Vérif user :** hard-refresh `:5173/cluster-scopes/{id}` → Travail / Périmètres… ; pills FR ; groupes « Actif : … / Menace : … ».
+
+---
+
+## 2026-09-03 — Grace FR site-wide (enums + RiskBadge + listes)
+
+**Demande user :** tout le site Grace en français (pas une seule page) — screenshot revue analyse encore EN.
+
+**Livré (gsms-platform/apps/grace/client) :**
+- `RiskBadge` i18n (`enum.riskLevel` + priorité/IRV)
+- Nouveaux enums FR : reviewStatus, assessmentStatus, riskPriority, irvBand, implementationStatus, evidenceBasis, surveyStatus, scopeStatus…
+- Wizard revue + ThreatsTable (colonnes + NATURAL→… traduits)
+- Listes : Dashboard, Assessments, Review, Reports, Threats, Assets, ActionPlans, Incidents, Surveys, Countermeasures, Clusters, scopes/survey run
+- ExecutiveSummary + TopThreats + PostureKpis
+- ThreatDetailDrawer
+- `tsc --noEmit` OK
+
+**Reste possible :** chrome EN résiduel (labels de formulaires wizard étape 2/6/7, HeroStrip, ActionPlanProgress titres, confirm dialogs). Enums visibles = branchés.
+
+---
+
+## 2026-09-03 — Modèles 100% FR (enums UI)
+
+**Demande user :** frustration — filtre / badges / détail Modèles encore en anglais (`PROCESS`, `ASSET TYPE`, `INTANGIBLE`…).
+
+**Cause :** `AdminTemplatesPage` affichait les enums bruts + labels EN hardcodés ; les clés `enum.assetType.*` existaient déjà mais n’étaient pas branchées (et le `.map((t) => …)` shadowait `useT()`).
+
+**Fix (gsms-platform) :**
+- `enum.*` FR/EN : adversaryType, actionType, shapeCategory, protectionDomain, ppsFunction, surveyType, relevance, questionType, vulnerabilityRating
+- `page.templates.*` labels champs + libellés liens
+- `AdminTemplatesPage.tsx` : filtres, listes, panneaux détail, create drawer, MultiSelect, pertinence
+
+**Vérif user :** refresh UI FR → filtre types = Bâtiment / Processus… ; détail = Type d’actif / Catégorie / Criticité / Rôle.
+
+---
+
+## 2026-09-03 — doctrine Tencent Agent Memory (horizontale)
+
+**Décision user :** TencentDB Agent Memory a une place dans GSMS — **mémoire commune des agents**, pas bases métier.
+
+**Ancré :** `gsms-platform/docs/circuit/AGENT-MEMORY-TENCENT.md`
+
+**NUC déjà up :** `tdai-memory-core` · `tdai-memory-hub` · `tdai-proxy` (healthy) sous `/opt/jarvis/TencentDB-Agent-Memory`.
+
+**Règle absolue :** Memory ne modifie jamais audit / finding / risk / CAPA / preuve / formation / mission / statut réglementaire. Propose seulement ; Core ou app spécialisée confirme l’écriture.
+
+**Types OK :** preference · context · observation · working_memory · prior_decision · workflow_pattern.  
+**Pas comme vérité :** official_status · compliance_status · risk_score · CAPA closure · audit result.
+
+**Pas d’implémentation GO** — doctrine seulement. Suite possible : namespaces agents + `memory_search` Jarvis → Hub (pas SQL métier).
+
+---
+
+## 2026-09-03 — packs CNAPS + entreprise-risques P0
+
+**Demande user :** « plus de pack??? »
+
+**Livré (gsms-platform) :**
+- `sec-privee-cnaps` — 6 modules, 12 Q, CSI livre VI · formation → School
+- `entreprise-risques` — 6 modules, 12 Q · ISO principes · aval SimpleRisk · DUERP CT
+- maybe-seed 10–13 · **pas** `site-global` dump · **pas** risk-engine
+
+**Packs Grace seedés :** banking · erp · site-surete · igh · cnaps · entreprise-risques
+
+---
+
+## 2026-09-03 — site-surete reseed + fiches circuit + pack IGH P0
+
+**Demande user (gsms-platform) :** `pnpm db:seed:site-surete` + surveys ; fiches circuit lecture (pas docker) ; pack IGH.
+
+**Livré :**
+- Reseed `site-surete` OK : 12 modules · 222 Q · 13 templates
+- Fiches déjà en place : `docs/circuit/XACTA.md` · `QATRIAL.md` · `SIMPLERISK.md` — **pas docker**
+- Pack `igh-precommission` seedé : 8 modules, 10 assets, 8 threats, 8 CM · 16 Q · 9 templates · maybe-seed 8–9
+- CCH **R146-3** piné : IGH **> 50 m habitation / > 28 m autres** (draft mapping avait inversé)
+- Arrêté IGH 30/12/2011 = `JORFTEXT000025167121` — checklist, pas article-atomique
+- **Pas** risk-engine · **pas** fusion ERP+IGH · **pas** OpenFire
+
+**Suite démo :** UI `http://127.0.0.1:5173` pack Pré-commission IGH · Nordica `admin@nordica.demo` / `Demo123!`
+
+---
+
+## 2026-09-03 — F7 + F8 DONE (`scoped`)
+
+**Demande user :** F7 ET 8 GO.
+
+**Livré (gsms-platform) :**
+- Cotes Légifrance : Titre II DP · chapitres **R** / **N** · **MS 45–52** · arrêté **SSIAP 2/05/2005**
+- Modules seed : `mod-dp-r`, `mod-dp-n`, `mod-ssiap` (+ CMs)
+- Surveys : `survey-erp-precom-dp-r|dp-n|ssiap` (10 questions)
+- Ruleset **v0.3.0** · pack **0.2.0** · compose `erp_type_in` / `erp_type_not_in`
+- Docs : OFFICIAL-REFS, RELECTURE, SOURCES-STATUS, DESIGN
+- **Pas** risk-engine · **pas** claim `detailed` · autres types DP = `listed`
+
+---
+
+## 2026-09-03 — Relecture F1–F6 DONE (`scoped`)
+
+**Demande user :** relecture avec vraies refs Légifrance.
+
+**Livré :**
+- `docs/rulesets/OFFICIAL-REFS.md` — catalogue cotes F1–F6
+- Ruleset `AUD.PRECOMMISSION.ERP.applicability.json` → **v0.2.0** · `maturity: scoped` · `officialArticleRefs`
+- Surveys : hints + `officialArticleRefs` sur questions clés ; reseed OK
+- Pack custom fields : `erp_type` aligné GN 1 (J, GA, EF, REF) ; `erp_category` → CCH R143-19
+- Journal `docs/circuit/RELECTURE-SOURCES.md` + honesty `SOURCES-STATUS-ERP-PRECOM.md` mis à jour
+- **Pas** de touch risk-engine · **pas** claim `detailed`
+
+**Reste :** F7 DP type · F8 SSIAP · relecture métier commission avant `detailed`.
+
+---
+
+## 2026-09-03 — Phase 7 DONE : circuit + backlog relecture
+
+**Demande user :** phase 7 puis relecture avec bonnes refs.
+
+**Livré :**
+- `docs/circuit/CIRCUIT-PRECOM-ERP.md` — mapping objets par app
+- `docs/circuit/contracts/precom-handoff.schema.json`
+- `docs/circuit/RELECTURE-SOURCES.md` — backlog session refs Légifrance
+- `GET /assessments/:id/circuit-handoff` + bouton export Scope
+- **Pas** de fusion / sync DB / touch risk-engine
+
+**Programme 0–7 P0 clos.** Suite = relecture sources (journal dans RELECTURE-SOURCES.md).
+
+---
+
+## 2026-09-03 — Phase 6 DONE (P0) + honesty sources
+
+**Demande user :** phase 6 + challenge « le pack est inventé / pas vérifié sources ».
+
+**Honnêteté :** OUI — pack P0 = checklist opérationnelle depuis carto, **pas** article-par-article Légifrance. Doc : `docs/cartography/SOURCES-STATUS-ERP-PRECOM.md`. Refs JO ajoutées (arrêté 25/06/1980 + guides préf.).
+
+**Phase 6 livré :**
+- `docs/rulesets/DESIGN.md` + `AUD.PRECOMMISSION.ERP.applicability.json`
+- `GET /assessments/:id/applicability` (compose pack/surveys)
+- UI Scope : panneau composition
+- **Pas** de touch `risk-engine.ts`
+
+**Suite :** phase 7 circuit (plus tard) · ou relecture métier + cotes Légifrance (`detailed`).
+
+---
+
+## 2026-09-03 — Phase 5 DONE : custom fields scope FR
+
+**Demande user :** phase 5.
+
+**Livré :**
+- `Assessment.metadata` (JSON) — `customFields[pkgSlug][key]`
+- `GET /assessments/custom-field-schema` (`appliesTo=assessment`)
+- Wizard Scope : section champs pack + bouton enregistrer
+- Pack schema affiné : `country`, `ssiap_required`, `building_features` (+ keys P2)
+- Doc : `docs/cartography/CUSTOM-FIELDS-ERP-PRECOM.md`
+
+**Pas de touch** risk-engine.  
+**Suite :** phase 6 RuleSets (gate après usage manuel 1–5).
+
+---
+
+## 2026-09-03 — Phase 4 DONE : ComplianceTag FR
+
+**Demande user :** phase 4.
+
+**Livré :**
+- Tags : `FR_ERP` · `FR_IGH` · `FR_CNAPS` · `FR_SSI` · `FR_COMMISSION`
+- `shared/src/index.ts` + miroir client `csmp-types.ts`
+- API zod (`assessments/schema`, action-plans) + serializers / threats routes
+- PDF report `COMPLIANCE_ORDER` / `COMPLIANCE_LABEL`
+- Glossary i18n EN/FR
+
+**Pas de migration** (TEXT[]). Pas de touch risk-engine.  
+**Suite :** phase 5 custom fields (schéma déjà partiel sur pack — doc/affinage).
+
+---
+
+## 2026-09-02 — Phase 3 DONE : surveys précom ERP
+
+**Demande user :** phase 3 (surveys checklist précom).
+
+**Livré (`apps/grace/server/prisma/`) :**
+| Fichier | Rôle |
+|---|---|
+| `seed-erp-precommission-surveys.mjs` | Upsert templates + library + attachments pack-only |
+| `erp_precommission_surveys_seed.json` | 5 templates · 20 questions FR |
+| `maybe-seed.mjs` | Step 5 après pack |
+
+**Templates :** `Pré-commission ERP` (+ Dossier / Dégagements / SSI & essais / Registre)  
+**AAA :** questions liées aux asset/threat/CM du pack `erp-precommission` uniquement (pas banking)  
+**Commande :** `pnpm db:seed:erp-precom-surveys`  
+**Pas de touch** risk-engine / AssetTypeSurveyDefault Nordica.
+
+**Suite :** phase 4 tags conformité FR (si user dit go).
+
+---
+
+## 2026-09-02 — Rename pack + UI packages grid
+
+**Demande user :** enlever `fr-` du slug pack ; cards packages plus petites, 3 / ligne.
+
+**Livré :**
+- Slug `erp-precommission` · nom `Pré-commission ERP` (legacy `fr-erp-precommission` supprimé au seed)
+- Fichiers : `seed-erp-precommission.mjs` · `erp_precommission_*.json` · `pnpm db:seed:erp-precom`
+- Anciens `seed-fr-*` / `fr_erp_*` supprimés
+- `TemplatePackagesPage` : grille `lg:grid-cols-3`, cards compactes
+- Docs carto / PROGRAMME mis à jour
+
+**Seed local OK.** Suite inchangée : phase 3 surveys.
+
+---
+
+## 2026-09-02 — Phase 2 DONE : pack `fr-erp-precommission` (P0)
+
+**Demande user :** phase 2
+
+**Livré (`apps/grace/server/prisma/`) :**
+| Fichier | Rôle |
+|---|---|
+| `seed-fr-erp-precommission.mjs` | Upsert idempotent + customFieldSchema |
+| `fr_erp_precommission_seed.json` | 8 modules · 16 assets · 7 threats |
+| `fr_erp_precommission_countermeasures_seed.json` | 8 CM · 10 liens threat↔cm |
+| `maybe-seed.mjs` | Step 4 ajouté (après banking) |
+
+**Vérif locale :** seed OK — banking intact · pack `fr-erp-precommission` `regionScope=FR`  
+**Commande :** `pnpm db:seed:fr-erp` (dans `apps/grace/server`)  
+**Pas de touch** `risk-engine` / banking content.
+
+**Suite :** phase 3 surveys FR (`survey-fr-erp-precom-*`).
+
+---
+
+## 2026-09-02 — Phase 1 carto métier DONE (mapping précom ERP)
+
+**Demande user :** « la carto metier »
+
+**Livré (`gsms-platform/docs/cartography/`) :**
+| Fichier | Contenu |
+|---|---|
+| `audit-types/AUD.PRECOMMISSION.ERP.mapping.md` | Familles → package/module/asset/threat/survey/tag/step |
+| `domains/{erp,pre-commission,incendie,igh,securite-physique}.md` | maturity `draft` + leviers Grace |
+| `INDEX.md` · `README.md` · `audit-types/INDEX.md` | Liens + statut |
+| `PROGRAMME-ATTAQUE.md` | Phase 1 marquée done |
+
+**Pas de code Grace / risk-engine.** Suite naturelle = phase 2 seed `fr-erp-precommission` P0 (si user dit go).
+
+---
+
+## 2026-09-02 — Retour programme Grace FR/UE (fin parenthèse i18n/dark)
+
+**User :** revient au projet d’avant traductions / front sombre.
+
+**Contexte :** parenthèse UI Grace (i18n FR + dark Metronic + graphe relations) close côté demande.
+
+**État programme** (`gsms-platform/docs/PROGRAMME-ATTAQUE.md`) :
+- Phase 0 i18n : largement avancée — **gate** « i18n OK — lance phase N » toujours requis avant seeds
+- Phase 1 carto : skeleton livré ; prochaine = mapping `AUD.PRECOMMISSION.ERP` + enrichir domaines ERP/précom
+- Phase 2+ : pack `fr-erp-precommission` **pas encore seedé**
+- Gate doctrine : pas de `risk-engine`, pas d’apps ISRA/OpenFire/Physsec
+
+**Attente user :** confirmer lancement phase 1 (ou 2 si carto jugée suffisante).
+
+---
+
+## 2026-09-02 — Programme d’attaque post-i18n (pas d’exec seeds)
+
+**User :** traduit Grace en FR (i18n) ; demande le plan d’attaque ensuite (ajouter/créer/modifier).
+
+**Livré :** `gsms-platform/docs/PROGRAMME-ATTAQUE.md`  
+Phases 0→7 : i18n (lui) → carto mapping → pack `fr-erp-precommission` → surveys → tags → custom fields → RuleSets → circuit apps.  
+Règle : agent **n’attaque pas** seeds tant que signal « i18n OK — lance phase N ».
+
+**Doctrine** gate ⓪ i18n ajouté.
+
+---
+
+## 2026-09-02 — Localisation FR dans Grace (7 steps intacts)
+
+**Décision :** CSMP 7 steps ≠ obligation légale UE/FR ; on **ne casse pas / n’ajoute pas** de steps. Spécialiste FR = packs + templates + surveys + tags.
+
+**Doc :** `gsms-platform/audits/grace/LOCALISATION-FR-DANS-GRACE.md`  
+- Mapping FR → steps 1–7  
+- Points d’accroche Prisma/API (`TemplatePackage`, surveys, `ComplianceTag` dans `shared/`)  
+- Pattern seed comme `seed-banking-finance.mjs` (additif)  
+- Interdit : `risk-engine.ts`, wizard steps  
+
+**Doctrine** mise à jour gate ②bis. Pas de seed JSON FR écrit encore.
+
+---
+
+## 2026-09-02 — DOCTRINE figée + cartographie FR/UE (gate avant moteur GRACE)
+
+**Demande :** figer doctrine plateforme + démarrer cartographie domaines/référentiels (pas 5k règles, pas toucher GRACE).
+
+**Livré dans `gsms-platform` :**
+| Doc | Rôle |
+|---|---|
+| `docs/DOCTRINE.md` | 5 apps · interdits ISRA/OpenFire/Physsec-as-app · HOW vs WHAT · gate §7 |
+| `docs/cartography/README.md` + `SCHEMA.md` + `INDEX.md` | Chaîne Source→Domaine→Applicabilité→Preuve→AuditType |
+| `docs/cartography/sources/{FR,EU,ISO}.md` | Inventaire sources officielles |
+| `docs/cartography/domains/*.md` | 9 domaines skeleton (sûreté→audit entreprise) |
+| `docs/cartography/audit-types/INDEX.md` | 6 types d’audit + matrice |
+
+**Gate :** moteur GRACE **non touché**. Prochaine itération carto = préciser refs Légifrance / DP ERP + valider métier.
+
+---
+
+## 2026-09-02 — GRACE FR/UE : sources d’inspiration figées (lab gsms-platform)
+
+**Contexte :** vision fork GRACE → GSMS Security & Safety Audit ; pas de 15 apps.
+
+**Docs lab (hors `gsms-school` prod) :**
+| Fichier | Contenu |
+|---|---|
+| `gsms-platform/docs/INSPIRATION-SOURCES.md` | Carte GRACE + ISRA + Physsec + OpenFire + JRC + droit FR/UE |
+| `gsms-platform/audits/inspiration/AUDIT-SOURCES-2026-09-02.md` | Comparaison risk (ISRA vs GRACE), taxonomie Physsec → RuleSets sûreté, limites OpenFire/JRC |
+
+**Décisions ratifiées :**
+- Fork réel = **GRACE seul**
+- ISRA / Physsec / OpenFire = inspiration (pas nouvelles apps dans `apps/`)
+- OpenFire ≠ droit ERP/IGH ; pas de ruleset unique `EU_FIRE`
+- Circuit Xacta → Grace → SimpleRisk → QAtrial → School inchangé
+
+**Prochaines études (si go) :** fiche profonde ISRA↔`risk-engine.ts` · inventaire CSV Physsec → `rulesets/FR/surete/` · pas de code fork tant que non demandé.
+
+---
+
+## 2026-09-02 — Qualiopi Q3 Passeport Session UI (+ serveur stoppé)
+
+**Demande utilisateur :** arrêter le serveur + livrer le hors-scope (passeport).
+
+**Serveur :** process Next sur :3001 tué.
+
+**Livré :**
+| Élément | Chemin |
+|---|---|
+| Page | `/gestion-ressources/qualiopi/passeport` |
+| Vue + panels | `.../passeport/components/` |
+| Hook | `.../passeport/hooks/use-qualiopi-passeport.ts` |
+| API sessions picker | `GET .../qualiopi/sessions` |
+| Menu | entrée « Passeport session » en tête Qualiopi |
+| Hub callout | lien Passeport |
+
+**UX :** choisir session → Stress test → summary + évaluations + findings avec « Corriger dans le métier » (actionTarget). Read-only.
+
+**Reste hors scope :** Q4 datatable flotte, Q5 org evaluate UI, Q6 snapshots, Q7 auditor pack.
+
+---
+
+## 2026-09-02 — Qualiopi Q1 Evaluation Engine + Stress Test API
+
+**Périmètre livré (go utilisateur) :** Q0 formalisé + Q1 moteur déterministe + Q2 API read-only.
+
+| Élément | Chemin |
+|---|---|
+| Matrice Q0 | `docs/QUALIOPI-Q0-CAPABILITY-MATRIX.md` |
+| Plan | `docs/QUALIOPI-Q1-ENGINE-PLAN.md` |
+| Types | `apps/lms-crm/lib/of/qualiopi-evaluation-types.ts` |
+| Règles pilotes | `apps/lms-crm/lib/of/qualiopi-evaluation-rules.ts` |
+| Engine | `apps/lms-crm/lib/of/qualiopi-session-evaluate.ts` |
+| API | `GET /api/sections/gestion-ressources/qualiopi/evaluate?sessionId=` |
+
+**Règles :** Q-I08, Q-I11, Q-I30, Q-I20, Q-I26, Q-I27 — statuts PASS/FAIL/WARNING/NOT_APPLICABLE/NOT_VERIFIABLE.  
+**Garanties :** aucune écriture DB ; pas de Prisma migration ; classeur / n8n / Coverage inchangés ; `ComplianceService` non étendu.  
+**Auth :** `crm.ressources.view`.  
+**Hors scope volontaire :** UI passeport, datatable, snapshots.
+
+**Test manuel :** appeler l’API avec un `sessionId` réel après login CRM.
+
+**Smoke local (RUNTIME VALIDATED) :**
+`pnpm -C apps/lms-crm exec tsx --env-file=../../.env ./scripts/smoke-qualiopi-evaluate.ts`
+→ session démo `b500816b-…` : summary fail=4 · N/A=2 · findings avec actionTargets OK. Aucune écriture.
+
+---
+
+## 2026-09-02 — Analyse OpenClaw use cases → JARVIS (lecture seule)
+
+**Mission :** catalogue de patterns uniquement. JARVIS non modifié. OpenClaw non installé.
+
+| Élément | Chemin |
+|---|---|
+| Clone | `C:\laragon\www\research\awesome-openclaw-usecases` (HEAD `659895e`, 42 use cases, 2026-03-24) |
+| Rapport | `C:\laragon\www\research\OPENCLAW_USECASES_FOR_JARVIS.md` |
+
+**Verdict court :** pas de nouvelle archi. Top récupérations = hybrid memory recall, goals+append-only log, STATE mission, n8n credential proxy (SaaS), morning brief gated. Reject = root self-heal, AionUi/OpenClaw runtime, dashboard Discord, armée multi-agents, overnight auto-MVP.
+
+**Complément priorisation (même jour) :** quick wins ≠ sprint unique. Roadmap stricte **J1 STATE → J2 MEMORY V2 → J3 PROACTIVE → J4 n8n/SaaS → J5 AMBIENT** intégrée au rapport (§16 bis, §18 flux, §20). Fondations avant proactif.
+
+**Stop** — analyse + complément doc ; aucun code JARVIS.
+
+---
+
+## 2026-09-02 — Deploy VPS post-4811f81 (cleanup tars + rsync)
+
+**Local** : 10× `gsms-school-*.tar.gz` (~445 Mo) supprimés.
+**VPS** : `/tmp` tars OK ; docker prune ; disque 22% (83 Go / 387 Go).
+**Deploy** : `rsync --delete` (corrige fichiers Metronic stale) + `SKIP_GIT=1 SKIP_DB_INIT=1 REBUILD_WORKER=0`.
+**Résultat** : `DEPLOY_EXIT=0` ; health `db:up` ; `gsms-app` Up.
+**URL** : https://hosting-global-it-ss.com
+**Fix local non commité** : `tsconfig.json` exclude `components/_deprecated-metronic`.
+
+Échecs intermédiaires : build cassé par orphelins VPS (`_deprecated-metronic`, `customer-details-invoice.tsx`) — résolu par sync delete.
+
+---
+
+## 2026-09-02 — Gate visuel Qualiopi classeur (post-4811f81)
+
+**Verdict structurel : PASS** — classes / copy / ordre UI inchangés vs pré-refactor (`56d04be` → `4811f81`). Diff = découpage fichiers uniquement (Summary / Criterion / IndicatorCard / Loading / Error + hook owner-scoped).
+
+| Contrôle | Résultat |
+|---|---|
+| Page shell (`classeur/page.tsx`) | Toolbar + GapsAssistant + View — inchangé (import path local) |
+| Layout `space-y-10`, bandeau summary, critères 1–7, grille `lg:grid-cols-2` | Identique |
+| IndicatorCard : save / upload / badges / preuve | Mutations locales conservées |
+| Loading / error copy | Identiques |
+| Gate navigateur live | **Bloqué auth** — redirect `/signin` ; fill password seed bloqué par Auto-review. CRM up sur `:3001`. |
+
+**Action utilisateur** : se connecter puis ouvrir `/gestion-ressources/qualiopi/classeur` pour confirmer le rendu live. Ensuite seulement : **un seul** pilote UI.
+
+---
+
 ## 2026-09-02 — Étape 4 + ownership hooks + règle UI hierarchy
 
 **Commit** : étape 4 refactor UI/tuyauterie (hooks pilotes, couverture Qualiopi via API, composition classeur Qualiopi).
