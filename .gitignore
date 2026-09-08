@@ -48,3 +48,6 @@ Thumbs.db
 *.swp
 *.swo
 .claude/settings.local.json
+
+# Scripts de debogage jetables (sessions d'investigation NUC/stack)
+.tmp-*

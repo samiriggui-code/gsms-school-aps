@@ -7,7 +7,7 @@
     "dev:lan": "next dev --turbopack --port 3001 --hostname 0.0.0.0",
     "dev:webpack": "next dev --port 3001",
     "prebuild": "node ../../scripts/clean-next-build.mjs",
-    "build": "next build",
+    "build": "node ../../scripts/next-build.mjs",
     "build:webpack": "next build --webpack",
     "start": "next start",
     "build:staging": "cp .env.staging .env.local && next build",
