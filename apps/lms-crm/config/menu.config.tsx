@@ -71,6 +71,7 @@ export const MENU_SIDEBAR: MenuConfig = [
         path: '/gestion-ressources/qualiopi',
         icon: ShieldCheck,
         children: [
+          { title: 'Passeport session', path: '/gestion-ressources/qualiopi/passeport' },
           { title: 'Classeur', path: '/gestion-ressources/qualiopi/classeur' },
           { title: 'Couverture', path: '/gestion-ressources/qualiopi/couverture' },
           { title: 'Historique', path: '/gestion-ressources/qualiopi/historique' },

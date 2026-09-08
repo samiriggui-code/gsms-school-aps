@@ -75,6 +75,7 @@
       "gestion-ressources": {
         "qualiopi": {
           "_self": "Module Qualiopi — complétude du dossier école et indicateurs à traiter.",
+          "passeport": "Stress test déterministe d'une session — PASS/FAIL/WARNING, findings et liens métier.",
           "classeur": "Détail des 32 indicateurs — statut d'audit, commentaire et preuve par indicateur.",
           "historique": "Timeline des écarts Qualiopi — KO, à réparer, preuves rejetées (OF-11)."
         }

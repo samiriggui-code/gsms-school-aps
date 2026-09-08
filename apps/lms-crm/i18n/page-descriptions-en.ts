@@ -60,6 +60,8 @@ export const PAGE_DESCRIPTIONS_EN_MAP: Record<string, string> = {
     'Manage company profile, structure and administrative documents.',
   'gestion-ressources.qualiopi':
     'Qualiopi module — school dossier completeness and open indicators.',
+  'gestion-ressources.qualiopi.passeport':
+    'Deterministic session stress test — PASS/FAIL/WARNING, findings and business links.',
   'gestion-ressources.qualiopi.classeur':
     'Indicator detail — audit status, comment and evidence per indicator.',
   'gestion-ressources.qualiopi.historique':

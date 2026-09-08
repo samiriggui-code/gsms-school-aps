@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Card, CardContent, CardFooter } from '@repo/ui/card';
 import { Button } from '@repo/ui/button';
-import { FolderOpen, History, ShieldCheck } from 'lucide-react';
+import { FolderOpen, History, ShieldCheck, ClipboardCheck } from 'lucide-react';
 
 export function QualiopiWelcomeCallout() {
   return (
@@ -33,16 +33,22 @@ export function QualiopiWelcomeCallout() {
               Module <span className="text-primary">Qualiopi</span>
             </h2>
             <p className="text-sm font-normal text-secondary-foreground leading-5.5">
-              Classeur des 32 indicateurs du référentiel V.9 : statut d&apos;audit (OK / KO / à
-              réparer / N/A) et preuve associée, plus historique des écarts (OF-11).
+              Hub de contrôle Qualiopi : stress test session (passeport), couverture Evidence,
+              classeur manuel en complément, historique des écarts.
             </p>
           </div>
         </CardContent>
         <CardFooter className="flex flex-wrap gap-2 justify-start">
           <Button variant="outline" size="sm" asChild>
+            <Link href="/gestion-ressources/qualiopi/passeport">
+              <ClipboardCheck className="size-4 mr-1" />
+              Passeport session
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
             <Link href="/gestion-ressources/qualiopi/classeur">
               <FolderOpen className="size-4 mr-1" />
-              Ouvrir le classeur
+              Classeur
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>

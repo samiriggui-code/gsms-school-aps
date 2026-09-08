@@ -40,6 +40,8 @@ export const PAGE_DESCRIPTIONS_FR: Record<string, string> = {
   "gestion-ressources.compagnie": "Gérez le profil de la compagnie, sa structure et ses documents administratifs.",
   "gestion-ressources.qualiopi":
     "Module Qualiopi — complétude du dossier école et indicateurs à traiter.",
+  "gestion-ressources.qualiopi.passeport":
+    "Stress test déterministe d'une session — PASS/FAIL/WARNING, findings et liens métier.",
   "gestion-ressources.qualiopi.classeur":
     "Détail des 32 indicateurs — statut d'audit, commentaire et preuve par indicateur.",
   "gestion-ressources.qualiopi.historique":
