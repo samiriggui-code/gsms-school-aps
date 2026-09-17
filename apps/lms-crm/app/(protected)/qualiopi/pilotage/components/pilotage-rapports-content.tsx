@@ -56,15 +56,6 @@ import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { DataGridPagination } from '@repo/ui/data-grid-pagination';
 import { DataGridTable, DataGridTableRowSelect, DataGridTableRowSelectAll } from '@repo/ui/data-grid-table';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarActions,
-  ToolbarDescription,
-  ToolbarHeading,
-  ToolbarTitle,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import {
   DATAGRID_SELECTION_BAR_ACTIONS,
   DATAGRID_SELECTION_BAR_INNER,
@@ -109,9 +100,9 @@ function generationSourceLabel(source?: PilotageRapportRow['generationSource']) 
   return null;
 }
 
+/** Corps leaf — toolbar via CrmWiredLeaf (page). */
 export function PilotageRapportsContent() {
   const queryClient = useQueryClient();
-  const { title, description } = usePageToolbarMeta('/qualiopi/pilotage/rapports');
   const intro = PILOTAGE_PAGE_INTRO.rapports;
   const [moduleId, setModuleId] = useState<PilotageModuleId>('gestion-ressources');
   const [periodValue, setPeriodValue] = useState<ReportPeriodValue>({ mode: 'preset', period: 'week' });
@@ -456,24 +447,15 @@ export function PilotageRapportsContent() {
   });
 
   return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-          <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <Button onClick={() => setGenerateOpen(true)}>
-              <FilePlus2 className="size-4" />
-              Générer un rapport
-            </Button>
-          </ToolbarActions>
-        </Toolbar>
-      </Container>
+    <div className="space-y-5 lg:space-y-7.5">
+      <div className={cn('flex flex-wrap items-center justify-end gap-2', DATAGRID_TOOLBAR_ACTIONS)}>
+        <Button onClick={() => setGenerateOpen(true)}>
+          <FilePlus2 className="size-4" />
+          Générer un rapport
+        </Button>
+      </div>
 
-      <Container className="space-y-5 pb-8 lg:space-y-7.5">
-        <ModuleKpiStatsRow items={kpiCards} />
+      <ModuleKpiStatsRow items={kpiCards} />
 
         <PilotageModuleTabs value={moduleId} onChange={setModuleId} />
 
@@ -549,7 +531,6 @@ export function PilotageRapportsContent() {
             </CardFooter>
           </Card>
         </DataGrid>
-      </Container>
 
       <PilotageRapportGenerateSheet
         open={generateOpen}
@@ -669,6 +650,6 @@ export function PilotageRapportsContent() {
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

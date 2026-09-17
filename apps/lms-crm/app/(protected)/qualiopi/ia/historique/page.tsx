@@ -10,16 +10,9 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { Container } from '@/components/common/container';
 import { ModuleDataGridShell } from '@/components/common/module-data-grid-shell';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { Badge } from '@repo/ui/badge';
 import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
@@ -58,7 +51,6 @@ function runVariant(status: string): 'success' | 'destructive' | 'warning' | 'se
 }
 
 export default function IaHistoriquePage() {
-  const { title, description } = usePageToolbarMeta('/qualiopi/ia/historique');
   const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
 
   const { data, isLoading } = useQuery({
@@ -147,21 +139,13 @@ export default function IaHistoriquePage() {
   });
 
   return (
-    <Container className="space-y-5">
-      <Toolbar>
-        <ToolbarHeading>
-          <ToolbarTitle>{title}</ToolbarTitle>
-          <ToolbarDescription>
-            {description || 'Journal AiRun — provider, statut, tokens, erreurs (sans secrets).'}
-          </ToolbarDescription>
-        </ToolbarHeading>
-      </Toolbar>
+    <CrmWiredLeaf path="/qualiopi/ia/historique">
       <ModuleDataGridShell
         table={table}
         recordCount={data?.pagination.total ?? 0}
         isLoading={isLoading}
         emptyMessage="Aucun run IA"
       />
-    </Container>
+    </CrmWiredLeaf>
   );
 }

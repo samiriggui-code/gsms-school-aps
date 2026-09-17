@@ -15,7 +15,7 @@ export function PilotageAlertesPageClient() {
           gaps). Les correctifs se font dans le métier (classeur, partenaires, sessions).
         </p>
         <Button asChild variant="outline" size="sm">
-          <Link href="/qualiopi/ecarts">Ouvrir les écarts détectés</Link>
+          <Link href="/qualiopi/referentiel/ecarts">Ouvrir les écarts détectés</Link>
         </Button>
       </div>
       <div className="grid gap-5 lg:grid-cols-2 lg:gap-8">

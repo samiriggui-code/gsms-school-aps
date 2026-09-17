@@ -12,17 +12,9 @@ import {
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { Container } from '@/components/common/container';
 import { ModuleDataGridShell } from '@/components/common/module-data-grid-shell';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-  ToolbarActions,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { Badge } from '@repo/ui/badge';
 import { Button } from '@repo/ui/button';
 import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
@@ -45,7 +37,6 @@ type ListResponse = {
 };
 
 export default function IaBrouillonsPage() {
-  const { title, description } = usePageToolbarMeta('/qualiopi/ia/brouillons');
   const qc = useQueryClient();
   const [pagination, setPagination] = useState<PaginationState>(createModuleLandingPagination);
 
@@ -167,24 +158,16 @@ export default function IaBrouillonsPage() {
   });
 
   return (
-    <Container className="space-y-5">
-      <Toolbar>
-        <ToolbarHeading>
-          <ToolbarTitle>{title}</ToolbarTitle>
-          <ToolbarDescription>
-            {description || 'File AiArtifact PROPOSED — revue humaine avant apply métier.'}
-          </ToolbarDescription>
-        </ToolbarHeading>
-        <ToolbarActions>
-          <Badge variant="warning">{data?.pagination.total ?? 0} à valider</Badge>
-        </ToolbarActions>
-      </Toolbar>
+    <CrmWiredLeaf
+      path="/qualiopi/ia/brouillons"
+      actions={<Badge variant="warning">{data?.pagination.total ?? 0} à valider</Badge>}
+    >
       <ModuleDataGridShell
         table={table}
         recordCount={data?.pagination.total ?? 0}
         isLoading={isLoading}
         emptyMessage="Aucun brouillon PROPOSED"
       />
-    </Container>
+    </CrmWiredLeaf>
   );
 }
