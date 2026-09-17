@@ -1,62 +1,31 @@
-"use client";
+'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
-import {
-  WelcomeCallout,
-  SecurityHighlightsB,
-  GestionAcademiqueModuleMenuCards,
-  RessourcesStatsDynamic,
-} from './components';
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { WelcomeCallout, GestionAcademiqueModuleMenuCards } from './components';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
+import { HubSectionStatsRow, type HubSectionStats } from '@/components/common/hub-section-stats-row';
+import { SectionSecurityHighlightsCard } from '@/components/common/section-security-highlights-card';
 import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { CalendarClock, CheckCircle2, Clock, FileX, Users } from 'lucide-react';
 import { toast } from 'sonner';
-
-interface ISecurityHighlightsRow {
-  icon: string;
-  text: string;
-  total: number | string;
-  stats: number;
-  trend?: 'up' | 'down' | 'neutral';
-  unit?: string;
-}
-
-interface ISecurityHighlightsItem {
-  badgeColor: string;
-  label: string;
-}
 
 export default function SectionBLandingPage() {
   const { t } = useTranslation();
 
-  const { title, description } = usePageToolbarMeta('/gestion-academique');
-  const [statsData, setStatsData] = useState<ISecurityHighlightsRow[]>([]);
-  const [dynamicStats, setDynamicStats] = useState<any>(null);
-  const [overallPerformance, setOverallPerformance] = useState({ value: 0, trend: 0 });
-  const [categories, setCategories] = useState<ISecurityHighlightsItem[]>([]);
+  const [dynamicStats, setDynamicStats] = useState<HubSectionStats | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStatsData = async () => {
       try {
-        const response = await fetch('/api/dashboard/stats');
+        const response = await fetch('/api/dashboard/stats?section=academique');
         if (!response.ok) {
           throw new Error(t('sectionLanding.loadError'));
         }
         const result = await response.json();
-        
+
         if (result.success) {
-          setStatsData(result.stats || []);
-          setDynamicStats(result.data || null);
-          setOverallPerformance(result.overallPerformance || { value: 0, trend: 0 });
-          setCategories(result.categories || []);
+          setDynamicStats(result.data ?? undefined);
         }
       } catch (error) {
         console.error('Erreur lors du chargement des highlights:', error);
@@ -65,55 +34,61 @@ export default function SectionBLandingPage() {
         setLoading(false);
       }
     };
-    
+
     fetchStatsData();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="container-fluid mx-auto w-full max-w-full min-w-0 px-4 lg:px-5 pb-8">
-        <div className="flex min-w-0 items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <span className="ml-3 text-muted-foreground">{t('sectionLanding.loadingIndicators')}</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-        </Toolbar>
-      </Container>
-      <Container className="space-y-5 lg:space-y-7.5 pb-8">
-        <RessourcesStatsDynamic data={dynamicStats} isLoading={loading} />
+    <CrmWiredLeaf path="/gestion-academique" level="section">
+      <div className="space-y-5 lg:space-y-7.5 pb-8">
+        <HubSectionStatsRow
+          data={dynamicStats}
+          isLoading={loading}
+          buildCards={(data) => [
+            { icon: Users, tone: 'primary', label: 'Candidatures', value: data.totalCollaborators, detail: 'Toutes périodes' },
+            { icon: CheckCircle2, tone: 'success', label: 'Validées', value: data.activeCollaborators, detail: 'Aptes en session', trend: 'up' },
+            { icon: Clock, tone: 'info', label: 'En instruction', value: data.absentCollaborators, detail: 'Pièces en cours' },
+            { icon: FileX, tone: 'destructive', label: 'Rejetées', value: data.complianceIssues, detail: `${data.complianceRate}% traitement positif`, trend: data.complianceIssues > 0 ? 'down' : 'neutral' },
+            {
+              icon: CalendarClock,
+              tone: 'warning',
+              label: 'Sessions actives',
+              value: data.categoryDistribution.find((c) => c.name === 'Sessions actives')?.count ?? 0,
+              detail: 'En cours aujourd\'hui',
+            },
+          ]}
+        />
 
-        <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
+        <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           <div className="min-w-0 lg:col-span-1">
-            <SecurityHighlightsB
+            <SectionSecurityHighlightsCard
+              titleKey="sections.gestionAcademique.securityHighlightsTitle"
               limit={5}
-              statsData={statsData}
-              overallPerformance={overallPerformance}
-              categories={categories}
+              overallPerformance={{ value: dynamicStats?.complianceRate ?? 0, trend: 0 }}
+              categories={[
+                { badgeColor: 'bg-emerald-500', label: 'Validées' },
+                { badgeColor: 'bg-sky-500', label: 'En instruction' },
+                { badgeColor: 'bg-red-500', label: 'Rejetées' },
+              ]}
+              statsData={
+                dynamicStats
+                  ? dynamicStats.categoryDistribution.map((c) => ({
+                      icon: 'ClipboardCheck',
+                      text: c.name,
+                      total: c.count,
+                      stats: Math.round((c.count / (dynamicStats.totalCollaborators || 1)) * 100),
+                    }))
+                  : []
+              }
             />
-
           </div>
-
           <div className="min-w-0 lg:col-span-2">
             <WelcomeCallout className="h-full" />
-
           </div>
         </div>
 
         <GestionAcademiqueModuleMenuCards />
-</Container>
-    </>
+      </div>
+    </CrmWiredLeaf>
   );
 }
-
-

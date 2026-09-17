@@ -13,6 +13,36 @@
           "tableau": "Follow-up board",
           "satisfaction": "Satisfaction",
           "circuits": "Circuits"
+        },
+        "lms": {
+          "_self": "LMS"
+        }
+      },
+      "administration-facturation": {
+        "finance": {
+          "_self": "Quotes & invoicing",
+          "financeurs": "Funders",
+          "bpf": "BPF"
+        },
+        "financeurs": {
+          "_self": "Funders"
+        },
+        "budget": {
+          "_self": "Budget & steering"
+        }
+      },
+      "qualiopi": {
+        "_self": "Qualiopi",
+        "referentiel": {
+          "_self": "Framework"
+        },
+        "pilotage": {
+          "_self": "Steering"
+        },
+        "ia": {
+          "_self": "AI",
+          "brouillons": "Drafts to validate",
+          "historique": "History"
         }
       },
       "support-qualite": {
@@ -1254,6 +1284,17 @@
     "insightsTitle": "Operational summary"
   },
   "sections": {
+    "qualiopi": {
+      "welcomeDescription": "Framework, steering and AI — the organization's compliance engine.",
+      "menuCardsTitle": "Quick access — Qualiopi",
+      "menuCardsSubtitle": "3 modules: Framework, Steering, AI",
+      "securityHighlightsTitle": "Key metrics — Qualiopi",
+      "cards": {
+        "referentiel": "Binder, Evidence coverage, session passport, gaps.",
+        "pilotage": "Alerts & OF gaps, KPIs, reports.",
+        "ia": "Drafts to validate, run history."
+      }
+    },
     "gestionRessources": {
       "welcomeDescription": "Centralize company, Qualiopi, HR and equipment — structure, OF compliance, staff and teaching resources.",
       "menuCardsTitle": "Quick access — Resource management",
@@ -1336,14 +1377,16 @@
     "administrationFacturation": {
       "welcomeDescription": "Budget, quotes, invoices, payments, funders, BPF and consolidated reports.",
       "menuCardsTitle": "Quick access — Administration & billing",
-      "menuCardsSubtitle": "One Finance module — pages follow the CRM menu order",
+      "menuCardsSubtitle": "{{modules}} modules · {{pages}} Finance pages",
       "securityHighlightsTitle": "Key metrics — Administration & billing",
       "cards": {
+        "devisFacturation": "Sales pipeline: quotes, invoices, payments.",
+        "financeurs": "OPCO / CPF / company funding and EDOF export.",
+        "budgetPilotage": "Budget, Pedagogical & Financial Balance Sheet (BPF) and consolidated reports.",
         "budget": "Budget tracking, expense lines and training envelope management.",
         "devis": "Sales pipeline, candidate quotes and shared brochures.",
         "factures": "Invoice issuance, tracking and follow-ups on candidate files.",
         "paiements": "Collections, reconciliation and payment status.",
-        "financeurs": "Funder and OPCO directory linked to invoices and BPF.",
         "bpf": "Annual Pedagogical & Financial Balance Sheet (BPF).",
         "rapports": "Finance dashboards, exports and consolidated metrics."
       }

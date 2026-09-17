@@ -22,35 +22,12 @@ const FEATURE_ICONS = {
   'ai-analytics': TrendingUp,
 } as const;
 
-const FEATURE_THEMES = {
-  'task-automation': {
-    iconBg: 'from-indigo-500/20 to-indigo-600/5',
-    iconText: 'text-indigo-600 dark:text-indigo-400',
-    stat: 'from-indigo-600 to-indigo-400',
-    ring: 'group-hover:ring-indigo-500/30',
-    orb: 'bg-indigo-500/15',
-  },
-  'workflow-optimization': {
-    iconBg: 'from-rose-500/20 to-rose-600/5',
-    iconText: 'text-rose-600 dark:text-rose-400',
-    stat: 'from-rose-600 to-rose-400',
-    ring: 'group-hover:ring-rose-500/30',
-    orb: 'bg-rose-500/15',
-  },
-  'intelligent-scheduling': {
-    iconBg: 'from-emerald-500/20 to-emerald-600/5',
-    iconText: 'text-emerald-600 dark:text-emerald-400',
-    stat: 'from-emerald-600 to-emerald-400',
-    ring: 'group-hover:ring-emerald-500/30',
-    orb: 'bg-emerald-500/15',
-  },
-  'ai-analytics': {
-    iconBg: 'from-amber-500/20 to-amber-600/5',
-    iconText: 'text-amber-600 dark:text-amber-400',
-    stat: 'from-amber-600 to-amber-400',
-    ring: 'group-hover:ring-amber-500/30',
-    orb: 'bg-amber-500/15',
-  },
+/** Un seul accent pour les 4 cartes — pas une couleur par feature (cf. pattern landing). */
+const FEATURE_THEME = {
+  iconBg: 'from-primary/20 to-primary/5',
+  iconText: 'text-primary',
+  ring: 'group-hover:ring-primary/30',
+  orb: 'bg-primary/15',
 } as const;
 
 const Features = () => {
@@ -75,14 +52,16 @@ const Features = () => {
           className="mx-auto mb-12 flex max-w-3xl flex-col items-center gap-4 text-center sm:mb-16"
         >
           <CustomBadge>{t('landing.features.badge')}</CustomBadge>
-          <CustomTitle>{t('landing.features.title')}</CustomTitle>
+          <CustomTitle accent={t('landing.features.titleAccent')}>
+            {t('landing.features.title')}
+          </CustomTitle>
           <CustomSubtitle>{t('landing.features.subtitle')}</CustomSubtitle>
         </motion.div>
 
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2">
           {FEATURE_IDS.map((id, index) => {
             const Icon = FEATURE_ICONS[id];
-            const theme = FEATURE_THEMES[id];
+            const theme = FEATURE_THEME;
             const stat = t(`landing.features.items.${id}.stats`);
             const metric = t(`landing.features.items.${id}.metric`);
 
@@ -122,12 +101,7 @@ const Features = () => {
                     </div>
 
                     <div className="text-right">
-                      <div
-                        className={cn(
-                          'bg-gradient-to-r bg-clip-text text-3xl font-bold tabular-nums tracking-tight text-transparent sm:text-4xl',
-                          theme.stat,
-                        )}
-                      >
+                      <div className="text-3xl font-bold tabular-nums tracking-tight text-foreground sm:text-4xl">
                         {stat}
                       </div>
                       <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground sm:text-xs">
@@ -144,10 +118,7 @@ const Features = () => {
                   </p>
 
                   <div
-                    className={cn(
-                      'absolute bottom-0 left-0 h-1 w-0 bg-gradient-to-r transition-all duration-500 group-hover:w-full',
-                      theme.stat,
-                    )}
+                    className="absolute bottom-0 left-0 h-1 w-0 bg-primary transition-all duration-500 group-hover:w-full"
                     aria-hidden
                   />
                 </div>

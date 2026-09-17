@@ -24,7 +24,7 @@ const FAQ = () => {
           className="flex items-center justify-center flex-col text-center gap-5 mb-25"
         >
           <CustomBadge>{t('landing.faq.badge')}</CustomBadge>
-          <CustomTitle>{t('landing.faq.title')}</CustomTitle>
+          <CustomTitle accent={t('landing.faq.titleAccent')}>{t('landing.faq.title')}</CustomTitle>
           <CustomSubtitle>{t('landing.faq.subtitle')}</CustomSubtitle>
         </motion.div>
 
@@ -47,7 +47,7 @@ const FAQ = () => {
                   value={`item-${id}`}
                   className="bg-background rounded-lg border! border-border px-6 hover:shadow-md transition-shadow"
                 >
-                  <AccordionTrigger className="text-start font-semibold text-foreground hover:text-indigo-600 data-[state=open]:text-indigo-600 transition-colors cursor-pointer">
+                  <AccordionTrigger className="text-start font-semibold text-foreground hover:text-primary data-[state=open]:text-primary transition-colors cursor-pointer">
                     {t(`landing.faq.items.${id}.question`)}
                   </AccordionTrigger>
                   <AccordionContent className="text-foreground leading-relaxed">
@@ -67,7 +67,7 @@ const FAQ = () => {
           className="flex flex-col justify-center items-center gap-1.5 text-center mt-12"
         >
           <span className="text-muted-foreground">{t('landing.faq.footerLead')}</span>
-          <Link href="#contact" className="text-indigo-600 hover:text-indigo-700 transition-colors hover:underline">
+          <Link href="#contact" className="text-primary hover:text-primary/80 transition-colors hover:underline">
             {t('landing.faq.footerLink')}
           </Link>
         </motion.div>

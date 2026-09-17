@@ -1,7 +1,6 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { PilotageRapportsContent } from '../components/pilotage-rapports-content';
-
+/** Déplacé sous /qualiopi/pilotage/rapports. */
 export default function Page() {
-  return <PilotageRapportsContent />;
+  redirect('/qualiopi/pilotage/rapports');
 }

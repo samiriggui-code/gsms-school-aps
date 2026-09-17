@@ -1,14 +1,15 @@
 'use client';
 
-import { BookOpen, ClipboardList } from 'lucide-react';
+import { BookOpen, ClipboardList, GraduationCap } from 'lucide-react';
 import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
-/** Cartes modules de la section — Accéder vers hubs ; puces = pages (liens). */
+/** Cartes modules de la section — 3 modules (Vie scolaire / LMS / Suivi formations, vague 3). */
 export function GestionAcademiqueModuleMenuCards() {
   return (
     <SectionMenuCardsShell
       titleKey="sections.gestionAcademique.menuCardsTitle"
       subtitleKey="sections.gestionAcademique.menuCardsSubtitle"
+      subtitleValues={{ modules: 3, pages: 15 }}
       items={[
         {
           moduleKey: 'gestion-academique-vie-scolaire',
@@ -16,16 +17,29 @@ export function GestionAcademiqueModuleMenuCards() {
           descriptionKey: 'sections.gestionAcademique.cards.vieScolaire',
           icon: BookOpen,
           backgroundImage: 'bg-3',
-          subSections: ['formations', 'cours', 'inscriptions', 'sessions', 'planning', 'etudiants'],
+          subSections: ['formations', 'sessions', 'planning', 'etudiants'],
           subSectionPaths: [
             '/gestion-academique/vie-scolaire/formations',
-            '/gestion-academique/vie-scolaire/cours',
-            '/gestion-academique/vie-scolaire/inscriptions-lms',
             '/gestion-academique/vie-scolaire/sessions',
             '/gestion-academique/vie-scolaire/planning',
             '/gestion-academique/vie-scolaire/etudiants',
           ],
           tone: 'violet',
+        },
+        {
+          moduleKey: 'gestion-academique-lms',
+          path: '/gestion-academique/lms',
+          descriptionKey: 'sections.gestionAcademique.cards.lms',
+          icon: GraduationCap,
+          backgroundImage: 'bg-3',
+          subSections: ['cours', 'devoirs', 'discussions', 'inscriptions'],
+          subSectionPaths: [
+            '/gestion-academique/vie-scolaire/cours',
+            '/gestion-academique/vie-scolaire/devoirs',
+            '/gestion-academique/vie-scolaire/discussions',
+            '/gestion-academique/vie-scolaire/inscriptions-lms',
+          ],
+          tone: 'sky',
         },
         {
           moduleKey: 'gestion-academique-suivi-formations',

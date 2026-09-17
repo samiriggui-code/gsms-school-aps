@@ -1,15 +1,8 @@
-"use client";
+'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
 import { WelcomeCallout, SecurityHighlightsB, SectionBMenuCards, RessourcesStatsDynamic } from './components';
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { useModuleLayout } from '@/hooks/use-module-layout';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -32,7 +25,6 @@ interface ISecurityHighlightsItem {
 export default function SectionBLandingPage() {
   const { t } = useTranslation();
 
-  const { title, description } = usePageToolbarMeta('/gestion-ressources');
   const { isVisible } = useModuleLayout('gestion-ressources-landing');
   const [statsData, setStatsData] = useState<ISecurityHighlightsRow[]>([]);
   const [dynamicStats, setDynamicStats] = useState<any>(null);
@@ -48,7 +40,7 @@ export default function SectionBLandingPage() {
           throw new Error(t('sectionLanding.loadError'));
         }
         const result = await response.json();
-        
+
         if (result.success) {
           setStatsData(result.stats || []);
           setDynamicStats(result.data || null);
@@ -62,7 +54,7 @@ export default function SectionBLandingPage() {
         setLoading(false);
       }
     };
-    
+
     fetchStatsData();
   }, []);
 
@@ -78,16 +70,8 @@ export default function SectionBLandingPage() {
   }
 
   return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-        </Toolbar>
-      </Container>
-      <Container className="space-y-5 lg:space-y-7.5 pb-8">
+    <CrmWiredLeaf path="/gestion-ressources" level="section">
+      <div className="space-y-5 lg:space-y-7.5 pb-8">
         {isVisible('stats') ? <RessourcesStatsDynamic data={dynamicStats} isLoading={loading} /> : null}
 
         {(isVisible('stats') || isVisible('welcome')) && (
@@ -111,7 +95,7 @@ export default function SectionBLandingPage() {
         )}
 
         {isVisible('menu-cards') ? <SectionBMenuCards /> : null}
-      </Container>
-    </>
+      </div>
+    </CrmWiredLeaf>
   );
 }

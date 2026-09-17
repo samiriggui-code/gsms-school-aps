@@ -25,9 +25,11 @@ export function Breadcrumb() {
     const startsWithHome = first.path === '/accueil' || first.title === 'Accueil';
     const merged = startsWithHome ? items : [home, ...items];
 
+    // Dédoublonne par path seul (pas path+title) : évite une double miette quand
+    // section et module partagent la même URL (ex. Qualiopi = section et module).
     const seen = new Set<string>();
     return merged.filter((item) => {
-      const key = `${item.path || ''}|${item.title || ''}`;
+      const key = item.path || item.title || '';
       if (seen.has(key)) return false;
       seen.add(key);
       return true;

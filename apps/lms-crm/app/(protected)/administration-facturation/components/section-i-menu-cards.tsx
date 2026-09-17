@@ -1,80 +1,50 @@
 'use client';
 
-import {
-  BarChart3,
-  Building2,
-  CreditCard,
-  FileSpreadsheet,
-  FileText,
-  ScrollText,
-  Wallet,
-} from 'lucide-react';
+import { Building2, FileText, Wallet } from 'lucide-react';
 import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
-/** Accès rapide feuilles Finance (ordre = menu latéral). */
+/** Cartes modules de la section Finance (3 modules, vague 3). */
 const items = [
   {
-    moduleKey: 'administration-facturation-budget',
-    path: '/administration-facturation/finance/budget',
-    descriptionKey: 'sections.administrationFacturation.cards.budget',
-    icon: Wallet,
-    backgroundImage: 'bg-3',
-    subSections: ['lignes', 'suivi'],
-    tone: 'emerald' as const,
-  },
-  {
-    moduleKey: 'administration-facturation-devis',
-    path: '/administration-facturation/finance/devis',
-    descriptionKey: 'sections.administrationFacturation.cards.devis',
+    moduleKey: 'administration-facturation-finance',
+    path: '/administration-facturation/finance',
+    descriptionKey: 'sections.administrationFacturation.cards.devisFacturation',
     icon: FileText,
     backgroundImage: 'bg-3',
-    subSections: ['pipeline', 'plaquettes'],
+    subSections: ['devis', 'factures', 'paiements'],
+    subSectionPaths: [
+      '/administration-facturation/finance/devis',
+      '/administration-facturation/finance/factures',
+      '/administration-facturation/finance/paiements',
+    ],
     tone: 'sky' as const,
   },
   {
-    moduleKey: 'administration-facturation-factures',
-    path: '/administration-facturation/finance/factures',
-    descriptionKey: 'sections.administrationFacturation.cards.factures',
-    icon: FileSpreadsheet,
-    backgroundImage: 'bg-3',
-    subSections: ['emission', 'relances'],
-    tone: 'violet' as const,
-  },
-  {
-    moduleKey: 'administration-facturation-paiements',
-    path: '/administration-facturation/finance/paiements',
-    descriptionKey: 'sections.administrationFacturation.cards.paiements',
-    icon: CreditCard,
-    backgroundImage: 'bg-3',
-    subSections: ['encaissements', 'reconciliation'],
-    tone: 'amber' as const,
-  },
-  {
     moduleKey: 'administration-facturation-financeurs',
-    path: '/administration-facturation/finance/financeurs',
+    path: '/administration-facturation/financeurs',
     descriptionKey: 'sections.administrationFacturation.cards.financeurs',
     icon: Building2,
     backgroundImage: 'bg-3',
-    subSections: ['opco', 'cpf'],
+    subSections: ['financeurs', 'edof-catalog'],
+    subSectionPaths: [
+      '/administration-facturation/finance/financeurs',
+      '/administration-facturation/finance/edof-catalog',
+    ],
     tone: 'cyan' as const,
   },
   {
-    moduleKey: 'administration-facturation-bpf',
-    path: '/administration-facturation/finance/bpf',
-    descriptionKey: 'sections.administrationFacturation.cards.bpf',
-    icon: ScrollText,
+    moduleKey: 'administration-facturation-budget',
+    path: '/administration-facturation/budget',
+    descriptionKey: 'sections.administrationFacturation.cards.budgetPilotage',
+    icon: Wallet,
     backgroundImage: 'bg-3',
-    subSections: ['cerfa', 'pilote'],
-    tone: 'indigo' as const,
-  },
-  {
-    moduleKey: 'administration-facturation-rapports',
-    path: '/administration-facturation/finance/rapports',
-    descriptionKey: 'sections.administrationFacturation.cards.rapports',
-    icon: BarChart3,
-    backgroundImage: 'bg-3',
-    subSections: ['tableaux', 'exports'],
-    tone: 'rose' as const,
+    subSections: ['budget', 'bpf', 'rapports'],
+    subSectionPaths: [
+      '/administration-facturation/finance/budget',
+      '/administration-facturation/finance/bpf',
+      '/administration-facturation/finance/rapports',
+    ],
+    tone: 'emerald' as const,
   },
 ];
 
@@ -82,7 +52,10 @@ export const AdminMenuCards = () => (
   <SectionMenuCardsShell
     titleKey="sections.administrationFacturation.menuCardsTitle"
     subtitleKey="sections.administrationFacturation.menuCardsSubtitle"
-    subtitleValues={{ pages: items.length }}
+    subtitleValues={{
+      modules: items.length,
+      pages: items.reduce((total, item) => total + item.subSections.length, 0),
+    }}
     items={items}
   />
 );

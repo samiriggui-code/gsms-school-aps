@@ -4,15 +4,8 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Container } from '@/components/common/container';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { Alert, AlertDescription, AlertTitle } from '@repo/ui/alert';
-import {
-  Toolbar,
-  ToolbarActions,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { DATAGRID_TOOLBAR_ACTIONS } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
 import { TeamStats } from './components/team-stats';
 import TeamList from './components/team-list';
@@ -33,7 +26,6 @@ import { RH_SESSION_TEAM_PHASE_LABELS } from '@/lib/rh-team-list-scope';
 
 export default function Page() {
   const { t } = useTranslation();
-  const { title, description } = usePageToolbarMeta('/gestion-ressources/rh/equipes');
   const [mainTab, setMainTab] = useState<'permanent' | 'session' | 'structure'>('permanent');
   const [sessionPhase, setSessionPhase] = useState<RhSessionTeamPhase>('running');
 
@@ -45,19 +37,14 @@ export default function Page() {
   );
 
   return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-          <ToolbarActions className={DATAGRID_TOOLBAR_ACTIONS}>
-            <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
-          </ToolbarActions>
-        </Toolbar>
-      </Container>
-
+    <CrmWiredLeaf
+      path="/gestion-ressources/rh/equipes"
+      actions={
+        <div className={DATAGRID_TOOLBAR_ACTIONS}>
+          <DataGridExportMenu config={exportConfig} label={t('common.actions.export')} />
+        </div>
+      }
+    >
       <Container className="space-y-5 lg:space-y-7.5 pb-8">
         <TeamStats variant="row" teamScope={statsScope} sessionPhase={sessionPhase} />
 
@@ -138,6 +125,6 @@ export default function Page() {
           </TabsContent>
         </Tabs>
       </Container>
-    </>
+    </CrmWiredLeaf>
   );
 }

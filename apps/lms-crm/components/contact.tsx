@@ -298,12 +298,14 @@ const Contact = () => {
   return (
     <section
       id="contact"
-      className="scroll-mt-24 overflow-x-clip border-b border-border/50 bg-zinc-50 py-16 sm:py-24 dark:bg-zinc-950"
+      className="scroll-mt-24 overflow-x-clip border-b border-border/50 bg-secondary py-16 sm:py-24"
     >
       <div className="container mx-auto px-4 sm:px-6">
         <header className="mb-12 flex flex-col items-center gap-4 text-center sm:mb-16">
           <CustomBadge>{t('landing.contact.badge')}</CustomBadge>
-          <CustomTitle>{t('landing.contact.title')}</CustomTitle>
+          <CustomTitle accent={t('landing.contact.titleAccent')}>
+            {t('landing.contact.title')}
+          </CustomTitle>
           <CustomSubtitle>{t('landing.contact.subtitle')}</CustomSubtitle>
         </header>
 

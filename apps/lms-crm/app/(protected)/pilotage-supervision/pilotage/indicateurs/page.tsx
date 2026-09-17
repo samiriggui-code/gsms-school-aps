@@ -1,7 +1,6 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { PilotageIndicateursContent } from '../components/pilotage-indicateurs-content';
-
+/** Déplacé sous /qualiopi/pilotage/indicateurs. */
 export default function Page() {
-  return <PilotageIndicateursContent />;
+  redirect('/qualiopi/pilotage/indicateurs');
 }

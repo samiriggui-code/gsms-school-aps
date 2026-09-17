@@ -401,7 +401,7 @@ export function ruleQI20DisabilityReferent(facts: SessionEvaluateFacts): RuleOut
   const code = 'Q-I20';
   const label = 'Mobilité, référent handicap, conseil de perfectionnement';
   const refs = facts.evidenceRefsByIndicator.get(code) ?? [];
-  const action = '/gestion-ressources/rh/referent-handicap';
+  const action = '/gestion-ressources/partenaires/referent-handicap';
   const name = facts.disabilityReferent.name?.trim() ?? '';
   const expected = 'SystemSetting.disabilityReferentName renseigné';
   const observed = name
@@ -448,7 +448,7 @@ export function ruleQI26DisabilityOrientation(facts: SessionEvaluateFacts): Rule
   const code = 'Q-I26';
   const label = 'Accueil et orientation des publics en situation de handicap';
   const refs = facts.evidenceRefsByIndicator.get(code) ?? [];
-  const action = '/gestion-ressources/rh/referent-handicap';
+  const action = '/gestion-ressources/partenaires/referent-handicap';
   const name = facts.disabilityReferent.name?.trim() ?? '';
   const pending = confirmed(facts).filter((p) => p.adaptationStatus === 'ADAPTATION_PENDING');
 
@@ -510,7 +510,7 @@ export function ruleQI27Subcontractors(facts: SessionEvaluateFacts): RuleOutput 
   const code = 'Q-I27';
   const label = 'Sous-traitance / portage salarial conforme';
   const refs = facts.evidenceRefsByIndicator.get(code) ?? [];
-  const action = '/gestion-ressources/rh/sous-traitants';
+  const action = '/gestion-ressources/partenaires/sous-traitants';
   const rows = facts.subcontractors;
 
   if (rows.length === 0) {

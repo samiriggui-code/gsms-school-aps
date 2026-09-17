@@ -117,7 +117,9 @@ const HowItWorks = () => {
           className="mx-auto mb-12 flex max-w-3xl flex-col items-center gap-4 text-center sm:mb-16"
         >
           <CustomBadge>{t('landing.howItWorks.badge')}</CustomBadge>
-          <CustomTitle>{t('landing.howItWorks.title')}</CustomTitle>
+          <CustomTitle accent={t('landing.howItWorks.titleAccent')}>
+            {t('landing.howItWorks.title')}
+          </CustomTitle>
           <CustomSubtitle>{t('landing.howItWorks.subtitle')}</CustomSubtitle>
         </motion.div>
 
@@ -148,7 +150,7 @@ const HowItWorks = () => {
                       'flex size-12 items-center justify-center rounded-full transition-all duration-300 sm:size-14',
                       isActive
                         ? 'bg-primary text-primary-foreground shadow-[0_8px_24px_hsl(var(--primary)/0.35)]'
-                        : 'bg-indigo-100/50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400',
+                        : 'bg-muted text-muted-foreground',
                     )}
                   >
                     <StepIcon className="size-5 sm:size-6" strokeWidth={1.75} />
@@ -171,7 +173,7 @@ const HowItWorks = () => {
                           className="h-0.5 overflow-hidden rounded-full"
                         >
                           <motion.div
-                            className="h-full bg-gradient-to-r from-primary to-indigo-400"
+                            className="h-full bg-primary"
                             style={{ width: `${progress}%` }}
                             transition={{ duration: 0.05, ease: 'linear' }}
                           />

@@ -1,15 +1,8 @@
-"use client";
+'use client';
 
 import { useTranslation } from '@/hooks/useTranslation';
 import { AdminStatsDynamic, AdminWelcomeCallout, SecurityHighlightsI, AdminMenuCards } from './components';
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -31,7 +24,6 @@ interface ISecurityHighlightsItem {
 export default function SectionILandingPage() {
   const { t } = useTranslation();
 
-  const { title, description } = usePageToolbarMeta('/administration-facturation');
   const [statsData, setStatsData] = useState<ISecurityHighlightsRow[]>([]);
   const [dynamicStats, setDynamicStats] = useState<any>(null);
   const [overallPerformance, setOverallPerformance] = useState<{ value: number; trend: number }>({
@@ -75,16 +67,8 @@ export default function SectionILandingPage() {
     );
   }
   return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-        </Toolbar>
-      </Container>
-      <Container className="space-y-5 lg:space-y-7.5 pb-8">
+    <CrmWiredLeaf path="/administration-facturation" level="section">
+      <div className="space-y-5 lg:space-y-7.5 pb-8">
         <AdminStatsDynamic data={dynamicStats} isLoading={loading} />
 
         <div className="grid min-w-0 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8 items-stretch">
@@ -95,17 +79,15 @@ export default function SectionILandingPage() {
               overallPerformance={overallPerformance}
               categories={categories}
             />
-
           </div>
 
           <div className="min-w-0 lg:col-span-2">
             <AdminWelcomeCallout />
-
           </div>
         </div>
 
         <AdminMenuCards />
-</Container>
-    </>
+      </div>
+    </CrmWiredLeaf>
   );
 }

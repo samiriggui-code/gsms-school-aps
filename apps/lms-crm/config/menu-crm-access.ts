@@ -4,12 +4,14 @@ import { CRM_PERMISSION } from '@/lib/auth/crm-permissions';
 /** Préfixe de chemin → permission CRM (match le plus long gagnant). */
 const PATH_PERMISSION_PREFIXES: { prefix: string; permissionSlug: string }[] = [
   { prefix: '/accueil', permissionSlug: CRM_PERMISSION.dashboard },
+  { prefix: '/qualiopi', permissionSlug: CRM_PERMISSION.ressourcesView },
+  { prefix: '/qualiopi/pilotage', permissionSlug: CRM_PERMISSION.pilotageView },
+  { prefix: '/qualiopi/ia', permissionSlug: CRM_PERMISSION.pilotageView },
   { prefix: '/gestion-ressources', permissionSlug: CRM_PERMISSION.ressourcesView },
   { prefix: '/gestion-academique', permissionSlug: CRM_PERMISSION.academiqueView },
   { prefix: '/administration-facturation', permissionSlug: CRM_PERMISSION.financeView },
   { prefix: '/communication-contenu', permissionSlug: CRM_PERMISSION.communicationView },
   { prefix: '/support-qualite', permissionSlug: CRM_PERMISSION.supportView },
-  { prefix: '/pilotage-supervision', permissionSlug: CRM_PERMISSION.pilotageView },
   { prefix: '/securite-configuration', permissionSlug: CRM_PERMISSION.securiteView },
   { prefix: '/account', permissionSlug: CRM_PERMISSION.dashboard },
   { prefix: '/mon-profil', permissionSlug: CRM_PERMISSION.dashboard },

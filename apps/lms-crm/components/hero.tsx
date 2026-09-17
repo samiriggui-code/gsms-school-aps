@@ -12,10 +12,11 @@ import { AnimatedTooltip } from '@repo/ui/animated-tooltip';
 import { Star } from '@/components/custom/star';
 import { useTranslation } from '@/hooks/useTranslation';
 
+/** Un seul accent (le primary du thème landing), pas un mot par couleur. */
 const ROTATING_WORD_CLASSES = [
-  'text-indigo-600 dark:text-indigo-400',
-  'text-red-600 dark:text-red-400',
-  'text-emerald-600 dark:text-emerald-400',
+  'font-landing-serif italic font-normal text-primary',
+  'font-landing-serif italic font-normal text-primary',
+  'font-landing-serif italic font-normal text-primary',
 ] as const;
 
 interface HeroProps {
@@ -36,7 +37,6 @@ const Hero = ({
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const ios = useIsIOS();
-  const showHeavyFx = useAnimatedBackground && !ios;
 
   const rotatingWords = useMemo((): WordRotateItem[] => {
     const raw = t('landing.hero.rotatingWords', { returnObjects: true }) as { text: string }[];
@@ -72,40 +72,13 @@ const Hero = ({
     { id: 5, name: 'Amina K.', designation: t('landing.hero.people.5'), image: '/media/avatars/300-5.png' },
   ];
 
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
-    setMouse({
-      x: (e.clientX - rect.left - rect.width / 2) / rect.width,
-      y: (e.clientY - rect.top - rect.height / 2) / rect.height,
-    });
-  };
-  const handleMouseLeave = () => setMouse({ x: 0, y: 0 });
-
   return (
-    <section
-      className={`relative lg:min-h-screen pt-25 pb-20 lg:pt-40 lg:pb-20 overflow-hidden group ${useAnimatedBackground ? 'bg-gradient-to-br from-gray-50 dark:from-zinc-950 via-indigo-50 dark:via-black to-indigo-50 dark:to-zinc-950' : 'bg-transparent'}`}
-      onMouseMove={showHeavyFx ? handleMouseMove : undefined}
-      onMouseLeave={showHeavyFx ? handleMouseLeave : undefined}
-    >
-      {showHeavyFx && (
-        <div className="hidden lg:block absolute inset-0 pointer-events-none">
-          <motion.div
-            className="absolute left-[10%] top-[15%] w-[320px] h-[320px] dark:w-[160px] dark:h-[160px] rounded-full bg-indigo-200 dark:bg-indigo-900 opacity-90 blur-[60px]"
-            animate={{ scale: [1, 1.13, 1], opacity: [0.85, 1, 0.85], x: mouse.x * 70, y: mouse.y * 40 }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute left-[18%] top-[23%] w-[90px] h-[90px] rounded-full bg-indigo-100 dark:bg-indigo-950 opacity-95 blur-[10px]"
-            animate={{ scale: [1, 1.08, 1], opacity: [0.92, 1, 0.92], x: mouse.x * 90, y: mouse.y * 60 }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute right-[12%] top-[30%] w-[220px] h-[220px] rounded-full bg-indigo-300 dark:bg-indigo-950 opacity-80 blur-[40px]"
-            animate={{ scale: [1, 1.08, 1], opacity: [0.75, 0.95, 0.75], x: mouse.x * -60, y: mouse.y * 30 }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        </div>
+    <section className="relative lg:min-h-screen pt-25 pb-20 lg:pt-40 lg:pb-20 overflow-hidden bg-background">
+      {useAnimatedBackground && !ios && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,color-mix(in_oklch,var(--primary),transparent_88%),transparent_70%)]"
+        />
       )}
 
       <div className="container mx-auto px-6 relative z-10">
@@ -114,11 +87,9 @@ const Hero = ({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-4 flex flex-col items-center justify-center gap-0.5 text-2xl font-bold leading-tight tracking-tight md:flex-row md:gap-1.5 md:text-4xl lg:mb-6 lg:text-5xl"
+            className="mb-4 flex flex-col items-center justify-center gap-0.5 text-[clamp(28px,5.2vw,56px)]/[1.05] font-[650] tracking-[-0.03em] text-foreground md:flex-row md:gap-2 lg:mb-6"
           >
-            <span className="bg-gradient-to-r from-indigo-900 via-indigo-900 to-indigo-900 dark:from-gray-50 dark:via-indigo-300 dark:to-indigo-900 bg-clip-text text-transparent">
-              {t('landing.hero.titlePrefix')}
-            </span>
+            <span>{t('landing.hero.titlePrefix')}</span>
             <WordRotate words={rotatingWords} className="w-[min(100%,18rem)] md:w-[22rem]" />
           </motion.h1>
 
@@ -183,9 +154,9 @@ const Hero = ({
               {mounted && (
                 <HeroVideoDialog
                   trigger={
-                    <div className="bg-indigo-600/10 dark:bg-indigo-300/10 backdrop-blur-md rounded-full p-4 shadow-lg">
+                    <div className="bg-primary/10 backdrop-blur-md rounded-full p-4 shadow-lg">
                       <div className="bg-background rounded-full p-3 shadow-lg">
-                        <Play className="size-6 text-indigo-600 dark:text-indigo-400 fill-indigo-600 dark:fill-indigo-400 ml-0.5" />
+                        <Play className="size-6 text-primary fill-primary ml-0.5" />
                       </div>
                     </div>
                   }

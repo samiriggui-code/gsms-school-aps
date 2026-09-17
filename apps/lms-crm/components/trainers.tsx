@@ -38,7 +38,7 @@ const VOLET_BADGE_ICONS: Record<VoletId, React.ElementType[]> = {
 function StatBadge({ icon: Icon, value, label }: { icon: React.ElementType; value: number | string; label: string }) {
   return (
     <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-      <Icon className="size-4 shrink-0 text-indigo-500" />
+      <Icon className="size-4 shrink-0 text-primary" />
       <span className="font-semibold text-foreground tabular-nums">
         {typeof value === 'number' ? value.toLocaleString() : value}
       </span>
@@ -61,10 +61,10 @@ function TrainerCardDynamic({
   const website = member.websiteUrl?.trim() || '#';
 
   return (
-    <div className="group relative bg-background border border-border rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:border-indigo-200 dark:hover:border-indigo-800 hover:-translate-y-1">
+    <div className="group relative bg-background border border-border rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 hover:-translate-y-1">
       <div className="flex items-center gap-3 mb-4">
         <div className="relative shrink-0">
-          <div className="size-14 rounded-lg overflow-hidden ring-2 ring-indigo-100 dark:ring-indigo-900 group-hover:ring-indigo-300 dark:group-hover:ring-indigo-700 transition-all">
+          <div className="size-14 rounded-lg overflow-hidden ring-2 ring-primary/15 group-hover:ring-primary/30 transition-all">
             <Image
               src={imageSrc}
               alt={member.name}
@@ -74,16 +74,16 @@ function TrainerCardDynamic({
               onError={() => setImageSrc(AVATAR_FALLBACK)}
             />
           </div>
-          <div className="absolute -top-1 -right-1 bg-indigo-600 text-white rounded-full p-1">
+          <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
             <BadgeIcon className="size-3" />
           </div>
         </div>
         <div className="min-w-0">
           <h3 className="text-lg font-bold text-foreground truncate">{member.name}</h3>
-          <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{member.title}</p>
+          <p className="text-sm font-medium text-primary">{member.title}</p>
         </div>
       </div>
-      <p className="text-xs font-medium text-indigo-500/80 dark:text-indigo-400/80 bg-indigo-50 dark:bg-indigo-950/40 rounded-md px-2.5 py-1 mb-3 inline-block">
+      <p className="text-xs font-medium text-primary/80 bg-primary/10 rounded-md px-2.5 py-1 mb-3 inline-block">
         {member.certifications}
       </p>
       <p className="text-sm text-muted-foreground leading-relaxed mb-5">{member.bio}</p>
@@ -103,7 +103,7 @@ function TrainerCardDynamic({
       <div className="flex items-center gap-2">
         <a
           href={linkedin}
-          className="inline-flex items-center justify-center size-8 rounded-lg bg-muted/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+          className="inline-flex items-center justify-center size-8 rounded-lg bg-muted/50 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
           aria-label={t('landing.trainers.linkedinAria', { name: member.name })}
           target={linkedin !== '#' ? '_blank' : undefined}
           rel={linkedin !== '#' ? 'noopener noreferrer' : undefined}
@@ -112,7 +112,7 @@ function TrainerCardDynamic({
         </a>
         <a
           href={website}
-          className="inline-flex items-center justify-center size-8 rounded-lg bg-muted/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+          className="inline-flex items-center justify-center size-8 rounded-lg bg-muted/50 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
           aria-label={t('landing.trainers.websiteAria', { name: member.name })}
           target={website !== '#' ? '_blank' : undefined}
           rel={website !== '#' ? 'noopener noreferrer' : undefined}
@@ -179,7 +179,7 @@ export default function Trainers() {
     <section id="trainers" className="py-20 lg:py-28 scroll-mt-24">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <span className="inline-block text-sm font-semibold tracking-wider text-indigo-600 dark:text-indigo-400 uppercase mb-3">
+          <span className="inline-block text-sm font-semibold tracking-wider text-primary uppercase mb-3">
             {t('landing.trainers.badge')}
           </span>
           <h2 className="mb-5 text-3xl font-bold text-foreground lg:text-5xl">{t('landing.trainers.title')}</h2>
@@ -188,7 +188,7 @@ export default function Trainers() {
 
         <div className="flex justify-center mb-12">
           <div
-            className="inline-flex w-full max-w-3xl rounded-full bg-zinc-200/90 dark:bg-zinc-800/90 p-1.5 shadow-inner"
+            className="inline-flex w-full max-w-3xl rounded-full bg-muted p-1.5 shadow-inner"
             role="tablist"
             aria-label={t('landing.trainers.tabsAriaLabel')}
           >
@@ -202,8 +202,8 @@ export default function Trainers() {
                 className={cn(
                   'relative flex-1 min-w-0 rounded-full px-3 py-2.5 text-center text-sm font-medium transition-all duration-200',
                   volet === tabId
-                    ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-950 dark:text-zinc-50'
-                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100',
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 <span className="block truncate">{t(`landing.trainers.tabs.${tabId}`)}</span>
@@ -214,7 +214,7 @@ export default function Trainers() {
 
         {loading ? (
           <div className="flex justify-center py-16 text-muted-foreground">
-            <Loader2 className="size-8 animate-spin text-indigo-500" />
+            <Loader2 className="size-8 animate-spin text-primary" />
           </div>
         ) : activeMembers.length === 0 ? (
           <p className="text-center text-muted-foreground py-12">{t('landing.trainers.dynamic.empty')}</p>

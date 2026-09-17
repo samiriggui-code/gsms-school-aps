@@ -1,11 +1,5 @@
 import Link from 'next/link';
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarDescription,
-  ToolbarHeading,
-  ToolbarTitle,
-} from '@/components/common/toolbar';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { Button } from '@repo/ui/button';
 import { prisma } from '@/lib/prisma';
 import { buildBpfAggregates } from '@/lib/finance/bpf-aggregates';
@@ -34,30 +28,23 @@ export default async function BpfPage({ searchParams }: PageProps) {
   const years = [current, current - 1, current - 2, current - 3];
 
   return (
-    <Container>
-      <Toolbar>
-        <ToolbarHeading>
-          <ToolbarTitle>BPF</ToolbarTitle>
-          <ToolbarDescription>
-            Agrégats Cerfa déterministes — exercice {data.year} ({data.periodStart} →{' '}
-            {data.periodEnd}). Export PDF synthèse (OF-07).
-          </ToolbarDescription>
-        </ToolbarHeading>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="primary" size="sm" asChild>
-            <a
-              href={`/api/sections/administration-facturation/finance/bpf/pdf?year=${year}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Export PDF
-            </a>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/administration-facturation/finance">Retour finance</Link>
-          </Button>
-        </div>
-      </Toolbar>
+    <CrmWiredLeaf
+      path="/administration-facturation/finance/bpf"
+      actions={
+        <Button variant="primary" size="sm" asChild>
+          <a
+            href={`/api/sections/administration-facturation/finance/bpf/pdf?year=${year}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Export PDF
+          </a>
+        </Button>
+      }
+    >
+      <p className="mb-4 text-xs text-muted-foreground">
+        Agrégats Cerfa déterministes — exercice {data.year} ({data.periodStart} → {data.periodEnd}).
+      </p>
 
       <div className="mb-6 flex flex-wrap gap-2">
         {years.map((y) => (
@@ -227,6 +214,6 @@ export default async function BpfPage({ searchParams }: PageProps) {
           GET /api/sections/administration-facturation/finance/bpf/stats?year={year}
         </code>
       </p>
-    </Container>
+    </CrmWiredLeaf>
   );
 }

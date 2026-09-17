@@ -42,7 +42,8 @@ export const sectionsMessages = {
       },
       howItWorks: {
         badge: 'Parcours de formation',
-        title: 'Comment ca fonctionne',
+        title: 'Comment ça',
+        titleAccent: 'fonctionne',
         subtitle:
           "Un parcours clair et progressif, de l'inscription a la certification professionnelle.",
         steps: {
@@ -100,7 +101,8 @@ export const sectionsMessages = {
       },
       features: {
         badge: 'Nos points forts',
-        title: 'Pourquoi choisir notre ecole',
+        title: 'Pourquoi choisir',
+        titleAccent: 'notre école',
         subtitle:
           'Une formation complete pour devenir agent de securite privee ou agent de securite incendie operationnel.',
         items: {
@@ -136,7 +138,8 @@ export const sectionsMessages = {
       },
       faq: {
         badge: 'FAQ',
-        title: 'Questions frequentes',
+        title: 'Questions',
+        titleAccent: 'fréquentes',
         subtitle:
           'Retrouvez les reponses aux questions les plus frequentes sur nos formations en securite privee et incendie.',
         items: {
@@ -186,12 +189,14 @@ export const sectionsMessages = {
       },
       ctaBanner: {
         badge: 'Pret a vous former ?',
-        title: 'Rejoignez la prochaine session de formation',
+        title: 'Rejoignez la prochaine',
+        titleAccent: 'session de formation',
         cta: 'Demander ma preinscription',
       },
       contact: {
         badge: 'Contact',
-        title: 'Contactez-nous',
+        title: 'Contactez',
+        titleAccent: 'nous',
         subtitle:
           'Une question sur nos formations securite privee et incendie ? Envoyez-nous un message et notre equipe vous repondra rapidement.',
         sideTitle: 'Parlons de votre projet de formation',
@@ -251,7 +256,8 @@ export const sectionsMessages = {
       },
       testimonials: {
         badge: 'Avis',
-        title: 'Ils temoignent',
+        title: 'Ils',
+        titleAccent: 'témoignent',
         subtitle:
           'Decouvrez les retours de nos apprenants et partenaires dans la securite privee et incendie.',
         ratingLabel: 'note',
@@ -353,7 +359,8 @@ export const sectionsMessages = {
       },
       howItWorks: {
         badge: 'Training pathway',
-        title: 'How it works',
+        title: 'How it',
+        titleAccent: 'works',
         subtitle:
           'A clear, step-by-step journey from enrolment to professional certification.',
         steps: {
@@ -411,7 +418,8 @@ export const sectionsMessages = {
       },
       features: {
         badge: 'Our strengths',
-        title: 'Why choose our school',
+        title: 'Why choose',
+        titleAccent: 'our school',
         subtitle:
           'Comprehensive training to become an operational private security or fire safety officer.',
         items: {
@@ -447,7 +455,8 @@ export const sectionsMessages = {
       },
       faq: {
         badge: 'FAQ',
-        title: 'Frequently asked questions',
+        title: 'Frequently asked',
+        titleAccent: 'questions',
         subtitle:
           'Find answers to the most common questions about our private security and fire safety training.',
         items: {
@@ -497,12 +506,14 @@ export const sectionsMessages = {
       },
       ctaBanner: {
         badge: 'Ready to train?',
-        title: 'Join the next training intake',
+        title: 'Join the next',
+        titleAccent: 'training intake',
         cta: 'Apply for pre-registration',
       },
       contact: {
         badge: 'Contact',
-        title: 'Contact us',
+        title: 'Contact',
+        titleAccent: 'us',
         subtitle:
           'Questions about our private security and fire safety training? Send us a message and our team will respond promptly.',
         sideTitle: 'Let\'s discuss your training project',
@@ -562,7 +573,8 @@ export const sectionsMessages = {
       },
       testimonials: {
         badge: 'Reviews',
-        title: 'What they say',
+        title: 'What they',
+        titleAccent: 'say',
         subtitle:
           'Feedback from our learners and partners in private security and fire safety.',
         ratingLabel: 'rating',

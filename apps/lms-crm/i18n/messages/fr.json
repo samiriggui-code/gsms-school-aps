@@ -6,14 +6,53 @@
           "_self": "Qualiopi",
           "classeur": "Classeur",
           "historique": "Historique"
+        },
+        "compagnie": {
+          "_self": "Compagnie",
+          "profil": "Profil",
+          "structure": "Structure",
+          "documents": "Documents"
+        },
+        "rh": {
+          "_self": "Équipe & habilitations",
+          "collaborateurs": "Collaborateurs",
+          "equipes": "Équipes",
+          "formateurs": "Formateurs",
+          "absences": "Absences"
+        },
+        "partenaires": {
+          "_self": "Partenaires & accessibilité",
+          "sous-traitants": "Sous-traitants",
+          "referent-handicap": "Référent handicap"
+        },
+        "equipements": {
+          "_self": "Moyens",
+          "inventaire": "Inventaire",
+          "affectations": "Affectations",
+          "maintenance": "Maintenance",
+          "salles": "Salles"
         }
       },
       "gestion-academique": {
+        "vie-scolaire": {
+          "_self": "Vie scolaire",
+          "formations": "Formations",
+          "sessions": "Sessions",
+          "planning": "Planning",
+          "etudiants": "Étudiants",
+          "cours": "Cours LMS",
+          "devoirs": "Devoirs LMS",
+          "discussions": "Discussions LMS",
+          "inscriptions-lms": "Inscriptions LMS"
+        },
         "suivi-formations": {
           "_self": "Suivi formations",
           "tableau": "Tableau de suivi",
           "satisfaction": "Satisfaction",
           "circuits": "Circuits"
+        },
+        "lms": {
+          "_self": "LMS"
         }
       },
       "pilotage-supervision": {
@@ -25,8 +64,35 @@
       },
       "administration-facturation": {
         "finance": {
+          "_self": "Devis & facturation",
+          "devis": "Devis",
+          "factures": "Factures",
+          "paiements": "Paiements",
           "financeurs": "Financeurs",
-          "bpf": "BPF"
+          "edof-catalog": "Export EDOF",
+          "budget": "Budget",
+          "bpf": "BPF",
+          "rapports": "Rapports"
+        },
+        "financeurs": {
+          "_self": "Financeurs"
+        },
+        "budget": {
+          "_self": "Budget & pilotage"
+        }
+      },
+      "qualiopi": {
+        "_self": "Qualiopi",
+        "referentiel": {
+          "_self": "Référentiel"
+        },
+        "pilotage": {
+          "_self": "Pilotage"
+        },
+        "ia": {
+          "_self": "IA",
+          "brouillons": "Brouillons à valider",
+          "historique": "Historique"
         }
       },
       "support-qualite": {
@@ -1283,25 +1349,37 @@
     }
   },
   "sections": {
+    "qualiopi": {
+      "welcomeDescription": "Référentiel, pilotage et IA — moteur conformité de l'organisme.",
+      "menuCardsTitle": "Accès rapide — Qualiopi",
+      "menuCardsSubtitle": "3 modules : Référentiel, Pilotage, IA",
+      "securityHighlightsTitle": "Indicateurs clés — Qualiopi",
+      "cards": {
+        "referentiel": "Classeur, couverture Evidence, passeport session, écarts.",
+        "pilotage": "Alertes & écarts OF, indicateurs, rapports.",
+        "ia": "Brouillons à valider, historique des runs."
+      }
+    },
     "gestionRessources": {
-      "welcomeDescription": "Centralisez compagnie, Qualiopi, RH et équipements — structure interne, conformité OF, personnel et matériel.",
+      "welcomeDescription": "Centralisez compagnie, équipe & habilitations, partenaires & accessibilité et moyens.",
       "menuCardsTitle": "Accès rapide — Gestion ressources",
-      "menuCardsSubtitle": "4 modules : Compagnie, Qualiopi, RH, Équipements",
+      "menuCardsSubtitle": "4 modules : Compagnie, Équipe, Partenaires, Moyens",
       "securityHighlightsTitle": "Indicateurs clés — Gestion ressources",
       "cards": {
         "compagnie": "Profil entreprise, structure interne et documents administratifs.",
-        "qualiopi": "Classeur des 32 indicateurs Qualiopi V.9 — statut d'audit et preuves.",
-        "rh": "Collaborateurs, formateurs, absences et conformité au menu latéral.",
-        "equipements": "Inventaire, affectations, maintenance atelier et salles de formation."
+        "rh": "Collaborateurs, formateurs, équipes et absences.",
+        "partenaires": "Sous-traitants (I27) et référent handicap (I20/I26).",
+        "equipements": "Inventaire, affectations, maintenance et salles de formation."
       }
     },
     "gestionAcademique": {
-      "welcomeDescription": "Vie scolaire (catalogue, sessions, étudiants) et suivi formations (tableau, satisfaction, circuits).",
+      "welcomeDescription": "Parcours & sessions : catalogue, LMS, planning, suivi et satisfaction.",
       "menuCardsTitle": "Accès rapide — Gestion académique",
-      "menuCardsSubtitle": "2 modules : Vie scolaire et Suivi formations",
+      "menuCardsSubtitle": "{{modules}} modules · {{pages}} pages",
       "securityHighlightsTitle": "Indicateurs clés — Gestion académique",
       "cards": {
         "vieScolaire": "Formations, sessions, planning et étudiants.",
+        "lms": "Cours, devoirs, discussions et inscriptions en ligne.",
         "formations": "Catalogue et pilotage des parcours de formation.",
         "sessions": "Sessions planifiées, inscriptions et organisation pédagogique.",
         "planning": "Calendrier hebdomadaire des sessions, salles et formateurs.",
@@ -1365,14 +1443,16 @@
     "administrationFacturation": {
       "welcomeDescription": "Budget, devis, factures, paiements, financeurs, BPF et rapports financiers.",
       "menuCardsTitle": "Accès rapide — Administration & facturation",
-      "menuCardsSubtitle": "{{pages}} pages Finance selon le menu CRM",
+      "menuCardsSubtitle": "{{modules}} modules · {{pages}} pages Finance",
       "securityHighlightsTitle": "Indicateurs clés — Administration & facturation",
       "cards": {
+        "devisFacturation": "Pipeline commercial : devis, factures, paiements.",
+        "financeurs": "Dispositifs de financement OPCO / CPF / entreprise et export EDOF.",
+        "budgetPilotage": "Budget, bilan pédagogique et financier (BPF) et rapports consolidés.",
         "budget": "Suivi budgétaire, lignes de dépenses et pilotage des enveloppes formation.",
         "devis": "Pipeline commercial, devis candidats et plaquettes partagées.",
         "factures": "Émission, suivi et relances des factures liées aux dossiers.",
         "paiements": "Encaissements, réconciliation et statuts de règlement.",
-        "financeurs": "Registre OPCO / CPF / entreprise — source unique pour sessions et BPF.",
         "bpf": "Bilan pédagogique et financier (Cerfa) — garde-fous déterministes.",
         "rapports": "Tableaux de bord finance, exports et indicateurs consolidés."
       }
@@ -1437,13 +1517,14 @@
     "noModulesTitle": "Aucun module accessible",
     "noModulesDescription": "Contactez votre administrateur pour obtenir les permissions nécessaires.",
     "cards": {
-      "gestion-ressources": "Compagnie, Qualiopi, RH et équipements — structure OF, conformité et moyens.",
-      "gestion-academique": "Vie scolaire (catalogue, sessions) et suivi formations (tableau, satisfaction, circuits).",
+      "qualiopi": "Moteur conformité : classeur 32 indicateurs, couverture Evidence, passeport session et écarts.",
+      "gestion-ressources": "Compagnie, équipe & habilitations, partenaires & accessibilité, moyens.",
+      "gestion-academique": "Parcours & sessions : catalogue, LMS, planning, suivi et satisfaction.",
       "administration-facturation": "Finance : budget, devis, factures, paiements, financeurs, BPF et rapports.",
-      "communication-contenu": "CMS landing, marketing leads et SEO.",
+      "communication-contenu": "Vitrine & acquisition : CMS landing, marketing leads et SEO.",
       "support-qualite": "Helpdesk : tickets et incidents.",
-      "securite-configuration": "Accès, paramètres et gouvernance documentaire.",
-      "pilotage-supervision": "Pilotage opérationnel (alertes, KPI, rapports, risques) et gouvernance IA."
+      "securite-configuration": "Accès, paramètres et gouvernance documentaire (RGPD).",
+      "pilotage-supervision": "Alertes & écarts OF, indicateurs, rapports, et gouvernance IA."
     }
   },
   "datagrid": {

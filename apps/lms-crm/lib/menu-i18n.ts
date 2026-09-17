@@ -33,6 +33,20 @@ export function translateMenuTitle(item: MenuItem, t: TFunction): string {
   return item.title ?? item.heading ?? '';
 }
 
+/** Repli si aucune clé `menu.byPath.*` ne matche — dérive un libellé du dernier segment d'URL. */
+export function fallbackLabelFromPath(path: string): string {
+  const slug = path.split('#')[0]?.split('/').filter(Boolean).pop() ?? path;
+  return slug
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+/** `translateMenuTitle` avec repli garanti non vide (utile pour titres/puces de cartes menu). */
+export function translateMenuTitleOrFallback(path: string, t: TFunction): string {
+  return translateMenuTitle({ path, title: '' }, t) || fallbackLabelFromPath(path);
+}
+
 export function translateMenuItems(items: MenuItem[], t: TFunction): MenuItem[] {
   return items.map((item) => ({
     ...item,

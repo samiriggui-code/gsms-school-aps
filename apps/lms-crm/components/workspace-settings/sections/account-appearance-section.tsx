@@ -18,7 +18,7 @@ import {
 import { portalMuted } from '@/components/portal/layout/portal-ui';
 
 export function AccountAppearanceSection() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const { language, changeLanguage } = useLanguage();
 
   return (
@@ -35,9 +35,9 @@ export function AccountAppearanceSection() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
           >
-            {theme === 'dark' ? (
+            {resolvedTheme === 'dark' ? (
               <>
                 <Sun className="me-2 size-4" />
                 Mode clair

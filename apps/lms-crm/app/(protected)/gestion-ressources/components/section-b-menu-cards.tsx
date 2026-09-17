@@ -1,6 +1,6 @@
 'use client';
 
-import { Building, ShieldCheck, Wrench, Users } from 'lucide-react';
+import { Building, Handshake, Wrench, Users } from 'lucide-react';
 import { SectionMenuCardsShell } from '@/components/common/section-menu-cards-shell';
 
 export const SectionBMenuCards = () => (
@@ -23,19 +23,6 @@ export const SectionBMenuCards = () => (
         tone: 'sky',
       },
       {
-        moduleKey: 'gestion-ressources-qualiopi',
-        path: '/gestion-ressources/qualiopi',
-        descriptionKey: 'sections.gestionRessources.cards.qualiopi',
-        icon: ShieldCheck,
-        backgroundImage: 'bg-4',
-        subSections: ['classeur', 'historique'],
-        subSectionPaths: [
-          '/gestion-ressources/qualiopi/classeur',
-          '/gestion-ressources/qualiopi/historique',
-        ],
-        tone: 'emerald',
-      },
-      {
         moduleKey: 'gestion-ressources-rh',
         path: '/gestion-ressources/rh',
         descriptionKey: 'sections.gestionRessources.cards.rh',
@@ -49,6 +36,19 @@ export const SectionBMenuCards = () => (
           '/gestion-ressources/rh/absences',
         ],
         tone: 'rose',
+      },
+      {
+        moduleKey: 'gestion-ressources-partenaires',
+        path: '/gestion-ressources/partenaires',
+        descriptionKey: 'sections.gestionRessources.cards.partenaires',
+        icon: Handshake,
+        backgroundImage: 'bg-4',
+        subSections: ['sous-traitants', 'referent-handicap'],
+        subSectionPaths: [
+          '/gestion-ressources/partenaires/sous-traitants',
+          '/gestion-ressources/partenaires/referent-handicap',
+        ],
+        tone: 'emerald',
       },
       {
         moduleKey: 'gestion-ressources-equipements',

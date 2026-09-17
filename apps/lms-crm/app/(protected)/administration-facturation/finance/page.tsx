@@ -1,13 +1,6 @@
 'use client';
 
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { useModuleLayout } from '@/hooks/use-module-layout';
 import {
   FinanceStats,
@@ -19,20 +12,11 @@ import {
 import { ComplianceAlerts } from './components/compliance-alerts';
 
 export default function FinanceLandingPage() {
-  const { title, description } = usePageToolbarMeta('/administration-facturation/finance');
   const { isVisible } = useModuleLayout('finance-landing');
 
   return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-        </Toolbar>
-      </Container>
-      <Container className="space-y-5 lg:space-y-7.5">
+    <CrmWiredLeaf path="/administration-facturation/finance" level="module">
+      <div className="space-y-5 lg:space-y-7.5">
         {(isVisible('stats') || isVisible('welcome')) && (
           <div className="grid min-w-0 grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             {isVisible('stats') ? (
@@ -77,7 +61,7 @@ export default function FinanceLandingPage() {
             ) : null}
           </div>
         )}
-      </Container>
-    </>
+      </div>
+    </CrmWiredLeaf>
   );
 }

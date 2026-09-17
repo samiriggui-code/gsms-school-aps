@@ -1,11 +1,4 @@
-import Link from 'next/link';
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarDescription,
-  ToolbarHeading,
-  ToolbarTitle,
-} from '@/components/common/toolbar';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { Button } from '@repo/ui/button';
 import { prisma } from '@/lib/prisma';
 import { buildEdofCatalogXml } from '@/lib/connectors/edof/build-catalog-xml';
@@ -17,26 +10,20 @@ export default async function EdofCatalogPage() {
   const defaulted = result.gaps.filter((g) => g.severity === 'defaulted');
 
   return (
-    <Container>
-      <Toolbar>
-        <ToolbarHeading>
-          <ToolbarTitle>Export EDOF (catalogue LHEO)</ToolbarTitle>
-          <ToolbarDescription>
-            Connecteur EDOF_CATALOG — génération XML ISO-8859-1 (XSD LHEO), puis import manuel sur
-            le portail EDOF (pas d&apos;API). Formations ACTIVE + cpfEligible uniquement.
-          </ToolbarDescription>
-        </ToolbarHeading>
-        <div className="flex gap-2">
-          <Button variant="primary" size="sm" asChild>
-            <a href="/api/sections/administration-facturation/finance/edof-catalog?format=xml">
-              Télécharger le XML
-            </a>
-          </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/administration-facturation/finance/financeurs">Financeurs</Link>
-          </Button>
-        </div>
-      </Toolbar>
+    <CrmWiredLeaf
+      path="/administration-facturation/finance/edof-catalog"
+      actions={
+        <Button variant="primary" size="sm" asChild>
+          <a href="/api/sections/administration-facturation/finance/edof-catalog?format=xml">
+            Télécharger le XML
+          </a>
+        </Button>
+      }
+    >
+      <p className="mb-4 text-xs text-muted-foreground">
+        Connecteur EDOF_CATALOG — génération XML ISO-8859-1 (XSD LHEO), puis import manuel sur le
+        portail EDOF (pas d&apos;API). Formations ACTIVE + cpfEligible uniquement.
+      </p>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-4">
         <div className="rounded-md border p-3">
@@ -133,6 +120,6 @@ export default async function EdofCatalogPage() {
           GET /api/sections/administration-facturation/finance/edof-catalog?format=xml|json
         </code>
       </p>
-    </Container>
+    </CrmWiredLeaf>
   );
 }

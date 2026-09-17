@@ -1,7 +1,6 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import { PilotageAlertsDatagrid } from '../components/pilotage-alerts-datagrid';
-
+/** Déplacé sous /qualiopi/pilotage/alertes. */
 export default function Page() {
-  return <PilotageAlertsDatagrid />;
+  redirect('/qualiopi/pilotage/alertes');
 }

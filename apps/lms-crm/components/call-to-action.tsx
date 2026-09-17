@@ -41,7 +41,10 @@ const CallToAction = () => {
             viewport={{ once: true }}
             className="text-4xl md:text-5xl font-bold text-white mb-10"
           >
-            {t('landing.ctaBanner.title')}
+            {t('landing.ctaBanner.title')}{' '}
+            <span className="font-landing-serif italic font-normal text-primary">
+              {t('landing.ctaBanner.titleAccent')}
+            </span>
           </motion.h2>
           <motion.div
             initial={{ opacity: 0, y: 20 }}

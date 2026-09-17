@@ -12,14 +12,6 @@ import { Eye, MoreHorizontal, Pencil, Plus, RefreshCw, Search, Trash2 } from 'lu
 import { toast } from 'sonner';
 import { Container } from '@/components/common/container';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
-import {
-  Toolbar,
-  ToolbarActions,
-  ToolbarDescription,
-  ToolbarHeading,
-  ToolbarTitle,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { Button } from '@repo/ui/button';
 import { Input } from '@repo/ui/input';
 import { Card, CardHeader } from '@repo/ui/card';
@@ -79,7 +71,6 @@ const KPI_ICONS = [BarChart3, Target, Wallet, TrendingDown, PiggyBank];
 
 export function FinanceBudgetPageContent() {
   const year = new Date().getFullYear();
-  const { title, description } = usePageToolbarMeta('/administration-facturation/finance/budget');
   const qc = useQueryClient();
   const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
@@ -292,23 +283,15 @@ export function FinanceBudgetPageContent() {
 
   return (
     <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-          <ToolbarActions>
-            <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>
-              <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
-              Actualiser
-            </Button>
-            <Button onClick={() => setOpenCreate(true)}>
-              <Plus className="size-4" />
-              Ajouter une ligne
-            </Button>
-          </ToolbarActions>
-        </Toolbar>
+      <Container className="flex justify-end gap-2">
+        <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>
+          <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
+          Actualiser
+        </Button>
+        <Button onClick={() => setOpenCreate(true)}>
+          <Plus className="size-4" />
+          Ajouter une ligne
+        </Button>
       </Container>
 
       <Container className="space-y-5 pb-8 lg:space-y-7.5">

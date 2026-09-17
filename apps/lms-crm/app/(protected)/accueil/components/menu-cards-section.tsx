@@ -6,7 +6,7 @@ import { useAppContext } from '@/lib/app-context';
 import { crmPermissionForPath } from '@/config/menu-crm-access';
 import { useTranslation } from '@/hooks/useTranslation';
 import { sessionHasPermission } from '@/lib/auth/crm-permissions';
-import { translateMenuTitle } from '@/lib/menu-i18n';
+import { translateMenuTitleOrFallback } from '@/lib/menu-i18n';
 import { Lock } from 'lucide-react';
 import { Skeleton } from '@repo/ui/skeleton';
 import {
@@ -16,7 +16,7 @@ import {
   MessageSquare,
   LifeBuoy,
   Shield,
-  TrendingUp,
+  ShieldCheck,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -34,14 +34,14 @@ type AccueilCardDef = {
 /** Aligné sur `MENU_SIDEBAR` — une carte = une section, puces = modules (liens hub). */
 const ACCUEIL_CARDS: AccueilCardDef[] = [
   {
-    moduleKey: 'pilotage-supervision',
-    path: '/pilotage-supervision',
-    descriptionKey: 'accueil.cards.pilotage-supervision',
-    icon: TrendingUp,
-    moduleCount: 2,
-    subSections: ['pilotage', 'ia'],
-    subSectionPaths: ['/pilotage-supervision/pilotage', '/pilotage-supervision/ia'],
-    tone: 'cyan',
+    moduleKey: 'qualiopi',
+    path: '/qualiopi',
+    descriptionKey: 'accueil.cards.qualiopi',
+    icon: ShieldCheck,
+    moduleCount: 3,
+    subSections: ['referentiel', 'pilotage', 'ia'],
+    subSectionPaths: ['/qualiopi/referentiel', '/qualiopi/pilotage', '/qualiopi/ia'],
+    tone: 'emerald',
   },
   {
     moduleKey: 'gestion-ressources',
@@ -49,11 +49,11 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
     descriptionKey: 'accueil.cards.gestion-ressources',
     icon: Users,
     moduleCount: 4,
-    subSections: ['compagnie', 'qualiopi', 'rh', 'equipements'],
+    subSections: ['compagnie', 'equipe', 'partenaires', 'moyens'],
     subSectionPaths: [
       '/gestion-ressources/compagnie',
-      '/gestion-ressources/qualiopi',
       '/gestion-ressources/rh',
+      '/gestion-ressources/partenaires',
       '/gestion-ressources/equipements',
     ],
     tone: 'sky',
@@ -63,10 +63,11 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
     path: '/gestion-academique',
     descriptionKey: 'accueil.cards.gestion-academique',
     icon: GraduationCap,
-    moduleCount: 2,
-    subSections: ['vie-scolaire', 'suivi-formations'],
+    moduleCount: 3,
+    subSections: ['vie-scolaire', 'lms', 'suivi-formations'],
     subSectionPaths: [
       '/gestion-academique/vie-scolaire',
+      '/gestion-academique/lms',
       '/gestion-academique/suivi-formations',
     ],
     tone: 'violet',
@@ -76,9 +77,13 @@ const ACCUEIL_CARDS: AccueilCardDef[] = [
     path: '/administration-facturation',
     descriptionKey: 'accueil.cards.administration-facturation',
     icon: Euro,
-    moduleCount: 1,
-    subSections: ['finance'],
-    subSectionPaths: ['/administration-facturation/finance'],
+    moduleCount: 3,
+    subSections: ['finance', 'financeurs', 'budget'],
+    subSectionPaths: [
+      '/administration-facturation/finance',
+      '/administration-facturation/financeurs',
+      '/administration-facturation/budget',
+    ],
     tone: 'emerald',
   },
   {
@@ -190,7 +195,7 @@ export const MenuCardsSection = () => {
               <MenuCard
                 key={item.moduleKey}
                 moduleKey={item.moduleKey}
-                title={translateMenuTitle({ path: item.path, title: '' }, t)}
+                title={translateMenuTitleOrFallback(item.path, t)}
                 description={t(item.descriptionKey)}
                 icon={item.icon}
                 path={item.path}
@@ -198,7 +203,7 @@ export const MenuCardsSection = () => {
                 backgroundImage="bg-3"
                 subSections={item.subSections}
                 subSectionLabels={item.subSectionPaths.map((subPath) =>
-                  translateMenuTitle({ path: subPath, title: '' }, t),
+                  translateMenuTitleOrFallback(subPath, t),
                 )}
                 subSectionPaths={item.subSectionPaths}
                 tone={item.tone}

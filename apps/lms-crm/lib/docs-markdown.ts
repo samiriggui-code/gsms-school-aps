@@ -16,7 +16,7 @@ const APP_ROUTE_PREFIXES = [
   '/administration-facturation',
   '/gestion-sites-clients',
   '/support-qualite',
-  '/pilotage-supervision',
+  '/qualiopi',
   '/securite-configuration',
   '/mon-profil',
   '/account',

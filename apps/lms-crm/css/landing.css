@@ -65,7 +65,53 @@ html {
   scroll-behavior: smooth;
 }
 
+/**
+ * Palette + typo du site public — scopées à [data-landing] pour ne jamais
+ * toucher aux tokens de config.reui.css utilisés par le backoffice (protected).
+ * Pattern porté de gsms-platform/apps/crm : papier chaud + encre quasi noire,
+ * un seul accent, radius plus généreux, accroche en serif italique.
+ */
 [data-landing] {
   width: 100%;
   min-height: 100vh;
+
+  --background: #faf8f5;
+  --foreground: #171310;
+  --card: #fefdfb;
+  --card-foreground: #171310;
+  --popover: #fefdfb;
+  --popover-foreground: #171310;
+  --secondary: #f1eee9;
+  --secondary-foreground: #171310;
+  --muted: #eeebe6;
+  --muted-foreground: #6b6a63;
+  --accent: #f1eee9;
+  --accent-foreground: #171310;
+  --border: #ddd9d1;
+  --input: #ddd9d1;
+  --radius: 14px;
+
+  font-family: var(--font-landing-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-landing] .font-landing-serif {
+  font-family: var(--font-landing-serif), Georgia, serif;
+}
+
+/** Variante sombre — même identité « papier chaud », inversée en encre chaude. */
+.dark [data-landing] {
+  --background: #15130f;
+  --foreground: #f2ede4;
+  --card: #1b1811;
+  --card-foreground: #f2ede4;
+  --popover: #1b1811;
+  --popover-foreground: #f2ede4;
+  --secondary: #221e16;
+  --secondary-foreground: #f2ede4;
+  --muted: #221e16;
+  --muted-foreground: #a39c8e;
+  --accent: #221e16;
+  --accent-foreground: #f2ede4;
+  --border: #332c1f;
+  --input: #332c1f;
 }

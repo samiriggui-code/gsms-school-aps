@@ -85,7 +85,7 @@ const Footer = () => {
                       <li key={itemId}>
                         <a
                           href="#"
-                          className="text-accent-foreground hover:text-indigo-600 transition-colors hover:underline"
+                          className="text-accent-foreground hover:text-primary transition-colors hover:underline"
                         >
                           {t(`landing.footer.columns.${column.id}.${itemId}`)}
                         </a>
@@ -106,7 +106,7 @@ const Footer = () => {
             <button
               type="button"
               onClick={() => setCgvOpen(true)}
-              className="text-muted-foreground underline underline-offset-4 hover:text-indigo-600 dark:hover:text-indigo-400"
+              className="text-muted-foreground underline underline-offset-4 hover:text-primary"
             >
               {t('landing.footer.cgv')}
             </button>

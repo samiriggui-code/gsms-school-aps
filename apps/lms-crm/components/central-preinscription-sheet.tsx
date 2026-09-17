@@ -25,6 +25,7 @@ import {
 } from '@repo/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs';
 import { Textarea } from '@repo/ui/textarea';
+import { landingFontVariables } from '@/lib/landing-fonts';
 import type { CatalogSessionRow } from '@/components/catalog/catalog-sessions-panel';
 import {
   PREINSCRIPTION_FORMATION_OPTIONS,
@@ -323,7 +324,13 @@ export function CentralPreinscriptionSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="gap-0 w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-2rem)] lg:w-[1160px] inset-2 sm:inset-5 border start-auto h-[calc(100dvh-1rem)] sm:h-auto max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] rounded-lg p-0 [&_[data-slot=sheet-close]]:top-3 sm:[&_[data-slot=sheet-close]]:top-4.5 [&_[data-slot=sheet-close]]:end-3 sm:[&_[data-slot=sheet-close]]:end-5">
+      <SheetContent
+        data-landing
+        className={cn(
+          landingFontVariables,
+          'gap-0 w-[calc(100vw-1rem)] max-w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-2rem)] lg:w-[1160px] inset-2 sm:inset-5 border start-auto h-[calc(100dvh-1rem)] sm:h-auto max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-2rem)] rounded-lg p-0 [&_[data-slot=sheet-close]]:top-3 sm:[&_[data-slot=sheet-close]]:top-4.5 [&_[data-slot=sheet-close]]:end-3 sm:[&_[data-slot=sheet-close]]:end-5',
+        )}
+      >
         <SheetHeader className="border-b border-border px-5 py-3.5">
           <SheetTitle className="font-medium">{p.sheetTitle}</SheetTitle>
           <SheetDescription>{p.sheetDescription}</SheetDescription>

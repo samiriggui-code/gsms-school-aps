@@ -14,14 +14,6 @@ import {
 import { toast } from 'sonner';
 import { Container } from '@/components/common/container';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
-import {
-  Toolbar,
-  ToolbarActions,
-  ToolbarDescription,
-  ToolbarHeading,
-  ToolbarTitle,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { Button } from '@repo/ui/button';
 import { Skeleton } from '@repo/ui/skeleton';
 import {
@@ -54,7 +46,6 @@ async function fetchRapports(months: number): Promise<FinanceRapportsPayload> {
 }
 
 export function FinanceRapportsContent() {
-  const { title, description } = usePageToolbarMeta('/administration-facturation/finance/rapports');
   const [months, setMonths] = useState('12');
 
   const { data, isLoading, isFetching, refetch } = useQuery({
@@ -95,33 +86,25 @@ export function FinanceRapportsContent() {
 
   return (
     <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-          <ToolbarActions className="flex flex-wrap gap-2">
-            <Select value={months} onValueChange={setMonths}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Période" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="6">6 mois</SelectItem>
-                <SelectItem value="12">12 mois</SelectItem>
-                <SelectItem value="18">18 mois</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>
-              <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
-              Actualiser
-            </Button>
-            <Button variant="outline" onClick={exportCsv}>
-              <Download className="size-4" />
-              Export CSV
-            </Button>
-          </ToolbarActions>
-        </Toolbar>
+      <Container className="flex flex-wrap justify-end gap-2">
+        <Select value={months} onValueChange={setMonths}>
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="Période" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="6">6 mois</SelectItem>
+            <SelectItem value="12">12 mois</SelectItem>
+            <SelectItem value="18">18 mois</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>
+          <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
+          Actualiser
+        </Button>
+        <Button variant="outline" onClick={exportCsv}>
+          <Download className="size-4" />
+          Export CSV
+        </Button>
       </Container>
 
       <Container className="space-y-5 pb-8 lg:space-y-7.5">

@@ -34,7 +34,14 @@ if (basePathEnv.startsWith('http')) {
 }
 
 const productionOrigins = getProductionAllowedOrigins();
-const localOrigins = ['localhost:3001', '127.0.0.1:3001', 'localhost:3000', '127.0.0.1:3000'];
+const localOrigins = [
+  'localhost:3002',
+  '127.0.0.1:3002',
+  'localhost:3001',
+  '127.0.0.1:3001',
+  'localhost:3000',
+  '127.0.0.1:3000',
+];
 
 const nextConfig = {
   output: 'standalone',
@@ -65,7 +72,7 @@ const nextConfig = {
       './apps/lms-crm/lib/cnaps/assets/**/*',
     ],
   },
-  allowedDevOrigins: getAllowedDevOrigins({ ports: [3000, 3001] }),
+  allowedDevOrigins: getAllowedDevOrigins({ ports: [3002] }),
   experimental: {
     serverActions: {
       allowedOrigins: [...new Set([...productionOrigins, ...localOrigins])],
@@ -151,20 +158,34 @@ const nextConfig = {
       '/support-qualite/qualite/incidents': '/support-qualite/support/incidents',
       '/support-qualite/qualite/incidents/sessions': '/support-qualite/support/incidents',
       '/support-qualite/qualite/incidents/resultats': '/support-qualite/support/incidents',
-      '/support-qualite/qualiopi': '/gestion-ressources/qualiopi',
-      '/support-qualite/qualiopi/classeur': '/gestion-ressources/qualiopi/classeur',
-      '/support-qualite/docs-circuits': '/gestion-academique/suivi-formations',
+      '/support-qualite/qualiopi': '/qualiopi',
+      '/support-qualite/qualiopi/classeur': '/qualiopi/classeur',
+      '/support-qualite/docs-circuits': '/gestion-academique/vie-scolaire',
       '/support-qualite/docs-circuits/satisfaction':
         '/gestion-academique/suivi-formations/satisfaction',
       '/support-qualite/docs-circuits/circuits':
         '/gestion-academique/suivi-formations/circuits',
-      '/qualite-organisme/qualiopi': '/gestion-ressources/qualiopi',
-      '/qualite-organisme/qualiopi/classeur': '/gestion-ressources/qualiopi/classeur',
-      '/qualite-organisme/docs-circuits': '/gestion-academique/suivi-formations',
+      '/qualite-organisme/qualiopi': '/qualiopi',
+      '/qualite-organisme/qualiopi/classeur': '/qualiopi/classeur',
+      '/qualite-organisme/docs-circuits': '/gestion-academique/vie-scolaire',
       '/qualite-organisme/docs-circuits/satisfaction':
         '/gestion-academique/suivi-formations/satisfaction',
       '/qualite-organisme/docs-circuits/circuits':
         '/gestion-academique/suivi-formations/circuits',
+      // Vague 1 Proposition A — Qualiopi section top-level
+      '/gestion-ressources/qualiopi': '/qualiopi',
+      '/gestion-ressources/qualiopi/passeport': '/qualiopi/passeport',
+      '/gestion-ressources/qualiopi/classeur': '/qualiopi/classeur',
+      '/gestion-ressources/qualiopi/couverture': '/qualiopi/couverture',
+      '/gestion-ressources/qualiopi/historique': '/qualiopi/historique',
+      '/gestion-ressources/conformite': '/qualiopi/ecarts',
+      // Vague 2 — partenaires URLs + pilotage risques
+      '/gestion-ressources/rh/sous-traitants': '/gestion-ressources/partenaires/sous-traitants',
+      '/gestion-ressources/rh/referent-handicap':
+        '/gestion-ressources/partenaires/referent-handicap',
+      '/pilotage-supervision/pilotage/risques': '/qualiopi/ecarts',
+      // Suivi formations fusionné dans Parcours & sessions
+      '/gestion-academique/suivi-formations': '/gestion-academique/vie-scolaire',
       '/gestion-academique/vie-scolaire/suivi-formations':
         '/gestion-academique/suivi-formations/tableau',
       '/securite-configuration/acces/security-log': '/securite-configuration/acces/logs',

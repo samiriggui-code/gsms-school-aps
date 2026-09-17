@@ -1,14 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import Link from 'next/link';
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarDescription,
-  ToolbarHeading,
-  ToolbarTitle,
-} from '@/components/common/toolbar';
-import { Button } from '@repo/ui/button';
+import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
 import { prisma } from '@/lib/prisma';
 import { CreateFundingCaseForm } from './create-funding-case-form';
 import { EdofDossierChecklistPanel } from './edof-dossier-checklist-panel';
@@ -75,19 +67,11 @@ export default async function FinanceursPage() {
   const activeProviders = providers.filter((p) => p.isActive).length;
 
   return (
-    <Container>
-      <Toolbar>
-        <ToolbarHeading>
-          <ToolbarTitle>Financeurs</ToolbarTitle>
-          <ToolbarDescription>
-            Registre Prisma FundingProvider / FundingCase (G5). Matrice connecteurs en référence
-            (dernière vérif : {data.last_verified_at ?? 'n/a'}).
-          </ToolbarDescription>
-        </ToolbarHeading>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/administration-facturation/finance">Retour finance</Link>
-        </Button>
-      </Toolbar>
+    <CrmWiredLeaf path="/administration-facturation/finance/financeurs">
+      <p className="mb-4 text-xs text-muted-foreground">
+        Registre Prisma FundingProvider / FundingCase (G5). Matrice connecteurs en référence
+        (dernière vérif : {data.last_verified_at ?? 'n/a'}).
+      </p>
 
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <div className="rounded-md border p-3">
@@ -272,6 +256,6 @@ export default async function FinanceursPage() {
           </tbody>
         </table>
       </div>
-    </Container>
+    </CrmWiredLeaf>
   );
 }

@@ -158,7 +158,9 @@ const Pricing = () => {
           className="flex flex-col items-center justify-center gap-5 text-center"
         >
           <CustomBadge>{t('landing.pricing.badge')}</CustomBadge>
-          <CustomTitle>{t('landing.pricing.title')}</CustomTitle>
+          <CustomTitle accent={t('landing.pricing.titleAccent')}>
+            {t('landing.pricing.title')}
+          </CustomTitle>
           <CustomSubtitle className="mb-10">{t('landing.pricing.subtitle')}</CustomSubtitle>
 
           {visibleTabs.length > 0 ? (
@@ -222,7 +224,7 @@ const Pricing = () => {
                     'md:col-start-1',
                 )}
               >
-                <Card className="h-full relative border-border hover:border-indigo-500 transition-all duration-300 group">
+                <Card className="h-full relative border-border hover:border-primary transition-all duration-300 group">
                   <CardHeader className="text-center py-6 border-b-0">
                     <div className="mb-3">
                       <Badge variant="outline">{formation.tag}</Badge>
@@ -277,7 +279,7 @@ const Pricing = () => {
                         whileTap={{ scale: 0.98 }}
                       >
                         <Button
-                          className="w-full cursor-pointer bg-black hover:bg-black/90 text-white dark:bg-white dark:text-black dark:hover:bg-white/90"
+                          className="w-full cursor-pointer"
                           size="lg"
                           variant="primary"
                           onClick={() => openFormationSheet(formation.id, formation.name)}

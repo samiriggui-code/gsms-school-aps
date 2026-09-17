@@ -3,7 +3,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { MenuCard, menuCardPagesBadge, type MenuCardTone } from '@/components/common/menu-card';
 import { useTranslation } from '@/hooks/useTranslation';
-import { translateMenuTitle } from '@/lib/menu-i18n';
+import { translateMenuTitleOrFallback } from '@/lib/menu-i18n';
 
 export type SectionMenuCardItem = {
   moduleKey: string;
@@ -46,16 +46,16 @@ export function SectionMenuCardsShell({
           const subSectionLabels =
             item.subSectionLabels ??
             (item.subSectionPaths
-              ? item.subSectionPaths.map((subPath) =>
-                  translateMenuTitle({ path: subPath, title: '' }, t),
-                )
+              ? item.subSectionPaths.map((subPath) => translateMenuTitleOrFallback(subPath, t))
               : undefined);
+
+          const title = translateMenuTitleOrFallback(item.path, t);
 
           return (
             <MenuCard
               key={item.moduleKey}
               moduleKey={item.moduleKey}
-              title={translateMenuTitle({ path: item.path, title: '' }, t)}
+              title={title}
               description={t(item.descriptionKey)}
               icon={item.icon}
               path={item.path}

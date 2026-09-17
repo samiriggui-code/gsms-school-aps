@@ -54,7 +54,7 @@ export function Header() {
   const canUseChat =
     isCrmRole(session?.user?.roleSlug) || isInstructorRole(session?.user?.roleSlug);
   const { changeLanguage, language } = useLanguage();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   const scrollPosition = useScrollPosition();
   const headerSticky: boolean = scrollPosition > 0;
@@ -218,10 +218,10 @@ export function Header() {
               mode="icon"
               shape="circle"
               className="size-9 hover:bg-primary/10 hover:[&_svg]:text-primary"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
               aria-label={t('layout.toggleTheme')}
             >
-              {theme === 'dark' ? (
+              {resolvedTheme === 'dark' ? (
                 <Sun className="size-4.5!" />
               ) : (
                 <Moon className="size-4.5!" />

@@ -2,6 +2,7 @@ import {
   Building,
   Euro,
   GraduationCap,
+  Handshake,
   LayoutGrid,
   LifeBuoy,
   MessageSquare,
@@ -9,16 +10,15 @@ import {
   Shield,
   ShieldCheck,
   Theater,
-  TrendingUp,
   Users,
-  ClipboardList,
 } from 'lucide-react';
 import { type MenuConfig } from './types';
 
 /**
- * Hiérarchie CRM (3 niveaux) — alignée sur `.cursor/rules/gestion-ressources-layout.mdc` :
- * Section (landing Accéder) → Module (dashboard) → Feuille.
- * Scaffolds « En construction » autorisés pour figer l’arbre (IA, Financeurs, BPF, Historique).
+ * Hiérarchie CRM (3 niveaux) — Proposition A vague 1+2+3 :
+ * Section → Module → Feuille.
+ * Qualiopi = section top-level (moteur OF), fusionnée avec l'ancienne
+ * section Pilotage supervision (Référentiel / Pilotage / IA = modules).
  */
 export const MENU_SIDEBAR: MenuConfig = [
   {
@@ -27,26 +27,36 @@ export const MENU_SIDEBAR: MenuConfig = [
     path: '/accueil',
   },
   {
-    title: 'Pilotage supervision',
-    icon: TrendingUp,
-    path: '/pilotage-supervision',
+    title: 'Qualiopi',
+    icon: ShieldCheck,
+    path: '/qualiopi',
     children: [
       {
-        title: 'Pilotage',
-        path: '/pilotage-supervision/pilotage',
+        title: 'Référentiel',
+        path: '/qualiopi/referentiel',
         children: [
-          { title: 'Alertes', path: '/pilotage-supervision/pilotage/alertes' },
-          { title: 'Indicateurs', path: '/pilotage-supervision/pilotage/indicateurs' },
-          { title: 'Rapports', path: '/pilotage-supervision/pilotage/rapports' },
-          { title: 'Risques', path: '/pilotage-supervision/pilotage/risques' },
+          { title: 'Passeport session', path: '/qualiopi/referentiel/passeport' },
+          { title: 'Classeur', path: '/qualiopi/referentiel/classeur' },
+          { title: 'Couverture', path: '/qualiopi/referentiel/couverture' },
+          { title: 'Historique', path: '/qualiopi/referentiel/historique' },
+          { title: 'Écarts détectés', path: '/qualiopi/referentiel/ecarts' },
+        ],
+      },
+      {
+        title: 'Pilotage',
+        path: '/qualiopi/pilotage',
+        children: [
+          { title: 'Alertes & écarts OF', path: '/qualiopi/pilotage/alertes' },
+          { title: 'Indicateurs', path: '/qualiopi/pilotage/indicateurs' },
+          { title: 'Rapports', path: '/qualiopi/pilotage/rapports' },
         ],
       },
       {
         title: 'IA',
-        path: '/pilotage-supervision/ia',
+        path: '/qualiopi/ia',
         children: [
-          { title: 'Brouillons à valider', path: '/pilotage-supervision/ia/brouillons' },
-          { title: 'Historique', path: '/pilotage-supervision/ia/historique' },
+          { title: 'Brouillons à valider', path: '/qualiopi/ia/brouillons' },
+          { title: 'Historique', path: '/qualiopi/ia/historique' },
         ],
       },
     ],
@@ -67,31 +77,26 @@ export const MENU_SIDEBAR: MenuConfig = [
         ],
       },
       {
-        title: 'Qualiopi',
-        path: '/gestion-ressources/qualiopi',
-        icon: ShieldCheck,
-        children: [
-          { title: 'Passeport session', path: '/gestion-ressources/qualiopi/passeport' },
-          { title: 'Classeur', path: '/gestion-ressources/qualiopi/classeur' },
-          { title: 'Couverture', path: '/gestion-ressources/qualiopi/couverture' },
-          { title: 'Historique', path: '/gestion-ressources/qualiopi/historique' },
-          { title: 'Tableau conformité', path: '/gestion-ressources/conformite' },
-        ],
-      },
-      {
-        title: 'RH',
+        title: 'Équipe & habilitations',
         path: '/gestion-ressources/rh',
         children: [
           { title: 'Collaborateurs', path: '/gestion-ressources/rh/collaborateurs' },
           { title: 'Équipes', path: '/gestion-ressources/rh/equipes' },
           { title: 'Formateurs', path: '/gestion-ressources/rh/formateurs' },
-          { title: 'Sous-traitants', path: '/gestion-ressources/rh/sous-traitants' },
-          { title: 'Référent handicap', path: '/gestion-ressources/rh/referent-handicap' },
           { title: 'Absences', path: '/gestion-ressources/rh/absences' },
         ],
       },
       {
-        title: 'Équipements',
+        title: 'Partenaires & accessibilité',
+        path: '/gestion-ressources/partenaires',
+        icon: Handshake,
+        children: [
+          { title: 'Sous-traitants', path: '/gestion-ressources/partenaires/sous-traitants' },
+          { title: 'Référent handicap', path: '/gestion-ressources/partenaires/referent-handicap' },
+        ],
+      },
+      {
+        title: 'Moyens',
         path: '/gestion-ressources/equipements',
         children: [
           {
@@ -125,84 +130,68 @@ export const MENU_SIDEBAR: MenuConfig = [
         title: 'Vie scolaire',
         path: '/gestion-academique/vie-scolaire',
         children: [
-          {
-            title: 'Formations',
-            path: '/gestion-academique/vie-scolaire/formations',
-          },
-          {
-            title: 'Cours LMS',
-            path: '/gestion-academique/vie-scolaire/cours',
-          },
-          {
-            title: 'Devoirs LMS',
-            path: '/gestion-academique/vie-scolaire/devoirs',
-          },
-          {
-            title: 'Discussions LMS',
-            path: '/gestion-academique/vie-scolaire/discussions',
-          },
-          {
-            title: 'Inscriptions LMS',
-            path: '/gestion-academique/vie-scolaire/inscriptions-lms',
-          },
-          {
-            title: 'Sessions',
-            path: '/gestion-academique/vie-scolaire/sessions',
-          },
-          {
-            title: 'Planning',
-            path: '/gestion-academique/vie-scolaire/planning',
-          },
-          {
-            title: 'Étudiants',
-            path: '/gestion-academique/vie-scolaire/etudiants',
-          },
+          { title: 'Formations', path: '/gestion-academique/vie-scolaire/formations' },
+          { title: 'Sessions', path: '/gestion-academique/vie-scolaire/sessions' },
+          { title: 'Planning', path: '/gestion-academique/vie-scolaire/planning' },
+          { title: 'Étudiants', path: '/gestion-academique/vie-scolaire/etudiants' },
+        ],
+      },
+      {
+        title: 'LMS',
+        path: '/gestion-academique/lms',
+        children: [
+          { title: 'Cours LMS', path: '/gestion-academique/vie-scolaire/cours' },
+          { title: 'Devoirs LMS', path: '/gestion-academique/vie-scolaire/devoirs' },
+          { title: 'Discussions LMS', path: '/gestion-academique/vie-scolaire/discussions' },
+          { title: 'Inscriptions LMS', path: '/gestion-academique/vie-scolaire/inscriptions-lms' },
         ],
       },
       {
         title: 'Suivi formations',
         path: '/gestion-academique/suivi-formations',
-        icon: ClipboardList,
         children: [
-          {
-            title: 'Tableau de suivi',
-            path: '/gestion-academique/suivi-formations/tableau',
-          },
-          {
-            title: 'Satisfaction',
-            path: '/gestion-academique/suivi-formations/satisfaction',
-          },
-          {
-            title: 'Circuits',
-            path: '/gestion-academique/suivi-formations/circuits',
-          },
+          { title: 'Tableau de suivi', path: '/gestion-academique/suivi-formations/tableau' },
+          { title: 'Satisfaction', path: '/gestion-academique/suivi-formations/satisfaction' },
+          { title: 'Circuits', path: '/gestion-academique/suivi-formations/circuits' },
         ],
       },
     ],
   },
   {
-    title: 'Admin facturation',
+    title: 'Finance',
     icon: Euro,
     path: '/administration-facturation',
     children: [
       {
-        title: 'Finance',
+        title: 'Devis & facturation',
         path: '/administration-facturation/finance',
         children: [
-          { title: 'Budget', path: '/administration-facturation/finance/budget' },
           { title: 'Devis', path: '/administration-facturation/finance/devis' },
           { title: 'Factures', path: '/administration-facturation/finance/factures' },
           { title: 'Paiements', path: '/administration-facturation/finance/paiements' },
+        ],
+      },
+      {
+        title: 'Financeurs',
+        path: '/administration-facturation/financeurs',
+        children: [
           { title: 'Financeurs', path: '/administration-facturation/finance/financeurs' },
-          { title: 'BPF', path: '/administration-facturation/finance/bpf' },
           { title: 'Export EDOF', path: '/administration-facturation/finance/edof-catalog' },
+        ],
+      },
+      {
+        title: 'Budget & pilotage',
+        path: '/administration-facturation/budget',
+        children: [
+          { title: 'Budget', path: '/administration-facturation/finance/budget' },
+          { title: 'BPF', path: '/administration-facturation/finance/bpf' },
           { title: 'Rapports', path: '/administration-facturation/finance/rapports' },
         ],
       },
     ],
   },
   {
-    title: 'Communication contenu',
+    title: 'Vitrine & acquisition',
     icon: MessageSquare,
     path: '/communication-contenu',
     children: [
@@ -280,7 +269,7 @@ export const MENU_SIDEBAR: MenuConfig = [
         path: '/securite-configuration/gouvernance-donnees',
         children: [
           {
-            title: 'Conformité',
+            title: 'Conformité RGPD',
             path: '/securite-configuration/gouvernance-donnees/conformite',
           },
           {

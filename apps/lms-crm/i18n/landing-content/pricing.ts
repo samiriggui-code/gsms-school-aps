@@ -3,7 +3,8 @@ export const pricingMessages = {
     landing: {
       pricing: {
         badge: 'Formations',
-        title: 'Nos parcours de formation',
+        title: 'Nos parcours de',
+        titleAccent: 'formation',
         subtitle:
           'Organisation par volets metiers, sans affichage tarifaire, avec les formations les plus demandees du secteur.',
         tabs: {
@@ -458,7 +459,8 @@ export const pricingMessages = {
     landing: {
       pricing: {
         badge: 'Training programmes',
-        title: 'Our training pathways',
+        title: 'Our training',
+        titleAccent: 'pathways',
         subtitle:
           'Organised by professional track, without displayed fees, featuring the most in-demand programmes in the sector.',
         tabs: {

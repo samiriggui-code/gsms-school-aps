@@ -454,6 +454,12 @@ export class StatService {
         { label: 'Devis Acceptés', value: acceptedDevis, color: 'success', icon: 'CheckCircle' },
         { label: 'Nouveaux Leads', value: totalLeads, color: 'info', icon: 'UserPlus' },
         { label: 'Factures en attente', value: pendingInvoices, color: 'warning', icon: 'Clock' },
+        {
+          label: 'Factures soldées',
+          value: Math.max(0, acceptedDevis - pendingInvoices),
+          color: 'destructive',
+          icon: 'CreditCard',
+        },
       ];
 
       const timeline = StatService.generateMonthlyTimeline(months);
@@ -473,25 +479,36 @@ export class StatService {
   /**
    * Stats pour le Dashboard principal (Général)
    */
+  /** Stats bandeau `/gestion-ressources` — Compagnie / RH / Partenaires / Équipements (seul appelant). */
   async getGeneralDashboardStats(): Promise<any> {
     const cacheKey = `stats:dashboard:general`;
 
     return this.getCachedStats(cacheKey, async () => {
       const [
         trainersCount,
-        sessionsCount,
+        rhTeamsCount,
         equipmentsBroken,
+        equipmentsAvailable,
+        equipmentsTotal,
+        roomsAvailable,
         totalUsers,
         activeSites,
         activeCollaborators,
+        subcontractorsActive,
       ] = await Promise.all([
         this.prisma.user.count({ where: { role: { slug: 'formateur' }, isTrashed: false } }),
-        this.prisma.formationSession.count(),
+        this.prisma.rhTeam.count(),
         this.prisma.equipment.count({ where: { status: 'OUT_OF_SERVICE' } }),
+        this.prisma.equipment.count({ where: { status: 'AVAILABLE' } }),
+        this.prisma.equipment.count(),
+        this.prisma.formationVenueRoom.count({ where: { isActive: true } }),
         this.prisma.user.count({ where: { isTrashed: false } }),
         this.prisma.clientSite.count({ where: { isActive: true } }),
         this.prisma.user.count({ where: { status: 'ACTIVE', isTrashed: false, NOT: [{ role: { slug: { in: ['candidat', 'eleve'] } } }] } }),
+        this.prisma.subcontractorRecord.count({ where: { status: 'ACTIVE' } }),
       ]);
+
+      const equipmentAvailPct = equipmentsTotal > 0 ? Math.round((equipmentsAvailable / equipmentsTotal) * 100) : 100;
 
       return {
         success: true,
@@ -502,61 +519,62 @@ export class StatService {
           availableAgents: {
             label: 'Formateurs actifs',
             value: trainersCount,
-            trend: 'up',
-            trendValue: '+4.2%',
+            trend: 'neutral',
+            trendValue: '',
             icon: 'Users',
           },
           activeTeams: {
-            label: 'Equipes pedagogiques',
-            value: 7,
-            trend: 'up',
-            trendValue: '+1.8%',
+            label: 'Équipes pédagogiques',
+            value: rhTeamsCount,
+            trend: 'neutral',
+            trendValue: '',
             icon: 'UsersRound',
           },
           brokenEquipments: {
-            label: 'Incidents materiel',
+            label: 'Incidents matériel',
             value: equipmentsBroken,
-            trend: 'down',
-            trendValue: '-12.5%',
+            trend: equipmentsBroken > 0 ? 'down' : 'neutral',
+            trendValue: '',
             icon: 'AlertTriangle',
           },
           operationalVehicles: {
             label: 'Salles disponibles',
-            value: 14,
-            trend: 'up',
-            trendValue: '+2.1%',
+            value: roomsAvailable,
+            trend: 'neutral',
+            trendValue: '',
             icon: 'CheckCircle',
           },
           serviceHours: {
-            label: 'Heures de cours',
-            value: 186,
-            trend: 'up',
-            trendValue: '+6.4%',
+            label: 'Sous-traitants actifs',
+            value: subcontractorsActive,
+            trend: 'neutral',
+            trendValue: '',
             icon: 'Clock3',
           },
           coveredSites: {
-            label: 'Campus actifs',
-            value: 4,
+            label: 'Sites actifs',
+            value: activeSites,
             trend: 'neutral',
-            trendValue: 'stable',
+            trendValue: '',
             icon: 'MapPin',
           },
         },
         stats: [
-          { icon: 'GraduationCap', text: 'Taux de reussite', total: 91, stats: 3, trend: 'up', unit: '%' },
-          { icon: 'BookOpenCheck', text: 'Parcours complets', total: 247, stats: 5, trend: 'up' },
-          { icon: 'ClipboardCheck', text: 'Inscriptions valides', total: 132, stats: 2, trend: 'up' },
-          { icon: 'UserCheck', text: 'Assiduite moyenne', total: 88, stats: 1, trend: 'neutral', unit: '%' },
-          { icon: 'ShieldCheck', text: 'Conformite qualite', total: 96, stats: 2, trend: 'up', unit: '%' },
+          { icon: 'UserCheck', text: 'Collaborateurs actifs', total: activeCollaborators, stats: 0, trend: 'neutral' },
+          { icon: 'GraduationCap', text: 'Formateurs', total: trainersCount, stats: 0, trend: 'neutral' },
+          { icon: 'MapPin', text: 'Sites actifs', total: activeSites, stats: 0, trend: 'neutral' },
+          { icon: 'CheckCircle', text: 'Équipements opérationnels', total: equipmentsAvailable, stats: equipmentAvailPct, trend: 'neutral' },
+          { icon: 'ShieldCheck', text: 'Sous-traitants qualifiés', total: subcontractorsActive, stats: 0, trend: 'neutral' },
         ],
         overallPerformance: {
-          value: 89.6,
-          trend: 2.7,
+          value: equipmentAvailPct,
+          trend: 0,
         },
         categories: [
-          { badgeColor: 'bg-blue-500', label: 'Pedagogie' },
-          { badgeColor: 'bg-green-500', label: 'Inscriptions' },
-          { badgeColor: 'bg-orange-500', label: 'Suivi' },
+          { badgeColor: 'bg-sky-500', label: 'Compagnie' },
+          { badgeColor: 'bg-rose-500', label: 'RH' },
+          { badgeColor: 'bg-emerald-500', label: 'Partenaires' },
+          { badgeColor: 'bg-amber-500', label: 'Équipements' },
         ],
         updatedAt: new Date().toISOString(),
       };
@@ -823,15 +841,28 @@ export class StatService {
           );
         }
         case 'securite': {
-          const [total, active, rows] = await Promise.all([
+          const [total, active, roles, permissions, rows] = await Promise.all([
             this.prisma.user.count({ where: { isTrashed: false } }),
             this.prisma.user.count({ where: { isTrashed: false, status: 'ACTIVE' } }),
+            this.prisma.userRole.count(),
+            this.prisma.userPermission.count(),
             this.prisma.user.findMany({
               where: { isTrashed: false },
               select: { createdAt: true },
             }),
           ]);
-          return pack(total, active, total - active, 0, [{ name: 'Comptes actifs', count: active }], rows);
+          return pack(
+            total,
+            active,
+            total - active,
+            0,
+            [
+              { name: 'Comptes actifs', count: active },
+              { name: 'Rôles définis', count: roles },
+              { name: 'Permissions', count: permissions },
+            ],
+            rows,
+          );
         }
         case 'compagnie': {
           const [sites, teams, rows] = await Promise.all([
@@ -847,6 +878,56 @@ export class StatService {
             [
               { name: 'Sites', count: sites },
               { name: 'Équipes', count: teams },
+            ],
+            rows,
+          );
+        }
+        case 'communication': {
+          const [cmsTotal, cmsActive, leads, campaigns, redirects, rows] = await Promise.all([
+            this.prisma.formation.count(),
+            this.prisma.formation.count({ where: { status: 'ACTIVE' } }),
+            this.prisma.lead.count(),
+            this.prisma.marketingCampaign.count(),
+            this.prisma.seoRedirect.count(),
+            this.prisma.lead.findMany({ select: { createdAt: true } }),
+          ]);
+          const total = cmsTotal + leads + campaigns + redirects;
+          return pack(
+            total,
+            cmsActive + campaigns,
+            leads,
+            0,
+            [
+              { name: 'CMS', count: cmsTotal },
+              { name: 'Marketing', count: leads + campaigns },
+              { name: 'SEO', count: redirects },
+            ],
+            rows,
+          );
+        }
+        case 'academique': {
+          const now = new Date();
+          const [total, validated, pending, rejected, sessionsActive, rows] = await Promise.all([
+            this.prisma.candidature.count(),
+            this.prisma.candidature.count({ where: { status: 'VALIDATED' } }),
+            this.prisma.candidature.count({
+              where: { status: { in: ['DRAFT', 'SUBMITTED', 'MISSING_DOCUMENTS', 'VALIDATION_PENDING'] } },
+            }),
+            this.prisma.candidature.count({ where: { status: 'REJECTED' } }),
+            this.prisma.formationSession.count({
+              where: { startDate: { lte: now }, OR: [{ endDate: null }, { endDate: { gte: now } }] },
+            }),
+            this.prisma.candidature.findMany({ select: { createdAt: true } }),
+          ]);
+          return pack(
+            total,
+            validated,
+            pending,
+            rejected,
+            [
+              { name: 'Validées', count: validated },
+              { name: 'En instruction', count: pending },
+              { name: 'Sessions actives', count: sessionsActive },
             ],
             rows,
           );

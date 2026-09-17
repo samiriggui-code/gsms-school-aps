@@ -12,14 +12,6 @@ import { CheckCircle2, Clock, Plus, RefreshCw, Search, Wallet, XCircle } from 'l
 import { toast } from 'sonner';
 import { Container } from '@/components/common/container';
 import { ModuleKpiStatsRow } from '@/components/common/module-kpi-stats-row';
-import {
-  Toolbar,
-  ToolbarActions,
-  ToolbarDescription,
-  ToolbarHeading,
-  ToolbarTitle,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
 import { useTranslation } from '@/hooks/useTranslation';
 import { workspaceActionLabel, workspaceStatusLabel } from '@/lib/workspace-labels';
 import { Button } from '@repo/ui/button';
@@ -75,7 +67,6 @@ function statusVariant(status: string): 'success' | 'warning' | 'destructive' | 
 
 export function FinancePaiementsPageContent() {
   const { t } = useTranslation();
-  const { title, description } = usePageToolbarMeta('/administration-facturation/finance/paiements');
   const qc = useQueryClient();
   const [q, setQ] = useState('');
   const [search, setSearch] = useState('');
@@ -240,23 +231,15 @@ export function FinancePaiementsPageContent() {
 
   return (
     <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-          <ToolbarActions>
-            <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>
-              <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
-              Actualiser
-            </Button>
-            <Button onClick={() => setOpenCreate(true)}>
-              <Plus className="size-4" />
-              Nouveau paiement
-            </Button>
-          </ToolbarActions>
-        </Toolbar>
+      <Container className="flex justify-end gap-2">
+        <Button variant="outline" disabled={isFetching} onClick={() => refetch()}>
+          <RefreshCw className={cn('size-4', isFetching && 'animate-spin')} />
+          Actualiser
+        </Button>
+        <Button onClick={() => setOpenCreate(true)}>
+          <Plus className="size-4" />
+          Nouveau paiement
+        </Button>
       </Container>
 
       <Container className="space-y-5 pb-8 lg:space-y-7.5">

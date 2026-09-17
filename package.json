@@ -20,7 +20,7 @@
 
     "postinstall": "pnpm db:generate",
 
-    "predev": "node scripts/free-dev-port.mjs 3001",
+    "predev": "node scripts/free-dev-port.mjs 3002",
 
     "dev": "concurrently -n crm,workers -c cyan,magenta \"pnpm -C apps/lms-crm dev\" \"pnpm --filter @repo/workers dev\"",
 

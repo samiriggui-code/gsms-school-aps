@@ -80,16 +80,18 @@ export function moduleLabelFromKey(moduleKey: string | null | undefined): string
 
 export function moduleHrefFromKey(moduleKey: string | null | undefined): string {
   if (!moduleKey) return '/accueil';
-  if (moduleKey.startsWith('gestion-ressources.qualiopi')) return '/gestion-ressources/qualiopi';
+  if (moduleKey.startsWith('qualiopi') || moduleKey.startsWith('gestion-ressources.qualiopi'))
+    return '/qualiopi/referentiel';
+  if (moduleKey.startsWith('gestion-ressources.partenaires')) return '/gestion-ressources/partenaires';
   if (moduleKey.startsWith('gestion-ressources.rh')) return '/gestion-ressources/rh';
   if (moduleKey.startsWith('gestion-ressources.equipements')) return '/gestion-ressources/equipements';
   if (moduleKey.startsWith('gestion-ressources')) return '/gestion-ressources';
   if (moduleKey.startsWith('gestion-academique.suivi-formations'))
-    return '/gestion-academique/suivi-formations';
+    return '/gestion-academique/vie-scolaire';
   if (moduleKey.startsWith('gestion-academique')) return '/gestion-academique';
   if (moduleKey.startsWith('administration-facturation')) return '/administration-facturation';
-  if (moduleKey.startsWith('pilotage-supervision.ia')) return '/pilotage-supervision/ia';
-  if (moduleKey.startsWith('pilotage-supervision')) return '/pilotage-supervision';
+  if (moduleKey.startsWith('pilotage-supervision.ia')) return '/qualiopi/ia';
+  if (moduleKey.startsWith('pilotage-supervision')) return '/qualiopi/pilotage';
   if (moduleKey.startsWith('support-qualite')) return '/support-qualite';
   if (moduleKey.startsWith('communication-contenu')) return '/communication-contenu';
   if (moduleKey.startsWith('securite-configuration')) return '/securite-configuration';

@@ -16,20 +16,38 @@ export async function GET(request: Request) {
 
   if (section === 'facturation') {
     const financeStats = await statService.getFinanceStats(months);
+    const [devisEmis, devisAcceptes] = financeStats.kpis;
+    const conversionRate =
+      devisEmis?.value && Number(devisEmis.value) > 0
+        ? Math.round((Number(devisAcceptes?.value ?? 0) / Number(devisEmis.value)) * 100)
+        : 0;
     return NextResponse.json({
       success: true,
       data: {
         activeUsers: financeStats.kpis[0],
         pendingInvoices: financeStats.kpis[1],
         totalRoles: financeStats.kpis[2],
-        storageQuota: {
-          label: 'Stockage utilisé',
-          value: '78%',
-          trend: 'up',
-          trendValue: '+5%',
-        },
-        systemLogs: financeStats.kpis[3],
+        storageQuota: financeStats.kpis[3],
+        systemLogs: financeStats.kpis[4],
       },
+      overallPerformance: { value: conversionRate, trend: 0 },
+      categories: financeStats.kpis.map((k) => ({
+        badgeColor:
+          k.color === 'success'
+            ? 'bg-green-500'
+            : k.color === 'warning'
+              ? 'bg-orange-500'
+              : k.color === 'destructive'
+                ? 'bg-red-500'
+                : 'bg-indigo-500',
+        label: k.label,
+      })),
+      stats: financeStats.kpis.map((k) => ({
+        icon: k.icon ?? 'FileText',
+        text: k.label,
+        total: k.value,
+        stats: 0,
+      })),
       updatedAt: financeStats.updatedAt,
     });
   }
@@ -43,6 +61,8 @@ export async function GET(request: Request) {
     'securite',
     'compagnie',
     'rh',
+    'communication',
+    'academique',
   ]);
 
   if (section && hubSections.has(section)) {
