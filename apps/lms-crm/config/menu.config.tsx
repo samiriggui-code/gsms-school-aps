@@ -140,10 +140,10 @@ export const MENU_SIDEBAR: MenuConfig = [
         title: 'LMS',
         path: '/gestion-academique/lms',
         children: [
-          { title: 'Cours LMS', path: '/gestion-academique/vie-scolaire/cours' },
-          { title: 'Devoirs LMS', path: '/gestion-academique/vie-scolaire/devoirs' },
-          { title: 'Discussions LMS', path: '/gestion-academique/vie-scolaire/discussions' },
-          { title: 'Inscriptions LMS', path: '/gestion-academique/vie-scolaire/inscriptions-lms' },
+          { title: 'Cours LMS', path: '/gestion-academique/lms/cours' },
+          { title: 'Devoirs LMS', path: '/gestion-academique/lms/devoirs' },
+          { title: 'Discussions LMS', path: '/gestion-academique/lms/discussions' },
+          { title: 'Inscriptions LMS', path: '/gestion-academique/lms/inscriptions' },
         ],
       },
       {
@@ -175,17 +175,17 @@ export const MENU_SIDEBAR: MenuConfig = [
         title: 'Financeurs',
         path: '/administration-facturation/financeurs',
         children: [
-          { title: 'Financeurs', path: '/administration-facturation/finance/financeurs' },
-          { title: 'Export EDOF', path: '/administration-facturation/finance/edof-catalog' },
+          { title: 'Financeurs', path: '/administration-facturation/financeurs/dossiers' },
+          { title: 'Export EDOF', path: '/administration-facturation/financeurs/edof-catalog' },
         ],
       },
       {
         title: 'Budget & pilotage',
         path: '/administration-facturation/budget',
         children: [
-          { title: 'Budget', path: '/administration-facturation/finance/budget' },
-          { title: 'BPF', path: '/administration-facturation/finance/bpf' },
-          { title: 'Rapports', path: '/administration-facturation/finance/rapports' },
+          { title: 'Budget', path: '/administration-facturation/budget/lignes' },
+          { title: 'BPF', path: '/administration-facturation/budget/bpf' },
+          { title: 'Rapports', path: '/administration-facturation/budget/rapports' },
         ],
       },
     ],

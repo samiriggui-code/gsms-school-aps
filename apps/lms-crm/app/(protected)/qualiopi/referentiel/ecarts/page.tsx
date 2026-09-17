@@ -37,7 +37,7 @@ export default async function ConformiteDashboardPage() {
             <Link href="/gestion-ressources/partenaires/referent-handicap">Référent</Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/administration-facturation/finance/financeurs">Financeurs</Link>
+            <Link href="/administration-facturation/financeurs/dossiers">Financeurs</Link>
           </Button>
         </div>
       }

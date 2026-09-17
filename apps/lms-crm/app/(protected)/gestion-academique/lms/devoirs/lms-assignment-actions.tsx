@@ -53,7 +53,7 @@ export function LmsAssignmentGradeForm({
 export function LmsAssignmentDetailLink({ id }: { id: string }) {
   return (
     <Button size="sm" variant="outline" asChild>
-      <Link href={`/gestion-academique/vie-scolaire/devoirs/${id}`}>Soumissions</Link>
+      <Link href={`/gestion-academique/lms/devoirs`}>Soumissions</Link>
     </Button>
   );
 }

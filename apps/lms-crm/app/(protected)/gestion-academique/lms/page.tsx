@@ -9,25 +9,25 @@ const LMS_CARDS = [
     title: 'Cours LMS',
     description: 'Contenus déposés pour les apprenants.',
     icon: BookOpen,
-    href: '/gestion-academique/vie-scolaire/cours',
+    href: '/gestion-academique/lms/cours',
   },
   {
     title: 'Devoirs LMS',
     description: 'Travaux à rendre et corrections.',
     icon: ClipboardList,
-    href: '/gestion-academique/vie-scolaire/devoirs',
+    href: '/gestion-academique/lms/devoirs',
   },
   {
     title: 'Discussions LMS',
     description: 'Forums de cours.',
     icon: MessageSquare,
-    href: '/gestion-academique/vie-scolaire/discussions',
+    href: '/gestion-academique/lms/discussions',
   },
   {
     title: 'Inscriptions LMS',
     description: 'Inscriptions aux parcours en ligne.',
     icon: UserPlus,
-    href: '/gestion-academique/vie-scolaire/inscriptions-lms',
+    href: '/gestion-academique/lms/inscriptions',
   },
 ];
 

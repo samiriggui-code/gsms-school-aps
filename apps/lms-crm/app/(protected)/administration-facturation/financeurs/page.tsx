@@ -9,13 +9,13 @@ const CARDS = [
     title: 'Financeurs',
     description: 'Registre OPCO, CPF, entreprises et dossiers FundingCase.',
     icon: HandCoins,
-    href: '/administration-facturation/finance/financeurs',
+    href: '/administration-facturation/financeurs/dossiers',
   },
   {
     title: 'Export EDOF',
     description: 'Catalogue LHEO pour le portail EDOF.',
     icon: FileOutput,
-    href: '/administration-facturation/finance/edof-catalog',
+    href: '/administration-facturation/financeurs/edof-catalog',
   },
 ];
 

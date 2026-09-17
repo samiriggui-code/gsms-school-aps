@@ -58,7 +58,7 @@ export function FinanceWelcomeCallout() {
         </CardContent>
         <CardFooter className="flex flex-wrap gap-2 justify-start">
           <Button variant="outline" size="sm" asChild>
-            <Link href="/administration-facturation/finance/budget">
+            <Link href="/administration-facturation/budget/lignes">
               <ChartBar className="size-4 mr-1" />
               Budget
             </Link>
@@ -82,7 +82,7 @@ export function FinanceWelcomeCallout() {
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/administration-facturation/finance/rapports">
+            <Link href="/administration-facturation/budget/rapports">
               <ChartBar className="size-4 mr-1" />
               Rapports
             </Link>

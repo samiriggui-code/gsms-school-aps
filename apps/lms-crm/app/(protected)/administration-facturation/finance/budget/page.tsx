@@ -1,10 +1,6 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { FinanceBudgetPageContent } from './components/finance-budget-page-content';
+import { redirect } from 'next/navigation';
 
+/** Déplacé sous /administration-facturation/budget/lignes. */
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/administration-facturation/finance/budget">
-      <FinanceBudgetPageContent />
-    </CrmWiredLeaf>
-  );
+  redirect('/administration-facturation/budget/lignes');
 }

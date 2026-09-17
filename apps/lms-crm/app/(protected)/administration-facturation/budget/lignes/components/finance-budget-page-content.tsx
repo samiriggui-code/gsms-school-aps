@@ -19,7 +19,7 @@ import { Badge } from '@repo/ui/badge';
 import { Progress } from '@repo/ui/progress';
 import { DataGridColumnHeader } from '@repo/ui/data-grid-column-header';
 import { createModuleLandingPagination } from '@/app/(protected)/securite-configuration/components/datagrid-standards';
-import { FinanceModuleDataGrid } from '../../components/finance-module-datagrid';
+import { FinanceModuleDataGrid } from '../../../finance/components/finance-module-datagrid';
 import {
   Dialog,
   DialogContent,

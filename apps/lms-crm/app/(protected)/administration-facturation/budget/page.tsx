@@ -9,19 +9,19 @@ const CARDS = [
     title: 'Budget',
     description: 'Lignes budgétaires, prévu vs réalisé.',
     icon: Wallet,
-    href: '/administration-facturation/finance/budget',
+    href: '/administration-facturation/budget/lignes',
   },
   {
     title: 'BPF',
     description: 'Bilan pédagogique et financier (Cerfa).',
     icon: ScrollText,
-    href: '/administration-facturation/finance/bpf',
+    href: '/administration-facturation/budget/bpf',
   },
   {
     title: 'Rapports',
     description: 'Tableaux de bord finance et exports.',
     icon: BarChart3,
-    href: '/administration-facturation/finance/rapports',
+    href: '/administration-facturation/budget/rapports',
   },
 ];
 

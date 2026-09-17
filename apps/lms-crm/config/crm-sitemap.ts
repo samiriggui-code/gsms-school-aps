@@ -162,10 +162,10 @@ export const CRM_SECTIONS: CrmSection[] = [
         path: '/gestion-academique/lms',
         description: 'Cours, devoirs, discussions et inscriptions en ligne.',
         leaves: [
-          { title: 'Cours LMS', path: '/gestion-academique/vie-scolaire/cours', description: 'Contenus LMS.' },
-          { title: 'Devoirs LMS', path: '/gestion-academique/vie-scolaire/devoirs', description: 'Travaux à rendre.' },
-          { title: 'Discussions LMS', path: '/gestion-academique/vie-scolaire/discussions', description: 'Forums de cours.' },
-          { title: 'Inscriptions LMS', path: '/gestion-academique/vie-scolaire/inscriptions-lms', description: 'Inscriptions aux parcours.' },
+          { title: 'Cours LMS', path: '/gestion-academique/lms/cours', description: 'Contenus LMS.' },
+          { title: 'Devoirs LMS', path: '/gestion-academique/lms/devoirs', description: 'Travaux à rendre.' },
+          { title: 'Discussions LMS', path: '/gestion-academique/lms/discussions', description: 'Forums de cours.' },
+          { title: 'Inscriptions LMS', path: '/gestion-academique/lms/inscriptions', description: 'Inscriptions aux parcours.' },
         ],
       },
       {
@@ -201,8 +201,8 @@ export const CRM_SECTIONS: CrmSection[] = [
         path: '/administration-facturation/financeurs',
         description: 'Dispositifs de financement et export EDOF.',
         leaves: [
-          { title: 'Financeurs', path: '/administration-facturation/finance/financeurs', description: 'OPCO, CPF, entreprises.' },
-          { title: 'Export EDOF', path: '/administration-facturation/finance/edof-catalog', description: 'Catalogue EDOF.' },
+          { title: 'Financeurs', path: '/administration-facturation/financeurs/dossiers', description: 'OPCO, CPF, entreprises.' },
+          { title: 'Export EDOF', path: '/administration-facturation/financeurs/edof-catalog', description: 'Catalogue EDOF.' },
         ],
       },
       {
@@ -210,9 +210,9 @@ export const CRM_SECTIONS: CrmSection[] = [
         path: '/administration-facturation/budget',
         description: 'Budgets, bilan pédagogique et reporting.',
         leaves: [
-          { title: 'Budget', path: '/administration-facturation/finance/budget', description: 'Budgets et enveloppes.' },
-          { title: 'BPF', path: '/administration-facturation/finance/bpf', description: 'Bilan pédagogique et financier.' },
-          { title: 'Rapports', path: '/administration-facturation/finance/rapports', description: 'Reporting financier.' },
+          { title: 'Budget', path: '/administration-facturation/budget/lignes', description: 'Budgets et enveloppes.' },
+          { title: 'BPF', path: '/administration-facturation/budget/bpf', description: 'Bilan pédagogique et financier.' },
+          { title: 'Rapports', path: '/administration-facturation/budget/rapports', description: 'Reporting financier.' },
         ],
       },
     ],
