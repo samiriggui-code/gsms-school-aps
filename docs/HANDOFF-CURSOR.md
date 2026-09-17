@@ -4,6 +4,23 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-17 — Normalisation URLs LMS + Finance
+
+**Commit :** `80a0b29` sur `chantier/qualiopi-q0-q3`
+
+**LMS canon :**
+- `/gestion-academique/lms/{cours,devoirs,discussions,inscriptions}`
+- redirects depuis `vie-scolaire/{cours,devoirs,discussions,inscriptions-lms}`
+
+**Finance canon :**
+- `/administration-facturation/financeurs/{dossiers,edof-catalog}`
+- `/administration-facturation/budget/{lignes,bpf,rapports}`
+- redirects depuis `finance/{financeurs,edof-catalog,budget,bpf,rapports}`
+
+**APIs :** inchangées pour l’instant (`…/vie-scolaire/…`, `…/finance/…`) — alignement API = chantier séparé.
+
+---
+
 ## 2026-09-17 — Commit IA CRM + normalize/unify Qualiopi
 
 **Branche :** `chantier/qualiopi-q0-q3`
