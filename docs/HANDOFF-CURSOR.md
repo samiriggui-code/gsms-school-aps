@@ -4,6 +4,20 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-17 — Commit IA CRM + normalize/unify Qualiopi
+
+**Branche :** `chantier/qualiopi-q0-q3`
+
+**Commits :**
+1. `dc55db0` — `feat(crm): section Qualiopi top-level et hubs IA menu` (269 fichiers) — Qualiopi hors gestion-ressources, Pilotage fusionné, hubs Partenaires/LMS/Finance, menu + `crm-sitemap`.
+2. `ba07c09` — `refactor(qualiopi): normaliser chemins et unifier chrome CrmWiredLeaf` — suppression arbres orphelins `/qualiopi/{classeur,passeport}/components|hooks` (canon = `/referentiel/...`), leaves Pilotage/IA sur `CrmWiredLeaf`, lien écarts → `/qualiopi/referentiel/ecarts`.
+
+**Canon URL Qualiopi :** `/qualiopi` → `/referentiel|pilotage|ia` (+ redirects plats conservés).
+
+**Suite possible (non faite) :** normaliser LMS (`vie-scolaire` → `/lms`) et Finance hubs ; déplacer APIs `pilotage-supervision` / `gestion-ressources/qualiopi` sous `sections/qualiopi`.
+
+---
+
 ## 2026-09-03 — Complément Tencent + AIInvoicePilot + discovery (pas de code structurel)
 
 **Demande :** figer Tencent = mémoire Eve ; AIInvoicePilot = façade publique ; auditer avant fusion/API.
