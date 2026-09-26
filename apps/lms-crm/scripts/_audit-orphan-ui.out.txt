@@ -1,0 +1,205 @@
+﻿{
+  "files": 2177,
+  "seeds": 595,
+  "reachable": 1249,
+  "stubPages": 133,
+  "liveProtectedPages": [
+    "app/(protected)/qualiopi/referentiel/cartographie-front/page.tsx"
+  ]
+}
+
+=== KEEP ÔÇö reachable from live entry (layout/instructor/portal/export/ÔÇª) ===
+KEEP-LIVE level=2 files=1 reach=1 app/(protected)/account/notifications/components
+  via app/(protected)/account/notifications/components/account-notifications-datagrid.tsx <- components/notifications/in-app-notifications-hub-page.tsx, app/mon-dossier/notifications/page.tsx, app/formateur/notifications/page.tsx
+KEEP-LIVE level=3 files=37 reach=19 app/(protected)/gestion-academique/vie-scolaire/etudiants/components
+  via app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidat-formation-visee-card.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/activity/activity.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/activity/timeline-item.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-access-details.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-access-stats.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+KEEP-LIVE level=3 files=45 reach=17 app/(protected)/gestion-academique/vie-scolaire/formations/components
+  via app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-logo-thumb.tsx <- components/instructor/instructor-sessions-datagrid-page.tsx, app/formateur/sessions/page.tsx, components/instructor/instructor-formations-datagrid-page.tsx, app/formateur/formations/page.tsx, components/instructor/dashboard/instructor-dashboard-overview-table.tsx, components/instructor/dashboard/instructor-dashboard.tsx, app/formateur/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/activity.tsx <- app/(site)/landing-page-client.tsx, app/(site)/landing-page-shell.tsx, app/(site)/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/billing-details.tsx <- components/portal/portal-funding-section.tsx, app/mon-dossier/mon-dossier-client.tsx, app/mon-dossier/page.tsx, app/(site)/landing-page-client.tsx, app/(site)/landing-page-shell.tsx, app/(site)/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/loyalty-tier.tsx <- app/(site)/landing-page-client.tsx, app/(site)/landing-page-shell.tsx, app/(site)/page.tsx
+  via app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/payment-methods.tsx <- components/portal/portal-funding-section.tsx, app/mon-dossier/mon-dossier-client.tsx, app/mon-dossier/page.tsx, app/(site)/landing-page-client.tsx, app/(site)/landing-page-shell.tsx, app/(site)/page.tsx
+KEEP-LIVE level=3 files=22 reach=1 app/(protected)/gestion-academique/vie-scolaire/sessions/components
+  via app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-user-avatar.tsx <- components/portal/formation-instructor-profile.tsx, app/formation/formation-client.tsx, app/formation/page.tsx, app/api/sections/gestion-academique/vie-scolaire/suivi-formations/[sessionId]/exports/conformite/route.ts, app/api/sections/gestion-academique/vie-scolaire/suivi-formations/[sessionId]/participants/[participantId]/funding/route.ts, app/api/sections/gestion-academique/vie-scolaire/suivi-formations/[sessionId]/participants/route.ts, app/api/portal/formation/route.ts, app/api/portal/dossier/route.ts
+KEEP-LIVE level=3 files=6 reach=1 app/(protected)/gestion-ressources/compagnie/documents/components
+  via app/(protected)/gestion-ressources/compagnie/documents/components/dossier-file-viewer-dialog.tsx <- components/portal/cnaps-dossier-sheet.tsx, app/mon-dossier/mon-dossier-client.tsx, app/mon-dossier/page.tsx
+KEEP-LIVE level=3 files=24 reach=18 app/(protected)/gestion-ressources/rh/collaborateurs/components
+  via app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-compliance-datagrid.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-absences.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-activity.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-compliance.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-documents.tsx <- components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+KEEP-LIVE level=3 files=22 reach=4 app/(protected)/gestion-ressources/rh/formateurs/components
+  via app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-hr-info.tsx <- components/instructor/instructor-profil-page.tsx, app/formateur/profil/page.tsx, components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-overview-stats.tsx <- components/instructor/instructor-profil-page.tsx, app/formateur/profil/page.tsx, components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-recent-activity.tsx <- components/instructor/instructor-profil-page.tsx, app/formateur/profil/page.tsx, components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+  via app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-reliability-tier.tsx <- components/instructor/instructor-profil-page.tsx, app/formateur/profil/page.tsx, components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx
+KEEP-LIVE level=4 files=11 reach=3 app/(protected)/securite-configuration/acces/users/[id]/components
+KEEP-LIVE level=1 files=9 reach=2 app/(protected)/securite-configuration/components
+  via app/(protected)/securite-configuration/components/datagrid-standards.tsx <- components/instructor/dashboard/instructor-dashboard-overview-table.tsx, components/instructor/dashboard/instructor-dashboard.tsx, app/formateur/page.tsx, components/common/module-landing-datagrid-shell.tsx, components/official-documents/official-export-renderer-client.tsx, components/official-documents/official-export-renderer.tsx, app/export/official/[token]/page.tsx, components/notifications/in-app-notifications-hub-page.tsx
+  via app/(protected)/securite-configuration/components/user-management-support-section.tsx <- components/portal/layout/portal-layout.tsx, components/portal/portal-shell.tsx, app/mon-dossier/layout.tsx, app/formation/layout.tsx, app/e-formation/layout.tsx, app/apprendre/layout.tsx, components/instructor/layout/instructor-layout.tsx, components/instructor/instructor-shell.tsx
+KEEP-LIVE level=3 files=20 reach=4 app/(protected)/securite-configuration/parametres/settings/components
+
+=== KEEP ÔÇö section/module hub (orphan OK) ===
+KEEP-HUB level=1 files=3 app/(protected)/accueil/components
+KEEP-HUB level=1 files=5 app/(protected)/administration-facturation/components
+KEEP-HUB level=2 files=9 app/(protected)/administration-facturation/finance/components
+KEEP-HUB level=2 files=13 app/(protected)/communication-contenu/cms/components
+KEEP-HUB level=1 files=5 app/(protected)/communication-contenu/components
+KEEP-HUB level=2 files=13 app/(protected)/communication-contenu/marketing/components
+KEEP-HUB level=2 files=13 app/(protected)/communication-contenu/seo/components
+KEEP-HUB level=1 files=5 app/(protected)/gestion-academique/components
+KEEP-HUB level=2 files=7 app/(protected)/gestion-academique/suivi-formations/components
+KEEP-HUB level=2 files=7 app/(protected)/gestion-academique/vie-scolaire/components
+KEEP-HUB level=2 files=7 app/(protected)/gestion-ressources/compagnie/components
+KEEP-HUB level=1 files=5 app/(protected)/gestion-ressources/components
+KEEP-HUB level=2 files=15 app/(protected)/gestion-ressources/equipements/components
+KEEP-HUB level=2 files=7 app/(protected)/gestion-ressources/rh/components
+KEEP-HUB level=1 files=7 app/(protected)/pilotage-supervision/components
+KEEP-HUB level=2 files=8 app/(protected)/pilotage-supervision/ia/components
+KEEP-HUB level=2 files=25 app/(protected)/pilotage-supervision/pilotage/components
+KEEP-HUB level=2 files=0 app/(protected)/qualiopi/classeur/components
+KEEP-HUB level=1 files=5 app/(protected)/qualiopi/components
+KEEP-HUB level=2 files=8 app/(protected)/qualiopi/ia/components
+KEEP-HUB level=2 files=0 app/(protected)/qualiopi/passeport/components
+KEEP-HUB level=2 files=25 app/(protected)/qualiopi/pilotage/components
+KEEP-HUB level=2 files=10 app/(protected)/qualiopi/referentiel/components
+KEEP-HUB level=2 files=14 app/(protected)/securite-configuration/acces/components
+KEEP-HUB level=2 files=17 app/(protected)/securite-configuration/gouvernance-donnees/components
+KEEP-HUB level=2 files=8 app/(protected)/securite-configuration/parametres/components
+KEEP-HUB level=1 files=9 app/(protected)/support-qualite/components
+KEEP-HUB level=2 files=11 app/(protected)/support-qualite/support/components
+
+=== DELETE ÔÇö leaf orphan component dirs ===
+DELETE dir files=2 app/(protected)/administration-facturation/budget/lignes/components
+DELETE dir files=3 app/(protected)/administration-facturation/budget/rapports/components
+DELETE dir files=0 app/(protected)/administration-facturation/finance/budget/components
+DELETE dir files=11 app/(protected)/administration-facturation/finance/devis/components
+DELETE dir files=6 app/(protected)/administration-facturation/finance/factures/components
+DELETE dir files=1 app/(protected)/administration-facturation/finance/paiements/components
+DELETE dir files=0 app/(protected)/administration-facturation/finance/rapports/components
+DELETE dir files=1 app/(protected)/communication-contenu/cms/contenus/components
+DELETE dir files=3 app/(protected)/communication-contenu/cms/equipe-landing/components
+DELETE dir files=1 app/(protected)/communication-contenu/marketing/campagnes/components
+DELETE dir files=31 app/(protected)/communication-contenu/marketing/formulaires-leads/components
+DELETE dir files=34 app/(protected)/gestion-academique/suivi-formations/tableau/components
+DELETE dir files=2 app/(protected)/gestion-academique/vie-scolaire/planning/components
+DELETE dir files=2 app/(protected)/gestion-ressources/compagnie/profil/components
+DELETE dir files=7 app/(protected)/gestion-ressources/compagnie/structure/components
+DELETE dir files=5 app/(protected)/gestion-ressources/equipements/affectations/components
+DELETE dir files=23 app/(protected)/gestion-ressources/equipements/inventaire/components
+DELETE dir files=4 app/(protected)/gestion-ressources/equipements/maintenance/components
+DELETE dir files=8 app/(protected)/gestion-ressources/equipements/salles/components
+DELETE dir files=16 app/(protected)/gestion-ressources/equipements/salles/page/components
+DELETE dir files=8 app/(protected)/gestion-ressources/rh/absences/components
+DELETE dir files=10 app/(protected)/gestion-ressources/rh/equipes/components
+DELETE dir files=7 app/(protected)/qualiopi/referentiel/classeur/components
+DELETE dir files=2 app/(protected)/qualiopi/referentiel/passeport/components
+DELETE dir files=1 app/(protected)/securite-configuration/acces/logs/components
+DELETE dir files=7 app/(protected)/securite-configuration/acces/permissions/components
+DELETE dir files=7 app/(protected)/securite-configuration/acces/roles/components
+DELETE dir files=3 app/(protected)/securite-configuration/acces/security-log/components
+DELETE dir files=4 app/(protected)/securite-configuration/acces/users/components
+DELETE dir files=2 app/(protected)/securite-configuration/gouvernance-donnees/audit-documentaire/components
+DELETE dir files=3 app/(protected)/securite-configuration/gouvernance-donnees/conformite/components
+DELETE dir files=2 app/(protected)/securite-configuration/gouvernance-donnees/demandes-documents/components
+DELETE dir files=3 app/(protected)/securite-configuration/parametres/sante-systeme/components
+DELETE dir files=0 app/(protected)/support-qualite/support/incidents/components
+DELETE dir files=6 app/(protected)/support-qualite/support/tickets/components
+
+=== REVIEW ÔÇö empty or odd ===
+REVIEW level=3 files=0 reach=false app/(protected)/administration-facturation/finance/budget/components
+REVIEW level=3 files=0 reach=false app/(protected)/administration-facturation/finance/rapports/components
+REVIEW level=2 files=0 reach=false app/(protected)/qualiopi/classeur/components
+REVIEW level=2 files=0 reach=false app/(protected)/qualiopi/passeport/components
+REVIEW level=3 files=0 reach=false app/(protected)/support-qualite/support/incidents/components
+
+=== DELETE ÔÇö orphan feature content files (not reachable, not hubs) ===
+DELETE file app/(protected)/accueil/accueil-dashboard-page.tsx
+DELETE file app/(protected)/administration-facturation/budget/lignes/hooks/use-finance-budget-detail-query.ts
+DELETE file app/(protected)/administration-facturation/finance/devis/forms/etudiant-add-schema.ts
+DELETE file app/(protected)/administration-facturation/finance/devis/forms/etudiant-edit-schema.ts
+DELETE file app/(protected)/administration-facturation/finance/devis/hooks/use-finance-devis-detail-query.ts
+DELETE file app/(protected)/administration-facturation/finance/factures/hooks/use-finance-facture-detail-query.ts
+DELETE file app/(protected)/administration-facturation/financeurs/dossiers/create-funding-case-form.tsx
+DELETE file app/(protected)/communication-contenu/cms/contenus/cms-contenus-page.tsx
+DELETE file app/(protected)/communication-contenu/cms/pages-landing/cms-pages-landing-page.tsx
+DELETE file app/(protected)/communication-contenu/marketing/formulaires-leads/forms/etudiant-add-schema.ts
+DELETE file app/(protected)/communication-contenu/marketing/formulaires-leads/forms/etudiant-edit-schema.ts
+DELETE file app/(protected)/communication-contenu/seo/meta-indexation/seo-meta-page.tsx
+DELETE file app/(protected)/gestion-academique/lms/cours/create-lms-course-form.tsx
+DELETE file app/(protected)/gestion-academique/lms/devoirs/create-lms-assignment-form.tsx
+DELETE file app/(protected)/gestion-academique/vie-scolaire/etudiants/forms/etudiant-add-schema.ts
+DELETE file app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-add-schema.ts
+DELETE file app/(protected)/gestion-academique/vie-scolaire/formations/forms/formation-edit-schema.ts
+DELETE file app/(protected)/gestion-ressources/compagnie/profil/forms/profil-add-schema.ts
+DELETE file app/(protected)/gestion-ressources/compagnie/profil/forms/profil-edit-schema.ts
+DELETE file app/(protected)/gestion-ressources/equipements/inventaire/forms/equipment-edit-schema.ts
+DELETE file app/(protected)/gestion-ressources/equipements/inventaire/forms/inventaire-add-schema.ts
+DELETE file app/(protected)/gestion-ressources/equipements/salles/page/salles-de-formation-page.tsx
+DELETE file app/(protected)/gestion-ressources/partenaires/referent-handicap/referent-contact-form.tsx
+DELETE file app/(protected)/gestion-ressources/partenaires/sous-traitants/create-subcontractor-form.tsx
+DELETE file app/(protected)/gestion-ressources/rh/collaborateurs/forms/collaborateur-add-schema.ts
+DELETE file app/(protected)/gestion-ressources/rh/formateurs/forms/formateur-add-schema.ts
+DELETE file app/(protected)/gestion-ressources/rh/formateurs/forms/formateur-edit-schema.ts
+DELETE file app/(protected)/gestion-ressources/rh/referent-handicap/referent-contact-form.tsx
+DELETE file app/(protected)/gestion-ressources/rh/sous-traitants/create-subcontractor-form.tsx
+DELETE file app/(protected)/support-qualite/support/incidents/incident-detail-sheet.tsx
+DELETE file app/(protected)/support-qualite/support/incidents/incidents-page-content.tsx
+DELETE file app/(protected)/support-qualite/support/tickets/support-tickets-page.tsx
+
+=== Top-level components/* verdict ===
+{"dir":"components/auth","files":2,"reachable":1,"sampleLiveImporters":["components/portal/portal-shell.tsx","app/mon-dossier/layout.tsx","app/formation/layout.tsx","app/e-formation/layout.tsx","app/apprendre/layout.tsx","components/instructor/instructor-shell.tsx","app/formateur/layout.tsx","app/(protected)/layout.tsx"],"verdict":"KEEP (policy)"}
+{"dir":"components/catalog","files":1,"reachable":1,"sampleLiveImporters":["app/(site)/landing-page-client.tsx","app/(site)/landing-page-shell.tsx","app/(site)/page.tsx","components/central-preinscription-sheet.tsx","components/customers/components/card-date.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/common","files":36,"reachable":12,"sampleLiveImporters":["components/portal/layout/portal-header.tsx","components/portal/layout/portal-layout.tsx","components/portal/portal-shell.tsx","app/mon-dossier/layout.tsx","app/formation/layout.tsx","app/e-formation/layout.tsx","app/apprendre/layout.tsx","components/instructor/layout/instructor-header.tsx","components/instructor/layout/instructor-layout.tsx","components/instructor/instructor-shell.tsx","app/formateur/layout.tsx","components/crm/crm-wired-leaf.tsx"],"verdict":"KEEP (policy)"}
+{"dir":"components/crm","files":10,"reachable":3,"sampleLiveImporters":["components/crm/qualiopi-dev-stub-page.tsx","app/(protected)/qualiopi/referentiel/cartographie-front/page.tsx","app/(protected)/securite-configuration/parametres/settings/layout.tsx","app/(protected)/account/notifications/page.tsx","app/(protected)/account/parametres/page.tsx","app/(protected)/accueil/page.tsx","app/(protected)/administration-facturation/budget/bpf/page.tsx","app/(protected)/administration-facturation/budget/lignes/page.tsx","app/(protected)/administration-facturation/budget/page.tsx","app/(protected)/administration-facturation/budget/rapports/page.tsx","app/(protected)/administration-facturation/finance/bpf/page.tsx","app/(protected)/administration-facturation/finance/budget/page.tsx"],"verdict":"KEEP (policy)"}
+{"dir":"components/custom","files":4,"reachable":4,"sampleLiveImporters":["app/(site)/landing-page-client.tsx","app/(site)/landing-page-shell.tsx","app/(site)/page.tsx","components/contact.tsx","components/faq.tsx","components/features.tsx","components/how-it-works.tsx","components/pricing.tsx","components/testimonials.tsx","components/hero.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/customers","files":5,"reachable":5,"sampleLiveImporters":["app/(site)/landing-page-client.tsx","app/(site)/landing-page-shell.tsx","app/(site)/page.tsx","components/customers/customer-details-reviews.tsx","components/customers/customer-details-overviews.tsx","components/customer-details-sheet.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/datagrid","files":3,"reachable":2,"sampleLiveImporters":["app/export/preview/[token]/page.tsx","app/export/official/[token]/page.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/docs","files":3,"reachable":3,"sampleLiveImporters":["app/docs/docs-shell.tsx","app/docs/layout.tsx","app/docs/[[...slug]]/page.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/eve","files":1,"reachable":1,"sampleLiveImporters":["app/components/layouts/demo1/layout.tsx"],"verdict":"KEEP (policy)"}
+{"dir":"components/governance","files":2,"reachable":1,"sampleLiveImporters":["app/api/sections/securite-configuration/gouvernance-donnees/compliance/users/[id]/route.ts","app/api/sections/securite-configuration/gouvernance-donnees/compliance/users/[id]/notify/route.ts","app/api/sections/securite-configuration/gouvernance-donnees/compliance/users/stats/route.ts","app/api/sections/securite-configuration/gouvernance-donnees/compliance/users/route.ts","components/official-documents/official-export-renderer-client.tsx","components/official-documents/official-export-renderer.tsx","app/export/official/[token]/page.tsx","app/api/sections/gestion-ressources/rh/collaborateurs/[id]/compliance/route.ts","app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-settings.tsx","hooks/use-file-asset-meta.ts","lib/governance/rh-document-upload-meta.ts"],"verdict":"KEEP (live)"}
+{"dir":"components/iam","files":4,"reachable":0,"sampleLiveImporters":[],"verdict":"DELETE-CANDIDATE"}
+{"dir":"components/instructor","files":30,"reachable":28,"sampleLiveImporters":["components/instructor/dashboard/instructor-dashboard.tsx","app/formateur/page.tsx","components/instructor/instructor-stagiaires-page.tsx","app/formateur/stagiaires/page.tsx","components/instructor/instructor-sessions-datagrid-page.tsx","app/formateur/sessions/page.tsx","components/instructor/instructor-formations-datagrid-page.tsx","app/formateur/formations/page.tsx","app/formateur/annonces/page.tsx","app/formateur/parcours/page.tsx","app/formateur/profil/page.tsx","app/formateur/layout.tsx"],"verdict":"KEEP (policy)"}
+{"dir":"components/keenicons","files":7,"reachable":0,"sampleLiveImporters":["app/layout.tsx (css/import)"],"verdict":"KEEP (live)"}
+{"dir":"components/legal","files":1,"reachable":1,"sampleLiveImporters":["app/(site)/landing-page-client.tsx","app/(site)/landing-page-shell.tsx","app/(site)/page.tsx","components/cgv-sheet.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/magicui","files":2,"reachable":1,"sampleLiveImporters":["app/(site)/landing-page-client.tsx","app/(site)/landing-page-shell.tsx","app/(site)/page.tsx","components/hero.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/notifications","files":1,"reachable":1,"sampleLiveImporters":["app/mon-dossier/notifications/page.tsx","app/formateur/notifications/page.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/official-documents","files":2,"reachable":2,"sampleLiveImporters":["components/official-documents/official-export-renderer.tsx","app/export/official/[token]/page.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/portal","files":35,"reachable":34,"sampleLiveImporters":["app/mon-dossier/mon-dossier-client.tsx","app/mon-dossier/page.tsx","components/portal/e-formation/e-formation-dashboard.tsx","app/e-formation/page.tsx","app/e-formation/quiz/page.tsx","components/portal/e-formation/e-formation-quiz-page.tsx","app/formation/formation-client.tsx","app/formation/page.tsx","components/portal/layout/portal-layout.tsx","components/portal/portal-shell.tsx","app/mon-dossier/layout.tsx","app/formation/layout.tsx"],"verdict":"KEEP (policy)"}
+{"dir":"components/reports","files":12,"reachable":11,"sampleLiveImporters":["components/reports/report-document-shell.tsx","components/official-documents/official-export-renderer-client.tsx","components/official-documents/official-export-renderer.tsx","app/export/official/[token]/page.tsx","app/export/preview/[token]/page.tsx","app/reports/render/[jobId]/page.tsx","components/datagrid/datagrid-export-report.tsx","components/reports/templates/qualiopi-checklist-report.tsx","components/reports/templates/pilotage-ops-weekly-report.tsx","components/reports/templates/pilotage-gr-indicateurs-report.tsx","components/reports/templates/pilotage-gr-conformite-report.tsx","components/reports/templates/finance-monthly-summary-report.tsx"],"verdict":"KEEP (policy)"}
+{"dir":"components/rh","files":9,"reachable":8,"sampleLiveImporters":["components/official-documents/official-export-renderer-client.tsx","components/official-documents/official-export-renderer.tsx","app/export/official/[token]/page.tsx","app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-settings.tsx","app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-settings.tsx","components/instructor/instructor-profil-page.tsx","app/formateur/profil/page.tsx","app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-hr-info.tsx","components/rh/rh-user-contact-profil-summary.tsx","app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-reliability-tier.tsx","app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-reliability-tier.tsx","app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-overview-stats.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/sheet-shared","files":4,"reachable":2,"sampleLiveImporters":["app/formation/formation-client.tsx","app/formation/page.tsx","components/portal/cnaps-dossier-sheet.tsx","app/mon-dossier/mon-dossier-client.tsx","app/mon-dossier/page.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/users","files":21,"reachable":3,"sampleLiveImporters":["components/users/iam-user-sheet-sidebar.tsx","app/(protected)/securite-configuration/acces/users/[id]/components/user-hero.tsx","app/(protected)/securite-configuration/acces/users/[id]/components/user-iam-headline.tsx"],"verdict":"KEEP (live)"}
+{"dir":"components/workspace-settings","files":9,"reachable":9,"sampleLiveImporters":["components/workspace-settings/workspace-settings-page.tsx","app/mon-dossier/parametres/page.tsx","app/formateur/parametres/page.tsx","components/workspace-settings/sections/account-notifications-section.tsx","components/workspace-settings/workspace-settings-shell.tsx"],"verdict":"KEEP (policy)"}
+
+=== Loose components/*.tsx live check (sample of Metronic leftovers) ===
+DELETE-CANDIDATE components/category-form-sheet.tsx importers=
+DELETE-CANDIDATE components/create-shipping-label-sheet.tsx importers=
+KEEP components/customer-details-sheet.tsx importers=components/pricing.tsx
+DELETE-CANDIDATE components/customer-form-sheet.tsx importers=
+DELETE-CANDIDATE components/product-details-analytics-sheet.tsx importers=
+DELETE-CANDIDATE components/product-form-image-upload.tsx importers=
+DELETE-CANDIDATE components/product-form-variants.tsx importers=
+DELETE-CANDIDATE components/product-info-sheet.tsx importers=
+MISSING components/user-details-sheet.tsx
+
+=== Landing kit (KEEP) ===
+REACH components/hero.tsx
+REACH components/features.tsx
+REACH components/faq.tsx
+REACH components/footer.tsx
+REACH components/contact.tsx
+REACH components/pricing.tsx
+REACH components/testimonials.tsx
+REACH components/how-it-works.tsx
+REACH components/trainers.tsx
+REACH components/trusted-brands.tsx
+REACH components/call-to-action.tsx
+REACH components/logo.tsx
+REACH components/central-preinscription-sheet.tsx
+REACH components/cgv-sheet.tsx

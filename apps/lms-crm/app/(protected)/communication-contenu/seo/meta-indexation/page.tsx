@@ -1,7 +1,5 @@
-'use client';
-
-import SeoMetaPage from './seo-meta-page';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <SeoMetaPage />;
+  return <QualiopiDevStubPage path="/communication-contenu/seo/meta-indexation" level="leaf" />;
 }

@@ -1,31 +1,5 @@
-'use client';
-
-import { Container } from '@/components/common/container';
-import {
-  Toolbar,
-  ToolbarHeading,
-  ToolbarTitle,
-  ToolbarDescription,
-} from '@/components/common/toolbar';
-import { usePageToolbarMeta } from '@/components/common/translated-toolbar';
-import { VieScolairePlanningPanel } from './components/vie-scolaire-planning-panel';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  const { title, description } = usePageToolbarMeta('/gestion-academique/vie-scolaire/planning');
-  return (
-    <>
-      <Container>
-        <Toolbar>
-          <ToolbarHeading>
-            <ToolbarTitle>{title}</ToolbarTitle>
-            <ToolbarDescription>{description}</ToolbarDescription>
-          </ToolbarHeading>
-        </Toolbar>
-      </Container>
-
-      <Container className="space-y-5 lg:space-y-7.5">
-        <VieScolairePlanningPanel />
-      </Container>
-    </>
-  );
+  return <QualiopiDevStubPage path="/gestion-academique/vie-scolaire/planning" level="leaf" />;
 }

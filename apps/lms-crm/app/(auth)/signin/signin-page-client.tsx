@@ -35,12 +35,9 @@ const SHOW_DEMO_ACCOUNTS =
 const DEV_ACCOUNTS = SHOW_DEMO_ACCOUNTS
   ? ([
       { label: 'Super Admin (Samir)', email: 'samir.iggui@ecole.local', password: 'demo1234' },
-      { label: 'Directeur (Yassine HIDJEB)', email: 'yassine.hidjeb@ecole.local', password: 'demo1234' },
       { label: 'Admin', email: 'john.doe@ecole.local', password: 'demo1234' },
       { label: 'Collaborateur', email: 'michael.brown@ecole.local', password: 'demo1234' },
       { label: 'Formateur', email: 'david.miller@ecole.local', password: 'demo1234' },
-      { label: 'Candidat', email: 'candidat.dev.1@ecole.local', password: 'demo1234' },
-      { label: 'CNAPS en cours', email: 'candidat.dev.2@ecole.local', password: 'demo1234' },
       { label: 'Stagiaire', email: 'stagiaire.dev.1@ecole.local', password: 'demo1234' },
     ] as const)
   : ([] as const);
@@ -98,8 +95,8 @@ export default function SigninPageClient() {
     }
     if (SHOW_DEMO_ACCOUNTS) {
       const intent = params.get('intent');
-      if (intent === 'candidat') {
-        prefillAccount('candidat.dev.1@ecole.local', 'demo1234');
+      if (intent === 'stagiaire') {
+        prefillAccount('stagiaire.dev.1@ecole.local', 'demo1234');
       } else if (intent === 'admin') {
         prefillAccount('samir.iggui@ecole.local', 'demo1234');
       }
@@ -195,9 +192,10 @@ export default function SigninPageClient() {
                 Connexion : e-mail professionnel <span className="font-mono text-foreground">prenom.nom@ecole.local</span> — pas l&apos;e-mail personnel (Gmail, etc.).
               </p>
               <p className="text-xs text-muted-foreground mt-2">
-                Même page de connexion : le rôle en base décide de la destination — candidat →{' '}
+                Même page de connexion : le rôle en base décide de la destination — stagiaire →{' '}
                 <span className="font-medium text-foreground">/mon-dossier</span>, équipe →{' '}
-                <span className="font-medium text-foreground">/accueil</span> (CRM).
+                <span className="font-medium text-foreground">/accueil</span> (CRM), formateur →{' '}
+                <span className="font-medium text-foreground">/formateur</span>.
               </p>
             </div>
           </>

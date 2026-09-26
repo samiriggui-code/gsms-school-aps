@@ -1,10 +1,5 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { PilotageAlertesPageClient } from './pilotage-alertes-page-client';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/qualiopi/pilotage/alertes">
-      <PilotageAlertesPageClient />
-    </CrmWiredLeaf>
-  );
+  return <QualiopiDevStubPage path="/qualiopi/pilotage/alertes" level="leaf" />;
 }

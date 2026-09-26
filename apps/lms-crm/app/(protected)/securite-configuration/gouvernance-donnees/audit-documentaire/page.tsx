@@ -1,7 +1,5 @@
-'use client';
-
-import { AuditDocumentaireDatagrid } from './components/audit-documentaire-datagrid';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <AuditDocumentaireDatagrid />;
+  return <QualiopiDevStubPage path="/securite-configuration/gouvernance-donnees/audit-documentaire" level="leaf" />;
 }

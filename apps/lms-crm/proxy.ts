@@ -135,6 +135,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (pathname === '/account' || pathname.startsWith('/account/')) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/^\/account/, '/mon-profil');
+    return NextResponse.redirect(url);
+  }
+
   if (
     pathname === '/' ||
     matchesPrefix(pathname, SESSION_REQUIRED_PAGE_PREFIXES) ||

@@ -40,6 +40,10 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Couverture', path: '/qualiopi/referentiel/couverture' },
           { title: 'Historique', path: '/qualiopi/referentiel/historique' },
           { title: 'Écarts détectés', path: '/qualiopi/referentiel/ecarts' },
+          {
+            title: 'Cartographie front',
+            path: '/qualiopi/referentiel/cartographie-front',
+          },
         ],
       },
       {
@@ -49,6 +53,8 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Alertes & écarts OF', path: '/qualiopi/pilotage/alertes' },
           { title: 'Indicateurs', path: '/qualiopi/pilotage/indicateurs' },
           { title: 'Rapports', path: '/qualiopi/pilotage/rapports' },
+          { title: 'Veille', path: '/qualiopi/pilotage/veille' },
+          { title: 'Amélioration continue', path: '/qualiopi/pilotage/amelioration' },
         ],
       },
       {
@@ -74,6 +80,10 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Profil', path: '/gestion-ressources/compagnie/profil' },
           { title: 'Structure', path: '/gestion-ressources/compagnie/structure' },
           { title: 'Documents', path: '/gestion-ressources/compagnie/documents' },
+          {
+            title: 'Conseil de perfectionnement',
+            path: '/gestion-ressources/compagnie/conseil-perfectionnement',
+          },
         ],
       },
       {
@@ -84,6 +94,11 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Équipes', path: '/gestion-ressources/rh/equipes' },
           { title: 'Formateurs', path: '/gestion-ressources/rh/formateurs' },
           { title: 'Absences', path: '/gestion-ressources/rh/absences' },
+          { title: 'Compétences intervenants', path: '/gestion-ressources/rh/competences' },
+          {
+            title: 'Développement salariés',
+            path: '/gestion-ressources/rh/developpement',
+          },
         ],
       },
       {
@@ -93,6 +108,11 @@ export const MENU_SIDEBAR: MenuConfig = [
         children: [
           { title: 'Sous-traitants', path: '/gestion-ressources/partenaires/sous-traitants' },
           { title: 'Référent handicap', path: '/gestion-ressources/partenaires/referent-handicap' },
+          {
+            title: 'Réseau handicap',
+            path: '/gestion-ressources/partenaires/reseau-handicap',
+          },
+          { title: 'Partenaires PFST', path: '/gestion-ressources/partenaires/pfst' },
         ],
       },
       {
@@ -134,6 +154,8 @@ export const MENU_SIDEBAR: MenuConfig = [
           { title: 'Sessions', path: '/gestion-academique/vie-scolaire/sessions' },
           { title: 'Planning', path: '/gestion-academique/vie-scolaire/planning' },
           { title: 'Étudiants', path: '/gestion-academique/vie-scolaire/etudiants' },
+          { title: 'Alternance', path: '/gestion-academique/vie-scolaire/alternance' },
+          { title: 'Insertion', path: '/gestion-academique/vie-scolaire/insertion' },
         ],
       },
       {

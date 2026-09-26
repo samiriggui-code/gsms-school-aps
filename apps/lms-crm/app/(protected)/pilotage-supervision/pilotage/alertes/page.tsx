@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
-/** Déplacé sous /qualiopi/pilotage/alertes. */
 export default function Page() {
-  redirect('/qualiopi/pilotage/alertes');
+  return <QualiopiDevStubPage path="/pilotage-supervision/pilotage/alertes" level="leaf" />;
 }

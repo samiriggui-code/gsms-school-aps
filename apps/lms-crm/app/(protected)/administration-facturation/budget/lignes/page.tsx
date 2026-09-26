@@ -1,10 +1,5 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { FinanceBudgetPageContent } from './components/finance-budget-page-content';
+import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/administration-facturation/budget/lignes">
-      <FinanceBudgetPageContent />
-    </CrmWiredLeaf>
-  );
+  return <QualiopiDevStubPage path="/administration-facturation/budget/lignes" level="leaf" />;
 }

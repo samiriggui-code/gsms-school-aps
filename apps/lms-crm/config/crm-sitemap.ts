@@ -56,6 +56,11 @@ export const CRM_SECTIONS: CrmSection[] = [
           { title: 'Couverture', path: '/qualiopi/referentiel/couverture', description: 'Preuves Evidence liées.' },
           { title: 'Historique', path: '/qualiopi/referentiel/historique', description: 'Timeline des événements d’audit.' },
           { title: 'Écarts détectés', path: '/qualiopi/referentiel/ecarts', description: 'Synthèse des non-conformités Qualiopi.' },
+          {
+            title: 'Cartographie front',
+            path: '/qualiopi/referentiel/cartographie-front',
+            description: 'Page → indicateurs Qualiopi (référentiel dev).',
+          },
         ],
       },
       {
@@ -70,6 +75,12 @@ export const CRM_SECTIONS: CrmSection[] = [
           },
           { title: 'Indicateurs', path: '/qualiopi/pilotage/indicateurs', description: 'KPI de l’organisme.' },
           { title: 'Rapports', path: '/qualiopi/pilotage/rapports', description: 'Exports et synthèses.' },
+          { title: 'Veille', path: '/qualiopi/pilotage/veille', description: 'Veille légale / métiers / pédagogique (I23–25).' },
+          {
+            title: 'Amélioration continue',
+            path: '/qualiopi/pilotage/amelioration',
+            description: 'Plans d’action I32.',
+          },
         ],
       },
       {
@@ -97,6 +108,11 @@ export const CRM_SECTIONS: CrmSection[] = [
           { title: 'Profil', path: '/gestion-ressources/compagnie/profil', description: 'Identité de l’organisme.' },
           { title: 'Structure', path: '/gestion-ressources/compagnie/structure', description: 'Organigramme et sites.' },
           { title: 'Documents', path: '/gestion-ressources/compagnie/documents', description: 'Pièces administratives.' },
+          {
+            title: 'Conseil de perfectionnement',
+            path: '/gestion-ressources/compagnie/conseil-perfectionnement',
+            description: 'PV et décisions (I20).',
+          },
         ],
       },
       {
@@ -108,6 +124,16 @@ export const CRM_SECTIONS: CrmSection[] = [
           { title: 'Équipes', path: '/gestion-ressources/rh/equipes', description: 'Composition des équipes.' },
           { title: 'Formateurs', path: '/gestion-ressources/rh/formateurs', description: 'Intervenants pédagogiques.' },
           { title: 'Absences', path: '/gestion-ressources/rh/absences', description: 'Congés et absences.' },
+          {
+            title: 'Compétences intervenants',
+            path: '/gestion-ressources/rh/competences',
+            description: 'Évaluation compétences (I21).',
+          },
+          {
+            title: 'Développement salariés',
+            path: '/gestion-ressources/rh/developpement',
+            description: 'Plans formation interne (I22).',
+          },
         ],
       },
       {
@@ -124,6 +150,16 @@ export const CRM_SECTIONS: CrmSection[] = [
             title: 'Référent handicap',
             path: '/gestion-ressources/partenaires/referent-handicap',
             description: 'Référent et suivi.',
+          },
+          {
+            title: 'Réseau handicap',
+            path: '/gestion-ressources/partenaires/reseau-handicap',
+            description: 'Expertises / réseaux (I26).',
+          },
+          {
+            title: 'Partenaires PFST',
+            path: '/gestion-ressources/partenaires/pfst',
+            description: 'Partenaires socio-éco (I28).',
           },
         ],
       },
@@ -155,6 +191,16 @@ export const CRM_SECTIONS: CrmSection[] = [
           { title: 'Sessions', path: '/gestion-academique/vie-scolaire/sessions', description: 'Sessions de formation.' },
           { title: 'Planning', path: '/gestion-academique/vie-scolaire/planning', description: 'Calendrier pédagogique.' },
           { title: 'Étudiants', path: '/gestion-academique/vie-scolaire/etudiants', description: 'Apprenants.' },
+          {
+            title: 'Alternance',
+            path: '/gestion-academique/vie-scolaire/alternance',
+            description: 'Tuteurs / missions / droits apprentis (I13–15).',
+          },
+          {
+            title: 'Insertion',
+            path: '/gestion-academique/vie-scolaire/insertion',
+            description: 'Suivi insertion / poursuite d’études (I29).',
+          },
         ],
       },
       {

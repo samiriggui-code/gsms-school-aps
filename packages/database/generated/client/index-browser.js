@@ -499,6 +499,9 @@ exports.Prisma.SystemSettingScalarFieldEnum = {
   disabilityReferentName: 'disabilityReferentName',
   disabilityReferentEmail: 'disabilityReferentEmail',
   disabilityReferentPhone: 'disabilityReferentPhone',
+  mobilityReferentName: 'mobilityReferentName',
+  mobilityReferentEmail: 'mobilityReferentEmail',
+  mobilityReferentPhone: 'mobilityReferentPhone',
   language: 'language',
   timezone: 'timezone',
   currency: 'currency',
@@ -697,6 +700,16 @@ exports.Prisma.FormationScalarFieldEnum = {
   complementaryDetails: 'complementaryDetails',
   catalogProgramConfig: 'catalogProgramConfig',
   courseId: 'courseId',
+  publicAccessDelayLabel: 'publicAccessDelayLabel',
+  publicTeachingMethods: 'publicTeachingMethods',
+  publicEvaluationMethods: 'publicEvaluationMethods',
+  publicDisabilityAccessInfo: 'publicDisabilityAccessInfo',
+  publicInfoLastReviewedAt: 'publicInfoLastReviewedAt',
+  publicInfoReviewedById: 'publicInfoReviewedById',
+  publicInfoIndicatorCodes: 'publicInfoIndicatorCodes',
+  operationalObjectivesSummary: 'operationalObjectivesSummary',
+  contentModalitiesSummary: 'contentModalitiesSummary',
+  certificationAdequacyNotes: 'certificationAdequacyNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1457,6 +1470,12 @@ exports.Prisma.SupportTicketScalarFieldEnum = {
   assignedToId: 'assignedToId',
   createdById: 'createdById',
   resolvedAt: 'resolvedAt',
+  isComplaint: 'isComplaint',
+  stakeholderKind: 'stakeholderKind',
+  sessionId: 'sessionId',
+  acknowledgedAt: 'acknowledgedAt',
+  firstResponseAt: 'firstResponseAt',
+  complaintIndicatorCodes: 'complaintIndicatorCodes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1502,6 +1521,12 @@ exports.Prisma.QualityIncidentScalarFieldEnum = {
   deadline: 'deadline',
   verifiedAt: 'verifiedAt',
   resolvedAt: 'resolvedAt',
+  isComplaint: 'isComplaint',
+  stakeholderKind: 'stakeholderKind',
+  sessionId: 'sessionId',
+  acknowledgedAt: 'acknowledgedAt',
+  firstResponseAt: 'firstResponseAt',
+  complaintIndicatorCodes: 'complaintIndicatorCodes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1927,7 +1952,13 @@ exports.Prisma.EvidenceIndicatorLinkScalarFieldEnum = {
   id: 'id',
   evidenceId: 'evidenceId',
   indicatorCode: 'indicatorCode',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  status: 'status',
+  confidence: 'confidence',
+  reason: 'reason',
+  createdByUserId: 'createdByUserId',
+  verifiedByUserId: 'verifiedByUserId',
+  verifiedAt: 'verifiedAt'
 };
 
 exports.Prisma.SessionReadinessEventScalarFieldEnum = {
@@ -1940,6 +1971,322 @@ exports.Prisma.SessionReadinessEventScalarFieldEnum = {
   actorUserId: 'actorUserId',
   payload: 'payload',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.CertificationOutcomeStatScalarFieldEnum = {
+  id: 'id',
+  scope: 'scope',
+  formationId: 'formationId',
+  sessionId: 'sessionId',
+  periodLabel: 'periodLabel',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  successRatePublished: 'successRatePublished',
+  satisfactionRatePublished: 'satisfactionRatePublished',
+  traineesCount: 'traineesCount',
+  completionRatePublished: 'completionRatePublished',
+  certificationPassRate: 'certificationPassRate',
+  blockValidationRate: 'blockValidationRate',
+  equivalencesSummary: 'equivalencesSummary',
+  bridgesSummary: 'bridgesSummary',
+  careerPathsSummary: 'careerPathsSummary',
+  publishedAt: 'publishedAt',
+  publishedById: 'publishedById',
+  indicatorCodes: 'indicatorCodes',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EngagementMeasureScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  participantId: 'participantId',
+  kind: 'kind',
+  label: 'label',
+  description: 'description',
+  status: 'status',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  ownerUserId: 'ownerUserId',
+  actionsTaken: 'actionsTaken',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CompanyTutorLinkScalarFieldEnum = {
+  id: 'id',
+  participantId: 'participantId',
+  companyId: 'companyId',
+  contactId: 'contactId',
+  tutorUserId: 'tutorUserId',
+  tutorName: 'tutorName',
+  tutorEmail: 'tutorEmail',
+  tutorPhone: 'tutorPhone',
+  roleLabel: 'roleLabel',
+  assignedAt: 'assignedAt',
+  endedAt: 'endedAt',
+  notes: 'notes',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprenticeshipMissionScalarFieldEnum = {
+  id: 'id',
+  participantId: 'participantId',
+  companyTutorLinkId: 'companyTutorLinkId',
+  horizon: 'horizon',
+  status: 'status',
+  title: 'title',
+  description: 'description',
+  plannedStart: 'plannedStart',
+  plannedEnd: 'plannedEnd',
+  validatedAt: 'validatedAt',
+  validatedById: 'validatedById',
+  progressNotes: 'progressNotes',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApprenticeRightsAckScalarFieldEnum = {
+  id: 'id',
+  participantId: 'participantId',
+  acknowledgedAt: 'acknowledgedAt',
+  apprenticeSignedAt: 'apprenticeSignedAt',
+  rightsTopics: 'rightsTopics',
+  documentFileAssetId: 'documentFileAssetId',
+  recordedById: 'recordedById',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SocioProfessionalSupportActionScalarFieldEnum = {
+  id: 'id',
+  participantId: 'participantId',
+  sessionId: 'sessionId',
+  kind: 'kind',
+  status: 'status',
+  label: 'label',
+  description: 'description',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  outcome: 'outcome',
+  ownerUserId: 'ownerUserId',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.HandicapNetworkPartnerScalarFieldEnum = {
+  id: 'id',
+  kind: 'kind',
+  label: 'label',
+  description: 'description',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  websiteUrl: 'websiteUrl',
+  companyId: 'companyId',
+  isActive: 'isActive',
+  lastMobilizedAt: 'lastMobilizedAt',
+  notes: 'notes',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionCertificationPresentationScalarFieldEnum = {
+  id: 'id',
+  participantId: 'participantId',
+  identityVerified: 'identityVerified',
+  prerequisitesVerified: 'prerequisitesVerified',
+  attendanceThresholdMet: 'attendanceThresholdMet',
+  formativeAssessmentComplete: 'formativeAssessmentComplete',
+  examRegistrationSubmitted: 'examRegistrationSubmitted',
+  accessibilityAccommodationsOk: 'accessibilityAccommodationsOk',
+  employerAgreementSigned: 'employerAgreementSigned',
+  authorityName: 'authorityName',
+  authorityReference: 'authorityReference',
+  checklistNotes: 'checklistNotes',
+  reviewedAt: 'reviewedAt',
+  reviewedById: 'reviewedById',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SessionIntervenantAssignmentScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  userId: 'userId',
+  externalLabel: 'externalLabel',
+  externalEmail: 'externalEmail',
+  role: 'role',
+  responsibilities: 'responsibilities',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  coordinatedById: 'coordinatedById',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PedagogicalResourceDeliveryScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  participantId: 'participantId',
+  label: 'label',
+  resourceType: 'resourceType',
+  deliveryChannel: 'deliveryChannel',
+  status: 'status',
+  fileAssetId: 'fileAssetId',
+  deliveredAt: 'deliveredAt',
+  acknowledgedAt: 'acknowledgedAt',
+  notes: 'notes',
+  deliveredById: 'deliveredById',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PerfectionnementCouncilMeetingScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  heldAt: 'heldAt',
+  attendees: 'attendees',
+  agenda: 'agenda',
+  decisions: 'decisions',
+  minutesFileAssetId: 'minutesFileAssetId',
+  chairUserId: 'chairUserId',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TrainerCompetencyReviewScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  formateurProfileId: 'formateurProfileId',
+  reviewPeriodStart: 'reviewPeriodStart',
+  reviewPeriodEnd: 'reviewPeriodEnd',
+  status: 'status',
+  competenciesAssessed: 'competenciesAssessed',
+  gapsIdentified: 'gapsIdentified',
+  overallAssessment: 'overallAssessment',
+  reviewedAt: 'reviewedAt',
+  reviewerUserId: 'reviewerUserId',
+  nextReviewDueAt: 'nextReviewDueAt',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StaffDevelopmentActionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  collaborateurProfileId: 'collaborateurProfileId',
+  competencyReviewId: 'competencyReviewId',
+  label: 'label',
+  objective: 'objective',
+  status: 'status',
+  plannedStart: 'plannedStart',
+  plannedEnd: 'plannedEnd',
+  completedAt: 'completedAt',
+  trainingProvider: 'trainingProvider',
+  costEuros: 'costEuros',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WatchItemScalarFieldEnum = {
+  id: 'id',
+  domain: 'domain',
+  title: 'title',
+  sourceLabel: 'sourceLabel',
+  sourceUrl: 'sourceUrl',
+  detectedAt: 'detectedAt',
+  summary: 'summary',
+  status: 'status',
+  relevanceTags: 'relevanceTags',
+  indicatorCodes: 'indicatorCodes',
+  ownerUserId: 'ownerUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WatchExploitationScalarFieldEnum = {
+  id: 'id',
+  watchItemId: 'watchItemId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  implementedAt: 'implementedAt',
+  impactSummary: 'impactSummary',
+  indicatorCodes: 'indicatorCodes',
+  ownerUserId: 'ownerUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SocioEconomicPartnershipScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  formationId: 'formationId',
+  contactId: 'contactId',
+  kind: 'kind',
+  status: 'status',
+  label: 'label',
+  description: 'description',
+  signedAt: 'signedAt',
+  pfstCapacity: 'pfstCapacity',
+  activities: 'activities',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InsertionFollowUpScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  participantId: 'participantId',
+  sessionId: 'sessionId',
+  followedUpAt: 'followedUpAt',
+  outcome: 'outcome',
+  employerName: 'employerName',
+  companyId: 'companyId',
+  notes: 'notes',
+  nextFollowUpAt: 'nextFollowUpAt',
+  recordedById: 'recordedById',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ContinuousImprovementActionScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  source: 'source',
+  sourceEntityType: 'sourceEntityType',
+  sourceEntityId: 'sourceEntityId',
+  supportTicketId: 'supportTicketId',
+  qualityIncidentId: 'qualityIncidentId',
+  watchExploitationId: 'watchExploitationId',
+  ownerUserId: 'ownerUserId',
+  deadline: 'deadline',
+  completedAt: 'completedAt',
+  verifiedAt: 'verifiedAt',
+  verifiedById: 'verifiedById',
+  effectivenessNotes: 'effectivenessNotes',
+  indicatorCodes: 'indicatorCodes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -2401,6 +2748,15 @@ exports.SupportTicketPriority = exports.$Enums.SupportTicketPriority = {
   URGENT: 'URGENT'
 };
 
+exports.QualityStakeholderKind = exports.$Enums.QualityStakeholderKind = {
+  BENEFICIARY: 'BENEFICIARY',
+  FUNDER: 'FUNDER',
+  TRAINER: 'TRAINER',
+  COMPANY: 'COMPANY',
+  STAFF: 'STAFF',
+  OTHER: 'OTHER'
+};
+
 exports.QualityIncidentSeverity = exports.$Enums.QualityIncidentSeverity = {
   LOW: 'LOW',
   MEDIUM: 'MEDIUM',
@@ -2666,6 +3022,171 @@ exports.EvidenceStatus = exports.$Enums.EvidenceStatus = {
   SUPERSEDED: 'SUPERSEDED'
 };
 
+exports.EvidenceIndicatorLinkStatus = exports.$Enums.EvidenceIndicatorLinkStatus = {
+  SUGGESTED: 'SUGGESTED',
+  AUTO: 'AUTO',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+};
+
+exports.CertificationOutcomeStatScope = exports.$Enums.CertificationOutcomeStatScope = {
+  ORGANIZATION: 'ORGANIZATION',
+  FORMATION: 'FORMATION',
+  SESSION_COHORT: 'SESSION_COHORT'
+};
+
+exports.EngagementMeasureKind = exports.$Enums.EngagementMeasureKind = {
+  INDIVIDUAL_MONITORING: 'INDIVIDUAL_MONITORING',
+  GROUP_ACTIVITY: 'GROUP_ACTIVITY',
+  MENTORING: 'MENTORING',
+  REMOTE_CHECKIN: 'REMOTE_CHECKIN',
+  EMPLOYER_LIAISON: 'EMPLOYER_LIAISON',
+  WELCOME_SESSION: 'WELCOME_SESSION',
+  OTHER: 'OTHER'
+};
+
+exports.EngagementMeasureStatus = exports.$Enums.EngagementMeasureStatus = {
+  PLANNED: 'PLANNED',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.ApprenticeshipMissionHorizon = exports.$Enums.ApprenticeshipMissionHorizon = {
+  SHORT_TERM: 'SHORT_TERM',
+  MEDIUM_TERM: 'MEDIUM_TERM',
+  LONG_TERM: 'LONG_TERM'
+};
+
+exports.ApprenticeshipMissionStatus = exports.$Enums.ApprenticeshipMissionStatus = {
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  REVISED: 'REVISED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.SocioProfessionalSupportKind = exports.$Enums.SocioProfessionalSupportKind = {
+  SOCIAL: 'SOCIAL',
+  PROFESSIONAL: 'PROFESSIONAL',
+  EDUCATIONAL: 'EDUCATIONAL',
+  CITIZENSHIP: 'CITIZENSHIP',
+  HOUSING: 'HOUSING',
+  HEALTH: 'HEALTH',
+  OTHER: 'OTHER'
+};
+
+exports.SocioProfessionalSupportStatus = exports.$Enums.SocioProfessionalSupportStatus = {
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  REFERRED_EXTERNAL: 'REFERRED_EXTERNAL',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.HandicapNetworkPartnerKind = exports.$Enums.HandicapNetworkPartnerKind = {
+  AGEFIPH: 'AGEFIPH',
+  MDPH: 'MDPH',
+  CAP_EMPLOI: 'CAP_EMPLOI',
+  SPECIALIZED_PROVIDER: 'SPECIALIZED_PROVIDER',
+  INTERNAL_EXPERT: 'INTERNAL_EXPERT',
+  TOOL_PLATFORM: 'TOOL_PLATFORM',
+  OTHER: 'OTHER'
+};
+
+exports.SessionIntervenantRole = exports.$Enums.SessionIntervenantRole = {
+  TRAINER: 'TRAINER',
+  CO_TRAINER: 'CO_TRAINER',
+  PEDAGOGICAL_COORDINATOR: 'PEDAGOGICAL_COORDINATOR',
+  ADMINISTRATIVE: 'ADMINISTRATIVE',
+  LOGISTICS: 'LOGISTICS',
+  COMMERCIAL: 'COMMERCIAL',
+  EXTERNAL_EXPERT: 'EXTERNAL_EXPERT',
+  OTHER: 'OTHER'
+};
+
+exports.PedagogicalResourceDeliveryStatus = exports.$Enums.PedagogicalResourceDeliveryStatus = {
+  PLANNED: 'PLANNED',
+  DELIVERED: 'DELIVERED',
+  ACKNOWLEDGED: 'ACKNOWLEDGED'
+};
+
+exports.TrainerCompetencyReviewStatus = exports.$Enums.TrainerCompetencyReviewStatus = {
+  SCHEDULED: 'SCHEDULED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  ACTION_REQUIRED: 'ACTION_REQUIRED'
+};
+
+exports.StaffDevelopmentActionStatus = exports.$Enums.StaffDevelopmentActionStatus = {
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.WatchDomain = exports.$Enums.WatchDomain = {
+  LEGAL_REGULATORY: 'LEGAL_REGULATORY',
+  SKILLS_JOBS_EMPLOYMENT: 'SKILLS_JOBS_EMPLOYMENT',
+  PEDAGOGICAL_TECHNOLOGICAL: 'PEDAGOGICAL_TECHNOLOGICAL'
+};
+
+exports.WatchItemStatus = exports.$Enums.WatchItemStatus = {
+  IDENTIFIED: 'IDENTIFIED',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  EXPLOITED: 'EXPLOITED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.WatchExploitationStatus = exports.$Enums.WatchExploitationStatus = {
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  IMPLEMENTED: 'IMPLEMENTED',
+  ABANDONED: 'ABANDONED'
+};
+
+exports.SocioEconomicPartnershipKind = exports.$Enums.SocioEconomicPartnershipKind = {
+  PFST_HOST: 'PFST_HOST',
+  CO_CONSTRUCTION: 'CO_CONSTRUCTION',
+  PLACEMENT: 'PLACEMENT',
+  NETWORK: 'NETWORK',
+  OTHER: 'OTHER'
+};
+
+exports.SocioEconomicPartnershipStatus = exports.$Enums.SocioEconomicPartnershipStatus = {
+  PROSPECT: 'PROSPECT',
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  ENDED: 'ENDED'
+};
+
+exports.InsertionFollowUpOutcome = exports.$Enums.InsertionFollowUpOutcome = {
+  EMPLOYED: 'EMPLOYED',
+  APPRENTICESHIP_CONTINUED: 'APPRENTICESHIP_CONTINUED',
+  FURTHER_STUDY: 'FURTHER_STUDY',
+  UNEMPLOYED: 'UNEMPLOYED',
+  UNKNOWN: 'UNKNOWN',
+  OTHER: 'OTHER'
+};
+
+exports.ContinuousImprovementActionStatus = exports.$Enums.ContinuousImprovementActionStatus = {
+  IDENTIFIED: 'IDENTIFIED',
+  PLANNED: 'PLANNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  VERIFIED: 'VERIFIED',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.ContinuousImprovementActionSource = exports.$Enums.ContinuousImprovementActionSource = {
+  SATISFACTION_SURVEY: 'SATISFACTION_SURVEY',
+  COMPLAINT: 'COMPLAINT',
+  QUALITY_INCIDENT: 'QUALITY_INCIDENT',
+  WATCH_EXPLOITATION: 'WATCH_EXPLOITATION',
+  AUDIT_FINDING: 'AUDIT_FINDING',
+  MANUAL: 'MANUAL'
+};
+
 exports.Prisma.ModelName = {
   LandingConfig: 'LandingConfig',
   User: 'User',
@@ -2794,7 +3315,25 @@ exports.Prisma.ModelName = {
   TrainingRequest: 'TrainingRequest',
   Evidence: 'Evidence',
   EvidenceIndicatorLink: 'EvidenceIndicatorLink',
-  SessionReadinessEvent: 'SessionReadinessEvent'
+  SessionReadinessEvent: 'SessionReadinessEvent',
+  CertificationOutcomeStat: 'CertificationOutcomeStat',
+  EngagementMeasure: 'EngagementMeasure',
+  CompanyTutorLink: 'CompanyTutorLink',
+  ApprenticeshipMission: 'ApprenticeshipMission',
+  ApprenticeRightsAck: 'ApprenticeRightsAck',
+  SocioProfessionalSupportAction: 'SocioProfessionalSupportAction',
+  HandicapNetworkPartner: 'HandicapNetworkPartner',
+  SessionCertificationPresentation: 'SessionCertificationPresentation',
+  SessionIntervenantAssignment: 'SessionIntervenantAssignment',
+  PedagogicalResourceDelivery: 'PedagogicalResourceDelivery',
+  PerfectionnementCouncilMeeting: 'PerfectionnementCouncilMeeting',
+  TrainerCompetencyReview: 'TrainerCompetencyReview',
+  StaffDevelopmentAction: 'StaffDevelopmentAction',
+  WatchItem: 'WatchItem',
+  WatchExploitation: 'WatchExploitation',
+  SocioEconomicPartnership: 'SocioEconomicPartnership',
+  InsertionFollowUp: 'InsertionFollowUp',
+  ContinuousImprovementAction: 'ContinuousImprovementAction'
 };
 
 /**

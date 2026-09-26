@@ -22,6 +22,7 @@ import {
   type QualiopiAuditStatus,
   type QualiopiIndicator,
 } from '@/lib/of/qualiopi-indicators';
+import type { QualiopiRegistryIndicatorBrief } from '@/lib/of/qualiopi-registry-brief-types';
 import {
   AUDIT_STATUS_LABEL,
   QUALIOPI_CLASSEUR_QUERY_KEY,
@@ -35,12 +36,14 @@ export function QualiopiIndicatorCard({
   item,
   disabled,
   evidenceCovered,
+  registryBrief,
 }: {
   indicator: QualiopiIndicator;
   item: ComplianceItemRow | undefined;
   disabled: boolean;
   /** OF-11′ — preuve Evidence existante (couverture auto), distinct du jugement audit. */
   evidenceCovered: boolean;
+  registryBrief?: QualiopiRegistryIndicatorBrief;
 }) {
   const queryClient = useQueryClient();
   const [auditStatus, setAuditStatus] = useState<QualiopiAuditStatus | ''>(
@@ -143,6 +146,27 @@ export function QualiopiIndicatorCard({
             ) : null}
           </div>
         </div>
+        {registryBrief?.expectedLevel || registryBrief?.evidenceExamples ? (
+          <details className="rounded-md border border-border/60 bg-muted/20 text-xs">
+            <summary className="cursor-pointer px-3 py-2 font-medium text-muted-foreground">
+              Guide V9 — niveau attendu & exemples de preuves
+            </summary>
+            <div className="space-y-2 border-t border-border/60 px-3 py-2 text-muted-foreground">
+              {registryBrief.expectedLevel ? (
+                <div>
+                  <p className="mb-0.5 font-semibold text-foreground">Niveau attendu</p>
+                  <p className="whitespace-pre-wrap">{registryBrief.expectedLevel}</p>
+                </div>
+              ) : null}
+              {registryBrief.evidenceExamples ? (
+                <div>
+                  <p className="mb-0.5 font-semibold text-foreground">Exemples de preuves</p>
+                  <p className="whitespace-pre-wrap">{registryBrief.evidenceExamples}</p>
+                </div>
+              ) : null}
+            </div>
+          </details>
+        ) : null}
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">

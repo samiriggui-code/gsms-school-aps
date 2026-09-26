@@ -1,7 +1,5 @@
-'use client';
-
-import { DemandesDocumentsDatagrid } from './components/demandes-documents-datagrid';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <DemandesDocumentsDatagrid />;
+  return <QualiopiDevStubPage path="/securite-configuration/gouvernance-donnees/demandes-documents" level="leaf" />;
 }

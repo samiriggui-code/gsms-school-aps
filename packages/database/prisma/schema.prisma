@@ -221,61 +221,61 @@ model User {
   roleId   String
   status   UserStatus @default(INACTIVE)
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  lastSignInAt    DateTime?
-  emailVerifiedAt DateTime?
-  isTrashed       Boolean   @default(false)
-  avatar          String?
-  firstName       String?
-  lastName        String?
-  phone           String?
-  proEmail        String?   @unique
-  userCategory    UserCategory @default(INTERNAL)
-  subcontractorId String?
-  jobFunction     String?
-  jobPositionId   String?
-  qualification   String?
-  birthDate       DateTime?
-  birthPlace      String?
-  nationality     String?
-  socialSecurityNumber  String?
-  cniNumber             String?
-  residencePermitNumber String?
-  residencePermitExpiry DateTime?
-  contractType          ContractType?
-  workTimeType          WorkTimeType?
-  contractStartDate     DateTime?
-  contractEndDate       DateTime?
-  address               String?
-  city                  String?
-  postalCode            String?
-  carteProNumber        String?
-  carteProExpiry        DateTime?
-  isSchedulable         Boolean   @default(true)
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+  lastSignInAt            DateTime?
+  emailVerifiedAt         DateTime?
+  isTrashed               Boolean       @default(false)
+  avatar                  String?
+  firstName               String?
+  lastName                String?
+  phone                   String?
+  proEmail                String?       @unique
+  userCategory            UserCategory  @default(INTERNAL)
+  subcontractorId         String?
+  jobFunction             String?
+  jobPositionId           String?
+  qualification           String?
+  birthDate               DateTime?
+  birthPlace              String?
+  nationality             String?
+  socialSecurityNumber    String?
+  cniNumber               String?
+  residencePermitNumber   String?
+  residencePermitExpiry   DateTime?
+  contractType            ContractType?
+  workTimeType            WorkTimeType?
+  contractStartDate       DateTime?
+  contractEndDate         DateTime?
+  address                 String?
+  city                    String?
+  postalCode              String?
+  carteProNumber          String?
+  carteProExpiry          DateTime?
+  isSchedulable           Boolean       @default(true)
   /// Présentation courte affichée sur le landing (#trainers) et fiches publiques équipe.
-  landingPresentation   String?   @db.Text
-  documentCni           String?
-  documentAssurance     String?
+  landingPresentation     String?       @db.Text
+  documentCni             String?
+  documentAssurance       String?
   documentResidencePermit String?
-  documentCartePro      String?
-  invitedByUserId String?
-  isProtected     Boolean   @default(false)
+  documentCartePro        String?
+  invitedByUserId         String?
+  isProtected             Boolean       @default(false)
 
   role        UserRole    @relation(fields: [roleId], references: [id])
   jobPosition RhPosition? @relation(fields: [jobPositionId], references: [id], onDelete: SetNull)
-  systemLog SystemLog[]
-  accounts  Account[]
-  Session   Session[]
+  systemLog   SystemLog[]
+  accounts    Account[]
+  Session     Session[]
 
   // LMS relations
-  courses            Course[]
-  userProgress       UserProgress[]
-  purchases          Purchase[]
-  stripeCustomer     StripeCustomer?
-  activitiesModified Activity[]      @relation("ActivityModifier")
-  chaptersReviewed   Chapter[]        @relation("ChapterReviewer")
-  activitiesReviewed Activity[]        @relation("ActivityReviewer")
+  courses                  Course[]
+  userProgress             UserProgress[]
+  purchases                Purchase[]
+  stripeCustomer           StripeCustomer?
+  activitiesModified       Activity[]         @relation("ActivityModifier")
+  chaptersReviewed         Chapter[]          @relation("ChapterReviewer")
+  activitiesReviewed       Activity[]         @relation("ActivityReviewer")
   quizQuestionBanksCreated QuizQuestionBank[] @relation("QuizBankCreator")
 
   instructorSessions TrainingSession[]      @relation("Instructor")
@@ -285,21 +285,25 @@ model User {
   submissions        AssignmentSubmission[]
   quizAttempts       QuizAttempt[]
 
-  formationSessionParticipants FormationSessionParticipant[]
-  formationSessionEmargementsMarked FormationSessionEmargement[] @relation("FormationSessionEmargementMarkedBy")
-  formationAttestations        FormationAttestation[]
-  candidatures                   Candidature[]
-  complianceDossiers             ComplianceDossier[]       @relation("ComplianceDossierUser")
-  complianceItemsValidated       ComplianceDossierItem[]   @relation("ComplianceItemValidator")
-  fundingCasesAsLearner          FundingCase[]             @relation("FundingCaseLearner")
-  evidenceAsLearner              Evidence[]                @relation("EvidenceLearner")
-  evidenceAsTrainer              Evidence[]                @relation("EvidenceTrainer")
-  documentRequestsRequested      DocumentRequest[]         @relation("DocumentRequestRequester")
-  complianceEventsActed          ComplianceItemEvent[]     @relation("ComplianceEventActor")
-  /** Sessions formation CRM dont cet utilisateur est le formateur référent. */
-  formationSessionsTrained FormationSession[] @relation("FormationSessionTrainer")
-  /** Sessions dont cet utilisateur modère le chat pédagogique. */
-  formationSessionsModerated FormationSession[] @relation("FormationSessionModerator")
+  formationSessionParticipants      FormationSessionParticipant[]
+  formationSessionEmargementsMarked FormationSessionEmargement[]  @relation("FormationSessionEmargementMarkedBy")
+  formationAttestations             FormationAttestation[]
+  candidatures                      Candidature[]
+  complianceDossiers                ComplianceDossier[]           @relation("ComplianceDossierUser")
+  complianceItemsValidated          ComplianceDossierItem[]       @relation("ComplianceItemValidator")
+  fundingCasesAsLearner             FundingCase[]                 @relation("FundingCaseLearner")
+  evidenceAsLearner                 Evidence[]                    @relation("EvidenceLearner")
+  evidenceAsTrainer                 Evidence[]                    @relation("EvidenceTrainer")
+  documentRequestsRequested         DocumentRequest[]             @relation("DocumentRequestRequester")
+  complianceEventsActed             ComplianceItemEvent[]         @relation("ComplianceEventActor")
+  /**
+   * Sessions formation CRM dont cet utilisateur est le formateur référent.
+   */
+  formationSessionsTrained          FormationSession[]            @relation("FormationSessionTrainer")
+  /**
+   * Sessions dont cet utilisateur modère le chat pédagogique.
+   */
+  formationSessionsModerated        FormationSession[]            @relation("FormationSessionModerator")
 
   certificates    UserCertificate[]
   discussions     Discussion[]
@@ -307,43 +311,65 @@ model User {
   discussionVotes DiscussionVote[]
   commentVotes    CommentVote[]
 
-  trails                Trail[]
-  trailRuns             TrailRun[]
-  apiTokens             ApiToken[]
-  webhooks              WebhookEndpoint[]
-  businessRoles         UserBusinessRole[]
-  collaborateurProfile  CollaborateurProfile?
-  formateurProfile      FormateurProfile?
-  landingTeamOffer      LandingTeamOffer?
-  managedCollaborateurs CollaborateurProfile[] @relation("CollaborateurManager")
-  createdFileAssets     FileAsset[]            @relation("FileAssetCreatedBy")
-  createdFileAssetVersions FileAssetVersion[] @relation("FileAssetVersionCreatedBy")
-  requestedReportJobs   ReportGenerationJob[]  @relation("ReportJobsRequested")
-  requestedAiRuns       AiRun[]                @relation("AiRunsRequested")
-  requestedAgentTasks   AgentTask[]            @relation("AgentTasksRequested")
-  reviewedAiArtifacts   AiArtifact[]           @relation("AiArtifactReviewed")
-  assignedSupportTickets SupportTicket[]       @relation("SupportTicketAssignee")
-  createdSupportTickets  SupportTicket[]       @relation("SupportTicketCreatedBy")
-  ticketComments         TicketComment[]       @relation("TicketCommentAuthor")
-  ticketAttachments      TicketAttachment[]    @relation("TicketAttachmentUploader")
-  helpArticlesAuthored   HelpArticle[]         @relation("HelpArticleAuthor")
-  assignedQualityIncidents QualityIncident[]   @relation("QualityIncidentAssignee")
-  reportedQualityIncidents QualityIncident[]   @relation("QualityIncidentReporter")
-  formativeAssessmentsRecorded FormativeAssessment[] @relation("FormativeAssessmentRecorder")
-  notificationPreference UserNotificationPreference?
+  trails                       Trail[]
+  trailRuns                    TrailRun[]
+  apiTokens                    ApiToken[]
+  webhooks                     WebhookEndpoint[]
+  businessRoles                UserBusinessRole[]
+  collaborateurProfile         CollaborateurProfile?
+  formateurProfile             FormateurProfile?
+  landingTeamOffer             LandingTeamOffer?
+  managedCollaborateurs        CollaborateurProfile[]      @relation("CollaborateurManager")
+  createdFileAssets            FileAsset[]                 @relation("FileAssetCreatedBy")
+  createdFileAssetVersions     FileAssetVersion[]          @relation("FileAssetVersionCreatedBy")
+  requestedReportJobs          ReportGenerationJob[]       @relation("ReportJobsRequested")
+  requestedAiRuns              AiRun[]                     @relation("AiRunsRequested")
+  requestedAgentTasks          AgentTask[]                 @relation("AgentTasksRequested")
+  reviewedAiArtifacts          AiArtifact[]                @relation("AiArtifactReviewed")
+  assignedSupportTickets       SupportTicket[]             @relation("SupportTicketAssignee")
+  createdSupportTickets        SupportTicket[]             @relation("SupportTicketCreatedBy")
+  ticketComments               TicketComment[]             @relation("TicketCommentAuthor")
+  ticketAttachments            TicketAttachment[]          @relation("TicketAttachmentUploader")
+  helpArticlesAuthored         HelpArticle[]               @relation("HelpArticleAuthor")
+  assignedQualityIncidents     QualityIncident[]           @relation("QualityIncidentAssignee")
+  reportedQualityIncidents     QualityIncident[]           @relation("QualityIncidentReporter")
+  formativeAssessmentsRecorded FormativeAssessment[]       @relation("FormativeAssessmentRecorder")
+  notificationPreference       UserNotificationPreference?
 
-  inAppNotifications InAppNotification[]
-  chatParticipants   ChatParticipant[]
-  chatMessages       ChatMessage[]
-  chatInvitationsReceived ChatInvitation[] @relation("ChatInvitationInvitee")
-  chatInvitationsSent     ChatInvitation[] @relation("ChatInvitationInviter")
+  inAppNotifications      InAppNotification[]
+  chatParticipants        ChatParticipant[]
+  chatMessages            ChatMessage[]
+  chatInvitationsReceived ChatInvitation[]    @relation("ChatInvitationInvitee")
+  chatInvitationsSent     ChatInvitation[]    @relation("ChatInvitationInviter")
 
-  rhTeamsLed         RhTeam[]        @relation("RhTeamLeader")
-  rhTeamMemberships  RhTeamMember[]
-  rhOrgUnitsManaged  RhOrgUnit[]     @relation("RhOrgUnitManager")
-  rhAbsences         RhAbsence[]
-  rhAbsencesValidated RhAbsence[]    @relation("RhAbsenceValidatedBy")
+  rhTeamsLed                 RhTeam[]           @relation("RhTeamLeader")
+  rhTeamMemberships          RhTeamMember[]
+  rhOrgUnitsManaged          RhOrgUnit[]        @relation("RhOrgUnitManager")
+  rhAbsences                 RhAbsence[]
+  rhAbsencesValidated        RhAbsence[]        @relation("RhAbsenceValidatedBy")
   venueRoomBookingsOrganized VenueRoomBooking[] @relation("VenueRoomBookingOrganizer")
+
+  formationPublicInfoReviews                Formation[]                        @relation("FormationPublicInfoReviewer")
+  certificationOutcomeStatsPublished        CertificationOutcomeStat[]         @relation("CertificationOutcomeStatPublisher")
+  engagementMeasuresOwned                   EngagementMeasure[]                @relation("EngagementMeasureOwner")
+  companyTutorAssignments                   CompanyTutorLink[]                 @relation("CompanyTutorUser")
+  apprenticeshipMissionsValidated           ApprenticeshipMission[]            @relation("ApprenticeshipMissionValidator")
+  apprenticeRightsAcksRecorded              ApprenticeRightsAck[]              @relation("ApprenticeRightsAckRecorder")
+  socioProfessionalSupportOwned             SocioProfessionalSupportAction[]   @relation("SocioProfessionalSupportOwner")
+  sessionCertificationPresentationsReviewed SessionCertificationPresentation[] @relation("SessionCertificationPresentationReviewer")
+  sessionIntervenantAssignments             SessionIntervenantAssignment[]     @relation("SessionIntervenantUser")
+  sessionIntervenantCoordination            SessionIntervenantAssignment[]     @relation("SessionIntervenantCoordinator")
+  pedagogicalResourcesDelivered             PedagogicalResourceDelivery[]      @relation("PedagogicalResourceDeliveredBy")
+  perfectionnementCouncilMeetingsChaired    PerfectionnementCouncilMeeting[]   @relation("PerfectionnementCouncilChair")
+  trainerCompetencyReviewsSubject           TrainerCompetencyReview[]          @relation("TrainerCompetencyReviewSubject")
+  trainerCompetencyReviewsConducted         TrainerCompetencyReview[]          @relation("TrainerCompetencyReviewReviewer")
+  staffDevelopmentActions                   StaffDevelopmentAction[]           @relation("StaffDevelopmentActionSubject")
+  watchItemsOwned                           WatchItem[]                        @relation("WatchItemOwner")
+  watchExploitationsOwned                   WatchExploitation[]                @relation("WatchExploitationOwner")
+  insertionFollowUpsAsLearner               InsertionFollowUp[]                @relation("InsertionFollowUpLearner")
+  insertionFollowUpsRecorded                InsertionFollowUp[]                @relation("InsertionFollowUpRecorder")
+  continuousImprovementActionsOwned         ContinuousImprovementAction[]      @relation("ContinuousImprovementActionOwner")
+  continuousImprovementActionsVerified      ContinuousImprovementAction[]      @relation("ContinuousImprovementActionVerifier")
 
   @@index([invitedByUserId])
   @@index([roleId])
@@ -380,14 +406,17 @@ model FileAsset {
   updatedAt        DateTime            @updatedAt
   deletedAt        DateTime?
 
-  createdBy      User?              @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  currentVersion FileAssetVersion?  @relation("FileAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
-  versions       FileAssetVersion[] @relation("FileAssetVersions")
-  reportJobs     ReportGenerationJob[]
-  complianceDossierItems ComplianceDossierItem[]
-  complianceItemEvents   ComplianceItemEvent[]
-  ticketAttachments      TicketAttachment[]
-  sessionConventions     FormationSessionConvention[]
+  createdBy                      User?                            @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  currentVersion                 FileAssetVersion?                @relation("FileAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
+  versions                       FileAssetVersion[]               @relation("FileAssetVersions")
+  reportJobs                     ReportGenerationJob[]
+  complianceDossierItems         ComplianceDossierItem[]
+  complianceItemEvents           ComplianceItemEvent[]
+  ticketAttachments              TicketAttachment[]
+  sessionConventions             FormationSessionConvention[]
+  apprenticeRightsAckDocuments   ApprenticeRightsAck[]
+  perfectionnementCouncilMinutes PerfectionnementCouncilMeeting[]
+  pedagogicalResourceDeliveries  PedagogicalResourceDelivery[]
 
   @@index([module, entityType, entityId])
   @@index([status, visibility])
@@ -409,9 +438,9 @@ model FileAssetVersion {
   createdById   String?
   createdAt     DateTime               @default(now())
 
-  fileAsset  FileAsset @relation("FileAssetVersions", fields: [fileAssetId], references: [id], onDelete: Cascade)
+  fileAsset  FileAsset  @relation("FileAssetVersions", fields: [fileAssetId], references: [id], onDelete: Cascade)
   currentFor FileAsset? @relation("FileAssetCurrentVersion")
-  createdBy  User?     @relation("FileAssetVersionCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy  User?      @relation("FileAssetVersionCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@unique([fileAssetId, versionNumber])
   @@index([fileAssetId, status])
@@ -466,22 +495,22 @@ enum AiArtifactStatus {
 /// AiArtifact que la fonction déterministe `apply*` correspondante valide et applique
 /// après revue humaine — jamais d'écriture directe par le LLM (GSMS-AI-01).
 model AiRun {
-  id                String      @id @default(uuid())
-  useCase           String
-  status            AiRunStatus @default(PENDING)
-  provider          String
-  model             String
-  inputSummary      Json        @default("{}")
-  promptTokens      Int?
-  completionTokens  Int?
-  costCents         Int?
-  errorMessage      String?
-  requestedById     String
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  completedAt       DateTime?
+  id               String      @id @default(uuid())
+  useCase          String
+  status           AiRunStatus @default(PENDING)
+  provider         String
+  model            String
+  inputSummary     Json        @default("{}")
+  promptTokens     Int?
+  completionTokens Int?
+  costCents        Int?
+  errorMessage     String?
+  requestedById    String
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  completedAt      DateTime?
 
-  requestedBy User        @relation("AiRunsRequested", fields: [requestedById], references: [id])
+  requestedBy User         @relation("AiRunsRequested", fields: [requestedById], references: [id])
   artifacts   AiArtifact[]
 
   @@index([status, createdAt])
@@ -506,7 +535,7 @@ model AiArtifact {
   createdAt        DateTime         @default(now())
 
   run        AiRun @relation(fields: [runId], references: [id], onDelete: Cascade)
-  reviewedBy User?  @relation("AiArtifactReviewed", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedBy User? @relation("AiArtifactReviewed", fields: [reviewedById], references: [id], onDelete: SetNull)
 
   @@index([runId])
   @@index([status])
@@ -534,11 +563,11 @@ model AgentConversation {
 }
 
 model AgentMessage {
-  id             String            @id @default(uuid())
+  id             String           @id @default(uuid())
   conversationId String
   role           AgentMessageRole
   content        String
-  createdAt      DateTime          @default(now())
+  createdAt      DateTime         @default(now())
 
   conversation AgentConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
@@ -555,14 +584,14 @@ enum AgentTaskStatus {
 }
 
 model AgentTask {
-  id            String           @id @default(uuid())
+  id            String          @id @default(uuid())
   kind          String
-  status        AgentTaskStatus  @default(PENDING)
-  payload       Json             @default("{}")
+  status        AgentTaskStatus @default(PENDING)
+  payload       Json            @default("{}")
   result        Json?
   error         String?
   requestedById String
-  createdAt     DateTime         @default(now())
+  createdAt     DateTime        @default(now())
   startedAt     DateTime?
   completedAt   DateTime?
 
@@ -609,9 +638,9 @@ model UserBusinessRole {
 }
 
 model CollaborateurProfile {
-  id                    String    @id @default(uuid())
-  userId                String    @unique
-  employeeCode          String?   @unique
+  id                    String                 @id @default(uuid())
+  userId                String                 @unique
+  employeeCode          String?                @unique
   companyId             String?
   schoolInternalService SchoolInternalService?
   managerUserId         String?
@@ -634,13 +663,14 @@ model CollaborateurProfile {
   city                  String?
   postalCode            String?
   country               String?
-  isSchedulable         Boolean   @default(true)
-  metadata              Json?     @default("{}")
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+  isSchedulable         Boolean                @default(true)
+  metadata              Json?                  @default("{}")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  manager User? @relation("CollaborateurManager", fields: [managerUserId], references: [id], onDelete: SetNull)
+  user               User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  manager            User?                    @relation("CollaborateurManager", fields: [managerUserId], references: [id], onDelete: SetNull)
+  developmentActions StaffDevelopmentAction[]
 
   @@index([companyId])
   @@index([schoolInternalService])
@@ -648,27 +678,30 @@ model CollaborateurProfile {
 }
 
 model FormateurProfile {
-  id                    String   @id @default(uuid())
-  userId                String   @unique
+  id                    String                 @id @default(uuid())
+  userId                String                 @unique
   companyId             String?
   /// Équipe interne rattachée (formateurs salariés / pool maison).
   schoolInternalService SchoolInternalService?
   trainingCenterId      String?
   /// Première spécialité (doublon de confort avec `specialties[0]`).
   speciality            String?
-  /** Domaines dispensés au catalogue (JSON string[]): SST, TFPAPS, SSIAP, etc. */
-  specialties           Json     @default("[]")
-  pedagogicalReferences Json?    @default("[]")
-  certifications        Json?    @default("[]")
+  /**
+   * Domaines dispensés au catalogue (JSON string[]): SST, TFPAPS, SSIAP, etc.
+   */
+  specialties           Json                   @default("[]")
+  pedagogicalReferences Json?                  @default("[]")
+  certifications        Json?                  @default("[]")
   yearsOfExperience     Int?
   hourlyRate            Float?
-  isInternal            Boolean  @default(true)
-  availability          Json?    @default("{}")
-  metadata              Json?    @default("{}")
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  isInternal            Boolean                @default(true)
+  availability          Json?                  @default("{}")
+  metadata              Json?                  @default("{}")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competencyReviews TrainerCompetencyReview[]
 
   @@index([companyId])
   @@index([schoolInternalService])
@@ -764,33 +797,33 @@ model SystemLog {
 }
 
 model SystemSetting {
-  id             String  @id @default(uuid())
-  name           String  @default("My Company")
-  logo           String?
-  active         Boolean @default(true)
-  address        String?
-  companyCity    String?
+  id                String  @id @default(uuid())
+  name              String  @default("My Company")
+  logo              String?
+  active            Boolean @default(true)
+  address           String?
+  companyCity       String?
   companyPostalCode String?
   /// Identifiant légal entreprise (école / organisme).
-  siret          String?
+  siret             String?
   /// Agrément CNAPS ou équivalent, si applicable.
-  cnaps          String?
+  cnaps             String?
   /// Représentant / responsable légal affiché sur documents et profil école.
-  directorFullName String?
+  directorFullName  String?
   /// Photo / avatar dirigeant (URL publique, preset `/compagnie-avatars/...` ou fichier uploadé).
-  directorAvatar   String?
-  industry         String?
-  companyType      String?
-  companySize      String?
-  companyRegion    String?
+  directorAvatar    String?
+  industry          String?
+  companyType       String?
+  companySize       String?
+  companyRegion     String?
 
   /// Numéro Déclaration Activité (NDA) et informations réglementaires formation.
-  ndaNumber               String?
-  ndaSpecialty            String?   @db.Text
-  ndaDeclaredAt           DateTime?
-  ndaRegion               String?
-  ndaTrainingActions      String?   @db.Text
-  qualiopiCertifications  String?   @db.Text
+  ndaNumber              String?
+  ndaSpecialty           String?   @db.Text
+  ndaDeclaredAt          DateTime?
+  ndaRegion              String?
+  ndaTrainingActions     String?   @db.Text
+  qualiopiCertifications String?   @db.Text
 
   /// Registre national des entreprises / données publiques INPI–INSEE (référence).
   siren                     String?
@@ -820,17 +853,21 @@ model SystemSetting {
   agreementQualiopiRef String?
   agreementSsiap       String?
 
-  websiteURL     String?
-  supportEmail   String?
-  supportPhone   String?
+  websiteURL              String?
+  supportEmail            String?
+  supportPhone            String?
   /// WF-40 — référent handicap (P0 texte, pas de rôle dédié).
   disabilityReferentName  String?
   disabilityReferentEmail String?
   disabilityReferentPhone String?
-  language       String  @default("en")
-  timezone       String  @default("UTC")
-  currency       String  @default("USD")
-  currencyFormat String  @default("$ {value}")
+  /// Qualiopi Q-I20 — référent mobilité nationale / internationale.
+  mobilityReferentName    String?
+  mobilityReferentEmail   String?
+  mobilityReferentPhone   String?
+  language                String  @default("en")
+  timezone                String  @default("UTC")
+  currency                String  @default("USD")
+  currencyFormat          String  @default("$ {value}")
 
   socialFacebook  String?
   socialTwitter   String?
@@ -861,17 +898,17 @@ model SystemSetting {
 }
 
 model ClientSite {
-  id          String      @id @default(uuid())
-  name        String
-  code        String?     @unique
-  address     String?
-  city        String?
-  country     String?
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  equipments  Equipment[]
-  rhTeams     RhTeam[]
+  id         String      @id @default(uuid())
+  name       String
+  code       String?     @unique
+  address    String?
+  city       String?
+  country    String?
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  equipments Equipment[]
+  rhTeams    RhTeam[]
 
   @@index([name])
 }
@@ -929,27 +966,27 @@ model RhOrgUnit {
 
 /// Équipe opérationnelle RH (pôles pédagogiques, formateurs, qualité…)
 model RhTeam {
-  id          String       @id @default(uuid())
-  name        String
-  description String?
-  type        RhTeamType   @default(PEDAGOGICAL)
-  sector      RhTeamSector @default(CAMPUS)
-  image       String?
-  siteId      String?
-  orgUnitId   String?
-  leaderId    String?
+  id                 String                @id @default(uuid())
+  name               String
+  description        String?
+  type               RhTeamType            @default(PEDAGOGICAL)
+  sector             RhTeamSector          @default(CAMPUS)
+  image              String?
+  siteId             String?
+  orgUnitId          String?
+  leaderId           String?
   /// Équipe auto-provisionnée pour une session formation (1:1).
-  formationSessionId String?              @unique
+  formationSessionId String?               @unique
   lifecycleStatus    RhTeamLifecycleStatus @default(ACTIVE)
   lifecycleClosedAt  DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
 
-  site             ClientSite?       @relation(fields: [siteId], references: [id], onDelete: SetNull)
-  orgUnit          RhOrgUnit?        @relation(fields: [orgUnitId], references: [id], onDelete: SetNull)
-  leader           User?             @relation("RhTeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
-  formationSession FormationSession? @relation(fields: [formationSessionId], references: [id], onDelete: SetNull)
-  members          RhTeamMember[]
+  site              ClientSite?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  orgUnit           RhOrgUnit?         @relation(fields: [orgUnitId], references: [id], onDelete: SetNull)
+  leader            User?              @relation("RhTeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  formationSession  FormationSession?  @relation(fields: [formationSessionId], references: [id], onDelete: SetNull)
+  members           RhTeamMember[]
   chatConversations ChatConversation[]
 
   @@index([siteId])
@@ -966,7 +1003,7 @@ model RhTeamMember {
   createdAt DateTime @default(now())
 
   team RhTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, userId])
   @@index([userId])
@@ -1037,22 +1074,22 @@ model RhQualification {
 }
 
 model Equipment {
-  id               String                @id @default(uuid())
-  serialNumber     String                @unique
-  label            String
-  type             String?
-  status           EquipmentStatus       @default(AVAILABLE)
-  assignedSiteId   String?
-  assignedSite     ClientSite?           @relation(fields: [assignedSiteId], references: [id], onDelete: SetNull)
-  metadata         Json?                 @default("{}")
-  avatar           String?
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
-  maintenanceItems EquipmentMaintenance[]
-  stockMovements   StockMovement[]
-  sessions         TrainingSession[]
+  id                  String                   @id @default(uuid())
+  serialNumber        String                   @unique
+  label               String
+  type                String?
+  status              EquipmentStatus          @default(AVAILABLE)
+  assignedSiteId      String?
+  assignedSite        ClientSite?              @relation(fields: [assignedSiteId], references: [id], onDelete: SetNull)
+  metadata            Json?                    @default("{}")
+  avatar              String?
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  maintenanceItems    EquipmentMaintenance[]
+  stockMovements      StockMovement[]
+  sessions            TrainingSession[]
   roomFixedAssignment VenueRoomFixedEquipment?
-  qualityIncidents   QualityIncident[]
+  qualityIncidents    QualityIncident[]
 
   @@index([status])
   @@index([type])
@@ -1060,18 +1097,18 @@ model Equipment {
 }
 
 model EquipmentMaintenance {
-  id              String                     @id @default(uuid())
-  equipmentId     String
-  status          EquipmentMaintenanceStatus @default(SCHEDULED)
-  title           String?
-  notes           String?
-  scheduledDate   DateTime?
-  completedDate   DateTime?
+  id            String                     @id @default(uuid())
+  equipmentId   String
+  status        EquipmentMaintenanceStatus @default(SCHEDULED)
+  title         String?
+  notes         String?
+  scheduledDate DateTime?
+  completedDate DateTime?
   /// Coût intervention / pièces (€) — charge budget EQUIPEMENT.
-  costAmount      Decimal?                   @db.Decimal(12, 2)
-  createdAt       DateTime                   @default(now())
-  updatedAt       DateTime                   @updatedAt
-  equipment       Equipment                  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  costAmount    Decimal?                   @db.Decimal(12, 2)
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+  equipment     Equipment                  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 
   @@index([equipmentId])
   @@index([status])
@@ -1079,15 +1116,15 @@ model EquipmentMaintenance {
 }
 
 model StockMovement {
-  id            String            @id @default(uuid())
-  equipmentId   String
-  type          StockMovementType
-  quantity      Int
-  movementDate  DateTime          @default(now())
-  notes         String?
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  equipment     Equipment         @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  id           String            @id @default(uuid())
+  equipmentId  String
+  type         StockMovementType
+  quantity     Int
+  movementDate DateTime          @default(now())
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  equipment    Equipment         @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 
   @@index([equipmentId])
   @@index([type])
@@ -1136,26 +1173,26 @@ enum FormationVitrineSessionKind {
 }
 
 model Formation {
-  id     String @id @default(uuid())
-  slug   String @unique
-  name   String
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  name        String
   /// Résumé carte liste / SEO (catalogue vitrine).
   description String? @db.Text
 
-  track               FormationTrack
-  tag                 String
-  duration            String             @db.Text
-  parcoursSpecialite  FormationParcoursSpecialite @default(INITIAL)
+  track              FormationTrack
+  tag                String
+  duration           String                      @db.Text
+  parcoursSpecialite FormationParcoursSpecialite @default(INITIAL)
 
   status   FormationLifecycleStatus @default(DRAFT)
   featured Boolean                  @default(false)
 
   /// Sidebar : logo formation (URL ou clé média).
-  logoUrl         String? @db.Text
-  providerName    String?
-  providerEmail   String?
-  providerPhone   String?
-  providerAddress String? @db.Text
+  logoUrl          String? @db.Text
+  providerName     String?
+  providerEmail    String?
+  providerPhone    String?
+  providerAddress  String? @db.Text
   /// Libellé rapide type « Dès le 04 Mai 2026 » (sidebar upload).
   nextSessionLabel String?
 
@@ -1167,20 +1204,20 @@ model Formation {
   deliveryMode FormationDeliveryMode?
 
   /// KPI vue d’ensemble (statistics1) — scalaires pour filtres / tri ; détails dans overviewMetrics si besoin.
-  hoursMin       Int?
-  hoursMax       Int?
-  traineesMin    Int?
-  traineesMax    Int?
-  priceFrom      Decimal? @db.Decimal(10, 2)
-  currency       String   @default("EUR")
-  successRate    Decimal? @db.Decimal(5, 2)
+  hoursMin               Int?
+  hoursMax               Int?
+  traineesMin            Int?
+  traineesMax            Int?
+  priceFrom              Decimal? @db.Decimal(10, 2)
+  currency               String   @default("EUR")
+  successRate            Decimal? @db.Decimal(5, 2)
   clientSatisfactionRate Decimal? @db.Decimal(5, 2)
 
   /// Bandeau Programme (statistics2).
-  unitsCount        Int?
-  volumeHoursLabel  String?
-  theoryPercent     Int?
-  practicePercent   Int?
+  unitsCount       Int?
+  volumeHoursLabel String?
+  theoryPercent    Int?
+  practicePercent  Int?
 
   /// Bandeau Prérequis (statistics4).
   minAgeLabel               String?
@@ -1212,7 +1249,7 @@ model Formation {
   courseId String? @unique
   course   Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
 
-  sessions FormationSession[]
+  sessions            FormationSession[]
   portalAnnouncements PortalSessionAnnouncement[]
   quizQuestionBanks   QuizQuestionBank[]
 
@@ -1222,13 +1259,31 @@ model Formation {
   /// Ligne catalogue finance (prestations / tarifs devis), synchronisée depuis l’offre catalogue.
   financeCatalogLine FinanceCatalogLine?
 
-  candidatures Candidature[]
-  attestations FormationAttestation[]
+  candidatures     Candidature[]
+  attestations     FormationAttestation[]
   /// Demandes de devis landing (Lead.source = Landing demande de devis).
-  quoteLeads Lead[] @relation("LeadQuoteFormation")
-  financeDevis FinanceDevis[]
+  quoteLeads       Lead[]                 @relation("LeadQuoteFormation")
+  financeDevis     FinanceDevis[]
   trainingRequests TrainingRequest[]
-  evidences Evidence[]
+  evidences        Evidence[]
+
+  /// Qualiopi Q-I01 — délai / modalités d'accès affichés au public.
+  publicAccessDelayLabel     String?
+  publicTeachingMethods      Json      @default("[]")
+  publicEvaluationMethods    Json      @default("[]")
+  publicDisabilityAccessInfo String?   @db.Text
+  publicInfoLastReviewedAt   DateTime?
+  publicInfoReviewedById     String?
+  publicInfoReviewedBy       User?     @relation("FormationPublicInfoReviewer", fields: [publicInfoReviewedById], references: [id], onDelete: SetNull)
+  publicInfoIndicatorCodes   String[]  @default(["Q-I01"])
+
+  /// Qualiopi Q-I05 / Q-I06 / Q-I07 — objectifs opérationnels + adéquation certification (texte structuré).
+  operationalObjectivesSummary String? @db.Text
+  contentModalitiesSummary     String? @db.Text
+  certificationAdequacyNotes   String? @db.Text
+
+  certificationOutcomeStats CertificationOutcomeStat[]
+  socioEconomicPartnerships SocioEconomicPartnership[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1237,6 +1292,7 @@ model Formation {
   @@index([track])
   @@index([parcoursSpecialite])
   @@index([featured])
+  @@index([publicInfoReviewedById])
 }
 
 /// Inclusion d'une fiche référence dans le catalogue école — pas de duplication métier, surcharges optionnelles.
@@ -1254,9 +1310,9 @@ model FormationCatalogOffer {
   /// Affichage catalogue : initial / MAC / RANâ¦ si null, reprend `Formation.parcoursSpecialite`.
   parcoursSpecialiteOverride FormationParcoursSpecialite?
 
-  fundingBlocksOverride       Json?
-  fundingChannelsOverride     Json?
-  prerequisitesTableOverride  Json?
+  fundingBlocksOverride      Json?
+  fundingChannelsOverride    Json?
+  prerequisitesTableOverride Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1301,22 +1357,22 @@ model LandingTeamOffer {
 
 /// Salle ou espace pédagogique réservable pour les sessions catalogue CRM (libellés métier : « Salle Aurore », etc.).
 model FormationVenueRoom {
-  id         String   @id @default(uuid())
-  name       String
-  shortCode  String?  @unique
-  capacity   Int?
-  floorLabel String?
+  id             String                    @id @default(uuid())
+  name           String
+  shortCode      String?                   @unique
+  capacity       Int?
+  floorLabel     String?
   /// Visuel vitrine (URL relative Next `/media/...`).
-  imageUrl   String?
-  isActive   Boolean  @default(true)
-  sortOrder  Int      @default(0)
-  sessions   FormationSession[]
-  examSessions FormationSession[] @relation("FormationSessionExamRoom")
-  formationExams FormationExam[] @relation("FormationExamVenueRoom")
-  bookings   VenueRoomBooking[]
+  imageUrl       String?
+  isActive       Boolean                   @default(true)
+  sortOrder      Int                       @default(0)
+  sessions       FormationSession[]
+  examSessions   FormationSession[]        @relation("FormationSessionExamRoom")
+  formationExams FormationExam[]           @relation("FormationExamVenueRoom")
+  bookings       VenueRoomBooking[]
   fixedEquipment VenueRoomFixedEquipment[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
 
   @@index([isActive])
   @@index([sortOrder])
@@ -1325,16 +1381,16 @@ model FormationVenueRoom {
 /// Mobilier / matériel permanent installé dans une salle (chaises, vidéoprojecteur…).
 /// Distinct des `FormationSession.reservedEquipmentIds` (réservation ponctuelle session).
 model VenueRoomFixedEquipment {
-  id          String   @id @default(uuid())
+  id          String             @id @default(uuid())
   venueRoomId String
   venueRoom   FormationVenueRoom @relation(fields: [venueRoomId], references: [id], onDelete: Cascade)
-  equipmentId String   @unique
-  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
-  quantity    Int      @default(1)
+  equipmentId String             @unique
+  equipment   Equipment          @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  quantity    Int                @default(1)
   installedAt DateTime?
-  notes       String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  notes       String?            @db.Text
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
 
   @@index([venueRoomId])
 }
@@ -1381,14 +1437,14 @@ model FormationSession {
   endDate   DateTime?
 
   /// Clôture des inscriptions (horodatage).
-  registrationClosesAt DateTime?
+  registrationClosesAt     DateTime?
   /// Date / heure d’examen prévue (optionnel).
-  examDate             DateTime?
+  examDate                 DateTime?
   /// Salle d’examen (PCS, plateau incendie…) si différente de la salle de cours.
-  examVenueRoomId      String?
-  examVenueRoom        FormationVenueRoom? @relation("FormationSessionExamRoom", fields: [examVenueRoomId], references: [id], onDelete: SetNull)
+  examVenueRoomId          String?
+  examVenueRoom            FormationVenueRoom? @relation("FormationSessionExamRoom", fields: [examVenueRoomId], references: [id], onDelete: SetNull)
   /// Matériel mobile réservé pour le jour d’examen (magnétomètre, fumigènes…).
-  examReservedEquipmentIds Json @default("[]")
+  examReservedEquipmentIds Json                @default("[]")
 
   /// Effectif cible pour cette session (distinct de la fourchette « fiche formation »).
   traineesMin Int?
@@ -1416,7 +1472,7 @@ model FormationSession {
   pedagogicalOutline Json @default("[]")
 
   /// Libellé affiché (ex. « 04 Mai au 12 Juin 2026 ») tant que les dates ne sont pas renseignées partout.
-  dateDisplayLabel String @db.Text
+  dateDisplayLabel String                      @db.Text
   location         String
   sessionKind      FormationVitrineSessionKind @default(INITIAL)
 
@@ -1430,21 +1486,30 @@ model FormationSession {
   bookingEnabled Boolean @default(false)
   bookingUrl     String? @db.Text
 
-  participants FormationSessionParticipant[]
-  suiviDays    FormationSessionDay[]
-  attestations FormationAttestation[]
-  formationExam FormationExam?
+  participants        FormationSessionParticipant[]
+  suiviDays           FormationSessionDay[]
+  attestations        FormationAttestation[]
+  formationExam       FormationExam?
   portalAnnouncements PortalSessionAnnouncement[]
-  rhTeam               RhTeam?
-  satisfactionSurveys   SatisfactionSurvey[]
-  fundingCases          FundingCase[]
-  evidences             Evidence[]
-  readinessEvents       SessionReadinessEvent[]
-  conventions           FormationSessionConvention[]
+  rhTeam              RhTeam?
+  satisfactionSurveys SatisfactionSurvey[]
+  fundingCases        FundingCase[]
+  evidences           Evidence[]
+  readinessEvents     SessionReadinessEvent[]
+  conventions         FormationSessionConvention[]
 
-  candidaturesInterested Candidature[] @relation("CandidatureInterestedSession")
-  financeDevisSessionLinks FinanceDevis[] @relation("FinanceDevisLinkedSession")
+  candidaturesInterested   Candidature[]          @relation("CandidatureInterestedSession")
+  financeDevisSessionLinks FinanceDevis[]         @relation("FinanceDevisLinkedSession")
   automationRuns           SessionAutomationRun[]
+
+  certificationOutcomeStats       CertificationOutcomeStat[]
+  engagementMeasures              EngagementMeasure[]
+  sessionIntervenantAssignments   SessionIntervenantAssignment[]
+  pedagogicalResourceDeliveries   PedagogicalResourceDelivery[]
+  insertionFollowUps              InsertionFollowUp[]
+  supportTickets                  SupportTicket[]
+  qualityIncidents                QualityIncident[]
+  socioProfessionalSupportActions SocioProfessionalSupportAction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1465,19 +1530,19 @@ enum SessionAutomationStatus {
 
 /// Exécution circuit n8n (jalons J-15 → J+45) — suivi / annulation si session reportée.
 model SessionAutomationRun {
-  id              String                  @id @default(uuid())
-  sessionId       String
-  session         FormationSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  participantId   String?
-  candidatureId   String?
-  circuitKey      String                  @default("default")
-  n8nExecutionId  String?
-  status          SessionAutomationStatus @default(RUNNING)
-  milestones      Json                    @default("[]")
-  metadata        Json                    @default("{}")
-  startedAt       DateTime                @default(now())
-  completedAt     DateTime?
-  cancelledAt     DateTime?
+  id             String                  @id @default(uuid())
+  sessionId      String
+  session        FormationSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participantId  String?
+  candidatureId  String?
+  circuitKey     String                  @default("default")
+  n8nExecutionId String?
+  status         SessionAutomationStatus @default(RUNNING)
+  milestones     Json                    @default("[]")
+  metadata       Json                    @default("{}")
+  startedAt      DateTime                @default(now())
+  completedAt    DateTime?
+  cancelledAt    DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1489,17 +1554,17 @@ model SessionAutomationRun {
 
 /// Annonce portail candidat â cible une session ou toute la formation (sessionId null).
 model PortalSessionAnnouncement {
-  id          String   @id @default(uuid())
+  id          String            @id @default(uuid())
   formationId String
-  formation   Formation @relation(fields: [formationId], references: [id], onDelete: Cascade)
+  formation   Formation         @relation(fields: [formationId], references: [id], onDelete: Cascade)
   sessionId   String?
   session     FormationSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   title       String
-  content     String   @db.Text
-  publishedAt DateTime @default(now())
-  isPublished Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  content     String            @db.Text
+  publishedAt DateTime          @default(now())
+  isPublished Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   @@index([formationId])
   @@index([sessionId])
@@ -1518,7 +1583,7 @@ model Candidature {
 
   /// Session précise visée depuis le landing (optionnel ; doit appartenir à `formationId` lorsque les deux sont renseignés).
   interestedSessionId String?
-  interestedSession    FormationSession? @relation("CandidatureInterestedSession", fields: [interestedSessionId], references: [id], onDelete: SetNull)
+  interestedSession   FormationSession? @relation("CandidatureInterestedSession", fields: [interestedSessionId], references: [id], onDelete: SetNull)
 
   leadId String? @unique
   lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
@@ -1526,9 +1591,9 @@ model Candidature {
   source CandidatureSource @default(MANUAL)
   status CandidatureStatus @default(DRAFT)
 
-  cnapsSubmittedAt DateTime?
-  cnapsReference   String?
-  cnapsDecisionAt  DateTime?
+  cnapsSubmittedAt  DateTime?
+  cnapsReference    String?
+  cnapsDecisionAt   DateTime?
   /// Réponse PN/CNAPS lorsque suivie manuellement (null = encore en cours).
   cnapsPrefavorable Boolean?
 
@@ -1537,14 +1602,14 @@ model Candidature {
   archivedAt  DateTime?
 
   notes    String? @db.Text
-  metadata Json     @default("{}")
+  metadata Json    @default("{}")
 
   documentsCompleteAt DateTime?
   complianceDossiers  ComplianceDossier[]
-  sessionEnrollments FormationSessionParticipant[]
-  attestations       FormationAttestation[]
-  financeDevis       FinanceDevis[]
-  assessments        CandidatureAssessment[]
+  sessionEnrollments  FormationSessionParticipant[]
+  attestations        FormationAttestation[]
+  financeDevis        FinanceDevis[]
+  assessments         CandidatureAssessment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1576,24 +1641,24 @@ enum AdaptationStatus {
 }
 
 model CandidatureAssessment {
-  id            String                      @id @default(uuid())
-  candidatureId String
-  kind          CandidatureAssessmentKind
-  status        CandidatureAssessmentStatus @default(PENDING)
-  sentAt        DateTime?
-  completedAt   DateTime?
+  id                   String                      @id @default(uuid())
+  candidatureId        String
+  kind                 CandidatureAssessmentKind
+  status               CandidatureAssessmentStatus @default(PENDING)
+  sentAt               DateTime?
+  completedAt          DateTime?
   /// Réponses questionnaire (Json libre).
-  answers       Json?
+  answers              Json?
   /// WF-03 — niveau constaté (libre).
-  level         String?
+  level                String?
   /// WF-03 — OK / PARTIAL / MISSING (ou texte libre).
-  prerequisitesStatus String?
+  prerequisitesStatus  String?
   /// Signal adaptation (lien WF-04 organisme, info staff).
-  adaptationRequired Boolean?
+  adaptationRequired   Boolean?
   /// WF-04 — cycle aménagement (renseigné surtout sur NEEDS_ANALYSIS).
-  adaptationStatus      AdaptationStatus?
-  adaptationNotifiedAt  DateTime?
-  adaptationNotes       String? @db.Text
+  adaptationStatus     AdaptationStatus?
+  adaptationNotifiedAt DateTime?
+  adaptationNotes      String?                     @db.Text
 
   candidature Candidature @relation(fields: [candidatureId], references: [id], onDelete: Cascade)
 
@@ -1609,7 +1674,7 @@ model CandidatureAssessment {
 
 /// Participation à une session vitrine CRM. `candidatureId` rattache au dossier validé lorsqu’existant.
 model FormationSessionParticipant {
-  id        String @id @default(uuid())
+  id        String           @id @default(uuid())
   sessionId String
   session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   userId    String
@@ -1635,19 +1700,28 @@ model FormationSessionParticipant {
 
   /// WF-24 — date de rattrapage proposée (si examOutcome = FAILED).
   retakeDate  DateTime?
-  retakeNotes String? @db.Text
+  retakeNotes String?   @db.Text
 
   /// WF-19 — prévention rupture de parcours.
   dropoutRiskStatus    DropoutRiskStatus @default(NONE)
   dropoutRiskFlaggedAt DateTime?
   dropoutRiskReason    String?
-  dropoutRiskNotes     String? @db.Text
+  dropoutRiskNotes     String?           @db.Text
 
-  emargements FormationSessionEmargement[]
-  satisfactionSurveys SatisfactionSurvey[]
-  fundingCases FundingCase[]
-  conventions FormationSessionConvention[]
+  emargements          FormationSessionEmargement[]
+  satisfactionSurveys  SatisfactionSurvey[]
+  fundingCases         FundingCase[]
+  conventions          FormationSessionConvention[]
   formativeAssessments FormativeAssessment[]
+
+  engagementMeasures               EngagementMeasure[]
+  companyTutorLinks                CompanyTutorLink[]
+  apprenticeshipMissions           ApprenticeshipMission[]
+  apprenticeRightsAck              ApprenticeRightsAck?
+  socioProfessionalSupportActions  SocioProfessionalSupportAction[]
+  sessionCertificationPresentation SessionCertificationPresentation?
+  pedagogicalResourceDeliveries    PedagogicalResourceDelivery[]
+  insertionFollowUps               InsertionFollowUp[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1663,19 +1737,19 @@ model FormationSessionParticipant {
 
 /// WF-21 — évaluation formative (présentiel), distinct du Quiz LMS.
 model FormativeAssessment {
-  id            String   @id @default(uuid())
+  id            String                      @id @default(uuid())
   participantId String
   participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
   sessionDayId  String?
-  sessionDay    FormationSessionDay? @relation(fields: [sessionDayId], references: [id], onDelete: SetNull)
+  sessionDay    FormationSessionDay?        @relation(fields: [sessionDayId], references: [id], onDelete: SetNull)
   label         String
   score         Int?
   passed        Boolean?
-  feedback      String?  @db.Text
+  feedback      String?                     @db.Text
   recordedById  String?
-  recordedBy    User?    @relation("FormativeAssessmentRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  recordedBy    User?                       @relation("FormativeAssessmentRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime                    @default(now())
+  updatedAt     DateTime                    @updatedAt
 
   @@index([participantId])
   @@index([sessionDayId])
@@ -1702,7 +1776,7 @@ model FormationSessionDay {
   journalNotesMorning String? @db.Text
   journalNotesEvening String? @db.Text
 
-  attendances FormationSessionEmargement[]
+  attendances          FormationSessionEmargement[]
   formativeAssessments FormativeAssessment[]
 
   createdAt DateTime @default(now())
@@ -1714,9 +1788,9 @@ model FormationSessionDay {
 
 /// Émargement nominatif par stagiaire et créneau (matin / soir).
 model FormationSessionEmargement {
-  id            String @id @default(uuid())
+  id            String                      @id @default(uuid())
   dayId         String
-  day           FormationSessionDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  day           FormationSessionDay         @relation(fields: [dayId], references: [id], onDelete: Cascade)
   participantId String
   participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
@@ -1725,8 +1799,8 @@ model FormationSessionEmargement {
 
   markedAt       DateTime?
   markedByUserId String?
-  markedBy       User?   @relation("FormationSessionEmargementMarkedBy", fields: [markedByUserId], references: [id], onDelete: SetNull)
-  notes          String? @db.Text
+  markedBy       User?     @relation("FormationSessionEmargementMarkedBy", fields: [markedByUserId], references: [id], onDelete: SetNull)
+  notes          String?   @db.Text
 
   /// WF-18 — null sauf si status = ABSENT.
   justificationStatus      AbsenceJustificationStatus?
@@ -1745,24 +1819,24 @@ model FormationSessionEmargement {
 
 /// WF-08 — convention de formation par participant (cycle GENERATED→…→ARCHIVED).
 model FormationSessionConvention {
-  id            String                  @id @default(uuid())
-  sessionId     String
-  participantId String
-  status        SessionConventionStatus @default(GENERATED)
-  fileAssetId   String?
+  id             String                  @id @default(uuid())
+  sessionId      String
+  participantId  String
+  status         SessionConventionStatus @default(GENERATED)
+  fileAssetId    String?
   /// Token signé optionnel pour ouverture publique (VIEWED).
-  publicToken   String?                 @unique
-  sentAt        DateTime?
-  viewedAt      DateTime?
-  signedAt      DateTime?
+  publicToken    String?                 @unique
+  sentAt         DateTime?
+  viewedAt       DateTime?
+  signedAt       DateTime?
   lastReminderAt DateTime?
-  reminderCount Int                     @default(0)
-  createdAt     DateTime                @default(now())
-  updatedAt     DateTime                @updatedAt
+  reminderCount  Int                     @default(0)
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
 
-  session     FormationSession             @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  participant FormationSessionParticipant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  fileAsset   FileAsset?                   @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+  session     FormationSession            @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participant FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  fileAsset   FileAsset?                  @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
 
   @@unique([sessionId, participantId])
   @@index([sessionId])
@@ -1785,7 +1859,7 @@ model FormationExam {
   juryPresidentName String?
   examinerName      String?
   /// Membres du jury (JSON string[]).
-  juryMemberNames   Json   @default("[]")
+  juryMemberNames   Json    @default("[]")
   notes             String? @db.Text
 
   createdAt DateTime @default(now())
@@ -1813,7 +1887,7 @@ model FormationAttestation {
   session   FormationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
 
   title          String
-  certificateUrl String? @db.Text
+  certificateUrl String?   @db.Text
   issueDate      DateTime  @default(now())
   expiryDate     DateTime?
   metadata       Json      @default("{}")
@@ -1855,7 +1929,7 @@ model Course {
   leads          Lead[]
   trailSteps     TrailStep[]
 
-  formationCatalog Formation?
+  formationCatalog  Formation?
   quizQuestionBanks QuizQuestionBank[]
 
   createdAt DateTime @default(now())
@@ -1901,11 +1975,11 @@ model Chapter {
   reviewedById         String?
   reviewedBy           User?                  @relation("ChapterReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
 
-  muxData      MuxData?
-  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  courseId     String
-  userProgress UserProgress[]
-  activities   Activity[]
+  muxData       MuxData?
+  course        Course                 @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId      String
+  userProgress  UserProgress[]
+  activities    Activity[]
   quizBankItems QuizQuestionBankItem[]
 
   createdAt DateTime @default(now())
@@ -1985,14 +2059,14 @@ model MuxData {
 
 /// Banque de questions QCM réutilisable (par formation ou cours LMS).
 model QuizQuestionBank {
-  id          String  @id @default(uuid())
+  id          String                 @id @default(uuid())
   title       String
   formationId String?
-  formation   Formation? @relation(fields: [formationId], references: [id], onDelete: Cascade)
+  formation   Formation?             @relation(fields: [formationId], references: [id], onDelete: Cascade)
   courseId    String?
-  course      Course?    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course      Course?                @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdById String
-  createdBy   User       @relation("QuizBankCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User                   @relation("QuizBankCreator", fields: [createdById], references: [id], onDelete: Cascade)
   items       QuizQuestionBankItem[]
 
   createdAt DateTime @default(now())
@@ -2238,10 +2312,10 @@ model Lead {
   formationId String?
   formation   Formation? @relation("LeadQuoteFormation", fields: [formationId], references: [id], onDelete: SetNull)
 
-  candidature Candidature?
-  financeDevis FinanceDevis[]
+  candidature    Candidature?
+  financeDevis   FinanceDevis[]
   supportTickets SupportTicket[]
-  contact Contact?
+  contact        Contact?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2253,13 +2327,13 @@ model Lead {
 
 /// Devis / proposition commerciale (Finance), souvent rattaché à un lead landing devis.
 model FinanceDevis {
-  id            String @id @default(uuid())
-  referenceCode String @unique
+  id            String             @id @default(uuid())
+  referenceCode String             @unique
   title         String
   status        FinanceDevisStatus @default(DRAFT)
 
   leadId String?
-  lead   Lead? @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
 
   formationId String?
   formation   Formation? @relation(fields: [formationId], references: [id], onDelete: SetNull)
@@ -2283,8 +2357,8 @@ model FinanceDevis {
   currency   String  @default("EUR")
 
   validUntil    DateTime?
-  notes         String? @db.Text
-  internalNotes String? @db.Text
+  notes         String?   @db.Text
+  internalNotes String?   @db.Text
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2372,7 +2446,7 @@ model FinanceCatalogLine {
   category String @default("FORMATION")
 
   /// Renseigné et unique pour les lignes synchronisées avec une offre catalogue formation.
-  formationId String? @unique
+  formationId String?    @unique
   formation   Formation? @relation(fields: [formationId], references: [id], onDelete: Cascade)
 
   label       String
@@ -2720,6 +2794,16 @@ model CollaborationDocument {
 
 // --- Support, marketing, SEO, finance (modules CRM opérationnels) ---
 
+/// Qualiopi Q-I31 — typologie partie prenante (réclamation / difficulté).
+enum QualityStakeholderKind {
+  BENEFICIARY
+  FUNDER
+  TRAINER
+  COMPANY
+  STAFF
+  OTHER
+}
+
 enum SupportTicketStatus {
   OPEN
   IN_PROGRESS
@@ -2736,43 +2820,54 @@ enum SupportTicketPriority {
 }
 
 model SupportTicket {
-  id          String                @id @default(uuid())
-  referenceCode String              @unique
-  subject     String
-  description String                @db.Text
-  status      SupportTicketStatus   @default(OPEN)
-  priority    SupportTicketPriority @default(MEDIUM)
-  requesterName  String
-  requesterEmail String
-  leadId      String?
-  lead        Lead?                 @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  assignedToId String?
-  assignedTo  User?                 @relation("SupportTicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  createdById String?
-  createdBy   User?                 @relation("SupportTicketCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  resolvedAt  DateTime?
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
-  comments    TicketComment[]
-  attachments TicketAttachment[]
-  incidents   QualityIncident[]
+  id                           String                        @id @default(uuid())
+  referenceCode                String                        @unique
+  subject                      String
+  description                  String                        @db.Text
+  status                       SupportTicketStatus           @default(OPEN)
+  priority                     SupportTicketPriority         @default(MEDIUM)
+  requesterName                String
+  requesterEmail               String
+  leadId                       String?
+  lead                         Lead?                         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  assignedToId                 String?
+  assignedTo                   User?                         @relation("SupportTicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdById                  String?
+  createdBy                    User?                         @relation("SupportTicketCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  resolvedAt                   DateTime?
+  /// Qualiopi Q-I31 — réclamation / difficulté partie prenante.
+  isComplaint                  Boolean                       @default(false)
+  stakeholderKind              QualityStakeholderKind?
+  sessionId                    String?
+  session                      FormationSession?             @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  acknowledgedAt               DateTime?
+  firstResponseAt              DateTime?
+  complaintIndicatorCodes      String[]                      @default(["Q-I31"])
+  continuousImprovementActions ContinuousImprovementAction[]
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  comments                     TicketComment[]
+  attachments                  TicketAttachment[]
+  incidents                    QualityIncident[]
 
   @@index([status])
   @@index([priority])
   @@index([leadId])
   @@index([assignedToId])
+  @@index([sessionId])
+  @@index([isComplaint])
 }
 
 model TicketComment {
-  id         String        @id @default(uuid())
-  ticketId   String
-  ticket     SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  authorId   String?
-  author     User?         @relation("TicketCommentAuthor", fields: [authorId], references: [id], onDelete: SetNull)
-  body       String        @db.Text
-  isInternal Boolean       @default(false)
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id          String             @id @default(uuid())
+  ticketId    String
+  ticket      SupportTicket      @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId    String?
+  author      User?              @relation("TicketCommentAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  body        String             @db.Text
+  isInternal  Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   attachments TicketAttachment[]
 
   @@index([ticketId])
@@ -2819,29 +2914,38 @@ enum QualityIncidentStatus {
 }
 
 model QualityIncident {
-  id                 String                  @id @default(uuid())
-  referenceCode      String                  @unique
-  title              String
-  description        String                  @db.Text
-  severity           QualityIncidentSeverity @default(MEDIUM)
-  status             QualityIncidentStatus   @default(REPORTED)
-  category           String?
-  ticketId           String?
-  ticket             SupportTicket?          @relation(fields: [ticketId], references: [id], onDelete: SetNull)
-  equipmentId        String?
-  equipment          Equipment?              @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
-  assignedToId       String?
-  assignedTo         User?                   @relation("QualityIncidentAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  reportedById       String?
-  reportedBy         User?                   @relation("QualityIncidentReporter", fields: [reportedById], references: [id], onDelete: SetNull)
-  rootCause          String?                 @db.Text
-  correctiveAction   String?                 @db.Text
+  id                           String                        @id @default(uuid())
+  referenceCode                String                        @unique
+  title                        String
+  description                  String                        @db.Text
+  severity                     QualityIncidentSeverity       @default(MEDIUM)
+  status                       QualityIncidentStatus         @default(REPORTED)
+  category                     String?
+  ticketId                     String?
+  ticket                       SupportTicket?                @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  equipmentId                  String?
+  equipment                    Equipment?                    @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
+  assignedToId                 String?
+  assignedTo                   User?                         @relation("QualityIncidentAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  reportedById                 String?
+  reportedBy                   User?                         @relation("QualityIncidentReporter", fields: [reportedById], references: [id], onDelete: SetNull)
+  rootCause                    String?                       @db.Text
+  correctiveAction             String?                       @db.Text
   /// WF-34 — échéance de l'action corrective.
-  deadline           DateTime?
-  verifiedAt         DateTime?
-  resolvedAt         DateTime?
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime                @updatedAt
+  deadline                     DateTime?
+  verifiedAt                   DateTime?
+  resolvedAt                   DateTime?
+  /// Qualiopi Q-I31 — réclamation / difficulté partie prenante.
+  isComplaint                  Boolean                       @default(false)
+  stakeholderKind              QualityStakeholderKind?
+  sessionId                    String?
+  session                      FormationSession?             @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  acknowledgedAt               DateTime?
+  firstResponseAt              DateTime?
+  complaintIndicatorCodes      String[]                      @default(["Q-I31"])
+  continuousImprovementActions ContinuousImprovementAction[]
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
 
   @@index([status])
   @@index([severity])
@@ -2849,6 +2953,8 @@ model QualityIncident {
   @@index([equipmentId])
   @@index([assignedToId])
   @@index([deadline])
+  @@index([sessionId])
+  @@index([isComplaint])
 }
 
 enum HelpArticleStatus {
@@ -2922,30 +3028,30 @@ enum MarketingCampaignStatus {
 }
 
 model MarketingCampaign {
-  id        String                  @id @default(uuid())
-  name      String
-  channel   String                  @default("landing")
-  status    MarketingCampaignStatus @default(DRAFT)
-  utmSource String?
-  utmMedium String?
+  id          String                  @id @default(uuid())
+  name        String
+  channel     String                  @default("landing")
+  status      MarketingCampaignStatus @default(DRAFT)
+  utmSource   String?
+  utmMedium   String?
   utmCampaign String?
-  startDate DateTime?
-  endDate   DateTime?
-  notes     String?                 @db.Text
-  createdAt DateTime                @default(now())
-  updatedAt DateTime                @updatedAt
+  startDate   DateTime?
+  endDate     DateTime?
+  notes       String?                 @db.Text
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
 
   @@index([status])
   @@index([utmSource])
 }
 
 model SeoRedirect {
-  id           String  @id @default(uuid())
-  sourcePath   String  @unique
+  id           String   @id @default(uuid())
+  sourcePath   String   @unique
   targetPath   String
-  redirectType Int     @default(302)
-  active       Boolean @default(true)
-  notes        String? @db.Text
+  redirectType Int      @default(302)
+  active       Boolean  @default(true)
+  notes        String?  @db.Text
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -2978,17 +3084,17 @@ model FinancePayment {
 }
 
 model FinanceBudgetLine {
-  id             String  @id @default(uuid())
-  label          String
-  category       String  @default("FORMATION")
-  periodYear     Int
-  periodMonth    Int?
-  plannedAmount  Decimal @db.Decimal(12, 2)
-  actualAmount   Decimal @default(0) @db.Decimal(12, 2)
-  currency       String  @default("EUR")
-  notes          String? @db.Text
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String   @id @default(uuid())
+  label         String
+  category      String   @default("FORMATION")
+  periodYear    Int
+  periodMonth   Int?
+  plannedAmount Decimal  @db.Decimal(12, 2)
+  actualAmount  Decimal  @default(0) @db.Decimal(12, 2)
+  currency      String   @default("EUR")
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([periodYear, periodMonth])
   @@index([category])
@@ -3031,25 +3137,25 @@ enum CrmEventSeverity {
 }
 
 model CrmEventOutbox {
-  id          String                @id @default(uuid())
-  eventType   String
-  moduleKey   String
-  specialty   String?
-  category    InAppNotificationCategory
-  severity    CrmEventSeverity      @default(INFO)
-  title       String
-  body        String                @db.Text
-  href        String?
-  audience    CrmEventAudience      @default(PERMISSION_SLUGS)
-  userIds     String[]              @default([])
-  roleSlugs   String[]              @default([])
-  permissionSlugs String[]          @default([])
-  payload     Json?                 @default("{}")
-  status      CrmEventOutboxStatus  @default(PENDING)
-  error       String?               @db.Text
-  processedAt DateTime?
-  createdById String?
-  createdAt   DateTime              @default(now())
+  id              String                    @id @default(uuid())
+  eventType       String
+  moduleKey       String
+  specialty       String?
+  category        InAppNotificationCategory
+  severity        CrmEventSeverity          @default(INFO)
+  title           String
+  body            String                    @db.Text
+  href            String?
+  audience        CrmEventAudience          @default(PERMISSION_SLUGS)
+  userIds         String[]                  @default([])
+  roleSlugs       String[]                  @default([])
+  permissionSlugs String[]                  @default([])
+  payload         Json?                     @default("{}")
+  status          CrmEventOutboxStatus      @default(PENDING)
+  error           String?                   @db.Text
+  processedAt     DateTime?
+  createdById     String?
+  createdAt       DateTime                  @default(now())
 
   @@index([status, createdAt])
   @@index([moduleKey, createdAt])
@@ -3259,7 +3365,7 @@ model DocumentRequirementTemplateItem {
   sortOrder    Int                @default(0)
   conditions   Json?              @default("{}")
 
-  template DocumentRequirementTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  template     DocumentRequirementTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
   dossierItems ComplianceDossierItem[]
 
   @@unique([templateId, code])
@@ -3283,11 +3389,11 @@ model ComplianceDossier {
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
 
-  user        User?        @relation("ComplianceDossierUser", fields: [userId], references: [id], onDelete: SetNull)
-  candidature Candidature? @relation(fields: [candidatureId], references: [id], onDelete: Cascade)
-  items       ComplianceDossierItem[]
-  requests    DocumentRequest[]
-  events      ComplianceItemEvent[]
+  user                User?                   @relation("ComplianceDossierUser", fields: [userId], references: [id], onDelete: SetNull)
+  candidature         Candidature?            @relation(fields: [candidatureId], references: [id], onDelete: Cascade)
+  items               ComplianceDossierItem[]
+  requests            DocumentRequest[]
+  events              ComplianceItemEvent[]
   subcontractorRecord SubcontractorRecord?
 
   @@unique([kind, subjectType, subjectId])
@@ -3317,10 +3423,10 @@ model ComplianceDossierItem {
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
 
-  dossier      ComplianceDossier              @relation(fields: [dossierId], references: [id], onDelete: Cascade)
+  dossier      ComplianceDossier                @relation(fields: [dossierId], references: [id], onDelete: Cascade)
   templateItem DocumentRequirementTemplateItem? @relation(fields: [templateItemId], references: [id], onDelete: SetNull)
-  fileAsset    FileAsset?                     @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
-  validatedBy  User?                          @relation("ComplianceItemValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  fileAsset    FileAsset?                       @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+  validatedBy  User?                            @relation("ComplianceItemValidator", fields: [validatedById], references: [id], onDelete: SetNull)
   requests     DocumentRequest[]
   events       ComplianceItemEvent[]
 
@@ -3330,18 +3436,18 @@ model ComplianceDossierItem {
 }
 
 model DocumentRequest {
-  id            String                  @id @default(uuid())
+  id            String                 @id @default(uuid())
   dossierId     String
   dossierItemId String
-  status        DocumentRequestStatus   @default(OPEN)
-  channel       DocumentRequestChannel  @default(IN_APP)
-  message       String?                 @db.Text
+  status        DocumentRequestStatus  @default(OPEN)
+  channel       DocumentRequestChannel @default(IN_APP)
+  message       String?                @db.Text
   dueAt         DateTime?
   sentAt        DateTime?
   fulfilledAt   DateTime?
   requestedById String?
-  createdAt     DateTime                @default(now())
-  updatedAt     DateTime                @updatedAt
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
 
   dossier     ComplianceDossier     @relation(fields: [dossierId], references: [id], onDelete: Cascade)
   dossierItem ComplianceDossierItem @relation(fields: [dossierItemId], references: [id], onDelete: Cascade)
@@ -3481,28 +3587,28 @@ model FundingProvider {
 }
 
 model FundingCase {
-  id                String                    @id @default(uuid())
+  id                String                       @id @default(uuid())
   /// Affichage type FUND-000882 (SERIES naming DocType plus tard)
-  reference         String?                   @unique
+  reference         String?                      @unique
   providerId        String
-  provider          FundingProvider           @relation(fields: [providerId], references: [id])
+  provider          FundingProvider              @relation(fields: [providerId], references: [id])
   learnerUserId     String?
-  learnerUser       User?                     @relation("FundingCaseLearner", fields: [learnerUserId], references: [id])
+  learnerUser       User?                        @relation("FundingCaseLearner", fields: [learnerUserId], references: [id])
   sessionId         String?
-  session           FormationSession?         @relation(fields: [sessionId], references: [id])
+  session           FormationSession?            @relation(fields: [sessionId], references: [id])
   participantId     String?
   participant       FormationSessionParticipant? @relation(fields: [participantId], references: [id])
   funderType        FundingFunderType
   transport         FundingTransport
-  status            FundingCaseStatus         @default(DRAFT)
+  status            FundingCaseStatus            @default(DRAFT)
   externalReference String?
-  requestedAmount   Decimal?                  @db.Decimal(12, 2)
-  approvedAmount    Decimal?                  @db.Decimal(12, 2)
-  currency          String                    @default("EUR")
+  requestedAmount   Decimal?                     @db.Decimal(12, 2)
+  approvedAmount    Decimal?                     @db.Decimal(12, 2)
+  currency          String                       @default("EUR")
   notes             String?
   ownerUserId       String?
-  createdAt         DateTime                  @default(now())
-  updatedAt         DateTime                  @updatedAt
+  createdAt         DateTime                     @default(now())
+  updatedAt         DateTime                     @updatedAt
   events            FundingCaseEvent[]
   documents         FundingDocument[]
 
@@ -3527,15 +3633,15 @@ model FundingCaseEvent {
 }
 
 model FundingDocument {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   caseId      String
   case        FundingCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
   code        String
   label       String
   status      String
   fileAssetId String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   @@unique([caseId, code])
   @@index([caseId])
@@ -3560,21 +3666,25 @@ enum TrainingRequestStatus {
 }
 
 model Company {
-  id               String            @id @default(uuid())
-  name             String
-  siret            String?
-  kind             CrmCompanyKind    @default(EMPLOYER)
-  email            String?
-  phone            String?
-  address          String?           @db.Text
-  isActive         Boolean           @default(true)
-  notes            String?           @db.Text
-  contacts         Contact[]
-  trainingRequests TrainingRequest[]
-  evidences        Evidence[]
-  subcontractorRecords SubcontractorRecord[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                        String                     @id @default(uuid())
+  name                      String
+  siret                     String?
+  kind                      CrmCompanyKind             @default(EMPLOYER)
+  email                     String?
+  phone                     String?
+  address                   String?                    @db.Text
+  isActive                  Boolean                    @default(true)
+  notes                     String?                    @db.Text
+  contacts                  Contact[]
+  trainingRequests          TrainingRequest[]
+  evidences                 Evidence[]
+  subcontractorRecords      SubcontractorRecord[]
+  companyTutorLinks         CompanyTutorLink[]
+  socioEconomicPartnerships SocioEconomicPartnership[]
+  insertionFollowUps        InsertionFollowUp[]
+  handicapNetworkPartners   HandicapNetworkPartner[]
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
 
   @@index([name])
   @@index([siret])
@@ -3623,20 +3733,22 @@ model SubcontractorStatusEvent {
 }
 
 model Contact {
-  id               String            @id @default(uuid())
-  companyId        String?
-  company          Company?          @relation(fields: [companyId], references: [id], onDelete: SetNull)
-  firstName        String
-  lastName         String
-  email            String?
-  phone            String?
-  jobTitle         String?
-  leadId           String?           @unique
-  lead             Lead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  notes            String?           @db.Text
-  trainingRequests TrainingRequest[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                        String                     @id @default(uuid())
+  companyId                 String?
+  company                   Company?                   @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  firstName                 String
+  lastName                  String
+  email                     String?
+  phone                     String?
+  jobTitle                  String?
+  leadId                    String?                    @unique
+  lead                      Lead?                      @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  notes                     String?                    @db.Text
+  trainingRequests          TrainingRequest[]
+  companyTutorLinks         CompanyTutorLink[]
+  socioEconomicPartnerships SocioEconomicPartnership[]
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
 
   @@index([email])
   @@index([companyId])
@@ -3737,6 +3849,13 @@ model Evidence {
   @@index([sourceType, sourceId])
 }
 
+enum EvidenceIndicatorLinkStatus {
+  SUGGESTED
+  AUTO
+  VERIFIED
+  REJECTED
+}
+
 model EvidenceIndicatorLink {
   id            String   @id @default(uuid())
   evidenceId    String
@@ -3744,8 +3863,19 @@ model EvidenceIndicatorLink {
   indicatorCode String
   createdAt     DateTime @default(now())
 
+  status     EvidenceIndicatorLinkStatus @default(SUGGESTED)
+  /// Score 0-1 renvoyé par l'agent IA quand le lien est proposé automatiquement (null si lien manuel).
+  confidence Float?
+  /// Justification de l'agent (pourquoi cette preuve concerne cet indicateur).
+  reason     String?                     @db.Text
+
+  createdByUserId  String?
+  verifiedByUserId String?
+  verifiedAt       DateTime?
+
   @@unique([evidenceId, indicatorCode])
   @@index([indicatorCode])
+  @@index([status])
 }
 
 /// Audit trail transitions readiness (SD-06) — forçable + findingIds dans payload.
@@ -3762,4 +3892,711 @@ model SessionReadinessEvent {
   createdAt   DateTime                @default(now())
 
   @@index([sessionId, createdAt])
+}
+
+// ─── Qualiopi métier gaps (V9) — GSMS-OF-05 ──────────────────────────────────
+
+enum CertificationOutcomeStatScope {
+  ORGANIZATION
+  FORMATION
+  SESSION_COHORT
+}
+
+/// Qualiopi Q-I02 / Q-I03 — publication d'indicateurs de résultats.
+model CertificationOutcomeStat {
+  id          String                        @id @default(uuid())
+  scope       CertificationOutcomeStatScope @default(FORMATION)
+  formationId String?
+  formation   Formation?                    @relation(fields: [formationId], references: [id], onDelete: Cascade)
+  sessionId   String?
+  session     FormationSession?             @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  periodLabel String
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  successRatePublished      Decimal? @db.Decimal(5, 2)
+  satisfactionRatePublished Decimal? @db.Decimal(5, 2)
+  traineesCount             Int?
+  completionRatePublished   Decimal? @db.Decimal(5, 2)
+
+  certificationPassRate Decimal? @db.Decimal(5, 2)
+  blockValidationRate   Decimal? @db.Decimal(5, 2)
+  equivalencesSummary   String?  @db.Text
+  bridgesSummary        String?  @db.Text
+  careerPathsSummary    String?  @db.Text
+
+  publishedAt    DateTime?
+  publishedById  String?
+  publishedBy    User?     @relation("CertificationOutcomeStatPublisher", fields: [publishedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[]  @default(["Q-I02", "Q-I03"])
+  metadata       Json      @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([formationId, periodStart])
+  @@index([sessionId])
+  @@index([scope])
+  @@index([publishedAt])
+}
+
+enum EngagementMeasureKind {
+  INDIVIDUAL_MONITORING
+  GROUP_ACTIVITY
+  MENTORING
+  REMOTE_CHECKIN
+  EMPLOYER_LIAISON
+  WELCOME_SESSION
+  OTHER
+}
+
+enum EngagementMeasureStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+/// Qualiopi Q-I12 — mesures d'engagement / prévention rupture (WF-19).
+model EngagementMeasure {
+  id            String                       @id @default(uuid())
+  sessionId     String
+  session       FormationSession             @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participantId String?
+  participant   FormationSessionParticipant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  kind        EngagementMeasureKind
+  label       String
+  description String?                 @db.Text
+  status      EngagementMeasureStatus @default(PLANNED)
+  startAt     DateTime?
+  endAt       DateTime?
+
+  ownerUserId    String?
+  owner          User?    @relation("EngagementMeasureOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  actionsTaken   Json     @default("[]")
+  indicatorCodes String[] @default(["Q-I12"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([participantId])
+  @@index([status])
+  @@index([ownerUserId])
+}
+
+enum ApprenticeshipMissionHorizon {
+  SHORT_TERM
+  MEDIUM_TERM
+  LONG_TERM
+}
+
+enum ApprenticeshipMissionStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  REVISED
+  CANCELLED
+}
+
+/// Qualiopi Q-I13 — lien tuteur entreprise ↔ apprenti.
+model CompanyTutorLink {
+  id            String                      @id @default(uuid())
+  participantId String
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  companyId     String
+  company       Company                     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  contactId   String?
+  contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  tutorUserId String?
+  tutorUser   User?    @relation("CompanyTutorUser", fields: [tutorUserId], references: [id], onDelete: SetNull)
+
+  tutorName  String?
+  tutorEmail String?
+  tutorPhone String?
+  roleLabel  String    @default("Tuteur entreprise")
+  assignedAt DateTime  @default(now())
+  endedAt    DateTime?
+  notes      String?   @db.Text
+
+  missions       ApprenticeshipMission[]
+  indicatorCodes String[]                @default(["Q-I13"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([participantId])
+  @@index([companyId])
+  @@index([contactId])
+  @@index([tutorUserId])
+}
+
+/// Qualiopi Q-I13 — missions confiées en entreprise.
+model ApprenticeshipMission {
+  id                 String                      @id @default(uuid())
+  participantId      String
+  participant        FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  companyTutorLinkId String?
+  companyTutorLink   CompanyTutorLink?           @relation(fields: [companyTutorLinkId], references: [id], onDelete: SetNull)
+
+  horizon      ApprenticeshipMissionHorizon
+  status       ApprenticeshipMissionStatus  @default(PLANNED)
+  title        String
+  description  String?                      @db.Text
+  plannedStart DateTime?
+  plannedEnd   DateTime?
+  validatedAt  DateTime?
+
+  validatedById  String?
+  validatedBy    User?    @relation("ApprenticeshipMissionValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  progressNotes  Json     @default("[]")
+  indicatorCodes String[] @default(["Q-I13"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([participantId])
+  @@index([companyTutorLinkId])
+  @@index([status])
+}
+
+/// Qualiopi Q-I15 — droits / devoirs des apprentis (accusé de réception).
+model ApprenticeRightsAck {
+  id            String                      @id @default(uuid())
+  participantId String                      @unique
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  acknowledgedAt     DateTime
+  apprenticeSignedAt DateTime?
+  rightsTopics       Json      @default("[]")
+
+  documentFileAssetId String?
+  documentFileAsset   FileAsset? @relation(fields: [documentFileAssetId], references: [id], onDelete: SetNull)
+
+  recordedById   String?
+  recordedBy     User?    @relation("ApprenticeRightsAckRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I15"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([acknowledgedAt])
+  @@index([documentFileAssetId])
+}
+
+enum SocioProfessionalSupportKind {
+  SOCIAL
+  PROFESSIONAL
+  EDUCATIONAL
+  CITIZENSHIP
+  HOUSING
+  HEALTH
+  OTHER
+}
+
+enum SocioProfessionalSupportStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  REFERRED_EXTERNAL
+  CANCELLED
+}
+
+/// Qualiopi Q-I14 — accompagnement socio-professionnel / éducatif / citoyenneté (CFA).
+model SocioProfessionalSupportAction {
+  id            String                      @id @default(uuid())
+  participantId String
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  sessionId     String?
+  session       FormationSession?           @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  kind        SocioProfessionalSupportKind
+  status      SocioProfessionalSupportStatus @default(PLANNED)
+  label       String
+  description String?                        @db.Text
+
+  startedAt   DateTime?
+  completedAt DateTime?
+  outcome     String?   @db.Text
+
+  ownerUserId    String?
+  owner          User?    @relation("SocioProfessionalSupportOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I14"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([participantId])
+  @@index([sessionId])
+  @@index([status])
+  @@index([kind])
+  @@index([ownerUserId])
+}
+
+enum HandicapNetworkPartnerKind {
+  AGEFIPH
+  MDPH
+  CAP_EMPLOI
+  SPECIALIZED_PROVIDER
+  INTERNAL_EXPERT
+  TOOL_PLATFORM
+  OTHER
+}
+
+/// Qualiopi Q-I26 — expertises / outils / réseaux mobilisés pour le handicap.
+model HandicapNetworkPartner {
+  id              String                     @id @default(uuid())
+  kind            HandicapNetworkPartnerKind
+  label           String
+  description     String?                    @db.Text
+  contactName     String?
+  contactEmail    String?
+  contactPhone    String?
+  websiteUrl      String?
+  companyId       String?
+  company         Company?                   @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  isActive        Boolean                    @default(true)
+  lastMobilizedAt DateTime?
+  notes           String?                    @db.Text
+  indicatorCodes  String[]                   @default(["Q-I26"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kind])
+  @@index([companyId])
+  @@index([isActive])
+}
+
+/// Qualiopi Q-I16 — checklist présentation à la certification (par bénéficiaire).
+model SessionCertificationPresentation {
+  id            String                      @id @default(uuid())
+  participantId String                      @unique
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  identityVerified              Boolean @default(false)
+  prerequisitesVerified         Boolean @default(false)
+  attendanceThresholdMet        Boolean @default(false)
+  formativeAssessmentComplete   Boolean @default(false)
+  examRegistrationSubmitted     Boolean @default(false)
+  accessibilityAccommodationsOk Boolean @default(false)
+  employerAgreementSigned       Boolean @default(false)
+
+  authorityName      String?
+  authorityReference String?
+  checklistNotes     Json      @default("{}")
+  reviewedAt         DateTime?
+
+  reviewedById   String?
+  reviewedBy     User?    @relation("SessionCertificationPresentationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I16"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([reviewedAt])
+}
+
+enum SessionIntervenantRole {
+  TRAINER
+  CO_TRAINER
+  PEDAGOGICAL_COORDINATOR
+  ADMINISTRATIVE
+  LOGISTICS
+  COMMERCIAL
+  EXTERNAL_EXPERT
+  OTHER
+}
+
+/// Qualiopi Q-I18 — coordination intervenants internes / externes.
+model SessionIntervenantAssignment {
+  id        String           @id @default(uuid())
+  sessionId String
+  session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  userId           String?
+  user             User?                  @relation("SessionIntervenantUser", fields: [userId], references: [id], onDelete: SetNull)
+  externalLabel    String?
+  externalEmail    String?
+  role             SessionIntervenantRole
+  responsibilities Json                   @default("[]")
+
+  startAt DateTime?
+  endAt   DateTime?
+
+  coordinatedById String?
+  coordinatedBy   User?    @relation("SessionIntervenantCoordinator", fields: [coordinatedById], references: [id], onDelete: SetNull)
+  indicatorCodes  String[] @default(["Q-I18"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([userId])
+  @@index([role])
+}
+
+enum PedagogicalResourceDeliveryStatus {
+  PLANNED
+  DELIVERED
+  ACKNOWLEDGED
+}
+
+/// Qualiopi Q-I19 — ressources pédagogiques mises à disposition.
+model PedagogicalResourceDelivery {
+  id        String           @id @default(uuid())
+  sessionId String
+  session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  participantId String?
+  participant   FormationSessionParticipant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  label           String
+  resourceType    String?
+  deliveryChannel String?
+  status          PedagogicalResourceDeliveryStatus @default(PLANNED)
+
+  fileAssetId String?
+  fileAsset   FileAsset? @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+
+  deliveredAt    DateTime?
+  acknowledgedAt DateTime?
+  notes          String?   @db.Text
+
+  deliveredById  String?
+  deliveredBy    User?    @relation("PedagogicalResourceDeliveredBy", fields: [deliveredById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I19"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([participantId])
+  @@index([status])
+  @@index([fileAssetId])
+}
+
+/// Qualiopi Q-I20 — conseil de perfectionnement.
+model PerfectionnementCouncilMeeting {
+  id     String   @id @default(uuid())
+  title  String
+  heldAt DateTime
+
+  attendees Json @default("[]")
+  agenda    Json @default("[]")
+  decisions Json @default("[]")
+
+  minutesFileAssetId String?
+  minutesFileAsset   FileAsset? @relation(fields: [minutesFileAssetId], references: [id], onDelete: SetNull)
+
+  chairUserId    String?
+  chair          User?    @relation("PerfectionnementCouncilChair", fields: [chairUserId], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I20"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([heldAt])
+  @@index([chairUserId])
+}
+
+enum TrainerCompetencyReviewStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  ACTION_REQUIRED
+}
+
+/// Qualiopi Q-I21 — évaluation compétences formateurs / intervenants.
+model TrainerCompetencyReview {
+  id                 String            @id @default(uuid())
+  userId             String
+  user               User              @relation("TrainerCompetencyReviewSubject", fields: [userId], references: [id], onDelete: Cascade)
+  formateurProfileId String?
+  formateurProfile   FormateurProfile? @relation(fields: [formateurProfileId], references: [id], onDelete: SetNull)
+
+  reviewPeriodStart DateTime?
+  reviewPeriodEnd   DateTime?
+  status            TrainerCompetencyReviewStatus @default(SCHEDULED)
+
+  competenciesAssessed Json    @default("[]")
+  gapsIdentified       Json    @default("[]")
+  overallAssessment    String? @db.Text
+
+  reviewedAt      DateTime?
+  reviewerUserId  String?
+  reviewer        User?     @relation("TrainerCompetencyReviewReviewer", fields: [reviewerUserId], references: [id], onDelete: SetNull)
+  nextReviewDueAt DateTime?
+
+  developmentActions StaffDevelopmentAction[]
+  indicatorCodes     String[]                 @default(["Q-I21"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([formateurProfileId])
+  @@index([status])
+  @@index([nextReviewDueAt])
+}
+
+enum StaffDevelopmentActionStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+/// Qualiopi Q-I22 — développement compétences du personnel.
+model StaffDevelopmentAction {
+  id                     String                @id @default(uuid())
+  userId                 String
+  user                   User                  @relation("StaffDevelopmentActionSubject", fields: [userId], references: [id], onDelete: Cascade)
+  collaborateurProfileId String?
+  collaborateurProfile   CollaborateurProfile? @relation(fields: [collaborateurProfileId], references: [id], onDelete: SetNull)
+
+  competencyReviewId String?
+  competencyReview   TrainerCompetencyReview? @relation(fields: [competencyReviewId], references: [id], onDelete: SetNull)
+
+  label     String
+  objective String?                      @db.Text
+  status    StaffDevelopmentActionStatus @default(PLANNED)
+
+  plannedStart DateTime?
+  plannedEnd   DateTime?
+  completedAt  DateTime?
+
+  trainingProvider String?
+  costEuros        Decimal? @db.Decimal(10, 2)
+  indicatorCodes   String[] @default(["Q-I22"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([collaborateurProfileId])
+  @@index([competencyReviewId])
+  @@index([status])
+}
+
+enum WatchDomain {
+  LEGAL_REGULATORY
+  SKILLS_JOBS_EMPLOYMENT
+  PEDAGOGICAL_TECHNOLOGICAL
+}
+
+enum WatchItemStatus {
+  IDENTIFIED
+  UNDER_REVIEW
+  EXPLOITED
+  ARCHIVED
+}
+
+/// Qualiopi Q-I23 / Q-I24 / Q-I25 — item de veille.
+model WatchItem {
+  id     String      @id @default(uuid())
+  domain WatchDomain
+  title  String
+
+  sourceLabel String?
+  sourceUrl   String?
+  detectedAt  DateTime
+  summary     String?         @db.Text
+  status      WatchItemStatus @default(IDENTIFIED)
+
+  relevanceTags  Json     @default("[]")
+  indicatorCodes String[]
+
+  ownerUserId String?
+  owner       User?   @relation("WatchItemOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+
+  exploitations WatchExploitation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([domain, status])
+  @@index([detectedAt])
+  @@index([ownerUserId])
+}
+
+enum WatchExploitationStatus {
+  PLANNED
+  IN_PROGRESS
+  IMPLEMENTED
+  ABANDONED
+}
+
+/// Qualiopi Q-I23 / Q-I24 / Q-I25 — exploitation des enseignements de veille.
+model WatchExploitation {
+  id          String    @id @default(uuid())
+  watchItemId String
+  watchItem   WatchItem @relation(fields: [watchItemId], references: [id], onDelete: Cascade)
+
+  title          String
+  description    String?                 @db.Text
+  status         WatchExploitationStatus @default(PLANNED)
+  implementedAt  DateTime?
+  impactSummary  String?                 @db.Text
+  indicatorCodes String[]
+
+  ownerUserId String?
+  owner       User?   @relation("WatchExploitationOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+
+  improvementActions ContinuousImprovementAction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([watchItemId])
+  @@index([status])
+  @@index([ownerUserId])
+}
+
+enum SocioEconomicPartnershipKind {
+  PFST_HOST
+  CO_CONSTRUCTION
+  PLACEMENT
+  NETWORK
+  OTHER
+}
+
+enum SocioEconomicPartnershipStatus {
+  PROSPECT
+  ACTIVE
+  SUSPENDED
+  ENDED
+}
+
+/// Qualiopi Q-I28 — partenariat socio-économique / PFST.
+model SocioEconomicPartnership {
+  id        String  @id @default(uuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  formationId String?
+  formation   Formation? @relation(fields: [formationId], references: [id], onDelete: SetNull)
+  contactId   String?
+  contact     Contact?   @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  kind         SocioEconomicPartnershipKind
+  status       SocioEconomicPartnershipStatus @default(PROSPECT)
+  label        String
+  description  String?                        @db.Text
+  signedAt     DateTime?
+  pfstCapacity Int?
+
+  activities     Json     @default("[]")
+  indicatorCodes String[] @default(["Q-I28"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([formationId])
+  @@index([status])
+}
+
+enum InsertionFollowUpOutcome {
+  EMPLOYED
+  APPRENTICESHIP_CONTINUED
+  FURTHER_STUDY
+  UNEMPLOYED
+  UNKNOWN
+  OTHER
+}
+
+/// Qualiopi Q-I29 — suivi insertion / poursuite d'études.
+model InsertionFollowUp {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation("InsertionFollowUpLearner", fields: [userId], references: [id], onDelete: Cascade)
+
+  participantId String?
+  participant   FormationSessionParticipant? @relation(fields: [participantId], references: [id], onDelete: SetNull)
+  sessionId     String?
+  session       FormationSession?            @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  followedUpAt   DateTime
+  outcome        InsertionFollowUpOutcome
+  employerName   String?
+  companyId      String?
+  company        Company?                 @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  notes          String?                  @db.Text
+  nextFollowUpAt DateTime?
+
+  recordedById   String?
+  recordedBy     User?    @relation("InsertionFollowUpRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I29"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([participantId])
+  @@index([sessionId])
+  @@index([followedUpAt])
+  @@index([outcome])
+}
+
+enum ContinuousImprovementActionStatus {
+  IDENTIFIED
+  PLANNED
+  IN_PROGRESS
+  VERIFIED
+  CLOSED
+  CANCELLED
+}
+
+enum ContinuousImprovementActionSource {
+  SATISFACTION_SURVEY
+  COMPLAINT
+  QUALITY_INCIDENT
+  WATCH_EXPLOITATION
+  AUDIT_FINDING
+  MANUAL
+}
+
+/// Qualiopi Q-I32 — mesure d'amélioration continue.
+model ContinuousImprovementAction {
+  id          String                            @id @default(uuid())
+  title       String
+  description String?                           @db.Text
+  status      ContinuousImprovementActionStatus @default(IDENTIFIED)
+  source      ContinuousImprovementActionSource
+
+  sourceEntityType String?
+  sourceEntityId   String?
+
+  supportTicketId     String?
+  supportTicket       SupportTicket?     @relation(fields: [supportTicketId], references: [id], onDelete: SetNull)
+  qualityIncidentId   String?
+  qualityIncident     QualityIncident?   @relation(fields: [qualityIncidentId], references: [id], onDelete: SetNull)
+  watchExploitationId String?
+  watchExploitation   WatchExploitation? @relation(fields: [watchExploitationId], references: [id], onDelete: SetNull)
+
+  ownerUserId  String?
+  owner        User?     @relation("ContinuousImprovementActionOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  deadline     DateTime?
+  completedAt  DateTime?
+  verifiedAt   DateTime?
+  verifiedById String?
+  verifiedBy   User?     @relation("ContinuousImprovementActionVerifier", fields: [verifiedById], references: [id], onDelete: SetNull)
+
+  effectivenessNotes String?  @db.Text
+  indicatorCodes     String[] @default(["Q-I32"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([source])
+  @@index([ownerUserId])
+  @@index([supportTicketId])
+  @@index([qualityIncidentId])
+  @@index([watchExploitationId])
+  @@index([deadline])
 }

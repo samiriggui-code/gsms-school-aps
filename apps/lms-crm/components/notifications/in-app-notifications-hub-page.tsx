@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Settings } from 'lucide-react';
-import { AccountNotificationsDatagrid } from '@/app/(protected)/account/notifications/components/account-notifications-datagrid';
+import { AccountNotificationsDatagrid } from '@/app/(protected)/mon-profil/notifications/components/account-notifications-datagrid';
 import { PortalPageHero } from '@/components/portal/layout/portal-page-hero';
 import { PortalPageShell } from '@/components/portal/layout/portal-page-shell';
 import { Button } from '@repo/ui/button';

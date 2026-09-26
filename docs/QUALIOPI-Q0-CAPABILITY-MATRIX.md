@@ -1,9 +1,10 @@
 # Qualiopi Q0 — Matrice de capacité & règles pilotes Q1
 
-**Date :** 2026-09-02  
-**Statut :** validé pour implémentation Q1  
+**Date :** 2026-09-17 (schéma métier complet)  
+**Statut :** schema COVERED 32/32 — règles auto Q1 encore 6  
 **Référentiel :** V9-2024-01-08 (`QUALIOPI_REFERENTIAL_VERSION`)  
-**Engine :** `qualiopi-engine-q1.0`
+**Engine :** `qualiopi-engine-q1.0`  
+**Mapping Prisma :** `docs/QUALIOPI-PRISMA-MAPPING.md`
 
 ---
 
@@ -16,6 +17,7 @@ MÉTIER PRODUIT → EVIDENCE PROUVE → RULE ÉVALUE → QUALIOPI DÉTECTE → M
 - Evidence ≠ conformité
 - CODE CALCULE · EVE n’intervient pas
 - Stress test = read-only
+- **Schema fit ≠ règle Q1** : les 32 ont un modèle ; seules 6 ont une règle auto.
 
 ---
 
@@ -44,64 +46,53 @@ MÉTIER PRODUIT → EVIDENCE PROUVE → RULE ÉVALUE → QUALIOPI DÉTECTE → M
 
 API : `GET /api/sections/gestion-ressources/qualiopi/evaluate?sessionId=`
 
-Fichiers :
-
-- `apps/lms-crm/lib/of/qualiopi-evaluation-types.ts`
-- `apps/lms-crm/lib/of/qualiopi-evaluation-rules.ts`
-- `apps/lms-crm/lib/of/qualiopi-session-evaluate.ts`
-- `apps/lms-crm/app/api/sections/gestion-ressources/qualiopi/evaluate/route.ts`
-
 ---
 
-## Matrice 32 indicateurs (synthèse)
+## Matrice 32 — schéma Prisma (2026-09-17)
 
-Légende Auto : **YES** (règle Q1) · **PARTIAL** (données présentes, pas de règle) · **NO** · **MANUAL** (classeur)
+Légende Auto : **YES** (règle Q1) · **READY** (modèle prêt, pas encore de règle) · **N/A-offre** (`required:false`)
 
-| Ind. | Scope | Source GSMS | Auto | Manual | Gap principal |
-|------|-------|-------------|------|--------|---------------|
-| Q-I01 | ORG/FORMATION | Catalogue / landing | PARTIAL | YES | Pas Evidence info publique |
-| Q-I02 | ORG/FORMATION | successRate / satisfactionRate | PARTIAL | YES | KPI manuels |
-| Q-I03 | FORMATION | Examens / certif | PARTIAL | YES | Taux obtention |
-| Q-I04 | BENEFICIARY | NEEDS_ANALYSIS | PARTIAL | YES | Evidence sans link |
-| Q-I05 | FORMATION | Objectifs formation | PARTIAL | YES | — |
-| Q-I06 | FORMATION | Contenu | PARTIAL | YES | — |
-| Q-I07 | FORMATION | Certifiant | PARTIAL | YES | Applicabilité |
-| Q-I08 | SESSION | POSITIONING | **YES Q1** | YES | — |
-| Q-I09 | SESSION | Conventions | PARTIAL | YES | Pas Evidence |
-| Q-I10 | SESSION | Adaptations | PARTIAL | YES | Link I20/I26 |
-| Q-I11 | SESSION | FormativeAssessment | **YES Q1** | YES | — |
-| Q-I12 | SESSION | Dropout | PARTIAL | YES | Pas link |
-| Q-I13 | SESSION | Alternance | NO | YES | N/A SSPI typique |
-| Q-I14 | SESSION | Socio-pro | NO | YES | NOT FOUND |
-| Q-I15 | SESSION | Apprentis | NO | YES | NOT FOUND |
-| Q-I16 | SESSION | Exam / retake | PARTIAL | YES | — |
-| Q-I17 | SESSION/ORG | Salles / équipements | PARTIAL | YES | — |
-| Q-I18 | SESSION | Circuits n8n | PARTIAL | YES | Orchestration ≠ preuve |
-| Q-I19 | SESSION | Ressources péda | PARTIAL | YES | — |
-| Q-I20 | ORG | Référent handicap | **YES Q1** | YES | — |
-| Q-I21 | TRAINER | Formateurs RH | PARTIAL | YES | — |
-| Q-I22 | TRAINER | Compétences RH | PARTIAL | YES | — |
-| Q-I23 | ORG | Veille légale | NO | YES | WatchItem absent |
-| Q-I24 | ORG | Veille métiers | NO | YES | — |
-| Q-I25 | ORG | Veille péda | NO | YES | — |
-| Q-I26 | ORG | Handicap | **YES Q1** | YES | — |
-| Q-I27 | SUBCONTRACTOR | Sous-traitants | **YES Q1** | YES | — |
-| Q-I28 | ORG | PFST | NO | YES | required:false |
-| Q-I29 | ORG | Insertion | NO | YES | — |
-| Q-I30 | SESSION | Satisfaction | **YES Q1** | YES | — |
-| Q-I31 | ORG/SESSION | Tickets / incidents | PARTIAL | YES | Pas Evidence |
-| Q-I32 | ORG | Amélioration continue | PARTIAL | YES | — |
+| Ind. | Prisma principal | Auto | Notes |
+|------|------------------|------|-------|
+| Q-I01 | `Formation.public*` | READY | |
+| Q-I02 | `CertificationOutcomeStat` | READY | |
+| Q-I03 | `CertificationOutcomeStat` + RNCP | READY | |
+| Q-I04 | `CandidatureAssessment` NEEDS | READY | |
+| Q-I05–07 | Formation objectifs / contenus / adéquation | READY | |
+| Q-I08 | POSITIONING | **YES Q1** | |
+| Q-I09 | Convention | READY | |
+| Q-I10 | adaptation* | READY | |
+| Q-I11 | FormativeAssessment | **YES Q1** | |
+| Q-I12 | `EngagementMeasure` + dropout | READY | |
+| Q-I13 | `CompanyTutorLink` / Mission | N/A-offre | CFA |
+| Q-I14 | `SocioProfessionalSupportAction` | N/A-offre | CFA |
+| Q-I15 | `ApprenticeRightsAck` | N/A-offre | CFA |
+| Q-I16 | `SessionCertificationPresentation` | READY | |
+| Q-I17 | salles / équipements | READY | |
+| Q-I18 | `SessionIntervenantAssignment` | READY | |
+| Q-I19 | `PedagogicalResourceDelivery` | READY | |
+| Q-I20 | disability + mobility + conseil | **YES Q1** (handicap) | mobilité/conseil READY |
+| Q-I21 | `TrainerCompetencyReview` | READY | |
+| Q-I22 | `StaffDevelopmentAction` | READY | |
+| Q-I23–25 | `WatchItem` + `WatchExploitation` | READY | |
+| Q-I26 | HandicapNetworkPartner + référent | **YES Q1** | |
+| Q-I27 | SubcontractorRecord | **YES Q1** | |
+| Q-I28 | `SocioEconomicPartnership` | N/A-offre | PFST |
+| Q-I29 | `InsertionFollowUp` | N/A-offre | |
+| Q-I30 | SatisfactionSurvey | **YES Q1** | |
+| Q-I31 | Ticket/Incident `isComplaint` | READY | |
+| Q-I32 | `ContinuousImprovementAction` | READY | |
 
-**Comptage Q1 :** 6 YES · ~18 PARTIAL · ~8 NO/manuel pur.
+**Comptage :** schema **32/32 COVERED** · règles Q1 **6 YES** · **~20 READY** · **~6 N/A-offre**.
 
 ---
 
 ## Ce qui n’existe pas encore
 
-- `ComplianceEvaluation` / `ComplianceFinding` / `ComplianceSnapshot` (tables) — MVP in-memory
-- Passeport UI / datatable sessions
-- RulesVersion persistée sur snapshot
-- Link Evidence auto pour Q-I08 / Q-I11 / Q-I30
+- UI d’écriture sur les nouveaux modèles
+- Règles Q1 étendues (veille, réclamations, amélioration…)
+- Evidence auto à la complétion métier
+- `ComplianceEvaluation` / snapshot persisté (MVP in-memory)
 
 ---
 
@@ -109,11 +100,9 @@ Légende Auto : **YES** (règle Q1) · **PARTIAL** (données présentes, pas de 
 
 | Phase | État |
 |-------|------|
-| Q0 Matrice | ✅ ce document |
-| Q1 Engine | ✅ règles + evaluate |
-| Q2 Stress test API | ✅ GET evaluate |
-| Q3 Passeport UI | ✅ `/qualiopi/passeport` |
-| Q4 Datatable sessions | pending |
-| Q5 Vue org | pending |
-| Q6 Snapshots | pending |
-| Q7 Auditor pack | pending |
+| Q0 Matrice | ✅ |
+| Q1 Engine (6 règles) | ✅ |
+| Schema métier 32 | ✅ 2026-09-17 |
+| Q2 Stress test API | ✅ |
+| Q3 Passeport UI | ✅ |
+| Q4+ UI + règles étendues | pending |

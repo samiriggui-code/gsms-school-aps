@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
-/** Vague 2 — risques OF = écarts Qualiopi (plus de second cockpit). */
 export default function Page() {
-  redirect('/qualiopi/referentiel/ecarts');
+  return <QualiopiDevStubPage path="/qualiopi/pilotage/risques" level="leaf" />;
 }

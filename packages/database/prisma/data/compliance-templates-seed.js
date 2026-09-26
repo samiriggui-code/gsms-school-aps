@@ -32,6 +32,10 @@ const QUALIOPI_SCHOOL_TEMPLATE = {
       indicator: ind.indicator,
       referentialVersion: QUALIOPI_REFERENTIAL_VERSION,
       auditStatuses: ['OK', 'KO', 'TO_FIX', 'NA'],
+      ponderation: ind.ponderation,
+      nouveauxEntrants: ind.nouveauxEntrants,
+      sousTraitance: ind.sousTraitance,
+      prismaHints: ind.prismaHints ?? [],
     },
   })),
 };

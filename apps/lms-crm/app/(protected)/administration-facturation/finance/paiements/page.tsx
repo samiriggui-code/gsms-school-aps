@@ -1,10 +1,5 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { FinancePaiementsPageContent } from './components/finance-paiements-page-content';
+import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/administration-facturation/finance/paiements">
-      <FinancePaiementsPageContent />
-    </CrmWiredLeaf>
-  );
+  return <QualiopiDevStubPage path="/administration-facturation/finance/paiements" level="leaf" />;
 }

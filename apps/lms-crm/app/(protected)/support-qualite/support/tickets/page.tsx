@@ -1,7 +1,5 @@
-'use client';
-
-import SupportTicketsPage from './support-tickets-page';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <SupportTicketsPage />;
+  return <QualiopiDevStubPage path="/support-qualite/support/tickets" level="leaf" />;
 }

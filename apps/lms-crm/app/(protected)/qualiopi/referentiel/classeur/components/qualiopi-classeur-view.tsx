@@ -6,9 +6,14 @@ import { QualiopiClasseurSummary } from './qualiopi-classeur-summary';
 import { QualiopiClasseurCriterion } from './qualiopi-classeur-criterion';
 import { QualiopiClasseurLoadingState } from './qualiopi-classeur-loading-state';
 import { QualiopiClasseurErrorState } from './qualiopi-classeur-error-state';
+import type { QualiopiRegistryIndicatorBrief } from '@/lib/of/qualiopi-registry-brief-types';
 
 /** Orchestrateur visuel du classeur Qualiopi — composition uniquement. */
-export function QualiopiClasseurView() {
+export function QualiopiClasseurView({
+  registryByCode = {},
+}: {
+  registryByCode?: Record<string, QualiopiRegistryIndicatorBrief>;
+}) {
   const {
     bootstrapQuery,
     dossierId,
@@ -52,6 +57,7 @@ export function QualiopiClasseurView() {
             indicators={indicators}
             itemsByCode={itemsByCode}
             coveredByCode={coveredByCode}
+            registryByCode={registryByCode}
           />
         );
       })}

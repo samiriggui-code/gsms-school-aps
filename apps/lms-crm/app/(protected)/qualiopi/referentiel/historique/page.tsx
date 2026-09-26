@@ -1,10 +1,5 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { QualiopiHistoriquePageClient } from '../components/qualiopi-historique-page-client';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/qualiopi/referentiel/historique">
-      <QualiopiHistoriquePageClient />
-    </CrmWiredLeaf>
-  );
+  return <QualiopiDevStubPage path="/qualiopi/referentiel/historique" level="leaf" />;
 }

@@ -1,10 +1,5 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { QualiopiCouverturePageClient } from '../components/qualiopi-couverture-page-client';
+import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/qualiopi/referentiel/couverture">
-      <QualiopiCouverturePageClient />
-    </CrmWiredLeaf>
-  );
+  return <QualiopiDevStubPage path="/qualiopi/referentiel/couverture" level="leaf" />;
 }

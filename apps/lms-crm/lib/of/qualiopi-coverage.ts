@@ -14,10 +14,21 @@ export type QualiopiCoverageEvidence = {
   createdAt: string;
 };
 
+/** Statut du meilleur lien EvidenceIndicatorLink pour l’indicateur. */
+export type QualiopiLinkAggregateStatus =
+  | 'VERIFIED'
+  | 'AUTO'
+  | 'SUGGESTED'
+  | 'REJECTED'
+  | 'NONE';
+
 export type QualiopiCoverageRow = QualiopiIndicator & {
   evidenceCount: number;
   latestEvidence: QualiopiCoverageEvidence | null;
   covered: boolean;
+  /** Agrégat liens : VERIFIED > AUTO > SUGGESTED > REJECTED > NONE. */
+  linkStatus: QualiopiLinkAggregateStatus;
+  linkConfidence: number | null;
 };
 
 export type QualiopiCoveragePayload = {
@@ -56,13 +67,33 @@ export async function buildQualiopiCoverage(
     byCode.set(link.indicatorCode, list);
   }
 
+  const rank: Record<string, number> = {
+    VERIFIED: 4,
+    AUTO: 3,
+    SUGGESTED: 2,
+    REJECTED: 1,
+  };
+
   const indicators: QualiopiCoverageRow[] = QUALIOPI_INDICATORS_V9.map((ind) => {
     const related = byCode.get(ind.code) ?? [];
     const latest = related[0]?.evidence;
+    let linkStatus: QualiopiLinkAggregateStatus = 'NONE';
+    let linkConfidence: number | null = null;
+    for (const link of related) {
+      const st = (link.status ?? 'SUGGESTED') as QualiopiLinkAggregateStatus;
+      if ((rank[st] ?? 0) > (rank[linkStatus] ?? 0)) {
+        linkStatus = st;
+        linkConfidence = link.confidence ?? null;
+      }
+    }
+    // Couvert si au moins un lien non rejeté
+    const covered = related.some((l) => l.status !== 'REJECTED');
     return {
       ...ind,
       evidenceCount: related.length,
-      covered: related.length > 0,
+      covered,
+      linkStatus: related.length === 0 ? 'NONE' : linkStatus,
+      linkConfidence,
       latestEvidence: latest
         ? {
             id: latest.id,

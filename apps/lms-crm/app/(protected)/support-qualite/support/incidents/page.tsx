@@ -1,7 +1,5 @@
-'use client';
-
-import IncidentsPageContent from './incidents-page-content';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <IncidentsPageContent />;
+  return <QualiopiDevStubPage path="/support-qualite/support/incidents" level="leaf" />;
 }

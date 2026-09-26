@@ -1,10 +1,5 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { PilotageIndicateursContent } from '../components/pilotage-indicateurs-content';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/qualiopi/pilotage/indicateurs">
-      <PilotageIndicateursContent />
-    </CrmWiredLeaf>
-  );
+  return <QualiopiDevStubPage path="/qualiopi/pilotage/indicateurs" level="leaf" />;
 }

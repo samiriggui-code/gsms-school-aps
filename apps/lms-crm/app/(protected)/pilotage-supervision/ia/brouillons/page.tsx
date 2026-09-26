@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
-/** Déplacé sous /qualiopi/ia/brouillons. */
 export default function Page() {
-  redirect('/qualiopi/ia/brouillons');
+  return <QualiopiDevStubPage path="/pilotage-supervision/ia/brouillons" level="leaf" />;
 }

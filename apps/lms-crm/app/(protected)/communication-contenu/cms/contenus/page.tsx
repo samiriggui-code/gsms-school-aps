@@ -1,7 +1,5 @@
-'use client';
-
-import CmsContenusPage from './cms-contenus-page';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <CmsContenusPage />;
+  return <QualiopiDevStubPage path="/communication-contenu/cms/contenus" level="leaf" />;
 }

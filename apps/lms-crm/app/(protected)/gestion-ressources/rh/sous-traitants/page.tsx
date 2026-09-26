@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
-/** Vague 2 — sous-traitants rattachés à Partenaires & accessibilité. */
 export default function Page() {
-  redirect('/gestion-ressources/partenaires/sous-traitants');
+  return <QualiopiDevStubPage path="/gestion-ressources/rh/sous-traitants" level="leaf" />;
 }

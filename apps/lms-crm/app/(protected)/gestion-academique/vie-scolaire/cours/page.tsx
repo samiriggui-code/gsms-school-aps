@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
-/** Déplacé sous /gestion-academique/lms/cours. */
 export default function Page() {
-  redirect('/gestion-academique/lms/cours');
+  return <QualiopiDevStubPage path="/gestion-academique/vie-scolaire/cours" level="leaf" />;
 }

@@ -1,7 +1,5 @@
-'use client';
-
-import { SettingsContent } from './components/settings-content';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <SettingsContent />;
+  return <QualiopiDevStubPage path="/securite-configuration/parametres/settings" level="leaf" />;
 }

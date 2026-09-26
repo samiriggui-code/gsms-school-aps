@@ -1,10 +1,5 @@
-import { CrmWiredLeaf } from '@/components/crm/crm-wired-leaf';
-import { QualiopiPasseportView } from './components/qualiopi-passeport-view';
+import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return (
-    <CrmWiredLeaf path="/qualiopi/referentiel/passeport">
-      <QualiopiPasseportView />
-    </CrmWiredLeaf>
-  );
+  return <QualiopiDevStubPage path="/qualiopi/referentiel/passeport" level="leaf" />;
 }

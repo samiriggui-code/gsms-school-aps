@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
-/** Déplacé sous /qualiopi/pilotage/indicateurs. */
 export default function Page() {
-  redirect('/qualiopi/pilotage/indicateurs');
+  return <QualiopiDevStubPage path="/pilotage-supervision/pilotage/indicateurs" level="leaf" />;
 }

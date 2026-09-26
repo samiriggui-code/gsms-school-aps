@@ -1,7 +1,5 @@
-'use client';
-
-import CmsPagesLandingPage from './cms-pages-landing-page';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <CmsPagesLandingPage />;
+  return <QualiopiDevStubPage path="/communication-contenu/cms/pages-landing" level="leaf" />;
 }

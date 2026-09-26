@@ -1,0 +1,298 @@
+﻿
+## app/(protected)/gestion-academique/vie-scolaire/etudiants/components
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidat-documents-cnaps-tab.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidat-formation-visee-card.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidat-hub-list.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidat-hub-stats.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidature-add-sheet.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidature-assessments-section.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidature-detail-sheet.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidature-parcours-actions.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/candidatures-list.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/activity/activity.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/activity/timeline-item.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/candidat-conformite-dossier-section.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/card-date.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-access-details.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-access-stats.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-hr-info.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-overview-stats.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-permissions-list.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-recent-activity.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-reliability-tier.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/etudiant-roles-groups.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/details/upload.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-acces-tab.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-add-dialog.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-add-sheet.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-absences.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-activity.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-compliance.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-documents.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-overview.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-permissions.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-settings.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-details-sheet.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-list.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-platform-access-panel.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/etudiant-stats.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/components/session-inscrits-panel.tsx
+# summary keep=19 orphan=18
+
+## app/(protected)/gestion-academique/vie-scolaire/formations/components
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/catalog/formation-catalog-program-sheets.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/activity/timeline-item.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/card-date.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/formation-access-details.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/formation-access-stats.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/formation-hr-info.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/formation-overview-stats.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/formation-permissions-list.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/details/formation-reliability-tier.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-add-catalog-sheet.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-details-absences.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-details-compliance.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-details-documents.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-list.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-logo-thumb.tsx  <- components/instructor/dashboard/instructor-dashboard-overview-table.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-offer-funding-prereq-pickers.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/formation-stats.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/activity.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/interview.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/new-article.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/photography-workshop.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/product-webinar.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/project-status.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/timeline-item.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/activity/upcoming-content.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/billing-details.tsx  <- components/portal/portal-funding-section.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/card-date.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/loyalty-tier.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/payment-methods.tsx  <- components/portal/portal-funding-section.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/resent-order.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/statistics1.tsx  <- app/formation/formation-client.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/statistics2.tsx  <- app/formation/formation-client.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/statistics3.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/statistics4.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/components/upload.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/customer-details-active.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/customer-details-billing.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/customer-details-invoice.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/customer-details-orders.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/customer-details-overviews.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/customer-details-reviews.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/formation-program-modules-ai-panel.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/formation-program-sheet-customer.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/tables/details-invoice.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/formations/components/sheets/customer/tables/details-orders.tsx  <- app/formation/formation-client.tsx
+# summary keep=6 orphan=39
+
+## app/(protected)/gestion-academique/vie-scolaire/sessions/components
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-detail-equipment-grid.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-detail-participants-grid.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-equipment-pick-grid.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-overview-metrics.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-participant-pick-grid.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-planning-timeline.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-sidebar-session-meta.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-trainer-summary.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-venue-room-summary.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/formation-session-vitrine-overview-cards.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-circuit-trigger-button.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-documents-menu-button.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-equipment-dispatch-guide.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-pedagogical-outline-ai-panel.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-publishability-checklist.tsx
+KEEP  app/(protected)/gestion-academique/vie-scolaire/sessions/components/session-user-avatar.tsx  <- app/formation/formation-client.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/sessions-by-formation.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/sessions-manager.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/sessions-summary.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/sheets/formation-session-add-sheet.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/sheets/formation-session-sheet-customer.tsx
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/sessions/components/sheets/use-formation-session-add-sheet.ts
+# summary keep=1 orphan=21
+
+## app/(protected)/gestion-ressources/rh/collaborateurs/components
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-add-sheet.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-add-sheet/hooks/use-collaborateur-add-sheet.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-compliance-datagrid.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-absences.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-activity.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-compliance.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-documents.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-overview.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-permissions.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-settings.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-details-sheet.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-list.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-stats.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/activity/activity.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/components/details/activity/timeline-item.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-access-details.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-access-stats.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-hr-info.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-overview-stats.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-permissions-list.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-recent-activity.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-reliability-tier.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/collaborateurs/components/details/collaborateur-roles-groups.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/components/details/upload.tsx
+# summary keep=18 orphan=6
+
+## app/(protected)/gestion-ressources/rh/formateurs/components
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/details/activity/activity.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/details/activity/timeline-item.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-access-details.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-access-stats.tsx
+KEEP  app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-hr-info.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-overview-stats.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-permissions-list.tsx
+KEEP  app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-recent-activity.tsx  <- components/official-documents/official-export-renderer-client.tsx
+KEEP  app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-reliability-tier.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/details/formateur-roles-groups.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/details/upload.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-add-sheet.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-absences.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-activity.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-compliance.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-documents.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-overview.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-permissions.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-settings.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-details-sheet.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-list.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/formateurs/components/formateur-stats.tsx
+# summary keep=4 orphan=18
+
+## app/(protected)/gestion-ressources/compagnie/documents/components
+ORPHAN app/(protected)/gestion-ressources/compagnie/documents/components/documents-list.tsx
+ORPHAN app/(protected)/gestion-ressources/compagnie/documents/components/documents-stats.tsx
+ORPHAN app/(protected)/gestion-ressources/compagnie/documents/components/dossier-administratif-view.tsx
+KEEP  app/(protected)/gestion-ressources/compagnie/documents/components/dossier-file-viewer-dialog.tsx  <- components/portal/cnaps-dossier-sheet.tsx
+ORPHAN app/(protected)/gestion-ressources/compagnie/documents/components/dossier-slot-sheet.tsx
+ORPHAN app/(protected)/gestion-ressources/compagnie/documents/components/dossier-types.ts
+# summary keep=1 orphan=5
+
+## app/(protected)/securite-configuration/acces/users/[id]/components
+KEEP  app/(protected)/securite-configuration/acces/users/[id]/components/user-context.tsx  <- app/(protected)/securite-configuration/acces/users/[id]/layout.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-danger-zone.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-delete-dialog.tsx
+KEEP  app/(protected)/securite-configuration/acces/users/[id]/components/user-hero.tsx  <- app/(protected)/securite-configuration/acces/users/[id]/layout.tsx
+KEEP  app/(protected)/securite-configuration/acces/users/[id]/components/user-iam-headline.tsx  <- app/(protected)/securite-configuration/acces/users/[id]/layout.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-iam-profile-tabs.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-iam-system-logs.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-profile-edit-dialog.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-profile-edit-sheet.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-profile.tsx
+ORPHAN app/(protected)/securite-configuration/acces/users/[id]/components/user-restore-dialog.tsx
+# summary keep=3 orphan=8
+
+## app/(protected)/securite-configuration/parametres/settings/components
+KEEP  app/(protected)/securite-configuration/parametres/settings/components/company-profile-context.tsx  <- app/(protected)/securite-configuration/parametres/settings/layout.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/general-settings-form.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/administrative-dossier-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/dirigeant-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/etablissement-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/formation-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/integrations-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/legal-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/notifications-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/registre-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/sections/social-settings-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/settings-collapsible-section.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/settings-content.tsx
+KEEP  app/(protected)/securite-configuration/parametres/settings/components/settings-context.tsx  <- app/(protected)/securite-configuration/parametres/settings/layout.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/settings-form-footer.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/settings-sections-context.tsx
+KEEP  app/(protected)/securite-configuration/parametres/settings/components/settings-sidebar-layout.tsx  <- app/(protected)/securite-configuration/parametres/settings/layout.tsx
+KEEP  app/(protected)/securite-configuration/parametres/settings/components/settings-sidebar-nav.tsx  <- app/(protected)/securite-configuration/parametres/settings/layout.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/timezone-select.tsx
+ORPHAN app/(protected)/securite-configuration/parametres/settings/components/use-settings-subpage-redirect.tsx
+# summary keep=4 orphan=16
+
+## app/(protected)/account/notifications/components
+KEEP  app/(protected)/account/notifications/components/account-notifications-datagrid.tsx  <- components/notifications/in-app-notifications-hub-page.tsx
+# summary keep=1 orphan=0
+
+## app/(protected)/securite-configuration/components
+KEEP  app/(protected)/securite-configuration/components/datagrid-standards.tsx  <- components/notifications/in-app-notifications-hub-page.tsx
+ORPHAN app/(protected)/securite-configuration/components/index.ts
+ORPHAN app/(protected)/securite-configuration/components/section-b-menu-cards.tsx
+ORPHAN app/(protected)/securite-configuration/components/section-b-security-highlights.tsx
+ORPHAN app/(protected)/securite-configuration/components/section-b-stats-dynamic.tsx
+ORPHAN app/(protected)/securite-configuration/components/section-b-welcome-callout.tsx
+ORPHAN app/(protected)/securite-configuration/components/securite-section-rh-proxy-kpis.tsx
+ORPHAN app/(protected)/securite-configuration/components/security-stats.tsx
+KEEP  app/(protected)/securite-configuration/components/user-management-support-section.tsx  <- app/components/layouts/demo1/layout.tsx
+# summary keep=2 orphan=7
+
+## orphan hooks under stubbed leaves
+ORPHAN app/(protected)/administration-facturation/budget/lignes/hooks/use-finance-budget-detail-query.ts
+ORPHAN app/(protected)/administration-facturation/finance/devis/components/devis-detail-sheet/hooks/use-devis-detail-sheet.ts
+ORPHAN app/(protected)/administration-facturation/finance/devis/hooks/use-devis-patch-mutation.ts
+ORPHAN app/(protected)/administration-facturation/finance/devis/hooks/use-finance-catalog-lines-query.ts
+ORPHAN app/(protected)/administration-facturation/finance/devis/hooks/use-finance-devis-detail-query.ts
+ORPHAN app/(protected)/administration-facturation/finance/devis/hooks/use-finance-devis-query.ts
+ORPHAN app/(protected)/administration-facturation/finance/factures/hooks/use-facture-patch-mutation.ts
+ORPHAN app/(protected)/administration-facturation/finance/factures/hooks/use-facture-pdf-mutation.ts
+ORPHAN app/(protected)/administration-facturation/finance/factures/hooks/use-finance-catalog-lines-query.ts
+ORPHAN app/(protected)/administration-facturation/finance/factures/hooks/use-finance-facture-detail-query.ts
+ORPHAN app/(protected)/administration-facturation/finance/factures/hooks/use-finance-facture-query.ts
+ORPHAN app/(protected)/communication-contenu/marketing/formulaires-leads/hooks/use-etudiant-history.ts
+ORPHAN app/(protected)/communication-contenu/marketing/formulaires-leads/hooks/use-landing-leads-query.ts
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/etudiants/hooks/use-etudiant-select-query.ts
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/hooks/use-formation-library-query.ts
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/hooks/use-formation-reference-templates-query.ts
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/hooks/use-formation-select-query.ts
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/hooks/use-formations-catalog-query.ts
+ORPHAN app/(protected)/gestion-academique/vie-scolaire/formations/hooks/use-formations-stats-query.ts
+ORPHAN app/(protected)/gestion-ressources/equipements/affectations/hooks/use-subcontractor-select-query.ts
+ORPHAN app/(protected)/gestion-ressources/equipements/hooks/use-client-sites.ts
+ORPHAN app/(protected)/gestion-ressources/equipements/inventaire/hooks/use-equipment-history.ts
+ORPHAN app/(protected)/gestion-ressources/equipements/inventaire/hooks/use-subcontractor-select-query.ts
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/components/collaborateur-add-sheet/hooks/use-collaborateur-add-sheet.tsx
+ORPHAN app/(protected)/gestion-ressources/rh/collaborateurs/hooks/use-subcontractor-select-query.ts
+ORPHAN app/(protected)/qualiopi/referentiel/classeur/hooks/use-qualiopi-classeur.ts
+ORPHAN app/(protected)/qualiopi/referentiel/passeport/hooks/use-qualiopi-passeport.ts
+ORPHAN app/(protected)/securite-configuration/acces/permissions/hooks/use-permission-select-query.ts
+ORPHAN app/(protected)/support-qualite/hooks/use-support-qualite-stats.ts
+ORPHAN app/(protected)/support-qualite/support/tickets/hooks/use-support-tickets-query.ts
+
+## components/users file-level
+ORPHAN components/users/components/user-access-details.tsx
+ORPHAN components/users/components/user-access-stats.tsx
+ORPHAN components/users/components/user-details-form.tsx
+ORPHAN components/users/components/user-hr-info.tsx
+ORPHAN components/users/components/user-roles-groups.tsx
+ORPHAN components/users/components/user-sidebar.tsx
+ORPHAN components/users/components/user-statistics.tsx
+KEEP  components/users/iam-user-sheet-sidebar-summary.tsx  <- app/(protected)/securite-configuration/acces/users/[id]/layout.tsx
+KEEP  components/users/iam-user-sheet-sidebar.tsx  <- app/(protected)/securite-configuration/acces/users/[id]/layout.tsx
+ORPHAN components/users/user-absences.tsx
+ORPHAN components/users/user-activity.tsx
+ORPHAN components/users/user-compliance.tsx
+ORPHAN components/users/user-documents.tsx
+KEEP  components/users/user-iam-headline.tsx  <- app/(protected)/securite-configuration/acces/users/[id]/layout.tsx
+ORPHAN components/users/user-iam-tabs.tsx
+ORPHAN components/users/user-logs.tsx
+ORPHAN components/users/user-overview.tsx
+ORPHAN components/users/user-permissions.tsx
+ORPHAN components/users/user-personal-info.tsx
+ORPHAN components/users/user-roles.tsx
+ORPHAN components/users/user-settings.tsx
+
+## components/iam
+ORPHAN components/iam/iam-compact-badges.tsx
+ORPHAN components/iam/permission-toggle-matrix.tsx
+ORPHAN components/iam/role-permissions-matrix.tsx
+ORPHAN components/iam/role-toggle-badges.tsx
+
+## components/sheet-shared
+ORPHAN components/sheet-shared/certification-steps.tsx
+KEEP  components/sheet-shared/prerequisites-table.tsx  <- app/formation/formation-client.tsx
+ORPHAN components/sheet-shared/program-accordion.tsx
+KEEP  components/sheet-shared/stat-grid.tsx  <- components/portal/cnaps-dossier-sheet.tsx
+
+## components/governance
+KEEP  components/governance/file-asset-meta-sheet.tsx  <- components/official-documents/official-export-renderer-client.tsx
+ORPHAN components/governance/governance-hub-page.tsx

@@ -1,5 +1,6 @@
 import { Separator } from '@repo/ui/separator';
 import type { QualiopiIndicator } from '@/lib/of/qualiopi-indicators';
+import type { QualiopiRegistryIndicatorBrief } from '@/lib/of/qualiopi-registry-brief-types';
 import type { ComplianceItemRow } from '../hooks/use-qualiopi-classeur';
 import { QualiopiIndicatorCard } from './qualiopi-indicator-card';
 
@@ -8,11 +9,13 @@ export function QualiopiClasseurCriterion({
   indicators,
   itemsByCode,
   coveredByCode,
+  registryByCode = {},
 }: {
   criterion: number;
   indicators: QualiopiIndicator[];
   itemsByCode: Map<string, ComplianceItemRow>;
   coveredByCode: Map<string, boolean>;
+  registryByCode?: Record<string, QualiopiRegistryIndicatorBrief>;
 }) {
   return (
     <section className="space-y-4">
@@ -29,6 +32,7 @@ export function QualiopiClasseurCriterion({
             item={itemsByCode.get(indicator.code)}
             disabled={false}
             evidenceCovered={coveredByCode.get(indicator.code) === true}
+            registryBrief={registryByCode[indicator.code]}
           />
         ))}
       </div>

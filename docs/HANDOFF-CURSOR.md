@@ -4,6 +4,145 @@ Cursor écrit ici (nouvelle entrée datée en haut) : fin de chantier, question,
 
 ---
 
+## 2026-09-17 — Clarification convention `app/` (Metronic officiel) + nettoyage ciblé
+
+**Contexte :** le user pensait `app/` en plein désordre. Vérification directe (source Metronic officielle relue) : `app/components/{layouts,partials}` et `app/models/` sont la **convention officielle Metronic** (confirmé dans le template source `themeforest-cG1EP3uE-metronic-responsive-admin-dashboard-template/.../metronic-tailwind-react-demos/typescript/nextjs/app/`), pas des erreurs de rangement. Ne pas dupliquer ces concepts vers un nouveau dossier top-level sans raison — si un composant appartient à la "chrome" du template (layout, partials), il va dans `app/components/`, pas dans un nouveau `components/layouts/xxx` parallèle.
+
+**Piège évité :** deux passes d'exploration avaient déclaré `app/components/layouts/demo1` et `app/components/partials` "morts" — **faux**, vérifié par lecture directe : `Demo1Layout` habille tout `(protected)/layout.tsx`, `partials` est utilisé par `app/(site)/maintenance-view.tsx` et `components/avatar-group.tsx`. Ne pas se fier aux rapports d'exploration sans grep direct sur les vrais chemins d'import relatifs (`../components/...`), pas seulement les alias `@/`.
+
+**Fait :**
+- Supprimé `app/apprendre/` (orphelin confirmé — non lié depuis nav/sidebar, contrairement à `app/e-formation/` qui est la version vivante/canonique). La redirection legacy `/apprendre → /e-formation` existe déjà dans `proxy.ts:132-135`, donc aucun lien cassé.
+- Fonctionnalité `LmsCourseDiscussions` présente dans l'ancien `apprendre/[courseId]/cours-client.tsx` mais absente d'`e-formation` — **pas portée** (composant partagé toujours dispo à `components/portal/lms/lms-course-discussions.tsx` si besoin plus tard).
+- Supprimé `apps/lms-crm/documentation.html` (reste Metronic, redirect vers docs.keenthemes.com) et `apps/lms-crm/errors.txt` (vide).
+
+**Pas fait (dette connue, hors scope de ce nettoyage) :**
+- `lib/` vs `domains/` — duplication réelle de concepts métier (crm, evidence, funding, lms, organisation, rh existent des deux côtés). Nécessite un audit fichier par fichier avant fusion — trop gros/risqué pour être improvisé.
+- Route groups `(formateur)`/`(eleve)` — pas nécessaire : le mécanisme de séparation par rôle existe déjà et fonctionne (`(protected)/layout.tsx` redirige `isPortalRole`→`/mon-dossier`, `isInstructorRole`→`/formateur` via des dossiers top-level classiques, pas des route groups). Changer pour des route groups serait cosmétique, pas fonctionnel.
+
+---
+
+## 2026-09-17 — Writers P1 restaurés + Registry branché front
+
+**Writers restaurés (git checkout tree + deps) :**
+- vie-scolaire : `sessions`, `etudiants`, `formations`
+- RH : `formateurs`
+- finance : `devis`, `factures`, `paiements`, `bpf`, `budget`, `edof-catalog`, `financeurs`, `rapports`
+- deps : inventaire-details-sheet, `components/equipment`
+- referentiel : `classeur`, `couverture`, `ecarts`, `passeport` (pages riches, plus stubs)
+
+**Registry branché :**
+- `lib/of/qualiopi-registry-brief.ts` (+ types client-safe) — bridge page-referential → Registry V9
+- `QualiopiPageBrief` enrichi (details niveau attendu / preuves / NC) + mode `compact`
+- `QualiopiPageBriefServer` + bandeaux layout sur writers P1
+- Stub pages : Registry chargé côté serveur dans `QualiopiDevStubPage`
+- Classeur : guide V9 par carte indicateur
+- Couverture : colonne lien `VERIFIED`/`AUTO`/`SUGGESTED`/`REJECTED` (`buildQualiopiCoverage` étendu)
+- Écarts : section niveau attendu Registry + liens relatedPaths
+
+**Tests :** `qualiopi-reference-registry.test.ts` 7/7 ; smoke brief formateurs → Q-I21 + 32/32 map.
+
+---
+
+## 2026-09-17 — Ack `QUALIOPI-REGISTRY-FRONT-HANDOFF.md`
+
+**Lu.** Registry V9 + `EvidenceIndicatorLink` étendu = OK, pattern page↔registry clair.
+
+**Fait tout de suite (réserve 1) :** restauré les 6 pages `role:na` + arbres `components/` (+ `components/crud` pour redirections SEO).
+
+**Correction importante vs §2 « composants toujours sur disque » :** faux après la 2ème passe purge — beaucoup de leaf `*/components` ont été **supprimés** (devis, factures, leads, users, classeur, etc.), pas seulement débranchés. Rebuild writer = souvent `git checkout` du tree leaf, pas un simple ré-import.
+
+**Pas encore fait (attente priorisation user / suite) :**
+- Brancher `getIndicator` / `getEvidenceExamples` dans `QualiopiPageBrief` + pages `/qualiopi/referentiel/*`
+- Rebuild writers prioritaires (sessions/étudiants/formations/formateurs/finance)
+
+---
+
+## 2026-09-17 — CORRECTIF : landings accueil/section/module restaurées
+
+**Erreur :** le reset stubs avait aussi remplacé `accueil` + toutes les `page.tsx` section/module par `QualiopiDevStubPage` — hors consigne (garder landings).
+
+**Fix :** `git checkout HEAD` sur **39** pages (accueil + section + module). Feuilles restent stubbées (**94** leaf). Kits `components/` section/module + `accueil-dashboard-page` + `iam` OK.
+
+---
+
+## 2026-09-17 — Fix build landing `@/components/header`
+
+**Cause :** 2ème passe purge avait supprimé `components/header.tsx` (surface landing `(site)`).
+
+**Fix :** `git checkout HEAD -- apps/lms-crm/components/header.tsx`. Vérifié : header + hero + trusted-brands + how-it-works + features + trainers + testimonials + faq + CTA + contact + footer + sheets pricing/logo/cgv/customer — tous présents.
+
+---
+
+## 2026-09-17 — Tri composants : purge Metronic / démo
+
+**Demande :** garder kit accueil/section/module + shell ; virer code mort Metronic.
+
+**Supprimé :** `components/{cards,charts,crud,equipment,examples,framework,image-input,settings,tables,workspace,maintenance,_deprecated-metronic,layouts}` ; partials `activities`, `mega-menu`, `dropdown-menu` ; cards NFT/demo ; common Metronic ; topbar demos ; dialogs (sauf search-dialog) ; search-* siblings ; root e-com sheets ; demo1 content/toolbar ; wrappers pilotage→workspace.
+
+**Restauré (shell) :** `components/iam`, `components/keenicons`, `partials/common/avatar-input`.
+
+**Gardé (rebuild landings) :** `components/crm/*` (accueil/section/module), `common/menu-card*`, `section-*`, `app/(protected)/**/components` landings.
+
+---
+
+## 2026-09-17 — Reset front CRM à zéro (stubs Qualiopi)
+
+**Demande user :** recommencer de zéro — vider toutes les pages métier, pas garder les UI riches.
+
+**Fait :** ~133 `page.tsx` sous `(protected)` remplacées par `QualiopiDevStubPage` (breadcrumbs menu + brief indicateurs). Exception : `/qualiopi/referentiel/cartographie-front`. Routes dynamiques `[devisId]` / `users/[id]` aussi stubbées.
+
+**Intact :** API, Prisma, layouts, dossiers `components/` (non branchés).
+
+---
+
+## 2026-09-17 — Référentiel front Qualiopi (page → indicateurs)
+
+**Demande :** double lecture front — pour chaque page, quel indicateur / preuve ; stubs vides + breadcrumbs ; signaler pages manquantes + relations.
+
+**Livré :**
+- `apps/lms-crm/lib/of/qualiopi-page-referential.ts` — cartographie paths menu + stubs
+- `QualiopiPageBrief` + `QualiopiDevStubPage`
+- Page `/qualiopi/referentiel/cartographie-front` (filtre + liste manquants)
+- 9 stubs writer (veille, amélioration, conseil, compétences, développement, réseau handicap, PFST, alternance, insertion)
+- Menu + `crm-sitemap` enrichis
+- Doc `docs/QUALIOPI-FRONT-PAGE-REFERENTIAL.md`
+
+**Suite :** remplacer stubs par UI métier branchée Prisma ; optionnel : bandeau `QualiopiPageBrief` sur pages writer déjà riches (formations, sessions, sous-traitants…).
+
+---
+
+## 2026-09-17 — Schema Prisma Qualiopi « totale » (32/32)
+
+**Demande user :** complément Prisma complet, pas de bricolage.
+
+**Livré :**
+- Bloc métier Qualiopi dans `packages/database/prisma/schema.prisma` (~18 modèles + enums) : veille, amélioration, CFA (I13–15), PFST, insertion, RH compétences, réclamations typées, stats publication, etc.
+- Compléments : `SocioProfessionalSupportAction` (I14), `HandicapNetworkPartner` (I26), champs Formation I01/I05–07, `mobilityReferent*`
+- Seed + miroir TS enrichis (`ponderation`, `nouveauxEntrants`, `sousTraitance`, `prismaHints`)
+- Doc : `docs/QUALIOPI-PRISMA-MAPPING.md` + Q0 matrix mise à jour
+- `pnpm db:generate` OK
+
+**À faire côté user / env :**
+- `pnpm db:push` (Laragon Postgres) — bloqué en autonomie, à approuver
+- `pnpm db:seed` pour recharger template classeur avec conditions enrichies
+- UI + règles Q1 étendues = chantier suivant (schema seul ≠ auto PASS)
+
+**Pas de table** `QualiopiIndicator` miroir du guide.
+
+---
+
+## 2026-09-17 — Audit Prisma ↔ Qualiopi V9 + corpus `qualiopi-rag`
+
+**Constat :** corpus `C:\laragon\www\qualiopi-rag\data\qualiopi-markdown-v9\indicateurs\` (32 MD + YAML) = preuves / niveau attendu / NC — **complément RAG**, pas un modèle Prisma. Aligné V9 avec seed `qualiopi-indicators-v9.js` (doc `qualiopi-rag/docs/comparaison-dataset-existant.md`).
+
+**Prisma métier déjà solide :** Formation (I01–07), CandidatureAssessment (I04/I08), FormativeAssessment (I11), SatisfactionSurvey (I30), SystemSetting.disability* (I20/I26), SubcontractorRecord (I27), Evidence + EvidenceIndicatorLink, classeur ComplianceDossier SCHOOL_QUALIOPI.
+
+**Gaps schéma (priorité) :** WatchItem/WatchAction (I23–25) ; ContinuousImprovementAction (I32) ; typage réclamation sur SupportTicket/QualityIncident (I31) ; PartnerSocioEco / PFST (I28) si applicable ; enrichir seed YAML (ponderation, sous_traitance) sans table référentiel.
+
+**Ne pas faire :** table `QualiopiIndicator` miroir du guide ; conformité auto = Evidence.
+
+---
+
 ## 2026-09-17 — Normalisation URLs LMS + Finance
 
 **Commit :** `80a0b29` sur `chantier/qualiopi-q0-q3`

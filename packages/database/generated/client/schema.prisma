@@ -349,6 +349,28 @@ model User {
   rhAbsencesValidated        RhAbsence[]        @relation("RhAbsenceValidatedBy")
   venueRoomBookingsOrganized VenueRoomBooking[] @relation("VenueRoomBookingOrganizer")
 
+  formationPublicInfoReviews                Formation[]                        @relation("FormationPublicInfoReviewer")
+  certificationOutcomeStatsPublished        CertificationOutcomeStat[]         @relation("CertificationOutcomeStatPublisher")
+  engagementMeasuresOwned                   EngagementMeasure[]                @relation("EngagementMeasureOwner")
+  companyTutorAssignments                   CompanyTutorLink[]                 @relation("CompanyTutorUser")
+  apprenticeshipMissionsValidated           ApprenticeshipMission[]            @relation("ApprenticeshipMissionValidator")
+  apprenticeRightsAcksRecorded              ApprenticeRightsAck[]              @relation("ApprenticeRightsAckRecorder")
+  socioProfessionalSupportOwned             SocioProfessionalSupportAction[]   @relation("SocioProfessionalSupportOwner")
+  sessionCertificationPresentationsReviewed SessionCertificationPresentation[] @relation("SessionCertificationPresentationReviewer")
+  sessionIntervenantAssignments             SessionIntervenantAssignment[]     @relation("SessionIntervenantUser")
+  sessionIntervenantCoordination            SessionIntervenantAssignment[]     @relation("SessionIntervenantCoordinator")
+  pedagogicalResourcesDelivered             PedagogicalResourceDelivery[]      @relation("PedagogicalResourceDeliveredBy")
+  perfectionnementCouncilMeetingsChaired    PerfectionnementCouncilMeeting[]   @relation("PerfectionnementCouncilChair")
+  trainerCompetencyReviewsSubject           TrainerCompetencyReview[]          @relation("TrainerCompetencyReviewSubject")
+  trainerCompetencyReviewsConducted         TrainerCompetencyReview[]          @relation("TrainerCompetencyReviewReviewer")
+  staffDevelopmentActions                   StaffDevelopmentAction[]           @relation("StaffDevelopmentActionSubject")
+  watchItemsOwned                           WatchItem[]                        @relation("WatchItemOwner")
+  watchExploitationsOwned                   WatchExploitation[]                @relation("WatchExploitationOwner")
+  insertionFollowUpsAsLearner               InsertionFollowUp[]                @relation("InsertionFollowUpLearner")
+  insertionFollowUpsRecorded                InsertionFollowUp[]                @relation("InsertionFollowUpRecorder")
+  continuousImprovementActionsOwned         ContinuousImprovementAction[]      @relation("ContinuousImprovementActionOwner")
+  continuousImprovementActionsVerified      ContinuousImprovementAction[]      @relation("ContinuousImprovementActionVerifier")
+
   @@index([invitedByUserId])
   @@index([roleId])
   @@index([jobPositionId])
@@ -384,14 +406,17 @@ model FileAsset {
   updatedAt        DateTime            @updatedAt
   deletedAt        DateTime?
 
-  createdBy              User?                        @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  currentVersion         FileAssetVersion?            @relation("FileAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
-  versions               FileAssetVersion[]           @relation("FileAssetVersions")
-  reportJobs             ReportGenerationJob[]
-  complianceDossierItems ComplianceDossierItem[]
-  complianceItemEvents   ComplianceItemEvent[]
-  ticketAttachments      TicketAttachment[]
-  sessionConventions     FormationSessionConvention[]
+  createdBy                      User?                            @relation("FileAssetCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  currentVersion                 FileAssetVersion?                @relation("FileAssetCurrentVersion", fields: [currentVersionId], references: [id], onDelete: SetNull)
+  versions                       FileAssetVersion[]               @relation("FileAssetVersions")
+  reportJobs                     ReportGenerationJob[]
+  complianceDossierItems         ComplianceDossierItem[]
+  complianceItemEvents           ComplianceItemEvent[]
+  ticketAttachments              TicketAttachment[]
+  sessionConventions             FormationSessionConvention[]
+  apprenticeRightsAckDocuments   ApprenticeRightsAck[]
+  perfectionnementCouncilMinutes PerfectionnementCouncilMeeting[]
+  pedagogicalResourceDeliveries  PedagogicalResourceDelivery[]
 
   @@index([module, entityType, entityId])
   @@index([status, visibility])
@@ -643,8 +668,9 @@ model CollaborateurProfile {
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  manager User? @relation("CollaborateurManager", fields: [managerUserId], references: [id], onDelete: SetNull)
+  user               User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  manager            User?                    @relation("CollaborateurManager", fields: [managerUserId], references: [id], onDelete: SetNull)
+  developmentActions StaffDevelopmentAction[]
 
   @@index([companyId])
   @@index([schoolInternalService])
@@ -674,7 +700,8 @@ model FormateurProfile {
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competencyReviews TrainerCompetencyReview[]
 
   @@index([companyId])
   @@index([schoolInternalService])
@@ -833,6 +860,10 @@ model SystemSetting {
   disabilityReferentName  String?
   disabilityReferentEmail String?
   disabilityReferentPhone String?
+  /// Qualiopi Q-I20 — référent mobilité nationale / internationale.
+  mobilityReferentName    String?
+  mobilityReferentEmail   String?
+  mobilityReferentPhone   String?
   language                String  @default("en")
   timezone                String  @default("UTC")
   currency                String  @default("USD")
@@ -1236,6 +1267,24 @@ model Formation {
   trainingRequests TrainingRequest[]
   evidences        Evidence[]
 
+  /// Qualiopi Q-I01 — délai / modalités d'accès affichés au public.
+  publicAccessDelayLabel     String?
+  publicTeachingMethods      Json      @default("[]")
+  publicEvaluationMethods    Json      @default("[]")
+  publicDisabilityAccessInfo String?   @db.Text
+  publicInfoLastReviewedAt   DateTime?
+  publicInfoReviewedById     String?
+  publicInfoReviewedBy       User?     @relation("FormationPublicInfoReviewer", fields: [publicInfoReviewedById], references: [id], onDelete: SetNull)
+  publicInfoIndicatorCodes   String[]  @default(["Q-I01"])
+
+  /// Qualiopi Q-I05 / Q-I06 / Q-I07 — objectifs opérationnels + adéquation certification (texte structuré).
+  operationalObjectivesSummary String? @db.Text
+  contentModalitiesSummary     String? @db.Text
+  certificationAdequacyNotes   String? @db.Text
+
+  certificationOutcomeStats CertificationOutcomeStat[]
+  socioEconomicPartnerships SocioEconomicPartnership[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1243,6 +1292,7 @@ model Formation {
   @@index([track])
   @@index([parcoursSpecialite])
   @@index([featured])
+  @@index([publicInfoReviewedById])
 }
 
 /// Inclusion d'une fiche référence dans le catalogue école — pas de duplication métier, surcharges optionnelles.
@@ -1452,6 +1502,15 @@ model FormationSession {
   financeDevisSessionLinks FinanceDevis[]         @relation("FinanceDevisLinkedSession")
   automationRuns           SessionAutomationRun[]
 
+  certificationOutcomeStats       CertificationOutcomeStat[]
+  engagementMeasures              EngagementMeasure[]
+  sessionIntervenantAssignments   SessionIntervenantAssignment[]
+  pedagogicalResourceDeliveries   PedagogicalResourceDelivery[]
+  insertionFollowUps              InsertionFollowUp[]
+  supportTickets                  SupportTicket[]
+  qualityIncidents                QualityIncident[]
+  socioProfessionalSupportActions SocioProfessionalSupportAction[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1654,6 +1713,15 @@ model FormationSessionParticipant {
   fundingCases         FundingCase[]
   conventions          FormationSessionConvention[]
   formativeAssessments FormativeAssessment[]
+
+  engagementMeasures               EngagementMeasure[]
+  companyTutorLinks                CompanyTutorLink[]
+  apprenticeshipMissions           ApprenticeshipMission[]
+  apprenticeRightsAck              ApprenticeRightsAck?
+  socioProfessionalSupportActions  SocioProfessionalSupportAction[]
+  sessionCertificationPresentation SessionCertificationPresentation?
+  pedagogicalResourceDeliveries    PedagogicalResourceDelivery[]
+  insertionFollowUps               InsertionFollowUp[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -2726,6 +2794,16 @@ model CollaborationDocument {
 
 // --- Support, marketing, SEO, finance (modules CRM opérationnels) ---
 
+/// Qualiopi Q-I31 — typologie partie prenante (réclamation / difficulté).
+enum QualityStakeholderKind {
+  BENEFICIARY
+  FUNDER
+  TRAINER
+  COMPANY
+  STAFF
+  OTHER
+}
+
 enum SupportTicketStatus {
   OPEN
   IN_PROGRESS
@@ -2742,31 +2820,42 @@ enum SupportTicketPriority {
 }
 
 model SupportTicket {
-  id             String                @id @default(uuid())
-  referenceCode  String                @unique
-  subject        String
-  description    String                @db.Text
-  status         SupportTicketStatus   @default(OPEN)
-  priority       SupportTicketPriority @default(MEDIUM)
-  requesterName  String
-  requesterEmail String
-  leadId         String?
-  lead           Lead?                 @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  assignedToId   String?
-  assignedTo     User?                 @relation("SupportTicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  createdById    String?
-  createdBy      User?                 @relation("SupportTicketCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  resolvedAt     DateTime?
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
-  comments       TicketComment[]
-  attachments    TicketAttachment[]
-  incidents      QualityIncident[]
+  id                           String                        @id @default(uuid())
+  referenceCode                String                        @unique
+  subject                      String
+  description                  String                        @db.Text
+  status                       SupportTicketStatus           @default(OPEN)
+  priority                     SupportTicketPriority         @default(MEDIUM)
+  requesterName                String
+  requesterEmail               String
+  leadId                       String?
+  lead                         Lead?                         @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  assignedToId                 String?
+  assignedTo                   User?                         @relation("SupportTicketAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdById                  String?
+  createdBy                    User?                         @relation("SupportTicketCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  resolvedAt                   DateTime?
+  /// Qualiopi Q-I31 — réclamation / difficulté partie prenante.
+  isComplaint                  Boolean                       @default(false)
+  stakeholderKind              QualityStakeholderKind?
+  sessionId                    String?
+  session                      FormationSession?             @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  acknowledgedAt               DateTime?
+  firstResponseAt              DateTime?
+  complaintIndicatorCodes      String[]                      @default(["Q-I31"])
+  continuousImprovementActions ContinuousImprovementAction[]
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  comments                     TicketComment[]
+  attachments                  TicketAttachment[]
+  incidents                    QualityIncident[]
 
   @@index([status])
   @@index([priority])
   @@index([leadId])
   @@index([assignedToId])
+  @@index([sessionId])
+  @@index([isComplaint])
 }
 
 model TicketComment {
@@ -2825,29 +2914,38 @@ enum QualityIncidentStatus {
 }
 
 model QualityIncident {
-  id               String                  @id @default(uuid())
-  referenceCode    String                  @unique
-  title            String
-  description      String                  @db.Text
-  severity         QualityIncidentSeverity @default(MEDIUM)
-  status           QualityIncidentStatus   @default(REPORTED)
-  category         String?
-  ticketId         String?
-  ticket           SupportTicket?          @relation(fields: [ticketId], references: [id], onDelete: SetNull)
-  equipmentId      String?
-  equipment        Equipment?              @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
-  assignedToId     String?
-  assignedTo       User?                   @relation("QualityIncidentAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  reportedById     String?
-  reportedBy       User?                   @relation("QualityIncidentReporter", fields: [reportedById], references: [id], onDelete: SetNull)
-  rootCause        String?                 @db.Text
-  correctiveAction String?                 @db.Text
+  id                           String                        @id @default(uuid())
+  referenceCode                String                        @unique
+  title                        String
+  description                  String                        @db.Text
+  severity                     QualityIncidentSeverity       @default(MEDIUM)
+  status                       QualityIncidentStatus         @default(REPORTED)
+  category                     String?
+  ticketId                     String?
+  ticket                       SupportTicket?                @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  equipmentId                  String?
+  equipment                    Equipment?                    @relation(fields: [equipmentId], references: [id], onDelete: SetNull)
+  assignedToId                 String?
+  assignedTo                   User?                         @relation("QualityIncidentAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  reportedById                 String?
+  reportedBy                   User?                         @relation("QualityIncidentReporter", fields: [reportedById], references: [id], onDelete: SetNull)
+  rootCause                    String?                       @db.Text
+  correctiveAction             String?                       @db.Text
   /// WF-34 — échéance de l'action corrective.
-  deadline         DateTime?
-  verifiedAt       DateTime?
-  resolvedAt       DateTime?
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime                @updatedAt
+  deadline                     DateTime?
+  verifiedAt                   DateTime?
+  resolvedAt                   DateTime?
+  /// Qualiopi Q-I31 — réclamation / difficulté partie prenante.
+  isComplaint                  Boolean                       @default(false)
+  stakeholderKind              QualityStakeholderKind?
+  sessionId                    String?
+  session                      FormationSession?             @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  acknowledgedAt               DateTime?
+  firstResponseAt              DateTime?
+  complaintIndicatorCodes      String[]                      @default(["Q-I31"])
+  continuousImprovementActions ContinuousImprovementAction[]
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
 
   @@index([status])
   @@index([severity])
@@ -2855,6 +2953,8 @@ model QualityIncident {
   @@index([equipmentId])
   @@index([assignedToId])
   @@index([deadline])
+  @@index([sessionId])
+  @@index([isComplaint])
 }
 
 enum HelpArticleStatus {
@@ -3566,21 +3666,25 @@ enum TrainingRequestStatus {
 }
 
 model Company {
-  id                   String                @id @default(uuid())
-  name                 String
-  siret                String?
-  kind                 CrmCompanyKind        @default(EMPLOYER)
-  email                String?
-  phone                String?
-  address              String?               @db.Text
-  isActive             Boolean               @default(true)
-  notes                String?               @db.Text
-  contacts             Contact[]
-  trainingRequests     TrainingRequest[]
-  evidences            Evidence[]
-  subcontractorRecords SubcontractorRecord[]
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
+  id                        String                     @id @default(uuid())
+  name                      String
+  siret                     String?
+  kind                      CrmCompanyKind             @default(EMPLOYER)
+  email                     String?
+  phone                     String?
+  address                   String?                    @db.Text
+  isActive                  Boolean                    @default(true)
+  notes                     String?                    @db.Text
+  contacts                  Contact[]
+  trainingRequests          TrainingRequest[]
+  evidences                 Evidence[]
+  subcontractorRecords      SubcontractorRecord[]
+  companyTutorLinks         CompanyTutorLink[]
+  socioEconomicPartnerships SocioEconomicPartnership[]
+  insertionFollowUps        InsertionFollowUp[]
+  handicapNetworkPartners   HandicapNetworkPartner[]
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
 
   @@index([name])
   @@index([siret])
@@ -3629,20 +3733,22 @@ model SubcontractorStatusEvent {
 }
 
 model Contact {
-  id               String            @id @default(uuid())
-  companyId        String?
-  company          Company?          @relation(fields: [companyId], references: [id], onDelete: SetNull)
-  firstName        String
-  lastName         String
-  email            String?
-  phone            String?
-  jobTitle         String?
-  leadId           String?           @unique
-  lead             Lead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  notes            String?           @db.Text
-  trainingRequests TrainingRequest[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
+  id                        String                     @id @default(uuid())
+  companyId                 String?
+  company                   Company?                   @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  firstName                 String
+  lastName                  String
+  email                     String?
+  phone                     String?
+  jobTitle                  String?
+  leadId                    String?                    @unique
+  lead                      Lead?                      @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  notes                     String?                    @db.Text
+  trainingRequests          TrainingRequest[]
+  companyTutorLinks         CompanyTutorLink[]
+  socioEconomicPartnerships SocioEconomicPartnership[]
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
 
   @@index([email])
   @@index([companyId])
@@ -3743,6 +3849,13 @@ model Evidence {
   @@index([sourceType, sourceId])
 }
 
+enum EvidenceIndicatorLinkStatus {
+  SUGGESTED
+  AUTO
+  VERIFIED
+  REJECTED
+}
+
 model EvidenceIndicatorLink {
   id            String   @id @default(uuid())
   evidenceId    String
@@ -3750,8 +3863,19 @@ model EvidenceIndicatorLink {
   indicatorCode String
   createdAt     DateTime @default(now())
 
+  status     EvidenceIndicatorLinkStatus @default(SUGGESTED)
+  /// Score 0-1 renvoyé par l'agent IA quand le lien est proposé automatiquement (null si lien manuel).
+  confidence Float?
+  /// Justification de l'agent (pourquoi cette preuve concerne cet indicateur).
+  reason     String?                     @db.Text
+
+  createdByUserId  String?
+  verifiedByUserId String?
+  verifiedAt       DateTime?
+
   @@unique([evidenceId, indicatorCode])
   @@index([indicatorCode])
+  @@index([status])
 }
 
 /// Audit trail transitions readiness (SD-06) — forçable + findingIds dans payload.
@@ -3768,4 +3892,711 @@ model SessionReadinessEvent {
   createdAt   DateTime                @default(now())
 
   @@index([sessionId, createdAt])
+}
+
+// ─── Qualiopi métier gaps (V9) — GSMS-OF-05 ──────────────────────────────────
+
+enum CertificationOutcomeStatScope {
+  ORGANIZATION
+  FORMATION
+  SESSION_COHORT
+}
+
+/// Qualiopi Q-I02 / Q-I03 — publication d'indicateurs de résultats.
+model CertificationOutcomeStat {
+  id          String                        @id @default(uuid())
+  scope       CertificationOutcomeStatScope @default(FORMATION)
+  formationId String?
+  formation   Formation?                    @relation(fields: [formationId], references: [id], onDelete: Cascade)
+  sessionId   String?
+  session     FormationSession?             @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  periodLabel String
+  periodStart DateTime?
+  periodEnd   DateTime?
+
+  successRatePublished      Decimal? @db.Decimal(5, 2)
+  satisfactionRatePublished Decimal? @db.Decimal(5, 2)
+  traineesCount             Int?
+  completionRatePublished   Decimal? @db.Decimal(5, 2)
+
+  certificationPassRate Decimal? @db.Decimal(5, 2)
+  blockValidationRate   Decimal? @db.Decimal(5, 2)
+  equivalencesSummary   String?  @db.Text
+  bridgesSummary        String?  @db.Text
+  careerPathsSummary    String?  @db.Text
+
+  publishedAt    DateTime?
+  publishedById  String?
+  publishedBy    User?     @relation("CertificationOutcomeStatPublisher", fields: [publishedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[]  @default(["Q-I02", "Q-I03"])
+  metadata       Json      @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([formationId, periodStart])
+  @@index([sessionId])
+  @@index([scope])
+  @@index([publishedAt])
+}
+
+enum EngagementMeasureKind {
+  INDIVIDUAL_MONITORING
+  GROUP_ACTIVITY
+  MENTORING
+  REMOTE_CHECKIN
+  EMPLOYER_LIAISON
+  WELCOME_SESSION
+  OTHER
+}
+
+enum EngagementMeasureStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+/// Qualiopi Q-I12 — mesures d'engagement / prévention rupture (WF-19).
+model EngagementMeasure {
+  id            String                       @id @default(uuid())
+  sessionId     String
+  session       FormationSession             @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  participantId String?
+  participant   FormationSessionParticipant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  kind        EngagementMeasureKind
+  label       String
+  description String?                 @db.Text
+  status      EngagementMeasureStatus @default(PLANNED)
+  startAt     DateTime?
+  endAt       DateTime?
+
+  ownerUserId    String?
+  owner          User?    @relation("EngagementMeasureOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  actionsTaken   Json     @default("[]")
+  indicatorCodes String[] @default(["Q-I12"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([participantId])
+  @@index([status])
+  @@index([ownerUserId])
+}
+
+enum ApprenticeshipMissionHorizon {
+  SHORT_TERM
+  MEDIUM_TERM
+  LONG_TERM
+}
+
+enum ApprenticeshipMissionStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  REVISED
+  CANCELLED
+}
+
+/// Qualiopi Q-I13 — lien tuteur entreprise ↔ apprenti.
+model CompanyTutorLink {
+  id            String                      @id @default(uuid())
+  participantId String
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  companyId     String
+  company       Company                     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  contactId   String?
+  contact     Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  tutorUserId String?
+  tutorUser   User?    @relation("CompanyTutorUser", fields: [tutorUserId], references: [id], onDelete: SetNull)
+
+  tutorName  String?
+  tutorEmail String?
+  tutorPhone String?
+  roleLabel  String    @default("Tuteur entreprise")
+  assignedAt DateTime  @default(now())
+  endedAt    DateTime?
+  notes      String?   @db.Text
+
+  missions       ApprenticeshipMission[]
+  indicatorCodes String[]                @default(["Q-I13"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([participantId])
+  @@index([companyId])
+  @@index([contactId])
+  @@index([tutorUserId])
+}
+
+/// Qualiopi Q-I13 — missions confiées en entreprise.
+model ApprenticeshipMission {
+  id                 String                      @id @default(uuid())
+  participantId      String
+  participant        FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  companyTutorLinkId String?
+  companyTutorLink   CompanyTutorLink?           @relation(fields: [companyTutorLinkId], references: [id], onDelete: SetNull)
+
+  horizon      ApprenticeshipMissionHorizon
+  status       ApprenticeshipMissionStatus  @default(PLANNED)
+  title        String
+  description  String?                      @db.Text
+  plannedStart DateTime?
+  plannedEnd   DateTime?
+  validatedAt  DateTime?
+
+  validatedById  String?
+  validatedBy    User?    @relation("ApprenticeshipMissionValidator", fields: [validatedById], references: [id], onDelete: SetNull)
+  progressNotes  Json     @default("[]")
+  indicatorCodes String[] @default(["Q-I13"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([participantId])
+  @@index([companyTutorLinkId])
+  @@index([status])
+}
+
+/// Qualiopi Q-I15 — droits / devoirs des apprentis (accusé de réception).
+model ApprenticeRightsAck {
+  id            String                      @id @default(uuid())
+  participantId String                      @unique
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  acknowledgedAt     DateTime
+  apprenticeSignedAt DateTime?
+  rightsTopics       Json      @default("[]")
+
+  documentFileAssetId String?
+  documentFileAsset   FileAsset? @relation(fields: [documentFileAssetId], references: [id], onDelete: SetNull)
+
+  recordedById   String?
+  recordedBy     User?    @relation("ApprenticeRightsAckRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I15"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([acknowledgedAt])
+  @@index([documentFileAssetId])
+}
+
+enum SocioProfessionalSupportKind {
+  SOCIAL
+  PROFESSIONAL
+  EDUCATIONAL
+  CITIZENSHIP
+  HOUSING
+  HEALTH
+  OTHER
+}
+
+enum SocioProfessionalSupportStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  REFERRED_EXTERNAL
+  CANCELLED
+}
+
+/// Qualiopi Q-I14 — accompagnement socio-professionnel / éducatif / citoyenneté (CFA).
+model SocioProfessionalSupportAction {
+  id            String                      @id @default(uuid())
+  participantId String
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  sessionId     String?
+  session       FormationSession?           @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  kind        SocioProfessionalSupportKind
+  status      SocioProfessionalSupportStatus @default(PLANNED)
+  label       String
+  description String?                        @db.Text
+
+  startedAt   DateTime?
+  completedAt DateTime?
+  outcome     String?   @db.Text
+
+  ownerUserId    String?
+  owner          User?    @relation("SocioProfessionalSupportOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I14"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([participantId])
+  @@index([sessionId])
+  @@index([status])
+  @@index([kind])
+  @@index([ownerUserId])
+}
+
+enum HandicapNetworkPartnerKind {
+  AGEFIPH
+  MDPH
+  CAP_EMPLOI
+  SPECIALIZED_PROVIDER
+  INTERNAL_EXPERT
+  TOOL_PLATFORM
+  OTHER
+}
+
+/// Qualiopi Q-I26 — expertises / outils / réseaux mobilisés pour le handicap.
+model HandicapNetworkPartner {
+  id              String                     @id @default(uuid())
+  kind            HandicapNetworkPartnerKind
+  label           String
+  description     String?                    @db.Text
+  contactName     String?
+  contactEmail    String?
+  contactPhone    String?
+  websiteUrl      String?
+  companyId       String?
+  company         Company?                   @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  isActive        Boolean                    @default(true)
+  lastMobilizedAt DateTime?
+  notes           String?                    @db.Text
+  indicatorCodes  String[]                   @default(["Q-I26"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kind])
+  @@index([companyId])
+  @@index([isActive])
+}
+
+/// Qualiopi Q-I16 — checklist présentation à la certification (par bénéficiaire).
+model SessionCertificationPresentation {
+  id            String                      @id @default(uuid())
+  participantId String                      @unique
+  participant   FormationSessionParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  identityVerified              Boolean @default(false)
+  prerequisitesVerified         Boolean @default(false)
+  attendanceThresholdMet        Boolean @default(false)
+  formativeAssessmentComplete   Boolean @default(false)
+  examRegistrationSubmitted     Boolean @default(false)
+  accessibilityAccommodationsOk Boolean @default(false)
+  employerAgreementSigned       Boolean @default(false)
+
+  authorityName      String?
+  authorityReference String?
+  checklistNotes     Json      @default("{}")
+  reviewedAt         DateTime?
+
+  reviewedById   String?
+  reviewedBy     User?    @relation("SessionCertificationPresentationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I16"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([reviewedAt])
+}
+
+enum SessionIntervenantRole {
+  TRAINER
+  CO_TRAINER
+  PEDAGOGICAL_COORDINATOR
+  ADMINISTRATIVE
+  LOGISTICS
+  COMMERCIAL
+  EXTERNAL_EXPERT
+  OTHER
+}
+
+/// Qualiopi Q-I18 — coordination intervenants internes / externes.
+model SessionIntervenantAssignment {
+  id        String           @id @default(uuid())
+  sessionId String
+  session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  userId           String?
+  user             User?                  @relation("SessionIntervenantUser", fields: [userId], references: [id], onDelete: SetNull)
+  externalLabel    String?
+  externalEmail    String?
+  role             SessionIntervenantRole
+  responsibilities Json                   @default("[]")
+
+  startAt DateTime?
+  endAt   DateTime?
+
+  coordinatedById String?
+  coordinatedBy   User?    @relation("SessionIntervenantCoordinator", fields: [coordinatedById], references: [id], onDelete: SetNull)
+  indicatorCodes  String[] @default(["Q-I18"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([userId])
+  @@index([role])
+}
+
+enum PedagogicalResourceDeliveryStatus {
+  PLANNED
+  DELIVERED
+  ACKNOWLEDGED
+}
+
+/// Qualiopi Q-I19 — ressources pédagogiques mises à disposition.
+model PedagogicalResourceDelivery {
+  id        String           @id @default(uuid())
+  sessionId String
+  session   FormationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  participantId String?
+  participant   FormationSessionParticipant? @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  label           String
+  resourceType    String?
+  deliveryChannel String?
+  status          PedagogicalResourceDeliveryStatus @default(PLANNED)
+
+  fileAssetId String?
+  fileAsset   FileAsset? @relation(fields: [fileAssetId], references: [id], onDelete: SetNull)
+
+  deliveredAt    DateTime?
+  acknowledgedAt DateTime?
+  notes          String?   @db.Text
+
+  deliveredById  String?
+  deliveredBy    User?    @relation("PedagogicalResourceDeliveredBy", fields: [deliveredById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I19"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([participantId])
+  @@index([status])
+  @@index([fileAssetId])
+}
+
+/// Qualiopi Q-I20 — conseil de perfectionnement.
+model PerfectionnementCouncilMeeting {
+  id     String   @id @default(uuid())
+  title  String
+  heldAt DateTime
+
+  attendees Json @default("[]")
+  agenda    Json @default("[]")
+  decisions Json @default("[]")
+
+  minutesFileAssetId String?
+  minutesFileAsset   FileAsset? @relation(fields: [minutesFileAssetId], references: [id], onDelete: SetNull)
+
+  chairUserId    String?
+  chair          User?    @relation("PerfectionnementCouncilChair", fields: [chairUserId], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I20"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([heldAt])
+  @@index([chairUserId])
+}
+
+enum TrainerCompetencyReviewStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  ACTION_REQUIRED
+}
+
+/// Qualiopi Q-I21 — évaluation compétences formateurs / intervenants.
+model TrainerCompetencyReview {
+  id                 String            @id @default(uuid())
+  userId             String
+  user               User              @relation("TrainerCompetencyReviewSubject", fields: [userId], references: [id], onDelete: Cascade)
+  formateurProfileId String?
+  formateurProfile   FormateurProfile? @relation(fields: [formateurProfileId], references: [id], onDelete: SetNull)
+
+  reviewPeriodStart DateTime?
+  reviewPeriodEnd   DateTime?
+  status            TrainerCompetencyReviewStatus @default(SCHEDULED)
+
+  competenciesAssessed Json    @default("[]")
+  gapsIdentified       Json    @default("[]")
+  overallAssessment    String? @db.Text
+
+  reviewedAt      DateTime?
+  reviewerUserId  String?
+  reviewer        User?     @relation("TrainerCompetencyReviewReviewer", fields: [reviewerUserId], references: [id], onDelete: SetNull)
+  nextReviewDueAt DateTime?
+
+  developmentActions StaffDevelopmentAction[]
+  indicatorCodes     String[]                 @default(["Q-I21"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([formateurProfileId])
+  @@index([status])
+  @@index([nextReviewDueAt])
+}
+
+enum StaffDevelopmentActionStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+/// Qualiopi Q-I22 — développement compétences du personnel.
+model StaffDevelopmentAction {
+  id                     String                @id @default(uuid())
+  userId                 String
+  user                   User                  @relation("StaffDevelopmentActionSubject", fields: [userId], references: [id], onDelete: Cascade)
+  collaborateurProfileId String?
+  collaborateurProfile   CollaborateurProfile? @relation(fields: [collaborateurProfileId], references: [id], onDelete: SetNull)
+
+  competencyReviewId String?
+  competencyReview   TrainerCompetencyReview? @relation(fields: [competencyReviewId], references: [id], onDelete: SetNull)
+
+  label     String
+  objective String?                      @db.Text
+  status    StaffDevelopmentActionStatus @default(PLANNED)
+
+  plannedStart DateTime?
+  plannedEnd   DateTime?
+  completedAt  DateTime?
+
+  trainingProvider String?
+  costEuros        Decimal? @db.Decimal(10, 2)
+  indicatorCodes   String[] @default(["Q-I22"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([collaborateurProfileId])
+  @@index([competencyReviewId])
+  @@index([status])
+}
+
+enum WatchDomain {
+  LEGAL_REGULATORY
+  SKILLS_JOBS_EMPLOYMENT
+  PEDAGOGICAL_TECHNOLOGICAL
+}
+
+enum WatchItemStatus {
+  IDENTIFIED
+  UNDER_REVIEW
+  EXPLOITED
+  ARCHIVED
+}
+
+/// Qualiopi Q-I23 / Q-I24 / Q-I25 — item de veille.
+model WatchItem {
+  id     String      @id @default(uuid())
+  domain WatchDomain
+  title  String
+
+  sourceLabel String?
+  sourceUrl   String?
+  detectedAt  DateTime
+  summary     String?         @db.Text
+  status      WatchItemStatus @default(IDENTIFIED)
+
+  relevanceTags  Json     @default("[]")
+  indicatorCodes String[]
+
+  ownerUserId String?
+  owner       User?   @relation("WatchItemOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+
+  exploitations WatchExploitation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([domain, status])
+  @@index([detectedAt])
+  @@index([ownerUserId])
+}
+
+enum WatchExploitationStatus {
+  PLANNED
+  IN_PROGRESS
+  IMPLEMENTED
+  ABANDONED
+}
+
+/// Qualiopi Q-I23 / Q-I24 / Q-I25 — exploitation des enseignements de veille.
+model WatchExploitation {
+  id          String    @id @default(uuid())
+  watchItemId String
+  watchItem   WatchItem @relation(fields: [watchItemId], references: [id], onDelete: Cascade)
+
+  title          String
+  description    String?                 @db.Text
+  status         WatchExploitationStatus @default(PLANNED)
+  implementedAt  DateTime?
+  impactSummary  String?                 @db.Text
+  indicatorCodes String[]
+
+  ownerUserId String?
+  owner       User?   @relation("WatchExploitationOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+
+  improvementActions ContinuousImprovementAction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([watchItemId])
+  @@index([status])
+  @@index([ownerUserId])
+}
+
+enum SocioEconomicPartnershipKind {
+  PFST_HOST
+  CO_CONSTRUCTION
+  PLACEMENT
+  NETWORK
+  OTHER
+}
+
+enum SocioEconomicPartnershipStatus {
+  PROSPECT
+  ACTIVE
+  SUSPENDED
+  ENDED
+}
+
+/// Qualiopi Q-I28 — partenariat socio-économique / PFST.
+model SocioEconomicPartnership {
+  id        String  @id @default(uuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  formationId String?
+  formation   Formation? @relation(fields: [formationId], references: [id], onDelete: SetNull)
+  contactId   String?
+  contact     Contact?   @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  kind         SocioEconomicPartnershipKind
+  status       SocioEconomicPartnershipStatus @default(PROSPECT)
+  label        String
+  description  String?                        @db.Text
+  signedAt     DateTime?
+  pfstCapacity Int?
+
+  activities     Json     @default("[]")
+  indicatorCodes String[] @default(["Q-I28"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([formationId])
+  @@index([status])
+}
+
+enum InsertionFollowUpOutcome {
+  EMPLOYED
+  APPRENTICESHIP_CONTINUED
+  FURTHER_STUDY
+  UNEMPLOYED
+  UNKNOWN
+  OTHER
+}
+
+/// Qualiopi Q-I29 — suivi insertion / poursuite d'études.
+model InsertionFollowUp {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation("InsertionFollowUpLearner", fields: [userId], references: [id], onDelete: Cascade)
+
+  participantId String?
+  participant   FormationSessionParticipant? @relation(fields: [participantId], references: [id], onDelete: SetNull)
+  sessionId     String?
+  session       FormationSession?            @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  followedUpAt   DateTime
+  outcome        InsertionFollowUpOutcome
+  employerName   String?
+  companyId      String?
+  company        Company?                 @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  notes          String?                  @db.Text
+  nextFollowUpAt DateTime?
+
+  recordedById   String?
+  recordedBy     User?    @relation("InsertionFollowUpRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  indicatorCodes String[] @default(["Q-I29"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([participantId])
+  @@index([sessionId])
+  @@index([followedUpAt])
+  @@index([outcome])
+}
+
+enum ContinuousImprovementActionStatus {
+  IDENTIFIED
+  PLANNED
+  IN_PROGRESS
+  VERIFIED
+  CLOSED
+  CANCELLED
+}
+
+enum ContinuousImprovementActionSource {
+  SATISFACTION_SURVEY
+  COMPLAINT
+  QUALITY_INCIDENT
+  WATCH_EXPLOITATION
+  AUDIT_FINDING
+  MANUAL
+}
+
+/// Qualiopi Q-I32 — mesure d'amélioration continue.
+model ContinuousImprovementAction {
+  id          String                            @id @default(uuid())
+  title       String
+  description String?                           @db.Text
+  status      ContinuousImprovementActionStatus @default(IDENTIFIED)
+  source      ContinuousImprovementActionSource
+
+  sourceEntityType String?
+  sourceEntityId   String?
+
+  supportTicketId     String?
+  supportTicket       SupportTicket?     @relation(fields: [supportTicketId], references: [id], onDelete: SetNull)
+  qualityIncidentId   String?
+  qualityIncident     QualityIncident?   @relation(fields: [qualityIncidentId], references: [id], onDelete: SetNull)
+  watchExploitationId String?
+  watchExploitation   WatchExploitation? @relation(fields: [watchExploitationId], references: [id], onDelete: SetNull)
+
+  ownerUserId  String?
+  owner        User?     @relation("ContinuousImprovementActionOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  deadline     DateTime?
+  completedAt  DateTime?
+  verifiedAt   DateTime?
+  verifiedById String?
+  verifiedBy   User?     @relation("ContinuousImprovementActionVerifier", fields: [verifiedById], references: [id], onDelete: SetNull)
+
+  effectivenessNotes String?  @db.Text
+  indicatorCodes     String[] @default(["Q-I32"])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([source])
+  @@index([ownerUserId])
+  @@index([supportTicketId])
+  @@index([qualityIncidentId])
+  @@index([watchExploitationId])
+  @@index([deadline])
 }

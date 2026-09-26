@@ -5,10 +5,44 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { apiFetch, unwrapSectionApiData } from '@/lib/api';
 import { Button } from '@repo/ui/button';
-import type { QualiopiCoveragePayload } from '@/lib/of/qualiopi-coverage';
+import type { QualiopiCoveragePayload, QualiopiLinkAggregateStatus } from '@/lib/of/qualiopi-coverage';
 import { QualiopiGapsAssistantPanel } from './qualiopi-gaps-assistant-panel';
 
 const COVERAGE_QUERY_KEY = ['qualiopi-coverage-page'] as const;
+
+function LinkStatusBadge({
+  status,
+  confidence,
+}: {
+  status: QualiopiLinkAggregateStatus;
+  confidence: number | null;
+}) {
+  const styles: Record<QualiopiLinkAggregateStatus, string> = {
+    VERIFIED: 'bg-emerald-100 text-emerald-900',
+    AUTO: 'bg-sky-100 text-sky-900',
+    SUGGESTED: 'bg-amber-100 text-amber-900',
+    REJECTED: 'bg-zinc-200 text-zinc-500 line-through',
+    NONE: 'bg-muted text-muted-foreground',
+  };
+  const labels: Record<QualiopiLinkAggregateStatus, string> = {
+    VERIFIED: 'Vérifié',
+    AUTO: 'Auto',
+    SUGGESTED: 'Suggéré',
+    REJECTED: 'Rejeté',
+    NONE: '—',
+  };
+  return (
+    <span
+      className={`inline-flex rounded px-2 py-0.5 text-[10px] font-medium ${styles[status]}`}
+      title={confidence != null ? `confidence ${confidence}` : undefined}
+    >
+      {labels[status]}
+      {confidence != null && status === 'SUGGESTED'
+        ? ` · ${Math.round(confidence * 100)}%`
+        : ''}
+    </span>
+  );
+}
 
 export function QualiopiCouverturePageClient() {
   const coverageQuery = useQuery({
@@ -82,6 +116,7 @@ export function QualiopiCouverturePageClient() {
               <th className="p-2 font-medium">Indicateur</th>
               <th className="p-2 font-medium">Preuves</th>
               <th className="p-2 font-medium">Dernière preuve</th>
+              <th className="p-2 font-medium">Lien</th>
               <th className="p-2 font-medium">Statut</th>
             </tr>
           </thead>
@@ -107,6 +142,9 @@ export function QualiopiCouverturePageClient() {
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
+                </td>
+                <td className="p-2">
+                  <LinkStatusBadge status={ind.linkStatus} confidence={ind.linkConfidence} />
                 </td>
                 <td className="p-2 text-xs">{ind.covered ? 'couvert' : 'non couvert'}</td>
               </tr>

@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
-/** Vague 2 — référent handicap rattaché à Partenaires & accessibilité. */
 export default function Page() {
-  redirect('/gestion-ressources/partenaires/referent-handicap');
+  return <QualiopiDevStubPage path="/gestion-ressources/rh/referent-handicap" level="leaf" />;
 }

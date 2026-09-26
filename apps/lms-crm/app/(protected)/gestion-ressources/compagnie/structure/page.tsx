@@ -1,5 +1,5 @@
-import { StructurePageShell } from './components/structure-page-shell';
+﻿import { QualiopiDevStubPage } from '@/components/crm/qualiopi-dev-stub-page';
 
 export default function Page() {
-  return <StructurePageShell />;
+  return <QualiopiDevStubPage path="/gestion-ressources/compagnie/structure" level="leaf" />;
 }
